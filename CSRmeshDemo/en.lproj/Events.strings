@@ -1,0 +1,108 @@
+
+/* Class = "UINavigationController"; title = "ShortcutNavigation"; ObjectID = "0Du-kq-Eqs"; */
+"0Du-kq-Eqs.title" = "ShortcutNavigation";
+
+/* Class = "UILabel"; text = "Time"; ObjectID = "1G5-lb-zPP"; */
+"1G5-lb-zPP.text" = "Time";
+
+/* Class = "UILabel"; text = "Repeat"; ObjectID = "3ae-vp-LxR"; */
+"3ae-vp-LxR.text" = "Repeat";
+
+/* Class = "UIBarButtonItem"; title = "Add"; ObjectID = "3d9-7a-tT6"; */
+"3d9-7a-tT6.title" = "Add";
+
+/* Class = "UISegmentedControl"; 5Lm-Yl-89Q.segmentTitles[0] = "ALL"; ObjectID = "5Lm-Yl-89Q"; */
+"5Lm-Yl-89Q.segmentTitles[0]" = "ALL";
+
+/* Class = "UISegmentedControl"; 5Lm-Yl-89Q.segmentTitles[1] = "LIGHT COLOR"; ObjectID = "5Lm-Yl-89Q"; */
+"5Lm-Yl-89Q.segmentTitles[1]" = "LIGHT COLOR";
+
+/* Class = "UISegmentedControl"; 5Lm-Yl-89Q.segmentTitles[2] = "LIGHT POWER"; ObjectID = "5Lm-Yl-89Q"; */
+"5Lm-Yl-89Q.segmentTitles[2]" = "LIGHT POWER";
+
+/* Class = "UISegmentedControl"; 5Lm-Yl-89Q.segmentTitles[3] = "HEATING"; ObjectID = "5Lm-Yl-89Q"; */
+"5Lm-Yl-89Q.segmentTitles[3]" = "HEATING";
+
+/* Class = "UINavigationItem"; title = "Create a Event"; ObjectID = "6G7-YM-Mq8"; */
+"6G7-YM-Mq8.title" = "Create a Event";
+
+/* Class = "UINavigationController"; title = "EventsDetailNavigationController"; ObjectID = "6jP-tg-OD0"; */
+"6jP-tg-OD0.title" = "EventsDetailNavigationController";
+
+/* Class = "UINavigationItem"; title = "Events Detail"; ObjectID = "8Nc-my-zRM"; */
+"8Nc-my-zRM.title" = "Events Detail";
+
+/* Class = "UILabel"; text = "Repeat"; ObjectID = "9Tw-hi-VTX"; */
+"9Tw-hi-VTX.text" = "Repeat";
+
+/* Class = "UILabel"; text = "Device Name"; ObjectID = "AX5-ku-qHo"; */
+"AX5-ku-qHo.text" = "Device Name";
+
+/* Class = "UITextField"; placeholder = "Event Name"; ObjectID = "CWn-l1-HgG"; */
+"CWn-l1-HgG.placeholder" = "Event Name";
+
+/* Class = "UILabel"; text = "2 - pick a setup"; ObjectID = "IHJ-sN-bul"; */
+"IHJ-sN-bul.text" = "2 - pick a setup";
+
+/* Class = "UILabel"; text = "Light color event"; ObjectID = "JPz-4G-T9J"; */
+"JPz-4G-T9J.text" = "Light color event";
+
+/* Class = "UIBarButtonItem"; title = "Cancel"; ObjectID = "Kh7-36-BgU"; */
+"Kh7-36-BgU.title" = "Cancel";
+
+/* Class = "UILabel"; text = "4 - time your event"; ObjectID = "NP6-B1-5eI"; */
+"NP6-B1-5eI.text" = "4 - time your event";
+
+/* Class = "UILabel"; text = "Event Detail"; ObjectID = "NPK-3b-K9p"; */
+"NPK-3b-K9p.text" = "Event Detail";
+
+/* Class = "UIBarButtonItem"; title = "Back"; ObjectID = "PRg-mi-nW7"; */
+"PRg-mi-nW7.title" = "Back";
+
+/* Class = "UILabel"; text = "3 - select light devices"; ObjectID = "PgC-yg-rcm"; */
+"PgC-yg-rcm.text" = "3 - select light devices";
+
+/* Class = "UILabel"; text = "Event Name"; ObjectID = "QwE-VZ-H9x"; */
+"QwE-VZ-H9x.text" = "Event Name";
+
+/* Class = "UIBarButtonItem"; title = "Delete"; ObjectID = "UMV-cT-9Gl"; */
+"UMV-cT-9Gl.title" = "Delete";
+
+/* Class = "UINavigationController"; title = "EventsNewCreationNavigationController"; ObjectID = "Und-Ae-U9N"; */
+"Und-Ae-U9N.title" = "EventsNewCreationNavigationController";
+
+/* Class = "UILabel"; text = "Device Name"; ObjectID = "YKg-cw-9UF"; */
+"YKg-cw-9UF.text" = "Device Name";
+
+/* Class = "UILabel"; text = "DateInNumbers"; ObjectID = "bJQ-In-uXy"; */
+"bJQ-In-uXy.text" = "DateInNumbers";
+
+/* Class = "UILabel"; text = "Event Name"; ObjectID = "bLE-oK-vFD"; */
+"bLE-oK-vFD.text" = "Event Name";
+
+/* Class = "UINavigationItem"; title = "Create Event"; ObjectID = "c3n-LW-dnV"; */
+"c3n-LW-dnV.title" = "Create Event";
+
+/* Class = "UITextField"; placeholder = "Your event name"; ObjectID = "cfw-Pu-MsM"; */
+"cfw-Pu-MsM.placeholder" = "Your event name";
+
+/* Class = "UINavigationController"; title = "EventsNavigationController"; ObjectID = "j5J-Yh-Nez"; */
+"j5J-Yh-Nez.title" = "EventsNavigationController";
+
+/* Class = "UILabel"; text = "Event Detail"; ObjectID = "lD9-2U-oBR"; */
+"lD9-2U-oBR.text" = "Event Detail";
+
+/* Class = "UILabel"; text = "time"; ObjectID = "pz4-ml-3Lj"; */
+"pz4-ml-3Lj.text" = "time";
+
+/* Class = "UILabel"; text = "1- set a name"; ObjectID = "q0P-SM-lb3"; */
+"q0P-SM-lb3.text" = "1- set a name";
+
+/* Class = "UIBarButtonItem"; title = "Edit"; ObjectID = "u8L-IL-Dse"; */
+"u8L-IL-Dse.title" = "Edit";
+
+/* Class = "UIBarButtonItem"; title = "Next"; ObjectID = "xZc-aE-c1e"; */
+"xZc-aE-c1e.title" = "Next";
+
+/* Class = "UINavigationItem"; title = "Events"; ObjectID = "yk3-vw-FNT"; */
+"yk3-vw-FNT.title" = "Events";
