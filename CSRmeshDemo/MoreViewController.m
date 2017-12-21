@@ -8,7 +8,7 @@
 
 #import "MoreViewController.h"
 #import "TimerViewController.h"
-#import "UpdateViewController.h"
+#import "DiscoverViewController.h"
 #import "AboutViewController.h"
 #import "MasterViewController.h"
 #import "PureLayout.h"
@@ -21,7 +21,7 @@
 @property (nonatomic,strong) UISplitViewController *panel;
 @property (nonatomic,strong) RemoteViewController *remoteVC;
 @property (nonatomic,strong) TimerViewController *timerVC;
-@property (nonatomic,strong) UpdateViewController *updateVC;
+@property (nonatomic,strong) DiscoverViewController *updateVC;
 @property (nonatomic,strong) AboutViewController *aboutVC;
 @property (nonatomic,strong) ShareViewController *shareVC;
 @property (nonatomic,strong) MasterViewController *masterVC;
@@ -56,7 +56,7 @@
     self.panel = [[UISplitViewController alloc] init];
     self.remoteVC = [[RemoteViewController alloc] init];
     self.timerVC = [[TimerViewController alloc] init];
-    self.updateVC = [[UpdateViewController alloc] init];
+    self.updateVC = [[DiscoverViewController alloc] init];
     self.aboutVC = [[AboutViewController alloc] init];
     self.shareVC = [[ShareViewController alloc] init];
     self.musicVC = [[MusicListTableViewController alloc] init];

@@ -135,14 +135,12 @@
 		2E16BC361F9D6E6100F2D830 /* ZHViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E16BC341F9D6E6100F2D830 /* ZHViewController.xib */; };
 		2E1FC7BF1F4ADB5500606862 /* DeviceDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E1FC7BD1F4ADB5500606862 /* DeviceDetailViewController.m */; };
 		2E1FC7C01F4ADB5500606862 /* DeviceDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E1FC7BE1F4ADB5500606862 /* DeviceDetailViewController.xib */; };
+		2E2DC5FC1FE8A05300A8E37F /* UpdateDeviceModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2DC5FB1FE8A05300A8E37F /* UpdateDeviceModel.m */; };
 		2E2EBF911FABF72600CEA401 /* OTAU.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE95A931FAB30A400E1F945 /* OTAU.m */; };
 		2E2EBF921FABF7EA00CEA401 /* PCM.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE95A8E1FAB30A400E1F945 /* PCM.m */; };
 		2E2EBF931FABF81700CEA401 /* ApplicationImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE95A871FAB30A400E1F945 /* ApplicationImage.m */; };
-		2E2EBF941FABF83100CEA401 /* Discovery.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE95A901FAB30A400E1F945 /* Discovery.m */; };
-		2E2EBF991FAC08C400CEA401 /* FirmwareSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2EBF951FAC08C300CEA401 /* FirmwareSelector.m */; };
 		2E2EBF9A1FAC08C400CEA401 /* DiscoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2EBF971FAC08C300CEA401 /* DiscoverViewController.m */; };
 		2E2EBF9C1FAC0A6500CEA401 /* DiscoverViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E2EBF9B1FAC0A6500CEA401 /* DiscoverViewController.xib */; };
-		2E2EBF9E1FAC0B9E00CEA401 /* FirmwareSelector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E2EBF9D1FAC0B9E00CEA401 /* FirmwareSelector.xib */; };
 		2E2EBFA41FAC2FF400CEA401 /* cskey_db.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E2EBF9F1FAC194400CEA401 /* cskey_db.json */; };
 		2E308D9C1F99D4C60080AE02 /* share@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E308D9B1F99D4580080AE02 /* share@2x.png */; };
 		2E308DA01F99DA060080AE02 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E308D9E1F99DA060080AE02 /* ShareViewController.m */; };
@@ -180,7 +178,6 @@
 		2E6A02131F39884500111312 /* TabBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A020E1F39884500111312 /* TabBarButton.m */; };
 		2E6A02141F39884500111312 /* TabBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A02101F39884500111312 /* TabBarView.m */; };
 		2E6A021A1F39893400111312 /* MainTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A02171F39893400111312 /* MainTabBarController.m */; };
-		2E72CEDE1FB1BD5100AECDD9 /* CBPeripheral+CallbackQ.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE95A8A1FAB30A400E1F945 /* CBPeripheral+CallbackQ.m */; };
 		2E72CEDF1FB1BD5100AECDD9 /* NSMutableArray+Queue.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE95A8C1FAB30A400E1F945 /* NSMutableArray+Queue.m */; };
 		2E758A151F6F6A2C0087EFF0 /* dimmer_csr.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E758A131F6F6A2C0087EFF0 /* dimmer_csr.png */; };
 		2E758A161F6F6A2C0087EFF0 /* switch_csr.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E758A141F6F6A2C0087EFF0 /* switch_csr.png */; };
@@ -480,12 +477,11 @@
 		2E1FC7BC1F4ADB5500606862 /* DeviceDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceDetailViewController.h; sourceTree = "<group>"; };
 		2E1FC7BD1F4ADB5500606862 /* DeviceDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceDetailViewController.m; sourceTree = "<group>"; };
 		2E1FC7BE1F4ADB5500606862 /* DeviceDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DeviceDetailViewController.xib; sourceTree = "<group>"; };
-		2E2EBF951FAC08C300CEA401 /* FirmwareSelector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FirmwareSelector.m; sourceTree = "<group>"; };
-		2E2EBF961FAC08C300CEA401 /* FirmwareSelector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FirmwareSelector.h; sourceTree = "<group>"; };
+		2E2DC5FA1FE8A05300A8E37F /* UpdateDeviceModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UpdateDeviceModel.h; sourceTree = "<group>"; };
+		2E2DC5FB1FE8A05300A8E37F /* UpdateDeviceModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UpdateDeviceModel.m; sourceTree = "<group>"; };
 		2E2EBF971FAC08C300CEA401 /* DiscoverViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DiscoverViewController.m; sourceTree = "<group>"; };
 		2E2EBF981FAC08C400CEA401 /* DiscoverViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DiscoverViewController.h; sourceTree = "<group>"; };
 		2E2EBF9B1FAC0A6500CEA401 /* DiscoverViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DiscoverViewController.xib; sourceTree = "<group>"; };
-		2E2EBF9D1FAC0B9E00CEA401 /* FirmwareSelector.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FirmwareSelector.xib; sourceTree = "<group>"; };
 		2E2EBF9F1FAC194400CEA401 /* cskey_db.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = cskey_db.json; sourceTree = "<group>"; };
 		2E308D9B1F99D4580080AE02 /* share@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share@2x.png"; sourceTree = "<group>"; };
 		2E308D9D1F99DA060080AE02 /* ShareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareViewController.h; sourceTree = "<group>"; };
@@ -638,14 +634,10 @@
 		2EE95A821FAB0F9700E1F945 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		2EE95A861FAB30A400E1F945 /* ApplicationImage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ApplicationImage.h; sourceTree = "<group>"; };
 		2EE95A871FAB30A400E1F945 /* ApplicationImage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ApplicationImage.m; sourceTree = "<group>"; };
-		2EE95A891FAB30A400E1F945 /* CBPeripheral+CallbackQ.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CBPeripheral+CallbackQ.h"; sourceTree = "<group>"; };
-		2EE95A8A1FAB30A400E1F945 /* CBPeripheral+CallbackQ.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "CBPeripheral+CallbackQ.m"; sourceTree = "<group>"; };
 		2EE95A8B1FAB30A400E1F945 /* NSMutableArray+Queue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+Queue.h"; sourceTree = "<group>"; };
 		2EE95A8C1FAB30A400E1F945 /* NSMutableArray+Queue.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+Queue.m"; sourceTree = "<group>"; };
 		2EE95A8D1FAB30A400E1F945 /* PCM.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PCM.h; sourceTree = "<group>"; };
 		2EE95A8E1FAB30A400E1F945 /* PCM.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PCM.m; sourceTree = "<group>"; };
-		2EE95A8F1FAB30A400E1F945 /* Discovery.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Discovery.h; sourceTree = "<group>"; };
-		2EE95A901FAB30A400E1F945 /* Discovery.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Discovery.m; sourceTree = "<group>"; };
 		2EE95A911FAB30A400E1F945 /* ErrorCodes.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = ErrorCodes.strings; sourceTree = "<group>"; };
 		2EE95A921FAB30A400E1F945 /* OTAU.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OTAU.h; sourceTree = "<group>"; };
 		2EE95A931FAB30A400E1F945 /* OTAU.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTAU.m; sourceTree = "<group>"; };
@@ -1663,15 +1655,14 @@
 			isa = PBXGroup;
 			children = (
 				2EE95A851FAB30A400E1F945 /* OTAU Library */,
-				2EE95A7C1FAAFC3900E1F945 /* UpdateViewController.h */,
-				2EE95A7D1FAAFC3900E1F945 /* UpdateViewController.m */,
-				2EE95A7E1FAAFC3900E1F945 /* UpdateViewController.xib */,
 				2E2EBF981FAC08C400CEA401 /* DiscoverViewController.h */,
 				2E2EBF971FAC08C300CEA401 /* DiscoverViewController.m */,
 				2E2EBF9B1FAC0A6500CEA401 /* DiscoverViewController.xib */,
-				2E2EBF961FAC08C300CEA401 /* FirmwareSelector.h */,
-				2E2EBF951FAC08C300CEA401 /* FirmwareSelector.m */,
-				2E2EBF9D1FAC0B9E00CEA401 /* FirmwareSelector.xib */,
+				2EE95A7C1FAAFC3900E1F945 /* UpdateViewController.h */,
+				2EE95A7D1FAAFC3900E1F945 /* UpdateViewController.m */,
+				2EE95A7E1FAAFC3900E1F945 /* UpdateViewController.xib */,
+				2E2DC5FA1FE8A05300A8E37F /* UpdateDeviceModel.h */,
+				2E2DC5FB1FE8A05300A8E37F /* UpdateDeviceModel.m */,
 			);
 			name = Update;
 			sourceTree = "<group>";
@@ -1682,8 +1673,6 @@
 				2EE95A861FAB30A400E1F945 /* ApplicationImage.h */,
 				2EE95A871FAB30A400E1F945 /* ApplicationImage.m */,
 				2EE95A881FAB30A400E1F945 /* CallbackQ */,
-				2EE95A8F1FAB30A400E1F945 /* Discovery.h */,
-				2EE95A901FAB30A400E1F945 /* Discovery.m */,
 				2EE95A911FAB30A400E1F945 /* ErrorCodes.strings */,
 				2EE95A921FAB30A400E1F945 /* OTAU.h */,
 				2EE95A931FAB30A400E1F945 /* OTAU.m */,
@@ -1694,8 +1683,6 @@
 		2EE95A881FAB30A400E1F945 /* CallbackQ */ = {
 			isa = PBXGroup;
 			children = (
-				2EE95A891FAB30A400E1F945 /* CBPeripheral+CallbackQ.h */,
-				2EE95A8A1FAB30A400E1F945 /* CBPeripheral+CallbackQ.m */,
 				2EE95A8B1FAB30A400E1F945 /* NSMutableArray+Queue.h */,
 				2EE95A8C1FAB30A400E1F945 /* NSMutableArray+Queue.m */,
 				2EE95A8D1FAB30A400E1F945 /* PCM.h */,
@@ -2168,7 +2155,6 @@
 				F45350891CD8B043002D91AB /* SensorActuatorTypes.json in Resources */,
 				0D1A19331B67744D0091F3D9 /* CSRPlaceTableViewCell.xib in Resources */,
 				2E93D8A31F6917E700ED3010 /* btnbg.png in Resources */,
-				2E2EBF9E1FAC0B9E00CEA401 /* FirmwareSelector.xib in Resources */,
 				2ED0AE961F885E3000DE45EA /* RemoteTCell.xib in Resources */,
 				2EA0C0C21F4281A6007B036C /* LightClusterCell.xib in Resources */,
 				2EE95A801FAAFC3900E1F945 /* UpdateViewController.xib in Resources */,
@@ -2260,9 +2246,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E72CEDE1FB1BD5100AECDD9 /* CBPeripheral+CallbackQ.m in Sources */,
 				2E72CEDF1FB1BD5100AECDD9 /* NSMutableArray+Queue.m in Sources */,
-				2E2EBF941FABF83100CEA401 /* Discovery.m in Sources */,
 				2E2EBF931FABF81700CEA401 /* ApplicationImage.m in Sources */,
 				2E2EBF921FABF7EA00CEA401 /* PCM.m in Sources */,
 				2E2EBF911FABF72600CEA401 /* OTAU.m in Sources */,
@@ -2341,7 +2325,6 @@
 				2E15B37E1F565A750065C205 /* AboutViewController.m in Sources */,
 				F4658A1F1C99747A00C284F4 /* CSRDeviceEventsEntity+CoreDataProperties.m in Sources */,
 				0D835B561B9749E600FF4376 /* CSRCheckbox.m in Sources */,
-				2E2EBF991FAC08C400CEA401 /* FirmwareSelector.m in Sources */,
 				0D835B571B9749E600FF4376 /* CSRAreaTableViewCell.m in Sources */,
 				0D835B581B9749E600FF4376 /* CSRDeviceSelectionTableViewCell.m in Sources */,
 				CED9EF061BD66C4C004EBAB0 /* CSRAreaSelectionManager.m in Sources */,
@@ -2400,6 +2383,7 @@
 				CED928011C8759D1003B6110 /* CSREventTimeSelectorVC.m in Sources */,
 				2EEA6E361F453B1300895CE2 /* ControlMaskView.m in Sources */,
 				F43D5A131CA454A1007EF5C6 /* CSREventRepeatCell.m in Sources */,
+				2E2DC5FC1FE8A05300A8E37F /* UpdateDeviceModel.m in Sources */,
 				2EA0C0C91F428B9B007B036C /* SpecialFlowLayoutCollectionController.m in Sources */,
 				F48095751CF89EC600F4BB10 /* CSRBridgeDiscoveryViewController.m in Sources */,
 				0D835B6A1B9749E600FF4376 /* CSRManagePlacesViewController.m in Sources */,

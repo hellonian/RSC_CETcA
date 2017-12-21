@@ -8,18 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreBluetooth/CoreBluetooth.h>
-#import "FirmwareSelector.h"
 #import "DiscoverViewController.h"
 #import "OTAU.h"
+#import "UpdateDeviceModel.h"
 
-@interface UpdateViewController : UIViewController <FirmwareDelegate, DiscoveryViewDelegate,OTAUDelegate>
+@interface UpdateViewController : UIViewController <OTAUDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *firmwareName;
 @property (weak, nonatomic) IBOutlet UIButton *targetName;
 @property (weak, nonatomic) IBOutlet UIButton *updateButtonName;
 
 @property (strong, nonatomic) NSString *firmwareFilename;
-@property (strong, nonatomic) CBPeripheral *targetPeripheral;
-
+@property (nonatomic,strong) UpdateDeviceModel *targetModel;
 @property (weak, nonatomic) IBOutlet UITextView *statusLog;
 
 -(void) handleOpenURL:(NSURL *)url;

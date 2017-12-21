@@ -680,7 +680,7 @@ typedef enum :NSInteger {
         
         
     }else{
-        NSLog(@"+ + + + + + + %ld",updatedBrightness);
+//        NSLog(@"+ + + + + + + %ld",updatedBrightness);
         CSRmeshDevice *device = [[CSRDevicesManager sharedInstance] getDeviceFromDeviceId:self.controlTarget.deviceID];
         if ([device.modelsSet containsObject:@(CSRMeshModelLIGHT)]) {
             [device setLevel:updatedBrightness];

@@ -24,11 +24,24 @@
 #import "DiscoverViewController.h"
 #import "CSRBluetoothLE.h"
 #import "OTAU.h"
+#import "CSRAppStateManager.h"
+#import "CSRDeviceEntity.h"
+#import "UpdateDeviceModel.h"
+#import "DataModelManager.h"
+#import "AFHTTPSessionManager.h"
+#import "UpdateViewController.h"
 
 @interface DiscoverViewController ()<UITableViewDelegate,UITableViewDataSource,CSRBluetoothLEDelegate>
+{
+    NSInteger SLatestV;
+    NSInteger DLatestV;
+    NSInteger RfLatestV;
+    NSInteger RoLatestV;
+}
 
 @property (strong, nonatomic) NSIndexPath *selectedCell;
 @property (nonatomic,strong) NSMutableArray *devices;
+@property (nonatomic,strong) NSArray *appDevices;
 
 @end
 
@@ -39,22 +52,30 @@
 {
     [super viewDidLoad];
 
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    
-    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:self action:@selector(backClick)];
-    self.navigationItem.leftBarButtonItem = back;
+    self.navigationItem.title = @"Update";
     _devices = [[NSMutableArray alloc] init];
     
     _peripheralsList.delegate = self;
     _peripheralsList.dataSource = self;
     
+    NSString *urlString = @"http://39.108.152.134/firware.php";
+    AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
+    sessionManager.responseSerializer.acceptableContentTypes = nil;
+    [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSDictionary *dic = (NSDictionary *)responseObject;
+        NSLog(@"%@",dic);
+        SLatestV = [dic[@"S350BT"] integerValue];
+        DLatestV = [dic[@"D350BT"] integerValue];
+        RfLatestV = [dic[@"RC350"] integerValue];
+        RoLatestV = [dic[@"RC351"] integerValue];
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@",error);
+    }];
     
-//    [[Discovery sharedInstance] setDiscoveryDelegate:self];
-//    [[Discovery sharedInstance] startScanForPeripheralsWithServices];
+}
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getFirmwareVersion:) name:@"getFirmwareVersion" object:nil];
     [[CSRBluetoothLE sharedInstance] setBleDelegate:self];
     [[CSRBluetoothLE sharedInstance] setIsUpdateScaning:YES];
     [[CSRBluetoothLE sharedInstance] startScan];
@@ -63,10 +84,10 @@
 -(void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-//    [[Discovery sharedInstance] setDiscoveryDelegate:nil];
     [[CSRBluetoothLE sharedInstance] setBleDelegate:nil];
     [[CSRBluetoothLE sharedInstance] setIsUpdateScaning:NO];
     [_devices removeAllObjects];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"getFirmwareVersion" object:nil];
 }
 
 /****************************************************************************/
@@ -87,14 +108,20 @@
 {
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
     if (!cell){
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"cell"];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
-    CBPeripheral *peripheral = (CBPeripheral*)[_devices objectAtIndex:indexPath.row];
-    if ([[peripheral name] length]){
-        [[cell textLabel] setText:[peripheral name]];
+
+    UpdateDeviceModel *upModel = [_devices objectAtIndex:indexPath.row];
+    cell.textLabel.text = upModel.name;
+    if (upModel.isLatest) {
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"kind:%@   version:%ld |Lastest",upModel.kind,(long)upModel.firwareVersion];
+        cell.detailTextLabel.textColor = [UIColor darkTextColor];
     }else{
-        [[cell textLabel] setText:@"No-Name"];
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"kind:%@   version:%ld |Need update",upModel.kind,(long)upModel.firwareVersion];
+        cell.detailTextLabel.textColor = [UIColor redColor];
     }
+    
     
 	return cell;
 }
@@ -103,53 +130,29 @@
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"00000000000000000000");
-//    devices = [[Discovery sharedInstance] foundPeripherals];
-    CBPeripheral *peripheral = (CBPeripheral*)[_devices objectAtIndex:indexPath.row];
-
-    NSArray *connectedPeripherals = [[CSRBluetoothLE sharedInstance] connectedPeripherals];
+    UpdateDeviceModel *model = [_devices objectAtIndex:indexPath.row];
     
-    if ([peripheral state] != CBPeripheralStateConnected) {
-        NSLog(@"非直连");
-        for (CBPeripheral *connectedPeripheral in connectedPeripherals) {
-            if ([connectedPeripheral state] == CBPeripheralStateConnected) {
-                [[CSRBluetoothLE sharedInstance] disconnectPeripheral:connectedPeripheral];
-                break;
+    if (!model.isLatest) {
+        NSArray *connectedPeripherals = [[CSRBluetoothLE sharedInstance] connectedPeripherals];
+        
+        if ([model.peripheral state] != CBPeripheralStateConnected) {
+            for (CBPeripheral *connectedPeripheral in connectedPeripherals) {
+                if ([connectedPeripheral state] == CBPeripheralStateConnected) {
+                    [[CSRBluetoothLE sharedInstance] setOutUpdate:YES];
+                    [[CSRBluetoothLE sharedInstance] setUpdatePeripheral:model.peripheral];
+                    [[CSRBluetoothLE sharedInstance] disconnectPeripheral:connectedPeripheral];
+                    break;
+                }
             }
         }
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSLog(@"开始重连");
-            [[CSRBluetoothLE sharedInstance] connectPeripheralNoCheck:peripheral];
-            [[CSRBluetoothLE sharedInstance] startOTAUTest:peripheral];
-            [self statusMessage:[NSString stringWithFormat:@"Connecting %@\n",peripheral.name]];
-        });
-    }
-    else if ([self isOTAUPeripheral:peripheral]){
-        NSLog(@"符合条件");
-        if (self.discoveryViewDelegate && [self.discoveryViewDelegate respondsToSelector:@selector(setTarget:)]) {
-            [self.discoveryViewDelegate setTarget:peripheral];
+        else if ([self isOTAUPeripheral:model.peripheral]){
+            UpdateViewController *uvc = [[UpdateViewController alloc] init];
+            uvc.targetModel = model;
+            [self.navigationController pushViewController:uvc animated:YES];
+            
         }
-    }
-    
-//    if ([peripheral state]!=CBPeripheralStateConnected) {
-////        [[Discovery sharedInstance] connectPeripheral:peripheral];
-//        [[CSRBluetoothLE sharedInstance] connectPeripheral:peripheral];
-//        // is this an OTAU peripheral?
-//        // Display "checking" in the cell view
-//        _selectedCell = indexPath;
-//        [tableView reloadData];
-    
-        // check for OTAU service
-//        [[Discovery sharedInstance] startOTAUTest:peripheral];
         
-        //[discoveryViewDelegate setTarget:peripheral];
-//        [self statusMessage:[NSString stringWithFormat:@"Connecting %@\n",peripheral.name]];
-    
-//    }
-//    else if([[Discovery sharedInstance]isOTAUPeripheral:peripheral]){
-//        [_discoveryViewDelegate setTarget:peripheral];
-//
-//    }
+    }
     
 }
 
@@ -175,54 +178,96 @@
 
 
 
-// Override to support editing the table view.
-
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a story board-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-
- */
-
 /****************************************************************************/
 /*                       BleDiscoveryDelegate Methods                       */
 /****************************************************************************/
 - (void) discoveryDidRefresh
 {
+    _appDevices = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
+    
     NSArray *foundPeripherals = [[CSRBluetoothLE sharedInstance] foundPeripherals];
     for (CBPeripheral *peripheral in foundPeripherals) {
-        if (![_devices containsObject:peripheral]) {
-            [_devices addObject:peripheral];
-        }
+        
+        [self checkData:peripheral];
+        
     }
+    
     NSArray *connectedPeripherals = [[CSRBluetoothLE sharedInstance] connectedPeripherals];
     for (CBPeripheral *peripheral in connectedPeripherals) {
-        if (![_devices containsObject:peripheral]) {
-            [_devices addObject:peripheral];
-        }
+        
+        [self checkData:peripheral];
+        
     }
+    [_peripheralsList reloadData];
+}
+
+- (void) checkData: (CBPeripheral *)peripheral {
+    
+    [_appDevices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
+        NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
+        if ([adUuidString isEqualToString:deviceUuidString]) {
+            BOOL exist = NO;
+            for (UpdateDeviceModel *model in _devices) {
+                if ([model.uuidStr isEqualToString:adUuidString]) {
+                    exist = YES;
+                    break;
+                }
+            }
+            if (!exist) {
+                UpdateDeviceModel *upModel = [[UpdateDeviceModel alloc] init];
+                upModel.peripheral = peripheral;
+                upModel.uuidStr = deviceUuidString;
+                upModel.name = deviceEntity.name;
+                upModel.kind = deviceEntity.shortName;
+                upModel.deviceId = deviceEntity.deviceId;
+                [[DataModelManager shareInstance] sendCmdData:@"880100" toDeviceId:deviceEntity.deviceId];
+                [_devices addObject:upModel];
+            }
+            *stop = YES;
+        }
+    }];
+}
+
+- (void) getFirmwareVersion:(NSNotification *)notification {
+    NSDictionary *dic = notification.userInfo;
+    NSNumber *deviceId = dic[@"deviceId"];
+    NSInteger firmwareVersion = [dic[@"getFirmwareVersion"] integerValue];
+    
+    [_devices enumerateObjectsUsingBlock:^(UpdateDeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([deviceId isEqualToNumber:model.deviceId]) {
+            model.firwareVersion = firmwareVersion;
+            if ([model.kind isEqualToString:@"S350BT"]) {
+                if (firmwareVersion == SLatestV) {
+                    model.isLatest = YES;
+                }else{
+                    model.isLatest = NO;
+                }
+            }
+            if ([model.kind isEqualToString:@"D350BT"]) {
+                if (firmwareVersion == DLatestV) {
+                    model.isLatest = YES;
+                }else{
+                    model.isLatest = NO;
+                }
+            }
+            if ([model.kind isEqualToString:@"RC350"]) {
+                if (firmwareVersion == RfLatestV) {
+                    model.isLatest = YES;
+                }else{
+                    model.isLatest = NO;
+                }
+            }
+            if ([model.kind isEqualToString:@"RC351"]) {
+                if (firmwareVersion == RoLatestV) {
+                    model.isLatest = YES;
+                }else{
+                    model.isLatest = NO;
+                }
+            }
+            *stop = YES;
+        }
+    }];
     [_peripheralsList reloadData];
 }
 
@@ -240,16 +285,19 @@
 // callback: is this an otau capable peripheral
 -(void) otauPeripheralTest:(CBPeripheral *) peripheral :(BOOL) isOtau {
     if (isOtau) {
-        NSLog(@"333333333");
-        [self statusMessage:[NSString stringWithFormat:@"Success: OTAU Test\n"]];
-        [_discoveryViewDelegate setTarget:peripheral];
-//        [[Discovery sharedInstance] stopScanning];
+        NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
+        [_devices enumerateObjectsUsingBlock:^(UpdateDeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([model.uuidStr isEqualToString:adUuidString]) {
+                UpdateViewController *uvc = [[UpdateViewController alloc] init];
+                uvc.targetModel = model;
+                [self.navigationController pushViewController:uvc animated:YES];
+                *stop = YES;
+            }
+        }];
+        
         [[CSRBluetoothLE sharedInstance] stopScan];
-        [self.navigationController popViewControllerAnimated:YES];
     }
     else {
-        [self statusMessage:[NSString stringWithFormat:@"Failed: OTAU Test\nDisconnecting...\n"]];
-//        [[Discovery sharedInstance] disconnectPeripheral:peripheral];
         [[CSRBluetoothLE sharedInstance] disconnectPeripheral:peripheral];
     }
 }
@@ -262,27 +310,5 @@
     [[CSRBluetoothLE sharedInstance] retrieveCachedPeripherals];
 }
 
-
-//============================================================================
--(void) statusMessage:(NSString *)message
-{
-    NSLog(@"文档内容 %@",message);
-    [_statusLog setScrollEnabled:NO];
-    [_statusLog setText:[_statusLog.text stringByAppendingString:message]];
-    [_statusLog setScrollEnabled:YES];
-    NSRange range = NSMakeRange(_statusLog.text.length - 1, 1);
-    [_statusLog scrollRangeToVisible:range];
-}
-
-
-/****************************************************************************/
-/*				            IB controls                                     */
-/****************************************************************************/
-
-- (void)backClick {
-    [_discoveryViewDelegate setTarget:nil];
-//    [[Discovery sharedInstance] stopScanning];
-    [self.navigationController popViewControllerAnimated:YES];
-}
 
 @end

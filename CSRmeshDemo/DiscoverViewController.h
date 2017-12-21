@@ -26,10 +26,10 @@
 #import <UIKit/UIKit.h>
 //#import "Discovery.h"
 
-@protocol DiscoveryViewDelegate <NSObject>
--(void) setTarget:(id)peripheral;
-
-@end
+//@protocol DiscoveryViewDelegate <NSObject>
+//-(void) setTarget:(id)peripheral;
+//
+//@end
 
 
 @interface DiscoverViewController : UIViewController 
@@ -39,9 +39,9 @@
 //@property (weak, nonatomic) IBOutlet UINavigationItem *viewName;
 @property (strong, nonatomic) IBOutlet UITableView *peripheralsList;
 
-@property (strong, nonatomic) id<DiscoveryViewDelegate> discoveryViewDelegate;
+//@property (strong, nonatomic) id<DiscoveryViewDelegate> discoveryViewDelegate;
 //@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 //- (IBAction)backButton:(id)sender;
 
-@property (weak, nonatomic) IBOutlet UITextView *statusLog;
+
 @end

@@ -285,8 +285,13 @@
 
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
     
-    NSLog(@">> %@",advertisementData);
     [peripheral setRssi:RSSI];
+    NSString *adString;
+    if (advertisementData[@"kCBAdvDataManufacturerData"]) {
+        NSData *adData = advertisementData[@"kCBAdvDataManufacturerData"];
+        adString = [[self hexStringForData:adData] uppercaseString];
+        [peripheral setUuidString:adString];
+    }
 
     NSMutableDictionary *enhancedAdvertismentData = [NSMutableDictionary dictionaryWithDictionary:advertisementData];
     enhancedAdvertismentData [CSR_PERIPHERAL] = peripheral;
@@ -300,10 +305,13 @@
     if ([messageStatus integerValue] == IS_BRIDGE || [messageStatus integerValue] == IS_BRIDGE_DISCOVERED_SERVICE) {
 #ifdef BRIDGE_ROAMING_ENABLE
         
-        if (!_isUpdateScaning && advertisementData[@"kCBAdvDataManufacturerData"]) {
-            NSData *uuidData = advertisementData[@"kCBAdvDataManufacturerData"];
-            NSString *uuidStr = [self hexStringForData:uuidData];
-            BOOL exist = [[uuidStr substringToIndex:12] boolValue];
+        NSArray *array = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
+        if (array.count == 0 || array == nil) {
+            [[CSRBridgeRoaming sharedInstance] didDiscoverBridgeDevice:central peripheral:peripheral advertisment:advertisementData RSSI:RSSI];
+        }
+        else if (!_isUpdateScaning && adString != nil ) {
+            
+            BOOL exist = [[adString substringToIndex:12] boolValue];
             if (exist) {
                 [[CSRBridgeRoaming sharedInstance] didDiscoverBridgeDevice:central peripheral:peripheral advertisment:advertisementData RSSI:RSSI];
             }
@@ -323,7 +331,7 @@
         
         
         
-        if (self.isUpdateScaning) {
+        if (self.isUpdateScaning ) {
             if (![_foundPeripherals containsObject:peripheral]) {
                 [_foundPeripherals addObject:peripheral];
                 [self discoveryDidRefresh];
@@ -383,7 +391,7 @@
     
     // if also connected to another Bridge then disconnect from that.
     
-    if (_isUpdatePage) {
+    if (_isUpdateScaning||_isUpdatePage) {
         [_connectedPeripherals addObject:peripheral];
         [self statusMessage:[NSString stringWithFormat:@"1010>>Established Connection To Peripheral %@\n",peripheral.name]];
         peripheral.delegate=self;
@@ -454,15 +462,21 @@
         if (_connectedPeripherals.count==0)
             [[NSNotificationCenter defaultCenter] postNotificationName:@"BridgeDisconnectedNotification" object:nil];
     }
+    
+    NSLog(@"}}}}}}}%d{{{}}}%d",_isUpdatePage,_isUpdateScaning);
     [self statusMessage:[NSString stringWithFormat:@"88>>Removed Connection To Peripheral %@\n",peripheral.name]];
     [self didDisconnect:peripheral error:error];
+    if (_isUpdateScaning && _outUpdate) {
+        
+        [self connectPeripheralNoCheck:_updatePeripheral];
+    }
 }
 
     //============================================================================
     // peripheral:discoverServices initiated this callback
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
-    if (_isUpdatePage) {
+    if (_isUpdateScaning||_isUpdatePage) {
         bool isOtau=NO;
         NSLog(@"did discover services for peripheral %@",peripheral.name);
         if (error == nil) {
@@ -547,7 +561,7 @@
         [[CSRBridgeRoaming sharedInstance] connectedPeripheral:peripheral];
 #endif
         
-        if (_isUpdatePage) {
+        if (_isUpdateScaning||_isUpdatePage) {
             CBUUID *uuid = [CBUUID UUIDWithString:serviceApplicationOtauUuid];
             CBUUID *bl_uuid = [CBUUID UUIDWithString:serviceBootOtauUuid];
 
@@ -666,7 +680,7 @@
 -(void) retrieveCachedPeripherals {
     NSArray *services = [[NSArray alloc] initWithObjects:
                          [CBUUID UUIDWithString:serviceApplicationOtauUuid], nil];
-    
+
     [self retrieveConnectedPeripheral:services];
 }
 
@@ -675,9 +689,9 @@
 -(NSArray *) retrievePeripheralsWithIdentifier:(NSUUID *) uuid {
     NSLog(@"Retrieve peripherals with UUID=%@",[uuid UUIDString]);
     NSArray *peripheralIdentifiers = [[NSArray alloc]initWithObjects:uuid, nil];
-    
+
     return([centralManager retrievePeripheralsWithIdentifiers:peripheralIdentifiers]);
-    
+
 }
 
 -(void) retrieveConnectedPeripheral:(NSArray *) services {

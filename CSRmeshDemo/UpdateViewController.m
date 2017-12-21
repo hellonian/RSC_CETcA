@@ -11,13 +11,17 @@
 
 #import "DataModelManager.h"
 #import "AFHTTPSessionManager.h"
+#import <MBProgressHUD.h>
 
-@interface UpdateViewController ()
+@interface UpdateViewController ()<MBProgressHUDDelegate>
 
 @property BOOL isUpdateRunning;
 @property BOOL isInitRunning;
 @property BOOL isAbortButton;
 @property BOOL peripheralConnected;
+@property (nonatomic,strong) MBProgressHUD *hud;
+@property (nonatomic,assign) BOOL outUpdate;
+
 
 @end
 
@@ -26,7 +30,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    self.navigationItem.title = @"Update";
+    UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(popToRootViewController)];
+    self.navigationItem.rightBarButtonItem = left;
     
     [[OTAU sharedInstance] setOTAUDelegate:self];
     
@@ -51,56 +56,39 @@
         [self handleOpenURL:appDelegate.urlImageFile];
     }
     
-//    UIButton *playPauseButton = [UIButton buttonWithType:(UIButtonTypeSystem)];
-//    playPauseButton.center = CGPointMake(WIDTH/2, 200);
-//    playPauseButton.bounds = CGRectMake(0, 0, 60, 60);
-//    playPauseButton.backgroundColor = [UIColor redColor];
-//    [self.view addSubview:playPauseButton];
-//    [playPauseButton addTarget:self action:@selector(playPauseButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    if (_targetModel != nil) {
+        [_targetName setTitle:[_targetModel name] forState:UIControlStateNormal];
+        [_targetName setAlpha:1.0];
+        
+        [_connectionState setText:@"CONNECTED"];
+        _isInitRunning = YES;
+        [self setStartAndAbortButtonLook];
+        [[OTAU sharedInstance] initOTAU:_targetModel.peripheral];
+    }
+    
+    // Dismiss Discovery View and any nulify all delegates set up for it.
+    [[CSRBluetoothLE sharedInstance] setBleDelegate:nil];
+    [[CSRBluetoothLE sharedInstance] stopScan];
+    [self setStartAndAbortButtonLook];
+    
 }
 
--(void)playPauseButtonAction:(UIButton *)sender {
-    NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Inbox"];
-    NSFileManager *manager = [NSFileManager defaultManager];
-    NSArray *array = [manager contentsOfDirectoryAtPath:path error:nil];
-    NSLog(@"%ld >>>>>>>>>>>>>>>>>>>>>> %@",array.count,array);
-    NSString *doc = [path stringByAppendingPathComponent:@"s350bt-2017-11-1_update.img"];
-    BOOL isE = [manager fileExistsAtPath:doc];
-    NSLog(@"isE > > %d",isE);
-
-    NSString *path1 = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
-    NSArray *array1 = [manager contentsOfDirectoryAtPath:path1 error:nil];
-    NSLog(@"%ld >>>>>>>>>>Documents>>>>>>>>>>>> %@",array1.count,array1);
-
-    NSString *path0 = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/localFile"];
-    NSArray *array0 = [manager contentsOfDirectoryAtPath:path0 error:nil];
-    NSLog(@"%ld >>>>>>>>>>Documents/localFile>>>>>>>>>>>> %@",array0.count,array0);
-    
-    [[DataModelManager shareInstance] sendCmdData:@"880100" toDeviceId:@(32771)];
-    
-//    if ([[_targetPeripheral name] hasSuffix:@"S350BT"]) {
-//    
-//    }
-    
-//    NSString *urlStr = @"http://39.108.152.134/s350bt.php";
-//    AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
-//    sessionManager.responseSerializer.acceptableContentTypes = nil;
-//    [sessionManager GET:urlStr parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
-//        NSDictionary *dic = (NSDictionary *)responseObject;
-//        NSLog(@"%@",dic);
-//    } failure:^(NSURLSessionDataTask *task, NSError *error) {
-//        NSLog(@"%@",error);
-//    }];
-    
+-(void)popToRootViewController {
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [[CSRBluetoothLE sharedInstance] setIsUpdatePage:YES];
+    _outUpdate = NO;
 }
 -(void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     [[CSRBluetoothLE sharedInstance] setIsUpdatePage:NO];
+    if (_outUpdate) {
+        [[CSRBluetoothLE sharedInstance] setOutUpdate:NO];
+        [[CSRBluetoothLE sharedInstance] disconnectPeripheral:_targetModel.peripheral];
+    }
     
     NSArray *imgAry = @[@"s350bt",@"d350bt",@"rc350",@"rc351"];
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -136,81 +124,88 @@
 
 - (IBAction)chooseFirmare:(UIButton *)sender {
     NSLog(@"chooseFirmware");
-//    FirmwareSelector *fs = [[FirmwareSelector alloc] init];
-//    fs.firmwareDelegate = self;
-//    [self.navigationController pushViewController:fs animated:YES];
     
-    if ([[_targetPeripheral name] hasSuffix:@"S350BT"]) {
-        NSString *urlStr = @"http://39.108.152.134/S350BT_V1.1.3.1.1.img";
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlStr]];
-        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-        NSURLSessionDownloadTask *task = [manager downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-            NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/s350bt.img"];
-            [_firmwareName setTitle:@"S350BT" forState:UIControlStateNormal];
+    _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    _hud.delegate = self;
+    _hud.label.numberOfLines = 0;
+    _hud.mode = MBProgressHUDModeDeterminateHorizontalBar;
+    _hud.label.text = @"firmware downloading: 0%";
+    _hud.label.font = [UIFont systemFontOfSize:14];
+    
+    NSString *urlString = [NSString stringWithFormat:@"http://39.108.152.134/%@.php",[_targetModel.kind lowercaseString]];
+    AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
+    sessionManager.responseSerializer.acceptableContentTypes = nil;
+    __weak UpdateViewController *weakSelf = self;
+    [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSDictionary *dic = (NSDictionary *)responseObject;
+        NSString *downloadAddress = dic[@"Download_address"];
+        [weakSelf downloadfirware:downloadAddress];
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@",error);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.hud.label.text = [NSString stringWithFormat:@"error:%@",error];
+        });
+    }];
+}
+
+- (void)downloadfirware:(NSString *)urlString {
+    
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSProgress *progress = nil;
+    NSURLSessionDownloadTask *task = [manager downloadTaskWithRequest:request progress:&progress destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+        NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/s350bt.img"];
+        _firmwareFilename = path;
+        
+        __weak UpdateViewController *weakSelf = self;
+        __block NSString *string = [urlString lastPathComponent];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            [_firmwareName setTitle:string forState:UIControlStateNormal];
             [_firmwareName setAlpha:1.0];
-            _firmwareFilename = path;
-            [self setStartAndAbortButtonLook];
-            return [NSURL fileURLWithPath:path];
-        } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-            if (error) {
-                NSLog(@"%@",error);
-            }
-        }];
-        [task resume];
-    }
-
-}
-
-- (IBAction)chooseTarger:(UIButton *)sender {
-    NSLog(@"chooseTarget");
-    DiscoverViewController *dvc = [[DiscoverViewController alloc] init];
-    dvc.discoveryViewDelegate = self;
-    [self.navigationController pushViewController:dvc animated:YES];
-}
-
-// Delegates
--(void) firmwareSelector:(NSString *) filepath {
-    if ([filepath isEqualToString:@""]) {
-    }
-    else {
-        NSString *filename = [[filepath lastPathComponent] stringByDeletingPathExtension];
-        [_firmwareName setTitle:filename forState:UIControlStateNormal];
-        [_firmwareName setAlpha:1.0];
-        _firmwareFilename = filepath;
-    }
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [self setStartAndAbortButtonLook];
-}
-
--(void) setTarget:(id)peripheral
-{
-    if (peripheral != nil)
-    {
-        NSLog(@"11111111111111");
-        [_targetName setTitle:[peripheral name] forState:UIControlStateNormal];
-        [_targetName setAlpha:1.0];
-        _targetPeripheral = peripheral;
-        [_connectionState setText:@"CONNECTED"];
-        _isInitRunning = YES;
-        [self setStartAndAbortButtonLook];
-        [[OTAU sharedInstance] initOTAU:peripheral];
-    }
+            [weakSelf setStartAndAbortButtonLook];
+            
+        });
+        return [NSURL fileURLWithPath:path];
+        
+    } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+        if (error) {
+            NSLog(@"%@",error);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.hud.label.text = [NSString stringWithFormat:@"error:%@",error];
+            });
+        }else{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.hud hideAnimated:YES];
+            });
+            
+        }
+        
+    }];
+    [task resume];
     
-    // Dismiss Discovery View and any nulify all delegates set up for it.
-    [[CSRBluetoothLE sharedInstance] setBleDelegate:nil];
-//    [self dismissViewControllerAnimated:YES completion:nil];
-    [[CSRBluetoothLE sharedInstance] stopScan];
-    [self setStartAndAbortButtonLook];
+    [progress addObserver:self forKeyPath:@"completedUnitCount" options:NSKeyValueObservingOptionNew context:nil];
 }
 
-//============================================================================
-// Called when the Start button is pressed
-//
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
+    if ([object isKindOfClass:[NSProgress class]]) {
+        __block NSProgress *progress = object;
+        NSLog(@"已完成大小:%lld  总大小:%lld", progress.completedUnitCount, progress.totalUnitCount);
+        NSLog(@"进度:%0.2f%%", progress.fractionCompleted * 100);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.hud.label.text = [NSString stringWithFormat:@"firmware downloading: %0.2f%%",progress.fractionCompleted*100];
+            self.hud.progress = progress.fractionCompleted;
+        });
+        
+    }
+}
+
 - (IBAction)startUpdate:(id)sender
 {
     if (_isAbortButton==NO)
     {
-        if (_firmwareFilename!=nil && _targetPeripheral!=nil)
+        if (_firmwareFilename!=nil && _targetModel.peripheral!=nil)
         {
             _isAbortButton=YES;
             _isUpdateRunning=YES;
@@ -232,7 +227,7 @@
     {
         _isAbortButton=NO;
         [self statusMessage:@"Update Aborted\n"];
-        [[OTAU sharedInstance]  abortOTAU:_targetPeripheral];
+        [[OTAU sharedInstance]  abortOTAU:_targetModel.peripheral];
         _isUpdateRunning=NO;
         [self setStartAndAbortButtonLook];
     }
@@ -241,7 +236,7 @@
 -(void) clearTarget {
     [_targetName setTitle:@"set target" forState:UIControlStateNormal];
     [_targetName setAlpha:1.0];
-    _targetPeripheral=nil;
+    _targetModel=nil;
     [self setStartAndAbortButtonLook];
 }
 
@@ -260,7 +255,7 @@
             [_firmwareName setEnabled:NO];
         }
         [_targetName setEnabled:YES];
-        if (_targetPeripheral!=nil && _firmwareFilename!=nil)
+        if (_targetModel.peripheral!=nil && _firmwareFilename!=nil)
         {
             [_startButton setEnabled:YES];
         }
@@ -296,7 +291,7 @@
     [_firmwareName setTitle:filename forState:UIControlStateNormal];
     [_firmwareName setAlpha:1.0];
     _firmwareFilename = url.path;
-    [self statusMessage:[NSString stringWithFormat:@"Imported File %@\n >>%@\n",_firmwareFilename,url]];
+    [self statusMessage:[NSString stringWithFormat:@"Imported File %@\n",_firmwareFilename]];
 }
 
 /****************************************************************************/
@@ -335,7 +330,7 @@
         const uint16_t *trim = (uint16_t*)[crystalTrimValue bytes];
         display = [NSString stringWithFormat:@"0x%X", *trim];
         [_crystalTrim setText:display];
-        [self statusMessage: @"1717>>Success: Read CS keys.\n"];
+        [self statusMessage: @"Success: Read CS keys.\n"];
     }
     else {
         [self statusMessage: @"Failed to read CS keys.\n"];
@@ -355,7 +350,7 @@
     
     if (otauVersion > 3) {
         [_fwVersion setText: [NSString stringWithFormat:@"%d", otauVersion]];
-        [self statusMessage: @"66>>Success: Get version.\n"];
+        [self statusMessage: @"Success: Get version.\n"];
     }
     else {
         [self statusMessage: @"Failed to read OTAU version.\n"];
@@ -434,13 +429,15 @@
                                           cancelButtonTitle:@"OK"
                                           otherButtonTitles:nil];
     [alert show];
+    if ([message isEqualToString:@"Success: Application Update"]) {
+        _outUpdate = YES;
+    }
 }
 
 //============================================================================
 // Display the status in the Text view
 -(void) statusMessage:(NSString *)message
 {
-    NSLog(@"文档 %@",message);
     [_statusLog setText:[_statusLog.text stringByAppendingString:message]];
     NSRange range = NSMakeRange(_statusLog.text.length - 1, 1);
     [_statusLog scrollRangeToVisible:range];
@@ -474,5 +471,14 @@
     
     [self setStartAndAbortButtonLook];
 }
+
+
+#pragma mark - MBProgressHUDDelegate
+
+- (void)hudWasHidden:(MBProgressHUD *)hudd {
+    [hudd removeFromSuperview];
+    hudd = nil;
+}
+
 
 @end

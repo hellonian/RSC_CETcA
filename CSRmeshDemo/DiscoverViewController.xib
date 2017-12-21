@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DiscoverViewController">
             <connections>
                 <outlet property="peripheralsList" destination="P6O-OE-Egw" id="0ha-gh-8Hb"/>
-                <outlet property="statusLog" destination="BuB-gU-4zg" id="8Vk-py-vOB"/>
                 <outlet property="view" destination="iN0-l3-epB" id="hXf-PT-GrC"/>
             </connections>
         </placeholder>
@@ -23,25 +21,15 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="P6O-OE-Egw">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="370"/>
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="617"/>
                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 </tableView>
-                <textView autoresizesSubviews="NO" clearsContextBeforeDrawing="NO" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BuB-gU-4zg">
-                    <rect key="frame" x="0.0" y="370" width="375" height="247"/>
-                    <color key="backgroundColor" red="0.94894276489999996" green="0.94894276489999996" blue="0.94894276489999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                </textView>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="BuB-gU-4zg" secondAttribute="trailing" id="SVU-8n-lK7"/>
+                <constraint firstAttribute="bottom" secondItem="P6O-OE-Egw" secondAttribute="bottom" constant="50" id="ilE-Qz-YMk"/>
                 <constraint firstAttribute="trailing" secondItem="P6O-OE-Egw" secondAttribute="trailing" id="jUh-JJ-g1f"/>
-                <constraint firstAttribute="bottom" secondItem="BuB-gU-4zg" secondAttribute="bottom" constant="50" id="kcb-0n-ZkH"/>
                 <constraint firstItem="P6O-OE-Egw" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="mXj-GD-ffv"/>
-                <constraint firstItem="BuB-gU-4zg" firstAttribute="height" secondItem="P6O-OE-Egw" secondAttribute="height" multiplier="2/3" id="qpX-YN-k5v"/>
-                <constraint firstItem="BuB-gU-4zg" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="tT3-64-xjh"/>
-                <constraint firstItem="BuB-gU-4zg" firstAttribute="top" secondItem="P6O-OE-Egw" secondAttribute="bottom" id="uuu-H2-3Er"/>
                 <constraint firstItem="P6O-OE-Egw" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="w2U-2J-kkE"/>
             </constraints>
             <point key="canvasLocation" x="25.5" y="51.5"/>

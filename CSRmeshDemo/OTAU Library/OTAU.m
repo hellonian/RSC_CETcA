@@ -32,7 +32,7 @@
 
 #import "OTAU.h"
 #import "ApplicationImage.h"
-#import "CBPeripheral+CallbackQ.h"
+#import "CBPeripheral+Info.h"
 #import "PCM.h"
 #import "AppDelegate.h"
 #import <CommonCrypto/CommonCrypto.h>
@@ -585,7 +585,7 @@
 // Returns (NO) if we failed to get the keys and there are were no cached values.
 //
 -(BOOL) getOtauKeys {
-    [self statusMessage:@"1616>>Start: Get CS keys.\n"];
+    [self statusMessage:@"Start: Get CS keys.\n"];
     if (!targetPeripheral || targetPeripheral.state != CBPeripheralStateConnected || otauVersion == 0) {
         return (NO);
     }
@@ -717,7 +717,7 @@
 // Call terminateOTAU if a timeout occurs.
 //
 -(void) otauMain {
-    [self statusMessage:@"11>>Start: Application Update\n"];
+    [self statusMessage:@"Start: Application Update\n"];
     
     otauRunning = YES;
     targetPeripheral.delegate = self;
@@ -766,14 +766,14 @@
         if (![appDelegate.peripheralInBoot boolValue]) {
             
             // Switch device to Boot mode and discover Services and Characteristics.
-            [self statusMessage:@"77>>Start: Enter Boot\n"];
+            [self statusMessage:@"Start: Enter Boot\n"];
             if ([self enterBoot]==NO ||
                 otauRunning == NO) {
                 [self statusMessage:[NSString stringWithFormat:@"Failed: Enter Boot -- %d\n",otauRunning]];
                 [self statusMessage:@"Failed: Enter Boot\n"];
                 break;
             }
-            [self statusMessage:@"1414>>Success: Enter Boot\n"];
+            [self statusMessage:@"Success: Enter Boot\n"];
             
             if (didAbort) {
                 break;
@@ -840,13 +840,13 @@
         // Update application image file with read values of
         // crystal trim, BT address, identity root and encryption root,
         // then generate CRC for data and header blocks.
-        [self statusMessage:@"1818>>Start: Prepare Application image\n"];
+        [self statusMessage:@"Start: Prepare Application image\n"];
         NSData *newApplication = [[ApplicationImage sharedInstance] prepareFirmwareWith:crystalTrim
                                                                                     and:btMacAddress
                                                                                     and:iRoot
                                                                                     and:eRoot
                                                                                 forFile:sourceFilename];
-        [self statusMessage:@"1919>>Success: Prepare Application image\n"];
+        [self statusMessage:@"Success: Prepare Application image\n"];
         
         if (didAbort) {
             break;
@@ -908,7 +908,7 @@
 //============================================================================
 //
 -(bool) discoverOtauVersion {
-    [self statusMessage:@"22>>Start: Get version.\n"];
+    [self statusMessage:@"Start: Get version.\n"];
     
     // We want to restore the original value of otau running afterwards.
     bool otauRunningOld = otauRunning;
@@ -951,7 +951,7 @@
                 
                 break;
             }
-            [self statusMessage:@"55>>Success: Read Bootloader Version Characteristics\n"];
+            [self statusMessage:@"Success: Read Bootloader Version Characteristics\n"];
             returnVal = YES;
         }
     } while (0); // one time loop. So that we can use break to terminate instead of Goto.
@@ -1011,7 +1011,7 @@
 // control characteristic.
 // If this value is zero then challenge response is enabled.
 -(BOOL) detectChallengeResponse {
-    [self statusMessage:@"1515>>Start: Detect if target challenge response enabled.\n"];
+    [self statusMessage:@"Start: Detect if target challenge response enabled.\n"];
     
     bool returnVal = NO;
     do {
@@ -1173,12 +1173,12 @@ const uint8_t sharedSecretKey[] = {
     BOOL returnVal = YES;
     
     // Provide a notification path from target to Host
-    [self statusMessage:@"2020>>Start: Subscribe for Notification\n"];
+    [self statusMessage:@"Start: Subscribe for Notification\n"];
     if (![self createNotifyForAppTransfer]) {
         [self statusMessage:@"Failed: Subscribe for Notification\n"];
         return (NO);
     }
-    [self statusMessage:@"2121>>Success: Subscribe for Notification\n"];
+    [self statusMessage:@"Success: Subscribe for Notification\n"];
     
     if (didAbort) return (NO);
 
@@ -1197,7 +1197,7 @@ const uint8_t sharedSecretKey[] = {
             if (appIdPcm && (appIdPcm.PCMError != NULL)) {
                 NSLog(@"Setting the update application ID failed: %@, proceeding anyway!", appIdPcm.PCMError.localizedDescription);
             }
-            [self statusMessage:@"2222>>Warning: Failed to set updated application ID.. proceeding anyway!\n"];
+            [self statusMessage:@"Warning: Failed to set updated application ID.. proceeding anyway!\n"];
         }
         
         if (didAbort) break;
@@ -1219,7 +1219,7 @@ const uint8_t sharedSecretKey[] = {
             break;
         }
         
-        [self statusMessage:@"2323>>Start: Transferring image\n"];
+        [self statusMessage:@"Start: Transferring image\n"];
         
         // Application Transfer - Loop
         // TX 20 bytes at a time from the application file.
@@ -1326,14 +1326,14 @@ const uint8_t sharedSecretKey[] = {
 -(BOOL) connect:(NSString *) service {
     BOOL    success = NO;
     
-    [self statusMessage:@"99>>Start: Connect\n"];
+    [self statusMessage:@"Start: Connect\n"];
     [[CSRBluetoothLE sharedInstance] setBleDelegate: self];
     [[CSRBluetoothLE sharedInstance] connectPeripheralNoCheck:targetPeripheral];
     targetPeripheral.delegate = self;
     PCM *pcm = [self waitForDelegate:kBleDidConnectPeripheral];
     
     if (pcm) {
-        [self statusMessage:@"1111>>Success: Connect\n"];
+        [self statusMessage:@"Success: Connect\n"];
         
         // Wait for characteristics to be discovered.
         int timeout = 300;//////////////////////////////////////////////////////////////////////
@@ -1431,12 +1431,12 @@ const uint8_t sharedSecretKey[] = {
         // Is this the characteristic we are interested in?
         if ([characteristic.UUID isEqual:uuid]) {
             NSLog(@"Request Characteristic %@ Value", characteristicName);
-            [self statusMessage:@"33>>Request Characteristic Value\n"];
+            [self statusMessage:@"Request Characteristic Value\n"];
             [targetPeripheral readValueForCharacteristic:characteristic];
             PCM *pcm= [self waitForDelegate:kDidUpdateValueForCharacteristic];
             if (pcm && (pcm.PCMError == NULL)) {
                 NSLog(@"Success: Request Characteristic %@ Value", characteristicName);
-                [self statusMessage:@"44>>Success: Request Characteristic Value\n"];
+                [self statusMessage:@"Success: Request Characteristic Value\n"];
                 return (pcm.PCMCharacteristic.value);
             }
             else {
@@ -1505,7 +1505,6 @@ const uint8_t sharedSecretKey[] = {
     NSLog(@"didDiscoverServices for peripheral %@",peripheral.name);
     PCM *pcm = [[PCM alloc] init:peripheral :nil :nil :error :kDidDiscoverServices];
     [peripheral saveCallback:pcm];
-    [self statusMessage:[NSString stringWithFormat:@">> save1 ~ ~ %@\n",pcm.PCMName]];
 }
 
 //============================================================================
@@ -1514,7 +1513,6 @@ const uint8_t sharedSecretKey[] = {
     NSLog(@"didDiscoverCharacteristicsForService for peripheral %@ & Service %@",peripheral.name, service.UUID);
     PCM *pcm = [[PCM alloc] init:peripheral :service :nil :error :kDidDiscoverCharacteristicsForService];
     [peripheral saveCallback:pcm];
-    [self statusMessage:[NSString stringWithFormat:@">> save2 ~ ~ %@\n",pcm.PCMName]];
 }
 
 //============================================================================
@@ -1523,7 +1521,6 @@ const uint8_t sharedSecretKey[] = {
     NSLog(@"didUpdateNotificationStateForCharacteristic for peripheral %@ & Characteristic %@",peripheral.name, characteristic.UUID);
     PCM *pcm = [[PCM alloc] init:peripheral :nil :characteristic :error :kDidUpdateNotificationStateForCharacteristic];
     [peripheral saveCallback:pcm];
-    [self statusMessage:[NSString stringWithFormat:@">> save3 ~ ~ %@\n",pcm.PCMName]];
 }
 
 //============================================================================
@@ -1544,7 +1541,6 @@ const uint8_t sharedSecretKey[] = {
     NSLog(@"didWriteValueForCharacteristic for peripheral %@ & Characteristic %@",peripheral.name, characteristic.UUID);
     PCM *pcm = [[PCM alloc] init:peripheral :nil :characteristic :error :kDidWriteValueForCharacteristic];
     [peripheral saveCallback:pcm];
-//    [self statusMessage:[NSString stringWithFormat:@">> save4 ~ ~ %@\n",pcm.PCMName]];
 }
 
 //============================================================================
@@ -1553,7 +1549,6 @@ const uint8_t sharedSecretKey[] = {
     NSLog(@"didUpdateValueForCharacteristic for peripheral %@ & Characteristic %@ value=%@",peripheral.name, characteristic.UUID, characteristic.value);
     PCM *pcm = [[PCM alloc] init:peripheral :nil :characteristic :error :kDidUpdateValueForCharacteristic];
     [peripheral saveCallback:pcm];
-    [self statusMessage:[NSString stringWithFormat:@">> save5 ~ ~ %@\n",pcm.PCMName]];
 }
 
 
@@ -1571,7 +1566,6 @@ const uint8_t sharedSecretKey[] = {
         NSLog(@"didDiscoverPeripheral peripheral %@",peripheral.name);
         PCM *pcm = [[PCM alloc] init:peripheral :nil :nil :nil :kBleDidDiscoverPeripheral];
         [peripheral saveCallback:pcm];
-        [self statusMessage:[NSString stringWithFormat:@">> save6 ~ ~ %@\n",pcm.PCMName]];
     }
 }
 
@@ -1581,7 +1575,6 @@ const uint8_t sharedSecretKey[] = {
 - (void) didConnectPeripheral:(CBPeripheral *)peripheral {
     NSLog(@"dideectPeripheral peripheral %@",peripheral.name);
     PCM *pcm = [[PCM alloc] init:peripheral :nil :nil :nil :kBleDidConnectPeripheral];
-    [self statusMessage:[NSString stringWithFormat:@">> save + + %@\n",pcm.PCMName]];
     [peripheral saveCallback:pcm];
     if (OTAUDelegate && [OTAUDelegate respondsToSelector: @selector(didChangeConnectionState:)]) {
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -1643,10 +1636,7 @@ const uint8_t sharedSecretKey[] = {
         [NSThread sleepForTimeInterval:1];
         if (targetPeripheral) {
             // This removes a delegate from the queue of received delegates.
-            [self statusMessage:[NSString stringWithFormat:@">> pcmcount + + %ld\n",targetPeripheral.queue.count]];
             PCM *pcm = [targetPeripheral getCallback];
-            [self statusMessage:[NSString stringWithFormat:@">> pcm + + %@\n",pcm.PCMName]];
-            [self statusMessage:[NSString stringWithFormat:@">> pcmcount + + %ld\n",targetPeripheral.queue.count]];
             if (pcm) {
                 if ([pcm.PCMName isEqualToString:delegate]) {
                     return (pcm);

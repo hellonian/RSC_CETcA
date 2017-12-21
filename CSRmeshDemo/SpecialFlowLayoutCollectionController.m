@@ -82,7 +82,7 @@
 #pragma mark - Public
 
 - (void)updateCollectionView {
-    NSLog(@"nnnnnnnnnnnnnnbao");
+//    NSLog(@"nnnnnnnnnnnnnnbao");
     [self updateControlSection];
     [self.lightPanel reloadData];
 }

@@ -170,6 +170,12 @@ static DataModelManager *manager = nil;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"settingRemoteCall" object:nil userInfo:@{@"settingRemoteCall":suffixStr}];
     }
     
+    //获取固件版本
+    if ([dataStr hasPrefix:@"a8"]) {
+        NSString *firmwareVersion = [dataStr substringWithRange:NSMakeRange(16, 2)];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"getFirmwareVersion" object:nil userInfo:@{@"getFirmwareVersion":@([self numberWithHexString:firmwareVersion]),@"deviceId":sourceDeviceId}];
+    }
+    
 }
 
 - (void)didReceiveStreamData:(NSNumber *)deviceId streamNumber:(NSNumber *)streamNumber data:(NSData *)data {

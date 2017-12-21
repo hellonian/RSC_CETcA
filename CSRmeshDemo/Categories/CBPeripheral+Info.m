@@ -4,8 +4,12 @@
 
 #import "CBPeripheral+Info.h"
 #import <objc/runtime.h>
+#import "NSMutableArray+Queue.h"
+
+static void * queuePropertyKey;
 
 NSString const *localNamePropertyKey = @"localNamePropertyKey";
+NSString const *uuidStringPropertyKey = @"uuidStringPropertyKey";
 NSString const *rssiPropertyKey = @"rssiPropertyKey";
 NSString const *startOfDiscoveryPropertyKey = @"startOfDiscovery";
 NSString const *isBridgeServicePropertyKey = @"isBridgeService";
@@ -13,7 +17,7 @@ NSString const *isBridgeServicePropertyKey = @"isBridgeService";
 
 @implementation CBPeripheral (Info)
 
-@dynamic localName, rssi, startOfDiscovery, discoveryState, isBridgeService;
+@dynamic localName, uuidString, rssi, startOfDiscovery, discoveryState, isBridgeService, queue;
 
     //=========================================================================
     // Getter and Setter for localName
@@ -23,6 +27,14 @@ NSString const *isBridgeServicePropertyKey = @"isBridgeService";
 
 -(void) setLocalName:(NSString *)localName {
     objc_setAssociatedObject(self, &localNamePropertyKey, localName, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+-(NSString *) uuidString {
+    return objc_getAssociatedObject(self, &uuidStringPropertyKey);
+}
+
+-(void) setUuidString:(NSString *)uuidString {
+    objc_setAssociatedObject(self, &uuidStringPropertyKey, uuidString, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
     //=========================================================================
@@ -58,7 +70,43 @@ NSString const *isBridgeServicePropertyKey = @"isBridgeService";
 }
 
 
+//=========================================================================
+// Getter and Setter for queue property
+- (NSMutableArray *)queue {
+    return objc_getAssociatedObject(self, queuePropertyKey);
+}
 
+- (void)setQueue:(NSMutableArray *)queue {
+    objc_setAssociatedObject(self, queuePropertyKey, queue, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+
+
+//=========================================================================
+// Save the callback object, PCM, in the Queue for this peripheral
+-(void) saveCallback :(id) pcm {
+    @synchronized(self) {
+        if (self.queue==nil) {
+            self.queue = [[NSMutableArray alloc]init];
+        }
+        
+        [self.queue enqueue:pcm];
+    }
+}
+
+-(id) getCallback {
+    @synchronized(self) {
+        id pcm = [self.queue dequeue];
+        return (pcm);
+    }
+}
+
+
+-(void) deleteQueue {
+    @synchronized(self) {
+        self.queue = nil;
+    }
+}
 
 
 
