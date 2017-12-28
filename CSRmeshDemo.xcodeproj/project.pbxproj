@@ -145,11 +145,16 @@
 		2E308D9C1F99D4C60080AE02 /* share@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E308D9B1F99D4580080AE02 /* share@2x.png */; };
 		2E308DA01F99DA060080AE02 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E308D9E1F99DA060080AE02 /* ShareViewController.m */; };
 		2E308DA11F99DA060080AE02 /* ShareViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E308D9F1F99DA060080AE02 /* ShareViewController.xib */; };
+		2E30FA521FECDE7A008F6418 /* PlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E30FA501FECDE7A008F6418 /* PlacesViewController.m */; };
+		2E30FA531FECDE7A008F6418 /* PlacesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E30FA511FECDE7A008F6418 /* PlacesViewController.xib */; };
+		2E30FA571FECE810008F6418 /* PlaceTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E30FA551FECE810008F6418 /* PlaceTableViewCell.m */; };
+		2E30FA581FECE810008F6418 /* PlaceTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E30FA561FECE810008F6418 /* PlaceTableViewCell.xib */; };
 		2E31CBE91F8F0844004A4FA8 /* KeyChainDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E31CBE81F8F0844004A4FA8 /* KeyChainDataManager.m */; };
 		2E31CBEC1F8F0BF8004A4FA8 /* KeyChain.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E31CBEB1F8F0BF8004A4FA8 /* KeyChain.m */; };
 		2E31CBEF1F8F1115004A4FA8 /* QRCodeScanningVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E31CBEE1F8F1115004A4FA8 /* QRCodeScanningVC.m */; };
 		2E37A6DA1F5CD5A8001F3941 /* icon_delete@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E37A6D91F5CD5A8001F3941 /* icon_delete@2x.png */; };
 		2E37A6DD1F5D3088001F3941 /* VisualFloorDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E37A6DC1F5D3088001F3941 /* VisualFloorDetailViewController.m */; };
+		2E3947F61FF36A3F00917035 /* PlaceColorIconPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3947F51FF36A3F00917035 /* PlaceColorIconPickerView.m */; };
 		2E40E8DF1F6638DB0011C126 /* nonetimer.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E40E8DE1F6638DB0011C126 /* nonetimer.png */; };
 		2E40E9211F66679E0011C126 /* TimerTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E40E9201F66679E0011C126 /* TimerTool.m */; };
 		2E488EAE1F79DF3F004F0E92 /* AreaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E488EAD1F79DF3F004F0E92 /* AreaViewController.m */; };
@@ -174,6 +179,12 @@
 		2E500B741FD8D6B9008303CE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D6E44EF1B3C4059000A44DD /* CoreGraphics.framework */; };
 		2E500B761FD8D6F3008303CE /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E500B751FD8D6F0008303CE /* MediaPlayer.framework */; };
 		2E500B781FD8D703008303CE /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E500B771FD8D6FE008303CE /* AVFoundation.framework */; };
+		2E57DD551FF1D6CE00F7219F /* PlaceDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E57DD531FF1D6CE00F7219F /* PlaceDetailsViewController.m */; };
+		2E57DD561FF1D6CE00F7219F /* PlaceDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E57DD541FF1D6CE00F7219F /* PlaceDetailsViewController.xib */; };
+		2E57DD5F1FF1FAEB00F7219F /* PlaceColorCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E57DD5D1FF1FAEB00F7219F /* PlaceColorCollectionViewCell.m */; };
+		2E57DD601FF1FAEB00F7219F /* PlaceColorCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E57DD5E1FF1FAEB00F7219F /* PlaceColorCollectionViewCell.xib */; };
+		2E57DD641FF1FB0800F7219F /* PlaceIconCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E57DD621FF1FB0800F7219F /* PlaceIconCollectionViewCell.m */; };
+		2E57DD651FF1FB0800F7219F /* PlaceIconCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E57DD631FF1FB0800F7219F /* PlaceIconCollectionViewCell.xib */; };
 		2E5C52021F905934009C5F19 /* MySQLDatabaseTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C52011F905934009C5F19 /* MySQLDatabaseTool.m */; };
 		2E6A02131F39884500111312 /* TabBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A020E1F39884500111312 /* TabBarButton.m */; };
 		2E6A02141F39884500111312 /* TabBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A02101F39884500111312 /* TabBarView.m */; };
@@ -229,6 +240,7 @@
 		2EEEB5DC1FDFA40000DC700D /* remoteImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EEEB5DB1FDFA40000DC700D /* remoteImage@2x.png */; };
 		2EF5BD0F1F6A210500CE63D3 /* blackbg.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EF5BD0E1F6A210500CE63D3 /* blackbg.png */; };
 		2EF5F07C1F445AC30069C594 /* ImproveTouchingExperience.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF5F07B1F445AC30069C594 /* ImproveTouchingExperience.m */; };
+		2EFB582D1FF0D31E008FCBD1 /* place@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFB582C1FF0D31E008FCBD1 /* place@2x.png */; };
 		9673B7D71D770C2000082385 /* CSRmesh.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968AF2421D7709910010904A /* CSRmesh.framework */; };
 		9B11A63178E224E88A4362DC /* libPods-CSRmeshDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC0A5B6099ED05FF9599ED2D /* libPods-CSRmeshDemo.a */; };
 		CD94058E1D91598F00492624 /* CSRmeshRestClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD94058D1D91598F00492624 /* CSRmeshRestClient.framework */; };
@@ -487,6 +499,12 @@
 		2E308D9D1F99DA060080AE02 /* ShareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareViewController.h; sourceTree = "<group>"; };
 		2E308D9E1F99DA060080AE02 /* ShareViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareViewController.m; sourceTree = "<group>"; };
 		2E308D9F1F99DA060080AE02 /* ShareViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShareViewController.xib; sourceTree = "<group>"; };
+		2E30FA4F1FECDE7A008F6418 /* PlacesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlacesViewController.h; sourceTree = "<group>"; };
+		2E30FA501FECDE7A008F6418 /* PlacesViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlacesViewController.m; sourceTree = "<group>"; };
+		2E30FA511FECDE7A008F6418 /* PlacesViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlacesViewController.xib; sourceTree = "<group>"; };
+		2E30FA541FECE810008F6418 /* PlaceTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlaceTableViewCell.h; sourceTree = "<group>"; };
+		2E30FA551FECE810008F6418 /* PlaceTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlaceTableViewCell.m; sourceTree = "<group>"; };
+		2E30FA561FECE810008F6418 /* PlaceTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlaceTableViewCell.xib; sourceTree = "<group>"; };
 		2E31CBE71F8F0844004A4FA8 /* KeyChainDataManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KeyChainDataManager.h; sourceTree = "<group>"; };
 		2E31CBE81F8F0844004A4FA8 /* KeyChainDataManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KeyChainDataManager.m; sourceTree = "<group>"; };
 		2E31CBEA1F8F0BF8004A4FA8 /* KeyChain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KeyChain.h; sourceTree = "<group>"; };
@@ -496,6 +514,8 @@
 		2E37A6D91F5CD5A8001F3941 /* icon_delete@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_delete@2x.png"; sourceTree = "<group>"; };
 		2E37A6DB1F5D3088001F3941 /* VisualFloorDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VisualFloorDetailViewController.h; sourceTree = "<group>"; };
 		2E37A6DC1F5D3088001F3941 /* VisualFloorDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VisualFloorDetailViewController.m; sourceTree = "<group>"; };
+		2E3947F41FF36A3F00917035 /* PlaceColorIconPickerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlaceColorIconPickerView.h; sourceTree = "<group>"; };
+		2E3947F51FF36A3F00917035 /* PlaceColorIconPickerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlaceColorIconPickerView.m; sourceTree = "<group>"; };
 		2E40E8DE1F6638DB0011C126 /* nonetimer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nonetimer.png; sourceTree = "<group>"; };
 		2E40E91F1F66679E0011C126 /* TimerTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimerTool.h; sourceTree = "<group>"; };
 		2E40E9201F66679E0011C126 /* TimerTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimerTool.m; sourceTree = "<group>"; };
@@ -556,6 +576,15 @@
 		2E500B6F1FD8D5EF008303CE /* MusicListTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicListTableViewCell.h; sourceTree = "<group>"; };
 		2E500B751FD8D6F0008303CE /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		2E500B771FD8D6FE008303CE /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		2E57DD521FF1D6CE00F7219F /* PlaceDetailsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlaceDetailsViewController.h; sourceTree = "<group>"; };
+		2E57DD531FF1D6CE00F7219F /* PlaceDetailsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlaceDetailsViewController.m; sourceTree = "<group>"; };
+		2E57DD541FF1D6CE00F7219F /* PlaceDetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlaceDetailsViewController.xib; sourceTree = "<group>"; };
+		2E57DD5C1FF1FAEB00F7219F /* PlaceColorCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlaceColorCollectionViewCell.h; sourceTree = "<group>"; };
+		2E57DD5D1FF1FAEB00F7219F /* PlaceColorCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlaceColorCollectionViewCell.m; sourceTree = "<group>"; };
+		2E57DD5E1FF1FAEB00F7219F /* PlaceColorCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlaceColorCollectionViewCell.xib; sourceTree = "<group>"; };
+		2E57DD611FF1FB0800F7219F /* PlaceIconCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlaceIconCollectionViewCell.h; sourceTree = "<group>"; };
+		2E57DD621FF1FB0800F7219F /* PlaceIconCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlaceIconCollectionViewCell.m; sourceTree = "<group>"; };
+		2E57DD631FF1FB0800F7219F /* PlaceIconCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlaceIconCollectionViewCell.xib; sourceTree = "<group>"; };
 		2E5C52001F905934009C5F19 /* MySQLDatabaseTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MySQLDatabaseTool.h; sourceTree = "<group>"; };
 		2E5C52011F905934009C5F19 /* MySQLDatabaseTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MySQLDatabaseTool.m; sourceTree = "<group>"; };
 		2E6A020D1F39884500111312 /* TabBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarButton.h; sourceTree = "<group>"; };
@@ -647,6 +676,7 @@
 		2EF5BD0E1F6A210500CE63D3 /* blackbg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blackbg.png; sourceTree = "<group>"; };
 		2EF5F07A1F445AC30069C594 /* ImproveTouchingExperience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImproveTouchingExperience.h; sourceTree = "<group>"; };
 		2EF5F07B1F445AC30069C594 /* ImproveTouchingExperience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImproveTouchingExperience.m; sourceTree = "<group>"; };
+		2EFB582C1FF0D31E008FCBD1 /* place@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "place@2x.png"; sourceTree = "<group>"; };
 		39523700A53C1F8D1887BAE1 /* Pods-CSRmeshDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CSRmeshDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-CSRmeshDemo/Pods-CSRmeshDemo.release.xcconfig"; sourceTree = "<group>"; };
 		85ECA97B1B55441400197A41 /* CSRLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CSRLoginViewController.h; path = Login/CSRLoginViewController.h; sourceTree = "<group>"; };
 		85ECA97C1B55441400197A41 /* CSRLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CSRLoginViewController.m; path = Login/CSRLoginViewController.m; sourceTree = "<group>"; };
@@ -1339,6 +1369,54 @@
 			name = Remote;
 			sourceTree = "<group>";
 		};
+		2E30FA4B1FECD7BE008F6418 /* Places */ = {
+			isa = PBXGroup;
+			children = (
+				2E30FA4C1FECD7BE008F6418 /* Controller */,
+				2E30FA4D1FECD7BE008F6418 /* Model */,
+				2E30FA4E1FECD7BE008F6418 /* View */,
+			);
+			path = Places;
+			sourceTree = "<group>";
+		};
+		2E30FA4C1FECD7BE008F6418 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				2E30FA4F1FECDE7A008F6418 /* PlacesViewController.h */,
+				2E30FA501FECDE7A008F6418 /* PlacesViewController.m */,
+				2E30FA511FECDE7A008F6418 /* PlacesViewController.xib */,
+				2E57DD521FF1D6CE00F7219F /* PlaceDetailsViewController.h */,
+				2E57DD531FF1D6CE00F7219F /* PlaceDetailsViewController.m */,
+				2E57DD541FF1D6CE00F7219F /* PlaceDetailsViewController.xib */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		2E30FA4D1FECD7BE008F6418 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		2E30FA4E1FECD7BE008F6418 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				2E30FA541FECE810008F6418 /* PlaceTableViewCell.h */,
+				2E30FA551FECE810008F6418 /* PlaceTableViewCell.m */,
+				2E30FA561FECE810008F6418 /* PlaceTableViewCell.xib */,
+				2E57DD5C1FF1FAEB00F7219F /* PlaceColorCollectionViewCell.h */,
+				2E57DD5D1FF1FAEB00F7219F /* PlaceColorCollectionViewCell.m */,
+				2E57DD5E1FF1FAEB00F7219F /* PlaceColorCollectionViewCell.xib */,
+				2E57DD611FF1FB0800F7219F /* PlaceIconCollectionViewCell.h */,
+				2E57DD621FF1FB0800F7219F /* PlaceIconCollectionViewCell.m */,
+				2E57DD631FF1FB0800F7219F /* PlaceIconCollectionViewCell.xib */,
+				2E3947F41FF36A3F00917035 /* PlaceColorIconPickerView.h */,
+				2E3947F51FF36A3F00917035 /* PlaceColorIconPickerView.m */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		2E488EB21F7A223C004F0E92 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
@@ -1553,6 +1631,7 @@
 				2EF5BD0E1F6A210500CE63D3 /* blackbg.png */,
 				2E758A131F6F6A2C0087EFF0 /* dimmer_csr.png */,
 				2E758A141F6F6A2C0087EFF0 /* switch_csr.png */,
+				2EFB582C1FF0D31E008FCBD1 /* place@2x.png */,
 			);
 			name = images;
 			sourceTree = "<group>";
@@ -1564,6 +1643,7 @@
 				2E07CD5C1F42DFF80081F6D0 /* MoreViewController.m */,
 				2EB5CCE41F57E97900913503 /* MasterViewController.h */,
 				2EB5CCE51F57E97900913503 /* MasterViewController.m */,
+				2E30FA4B1FECD7BE008F6418 /* Places */,
 				2E500B521FD8D4E2008303CE /* Music */,
 				2E500B511FD8D3F5008303CE /* About */,
 				2EE95A841FAB302800E1F945 /* Update */,
@@ -2121,10 +2201,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				2EEEB5DC1FDFA40000DC700D /* remoteImage@2x.png in Resources */,
+				2E57DD561FF1D6CE00F7219F /* PlaceDetailsViewController.xib in Resources */,
 				2EA0C0B31F4275E0007B036C /* icon_all_light_off@2x.png in Resources */,
 				2E1FC7C01F4ADB5500606862 /* DeviceDetailViewController.xib in Resources */,
 				2E0D31761F7C7EEB00C2C301 /* scence8.png in Resources */,
 				2E0D31711F7C7EDE00C2C301 /* scence3.png in Resources */,
+				2E57DD651FF1FB0800F7219F /* PlaceIconCollectionViewCell.xib in Resources */,
 				2EA0C0B41F4275E0007B036C /* icon_plus@2x.png in Resources */,
 				0D835B821B974A1100FF4376 /* Main.storyboard in Resources */,
 				2ECFEED81F6B5BB600E9C9D7 /* about@2x.png in Resources */,
@@ -2132,6 +2214,7 @@
 				2EF5BD0F1F6A210500CE63D3 /* blackbg.png in Resources */,
 				2E8D2F341F5F944B00D0E9DA /* TimerCell.xib in Resources */,
 				2E0D31741F7C7EE600C2C301 /* scence6.png in Resources */,
+				2E30FA531FECDE7A008F6418 /* PlacesViewController.xib in Resources */,
 				2E0D316E1F7C7ED600C2C301 /* scence18.png in Resources */,
 				2E0D316B1F7C7ECD00C2C301 /* scence14.png in Resources */,
 				CE1DE0AF1BFB82840009C1D1 /* ThermostatWIthColor.png in Resources */,
@@ -2182,9 +2265,12 @@
 				2E0D31731F7C7EE300C2C301 /* scence5.png in Resources */,
 				2E0D31681F7C7EC500C2C301 /* scence11.png in Resources */,
 				2E2EBFA41FAC2FF400CEA401 /* cskey_db.json in Resources */,
+				2E30FA581FECE810008F6418 /* PlaceTableViewCell.xib in Resources */,
 				2E0D31661F7C7EBE00C2C301 /* scence1.png in Resources */,
+				2EFB582D1FF0D31E008FCBD1 /* place@2x.png in Resources */,
 				2E0D31781F7C7EF100C2C301 /* scene15.png in Resources */,
 				2E0D31771F7C7EEE00C2C301 /* scence9.png in Resources */,
+				2E57DD601FF1FAEB00F7219F /* PlaceColorCollectionViewCell.xib in Resources */,
 				2E40E8DF1F6638DB0011C126 /* nonetimer.png in Resources */,
 				2E16B3741F4D8DCC00E10160 /* FloorViewCell.xib in Resources */,
 				2EB5CCEC1F581E5E00913503 /* AboutViewController.xib in Resources */,
@@ -2267,6 +2353,7 @@
 				F43D5A121CA454A1007EF5C6 /* CSREventOnOffCell.m in Sources */,
 				0D835B3A1B9749E600FF4376 /* CSRAlertView.m in Sources */,
 				F4E255461CAAC72F004B2D01 /* CSRControllerDetailsVC.m in Sources */,
+				2E57DD5F1FF1FAEB00F7219F /* PlaceColorCollectionViewCell.m in Sources */,
 				F43D5A101CA454A1007EF5C6 /* CSREventDevicesCell.m in Sources */,
 				0D835B851B975E8700FF4376 /* CSRSettingsEntity.m in Sources */,
 				0D835B3B1B9749E600FF4376 /* CSRMeshUtilities.m in Sources */,
@@ -2293,6 +2380,7 @@
 				2E07CD591F42A5F40081F6D0 /* HitTestAlrightCollectionView.m in Sources */,
 				2E500B611FD8D5BA008303CE /* MusicListTableViewController.m in Sources */,
 				0D835B461B9749E600FF4376 /* CSRDatabaseManager.m in Sources */,
+				2E30FA571FECE810008F6418 /* PlaceTableViewCell.m in Sources */,
 				0D835B881B975E8800FF4376 /* CSRDeviceEntity.m in Sources */,
 				F4C85EA21CB3C459003E1FF3 /* CSRJoinPlaceVC.m in Sources */,
 				0D835B8B1B975E8800FF4376 /* CSRUserEntity.m in Sources */,
@@ -2355,6 +2443,7 @@
 				F47DF5231CAE841300BD3FD4 /* CSRControllerAssociationVC.m in Sources */,
 				CE389C7A1C4408650017D9EB /* NSData+Encryption.m in Sources */,
 				0D835B641B9749E600FF4376 /* CSRAddDeviceWizardViewController.m in Sources */,
+				2E57DD551FF1D6CE00F7219F /* PlaceDetailsViewController.m in Sources */,
 				F4E255431CAAA98D004B2D01 /* CSRShareViewController.m in Sources */,
 				0D835B651B9749E600FF4376 /* CSRAreaSelectionViewController.m in Sources */,
 				0D835B661B9749E600FF4376 /* CSRAreaSelectionSearchTableViewController.m in Sources */,
@@ -2371,6 +2460,7 @@
 				F43AA3BB1CAA82A100C1EDF8 /* CSRControllersViewController.m in Sources */,
 				2E0DF4921F4E51F900FD4827 /* ConfiguredDeviceListController.m in Sources */,
 				CED928101C875A22003B6110 /* CSRWeeklyDaysSelectionCell.m in Sources */,
+				2E3947F61FF36A3F00917035 /* PlaceColorIconPickerView.m in Sources */,
 				2E488EAE1F79DF3F004F0E92 /* AreaViewController.m in Sources */,
 				2E40E9211F66679E0011C126 /* TimerTool.m in Sources */,
 				F477A9171C9AE8AB00ABDF31 /* CSRLightWhiteVC.m in Sources */,
@@ -2446,6 +2536,8 @@
 				2E8D2F331F5F944B00D0E9DA /* TimerCell.m in Sources */,
 				2E6A02131F39884500111312 /* TabBarButton.m in Sources */,
 				F4658A221C99747A00C284F4 /* CSREventEntity.m in Sources */,
+				2E30FA521FECDE7A008F6418 /* PlacesViewController.m in Sources */,
+				2E57DD641FF1FB0800F7219F /* PlaceIconCollectionViewCell.m in Sources */,
 				2E16BC351F9D6E6100F2D830 /* ZHViewController.m in Sources */,
 				0D835B801B9749E700FF4376 /* main.m in Sources */,
 			);

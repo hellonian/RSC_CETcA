@@ -58,7 +58,7 @@ static MusicPlayViewController * mp = nil;
     UIButton *back = [UIButton buttonWithType:UIButtonTypeCustom];
     back.center = CGPointMake(WIDTH/2, 44);
     back.bounds = CGRectMake(0, 0, 44, 44);
-    [back setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+    [back setImage:[UIImage imageNamed:@"musicBack"] forState:UIControlStateNormal];
     [back addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:back];
     

@@ -15,6 +15,7 @@
 #import "RemoteViewController.h"
 #import "ShareViewController.h"
 #import "MusicListTableViewController.h"
+#import "PlacesViewController.h"
 
 @interface MoreViewController ()<UISplitViewControllerDelegate,masterDelegate>
 
@@ -25,6 +26,7 @@
 @property (nonatomic,strong) AboutViewController *aboutVC;
 @property (nonatomic,strong) ShareViewController *shareVC;
 @property (nonatomic,strong) MasterViewController *masterVC;
+@property (nonatomic,strong) PlacesViewController *placesVC;
 @property (nonatomic,strong) UINavigationController *masterViewManager;
 @property (nonatomic,strong) UINavigationController *detailViewManger;
 @property (nonatomic,strong) MusicListTableViewController *musicVC;
@@ -60,12 +62,13 @@
     self.aboutVC = [[AboutViewController alloc] init];
     self.shareVC = [[ShareViewController alloc] init];
     self.musicVC = [[MusicListTableViewController alloc] init];
+    self.placesVC = [[PlacesViewController alloc] init];
     self.masterVC = [[MasterViewController alloc] init];
     self.masterVC.delegate = self;
     
     self.masterViewManager = [[UINavigationController alloc] initWithRootViewController:self.masterVC];
     self.masterViewManager.navigationBarHidden = NO;
-    self.detailViewManger = [[UINavigationController alloc] initWithRootViewController:self.shareVC];
+    self.detailViewManger = [[UINavigationController alloc] initWithRootViewController:self.placesVC];
     self.detailViewManger.navigationBarHidden = NO;
     self.panel.viewControllers = @[self.masterViewManager,self.detailViewManger];
     self.panel.delegate = self;
@@ -106,21 +109,24 @@
     [vcs removeAllObjects];
     switch (row) {
         case 0:
-            [vcs addObject:self.shareVC];
+            [vcs addObject:self.placesVC];
             break;
         case 1:
-            [vcs addObject:self.timerVC];
+            [vcs addObject:self.shareVC];
             break;
         case 2:
-            [vcs addObject:self.updateVC];
+            [vcs addObject:self.timerVC];
             break;
         case 3:
-            [vcs addObject:self.remoteVC];
+            [vcs addObject:self.updateVC];
             break;
         case 4:
-            [vcs addObject:self.musicVC];
+            [vcs addObject:self.remoteVC];
             break;
         case 5:
+            [vcs addObject:self.musicVC];
+            break;
+        case 6:
             [vcs addObject:self.aboutVC];
             break;
         default:
@@ -132,22 +138,26 @@
 - (void)pushViewConrollerWithRow: (NSInteger)row {
     switch (row) {
         case 0:
-            [self.masterViewManager pushViewController:self.shareVC animated:YES];
+            [self.masterViewManager pushViewController:self.placesVC animated:YES];
             break;
         case 1:
-            [self.masterViewManager pushViewController:self.timerVC animated:YES];
+            [self.masterViewManager pushViewController:self.shareVC animated:YES];
             break;
         case 2:
-            [self.masterViewManager pushViewController:self.updateVC animated:YES];
+            [self.masterViewManager pushViewController:self.timerVC animated:YES];
             break;
         case 3:
-            [self.masterViewManager pushViewController:self.remoteVC animated:YES];
+            [self.masterViewManager pushViewController:self.updateVC animated:YES];
             break;
         case 4:
-            [self.masterViewManager pushViewController:self.musicVC animated:YES];
+            [self.masterViewManager pushViewController:self.remoteVC animated:YES];
             break;
         case 5:
+            [self.masterViewManager pushViewController:self.musicVC animated:YES];
+            break;
+        case 6:
             [self.masterViewManager pushViewController:self.aboutVC animated:YES];
+            break;
         default:
             break;
     }

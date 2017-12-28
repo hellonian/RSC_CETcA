@@ -28,13 +28,20 @@
     self.navigationItem.title = @"More";
     self.view.backgroundColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1];
     
-    imageArray = @[@"share",
+    imageArray = @[@"place",
+                   @"share",
                    @"time.png",
                    @"update.png",
                    @"remoteImage",
                    @"musicIcon",
                    @"about"];
-    titleArray = @[@"Share",@"Timer",@"Update",@"Remote",@"Music",@"About"];
+    titleArray = @[@"Places",
+                   @"Share",
+                   @"Timer",
+                   @"Update",
+                   @"Remote",
+                   @"Music",
+                   @"About"];
     
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.tableView.delegate = self;
@@ -48,7 +55,7 @@
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 6;
+    return [titleArray count];
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
