@@ -12,6 +12,7 @@
 #import "CSRGatewayEntity.h"
 #import "CSRControllerEntity.h"
 
+
 @interface CSRDatabaseManager ()
 
 @end
@@ -561,7 +562,27 @@
         //Common Method
         return [self getFreeIdFromArray:[allIdsArray copy]];
         
-    } else if ([typeString isEqualToString:@"CSREventEntity"]) {
+    } else if ([typeString isEqualToString:@"GalleryEntity"]) {
+        NSMutableArray *allIdsArray = [NSMutableArray new];
+        
+        for (GalleryEntity *gallery in [CSRAppStateManager sharedInstance].selectedPlace.gallerys) {
+            [allIdsArray addObject:gallery.galleryID];
+        }
+        
+        return [self getFreeIdFromArray:[allIdsArray copy]];
+        
+    }else if ([typeString isEqualToString:@"DropEntity"]) {
+        NSMutableArray *allIdsArray = [NSMutableArray new];
+        
+        for (GalleryEntity *gallery in [CSRAppStateManager sharedInstance].selectedPlace.gallerys) {
+            for (DropEntity *drop in gallery.drops) {
+                [allIdsArray addObject:drop.dropID];
+            }
+        }
+        
+        return [self getFreeIdFromArray:[allIdsArray copy]];
+        
+    }else if ([typeString isEqualToString:@"CSREventEntity"]) {
         NSMutableArray *allIdsArray = [NSMutableArray new];
         
         NSArray *allEventsArray = [[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"CSREventEntity" withPredicate:nil];
@@ -842,6 +863,82 @@
         
     }
     
+}
+
+#pragma mark - Gallery Methods
+
+- (GalleryEntity *)saveNewGallery:(NSNumber *)galleryId galleryImage:(UIImage *)image galleryBoundeWR:(NSNumber *)boundWR galleryBoundHR:(NSNumber *)boundHR
+{
+    
+    __block GalleryEntity *newGalleryEntity;
+    
+    [[CSRAppStateManager sharedInstance].selectedPlace.gallerys enumerateObjectsUsingBlock:^(id  _Nonnull obj, BOOL * _Nonnull stop) {
+        
+        GalleryEntity *galleryEntity = (GalleryEntity *)obj;
+        
+        if ([galleryEntity.galleryID isEqualToNumber:galleryId]) {
+            
+            newGalleryEntity = galleryEntity;
+            *stop = YES;
+        }
+        
+    }];
+    
+    if (!newGalleryEntity) {
+        
+        newGalleryEntity = [NSEntityDescription insertNewObjectForEntityForName:@"GalleryEntity" inManagedObjectContext:self.managedObjectContext];
+    }
+    
+    NSData *galleryImageData = UIImageJPEGRepresentation(image, 0.5);
+    newGalleryEntity.galleryImage = galleryImageData;
+    newGalleryEntity.galleryID = galleryId;
+    newGalleryEntity.boundWidth = boundWR;
+    newGalleryEntity.boundHeight = boundHR;
+    [[CSRAppStateManager sharedInstance].selectedPlace addGallerysObject:newGalleryEntity];
+    [self saveContext];
+    
+    return newGalleryEntity;
+    
+}
+
+#pragma mark - Drop Methods
+
+- (DropEntity *)saveNewDrop:(NSNumber *)dropId device:(CSRDeviceEntity *)device dropBoundRatio:(NSNumber *)boundRatio centerXRatio:(NSNumber *)centerXRatio centerYRatio:(NSNumber *)centerYRatio galleryId:(NSNumber *)gelleryId {
+    __block GalleryEntity *currentGalleryEntity;
+    [[CSRAppStateManager sharedInstance].selectedPlace.gallerys enumerateObjectsUsingBlock:^(GalleryEntity * _Nonnull obj, BOOL * _Nonnull stop) {
+        if ([obj.galleryID isEqualToNumber:gelleryId]) {
+            currentGalleryEntity = obj;
+            *stop = YES;
+        }
+    }];
+    if (currentGalleryEntity) {
+        __block DropEntity *newDropEntity;
+        [currentGalleryEntity.drops enumerateObjectsUsingBlock:^(DropEntity *dropEntity, BOOL * _Nonnull stop) {
+            if ([dropEntity.dropID isEqualToNumber:dropId]) {
+                newDropEntity = dropEntity;
+                *stop = YES;
+            }
+        }];
+        if (!newDropEntity) {
+            newDropEntity = [NSEntityDescription insertNewObjectForEntityForName:@"DropEntity" inManagedObjectContext:self.managedObjectContext];
+        }
+
+        newDropEntity.dropID = dropId;
+        newDropEntity.device = device;
+        newDropEntity.boundRatio = boundRatio;
+        newDropEntity.centerXRatio = centerXRatio;
+        newDropEntity.centerYRatio = centerXRatio;
+        
+        NSLog(@">> %@",currentGalleryEntity);
+        NSLog(@">> %@",newDropEntity);
+
+        [currentGalleryEntity addDropsObject:newDropEntity];
+        [self saveContext];
+        return newDropEntity;
+    }
+
+    return nil;
+
 }
 
 @end

@@ -10,6 +10,7 @@
 #import "CSRGatewayEntity.h"
 #import "CSRSettingsEntity.h"
 #import "CSRUserEntity.h"
+#import "GalleryEntity.h"
 
 @implementation CSRPlaceEntity
 

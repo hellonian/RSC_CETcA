@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSSet<CSRGatewayEntity *> *gateways;
 @property (nullable, nonatomic, retain) CSRSettingsEntity *settings;
 @property (nullable, nonatomic, retain) CSRUserEntity *user;
+@property (nullable, nonatomic, retain) NSSet<GalleryEntity *> *gallerys;
 
 @end
 
@@ -53,6 +54,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeGatewaysObject:(CSRGatewayEntity *)value;
 - (void)addGateways:(NSSet<CSRGatewayEntity *> *)values;
 - (void)removeGateways:(NSSet<CSRGatewayEntity *> *)values;
+
+- (void)addGallerysObject:(GalleryEntity *)value;
+- (void)removeGallerysObject:(GalleryEntity *)value;
+- (void)addGallerys:(NSSet<GalleryEntity *> *)values;
+- (void)removeGallerys:(NSSet<GalleryEntity *> *)values;
 
 @end
 

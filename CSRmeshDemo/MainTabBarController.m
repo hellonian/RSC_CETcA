@@ -47,11 +47,12 @@
         self.navigationItem.rightBarButtonItem = nil;
     }
     else if (index == 1) {
-        self.navigationController.navigationBarHidden = NO;
-        self.title = @"Gallery";
-        UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(firstRightBarButtonAction:)];
-        self.navigationItem.rightBarButtonItem = edit;
-        self.navigationItem.leftBarButtonItem = nil;
+//        self.navigationController.navigationBarHidden = NO;
+//        self.title = @"Gallery";
+//        UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(firstRightBarButtonAction:)];
+//        self.navigationItem.rightBarButtonItem = edit;
+//        self.navigationItem.leftBarButtonItem = nil;
+        self.navigationController.navigationBarHidden = YES;
     }
     else if (index == 2){
         self.title = @"Scenes";
@@ -141,18 +142,19 @@
 }
 //添加相册
 -(void)addNewVisualControl{
-    VisualFloorOrganizeController *organizer = [[VisualFloorOrganizeController alloc] init];
-    organizer.isEdit = NO;
-    [organizer setOrganizingHandle:^(VisualControlContentView *panel) {
-        [self.viewControllers enumerateObjectsUsingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([obj isKindOfClass:[FloorViewController class]]) {
-                FloorViewController *fvc = (FloorViewController *)obj;
-                [fvc insertVisualControlGallery:panel];
-                *stop = YES;
-            }
-        }];
-    }];
-    [self.navigationController pushViewController:organizer animated:YES];
+//    VisualFloorOrganizeController *organizer = [[VisualFloorOrganizeController alloc] init];
+//    organizer.isEdit = NO;
+//    [organizer setOrganizingHandle:^(VisualControlContentView *panel) {
+//        [self.viewControllers enumerateObjectsUsingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//            if ([obj isKindOfClass:[FloorViewController class]]) {
+//                FloorViewController *fvc = (FloorViewController *)obj;
+//                [fvc insertVisualControlGallery:panel];
+//                *stop = YES;
+//            }
+//        }];
+//    }];
+//    [self.navigationController pushViewController:organizer animated:YES];
+    
 }
 
 - (void)chooseSelectIndex: (NSInteger)inndex {

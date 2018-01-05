@@ -5,7 +5,6 @@
 #import "CSRUserEntity.h"
 #import "CSRPlaceEntity.h"
 
-
 @implementation CSRUserEntity
 
 @dynamic email;

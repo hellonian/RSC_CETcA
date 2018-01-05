@@ -34,6 +34,7 @@
         <attribute name="shortName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="areas" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CSRAreaEntity" inverseName="devices" inverseEntity="CSRAreaEntity" syncable="YES"/>
+        <relationship name="drops" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DropEntity" inverseName="device" inverseEntity="DropEntity" syncable="YES"/>
         <relationship name="events" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CSREventEntity" inverseName="devices" inverseEntity="CSREventEntity" syncable="YES"/>
         <relationship name="place" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CSRPlaceEntity" inverseName="devices" inverseEntity="CSRPlaceEntity" syncable="YES"/>
     </entity>
@@ -81,6 +82,7 @@
         <relationship name="controllers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CSRControllerEntity" inverseName="place" inverseEntity="CSRControllerEntity" syncable="YES"/>
         <relationship name="devices" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CSRDeviceEntity" inverseName="place" inverseEntity="CSRDeviceEntity" syncable="YES"/>
         <relationship name="events" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CSREventEntity" inverseName="place" inverseEntity="CSREventEntity" syncable="YES"/>
+        <relationship name="gallerys" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="GalleryEntity" inverseName="place" inverseEntity="GalleryEntity" syncable="YES"/>
         <relationship name="gateways" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CSRGatewayEntity" inverseName="place" inverseEntity="CSRGatewayEntity" syncable="YES"/>
         <relationship name="settings" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CSRSettingsEntity" inverseName="place" inverseEntity="CSRSettingsEntity" syncable="YES"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CSRUserEntity" inverseName="places" inverseEntity="CSRUserEntity" syncable="YES"/>
@@ -103,15 +105,33 @@
         <attribute name="userId" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="places" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CSRPlaceEntity" inverseName="user" inverseEntity="CSRPlaceEntity" syncable="YES"/>
     </entity>
+    <entity name="DropEntity" syncable="YES">
+        <attribute name="boundRatio" optional="YES" attributeType="Float" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="centerXRatio" optional="YES" attributeType="Float" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="centerYRatio" optional="YES" attributeType="Float" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="dropID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="device" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CSRDeviceEntity" inverseName="drops" inverseEntity="CSRDeviceEntity" syncable="YES"/>
+        <relationship name="gallery" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GalleryEntity" inverseName="drops" inverseEntity="GalleryEntity" syncable="YES"/>
+    </entity>
+    <entity name="GalleryEntity" syncable="YES">
+        <attribute name="boundHeight" optional="YES" attributeType="Float" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="boundWidth" optional="YES" attributeType="Float" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="galleryID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="galleryImage" optional="YES" attributeType="Binary" syncable="YES"/>
+        <relationship name="drops" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DropEntity" inverseName="gallery" inverseEntity="DropEntity" syncable="YES"/>
+        <relationship name="place" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CSRPlaceEntity" inverseName="gallerys" inverseEntity="CSRPlaceEntity" syncable="YES"/>
+    </entity>
     <elements>
         <element name="CSRAreaEntity" positionX="81" positionY="-207" width="128" height="120"/>
-        <element name="CSRControllerEntity" positionX="-486" positionY="-81" width="128" height="180"/>
-        <element name="CSRDeviceEntity" positionX="61" positionY="200" width="128" height="300"/>
+        <element name="CSRControllerEntity" positionX="-495" positionY="18" width="128" height="180"/>
+        <element name="CSRDeviceEntity" positionX="61" positionY="200" width="128" height="315"/>
         <element name="CSRDeviceEventsEntity" positionX="-621" positionY="305" width="128" height="133"/>
         <element name="CSREventEntity" positionX="-434" positionY="288" width="128" height="180"/>
         <element name="CSRGatewayEntity" positionX="-191" positionY="269" width="128" height="178"/>
-        <element name="CSRPlaceEntity" positionX="-117" positionY="-72" width="128" height="270"/>
+        <element name="CSRPlaceEntity" positionX="-99" positionY="-63" width="128" height="285"/>
         <element name="CSRSettingsEntity" positionX="-317" positionY="27" width="128" height="180"/>
         <element name="CSRUserEntity" positionX="-308" positionY="-279" width="128" height="120"/>
+        <element name="DropEntity" positionX="-414" positionY="-126" width="128" height="135"/>
+        <element name="GalleryEntity" positionX="-423" positionY="-135" width="128" height="135"/>
     </elements>
 </model>

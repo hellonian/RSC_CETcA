@@ -4,6 +4,7 @@
 
 #import "CSRDeviceEntity.h"
 #import "CSRAreaEntity.h"
+#import "DropEntity.h"
 
 @implementation CSRDeviceEntity
 
@@ -22,5 +23,6 @@
 @dynamic areas;
 @dynamic dhmKey;
 @dynamic shortName;
+@dynamic drops;
 
 @end

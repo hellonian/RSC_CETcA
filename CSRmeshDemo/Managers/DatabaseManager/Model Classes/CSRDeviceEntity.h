@@ -5,7 +5,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class CSRAreaEntity;
+@class CSRAreaEntity,DropEntity;
 
 @interface CSRDeviceEntity : NSManagedObject
 
@@ -24,6 +24,7 @@
 @property (nonatomic, retain) NSString * uuid;
 @property (nonatomic, retain) NSSet *areas;
 @property (nonatomic, retain) NSData *dhmKey;
+@property (nonatomic, retain) NSSet *drops;
 
 @end
 
@@ -33,5 +34,10 @@
 - (void)removeAreasObject:(CSRAreaEntity *)value;
 - (void)addAreas:(NSSet *)values;
 - (void)removeAreas:(NSSet *)values;
+
+- (void)addDropsObject:(DropEntity *)value;
+- (void)removeDropsObject:(DropEntity *)value;
+- (void)addDrops:(NSSet *)values;
+- (void)removeDrops:(NSSet *)values;
 
 @end

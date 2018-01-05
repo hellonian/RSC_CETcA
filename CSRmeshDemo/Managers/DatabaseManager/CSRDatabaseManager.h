@@ -9,6 +9,9 @@
 #import "CSRAreaEntity.h"
 #import "CSRSettingsEntity.h"
 #import "CSREventEntity.h"
+#import "GalleryEntity.h"
+#import "DropEntity.h"
+#import "CSRDeviceEntity.h"
 
 @interface CSRDatabaseManager : NSObject {
     BOOL newDatabase;
@@ -39,8 +42,14 @@
 //Remove Area
 - (void) removeAreaFromDatabaseWithAreaId:(NSNumber*)areaId;
 
+//Gallery
+- (GalleryEntity *)saveNewGallery:(NSNumber *)galleryId galleryImage:(UIImage *)image galleryBoundeWR:(NSNumber *)boundWR galleryBoundHR:(NSNumber *)boundHR;
+
+//Drop
+- (DropEntity *)saveNewDrop:(NSNumber *)dropId device:(CSRDeviceEntity *)device dropBoundRatio:(NSNumber *)boundRatio centerXRatio:(NSNumber *)centerXRatio centerYRatio:(NSNumber *)centerYRatio galleryId:(NSNumber *)gelleryId;
+
 //Database Local functions
--(void) loadDatabase;
+- (void) loadDatabase;
 //-(NSString *) fetchNetworkKey;
 - (CSRAreaEntity *)getAreaEntityWithId:(NSNumber *)areaId;
 - (CSRDeviceEntity *)getDeviceEntityWithId:(NSNumber *)deviceId;

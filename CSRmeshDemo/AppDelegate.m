@@ -9,7 +9,8 @@
 #import "CSRmeshSettings.h"
 #import "CSRMesh/TimeModelApi.h"
 #import "LightClusterViewController.h"
-#import "FloorViewController.h"
+//#import "FloorViewController.h"
+#import "GalleryViewController.h"
 #import "MoreViewController.h"
 #import "SceneCollectionController.h"
 #import "LightSceneBringer.h"
@@ -70,9 +71,11 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
     self.mainTabBarController = [[MainTabBarController alloc] init];
     LightClusterViewController *lampsVC = [[LightClusterViewController alloc] initWithItemPerSection:3 cellIdentifier:@"LightClusterCell"];
     SceneCollectionController *sceneVC = [[SceneCollectionController alloc] initWithItemPerSection:3 cellIdentifier:@"SceneCell"];
-    FloorViewController *galleryVC = [[FloorViewController alloc] init];
+//    FloorViewController *galleryVC = [[FloorViewController alloc] init];
+    GalleryViewController *galleryVC = [[GalleryViewController alloc] init];
+    UINavigationController *galleryNav = [[UINavigationController alloc] initWithRootViewController:galleryVC];
     MoreViewController *moreVC = [[MoreViewController alloc] init];
-    NSArray *vcs = @[lampsVC,galleryVC,sceneVC,moreVC];
+    NSArray *vcs = @[lampsVC,galleryNav,sceneVC,moreVC];
     self.mainTabBarController.viewControllers = vcs;
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:self.mainTabBarController];
     self.window.rootViewController = nav;

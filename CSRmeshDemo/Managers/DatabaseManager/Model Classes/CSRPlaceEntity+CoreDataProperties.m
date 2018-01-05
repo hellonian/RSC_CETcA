@@ -21,5 +21,6 @@
 @dynamic gateways;
 @dynamic settings;
 @dynamic user;
+@dynamic gallerys;
 
 @end

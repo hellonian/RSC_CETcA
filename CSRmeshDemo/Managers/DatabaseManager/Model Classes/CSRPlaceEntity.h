@@ -5,7 +5,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class CSRAreaEntity, CSRControllerEntity, CSRDeviceEntity, CSREventEntity, CSRGatewayEntity, CSRSettingsEntity, CSRUserEntity;
+@class CSRAreaEntity, CSRControllerEntity, CSRDeviceEntity, CSREventEntity, CSRGatewayEntity, CSRSettingsEntity, CSRUserEntity, GalleryEntity;
 
 NS_ASSUME_NONNULL_BEGIN
 
