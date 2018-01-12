@@ -12,6 +12,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="GalleryViewController">
             <connections>
+                <outlet property="scrollView" destination="HJl-i1-Tf0" id="ORZ-EP-7px"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -19,7 +20,29 @@
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bgImage" translatesAutoresizingMaskIntoConstraints="NO" id="mF4-rR-uMm">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                </imageView>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HJl-i1-Tf0">
+                    <rect key="frame" x="0.0" y="64" width="375" height="553"/>
+                </scrollView>
+            </subviews>
+            <constraints>
+                <constraint firstItem="mF4-rR-uMm" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="3GU-LO-nW9"/>
+                <constraint firstItem="HJl-i1-Tf0" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="64" id="518-af-yIB"/>
+                <constraint firstItem="HJl-i1-Tf0" firstAttribute="bottom" secondItem="Q5M-cg-NOt" secondAttribute="bottom" constant="-50" id="9QX-pH-Vp3"/>
+                <constraint firstItem="HJl-i1-Tf0" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="9fr-sM-hpH"/>
+                <constraint firstItem="HJl-i1-Tf0" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="gdX-OO-bgg"/>
+                <constraint firstItem="mF4-rR-uMm" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="nSp-S5-aip"/>
+                <constraint firstItem="mF4-rR-uMm" firstAttribute="bottom" secondItem="Q5M-cg-NOt" secondAttribute="bottom" id="rLX-RB-3O8"/>
+                <constraint firstItem="mF4-rR-uMm" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="vWf-uv-IcB"/>
+            </constraints>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
+            <point key="canvasLocation" x="25.5" y="52.5"/>
         </view>
     </objects>
+    <resources>
+        <image name="bgImage" width="750" height="1334"/>
+    </resources>
 </document>

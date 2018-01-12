@@ -67,8 +67,17 @@
         self.navigationItem.title = @"Controlling";
         UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(galleryDetailEditAction:)];
         self.navigationItem.rightBarButtonItem = edit;
-        self.navigationItem.leftBarButtonItem = nil;
+        UIBarButtonItem *close = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStylePlain target:self action:@selector(galleryDetailCloseAction:)];
+        self.navigationItem.leftBarButtonItem = close;
     }
+    
+    [_controlImageView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj isKindOfClass:[GalleryDropView class]]) {
+            GalleryDropView *dropView = (GalleryDropView *)obj;
+            dropView.isEditing = _isEditing;
+        }
+    }];
+    
 }
 
 - (void)galleryDetailEditAction:(UIBarButtonItem *)item {
@@ -77,15 +86,22 @@
     
 }
 
+- (void)galleryDetailCloseAction:(UIBarButtonItem *)item {
+    if (self.handle) {
+        self.handle();
+    }
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 - (void)galleryDetailDoneAction:(UIBarButtonItem *)item {
     _isEditing = NO;
     [self prepareNavigationItem];
     
     NSNumber *galleryIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"GalleryEntity"];
     
-    float boundWR = 0.288 * _controlImageView.bounds.size.width/_controlImageView.bounds.size.height;
+    float boundWR = 0.549 * _controlImageView.bounds.size.width/_controlImageView.bounds.size.height;
 
-    GalleryEntity *galleryEntity = [[CSRDatabaseManager sharedInstance] saveNewGallery:galleryIdNumber galleryImage:_image galleryBoundeWR:@(boundWR) galleryBoundHR:@(0.288)];
+    GalleryEntity *galleryEntity = [[CSRDatabaseManager sharedInstance] saveNewGallery:galleryIdNumber galleryImage:_image galleryBoundeWR:@(boundWR) galleryBoundHR:@(0.549) newGalleryId:nil];
 
     [[CSRAppStateManager sharedInstance].selectedPlace addGallerysObject:galleryEntity];
     [[CSRDatabaseManager sharedInstance] saveContext];
@@ -128,6 +144,7 @@
             
             GalleryDropView *dropView = [[GalleryDropView alloc] initWithFrame:CGRectMake(0, 0, 128, 128)];
             dropView.deviceId = deviceId;
+            dropView.isEditing = YES;
             [_controlImageView addDropViewInCenter:dropView];
         
         }
@@ -145,7 +162,7 @@
 - (void)galleryControlImageViewDeleteDropView:(UIView *)view {
     GalleryDropView *dropView = (GalleryDropView *)view;
     
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Alert!" message:@"Are you sure to remove this light representaion?" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"Remove light?" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"CANCEL" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         
     }];

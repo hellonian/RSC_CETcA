@@ -236,6 +236,7 @@
 		2EA0C0C21F4281A6007B036C /* LightClusterCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EA0C0BD1F4281A6007B036C /* LightClusterCell.xib */; };
 		2EAD47991FFC6DA8007D45E9 /* GalleryControlImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAD47981FFC6DA8007D45E9 /* GalleryControlImageView.m */; };
 		2EAD479C1FFC76F3007D45E9 /* GallreyDropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAD479B1FFC76F3007D45E9 /* GallreyDropView.m */; };
+		2EAD4EA82004A4BB003733CA /* GalleryEditToolView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAD4EA72004A4BB003733CA /* GalleryEditToolView.m */; };
 		2EAF24751F417AAE00FB092A /* LightBringer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF24721F417AAE00FB092A /* LightBringer.m */; };
 		2EAF24761F417AAE00FB092A /* LightGroupBringer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF24741F417AAE00FB092A /* LightGroupBringer.m */; };
 		2EAF24791F417B9100FB092A /* UIView+DarkEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF24781F417B9100FB092A /* UIView+DarkEffect.m */; };
@@ -674,6 +675,8 @@
 		2EAD47981FFC6DA8007D45E9 /* GalleryControlImageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GalleryControlImageView.m; sourceTree = "<group>"; };
 		2EAD479A1FFC76F3007D45E9 /* GalleryDropView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GalleryDropView.h; sourceTree = "<group>"; };
 		2EAD479B1FFC76F3007D45E9 /* GallreyDropView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GallreyDropView.m; sourceTree = "<group>"; };
+		2EAD4EA62004A4BB003733CA /* GalleryEditToolView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GalleryEditToolView.h; sourceTree = "<group>"; };
+		2EAD4EA72004A4BB003733CA /* GalleryEditToolView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GalleryEditToolView.m; sourceTree = "<group>"; };
 		2EAF24711F417AAE00FB092A /* LightBringer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LightBringer.h; sourceTree = "<group>"; };
 		2EAF24721F417AAE00FB092A /* LightBringer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LightBringer.m; sourceTree = "<group>"; };
 		2EAF24731F417AAE00FB092A /* LightGroupBringer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LightGroupBringer.h; sourceTree = "<group>"; };
@@ -1816,6 +1819,8 @@
 				2EAD47981FFC6DA8007D45E9 /* GalleryControlImageView.m */,
 				2EAD479A1FFC76F3007D45E9 /* GalleryDropView.h */,
 				2EAD479B1FFC76F3007D45E9 /* GallreyDropView.m */,
+				2EAD4EA62004A4BB003733CA /* GalleryEditToolView.h */,
+				2EAD4EA72004A4BB003733CA /* GalleryEditToolView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -2590,6 +2595,7 @@
 				0D835B791B9749E700FF4376 /* CSRAboutViewController.m in Sources */,
 				2E2E6FFA1FF5DCB4002D1C1D /* LightDot.m in Sources */,
 				2E2E707F1FF5DE60002D1C1D /* MusicDimmerChooseVC.m in Sources */,
+				2EAD4EA82004A4BB003733CA /* GalleryEditToolView.m in Sources */,
 				2E2E707B1FF5DE60002D1C1D /* AboutViewController.m in Sources */,
 				2E2E6FE51FF5DC3C002D1C1D /* DeviceDetailViewController.m in Sources */,
 				F43AA3BE1CAA83ED00C1EDF8 /* CSRNewControllersViewController.m in Sources */,

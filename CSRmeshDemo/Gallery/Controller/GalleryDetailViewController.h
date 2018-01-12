@@ -12,5 +12,6 @@
 
 @property (nonatomic, strong) UIImage *image;
 @property (nonatomic, assign) BOOL isEditing;
+@property (nonatomic, strong) void(^handle)(void);
 
 @end

@@ -7,13 +7,19 @@
 //
 
 #import "GalleryControlImageView.h"
+#import "CSRDeviceEntity.h"
 
 @interface GalleryControlImageView ()
+{
+    CGFloat distanceX;
+    CGFloat distanceY;
+    CGRect oldRect;
+}
 
 @property (nonatomic, weak) UIView *closestDropView;
 @property (nonatomic, assign) CGRect originRect;
 @property (nonatomic, assign) CGPoint originCenter;
-
+@property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
 
 @end
 
@@ -23,20 +29,41 @@
     self = [super init];
     if (self) {
         self.userInteractionEnabled = YES;
-        self.clipsToBounds = YES;
         
-        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureAction:)];
+        self.drops = [[NSMutableArray alloc] init];
+        _deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _deleteButton.frame = CGRectMake(-10, -10, 30, 30);
+        [_deleteButton setBackgroundImage:[UIImage imageNamed:@"icon_delete"] forState:UIControlStateNormal];
+        [_deleteButton addTarget:self action:@selector(deleteAction:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:_deleteButton];
+        
+//        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureAction:)];
         UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchGestureAction:)];
         UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureAction:)];
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureAction:)];
+//        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureAction:)];
         
-        [self addGestureRecognizer:panGesture];
+//        [self addGestureRecognizer:panGesture];
         [self addGestureRecognizer:pinchGesture];
         [self addGestureRecognizer:longPressGesture];
-        [self addGestureRecognizer:tapGesture];
+//        [self addGestureRecognizer:tapGesture];
         
     }
     return self;
+}
+
+- (void)addPanGestureRecognizer {
+    self.panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureAction:)];
+    [self addGestureRecognizer:self.panGesture];
+}
+
+- (void)removePanGestureRecognizer {
+    [self removeGestureRecognizer:self.panGesture];
+}
+
+- (void)deleteAction:(UIButton *)btn {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(galleryControlImageViewDeleteAction:)]) {
+        [self.delegate galleryControlImageViewDeleteAction:self];
+    }
 }
 
 - (void)addDropViewInCenter:(GalleryDropView *)view {
@@ -50,30 +77,67 @@
     }
 }
 
+- (void)addDropViewInRightLocation:(DropEntity *)drop {
+    float boundWidth = [drop.boundRatio floatValue]*self.bounds.size.width;
+    float centerX = [drop.centerXRatio floatValue]*self.bounds.size.width;
+    float centerY = [drop.centerYRatio floatValue]*self.bounds.size.height;
+    GalleryDropView *dropView = [[GalleryDropView alloc] initWithFrame:CGRectMake(centerX-boundWidth/2, centerY-boundWidth/2, boundWidth, boundWidth)];
+    dropView.boundRatio = drop.boundRatio;
+    dropView.centerXRatio = drop.centerXRatio;
+    dropView.centerYRatio = drop.centerYRatio;
+    dropView.deviceId = drop.device.deviceId;
+    dropView.dropId = drop.dropID;
+    [self addSubview:dropView];
+    [self.drops addObject:dropView];
+}
+
+
+
+- (void)adjustDropViewInRightLocation {
+    
+    [self.drops enumerateObjectsUsingBlock:^(GalleryDropView *dropView, NSUInteger idx, BOOL * _Nonnull stop) {
+        float boundWidth = [dropView.boundRatio floatValue]*self.bounds.size.width;
+        float centerX = [dropView.centerXRatio floatValue]*self.bounds.size.width;
+        float centerY = [dropView.centerYRatio floatValue]*self.bounds.size.height;
+        dropView.layer.cornerRadius = boundWidth/2;
+        dropView.frame = CGRectMake(centerX-boundWidth/2, centerY-boundWidth/2, boundWidth, boundWidth);
+    }];
+}
+
 #pragma mark - gestureAction
 
 - (void)panGestureAction:(UIPanGestureRecognizer *)sender {
-    CGPoint touchPoint = [sender locationInView:self];
-    UIView *hitView = [self hitTest:touchPoint withEvent:nil];
     
+    CGPoint touchPoint = [sender locationInView:self.superview];
+
     switch (sender.state) {
         case UIGestureRecognizerStateBegan:
+        {
+            distanceX = self.center.x - touchPoint.x;
+            distanceY = self.center.y - touchPoint.y;
+            oldRect = self.frame;
             
             break;
+        }
         case UIGestureRecognizerStateChanged:
-            if (_isEditing) {
-                if ([hitView isKindOfClass:[GalleryDropView class]]) {
-                    hitView.center = touchPoint;
-                }
+        {
+            self.center = CGPointMake(touchPoint.x + distanceX, touchPoint.y + distanceY);
+
+            break;
+        }
+        case UIGestureRecognizerStateEnded:
+        {
+            if (self.delegate && [self.delegate respondsToSelector:@selector(galleryControlImageViewAdjustLocation:oldRect:)]) {
+                [self.delegate galleryControlImageViewAdjustLocation:self oldRect:oldRect];
             }
             
             break;
-        
+        }
         default:
             break;
     }
-    
-    
+
+
 }
 
 - (void)pinchGestureAction:(UIPinchGestureRecognizer *)sender {
@@ -111,15 +175,15 @@
     }
 }
 
-- (void)tapGestureAction:(UITapGestureRecognizer *)sender {
-    if (sender.state == UIGestureRecognizerStateEnded) {
-        CGPoint touchPoint = [sender locationInView:self];
-        UIView *hitView = [self hitTest:touchPoint withEvent:nil];
-        if ([hitView isKindOfClass:[GalleryDropView class]]) {
-            NSLog(@"dianji");
-        }
-    }
-}
+//- (void)tapGestureAction:(UITapGestureRecognizer *)sender {
+//    if (sender.state == UIGestureRecognizerStateEnded) {
+//        CGPoint touchPoint = [sender locationInView:self];
+//        UIView *hitView = [self hitTest:touchPoint withEvent:nil];
+//        if ([hitView isKindOfClass:[GalleryDropView class]]) {
+//            NSLog(@"dianji");
+//        }
+//    }
+//}
 
 #pragma mark - pinchGesture help
 

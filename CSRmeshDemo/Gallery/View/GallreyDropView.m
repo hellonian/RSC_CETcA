@@ -22,9 +22,63 @@
         self.layer.cornerRadius = unit/2;
         self.layer.borderWidth =1;
         self.layer.borderColor = [UIColor darkGrayColor].CGColor;
+        
+        self.userInteractionEnabled = YES;
+        
+        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureAction:)];
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureAction:)];
+        
+        [self addGestureRecognizer:panGesture];
+        [self addGestureRecognizer:tapGesture];
     }
     return self;
 }
+
+#pragma mark - gestureAction
+
+- (void)panGestureAction:(UIPanGestureRecognizer *)sender {
+    NSLog(@"pan");
+    CGPoint touchPoint = [sender locationInView:self.superview];
+//    UIView *hitView = [self hitTest:touchPoint withEvent:nil];
+    
+    switch (sender.state) {
+        case UIGestureRecognizerStateBegan:
+            
+            break;
+        case UIGestureRecognizerStateChanged:
+            if (_isEditing) {
+
+                if (touchPoint.x < self.frame.size.width/2.0f) {
+                    touchPoint.x = self.frame.size.width/2.0f;
+                }
+                if (touchPoint.x > self.superview.frame.size.width - self.frame.size.width/2.0f) {
+                    touchPoint.x = self.superview.frame.size.width - self.frame.size.width/2.0f;
+                }
+                if (touchPoint.y < self.frame.size.height/2.0f) {
+                    touchPoint.y = self.frame.size.height/2.0f;
+                }
+                if (touchPoint.y > self.superview.frame.size.height - self.frame.size.height/2.0f) {
+                    touchPoint.y = self.superview.frame.size.height - self.frame.size.height/2.0f;
+                }
+                self.center = touchPoint;
+            }
+            
+            break;
+            
+        default:
+            break;
+    }
+    
+    
+}
+
+- (void)tapGestureAction:(UITapGestureRecognizer *)sender {
+    NSLog(@"tap");
+    if (sender.state == UIGestureRecognizerStateEnded) {
+        NSLog(@"%@",self.deviceId);
+    }
+}
+
 
 /*
 // Only override drawRect: if you perform custom drawing.

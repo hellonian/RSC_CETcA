@@ -8,10 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "GalleryDropView.h"
+#import "DropEntity.h"
 
 @protocol GalleryControlImageViewDelegate <NSObject>
 
+@optional
 - (void) galleryControlImageViewDeleteDropView:(UIView *)view;
+- (void) galleryControlImageViewDeleteAction:(id)sender;
+- (void) galleryControlImageViewAdjustLocation:(id)sender oldRect:(CGRect)oldRect;
 
 @end
 
@@ -19,8 +23,15 @@
 
 @property (nonatomic, assign) BOOL isEditing;
 @property (nonatomic, weak) id<GalleryControlImageViewDelegate> delegate;
+@property (nonatomic, strong) NSNumber *galleryId;
+@property (nonatomic, strong) NSMutableArray *drops;
+@property (nonatomic, strong) UIButton *deleteButton;
 
 - (void)addDropViewInCenter:(GalleryDropView *)view;
 - (void)deleteDropView:(UIView *)view;
+- (void)addDropViewInRightLocation:(DropEntity *)drop;
+- (void)adjustDropViewInRightLocation;
+- (void)addPanGestureRecognizer;
+- (void)removePanGestureRecognizer;
 
 @end

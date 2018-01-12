@@ -11,5 +11,10 @@
 @interface GalleryDropView : UIView
 
 @property (nonatomic,strong) NSNumber *deviceId;
+@property (nonatomic,assign) BOOL isEditing;
+@property (nonatomic,strong) NSNumber *dropId;
+@property (nonatomic, retain) NSNumber * boundRatio;
+@property (nonatomic, retain) NSNumber * centerXRatio;
+@property (nonatomic, retain) NSNumber * centerYRatio;
 
 @end

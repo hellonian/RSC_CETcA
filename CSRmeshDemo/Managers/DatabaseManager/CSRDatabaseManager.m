@@ -867,7 +867,7 @@
 
 #pragma mark - Gallery Methods
 
-- (GalleryEntity *)saveNewGallery:(NSNumber *)galleryId galleryImage:(UIImage *)image galleryBoundeWR:(NSNumber *)boundWR galleryBoundHR:(NSNumber *)boundHR
+- (GalleryEntity *)saveNewGallery:(NSNumber *)galleryId galleryImage:(UIImage *)image galleryBoundeWR:(NSNumber *)boundWR galleryBoundHR:(NSNumber *)boundHR newGalleryId:(NSNumber *)newGalleryId
 {
     
     __block GalleryEntity *newGalleryEntity;
@@ -891,7 +891,11 @@
     
     NSData *galleryImageData = UIImageJPEGRepresentation(image, 0.5);
     newGalleryEntity.galleryImage = galleryImageData;
-    newGalleryEntity.galleryID = galleryId;
+    if (newGalleryId != nil) {
+        newGalleryEntity.galleryID = newGalleryId;
+    }else {
+        newGalleryEntity.galleryID = galleryId;
+    }
     newGalleryEntity.boundWidth = boundWR;
     newGalleryEntity.boundHeight = boundHR;
     [[CSRAppStateManager sharedInstance].selectedPlace addGallerysObject:newGalleryEntity];
@@ -927,7 +931,7 @@
         newDropEntity.device = device;
         newDropEntity.boundRatio = boundRatio;
         newDropEntity.centerXRatio = centerXRatio;
-        newDropEntity.centerYRatio = centerXRatio;
+        newDropEntity.centerYRatio = centerYRatio;
         
         NSLog(@">> %@",currentGalleryEntity);
         NSLog(@">> %@",newDropEntity);
