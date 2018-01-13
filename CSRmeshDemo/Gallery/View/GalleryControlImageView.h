@@ -16,6 +16,7 @@
 - (void) galleryControlImageViewDeleteDropView:(UIView *)view;
 - (void) galleryControlImageViewDeleteAction:(id)sender;
 - (void) galleryControlImageViewAdjustLocation:(id)sender oldRect:(CGRect)oldRect;
+- (void) galleryControlImageViewPresentDetailViewAction:(id)sender;
 
 @end
 

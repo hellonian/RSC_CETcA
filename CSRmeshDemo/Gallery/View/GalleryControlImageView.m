@@ -40,12 +40,12 @@
 //        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureAction:)];
         UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchGestureAction:)];
         UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureAction:)];
-//        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureAction:)];
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureAction:)];
         
 //        [self addGestureRecognizer:panGesture];
         [self addGestureRecognizer:pinchGesture];
         [self addGestureRecognizer:longPressGesture];
-//        [self addGestureRecognizer:tapGesture];
+        [self addGestureRecognizer:tapGesture];
         
     }
     return self;
@@ -175,15 +175,13 @@
     }
 }
 
-//- (void)tapGestureAction:(UITapGestureRecognizer *)sender {
-//    if (sender.state == UIGestureRecognizerStateEnded) {
-//        CGPoint touchPoint = [sender locationInView:self];
-//        UIView *hitView = [self hitTest:touchPoint withEvent:nil];
-//        if ([hitView isKindOfClass:[GalleryDropView class]]) {
-//            NSLog(@"dianji");
-//        }
-//    }
-//}
+- (void)tapGestureAction:(UITapGestureRecognizer *)sender {
+    if (sender.state == UIGestureRecognizerStateEnded) {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(galleryControlImageViewPresentDetailViewAction:)]) {
+            [self.delegate galleryControlImageViewPresentDetailViewAction:self.galleryId];
+        }
+    }
+}
 
 #pragma mark - pinchGesture help
 

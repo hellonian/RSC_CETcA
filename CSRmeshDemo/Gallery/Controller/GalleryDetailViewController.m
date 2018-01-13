@@ -7,7 +7,6 @@
 //
 
 #import "GalleryDetailViewController.h"
-#import "GalleryControlImageView.h"
 #import "ConfiguredDeviceListController.h"
 #import "GalleryDropView.h"
 #import "CSRDatabaseManager.h"
@@ -15,10 +14,12 @@
 #import "CSRAppStateManager.h"
 #import "DropEntity.h"
 #import "CSRDeviceEntity.h"
+#import "GalleryControlImageView.h"
+
 
 @interface GalleryDetailViewController ()<GalleryControlImageViewDelegate>
 
-@property (nonatomic, strong) GalleryControlImageView *controlImageView;
+@property (nonatomic, copy) GalleryControlImageView *controlImageView;
 @property (nonatomic, assign) BOOL isSelected;
 
 @end
@@ -34,11 +35,13 @@
     
     [self prepareNavigationItem];
     
+    _controlImageView = [[GalleryControlImageView alloc] init];
+    _controlImageView.delegate = self;
+    _controlImageView.center = CGPointMake(WIDTH/2, (HEIGHT-64-50)/2+64);
+    
     if (_image) {
-        _controlImageView = [[GalleryControlImageView alloc] init];
-        _controlImageView.delegate = self;
+        
         _controlImageView.image = _image;
-        _controlImageView.center = CGPointMake(WIDTH/2, (HEIGHT-64-50)/2+64);
         _controlImageView.isEditing = YES;
         CGFloat fixelW = CGImageGetWidth(_image.CGImage);
         CGFloat fixelH = CGImageGetHeight(_image.CGImage);
@@ -47,11 +50,37 @@
         }else {
             _controlImageView.bounds = CGRectMake(0, 0, fixelW/fixelH*(HEIGHT-64-50), HEIGHT-64-50);
         }
-        [self.view addSubview:_controlImageView];
+        
+        
     }
+    else if (_galleryId)
+    {
+        _controlImageView.isEditing = NO;
+        [_controlImageView.deleteButton setHidden:YES];
+        NSArray *gallerys = [[CSRAppStateManager sharedInstance].selectedPlace.gallerys allObjects];
+        [gallerys enumerateObjectsUsingBlock:^(GalleryEntity *galleryEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([galleryEntity.galleryID isEqualToNumber:_galleryId]) {
+                UIImage *myImage = [UIImage imageWithData:galleryEntity.galleryImage];
+                _controlImageView.image = myImage;
+                CGFloat fixelW = CGImageGetWidth(myImage.CGImage);
+                CGFloat fixelH = CGImageGetHeight(myImage.CGImage);
+                if (fixelW/fixelH > WIDTH/(HEIGHT-64-50)) {
+                    _controlImageView.bounds = CGRectMake(0, 0, WIDTH, fixelH/fixelW*WIDTH);
+                }else {
+                    _controlImageView.bounds = CGRectMake(0, 0, fixelW/fixelH*(HEIGHT-64-50), HEIGHT-64-50);
+                }
+                if (galleryEntity.drops != nil && [galleryEntity.drops count] > 0) {
+                    for (DropEntity * dropEntity in galleryEntity.drops) {
+                        [_controlImageView addDropViewInRightLocation:dropEntity];
+                    }
+                }
+                *stop = YES;
+            }
+        }];
+    }
+
     
-    
-    
+    [self.view addSubview:_controlImageView];
 }
 
 - (void)prepareNavigationItem {
@@ -90,7 +119,8 @@
     if (self.handle) {
         self.handle();
     }
-    [self.navigationController popViewControllerAnimated:YES];
+    [UIView transitionWithView:self.navigationController.view duration:1 options:UIViewAnimationOptionTransitionFlipFromLeft animations:nil completion:nil];
+    [self.navigationController popViewControllerAnimated:NO]; 
 }
 
 - (void)galleryDetailDoneAction:(UIBarButtonItem *)item {

@@ -76,7 +76,7 @@
 
 - (void)galleryDoneAction:(UIBarButtonItem *)item {
     
-    _hud = [MBProgressHUD showHUDAddedTo:self.scrollView animated:YES];
+    _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     _hud.mode = MBProgressHUDModeIndeterminate;
     _hud.delegate = self;
     
@@ -284,6 +284,15 @@
     return NO;
 }
 
+- (void)galleryControlImageViewPresentDetailViewAction:(id)sender {
+    NSNumber *galleryId = (NSNumber *)sender;
+    
+    GalleryDetailViewController *detailVC = [[GalleryDetailViewController alloc] init];
+    detailVC.galleryId = galleryId;
+    [self.navigationController pushViewController:detailVC animated:NO];
+    [UIView transitionWithView:self.navigationController.view duration:1 options:UIViewAnimationOptionTransitionFlipFromRight animations:nil completion:nil];
+}
+
 #pragma mark - <UINavigationControllerDelegate,UIImagePickerControllerDelegate>
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
@@ -294,6 +303,7 @@
     gdvc.image = [self fixOrientation:image];
     gdvc.isEditing = YES;
     gdvc.handle = ^{
+        NSLog(@"block");
         [self getData];
     };
     [self.navigationController pushViewController:gdvc animated:NO];
