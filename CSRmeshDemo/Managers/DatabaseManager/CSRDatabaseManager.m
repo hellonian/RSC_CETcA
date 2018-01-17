@@ -932,9 +932,6 @@
         newDropEntity.boundRatio = boundRatio;
         newDropEntity.centerXRatio = centerXRatio;
         newDropEntity.centerYRatio = centerYRatio;
-        
-        NSLog(@">> %@",currentGalleryEntity);
-        NSLog(@">> %@",newDropEntity);
 
         [currentGalleryEntity addDropsObject:newDropEntity];
         [self saveContext];

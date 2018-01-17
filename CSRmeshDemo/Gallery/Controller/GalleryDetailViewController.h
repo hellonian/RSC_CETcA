@@ -16,5 +16,6 @@
 @property (nonatomic, strong) NSMutableArray *drops;
 @property (nonatomic, strong) void(^handle)(void);
 @property (nonatomic, strong) NSNumber *galleryId;
+@property (nonatomic, assign) BOOL isNewAdd;
 
 @end

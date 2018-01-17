@@ -77,7 +77,7 @@
     }
 }
 
-- (void)addDropViewInRightLocation:(DropEntity *)drop {
+- (GalleryDropView *)addDropViewInRightLocation:(DropEntity *)drop {
     float boundWidth = [drop.boundRatio floatValue]*self.bounds.size.width;
     float centerX = [drop.centerXRatio floatValue]*self.bounds.size.width;
     float centerY = [drop.centerYRatio floatValue]*self.bounds.size.height;
@@ -87,8 +87,12 @@
     dropView.centerYRatio = drop.centerYRatio;
     dropView.deviceId = drop.device.deviceId;
     dropView.dropId = drop.dropID;
+    dropView.kindName = drop.device.shortName;
     [self addSubview:dropView];
+    [dropView adjustDropViewBgcolorWithdeviceId:dropView.deviceId];
     [self.drops addObject:dropView];
+    
+    return dropView;
 }
 
 
@@ -157,6 +161,11 @@
                     CGFloat updateH = _originRect.size.height*scale;
                     _closestDropView.frame = CGRectMake(_originCenter.x-updateW/2, _originCenter.y-updateH/2, updateW, updateH);
                     _closestDropView.layer.cornerRadius = MIN(updateW/2, updateH/2);
+                }
+                break;
+            case UIGestureRecognizerStateEnded:
+                if (self.delegate && [self.delegate respondsToSelector:@selector(galleryControlImageViewPichDropView:)]) {
+                    [self.delegate galleryControlImageViewPichDropView:@(YES)];
                 }
                 break;
             default:
@@ -233,6 +242,8 @@
     }
     return CGRectZero;
 }
+
+
 
 
 /*

@@ -16,8 +16,11 @@
 #import "CSRDatabaseManager.h"
 #import "GalleryEditToolView.h"
 #import <MBProgressHUD.h>
+#import "DeviceModelManager.h"
+#import "ImproveTouchingExperience.h"
+#import "ControlMaskView.h"
 
-@interface GalleryViewController ()<UINavigationControllerDelegate,UIImagePickerControllerDelegate,GalleryEditToolViewDelegate,GalleryControlImageViewDelegate,MBProgressHUDDelegate>
+@interface GalleryViewController ()<UINavigationControllerDelegate,UIImagePickerControllerDelegate,GalleryEditToolViewDelegate,GalleryControlImageViewDelegate,MBProgressHUDDelegate,GalleryDropViewDelegate>
 
 @property (nonatomic,strong) NSMutableArray *galleryEntitys;
 @property (nonatomic,strong) NSMutableArray *controlImageViewArray;
@@ -28,6 +31,10 @@
 @property (nonatomic,assign) float adjustHeight;
 @property (nonatomic,assign) BOOL isChange;
 @property (nonatomic,strong) MBProgressHUD *hud;
+@property (nonatomic,strong) NSNumber *originalLevel;
+@property (nonatomic,strong) ImproveTouchingExperience *improver;
+@property (nonatomic,strong) ControlMaskView *maskLayer;
+
 @end
 
 @implementation GalleryViewController
@@ -40,18 +47,21 @@
     UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(galleryEditAction:)];
     self.navigationItem.rightBarButtonItem = edit;
     self.navigationItem.leftBarButtonItem = nil;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getData) name:@"reGetData" object:nil];
+
+    self.improver = [[ImproveTouchingExperience alloc] init];
     _isEditing = NO;
     _adjustRow = -1;
     _adjustHeight = -1.0f;
     
     [self getData];
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
 }
+
 
 #pragma mark - actions
 
@@ -288,7 +298,13 @@
     NSNumber *galleryId = (NSNumber *)sender;
     
     GalleryDetailViewController *detailVC = [[GalleryDetailViewController alloc] init];
+    detailVC.isNewAdd = NO;
     detailVC.galleryId = galleryId;
+    
+    detailVC.handle = ^{
+        [self getData];
+    };
+    
     [self.navigationController pushViewController:detailVC animated:NO];
     [UIView transitionWithView:self.navigationController.view duration:1 options:UIViewAnimationOptionTransitionFlipFromRight animations:nil completion:nil];
 }
@@ -300,10 +316,10 @@
     UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
     
     GalleryDetailViewController *gdvc = [[GalleryDetailViewController alloc] init];
+    gdvc.isNewAdd = YES;
     gdvc.image = [self fixOrientation:image];
     gdvc.isEditing = YES;
     gdvc.handle = ^{
-        NSLog(@"block");
         [self getData];
     };
     [self.navigationController pushViewController:gdvc animated:NO];
@@ -621,13 +637,56 @@
     [controlImageView.deleteButton setHidden:!_isEditing];
     if (galleryEntity.drops != nil && [galleryEntity.drops count] > 0) {
         for (DropEntity * dropEntity in galleryEntity.drops) {
-            [controlImageView addDropViewInRightLocation:dropEntity];
+            GalleryDropView *dropView = [controlImageView addDropViewInRightLocation:dropEntity];
+            dropView.delegate = self;
         }
     }
     
     [self.scrollView addSubview:controlImageView];
     [self.controlImageViewArray addObject:controlImageView];
 }
+
+#pragma mark - GalleryDropViewDelegate
+
+- (void)galleryDropViewPanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId withPanState:(UIGestureRecognizerState)state {
+    
+    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+    
+    if (state == UIGestureRecognizerStateBegan) {
+        self.originalLevel = model.level;
+        [self.improver beginImproving];
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:self.originalLevel withState:state];
+        return;
+    }
+    if (state == UIGestureRecognizerStateChanged || state == UIGestureRecognizerStateEnded) {
+        NSInteger updateLevel = [self.improver improveTouching:touchPoint referencePoint:origin primaryBrightness:[self.originalLevel integerValue]];
+        CGFloat percentage = updateLevel/255.0*100;
+        [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
+        
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state];
+        
+        if (state == UIGestureRecognizerStateEnded) {
+            [self hideControlMaskLayer];
+        }
+        
+        return;
+    }
+}
+
+- (void)showControlMaskLayerWithAlpha:(CGFloat)percentage text:(NSString*)text {
+    if (!_maskLayer.superview) {
+        [[UIApplication sharedApplication].keyWindow addSubview:self.maskLayer];
+    }
+    
+    [self.maskLayer updateProgress:percentage withText:text];
+}
+
+- (void)hideControlMaskLayer {
+    if (_maskLayer && _maskLayer.superview) {
+        [self.maskLayer removeFromSuperview];
+    }
+}
+
 
 #pragma mark - GalleryEditToolViewDelegate
 
@@ -664,6 +723,14 @@
     }
     return _toolViewArray;
 }
+
+- (ControlMaskView*)maskLayer {
+    if (!_maskLayer) {
+        _maskLayer = [[ControlMaskView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    }
+    return _maskLayer;
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

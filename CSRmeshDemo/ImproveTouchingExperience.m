@@ -85,7 +85,6 @@
         self.maxDomination = NO;  //fix
         updatedBrightness = 0;
     }
-    
     return updatedBrightness;
 }
 

@@ -7,8 +7,6 @@
 //
 
 #import "MainTabBarController.h"
-#import "VisualFloorOrganizeController.h"
-#import "FloorViewController.h"
 #import "LightClusterViewController.h"
 #import "SceneCollectionController.h"
 #import "ConfiguredDeviceListController.h"
@@ -111,51 +109,6 @@
     }
 }
 
-#pragma mark - 相册模式操作
-//编辑相册
--(void)firstRightBarButtonAction:(UIBarButtonItem *)barButton{
-    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(firstRightBarButtonAdvanceAction:)];
-    self.navigationItem.rightBarButtonItem = done;
-    UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addNewVisualControl)];
-    self.navigationItem.leftBarButtonItem = add;
-    [self.viewControllers enumerateObjectsUsingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([obj isKindOfClass:[FloorViewController class]]) {
-            FloorViewController *fvc = (FloorViewController *)obj;
-            [fvc beginAdjustingFlowLayout];
-            *stop = YES;
-        }
-    }];
-}
-
-- (void)firstRightBarButtonAdvanceAction:(UIBarButtonItem*)sender {
-    UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(firstRightBarButtonAction:)];
-    self.navigationItem.rightBarButtonItem = edit;
-    self.navigationItem.leftBarButtonItem = nil;
-    [self.viewControllers enumerateObjectsUsingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([obj isKindOfClass:[FloorViewController class]]) {
-            FloorViewController *fvc = (FloorViewController *)obj;
-            [fvc endAdjustingFlowLayout];
-            *stop = YES;
-        }
-    }];
-    
-}
-//添加相册
--(void)addNewVisualControl{
-//    VisualFloorOrganizeController *organizer = [[VisualFloorOrganizeController alloc] init];
-//    organizer.isEdit = NO;
-//    [organizer setOrganizingHandle:^(VisualControlContentView *panel) {
-//        [self.viewControllers enumerateObjectsUsingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//            if ([obj isKindOfClass:[FloorViewController class]]) {
-//                FloorViewController *fvc = (FloorViewController *)obj;
-//                [fvc insertVisualControlGallery:panel];
-//                *stop = YES;
-//            }
-//        }];
-//    }];
-//    [self.navigationController pushViewController:organizer animated:YES];
-    
-}
 
 - (void)chooseSelectIndex: (NSInteger)inndex {
     [self setSelectedIndex:inndex];

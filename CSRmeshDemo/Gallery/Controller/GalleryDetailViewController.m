@@ -15,12 +15,21 @@
 #import "DropEntity.h"
 #import "CSRDeviceEntity.h"
 #import "GalleryControlImageView.h"
+#import "CSRmeshDevice.h"
+#import "CSRDevicesManager.h"
+#import "DeviceModelManager.h"
+#import "ImproveTouchingExperience.h"
+#import "ControlMaskView.h"
 
-
-@interface GalleryDetailViewController ()<GalleryControlImageViewDelegate>
+@interface GalleryDetailViewController ()<GalleryControlImageViewDelegate,GalleryDropViewDelegate>
 
 @property (nonatomic, copy) GalleryControlImageView *controlImageView;
 @property (nonatomic, assign) BOOL isSelected;
+@property (nonatomic, assign) BOOL isChange;
+@property (nonatomic, strong) GalleryEntity *MyGalleryEntity;
+@property (nonatomic,strong) NSNumber *originalLevel;
+@property (nonatomic,strong) ImproveTouchingExperience *improver;
+@property (nonatomic,strong) ControlMaskView *maskLayer;
 
 @end
 
@@ -38,8 +47,9 @@
     _controlImageView = [[GalleryControlImageView alloc] init];
     _controlImageView.delegate = self;
     _controlImageView.center = CGPointMake(WIDTH/2, (HEIGHT-64-50)/2+64);
+    [_controlImageView.deleteButton setHidden:YES];
     
-    if (_image) {
+    if (_isNewAdd && _image) {
         
         _controlImageView.image = _image;
         _controlImageView.isEditing = YES;
@@ -51,17 +61,17 @@
             _controlImageView.bounds = CGRectMake(0, 0, fixelW/fixelH*(HEIGHT-64-50), HEIGHT-64-50);
         }
         
-        
     }
     else if (_galleryId)
     {
+        
         _controlImageView.isEditing = NO;
-        [_controlImageView.deleteButton setHidden:YES];
         NSArray *gallerys = [[CSRAppStateManager sharedInstance].selectedPlace.gallerys allObjects];
         [gallerys enumerateObjectsUsingBlock:^(GalleryEntity *galleryEntity, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([galleryEntity.galleryID isEqualToNumber:_galleryId]) {
                 UIImage *myImage = [UIImage imageWithData:galleryEntity.galleryImage];
                 _controlImageView.image = myImage;
+                _MyGalleryEntity = galleryEntity;
                 CGFloat fixelW = CGImageGetWidth(myImage.CGImage);
                 CGFloat fixelH = CGImageGetHeight(myImage.CGImage);
                 if (fixelW/fixelH > WIDTH/(HEIGHT-64-50)) {
@@ -71,7 +81,8 @@
                 }
                 if (galleryEntity.drops != nil && [galleryEntity.drops count] > 0) {
                     for (DropEntity * dropEntity in galleryEntity.drops) {
-                        [_controlImageView addDropViewInRightLocation:dropEntity];
+                        GalleryDropView * dropView = [_controlImageView addDropViewInRightLocation:dropEntity];
+                        dropView.delegate = self;
                     }
                 }
                 *stop = YES;
@@ -79,8 +90,9 @@
         }];
     }
 
-    
     [self.view addSubview:_controlImageView];
+    
+    self.improver = [[ImproveTouchingExperience alloc] init];
 }
 
 - (void)prepareNavigationItem {
@@ -112,13 +124,21 @@
 - (void)galleryDetailEditAction:(UIBarButtonItem *)item {
     _isEditing = YES;
     [self prepareNavigationItem];
-    
 }
 
 - (void)galleryDetailCloseAction:(UIBarButtonItem *)item {
-    if (self.handle) {
-        self.handle();
+    
+    if (_isNewAdd) {
+        if (self.handle) {
+            self.handle();
+        }
+    }else if (_isChange) {
+        if (self.handle) {
+            self.handle();
+            _isChange = NO;
+        }
     }
+    
     [UIView transitionWithView:self.navigationController.view duration:1 options:UIViewAnimationOptionTransitionFlipFromLeft animations:nil completion:nil];
     [self.navigationController popViewControllerAnimated:NO]; 
 }
@@ -126,43 +146,71 @@
 - (void)galleryDetailDoneAction:(UIBarButtonItem *)item {
     _isEditing = NO;
     [self prepareNavigationItem];
-    
-    NSNumber *galleryIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"GalleryEntity"];
-    
-    float boundWR = 0.549 * _controlImageView.bounds.size.width/_controlImageView.bounds.size.height;
-
-    GalleryEntity *galleryEntity = [[CSRDatabaseManager sharedInstance] saveNewGallery:galleryIdNumber galleryImage:_image galleryBoundeWR:@(boundWR) galleryBoundHR:@(0.549) newGalleryId:nil];
-
-    [[CSRAppStateManager sharedInstance].selectedPlace addGallerysObject:galleryEntity];
-    [[CSRDatabaseManager sharedInstance] saveContext];
-    
-    [_controlImageView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([obj isKindOfClass:[GalleryDropView class]]) {
-            GalleryDropView *dropView = (GalleryDropView *)obj;
-            
-            float boundR = dropView.bounds.size.width/_controlImageView.bounds.size.width;
-            float centerXR = dropView.center.x/_controlImageView.bounds.size.width;
-            float centerYR = dropView.center.y/_controlImageView.bounds.size.height;
-            __block CSRDeviceEntity *device;
-            NSArray *devices = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
-            [devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-                if ([deviceEntity.deviceId isEqualToNumber:dropView.deviceId]) {
-                    device = deviceEntity;
-                    *stop = YES;
+    if (_isNewAdd) {
+        NSNumber *galleryIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"GalleryEntity"];
+        float boundWR = 0.549 * _controlImageView.bounds.size.width/_controlImageView.bounds.size.height;
+        
+        GalleryEntity *galleryEntity = [[CSRDatabaseManager sharedInstance] saveNewGallery:galleryIdNumber galleryImage:_image galleryBoundeWR:@(boundWR) galleryBoundHR:@(0.549) newGalleryId:nil];
+        
+        [[CSRAppStateManager sharedInstance].selectedPlace addGallerysObject:galleryEntity];
+        [[CSRDatabaseManager sharedInstance] saveContext];
+        
+        [_controlImageView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([obj isKindOfClass:[GalleryDropView class]]) {
+                GalleryDropView *dropView = (GalleryDropView *)obj;
+                
+                float boundR = dropView.bounds.size.width/_controlImageView.bounds.size.width;
+                float centerXR = dropView.center.x/_controlImageView.bounds.size.width;
+                float centerYR = dropView.center.y/_controlImageView.bounds.size.height;
+                __block CSRDeviceEntity *device;
+                NSArray *devices = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
+                [devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+                    if ([deviceEntity.deviceId isEqualToNumber:dropView.deviceId]) {
+                        device = deviceEntity;
+                        *stop = YES;
+                    }
+                }];
+                
+                NSNumber *dropIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"DropEntity"];
+                
+                DropEntity *dropEntity = [[CSRDatabaseManager sharedInstance] saveNewDrop:dropIdNumber device:device dropBoundRatio:@(boundR) centerXRatio:@(centerXR) centerYRatio:@(centerYR) galleryId:galleryIdNumber];
+                
+                if (dropEntity) {
+                    [galleryEntity addDropsObject:dropEntity];
+                    [[CSRDatabaseManager sharedInstance] saveContext];
                 }
-            }];
-            
-            NSNumber *dropIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"DropEntity"];
-            
-            DropEntity *dropEntity = [[CSRDatabaseManager sharedInstance] saveNewDrop:dropIdNumber device:device dropBoundRatio:@(boundR) centerXRatio:@(centerXR) centerYRatio:@(centerYR) galleryId:galleryIdNumber];
-            
-            if (dropEntity) {
-                [galleryEntity addDropsObject:dropEntity];
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            } 
-        }
-    }];
-    
+            }
+        }];
+    }else if (_isChange) {
+        
+        [_controlImageView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([obj isKindOfClass:[GalleryDropView class]]) {
+                GalleryDropView *dropView = (GalleryDropView *)obj;
+                
+                float boundR = dropView.bounds.size.width/_controlImageView.bounds.size.width;
+                float centerXR = dropView.center.x/_controlImageView.bounds.size.width;
+                float centerYR = dropView.center.y/_controlImageView.bounds.size.height;
+                __block CSRDeviceEntity *device;
+                NSArray *devices = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
+                [devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+                    if ([deviceEntity.deviceId isEqualToNumber:dropView.deviceId]) {
+                        device = deviceEntity;
+                        *stop = YES;
+                    }
+                }];
+                
+                NSNumber *dropIdNumber;
+                DropEntity *dropEntity = [[[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"DropEntity" withPredicate:@"dropID == %@",dropView.dropId] firstObject];
+                if (dropEntity) {
+                    dropIdNumber = dropEntity.dropID;
+                }else {
+                    dropIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"DropEntity"];
+                }
+                [[CSRDatabaseManager sharedInstance] saveNewDrop:dropIdNumber device:device dropBoundRatio:@(boundR) centerXRatio:@(centerXR) centerYRatio:@(centerYR) galleryId:_galleryId];
+                
+            }
+        }];
+    }
 }
 
 - (void)galleryAddAction:(UIBarButtonItem *)item {
@@ -171,10 +219,17 @@
     [list setSelectDeviceHandle:^(NSArray *selectedDevice) {
         if (selectedDevice.count > 0) {
             NSNumber *deviceId = selectedDevice[0];
-            
+            if (!_isNewAdd) {
+                _isChange = YES;
+            }
             GalleryDropView *dropView = [[GalleryDropView alloc] initWithFrame:CGRectMake(0, 0, 128, 128)];
             dropView.deviceId = deviceId;
             dropView.isEditing = YES;
+            dropView.delegate = self;
+            
+            CSRmeshDevice *device = [[CSRDevicesManager sharedInstance] getDeviceFromDeviceId:deviceId];
+            dropView.kindName = device.shortName;
+            
             [_controlImageView addDropViewInCenter:dropView];
         
         }
@@ -183,21 +238,26 @@
     
 }
 
-- (void)galleryDeleteAction:(UIBarButtonItem *)item {
-    
-}
-
 #pragma mark - GalleryControlImageViewDelegate
 
 - (void)galleryControlImageViewDeleteDropView:(UIView *)view {
-    GalleryDropView *dropView = (GalleryDropView *)view;
+    if (!_isNewAdd) {
+        _isChange = YES;
+    }
     
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"Remove light?" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"CANCEL" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         
     }];
     UIAlertAction *removeAction = [UIAlertAction actionWithTitle:@"REMOVE" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        GalleryDropView *dropView = (GalleryDropView *)view;
         [_controlImageView deleteDropView:view];
+        
+        DropEntity *dropEntity = [[[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"DropEntity" withPredicate:@"dropID == %@",dropView.dropId] firstObject];
+        if (dropEntity) {
+            [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:dropEntity];
+            [[CSRDatabaseManager sharedInstance] saveContext];
+        }
         
     }];
     [alertController addAction:cancelAction];
@@ -205,20 +265,65 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)galleryControlImageViewPichDropView:(id)sender {
+    if ([sender isKindOfClass:[NSNumber class]]) {
+        NSNumber *isChange = (NSNumber *)sender;
+        _isChange = [isChange boolValue];
+    }
 }
 
-/*
-#pragma mark - Navigation
+#pragma mark - GalleryDropViewDelegate
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)galleryDropViewPanLocationAction:(NSNumber *)value {
+    if (!_isNewAdd) {
+        _isChange = [value boolValue];
+    }
 }
-*/
+
+- (void)galleryDropViewPanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId withPanState:(UIGestureRecognizerState)state {
+    
+    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+    
+    if (state == UIGestureRecognizerStateBegan) {
+        self.originalLevel = model.level;
+        [self.improver beginImproving];
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:self.originalLevel withState:state];
+        return;
+    }
+    if (state == UIGestureRecognizerStateChanged || state == UIGestureRecognizerStateEnded) {
+        NSInteger updateLevel = [self.improver improveTouching:touchPoint referencePoint:origin primaryBrightness:[self.originalLevel integerValue]];
+        CGFloat percentage = updateLevel/255.0*100;
+        [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
+        
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state];
+        
+        if (state == UIGestureRecognizerStateEnded) {
+            [self hideControlMaskLayer];
+        }
+        
+        return;
+    }
+}
+
+- (void)showControlMaskLayerWithAlpha:(CGFloat)percentage text:(NSString*)text {
+    if (!_maskLayer.superview) {
+        [[UIApplication sharedApplication].keyWindow addSubview:self.maskLayer];
+    }
+    
+    [self.maskLayer updateProgress:percentage withText:text];
+}
+
+- (void)hideControlMaskLayer {
+    if (_maskLayer && _maskLayer.superview) {
+        [self.maskLayer removeFromSuperview];
+    }
+}
+
+- (ControlMaskView*)maskLayer {
+    if (!_maskLayer) {
+        _maskLayer = [[ControlMaskView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    }
+    return _maskLayer;
+}
 
 @end

@@ -827,6 +827,7 @@
 
 ////////////////////////////////////////
 -(void) setLevel:(NSNumber *)deviceId level:(NSNumber *)level {
+    NSLog(@"<<<<<<<<<<<<< %@",level);
     [[LightModelApi sharedInstance] setLevel:deviceId level:level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
         
     } failure:^(NSError * _Nullable error) {

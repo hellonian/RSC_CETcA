@@ -17,6 +17,7 @@
 - (void) galleryControlImageViewDeleteAction:(id)sender;
 - (void) galleryControlImageViewAdjustLocation:(id)sender oldRect:(CGRect)oldRect;
 - (void) galleryControlImageViewPresentDetailViewAction:(id)sender;
+- (void) galleryControlImageViewPichDropView:(id)sender;
 
 @end
 
@@ -30,7 +31,7 @@
 
 - (void)addDropViewInCenter:(GalleryDropView *)view;
 - (void)deleteDropView:(UIView *)view;
-- (void)addDropViewInRightLocation:(DropEntity *)drop;
+- (GalleryDropView *)addDropViewInRightLocation:(DropEntity *)drop;
 - (void)adjustDropViewInRightLocation;
 - (void)addPanGestureRecognizer;
 - (void)removePanGestureRecognizer;

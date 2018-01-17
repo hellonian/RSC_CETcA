@@ -7,6 +7,7 @@
 //
 
 #import "GalleryDropView.h"
+#import "DeviceModelManager.h"
 
 @implementation GalleryDropView
 
@@ -18,7 +19,6 @@
     
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
-        self.alpha = 0.8;
         self.layer.cornerRadius = unit/2;
         self.layer.borderWidth =1;
         self.layer.borderColor = [UIColor darkGrayColor].CGColor;
@@ -30,6 +30,9 @@
         
         [self addGestureRecognizer:panGesture];
         [self addGestureRecognizer:tapGesture];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setPowerStateSuccess:) name:@"setPowerStateSuccess" object:nil];
+        
     }
     return self;
 }
@@ -37,17 +40,19 @@
 #pragma mark - gestureAction
 
 - (void)panGestureAction:(UIPanGestureRecognizer *)sender {
-    NSLog(@"pan");
+    
     CGPoint touchPoint = [sender locationInView:self.superview];
-//    UIView *hitView = [self hitTest:touchPoint withEvent:nil];
     
     switch (sender.state) {
         case UIGestureRecognizerStateBegan:
+            if (!_isEditing && [self.kindName isEqualToString:@"D350BT"] && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
+                [self.delegate galleryDropViewPanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId withPanState:sender.state];
+            }
             
             break;
         case UIGestureRecognizerStateChanged:
+            
             if (_isEditing) {
-
                 if (touchPoint.x < self.frame.size.width/2.0f) {
                     touchPoint.x = self.frame.size.width/2.0f;
                 }
@@ -60,7 +65,21 @@
                 if (touchPoint.y > self.superview.frame.size.height - self.frame.size.height/2.0f) {
                     touchPoint.y = self.superview.frame.size.height - self.frame.size.height/2.0f;
                 }
+                
                 self.center = touchPoint;
+            }
+            
+            if (!_isEditing && [self.kindName isEqualToString:@"D350BT"] && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
+                [self.delegate galleryDropViewPanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId withPanState:sender.state];
+            }
+            
+            break;
+        case UIGestureRecognizerStateEnded:
+            if (_isEditing && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanLocationAction:)]) {
+                [self.delegate galleryDropViewPanLocationAction:@(YES)];
+            }
+            if (!_isEditing && [self.kindName isEqualToString:@"D350BT"] && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
+                [self.delegate galleryDropViewPanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId withPanState:sender.state];
             }
             
             break;
@@ -69,15 +88,36 @@
             break;
     }
     
-    
 }
 
 - (void)tapGestureAction:(UITapGestureRecognizer *)sender {
-    NSLog(@"tap");
     if (sender.state == UIGestureRecognizerStateEnded) {
-        NSLog(@"%@",self.deviceId);
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(![model.powerState boolValue])];
+        
     }
 }
+
+- (void)setPowerStateSuccess:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        [self adjustDropViewBgcolorWithdeviceId:deviceId];
+    }
+}
+
+- (void)adjustDropViewBgcolorWithdeviceId:(NSNumber *)deviceId {
+    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+    if (![model.powerState boolValue]) {
+        self.backgroundColor = [UIColor clearColor];
+    }else if ([self.kindName isEqualToString:@"S350BT"]) {
+        self.backgroundColor = [UIColor whiteColor];
+    }else if ([self.kindName isEqualToString:@"D350BT"]){
+        self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:[model.level floatValue]/255.0];
+    }
+}
+
 
 
 /*
