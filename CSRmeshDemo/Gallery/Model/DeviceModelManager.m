@@ -13,6 +13,8 @@
 #import <CSRmesh/PowerModelApi.h>
 #import <CSRmesh/LightModelApi.h>
 
+#import "DataModelManager.h"
+
 @interface DeviceModelManager ()<LightModelApiDelegate,PowerModelApiDelegate>
 {
     NSTimer *timer;
@@ -39,6 +41,7 @@
         _allDevices = [NSMutableArray new];
         [[LightModelApi sharedInstance] addDelegate:self];
         [[PowerModelApi sharedInstance] addDelegate:self];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(physicalButtonActionCall:) name:@"physicalButtonActionCall" object:nil];
         
         NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
         if (mutableArray != nil && [mutableArray count] != 0) {
@@ -132,6 +135,23 @@
     }
 }
 
-
+//物理按钮反馈
+- (void)physicalButtonActionCall: (NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSString *state = userInfo[@"powerState"];
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    NSNumber *level = userInfo[@"level"];
+    
+    [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([model.deviceId isEqualToNumber:deviceId]) {
+            model.powerState = [NSNumber numberWithBool:[state boolValue]];
+            model.level = level;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
+            NSLog(@"物理按钮反馈");
+            *stop = YES;
+        }
+    }];
+    
+}
 
 @end

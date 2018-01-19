@@ -627,20 +627,20 @@
         NSLog (@"Can't subscribe for notification to %@ of %@", characteristic.UUID, peripheral.name);
     else
         NSLog (@"Did subscribe for notification to %@ of %@", characteristic.UUID, peripheral.name);
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            [[LightModelApi sharedInstance] addDelegate:self];
-            NSSet *devices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
-            for (CSRDeviceEntity *deviceEntity in devices) {
-                
-                [[LightModelApi sharedInstance] getState:deviceEntity.deviceId success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-                    NSLog(@"获取所有设备状态");
-                } failure:^(NSError * _Nullable error) {
-                    
-                }];
-            }
-            
-        });
+//        static dispatch_once_t onceToken;
+//        dispatch_once(&onceToken, ^{
+//            [[LightModelApi sharedInstance] addDelegate:self];
+//            NSSet *devices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
+//            for (CSRDeviceEntity *deviceEntity in devices) {
+//                
+//                [[LightModelApi sharedInstance] getState:deviceEntity.deviceId success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+//                    NSLog(@"获取所有设备状态");
+//                } failure:^(NSError * _Nullable error) {
+//                    
+//                }];
+//            }
+//            
+//        });
     
 }
 

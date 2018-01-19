@@ -28,7 +28,7 @@
     self.titleLabel.font = [UIFont systemFontOfSize:10];    //10 is just fit
     
     CGFloat offsetImage = (self.bounds.size.height-self.imageView.bounds.size.height)*0.5;
-    CGFloat offsetTitle = (self.bounds.size.height-self.titleLabel.bounds.size.height)*0.3;
+    CGFloat offsetTitle = (self.bounds.size.height-self.titleLabel.bounds.size.height)*0.5;
     
     self.imageEdgeInsets = UIEdgeInsetsMake(-offsetImage, 0, offsetImage, -self.titleLabel.bounds.size.width);
     self.titleEdgeInsets = UIEdgeInsetsMake(offsetTitle, -self.imageView.bounds.size.width, -offsetTitle, 0);

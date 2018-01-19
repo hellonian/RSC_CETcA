@@ -9,11 +9,12 @@
 #import "CSRmeshSettings.h"
 #import "CSRMesh/TimeModelApi.h"
 #import "LightClusterViewController.h"
-//#import "FloorViewController.h"
 #import "GalleryViewController.h"
 #import "MoreViewController.h"
 #import "SceneCollectionController.h"
 #import "LightSceneBringer.h"
+
+#import "MainViewController.h"
 
 @interface AppDelegate ()
 
@@ -52,7 +53,7 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
     // Check for externally passed URL - place import
     if (launchOptions[@"UIApplicationLaunchOptionsURLKey"])
     {
-        [self application:application openURL:launchOptions[@"UIApplicationLaunchOptionsURLKey"] sourceApplication:nil annotation:launchOptions];
+        [self application:application openURL:launchOptions[@"UIApplicationLaunchOptionsURLKey"] options:launchOptions];
     }
     
     
@@ -64,23 +65,29 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
     [self.window addSubview:bgView];
     
     [[UINavigationBar appearance] setTintColor:DARKORAGE];
-    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]}];
-    [[UINavigationBar appearance] setBarTintColor:[UIColor blackColor]];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1]}];
+    [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:220/255.0 green:220/255.0 blue:220/255.0 alpha:1]];
+    
     
     self.mainTabBarController = [[MainTabBarController alloc] init];
-    LightClusterViewController *lampsVC = [[LightClusterViewController alloc] initWithItemPerSection:3 cellIdentifier:@"LightClusterCell"];
-    SceneCollectionController *sceneVC = [[SceneCollectionController alloc] initWithItemPerSection:3 cellIdentifier:@"SceneCell"];
-//    FloorViewController *galleryVC = [[FloorViewController alloc] init];
+    
+//    LightClusterViewController *lampsVC = [[LightClusterViewController alloc] initWithItemPerSection:3 cellIdentifier:@"LightClusterCell"];
+    MainViewController *mainVC = [[MainViewController alloc] init];
+    UINavigationController *mainNav = [[UINavigationController alloc] initWithRootViewController:mainVC];
+    
+//    SceneCollectionController *sceneVC = [[SceneCollectionController alloc] initWithItemPerSection:3 cellIdentifier:@"SceneCell"];
+    
     GalleryViewController *galleryVC = [[GalleryViewController alloc] init];
     UINavigationController *galleryNav = [[UINavigationController alloc] initWithRootViewController:galleryVC];
-    MoreViewController *moreVC = [[MoreViewController alloc] init];
-    NSArray *vcs = @[lampsVC,galleryNav,sceneVC,moreVC];
-    self.mainTabBarController.viewControllers = vcs;
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:self.mainTabBarController];
-    self.window.rootViewController = nav;
     
-    [self loadDefaultSceneProfile];
+    MoreViewController *moreVC = [[MoreViewController alloc] init];
+    
+    NSArray *vcs = @[mainNav,galleryNav,moreVC];
+    self.mainTabBarController.viewControllers = vcs;
+//    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:self.mainTabBarController];
+    self.window.rootViewController = self.mainTabBarController;
+    
+//    [self loadDefaultSceneProfile];
     
 //    NSURL *url = (NSURL *)[launchOptions valueForKey:UIApplicationLaunchOptionsURLKey];
 //    if (url != nil && [url isFileURL]) {
@@ -127,19 +134,12 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
     [center synchronize];
 }
 
-- (BOOL)application:(UIApplication *)application openURL:(nonnull NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(nonnull id)annotation {
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
     if (self.window) {
         if (url) {
             NSString *fileNameStr = [url lastPathComponent];
             NSString *doc = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/localFile"] stringByAppendingPathComponent:fileNameStr];
             
-            //避免每次使用APP打开邮箱附件都在沙盒中生成一个固件包
-//            NSFileManager *manager = [NSFileManager defaultManager];
-//            NSString *filePath = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Inbox"] stringByAppendingPathComponent:fileNameStr];
-//            if ([manager fileExistsAtPath:filePath]) {
-//                [manager removeItemAtPath:filePath error:nil];
-//            }
-
             NSData *data = [NSData dataWithContentsOfURL:url];
             [data writeToFile:doc atomically:YES];
             
@@ -150,8 +150,6 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
     }
     return YES;
 }
-
-
 
 
 - (void)applicationDidBecomeActive:(UIApplication *)application

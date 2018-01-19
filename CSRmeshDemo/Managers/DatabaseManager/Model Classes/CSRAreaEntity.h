@@ -13,6 +13,7 @@
 @property (nonatomic, retain) NSString * areaName;
 @property (nonatomic, retain) NSNumber * favourite;
 @property (nonatomic, retain) NSSet *devices;
+
 @end
 
 @interface CSRAreaEntity (CoreDataGeneratedAccessors)

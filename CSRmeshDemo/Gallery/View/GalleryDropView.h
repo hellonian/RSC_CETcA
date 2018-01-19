@@ -12,7 +12,7 @@
 @protocol GalleryDropViewDelegate <NSObject>
 
 @optional
-- (void) galleryDropViewPanLocationAction:(NSNumber *)value;
+- (void)galleryDropViewPanLocationAction:(NSNumber *)value;
 - (void)galleryDropViewPanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId withPanState:(UIGestureRecognizerState)state;
 
 @end

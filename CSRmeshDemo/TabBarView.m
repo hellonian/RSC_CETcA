@@ -25,11 +25,11 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.userInteractionEnabled = YES;
-        self.backgroundColor = [UIColor blackColor];
+        self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
         _buttons = [NSMutableArray arrayWithCapacity:3];
-        NSArray *titles = @[@"Lamps",@"Gallery",@"Scenes",@"More"];
-        _normalImages = @[@"lampActiveImage",@"galleryActiveImage",@"sceneActiveImage",@"moreActiveImage"];
-        _highlightImages = @[@"lampImage",@"galleryImage",@"sceneImage",@"moreImage"];
+        NSArray *titles = @[@"Main",@"Gallery",@"Setting"];
+        _normalImages = @[@"main_normal",@"gallery_normal",@"setting_normal"];
+        _highlightImages = @[@"main_highlighted",@"gallery_highlighted",@"setting_highlighted"];
         for (int i=0; i<titles.count; i++) {
             UIImage *normalImage = [UIImage imageNamed:_normalImages[i]];
             TabBarButton *barButton = [[TabBarButton alloc] initWithImage:normalImage title:titles[i]];
@@ -63,11 +63,11 @@
         for (int i=0 ; i<_buttons.count; i++) {
             TabBarButton *button = _buttons[i];
             if (i == selectedIndex) {
-                [button setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
+                [button setTitleColor:DARKORAGE forState:UIControlStateNormal];
                 [button setImage:[UIImage imageNamed:[_highlightImages objectAtIndex:i]] forState:UIControlStateNormal];
             }else
             {
-                [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+                [button setTitleColor:[UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1] forState:UIControlStateNormal];
                 [button setImage:[UIImage imageNamed:[_normalImages objectAtIndex:i]] forState:UIControlStateNormal];
             }
         }
@@ -76,7 +76,7 @@
 
 -(void)clickBarButton:(TabBarButton *)button
 {
-    
+
     self.selectedIndex = button.tag;
     if (self.delegate) {
         [self.delegate didSelectedAtIndex:self.selectedIndex];

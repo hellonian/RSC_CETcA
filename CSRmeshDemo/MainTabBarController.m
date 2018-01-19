@@ -28,7 +28,8 @@
     self.tabBarView = [[TabBarView alloc]initWithFrame:CGRectMake(0, HEIGHT-50, WIDTH, 50)];
     self.tabBarView.delegate = self;
     [self.view addSubview:self.tabBarView];
-    [self didSelectedAtIndex:0];
+    
+//    [self didSelectedAtIndex:0];
     
 }
 -(void)viewWillAppear:(BOOL)animated
@@ -37,35 +38,36 @@
 }
 -(void)didSelectedAtIndex:(NSInteger)index{
     self.selectedIndex = index;
-    if (index == 0) {
-        self.navigationController.navigationBarHidden = NO;
-        self.title = @"Lamps";
-        UIBarButtonItem *group = [[UIBarButtonItem alloc]initWithTitle:@"Group" style:UIBarButtonItemStylePlain target:self action:@selector(beginOrganizingGroup)];
-        self.navigationItem.leftBarButtonItem = group;
-        self.navigationItem.rightBarButtonItem = nil;
-    }
-    else if (index == 1) {
-//        self.navigationController.navigationBarHidden = NO;
-//        self.title = @"Gallery";
-//        UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(firstRightBarButtonAction:)];
+//    if (index == 0) {
+////        self.navigationController.navigationBarHidden = NO;
+////        self.title = @"Lamps";
+////        UIBarButtonItem *group = [[UIBarButtonItem alloc]initWithTitle:@"Group" style:UIBarButtonItemStylePlain target:self action:@selector(beginOrganizingGroup)];
+////        self.navigationItem.leftBarButtonItem = group;
+////        self.navigationItem.rightBarButtonItem = nil;
+////        self.navigationController.navigationBarHidden = YES;
+//    }
+//    else if (index == 1) {
+////        self.navigationController.navigationBarHidden = NO;
+////        self.title = @"Gallery";
+////        UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(firstRightBarButtonAction:)];
+////        self.navigationItem.rightBarButtonItem = edit;
+////        self.navigationItem.leftBarButtonItem = nil;
+//        self.navigationController.navigationBarHidden = YES;
+//    }
+//    else if (index == 2){
+//        self.title = @"Scenes";
+//        UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(sceneBeginEdit)];
 //        self.navigationItem.rightBarButtonItem = edit;
+////        UIBarButtonItem *scene = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(beginOrganizingScene)];
 //        self.navigationItem.leftBarButtonItem = nil;
-        self.navigationController.navigationBarHidden = YES;
-    }
-    else if (index == 2){
-        self.title = @"Scenes";
-        UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(sceneBeginEdit)];
-        self.navigationItem.rightBarButtonItem = edit;
-//        UIBarButtonItem *scene = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(beginOrganizingScene)];
-        self.navigationItem.leftBarButtonItem = nil;
-    }
-    else
-    {
-        self.navigationController.navigationBarHidden = YES;
-//        self.title = @"More";
-//        self.navigationItem.rightBarButtonItem = nil;
-//        self.navigationItem.leftBarButtonItem = nil;
-    }
+//    }
+//    else
+//    {
+//        self.navigationController.navigationBarHidden = YES;
+////        self.title = @"More";
+////        self.navigationItem.rightBarButtonItem = nil;
+////        self.navigationItem.leftBarButtonItem = nil;
+//    }
 }
 -(void)beginOrganizingGroup{
     
@@ -99,7 +101,7 @@
 
 - (void)cancelOrganizingGroup {
     
-    [self didSelectedAtIndex:0];
+//    [self didSelectedAtIndex:0];
     [_lcvc endGroupOrganizing];
 }
 

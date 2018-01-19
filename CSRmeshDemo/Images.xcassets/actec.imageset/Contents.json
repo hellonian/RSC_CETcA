@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "actec.png",
+      "filename" : "acteclogo.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "actec@2x.png",
+      "filename" : "acteclogo@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "actec@3x.png",
+      "filename" : "acteclogo@3x.png",
       "scale" : "3x"
     }
   ],

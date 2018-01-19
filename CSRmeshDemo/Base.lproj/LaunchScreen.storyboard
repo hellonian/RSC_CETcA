@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="k0c-d3-NaE">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="k0c-d3-NaE">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -23,37 +23,30 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bgImage" translatesAutoresizingMaskIntoConstraints="NO" id="6p5-eJ-lM7">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                            </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Copyright © 2017 AcTEC(Fuzhou) Electronics Co., Ltd. All rights reserved." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CNO-2Q-wko">
-                                <rect key="frame" x="20" y="607" width="335" height="40"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="Bhy-U9-kPf"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="actec" translatesAutoresizingMaskIntoConstraints="NO" id="TNq-yX-3vN">
-                                <rect key="frame" x="67" y="153" width="240" height="106"/>
+                                <rect key="frame" x="67" y="146" width="240" height="120"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="240" id="KNm-N8-O0v"/>
-                                    <constraint firstAttribute="width" secondItem="TNq-yX-3vN" secondAttribute="height" multiplier="131:58" id="zaT-PS-bpP"/>
+                                    <constraint firstAttribute="width" secondItem="TNq-yX-3vN" secondAttribute="height" multiplier="2:1" id="zaT-PS-bpP"/>
                                 </constraints>
                             </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Copyright © 2017 AcTEC(Fuzhou) Electronics Co., Ltd. All rights reserved." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CNO-2Q-wko">
+                                <rect key="frame" x="47.5" y="607" width="280" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="Bhy-U9-kPf"/>
+                                    <constraint firstAttribute="width" constant="280" id="D7C-Yu-Elz"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="textColor" red="0.39215686274509803" green="0.39215686274509803" blue="0.39215686274509803" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="TNq-yX-3vN" firstAttribute="centerY" secondItem="hHr-Ic-DFM" secondAttribute="centerY" multiplier="0.618" id="24u-Mr-uaK"/>
                             <constraint firstItem="CNO-2Q-wko" firstAttribute="centerX" secondItem="hHr-Ic-DFM" secondAttribute="centerX" id="6qy-eg-weQ"/>
-                            <constraint firstAttribute="trailing" secondItem="6p5-eJ-lM7" secondAttribute="trailing" id="BwZ-Rz-DxP"/>
                             <constraint firstItem="ibu-iX-V6H" firstAttribute="top" secondItem="CNO-2Q-wko" secondAttribute="bottom" constant="20" id="NQu-aI-9rn"/>
-                            <constraint firstItem="6p5-eJ-lM7" firstAttribute="leading" secondItem="hHr-Ic-DFM" secondAttribute="leading" id="RdM-oZ-ZYF"/>
                             <constraint firstItem="TNq-yX-3vN" firstAttribute="centerX" secondItem="hHr-Ic-DFM" secondAttribute="centerX" id="XZo-rX-oit"/>
-                            <constraint firstItem="CNO-2Q-wko" firstAttribute="leading" secondItem="hHr-Ic-DFM" secondAttribute="leading" constant="20" id="yEB-G4-ua9"/>
-                            <constraint firstItem="ibu-iX-V6H" firstAttribute="top" secondItem="6p5-eJ-lM7" secondAttribute="bottom" id="z90-f1-HiX"/>
-                            <constraint firstItem="6p5-eJ-lM7" firstAttribute="top" secondItem="hHr-Ic-DFM" secondAttribute="top" id="zgQ-Ip-yFu"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -63,7 +56,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="actec" width="131" height="58"/>
-        <image name="bgImage" width="750" height="1334"/>
+        <image name="actec" width="240" height="120"/>
     </resources>
 </document>
