@@ -292,6 +292,9 @@
     }
     if (state == UIGestureRecognizerStateChanged || state == UIGestureRecognizerStateEnded) {
         NSInteger updateLevel = [self.improver improveTouching:touchPoint referencePoint:origin primaryBrightness:[self.originalLevel integerValue]];
+        if (updateLevel < 13) {
+            updateLevel = 13;
+        }
         CGFloat percentage = updateLevel/255.0*100;
         [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
         

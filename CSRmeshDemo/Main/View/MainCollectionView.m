@@ -38,7 +38,7 @@
         
         id info = self.dataArray[indexPath.row];
         
-        [cell configureCellWithiInfo:info];
+        [cell configureCellWithiInfo:info withCellIndexPath:indexPath];
         
     }
     
@@ -59,11 +59,18 @@
 //    }
 //}
 
-- (void)superCollectionViewCellDelegateAddDeviceAction:(NSNumber *)cellDeviceId {
-    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewAddDeviceAction:)]) {
-        [self.mainDelegate mainCollectionViewAddDeviceAction:cellDeviceId];
+- (void)superCollectionViewCellDelegateAddDeviceAction:(NSNumber *)cellDeviceId cellIndexPath:(NSIndexPath *)cellIndexPath {
+    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewTapCellAction:cellIndexPath:)]) {
+        [self.mainDelegate mainCollectionViewTapCellAction:cellDeviceId cellIndexPath:cellIndexPath];
     }
 }
+
+- (void)superCollectionViewCellDelegatePanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId withPanState:(UIGestureRecognizerState)state {
+    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewDelegatePanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
+        [self.mainDelegate mainCollectionViewDelegatePanBrightnessWithTouchPoint:touchPoint withOrigin:origin toLight:deviceId withPanState:state];
+    }
+}
+
 
 #pragma mark - lazy
 

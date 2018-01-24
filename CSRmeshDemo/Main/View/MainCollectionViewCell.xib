@@ -28,11 +28,11 @@
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ghm-qb-6Mx">
-                        <rect key="frame" x="8" y="145" width="168" height="15"/>
+                        <rect key="frame" x="8" y="149" width="168" height="11"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="15" id="3oT-zN-cv4"/>
+                            <constraint firstAttribute="height" constant="11" id="3oT-zN-cv4"/>
                         </constraints>
-                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
                         <color key="textColor" red="0.30196078431372547" green="0.30196078431372547" blue="0.30196078431372547" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
@@ -41,17 +41,17 @@
                         <constraints>
                             <constraint firstAttribute="height" constant="12" id="7cU-e9-rzL"/>
                         </constraints>
-                        <fontDescription key="fontDescription" type="system" pointSize="9"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="8"/>
                         <color key="textColor" red="0.70196078431372544" green="0.70196078431372544" blue="0.70196078431372544" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cWD-U5-f2w">
-                        <rect key="frame" x="176" y="145" width="40" height="15"/>
+                        <rect key="frame" x="176" y="149" width="40" height="11"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="40" id="7sr-P1-tci"/>
-                            <constraint firstAttribute="height" constant="15" id="fso-mf-Giz"/>
+                            <constraint firstAttribute="height" constant="11" id="fso-mf-Giz"/>
                         </constraints>
-                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
                         <color key="textColor" red="0.30196078431372547" green="0.30196078431372547" blue="0.30196078431372547" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>

@@ -50,6 +50,9 @@
 }
 
 - (void)addVCBackAction {
+    if (self.handle) {
+        self.handle();
+    }
     CATransition *animation = [CATransition animation];
     [animation setDuration:0.3];
     [animation setType:kCATransitionMoveIn];
@@ -164,37 +167,70 @@
     return NO;
 }
 
-////入网过程进度条
-//- (void)displayAssociationProgress:(NSNotification *)notification {
-//    NSNumber *completedSteps = notification.userInfo[@"stepsCompleted"];
-//    NSNumber *totalSteps = notification.userInfo[@"totalSteps"];
-//
-//    if ([completedSteps floatValue] <= [totalSteps floatValue] && [completedSteps floatValue] > 0) {
-//        CGFloat completed = [completedSteps floatValue]/[totalSteps floatValue];
-//        _hud.label.text = [NSString stringWithFormat:@"Associating device: %.0f%%", (completed * 100)];
-//        _hud.progress = completed;
-//        if (completed >= 1) {
-//            [self.hud hideAnimated:YES];
-//        }
-//        [_mainCollectionView.dataArray removeObject:_selectedDevice];
-//        [_mainCollectionView reloadData];
-//    } else {
-//        NSLog(@"ERROR: There was and issue with device association");
-//    }
-//}
-//
-//- (void)deviceAssociationFailed:(NSNotification *)notification
-//{
-//    _hud.label.text = [NSString stringWithFormat:@"Association error: %@", notification.userInfo[@"error"]];
-//}
+//入网过程进度条
+- (void)displayAssociationProgress:(NSNotification *)notification {
+    NSNumber *completedSteps = notification.userInfo[@"stepsCompleted"];
+    NSNumber *totalSteps = notification.userInfo[@"totalSteps"];
 
-- (void)mainCollectionViewAddDeviceAction:(NSNumber *)cellDeviceId {
-    if ([cellDeviceId isEqualToNumber:@3000]) {
-        NSLog(@"sdsdadadfa");
-        
-        
+    if ([completedSteps floatValue] <= [totalSteps floatValue] && [completedSteps floatValue] > 0) {
+        CGFloat completed = [completedSteps floatValue]/[totalSteps floatValue];
+        _associateHud.label.text = [NSString stringWithFormat:@"Associating device: %.0f%%", (completed * 100)];
+        _associateHud.progress = completed;
+        if (completed >= 1) {
+            [_associateHud hideAnimated:YES];
+        }
+        [_mainCollectionView.dataArray removeObject:_selectedDevice];
+        [_mainCollectionView reloadData];
+    } else {
+        NSLog(@"ERROR: There was and issue with device association");
     }
 }
+
+- (void)deviceAssociationFailed:(NSNotification *)notification
+{
+    _associateHud.label.text = [NSString stringWithFormat:@"Association error: %@", notification.userInfo[@"error"]];
+}
+
+#pragma mark - MainCollectionViewDelegate
+
+- (void)mainCollectionViewTapCellAction:(NSNumber *)cellDeviceId cellIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"addvc %ld",indexPath.row);
+    
+    if ([cellDeviceId isEqualToNumber:@3000]) {
+        _selectedDevice = [_mainCollectionView.dataArray objectAtIndex:indexPath.row];
+        
+        if (_selectedDevice) {
+            [[CSRDevicesManager sharedInstance] setAttentionPreAssociation:_selectedDevice.deviceHash attentionState:@(1) withDuration:@(6000)];
+            
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Are you sure to add the selected device？" message:nil preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                
+            }];
+            UIAlertAction *confirm = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                [self associateDevice];
+            }];
+            [alert addAction:cancel];
+            [alert addAction:confirm];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+    }
+}
+
+- (void)associateDevice {
+    [[CSRDevicesManager sharedInstance].unassociatedMeshDevices removeAllObjects];
+    if (_selectedDevice.appearanceShortname) {
+        [[CSRDevicesManager sharedInstance] associateDeviceFromCSRDeviceManager:_selectedDevice.deviceHash authorisationCode:nil];
+        
+        _associateHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        _associateHud.mode = MBProgressHUDModeDeterminateHorizontalBar;
+        _associateHud.delegate = self;
+        _associateHud.label.font = [UIFont systemFontOfSize:13];
+        _associateHud.label.numberOfLines = 0;
+        _associateHud.label.text = @"Associating device: 0%";
+    }
+}
+
+
 
 #pragma mark - MBProgressHUDDelegate
 

@@ -42,6 +42,7 @@
         [[LightModelApi sharedInstance] addDelegate:self];
         [[PowerModelApi sharedInstance] addDelegate:self];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(physicalButtonActionCall:) name:@"physicalButtonActionCall" object:nil];
+        [DataModelManager shareInstance];
         
         NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
         if (mutableArray != nil && [mutableArray count] != 0) {
@@ -114,14 +115,13 @@
     currentState = state;
     currentLevel = level;
     if (state == UIGestureRecognizerStateBegan) {
-        timer = [NSTimer scheduledTimerWithTimeInterval:0.12 target:self selector:@selector(timerMethod:) userInfo:deviceId repeats:YES];
-        [timer fire];
+        timer = [NSTimer timerWithTimeInterval:0.12 target:self selector:@selector(timerMethod:) userInfo:deviceId repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
     }
 }
 
 - (void)timerMethod:(NSTimer *)infotimer {
     @synchronized (self) {
-        
         NSNumber *deviceId = infotimer.userInfo;
         [[LightModelApi sharedInstance] setLevel:deviceId level:currentLevel success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
             

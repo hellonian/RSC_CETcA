@@ -43,6 +43,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    
     self.navigationItem.title = @"Gallery";
     UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(galleryEditAction:)];
     self.navigationItem.rightBarButtonItem = edit;
@@ -651,7 +653,7 @@
 - (void)galleryDropViewPanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId withPanState:(UIGestureRecognizerState)state {
     
     DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
-    
+    NSLog(@"UIGestureRecognizerState>> %ld",state);
     if (state == UIGestureRecognizerStateBegan) {
         self.originalLevel = model.level;
         [self.improver beginImproving];
@@ -660,15 +662,17 @@
     }
     if (state == UIGestureRecognizerStateChanged || state == UIGestureRecognizerStateEnded) {
         NSInteger updateLevel = [self.improver improveTouching:touchPoint referencePoint:origin primaryBrightness:[self.originalLevel integerValue]];
+        if (updateLevel < 13) {
+            updateLevel = 13;
+        }
         CGFloat percentage = updateLevel/255.0*100;
         [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
-        
+        NSLog(@"》》 》 %ld",updateLevel);
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state];
         
         if (state == UIGestureRecognizerStateEnded) {
             [self hideControlMaskLayer];
         }
-        
         return;
     }
 }

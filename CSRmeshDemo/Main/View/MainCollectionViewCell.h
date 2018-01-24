@@ -11,7 +11,8 @@
 @interface MainCollectionViewCell : SuperCollectionViewCell
 
 @property (nonatomic,strong) NSNumber *deviceId;
-
+@property (nonatomic,strong) NSNumber *groupId;
+@property (nonatomic,strong) NSArray *groupMembers;
 
 
 @end

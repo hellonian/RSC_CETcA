@@ -10,7 +10,7 @@
 
 @implementation SuperCollectionViewCell
 
-- (void)configureCellWithiInfo:(id)info {
+- (void)configureCellWithiInfo:(id)info withCellIndexPath:(NSIndexPath *)indexPath{
     
 }
 

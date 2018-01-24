@@ -24,7 +24,7 @@
 }
 
 
-- (void)configureCellWithiInfo:(id)info {
+- (void)configureCellWithiInfo:(id)info withCellIndexPath:(NSIndexPath *)indexPath{
     if ([info isKindOfClass:[NSString class]]) {
         self.nameLabel.text = @"Home";
 

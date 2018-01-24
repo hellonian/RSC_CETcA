@@ -26,6 +26,9 @@
     if (self) {
         self.userInteractionEnabled = YES;
         self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, WIDTH, 1)];
+        lineView.backgroundColor = [UIColor colorWithRed:179/255.0 green:179/255.0 blue:179/255.0 alpha:1];
+        [self addSubview:lineView];
         _buttons = [NSMutableArray arrayWithCapacity:3];
         NSArray *titles = @[@"Main",@"Gallery",@"Setting"];
         _normalImages = @[@"main_normal",@"gallery_normal",@"setting_normal"];
