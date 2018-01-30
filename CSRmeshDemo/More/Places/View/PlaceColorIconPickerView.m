@@ -15,7 +15,7 @@
 
 @implementation PlaceColorIconPickerView
 
-- (id)initWithFrame:(CGRect)frame withMode:(CSRPlacesCollectionViewMode)viewMode{
+- (id)initWithFrame:(CGRect)frame withMode:(CollectionViewPickerMode)viewMode{
     self = [super initWithFrame:frame];
     if (self) {
         _mode = viewMode;
@@ -27,17 +27,19 @@
 }
 
 #pragma mark - Configure view with mode
-- (void)populateCollectionItemsWithMode:(CSRPlacesCollectionViewMode)mode
+- (void)populateCollectionItemsWithMode:(CollectionViewPickerMode)mode
 {
     
     switch (mode) {
-        case CSRPlacesCollectionViewMode_ColorPicker:
+        case CollectionViewPickerMode_PlaceColorPicker:
             _itemsArray = kPlaceColors;
             break;
-        case CSRPlacesCollectionViewMode_IconPicker:
+        case CollectionViewPickerMode_PlaceIconPicker:
             _itemsArray = kPlaceIcons;
             break;
-            
+        case CollectionViewPickerMode_SceneIconPicker:
+            _itemsArray = kSceneIcons;
+            break;
         default:
             break;
     }
@@ -47,10 +49,12 @@
 - (void)drawViews {
     _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(277*0.5-100, 20, 200, 21)];
     _titleLabel.textAlignment = NSTextAlignmentCenter;
-    if (_mode == CSRPlacesCollectionViewMode_ColorPicker) {
+    if (_mode == CollectionViewPickerMode_PlaceColorPicker) {
         _titleLabel.text = @"Select color";
-    }else if (_mode == CSRPlacesCollectionViewMode_IconPicker) {
+    }else if (_mode == CollectionViewPickerMode_PlaceIconPicker) {
         _titleLabel.text = @"Select image";
+    }else if (_mode == CollectionViewPickerMode_SceneIconPicker) {
+        _titleLabel.text = @"Scene Icons";
     }
     [self addSubview:_titleLabel];
     
@@ -83,13 +87,13 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *cell = nil;
     
-    if (_mode == CSRPlacesCollectionViewMode_ColorPicker) {
+    if (_mode == CollectionViewPickerMode_PlaceColorPicker) {
         
         cell = [collectionView dequeueReusableCellWithReuseIdentifier:PlaceColorCellIdentifier forIndexPath:indexPath];
         ((PlaceColorCollectionViewCell *)cell).placeColor.backgroundColor = [CSRUtilities colorFromHex:[_itemsArray objectAtIndex:indexPath.row]];
         ((PlaceColorCollectionViewCell *)cell).placeColor.layer.cornerRadius = ((PlaceColorCollectionViewCell *)cell).placeColor.bounds.size.width / 2;
         
-    } else {
+    } else if (_mode == CollectionViewPickerMode_PlaceIconPicker) {
         
         cell = [collectionView dequeueReusableCellWithReuseIdentifier:PlaceIconCellIdentifier forIndexPath:indexPath];
         
@@ -102,6 +106,11 @@
         ((PlaceIconCollectionViewCell *)cell).placeIcon.image = [((PlaceIconCollectionViewCell *)cell).placeIcon.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         ((PlaceIconCollectionViewCell *)cell).placeIcon.tintColor = [CSRUtilities colorFromHex:kColorDarkBlueCSR];
         
+    } else {
+        
+        cell = [collectionView dequeueReusableCellWithReuseIdentifier:PlaceIconCellIdentifier forIndexPath:indexPath];
+        
+        ((PlaceIconCollectionViewCell *)cell).placeIcon.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@_normal",_itemsArray[indexPath.row]]];
     }
     
     return cell;

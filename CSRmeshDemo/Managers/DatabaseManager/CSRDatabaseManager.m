@@ -759,8 +759,7 @@
 
 #pragma mark - AREA Methods
 
-- (CSRAreaEntity*)saveNewArea:(NSNumber *)areaId areaName:(NSString *)areaName
-{
+- (CSRAreaEntity*)saveNewArea:(NSNumber *)areaId areaName:(NSString *)areaName areaImage:(UIImage *)image {
     
     __block CSRAreaEntity *newAreaEntity;
     
@@ -784,6 +783,8 @@
     
     newAreaEntity.areaName = areaName;
     newAreaEntity.areaID = areaId;
+    NSData *areaImageData = UIImageJPEGRepresentation(image, 0.5);
+    newAreaEntity.areaImage = areaImageData;
     [[CSRAppStateManager sharedInstance].selectedPlace addAreasObject:newAreaEntity];
     [self saveContext];
     

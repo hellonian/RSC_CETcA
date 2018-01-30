@@ -15,6 +15,9 @@
     if (self) {
         self.bounds = CGRectMake(0, 0, WIDTH, 40);
         self.backgroundColor = DARKORAGE;
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(WIDTH-40, 0, 40, 40)];
+        imageView.image = [UIImage imageNamed:@"burger"];
+        [self addSubview:imageView];
         self.isLimitHeight = -1.0f;
         UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(toolViewPanGestureAction:)];
         [self addGestureRecognizer:panGesture];

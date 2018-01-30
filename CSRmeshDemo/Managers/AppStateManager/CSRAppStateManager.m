@@ -11,6 +11,7 @@
 #import "CSRDevicesManager.h"
 #import "AFHTTPRequestOperationManager.h"
 #import <CSRmesh/CSRGatewayNetService.h>
+#import "SceneEntity.h"
 
 @interface CSRAppStateManager() <CSRBluetoothLEDelegate, MeshServiceApiDelegate>
 
@@ -243,6 +244,27 @@
         defaultPlace.owner = @"My place";
         
         [[CSRDatabaseManager sharedInstance] saveContext];
+        
+        for (int i=0; i<4; i++) {
+            SceneEntity *defaultScene = [NSEntityDescription insertNewObjectForEntityForName:@"SceneEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+            
+            defaultScene.sceneID = @(i);
+            if (i==0) {
+                defaultScene.iconID = @0;
+                defaultScene.sceneName = @"Home";
+            }
+            if (i==1) {
+                defaultScene.iconID = @1;
+                defaultScene.sceneName = @"Away";
+            }
+            if (i==2 || i==3) {
+                defaultScene.iconID = @2;
+                defaultScene.sceneName = @"Custom";
+            }
+            
+            [defaultPlace addScenesObject:defaultScene];
+            [[CSRDatabaseManager sharedInstance] saveContext];
+        }
         
         [CSRUtilities saveObject:[[[defaultPlace objectID] URIRepresentation] absoluteString] toDefaultsWithKey:@"kCSRLastSelectedPlaceID"];
         

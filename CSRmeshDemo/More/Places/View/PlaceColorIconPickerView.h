@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSUInteger, CSRPlacesCollectionViewMode)
+typedef NS_ENUM(NSUInteger, CollectionViewPickerMode)
 {
-    CSRPlacesCollectionViewMode_ColorPicker = 0,
-    CSRPlacesCollectionViewMode_IconPicker = 1
+    CollectionViewPickerMode_PlaceColorPicker = 0,
+    CollectionViewPickerMode_PlaceIconPicker = 1,
+    CollectionViewPickerMode_SceneIconPicker = 2
 };
 
 @protocol PlaceColorIconPickerViewDelegate <NSObject>
@@ -27,9 +28,9 @@ typedef NS_ENUM(NSUInteger, CSRPlacesCollectionViewMode)
 @property (nonatomic,strong) UICollectionView *collectionView;
 @property (nonatomic,strong) UIButton *cancelButton;
 @property (nonatomic,strong) NSArray *itemsArray;
-@property (nonatomic,assign) CSRPlacesCollectionViewMode mode;
+@property (nonatomic,assign) CollectionViewPickerMode mode;
 @property (nonatomic,weak) id <PlaceColorIconPickerViewDelegate> delegate;
 
-- (id)initWithFrame:(CGRect)frame withMode:(CSRPlacesCollectionViewMode)viewMode;
+- (id)initWithFrame:(CGRect)frame withMode:(CollectionViewPickerMode)viewMode;
 
 @end

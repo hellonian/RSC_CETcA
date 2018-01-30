@@ -16,6 +16,7 @@
 #import "CSRDatabaseManager.h"
 #import "CSRSettingsEntity.h"
 #import "CSRAppStateManager.h"
+#import "SceneEntity.h"
 
 @interface PlaceDetailsViewController ()<UITextFieldDelegate,CSRCheckboxDelegate,PlaceColorIconPickerViewDelegate,CSRCheckboxDelegate>
 {
@@ -143,6 +144,28 @@
             
             [self checkForSettings];
             [[CSRDatabaseManager sharedInstance] saveContext];
+            
+            for (int i=0; i<4; i++) {
+                SceneEntity *defaultScene = [NSEntityDescription insertNewObjectForEntityForName:@"SceneEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+                
+                defaultScene.sceneID = @(i);
+                if (i==0) {
+                    defaultScene.iconID = @0;
+                    defaultScene.sceneName = @"Home";
+                }
+                if (i==1) {
+                    defaultScene.iconID = @1;
+                    defaultScene.sceneName = @"Away";
+                }
+                if (i==2 || i==3) {
+                    defaultScene.iconID = @2;
+                    defaultScene.sceneName = @"Custom";
+                }
+                
+                [_placeEntity addScenesObject:defaultScene];
+                [[CSRDatabaseManager sharedInstance] saveContext];
+            }
+            
             [[CSRAppStateManager sharedInstance] setupPlace];
             
             [self dismissViewControllerAnimated:YES completion:nil];
@@ -197,10 +220,10 @@
     if (!pickerView) {
         
         if ([sender isEqual:_placeColorSelectionButton]) {
-            pickerMode = CSRPlacesCollectionViewMode_ColorPicker;
+            pickerMode = CollectionViewPickerMode_PlaceColorPicker;
         }
         else if ([sender isEqual:_placeIconSelectionButton]){
-            pickerMode = CSRPlacesCollectionViewMode_IconPicker;
+            pickerMode = CollectionViewPickerMode_PlaceIconPicker;
         }
         
         pickerView = [[PlaceColorIconPickerView alloc] initWithFrame:CGRectMake((WIDTH-277)/2, (HEIGHT-240)/2, 277, 240) withMode:pickerMode];
@@ -245,11 +268,11 @@
 #pragma mark - <PlaceColorIconPickerViewDelegate>
 
 - (id)selectedItem:(id)item {
-    if (pickerMode == CSRPlacesCollectionViewMode_ColorPicker) {
+    if (pickerMode == CollectionViewPickerMode_PlaceColorPicker) {
         NSString *selectedColorHex = (NSString *)item;
         _placeColorSelectionButton.backgroundColor = [CSRUtilities colorFromHex:selectedColorHex];
     }
-    else if (pickerMode == CSRPlacesCollectionViewMode_IconPicker) {
+    else if (pickerMode == CollectionViewPickerMode_PlaceIconPicker) {
         NSDictionary *iconImageDictionary = (NSDictionary *)item;
         placeIconId = [(NSNumber *)iconImageDictionary[@"id"] integerValue];
         SEL imageSelector = NSSelectorFromString(iconImageDictionary[@"iconImage"]);

@@ -10,4 +10,6 @@
 
 @interface SceneCollectionViewCell : SuperCollectionViewCell
 
+@property (nonatomic,strong) NSNumber *sceneId;
+
 @end

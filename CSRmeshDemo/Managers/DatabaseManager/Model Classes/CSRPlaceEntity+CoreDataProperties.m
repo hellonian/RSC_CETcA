@@ -22,5 +22,6 @@
 @dynamic settings;
 @dynamic user;
 @dynamic gallerys;
+@dynamic scenes;
 
 @end

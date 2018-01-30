@@ -19,12 +19,18 @@ typedef enum : NSUInteger {
 } PanGestureMoveDirection;
 
 @interface MainCollectionViewCell ()<UIGestureRecognizerDelegate>
+{
+    CGFloat distanceX;
+    CGFloat distanceY;
+}
 
 @property (weak, nonatomic) IBOutlet UIImageView *iconView;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *kindLabel;
 @property (weak, nonatomic) IBOutlet UILabel *levelLabel;
 @property (nonatomic,assign) PanGestureMoveDirection direction;
+@property (weak, nonatomic) IBOutlet UIButton *deleteBtn;
+@property (weak, nonatomic) IBOutlet UIImageView *moveImageView;
 
 
 @end
@@ -39,25 +45,30 @@ typedef enum : NSUInteger {
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mainCellTapGestureAction:)];
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(mainCellPanGestureAction:)];
     panGesture.delegate = self;
-    UITapGestureRecognizer *doubleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mainCelldoubleTapGestureAction:)];
-    doubleTapGesture.numberOfTapsRequired = 2;
+    UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(mainCellLongPressGestureAction:)];
 
     [self addGestureRecognizer:tapGesture];
     [self addGestureRecognizer:panGesture];
-    [self addGestureRecognizer:doubleTapGesture];
-//    [tapGesture requireGestureRecognizerToFail:doubleTapGesture];
+    [self addGestureRecognizer:longPressGesture];
+    
+    UIPanGestureRecognizer *movePanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(mainCellMovePanGestureAction:)];
+    [self.moveImageView addGestureRecognizer:movePanGesture];
+    
+    
+    
 }
 
 - (void)configureCellWithiInfo:(id)info withCellIndexPath:(NSIndexPath *)indexPath{
+    self.hidden = NO;
 //    if ([info isKindOfClass:[NSString class]]) {
 //        self.iconView.image = [UIImage imageNamed:@"dimmersingle"];
 //        self.nameLabel.text = @"D350BT";
 //    }
-    
     if ([info isKindOfClass:[CSRAreaEntity class]]) {
         CSRAreaEntity *areaEntity = (CSRAreaEntity *)info;
         self.groupId = areaEntity.areaID;
         self.deviceId = @2000;
+        
         self.groupMembers = [areaEntity.devices allObjects];
 //        self.iconView.image = areaEntity.image;
         return;
@@ -66,9 +77,13 @@ typedef enum : NSUInteger {
     if ([info isKindOfClass:[CSRDeviceEntity class]]) {
         
         CSRDeviceEntity *deviceEntity = (CSRDeviceEntity *)info;
-        self.groupId = @4000;
+        NSLog(@">> %@ >> %@ ",deviceEntity.name,deviceEntity.shortName);
+        
+        self.groupId = @1000;
         self.deviceId = deviceEntity.deviceId;
+        self.nameLabel.hidden = NO;
         self.nameLabel.text = deviceEntity.name;
+        self.kindLabel.hidden = NO;
         if ([deviceEntity.shortName isEqualToString:@"D350BT"]) {
             self.iconView.image = [UIImage imageNamed:@"dimmersingle"];
             self.kindLabel.text = @"Dimmer";
@@ -83,10 +98,13 @@ typedef enum : NSUInteger {
         
         [self adjustCellBgcolorAndLevelLabelWithDeviceId:deviceEntity.deviceId];
         
+        NSLog(@">> %d",self.hidden);
+        
         return;
     }
     
     if ([info isKindOfClass:[NSNumber class]]) {
+        self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
         self.groupId = @4000;
         self.deviceId = @1000;
         self.iconView.image = [UIImage imageNamed:@"addroom"];
@@ -94,6 +112,8 @@ typedef enum : NSUInteger {
         self.nameLabel.hidden = YES;
         self.kindLabel.hidden = YES;
         self.levelLabel.hidden = YES;
+        self.deleteBtn.hidden = YES;
+        self.moveImageView.hidden = YES;
         return;
     }
     
@@ -147,7 +167,6 @@ typedef enum : NSUInteger {
         NSLog(@"maincell00");
         if ([self.deviceId isEqualToNumber:@1000] || [self.deviceId isEqualToNumber:@3000]) {
             if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateAddDeviceAction:cellIndexPath:)]) {
-                NSLog(@"maincell");
                 [self.superCellDelegate superCollectionViewCellDelegateAddDeviceAction:self.deviceId cellIndexPath:self.cellIndexPath];
             }
         }
@@ -227,8 +246,24 @@ typedef enum : NSUInteger {
     return _direction;
 }
 
-- (void)mainCelldoubleTapGestureAction:(UITapGestureRecognizer *)sender {
-    NSLog(@"shuangji");
+- (void)mainCellLongPressGestureAction:(UILongPressGestureRecognizer *)sender {
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateLongPressAction:)]) {
+            [self.superCellDelegate superCollectionViewCellDelegateLongPressAction:self];
+        }
+    }
+}
+
+- (void)mainCellMovePanGestureAction:(UIPanGestureRecognizer *)sender {
+    CGPoint touchAt = [sender locationInView:self.superview];
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        distanceX = self.center.x - touchAt.x;
+        distanceY = self.center.y - touchAt.y;
+    }
+    CGPoint touchPoint = CGPointMake(touchAt.x+distanceX, touchAt.y+distanceY);
+    if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateMoveCellPanAction:touchPoint:)]) {
+        [self.superCellDelegate superCollectionViewCellDelegateMoveCellPanAction:sender.state touchPoint:touchPoint];
+    }
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
@@ -237,6 +272,18 @@ typedef enum : NSUInteger {
     }
     return NO;
 }
+
+- (void)showDeleteBtnAndMoveImageView:(BOOL)value {
+    self.deleteBtn.hidden = value;
+    self.moveImageView.hidden = value;
+}
+
+- (IBAction)deleteMainCell:(UIButton *)sender {
+    if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateDeleteDeviceAction:)]) {
+        [self.superCellDelegate superCollectionViewCellDelegateDeleteDeviceAction:self.deviceId];
+    }
+}
+
 
 
 @end

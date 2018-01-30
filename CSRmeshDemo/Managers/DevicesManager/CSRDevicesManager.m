@@ -329,16 +329,16 @@
 }
 
 
-- (CSRAreaEntity*) addMeshArea:(NSString *)name {
-    
-    NSNumber *areaIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRAreaEntity"];
-    CSRmeshArea *area = [[CSRmeshArea alloc] initWithNumber:areaIdNumber andName:name];
-    [_meshAreas addObject:area];
-    
-    CSRAreaEntity *areaObj = [[CSRDatabaseManager sharedInstance] saveNewArea:areaIdNumber areaName:name];
-
-    return areaObj;
-}
+//- (CSRAreaEntity*) addMeshArea:(NSString *)name {
+//    
+//    NSNumber *areaIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRAreaEntity"];
+//    CSRmeshArea *area = [[CSRmeshArea alloc] initWithNumber:areaIdNumber andName:name];
+//    [_meshAreas addObject:area];
+//
+//    CSRAreaEntity *areaObj = [[CSRDatabaseManager sharedInstance] saveNewArea:areaIdNumber areaName:name];
+//
+//    return areaObj;
+//}
 
 -(CSRmeshArea *) getArea :(NSInteger) offset {
     

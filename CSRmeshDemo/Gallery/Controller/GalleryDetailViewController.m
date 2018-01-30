@@ -38,9 +38,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bgImage"]];
-    imageView.frame = [UIScreen mainScreen].bounds;
-    [self.view addSubview:imageView];
+    self.view.backgroundColor = [UIColor colorWithRed:195/255.0 green:195/255.0 blue:195/255.0 alpha:1];
     
     [self prepareNavigationItem];
     
@@ -152,8 +150,8 @@
         
         GalleryEntity *galleryEntity = [[CSRDatabaseManager sharedInstance] saveNewGallery:galleryIdNumber galleryImage:_image galleryBoundeWR:@(boundWR) galleryBoundHR:@(0.549) newGalleryId:nil];
         
-        [[CSRAppStateManager sharedInstance].selectedPlace addGallerysObject:galleryEntity];
-        [[CSRDatabaseManager sharedInstance] saveContext];
+//        [[CSRAppStateManager sharedInstance].selectedPlace addGallerysObject:galleryEntity];
+//        [[CSRDatabaseManager sharedInstance] saveContext];
         
         [_controlImageView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([obj isKindOfClass:[GalleryDropView class]]) {

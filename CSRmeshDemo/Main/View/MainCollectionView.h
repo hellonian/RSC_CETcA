@@ -13,6 +13,9 @@
 //@optional
 - (void)mainCollectionViewTapCellAction:(NSNumber *)cellDeviceId cellIndexPath:(NSIndexPath *)indexPath;
 - (void)mainCollectionViewDelegatePanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId withPanState:(UIGestureRecognizerState)state;
+- (void)mainCollectionViewDelegateSceneMenuAction:(NSNumber *)sceneId actionName:(NSString *)actionName;
+- (void)mainCollectionViewDelegateLongPressAction:(id)cell;
+- (void)mainCollectionViewDelegateDeleteDeviceAction:(NSNumber *)cellDeviceId;
 
 @end
 

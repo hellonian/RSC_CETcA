@@ -117,17 +117,18 @@
         }
     }];
     
-    [self.scrollView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([obj isKindOfClass:[GalleryDropView class]]) {
-            [obj removeFromSuperview];
-        }
-    }];
+//    [self.scrollView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//        if ([obj isKindOfClass:[GalleryDropView class]]) {
+//            [obj removeFromSuperview];
+//        }
+//    }];
     
     [_hud hideAnimated:YES];
 }
 
 - (void)galleryAddAction:(UIBarButtonItem *)item {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    [alert.view setTintColor:DARKORAGE];
     UIAlertAction *camera = [UIAlertAction actionWithTitle:@"Camera" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         [self alertAction:0];
@@ -540,6 +541,14 @@
                 controlImageView.tag = idx;
                 [controlImageView adjustDropViewInRightLocation];
             }
+            
+            if (idx==[self.controlImageViewArray count]-1) {
+                [self.toolViewArray enumerateObjectsUsingBlock:^(GalleryEditToolView * toolView, NSUInteger idx, BOOL * _Nonnull stop) {
+                    if (toolView.tag > rowIdx+100) {
+                        [toolView removeFromSuperview];
+                    }
+                }];
+            }
         }
     }];
     self.scrollView.contentSize = CGSizeMake(WIDTH, (allHeight+rowHeight+verticalInterVal)*WIDTH);
@@ -653,7 +662,6 @@
 - (void)galleryDropViewPanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId withPanState:(UIGestureRecognizerState)state {
     
     DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
-    NSLog(@"UIGestureRecognizerState>> %ld",state);
     if (state == UIGestureRecognizerStateBegan) {
         self.originalLevel = model.level;
         [self.improver beginImproving];
@@ -667,7 +675,6 @@
         }
         CGFloat percentage = updateLevel/255.0*100;
         [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
-        NSLog(@"》》 》 %ld",updateLevel);
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state];
         
         if (state == UIGestureRecognizerStateEnded) {

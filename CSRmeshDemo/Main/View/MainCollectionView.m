@@ -59,6 +59,22 @@
 //    }
 //}
 
+- (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
+    if ([_cellIdentifier isEqualToString:@"MainCollectionViewCell"]) {
+        return YES;
+    }
+    return NO;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView moveItemAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
+    id objec = [self.dataArray objectAtIndex:sourceIndexPath.item];
+    [self.dataArray removeObject:objec];
+    [self.dataArray insertObject:objec atIndex:destinationIndexPath.item];
+}
+
+
+#pragma mark - SuperCollectionViewCellDelegate
+
 - (void)superCollectionViewCellDelegateAddDeviceAction:(NSNumber *)cellDeviceId cellIndexPath:(NSIndexPath *)cellIndexPath {
     if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewTapCellAction:cellIndexPath:)]) {
         [self.mainDelegate mainCollectionViewTapCellAction:cellDeviceId cellIndexPath:cellIndexPath];
@@ -71,6 +87,53 @@
     }
 }
 
+- (void)superCollectionViewCellDelegateSceneMenuAction:(NSNumber *)sceneId actionName:(NSString *)actionName {
+    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewDelegateSceneMenuAction:actionName:)]) {
+        [self.mainDelegate mainCollectionViewDelegateSceneMenuAction:sceneId actionName:actionName];
+    }
+}
+
+- (void)superCollectionViewCellDelegateLongPressAction:(id)cell {
+    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewDelegateLongPressAction:)]) {
+        [self.mainDelegate mainCollectionViewDelegateLongPressAction:cell];
+    }
+}
+
+- (void)superCollectionViewCellDelegateDeleteDeviceAction:(NSNumber *)cellDeviceId {
+    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewDelegateDeleteDeviceAction:)]) {
+        [self.mainDelegate mainCollectionViewDelegateDeleteDeviceAction:cellDeviceId];
+    }
+}
+
+- (void)superCollectionViewCellDelegateMoveCellPanAction:(UIGestureRecognizerState)state touchPoint:(CGPoint)touchPoint {
+    switch (state) {
+        case UIGestureRecognizerStateBegan:
+        {
+            NSIndexPath *myIndexPath = [self indexPathForItemAtPoint:touchPoint];
+            if (myIndexPath == nil) {
+                break;
+            }
+            [self beginInteractiveMovementForItemAtIndexPath:myIndexPath];
+            break;
+        }
+        case UIGestureRecognizerStateChanged:
+        {
+            [self updateInteractiveMovementTargetPosition:touchPoint];
+            break;
+        }
+        case UIGestureRecognizerStateEnded:
+        {
+            [self endInteractiveMovement];
+            break;
+        }
+        default:
+        {
+            [self cancelInteractiveMovement];
+            break;
+        }
+    }
+    
+}
 
 #pragma mark - lazy
 

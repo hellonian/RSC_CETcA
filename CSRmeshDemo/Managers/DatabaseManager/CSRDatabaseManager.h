@@ -34,7 +34,7 @@
 - (NSNumber*)getNextFreeGatewayDeviceId;
 
 //Groups
-- (CSRAreaEntity*) saveNewArea :(NSNumber *) areaId areaName:(NSString *) areaName;
+- (CSRAreaEntity*) saveNewArea :(NSNumber *) areaId areaName:(NSString *) areaName areaImage:(UIImage *) image;
 
 // Remove Device
 -(void) removeDeviceFromDatabase :(NSNumber *) deviceId;

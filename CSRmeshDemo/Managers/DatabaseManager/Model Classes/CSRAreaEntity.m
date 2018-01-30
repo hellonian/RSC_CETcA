@@ -10,6 +10,7 @@
 
 @dynamic areaID;
 @dynamic areaName;
+@dynamic areaImage;
 @dynamic favourite;
 @dynamic devices;
 

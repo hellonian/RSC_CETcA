@@ -14,5 +14,6 @@
 @property (nonatomic,strong) NSNumber *groupId;
 @property (nonatomic,strong) NSArray *groupMembers;
 
+- (void)showDeleteBtnAndMoveImageView:(BOOL)value;
 
 @end

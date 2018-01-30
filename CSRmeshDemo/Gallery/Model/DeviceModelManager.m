@@ -15,6 +15,8 @@
 
 #import "DataModelManager.h"
 
+#import "CSRDatabaseManager.h"
+
 @interface DeviceModelManager ()<LightModelApiDelegate,PowerModelApiDelegate>
 {
     NSTimer *timer;
@@ -56,6 +58,7 @@
                     DeviceModel *model = [[DeviceModel alloc] init];
                     model.deviceId = deviceEntity.deviceId;
                     model.shortName = deviceEntity.shortName;
+                    model.name = deviceEntity.name;
                     [_allDevices addObject:model];
                 }
             }
@@ -67,28 +70,48 @@
 #pragma mark - LightModelApiDelegate
 
 - (void)didGetLightState:(NSNumber *)deviceId red:(NSNumber *)red green:(NSNumber *)green blue:(NSNumber *)blue level:(NSNumber *)level powerState:(NSNumber *)powerState colorTemperature:(NSNumber *)colorTemperature supports:(NSNumber *)supports meshRequestId:(NSNumber *)meshRequestId {
+    __block BOOL exist;
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
             model.powerState = powerState;
             model.level = level;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
             NSLog(@"调光回调 powerState--> %@ --> %@",powerState,level);
+            exist = YES;
             *stop = YES;
         }
     }];
+    if (!exist) {
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+        DeviceModel *model = [[DeviceModel alloc] init];
+        model.deviceId = deviceEntity.deviceId;
+        model.shortName = deviceEntity.shortName;
+        model.name = deviceEntity.name;
+        [_allDevices addObject:model];
+    }
 }
 
 #pragma mark - PowerModelApiDelegate
 
 - (void)didGetPowerState:(NSNumber *)deviceId state:(NSNumber *)state meshRequestId:(NSNumber *)meshRequestId {
+    __block BOOL exist;
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
             model.powerState = state;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId}];
             NSLog(@"开关回调 powerState--> %@",state);
+            exist = YES;
             *stop = YES;
         }
     }];
+    if (!exist) {
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+        DeviceModel *model = [[DeviceModel alloc] init];
+        model.deviceId = deviceEntity.deviceId;
+        model.shortName = deviceEntity.shortName;
+        model.name = deviceEntity.name;
+        [_allDevices addObject:model];
+    }
 }
 
 
