@@ -95,6 +95,7 @@
 		2E07CD591F42A5F40081F6D0 /* HitTestAlrightCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E07CD581F42A5F40081F6D0 /* HitTestAlrightCollectionView.m */; };
 		2E2000A920182260000AD8C3 /* SceneEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2000A820182260000AD8C3 /* SceneEntity.m */; };
 		2E2000AC2018227E000AD8C3 /* SceneMemberEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2000AB2018227E000AD8C3 /* SceneMemberEntity.m */; };
+		2E2533EE20219850002A6EC3 /* DeviceListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2533ED20219850002A6EC3 /* DeviceListViewController.m */; };
 		2E2E6F791FF5D92B002D1C1D /* ConfiguredDeviceListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E6F611FF5D92B002D1C1D /* ConfiguredDeviceListController.m */; };
 		2E2E6FAD1FF5DAFC002D1C1D /* about@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E6F861FF5DAFB002D1C1D /* about@2x.png */; };
 		2E2E6FAE1FF5DAFC002D1C1D /* blackbg.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E6F871FF5DAFB002D1C1D /* blackbg.png */; };
@@ -464,6 +465,8 @@
 		2E2000A820182260000AD8C3 /* SceneEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneEntity.m; sourceTree = "<group>"; };
 		2E2000AA2018227E000AD8C3 /* SceneMemberEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneMemberEntity.h; sourceTree = "<group>"; };
 		2E2000AB2018227E000AD8C3 /* SceneMemberEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneMemberEntity.m; sourceTree = "<group>"; };
+		2E2533EC20219850002A6EC3 /* DeviceListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceListViewController.h; sourceTree = "<group>"; };
+		2E2533ED20219850002A6EC3 /* DeviceListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeviceListViewController.m; sourceTree = "<group>"; };
 		2E2E6F601FF5D92B002D1C1D /* ConfiguredDeviceListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfiguredDeviceListController.h; sourceTree = "<group>"; };
 		2E2E6F611FF5D92B002D1C1D /* ConfiguredDeviceListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfiguredDeviceListController.m; sourceTree = "<group>"; };
 		2E2E6F861FF5DAFB002D1C1D /* about@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "about@2x.png"; sourceTree = "<group>"; };
@@ -1878,6 +1881,8 @@
 				2EF718321FFB2C0600901918 /* GalleryViewController.xib */,
 				2EF718731FFB6C4D00901918 /* GalleryDetailViewController.h */,
 				2EF718741FFB6C4D00901918 /* GalleryDetailViewController.m */,
+				2E2533EC20219850002A6EC3 /* DeviceListViewController.h */,
+				2E2533ED20219850002A6EC3 /* DeviceListViewController.m */,
 				2E2E6F601FF5D92B002D1C1D /* ConfiguredDeviceListController.h */,
 				2E2E6F611FF5D92B002D1C1D /* ConfiguredDeviceListController.m */,
 			);
@@ -2562,6 +2567,7 @@
 				2E2E70AD1FF5DE60002D1C1D /* TimeSchedule.m in Sources */,
 				2E2E70AE1FF5DE60002D1C1D /* DiscoverViewController.m in Sources */,
 				0D835B621B9749E600FF4376 /* CSRDevicesSearchListTableViewController.m in Sources */,
+				2E2533EE20219850002A6EC3 /* DeviceListViewController.m in Sources */,
 				0D835B631B9749E600FF4376 /* CSRDeviceDetailsViewController.m in Sources */,
 				F47DF5231CAE841300BD3FD4 /* CSRControllerAssociationVC.m in Sources */,
 				2EA708C32011C31300782209 /* AddDevcieViewController.m in Sources */,

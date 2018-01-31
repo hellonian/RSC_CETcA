@@ -133,13 +133,11 @@
         
         [self alertAction:0];
         
-        [alert dismissViewControllerAnimated:YES completion:nil];
     }];
     UIAlertAction *album = [UIAlertAction actionWithTitle:@"Choose from Album" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         [self alertAction:1];
         
-        [alert dismissViewControllerAnimated:YES completion:nil];
     }];
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         
@@ -308,8 +306,10 @@
         [self getData];
     };
     
-    [self.navigationController pushViewController:detailVC animated:NO];
-    [UIView transitionWithView:self.navigationController.view duration:1 options:UIViewAnimationOptionTransitionFlipFromRight animations:nil completion:nil];
+    UINavigationController *nav= [[UINavigationController alloc] initWithRootViewController:detailVC];
+    [nav setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
+    [self presentViewController:nav animated:YES completion:nil];
+    
 }
 
 #pragma mark - <UINavigationControllerDelegate,UIImagePickerControllerDelegate>
@@ -325,9 +325,10 @@
     gdvc.handle = ^{
         [self getData];
     };
-    [self.navigationController pushViewController:gdvc animated:NO];
     
-    
+    UINavigationController *nav= [[UINavigationController alloc] initWithRootViewController:gdvc];
+    [nav setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
+    [self presentViewController:nav animated:NO completion:nil];
 }
 
 //相机拍的照片带有imageOrientation属性，在显示的时候会自动摆正方向，而存放的时候按统一方向存放，开发使用时需摆正方向。
@@ -660,8 +661,7 @@
 #pragma mark - GalleryDropViewDelegate
 
 - (void)galleryDropViewPanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId withPanState:(UIGestureRecognizerState)state {
-    
-    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
     if (state == UIGestureRecognizerStateBegan) {
         self.originalLevel = model.level;
         [self.improver beginImproving];

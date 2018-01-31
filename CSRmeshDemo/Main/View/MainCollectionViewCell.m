@@ -106,7 +106,12 @@ typedef enum : NSUInteger {
     if ([info isKindOfClass:[NSNumber class]]) {
         self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
         self.groupId = @4000;
-        self.deviceId = @1000;
+        NSNumber *num = (NSNumber *)info;
+        if ([num isEqualToNumber:@0]) {
+            self.deviceId = @1000;
+        }else if ([num isEqualToNumber:@1]) {
+            self.deviceId = @4000;
+        }
         self.iconView.image = [UIImage imageNamed:@"addroom"];
         self.cellIndexPath = indexPath;
         self.nameLabel.hidden = YES;
@@ -165,7 +170,7 @@ typedef enum : NSUInteger {
 - (void)mainCellTapGestureAction:(UITapGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateEnded) {
         NSLog(@"maincell00");
-        if ([self.deviceId isEqualToNumber:@1000] || [self.deviceId isEqualToNumber:@3000]) {
+        if ([self.deviceId isEqualToNumber:@1000] || [self.deviceId isEqualToNumber:@3000] || [self.deviceId isEqualToNumber:@4000]) {
             if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateAddDeviceAction:cellIndexPath:)]) {
                 [self.superCellDelegate superCollectionViewCellDelegateAddDeviceAction:self.deviceId cellIndexPath:self.cellIndexPath];
             }

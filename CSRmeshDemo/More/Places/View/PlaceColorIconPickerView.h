@@ -12,7 +12,8 @@ typedef NS_ENUM(NSUInteger, CollectionViewPickerMode)
 {
     CollectionViewPickerMode_PlaceColorPicker = 0,
     CollectionViewPickerMode_PlaceIconPicker = 1,
-    CollectionViewPickerMode_SceneIconPicker = 2
+    CollectionViewPickerMode_SceneIconPicker = 2,
+    CollectionViewPickerMode_GroupIconPicker = 3
 };
 
 @protocol PlaceColorIconPickerViewDelegate <NSObject>

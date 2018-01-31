@@ -44,7 +44,7 @@
     
     _controlImageView = [[GalleryControlImageView alloc] init];
     _controlImageView.delegate = self;
-    _controlImageView.center = CGPointMake(WIDTH/2, (HEIGHT-64-50)/2+64);
+    _controlImageView.center = CGPointMake(WIDTH/2, (HEIGHT-64)/2+64);
     [_controlImageView.deleteButton setHidden:YES];
     
     if (_isNewAdd && _image) {
@@ -53,10 +53,10 @@
         _controlImageView.isEditing = YES;
         CGFloat fixelW = CGImageGetWidth(_image.CGImage);
         CGFloat fixelH = CGImageGetHeight(_image.CGImage);
-        if (fixelW/fixelH > WIDTH/(HEIGHT-64-50)) {
+        if (fixelW/fixelH > WIDTH/(HEIGHT-64)) {
             _controlImageView.bounds = CGRectMake(0, 0, WIDTH, fixelH/fixelW*WIDTH);
         }else {
-            _controlImageView.bounds = CGRectMake(0, 0, fixelW/fixelH*(HEIGHT-64-50), HEIGHT-64-50);
+            _controlImageView.bounds = CGRectMake(0, 0, fixelW/fixelH*(HEIGHT-64), HEIGHT-64);
         }
         
     }
@@ -72,10 +72,10 @@
                 _MyGalleryEntity = galleryEntity;
                 CGFloat fixelW = CGImageGetWidth(myImage.CGImage);
                 CGFloat fixelH = CGImageGetHeight(myImage.CGImage);
-                if (fixelW/fixelH > WIDTH/(HEIGHT-64-50)) {
+                if (fixelW/fixelH > WIDTH/(HEIGHT-64)) {
                     _controlImageView.bounds = CGRectMake(0, 0, WIDTH, fixelH/fixelW*WIDTH);
                 }else {
-                    _controlImageView.bounds = CGRectMake(0, 0, fixelW/fixelH*(HEIGHT-64-50), HEIGHT-64-50);
+                    _controlImageView.bounds = CGRectMake(0, 0, fixelW/fixelH*(HEIGHT-64), HEIGHT-64);
                 }
                 if (galleryEntity.drops != nil && [galleryEntity.drops count] > 0) {
                     for (DropEntity * dropEntity in galleryEntity.drops) {
@@ -96,14 +96,12 @@
 - (void)prepareNavigationItem {
     _controlImageView.isEditing = _isEditing;
     if (_isEditing) {
-        self.navigationItem.title = @"Editing";
         UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(galleryDetailDoneAction:)];
         UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(galleryAddAction:)];
         self.navigationItem.rightBarButtonItem = done;
         self.navigationItem.leftBarButtonItem = add;
         
     }else {
-        self.navigationItem.title = @"Controlling";
         UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(galleryDetailEditAction:)];
         self.navigationItem.rightBarButtonItem = edit;
         UIBarButtonItem *close = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStylePlain target:self action:@selector(galleryDetailCloseAction:)];
@@ -137,8 +135,7 @@
         }
     }
     
-    [UIView transitionWithView:self.navigationController.view duration:1 options:UIViewAnimationOptionTransitionFlipFromLeft animations:nil completion:nil];
-    [self.navigationController popViewControllerAnimated:NO]; 
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)galleryDetailDoneAction:(UIBarButtonItem *)item {

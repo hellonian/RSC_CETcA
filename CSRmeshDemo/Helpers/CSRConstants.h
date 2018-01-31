@@ -32,6 +32,8 @@
 
 #define kSceneIcons @[@"home", @"away", @"party", @"tv", @"reading", @"dinning"];
 
+#define kGroupIcons @[@"livingroom",@"bedroom",@"dinningroom",@"washroom",@"studyroom",@"kettleroom",@"atticroom",@"stairroom",@"fitnessroom",@"plantroom",@"panroom",@"terraceroom",@"bookcaseroom",@"stoolroom",@"talkingroom",@"warehouseroom",@"corridorroom"];
+
 
 #pragma mark - Notifications
 

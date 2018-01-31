@@ -43,8 +43,6 @@
     _mainCollectionView = [[MainCollectionView alloc] initWithFrame:CGRectMake(WIDTH*3/160.0, WIDTH*12/640.0+64, WIDTH*157/160.0, HEIGHT-64-WIDTH*3/160.0) collectionViewLayout:flowLayout cellIdentifier:@"MainCollectionViewCell"];
     _mainCollectionView.mainDelegate = self;
     
-    _mainCollectionView.dataArray = [NSMutableArray arrayWithObjects:@"ssss",@"ssss",@"ssss",@"ssss",@"ssss",@"ssss",@"ssss",@"ssss",@"ssss",@"ssss",@"ssss",@"ssss",@"ssss",@"ssss",@"ssss",@"ssss",@"ssss",@"ssss",@"ssss",@"ssss",@"ssss",@"ssss",@"ssss",@"ssss", nil];
-    
     [self.view addSubview:_mainCollectionView];
     
 }

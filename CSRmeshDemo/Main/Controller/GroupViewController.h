@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MainCollectionView.h"
 
 @interface GroupViewController : UIViewController
+
+@property (nonatomic,assign) BOOL isEditing;
+@property (nonatomic,strong) MainCollectionView *devicesCollectionView;
 
 @end

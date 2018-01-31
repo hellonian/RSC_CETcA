@@ -40,6 +40,9 @@
         case CollectionViewPickerMode_SceneIconPicker:
             _itemsArray = kSceneIcons;
             break;
+        case CollectionViewPickerMode_GroupIconPicker:
+            _itemsArray = kGroupIcons;
+            break;
         default:
             break;
     }
@@ -55,6 +58,8 @@
         _titleLabel.text = @"Select image";
     }else if (_mode == CollectionViewPickerMode_SceneIconPicker) {
         _titleLabel.text = @"Scene Icons";
+    }else if (_mode == CollectionViewPickerMode_GroupIconPicker) {
+        _titleLabel.text = @"Group Icons";
     }
     [self addSubview:_titleLabel];
     
@@ -106,11 +111,15 @@
         ((PlaceIconCollectionViewCell *)cell).placeIcon.image = [((PlaceIconCollectionViewCell *)cell).placeIcon.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         ((PlaceIconCollectionViewCell *)cell).placeIcon.tintColor = [CSRUtilities colorFromHex:kColorDarkBlueCSR];
         
-    } else {
+    } else if (_mode == CollectionViewPickerMode_SceneIconPicker) {
         
         cell = [collectionView dequeueReusableCellWithReuseIdentifier:PlaceIconCellIdentifier forIndexPath:indexPath];
         
         ((PlaceIconCollectionViewCell *)cell).placeIcon.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@_normal",_itemsArray[indexPath.row]]];
+        
+    }else if (_mode == CollectionViewPickerMode_GroupIconPicker) {
+        cell = [collectionView dequeueReusableCellWithReuseIdentifier:PlaceIconCellIdentifier forIndexPath:indexPath];
+        ((PlaceIconCollectionViewCell *)cell).placeIcon.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@_highlight",_itemsArray[indexPath.row]]];
     }
     
     return cell;

@@ -194,6 +194,7 @@
     UIAlertAction *camera = [UIAlertAction actionWithTitle:@"Create New Group" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         GroupViewController *gvc = [[GroupViewController alloc] init];
+        gvc.isEditing = YES;
         CATransition *animation = [CATransition animation];
         [animation setDuration:0.3];
         [animation setType:kCATransitionMoveIn];
