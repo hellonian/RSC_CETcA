@@ -152,6 +152,7 @@
     NSLog(@"group");
     if ([cellDeviceId isEqualToNumber:@4000]) {
         NSLog(@"grouppppppp");
+        NSLog(@"dd");
     }
 }
 
