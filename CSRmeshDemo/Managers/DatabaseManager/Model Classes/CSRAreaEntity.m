@@ -13,6 +13,7 @@
 @dynamic areaName;
 @dynamic areaImage;
 @dynamic favourite;
+@dynamic sortId;
 @dynamic devices;
 
 @end

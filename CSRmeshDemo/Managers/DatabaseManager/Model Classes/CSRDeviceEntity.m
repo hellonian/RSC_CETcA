@@ -24,5 +24,6 @@
 @dynamic dhmKey;
 @dynamic shortName;
 @dynamic drops;
+@dynamic sortId;
 
 @end

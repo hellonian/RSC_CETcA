@@ -14,6 +14,7 @@
 @property (nonatomic, retain) NSString * areaName;
 @property (nonatomic, retain) NSData *areaImage;
 @property (nonatomic, retain) NSNumber * favourite;
+@property (nonatomic, retain) NSNumber * sortId;
 @property (nonatomic, retain) NSSet *devices;
 
 @end

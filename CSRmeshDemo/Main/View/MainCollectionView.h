@@ -17,6 +17,7 @@
 - (void)mainCollectionViewDelegateLongPressAction:(id)cell;
 - (void)mainCollectionViewDelegateDeleteDeviceAction:(NSNumber *)cellDeviceId cellGroupId:(NSNumber *)cellGroupId;
 - (void)mainCollectionViewDelegateSelectAction:(NSNumber *)cellDeviceId;
+- (void)mainCollectionViewDelegateClickEmptyGroupCellAction:(NSIndexPath *)cellIndexPath;
 
 @end
 
@@ -24,6 +25,7 @@
 
 @property (nonatomic,strong) NSMutableArray *dataArray;
 @property (nonatomic,weak) id<MainCollectionViewDelegate> mainDelegate;
+@property (nonatomic,assign) BOOL isLocationChanged;
 
 - (id)initWithFrame:(CGRect)frame collectionViewLayout:(UICollectionViewLayout *)layout cellIdentifier:(NSString *)identifier;
 

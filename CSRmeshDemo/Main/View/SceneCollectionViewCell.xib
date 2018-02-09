@@ -22,15 +22,15 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="uAk-st-FmO">
-                        <rect key="frame" x="14.5" y="11" width="146" height="175"/>
+                        <rect key="frame" x="41" y="52" width="93" height="93"/>
                         <constraints>
-                            <constraint firstAttribute="width" secondItem="uAk-st-FmO" secondAttribute="height" multiplier="5:6" id="L1R-p1-GaF"/>
+                            <constraint firstAttribute="width" secondItem="uAk-st-FmO" secondAttribute="height" id="hJR-wY-WF5"/>
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" highlighted="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XgI-h0-Kja">
-                        <rect key="frame" x="0.0" y="143" width="175" height="20"/>
+                        <rect key="frame" x="0.0" y="145" width="175" height="14"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="20" id="Y3o-qu-a6y"/>
+                            <constraint firstAttribute="height" constant="14" id="Y3o-qu-a6y"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="11"/>
                         <color key="textColor" red="0.30196078430000001" green="0.30196078430000001" blue="0.30196078430000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -40,11 +40,11 @@
             </view>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="XgI-h0-Kja" secondAttribute="trailing" id="2yc-X2-0Ja"/>
-                <constraint firstItem="XgI-h0-Kja" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" multiplier="14:9" id="3fc-gv-qGb"/>
                 <constraint firstItem="XgI-h0-Kja" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="8F3-AP-5f4"/>
-                <constraint firstItem="uAk-st-FmO" firstAttribute="width" secondItem="gTV-IL-0wX" secondAttribute="width" multiplier="5:6" id="Mic-WF-db0"/>
+                <constraint firstItem="uAk-st-FmO" firstAttribute="width" secondItem="gTV-IL-0wX" secondAttribute="width" multiplier="32:60" id="Mic-WF-db0"/>
                 <constraint firstItem="uAk-st-FmO" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="gMQ-Zw-N9E"/>
                 <constraint firstItem="uAk-st-FmO" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="kNg-hb-Cxv"/>
+                <constraint firstItem="XgI-h0-Kja" firstAttribute="top" secondItem="uAk-st-FmO" secondAttribute="bottom" id="ps5-gT-Jjc"/>
                 <constraint firstItem="XgI-h0-Kja" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="xBm-h7-DUr"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="SEy-5g-ep8"/>

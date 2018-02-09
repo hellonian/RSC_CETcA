@@ -41,6 +41,7 @@
 @property (nonatomic,strong) NSNumber *originalLevel;
 @property (nonatomic,strong) ImproveTouchingExperience *improver;
 @property (nonatomic,strong) ControlMaskView *maskLayer;
+@property (nonatomic,strong) UIView *translucentBgView;
 
 @end
 
@@ -313,12 +314,10 @@
         if (!pickerView) {
             pickerView = [[PlaceColorIconPickerView alloc] initWithFrame:CGRectMake((WIDTH-270)/2, (HEIGHT-190)/2, 277, 190) withMode:CollectionViewPickerMode_GroupIconPicker];
             pickerView.delegate = self;
-            __weak GroupViewController *weakSelf = self;
-            [UIView animateWithDuration:0.5 animations:^{
-                [weakSelf.view addSubview:pickerView];
-                [pickerView autoCenterInSuperview];
-                [pickerView autoSetDimensionsToSize:CGSizeMake(270, 190)];
-            }];
+            [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+            [[UIApplication sharedApplication].keyWindow addSubview:pickerView];
+            [pickerView autoCenterInSuperview];
+            [pickerView autoSetDimensionsToSize:CGSizeMake(270, 190)];
         }
         
     }];
@@ -438,7 +437,7 @@
 
 - (void)mainCollectionViewDelegateLongPressAction:(id)cell {
     MainCollectionViewCell *mainCell = (MainCollectionViewCell *)cell;
-    if ([mainCell.groupId isEqualToNumber:@1000]) {
+    if ([mainCell.groupId isEqualToNumber:@2000]) {
         DeviceViewController *dvc = [[DeviceViewController alloc] init];
         dvc.deviceId = mainCell.deviceId;
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
@@ -564,10 +563,9 @@
 
 - (void)cancel:(UIButton *)sender {
     if (pickerView) {
-        [UIView animateWithDuration:0.5 animations:^{
-            [pickerView removeFromSuperview];
-            pickerView = nil;
-        }];
+        [pickerView removeFromSuperview];
+        pickerView = nil;
+        [self.translucentBgView removeFromSuperview];
     }
 }
 
@@ -595,6 +593,15 @@
         _maskLayer = [[ControlMaskView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     }
     return _maskLayer;
+}
+
+- (UIView *)translucentBgView {
+    if (!_translucentBgView) {
+        _translucentBgView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        _translucentBgView.backgroundColor = [UIColor blackColor];
+        _translucentBgView.alpha = 0.4;
+    }
+    return _translucentBgView;
 }
 
 

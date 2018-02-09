@@ -152,6 +152,7 @@
             
         }];
         if (currentState == UIGestureRecognizerStateEnded) {
+            NSLog(@"定时器结束！！🔔🔔🔔🔔🔔🔔🔔🔔🔔🔔🔔");
             [timer invalidate];
             timer = nil;
         }

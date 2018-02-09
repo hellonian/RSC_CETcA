@@ -24,7 +24,7 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
-    _iconArray = @[@"home",@"away",@"custom",@"dinning",@"party",@"reading",@"tv"];
+    _iconArray = @[@"home", @"sleep", @"party", @"TV", @"reading", @"away", @"getup", @"dining", @"custom"];
 }
 
 
@@ -34,8 +34,8 @@
         SceneEntity *sceneEntity = (SceneEntity *)info;
         
         NSString *iconString = self.iconArray[[sceneEntity.iconID integerValue]];
-        self.iconView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@_normal",iconString]];
-        self.iconView.highlightedImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@_highlight",iconString]];
+        self.iconView.image = [UIImage imageNamed:[NSString stringWithFormat:@"Scene_%@_gray",iconString]];
+        self.iconView.highlightedImage = [UIImage imageNamed:[NSString stringWithFormat:@"Scene_%@_orange",iconString]];
         self.nameLabel.text = sceneEntity.sceneName;
         self.nameLabel.highlightedTextColor = DARKORAGE;
         self.sceneId = sceneEntity.sceneID;

@@ -154,11 +154,13 @@
                 meshDevice.name = [NSString stringWithFormat:@"%@ %d", shortName, (int)([deviceId intValue]&0x7fff)];
                 deviceEntity.name = meshDevice.name;
             }
-            NSLog(@"uuid>> >> >> >><< %@ >> %@ >> %@",meshDevice.uuid,meshDevice.uuid.UUIDString,meshDevice.uuid.data);
+//            NSLog(@"uuid>> >> >> >><< %@ >> %@ >> %@",meshDevice.uuid,meshDevice.uuid.UUIDString,meshDevice.uuid.data);
             if (meshDevice.uuid) {
-                NSLog(@"uuid>> >> >> >> %@ >> %@ >> %@",meshDevice.uuid,meshDevice.uuid.UUIDString,meshDevice.uuid.data);
+//                NSLog(@"uuid>> >> >> >> %@ >> %@ >> %@",meshDevice.uuid,meshDevice.uuid.UUIDString,meshDevice.uuid.data);
                 deviceEntity.uuid = meshDevice.uuid.UUIDString;
             }
+            NSNumber *sortId = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"SortId"];
+            deviceEntity.sortId = sortId;
  
             [[CSRAppStateManager sharedInstance].selectedPlace addDevicesObject:deviceEntity];
             [[CSRDatabaseManager sharedInstance] saveContext];

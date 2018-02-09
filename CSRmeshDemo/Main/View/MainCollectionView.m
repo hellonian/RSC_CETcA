@@ -61,6 +61,7 @@
     id objec = [self.dataArray objectAtIndex:sourceIndexPath.item];
     [self.dataArray removeObject:objec];
     [self.dataArray insertObject:objec atIndex:destinationIndexPath.item];
+    self.isLocationChanged = YES;
 }
 
 
@@ -129,6 +130,12 @@
 - (void)superCollectionViewCellDelegateSelectAction:(NSNumber *)cellDeviceId {
     if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewDelegateSelectAction:)]) {
         [self.mainDelegate mainCollectionViewDelegateSelectAction:cellDeviceId];
+    }
+}
+
+- (void)superCollectionViewCellDelegateClickEmptyGroupCellAction:(NSIndexPath *)cellIndexPath {
+    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewDelegateClickEmptyGroupCellAction:)]) {
+        [self.mainDelegate mainCollectionViewDelegateClickEmptyGroupCellAction:cellIndexPath];
     }
 }
 

@@ -254,15 +254,28 @@
                 defaultScene.sceneName = @"Home";
             }
             if (i==1) {
-                defaultScene.iconID = @1;
+                defaultScene.iconID = @5;
                 defaultScene.sceneName = @"Away";
             }
             if (i==2 || i==3) {
-                defaultScene.iconID = @2;
+                defaultScene.iconID = @8;
                 defaultScene.sceneName = @"Custom";
             }
             
             [defaultPlace addScenesObject:defaultScene];
+            [[CSRDatabaseManager sharedInstance] saveContext];
+        }
+        
+        NSArray *defaultAreaNames = @[@"Livingroom",@"Bedroom",@"Diningroom",@"Washroom",@"Kitchen"];
+        for (int i=0; i<5; i++) {
+            CSRAreaEntity *defaultArea = [NSEntityDescription insertNewObjectForEntityForName:@"CSRAreaEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+            
+            defaultArea.areaID = @(i);
+            defaultArea.areaName = defaultAreaNames[i];
+            defaultArea.areaIconNum = @(i);
+            defaultArea.sortId = @(i);
+            
+            [defaultPlace addAreasObject:defaultArea];
             [[CSRDatabaseManager sharedInstance] saveContext];
         }
         

@@ -47,7 +47,7 @@
 @property (nonatomic,assign) BOOL mainCVEditting;
 @property (nonatomic,strong) UIActivityIndicatorView *spinner;
 @property (nonatomic,strong) CSRAreaEntity *areaEntity;
-
+@property (nonatomic,strong) UIView *translucentBgView;
 @end
 
 @implementation MainViewController
@@ -106,21 +106,16 @@
     __block NSMutableArray *deviceIdWasInAreaArray =[[NSMutableArray alloc] init];
     NSMutableArray *areaMutableArray =  [[[CSRAppStateManager sharedInstance].selectedPlace.areas allObjects] mutableCopy];
     if (areaMutableArray != nil || [areaMutableArray count] != 0) {
-        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"areaName" ascending:YES]; //@"name"
-        [areaMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
         [areaMutableArray enumerateObjectsUsingBlock:^(CSRAreaEntity *area, NSUInteger idx, BOOL * _Nonnull stop) {
             for (CSRDeviceEntity *deviceEntity in area.devices) {
                 [deviceIdWasInAreaArray addObject:deviceEntity.deviceId];
             }
             [_mainCollectionView.dataArray addObject:area];
-            
         }];
     }
     
     NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
     if (mutableArray != nil || [mutableArray count] != 0) {
-        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-        [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
         [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([deviceEntity.shortName isEqualToString:@"D350BT"] || [deviceEntity.shortName isEqualToString:@"S350BT"]) {
                 if (![deviceIdWasInAreaArray containsObject:deviceEntity.deviceId]) {
@@ -129,6 +124,10 @@
             }
         }];
     }
+    
+    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
+    [_mainCollectionView.dataArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+
     [_mainCollectionView.dataArray addObject:@0];
     
     [_mainCollectionView reloadData];
@@ -179,6 +178,70 @@
     self.navigationItem.rightBarButtonItem = edit;
     _mainCVEditting = NO;
     [self mainCollectionViewEditlayoutView];
+    
+    if (self.mainCollectionView.isLocationChanged) {
+        self.mainCollectionView.isLocationChanged = NO;
+        
+        [self.mainCollectionView.dataArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([obj isKindOfClass:[CSRAreaEntity class]]) {
+                CSRAreaEntity *area = (CSRAreaEntity *)obj;
+                
+                __block CSRAreaEntity *foundAreaEntity = nil;
+                
+                [[CSRAppStateManager sharedInstance].selectedPlace.areas enumerateObjectsUsingBlock:^(id  _Nonnull obj, BOOL * _Nonnull stop) {
+                    
+                    CSRAreaEntity *areaEntity = (CSRAreaEntity *)obj;
+                    
+                    if ([areaEntity.areaID isEqualToNumber:area.areaID]) {
+                        
+                        foundAreaEntity = areaEntity;
+                        *stop = YES;
+                    }
+                    
+                }];
+                if (foundAreaEntity) {
+                    foundAreaEntity.sortId = @(idx);
+                    [[CSRAppStateManager sharedInstance].selectedPlace addAreasObject:foundAreaEntity];
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                }
+                
+            }else if ([obj isKindOfClass:[CSRDeviceEntity class]]) {
+                CSRDeviceEntity *device = (CSRDeviceEntity *)obj;
+
+                __block CSRDeviceEntity *foundDeviceEntity = nil;
+                
+                [[CSRAppStateManager sharedInstance].selectedPlace.devices enumerateObjectsUsingBlock:^(id  _Nonnull obj, BOOL * _Nonnull stop) {
+                    
+                    CSRDeviceEntity *deviceEntity = (CSRDeviceEntity *)obj;
+                    
+                    if ([deviceEntity.deviceId isEqualToNumber:device.deviceId]) {
+                        
+                        foundDeviceEntity = device;
+                        *stop = YES;
+                    }
+                    
+                }];
+                
+                
+                if (foundDeviceEntity) {
+                    foundDeviceEntity.sortId = @(idx);
+                    
+                    if (foundDeviceEntity.areas) {
+                        for (CSRAreaEntity *areaEntity in foundDeviceEntity.areas) {
+                            [areaEntity addDevicesObject:foundDeviceEntity];
+                        }
+                    }
+                    
+                    [[CSRAppStateManager sharedInstance].selectedPlace addDevicesObject:foundDeviceEntity];
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                }
+                
+            }
+        }];
+        
+    }
+    
+    
 }
 
 #pragma mark - MainCollectionViewDelegate
@@ -312,13 +375,12 @@
     if ([actionName isEqualToString:@"Icon"]) {
         NSLog(@"Icon");
         if (!pickerView) {
-            pickerView = [[PlaceColorIconPickerView alloc] initWithFrame:CGRectMake((WIDTH-277)/2, (HEIGHT-240)/2, 277, 240) withMode:CollectionViewPickerMode_SceneIconPicker];
+            pickerView = [[PlaceColorIconPickerView alloc] initWithFrame:CGRectMake((WIDTH-270)/2, (HEIGHT-190)/2, 270, 190) withMode:CollectionViewPickerMode_SceneIconPicker];
             pickerView.delegate = self;
-            [UIView animateWithDuration:0.5 animations:^{
-                [self.view addSubview:pickerView];
-                [pickerView autoCenterInSuperview];
-                [pickerView autoSetDimensionsToSize:CGSizeMake(277, 240)];
-            }];
+            [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+            [[UIApplication sharedApplication].keyWindow addSubview:pickerView];
+            [pickerView autoCenterInSuperview];
+            [pickerView autoSetDimensionsToSize:CGSizeMake(270, 190)];
         }
         return;
     }
@@ -508,6 +570,36 @@
     return @(-1);
 }
 
+- (void)mainCollectionViewDelegateClickEmptyGroupCellAction:(NSIndexPath *)cellIndexPath {
+    NSLog(@"空组");
+//    NSArray *devices = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
+//    __block BOOL exist;
+//    [devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+//        if ([obj isKindOfClass:[CSRDeviceEntity class]]) {
+//            <#statements#>
+//        }
+//    }];
+//    if (<#condition#>) {
+//        <#statements#>
+//    }
+//    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"This group is" message:nil preferredStyle:UIAlertControllerStyleAlert];
+//    [alertController.view setTintColor:DARKORAGE];
+//    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//        if (meshDevice) {
+//            [[CSRDevicesManager sharedInstance] initiateRemoveDevice:meshDevice];
+//        }
+//    }];
+//    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+//        [_spinner stopAnimating];
+//        [_spinner setHidden:YES];
+//    }];
+//    [alertController addAction:okAction];
+//    [alertController addAction:cancelAction];
+//    [self presentViewController:alertController animated:YES completion:nil];
+}
+
+#pragma mark - notification
+
 -(void)deleteStatus:(NSNotification *)notification
 {
     NSNumber *num = notification.userInfo[@"boolFlag"];
@@ -537,7 +629,7 @@
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Device Device"
                                                                              message:[NSString stringWithFormat:@"Device wasn't found. Do you want to delete %@ anyway?", meshDevice.name]
                                                                       preferredStyle:UIAlertControllerStyleAlert];
-    [alertController.view setTintColor:[CSRUtilities colorFromHex:kColorBlueCSR]];
+    [alertController.view setTintColor:DARKORAGE];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"NO"
                                                            style:UIAlertActionStyleCancel
                                                          handler:^(UIAlertAction *action) {
@@ -579,10 +671,9 @@
 
 - (void)cancel:(UIButton *)sender {
     if (pickerView) {
-        [UIView animateWithDuration:0.5 animations:^{
-            [pickerView removeFromSuperview];
-            pickerView = nil;
-        }];
+        [pickerView removeFromSuperview];
+        pickerView = nil;
+        [self.translucentBgView removeFromSuperview];
     }
 }
 
@@ -593,6 +684,15 @@
         _maskLayer = [[ControlMaskView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     }
     return _maskLayer;
+}
+
+- (UIView *)translucentBgView {
+    if (!_translucentBgView) {
+        _translucentBgView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        _translucentBgView.backgroundColor = [UIColor blackColor];
+        _translucentBgView.alpha = 0.4;
+    }
+    return _translucentBgView;
 }
 
 - (void)didReceiveMemoryWarning {

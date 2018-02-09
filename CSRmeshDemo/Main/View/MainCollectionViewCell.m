@@ -96,7 +96,7 @@ typedef enum : NSUInteger {
             NSString *imageString = [iconArray objectAtIndex:[areaEntity.areaIconNum integerValue]];
             self.iconView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@room",imageString]];
         }
-        
+        self.cellIndexPath = indexPath;
         [self adjustGroupCellBgcolorAndLevelLabel];
         self.bottomView.hidden = NO;
         return;
@@ -148,6 +148,7 @@ typedef enum : NSUInteger {
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
+        [self adjustCellBgcolorAndLevelLabelWithDeviceId:device.deviceId];
         return;
     }
     
@@ -272,25 +273,35 @@ typedef enum : NSUInteger {
 - (void)mainCellTapGestureAction:(UITapGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateEnded) {
         NSLog(@"maincell00");
-        if ([self.deviceId isEqualToNumber:@1000] || [self.deviceId isEqualToNumber:@3000] || [self.deviceId isEqualToNumber:@4000]) {
-            if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateAddDeviceAction:cellIndexPath:)]) {
-                [self.superCellDelegate superCollectionViewCellDelegateAddDeviceAction:self.deviceId cellIndexPath:self.cellIndexPath];
-            }
-        }else if ([self.deviceId isEqualToNumber:@2000]) {
-            __block BOOL isPowerOn = 0;
-            [self.groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *entity, NSUInteger idx, BOOL * _Nonnull stop) {
-                DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:entity.deviceId];
-                if ([model.powerState boolValue]) {
-                    isPowerOn = YES;
-                    *stop = YES;
+        if (self.kindLabel.text.length > 0) {
+            if ([self.deviceId isEqualToNumber:@1000] || [self.deviceId isEqualToNumber:@3000] || [self.deviceId isEqualToNumber:@4000]) {
+                if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateAddDeviceAction:cellIndexPath:)]) {
+                    [self.superCellDelegate superCollectionViewCellDelegateAddDeviceAction:self.deviceId cellIndexPath:self.cellIndexPath];
                 }
-            }];
-            [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:self.groupId withPowerState:@(!isPowerOn)];
-            
+            }else if ([self.deviceId isEqualToNumber:@2000]) {
+                __block BOOL isPowerOn = 0;
+                [self.groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *entity, NSUInteger idx, BOOL * _Nonnull stop) {
+                    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:entity.deviceId];
+                    if ([model.powerState boolValue]) {
+                        isPowerOn = YES;
+                        *stop = YES;
+                    }
+                }];
+                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:self.groupId withPowerState:@(!isPowerOn)];
+                
+            }else {
+                DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(![model.powerState boolValue])];
+            }
         }else {
-            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-            [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(![model.powerState boolValue])];
+            if ([self.deviceId isEqualToNumber:@2000]) {
+                if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateClickEmptyGroupCellAction:)]) {
+                    [self.superCellDelegate superCollectionViewCellDelegateClickEmptyGroupCellAction:self.cellIndexPath];
+                }
+            }
         }
+        
+        
     }
 }
 

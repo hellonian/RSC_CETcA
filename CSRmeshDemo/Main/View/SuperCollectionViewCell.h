@@ -18,6 +18,7 @@
 - (void)superCollectionViewCellDelegateDeleteDeviceAction:(NSNumber *)cellDeviceId cellGroupId:(NSNumber *)cellGroupId;
 - (void)superCollectionViewCellDelegateMoveCellPanAction:(UIGestureRecognizerState)state touchPoint:(CGPoint)touchPoint;
 - (void)superCollectionViewCellDelegateSelectAction:(NSNumber *)cellDeviceId;
+- (void)superCollectionViewCellDelegateClickEmptyGroupCellAction:(NSIndexPath *)cellIndexPath;
 
 @end
 

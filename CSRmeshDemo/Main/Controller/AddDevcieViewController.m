@@ -123,7 +123,6 @@
 
 -(void)didDiscoverDeviceNotification:(NSNotification *)notification{
     if (![self alreadyDiscoveredDeviceFilteringWithDeviceUUID:(NSUUID *)notification.userInfo[kDeviceUuidString]]) {
-        NSLog(@"uuid>>notification>> %@",notification.userInfo[kDeviceUuidString]);
         [[CSRDevicesManager sharedInstance] addDeviceWithUUID:notification.userInfo[kDeviceUuidString] andRSSI:notification.userInfo[kDeviceRssiString]];
         [self getDataArray];
     }

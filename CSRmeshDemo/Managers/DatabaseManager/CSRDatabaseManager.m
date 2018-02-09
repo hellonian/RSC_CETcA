@@ -596,6 +596,18 @@
         //Common Method
         return [self getFreeIdFromArray:[allIdsArray copy]];
         
+    }else if ([typeString isEqualToString:@"SortId"]) {
+        
+        NSMutableArray *allIdsArray = [NSMutableArray new];
+        
+        for (CSRAreaEntity *area in [CSRAppStateManager sharedInstance].selectedPlace.areas) {
+            [allIdsArray addObject:area.sortId];
+        }
+        for (CSRDeviceEntity *device in [CSRAppStateManager sharedInstance].selectedPlace.devices) {
+            [allIdsArray addObject:device.sortId];
+        }
+        return [self getFreeIdFromArray:[allIdsArray copy]];
+        
     }
     return @(-1);
 }
@@ -788,6 +800,8 @@
         NSData *areaImageData = UIImageJPEGRepresentation(image, 0.5);
         newAreaEntity.areaImage = areaImageData;
     }
+    NSNumber *sorId = [self getNextFreeIDOfType:@"SortId"];
+    newAreaEntity.sortId = sorId;
     
     [[CSRAppStateManager sharedInstance].selectedPlace addAreasObject:newAreaEntity];
     [self saveContext];

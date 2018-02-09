@@ -25,6 +25,7 @@
 @property (nonatomic, retain) NSSet *areas;
 @property (nonatomic, retain) NSData *dhmKey;
 @property (nonatomic, retain) NSSet *drops;
+@property (nonatomic, retain) NSNumber * sortId;
 
 @end
 
