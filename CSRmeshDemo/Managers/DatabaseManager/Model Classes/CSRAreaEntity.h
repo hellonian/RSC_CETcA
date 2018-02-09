@@ -9,6 +9,7 @@
 
 @interface CSRAreaEntity : NSManagedObject
 
+@property (nonatomic, retain) NSNumber * areaIconNum;
 @property (nonatomic, retain) NSNumber * areaID;
 @property (nonatomic, retain) NSString * areaName;
 @property (nonatomic, retain) NSData *areaImage;

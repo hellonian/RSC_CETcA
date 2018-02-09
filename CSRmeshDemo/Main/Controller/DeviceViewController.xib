@@ -25,7 +25,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jqF-CI-kaG">
-                    <rect key="frame" x="0.0" y="124" width="375" height="89"/>
+                    <rect key="frame" x="0.0" y="120" width="375" height="89"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4m7-Pn-lZ6">
                             <rect key="frame" x="20" y="44" width="355" height="0.5"/>
@@ -87,7 +87,7 @@
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9f4-UH-vng">
-                    <rect key="frame" x="0.0" y="301" width="375" height="44"/>
+                    <rect key="frame" x="0.0" y="297" width="375" height="44"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lRY-vT-dpa">
                             <rect key="frame" x="315" y="12" width="40" height="20"/>
@@ -99,7 +99,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="255" minValue="0.0" maxValue="255" translatesAutoresizingMaskIntoConstraints="NO" id="8Cl-t0-0uR">
-                            <rect key="frame" x="42" y="7" width="267" height="31"/>
+                            <rect key="frame" x="42" y="6" width="267" height="31"/>
                             <color key="minimumTrackTintColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
                                 <action selector="leveSliderValueChanged:" destination="-1" eventType="valueChanged" id="GYM-bw-8pL"/>
@@ -119,14 +119,14 @@
                         <constraint firstItem="lRY-vT-dpa" firstAttribute="leading" secondItem="8Cl-t0-0uR" secondAttribute="trailing" constant="8" id="uaH-yf-FQb"/>
                     </constraints>
                 </view>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="heater" translatesAutoresizingMaskIntoConstraints="NO" id="b4F-Y7-1Xh">
-                    <rect key="frame" x="0.0" y="301" width="44" height="44"/>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Ico_sun" translatesAutoresizingMaskIntoConstraints="NO" id="b4F-Y7-1Xh">
+                    <rect key="frame" x="14" y="311" width="16" height="16"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="44" id="GgJ-R7-SZm"/>
+                        <constraint firstAttribute="width" constant="16" id="GgJ-R7-SZm"/>
                     </constraints>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Brightness" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ClO-Me-qxg">
-                    <rect key="frame" x="20" y="269" width="100" height="20"/>
+                    <rect key="frame" x="20" y="265" width="100" height="20"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="100" id="YKj-WZ-enp"/>
                         <constraint firstAttribute="height" constant="20" id="oaV-qD-ceF"/>
@@ -136,25 +136,25 @@
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
-            <color key="backgroundColor" red="0.76470588235294112" green="0.76470588235294112" blue="0.76470588235294112" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color key="backgroundColor" red="0.93333333333333335" green="0.93333333333333335" blue="0.95294117647058818" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="9f4-UH-vng" firstAttribute="top" secondItem="ClO-Me-qxg" secondAttribute="bottom" constant="12" id="9cu-2c-9hk"/>
-                <constraint firstItem="9f4-UH-vng" firstAttribute="top" secondItem="b4F-Y7-1Xh" secondAttribute="top" id="B0u-I8-pO0"/>
-                <constraint firstItem="9f4-UH-vng" firstAttribute="bottom" secondItem="b4F-Y7-1Xh" secondAttribute="bottom" id="KYt-Lu-aHP"/>
+                <constraint firstItem="9f4-UH-vng" firstAttribute="top" secondItem="b4F-Y7-1Xh" secondAttribute="top" constant="-14" id="B0u-I8-pO0"/>
+                <constraint firstItem="9f4-UH-vng" firstAttribute="bottom" secondItem="b4F-Y7-1Xh" secondAttribute="bottom" constant="14" id="KYt-Lu-aHP"/>
                 <constraint firstItem="ClO-Me-qxg" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="20" id="NlE-Pu-tfx"/>
                 <constraint firstItem="9f4-UH-vng" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="SN6-Pp-haC"/>
                 <constraint firstItem="jqF-CI-kaG" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="Uyd-Gr-jXu"/>
-                <constraint firstItem="9f4-UH-vng" firstAttribute="leading" secondItem="b4F-Y7-1Xh" secondAttribute="leading" id="ccW-6M-fW2"/>
+                <constraint firstItem="9f4-UH-vng" firstAttribute="leading" secondItem="b4F-Y7-1Xh" secondAttribute="leading" constant="-14" id="ccW-6M-fW2"/>
                 <constraint firstItem="9f4-UH-vng" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="mdy-nQ-9dr"/>
                 <constraint firstItem="9f4-UH-vng" firstAttribute="top" secondItem="jqF-CI-kaG" secondAttribute="bottom" constant="88" id="pIT-U7-tby"/>
                 <constraint firstItem="jqF-CI-kaG" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="r7v-Aj-u3I"/>
-                <constraint firstItem="jqF-CI-kaG" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" constant="104" id="yWv-Ik-oQg"/>
+                <constraint firstItem="jqF-CI-kaG" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" constant="100" id="yWv-Ik-oQg"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <point key="canvasLocation" x="24.5" y="52.5"/>
         </view>
     </objects>
     <resources>
-        <image name="heater" width="48" height="48"/>
+        <image name="Ico_sun" width="16" height="16"/>
     </resources>
 </document>

@@ -21,7 +21,10 @@
         _mode = viewMode;
         [self populateCollectionItemsWithMode:viewMode];
         [self drawViews];
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor colorWithRed:246/255.0 green:246/255.0 blue:246/255.0 alpha:246/255.0];
+        self.alpha = 0.9;
+        self.layer.cornerRadius = 14;
+        self.layer.masksToBounds = YES;
     }
     return self;
 }
@@ -50,7 +53,8 @@
 }
 
 - (void)drawViews {
-    _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(277*0.5-100, 20, 200, 21)];
+    _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(270*0.5-100, 5, 200, 20)];
+    _titleLabel.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
     _titleLabel.textAlignment = NSTextAlignmentCenter;
     if (_mode == CollectionViewPickerMode_PlaceColorPicker) {
         _titleLabel.text = @"Select color";
@@ -63,18 +67,27 @@
     }
     [self addSubview:_titleLabel];
     
-    _cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(277*0.5-100, 202, 200, 30)];
+    UIView *topLine = [[UIView alloc] initWithFrame:CGRectMake(0, 29, 270, 1)];
+    topLine.backgroundColor = [UIColor colorWithRed:195/255.0 green:195/255.0 blue:195/255.0 alpha:1];
+    [self addSubview:topLine];
+    
+    _cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(270*0.5-100, 165, 200, 20)];
     [_cancelButton setTitle:@"CANCEL" forState:UIControlStateNormal];
-    [_cancelButton setTitleColor:[UIColor darkTextColor] forState:UIControlStateNormal];
+    [_cancelButton setTitleColor:DARKORAGE forState:UIControlStateNormal];
     [_cancelButton addTarget:self action:@selector(cancelAction:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_cancelButton];
     
-    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    layout.minimumLineSpacing = 5;
-    layout.minimumInteritemSpacing = 5;
-    layout.itemSize = CGSizeMake(45, 45);
+    UIView *botLine = [[UIView alloc] initWithFrame:CGRectMake(0, 160, 270, 1)];
+    botLine.backgroundColor = [UIColor colorWithRed:195/255.0 green:195/255.0 blue:195/255.0 alpha:1];
+    [self addSubview:botLine];
     
-    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(16, 49, 245, 145) collectionViewLayout:layout];
+    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+    layout.minimumLineSpacing = 7;
+    layout.minimumInteritemSpacing = 7;
+    layout.sectionInset = UIEdgeInsetsMake(12, 16, 12, 16);
+    layout.itemSize = CGSizeMake(42, 42);
+    
+    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 30, 270, 130) collectionViewLayout:layout];
     _collectionView.dataSource = self;
     _collectionView.delegate = self;
     _collectionView.backgroundColor = [UIColor whiteColor];
@@ -119,7 +132,7 @@
         
     }else if (_mode == CollectionViewPickerMode_GroupIconPicker) {
         cell = [collectionView dequeueReusableCellWithReuseIdentifier:PlaceIconCellIdentifier forIndexPath:indexPath];
-        ((PlaceIconCollectionViewCell *)cell).placeIcon.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@_highlight",_itemsArray[indexPath.row]]];
+        ((PlaceIconCollectionViewCell *)cell).placeIcon.image = [UIImage imageNamed:_itemsArray[indexPath.row]];
     }
     
     return cell;

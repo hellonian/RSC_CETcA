@@ -759,7 +759,7 @@
 
 #pragma mark - AREA Methods
 
-- (CSRAreaEntity*)saveNewArea:(NSNumber *)areaId areaName:(NSString *)areaName areaImage:(UIImage *)image {
+- (CSRAreaEntity*)saveNewArea:(NSNumber *)areaId areaName:(NSString *)areaName areaImage:(UIImage *)image areaIconNum:(NSNumber *)iconNum {
     
     __block CSRAreaEntity *newAreaEntity;
     
@@ -783,8 +783,12 @@
     
     newAreaEntity.areaName = areaName;
     newAreaEntity.areaID = areaId;
-    NSData *areaImageData = UIImageJPEGRepresentation(image, 0.5);
-    newAreaEntity.areaImage = areaImageData;
+    newAreaEntity.areaIconNum = iconNum;
+    if ([iconNum isEqualToNumber:@99]) {
+        NSData *areaImageData = UIImageJPEGRepresentation(image, 0.5);
+        newAreaEntity.areaImage = areaImageData;
+    }
+    
     [[CSRAppStateManager sharedInstance].selectedPlace addAreasObject:newAreaEntity];
     [self saveContext];
     

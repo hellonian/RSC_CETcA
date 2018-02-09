@@ -205,6 +205,7 @@
 		2E2E70B61FF5DE60002D1C1D /* UpdateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70791FF5DE60002D1C1D /* UpdateViewController.m */; };
 		2E2E70B71FF5DE60002D1C1D /* UpdateViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E707A1FF5DE60002D1C1D /* UpdateViewController.xib */; };
 		2E2EBFA41FAC2FF400CEA401 /* cskey_db.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E2EBF9F1FAC194400CEA401 /* cskey_db.json */; };
+		2E3A65F7202BF97300B3E425 /* SingleDeviceModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3A65F6202BF97300B3E425 /* SingleDeviceModel.m */; };
 		2E3B965A200F2553000BD086 /* AreaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3B964A200F2553000BD086 /* AreaViewController.m */; };
 		2E3B965B200F2553000BD086 /* DeviceDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3B964C200F2553000BD086 /* DeviceDetailViewController.m */; };
 		2E3B965C200F2553000BD086 /* DeviceDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E3B964D200F2553000BD086 /* DeviceDetailViewController.xib */; };
@@ -625,6 +626,8 @@
 		2E2E70791FF5DE60002D1C1D /* UpdateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateViewController.m; sourceTree = "<group>"; };
 		2E2E707A1FF5DE60002D1C1D /* UpdateViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UpdateViewController.xib; sourceTree = "<group>"; };
 		2E2EBF9F1FAC194400CEA401 /* cskey_db.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = cskey_db.json; sourceTree = "<group>"; };
+		2E3A65F5202BF97300B3E425 /* SingleDeviceModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SingleDeviceModel.h; sourceTree = "<group>"; };
+		2E3A65F6202BF97300B3E425 /* SingleDeviceModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SingleDeviceModel.m; sourceTree = "<group>"; };
 		2E3B9649200F2553000BD086 /* AreaViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AreaViewController.h; sourceTree = "<group>"; };
 		2E3B964A200F2553000BD086 /* AreaViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AreaViewController.m; sourceTree = "<group>"; };
 		2E3B964B200F2553000BD086 /* DeviceDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceDetailViewController.h; sourceTree = "<group>"; };
@@ -1782,6 +1785,8 @@
 		2E3B967A200F35A2000BD086 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				2E3A65F5202BF97300B3E425 /* SingleDeviceModel.h */,
+				2E3A65F6202BF97300B3E425 /* SingleDeviceModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2471,6 +2476,7 @@
 				0D835B951B97603600FF4376 /* CSRmesh.xcdatamodeld in Sources */,
 				0D835B361B9749E600FF4376 /* AppDelegate.m in Sources */,
 				2E3B965A200F2553000BD086 /* AreaViewController.m in Sources */,
+				2E3A65F7202BF97300B3E425 /* SingleDeviceModel.m in Sources */,
 				CED927FF1C8759D1003B6110 /* CSREventDetailsViewController.m in Sources */,
 				2E2E70931FF5DE60002D1C1D /* PlaceTableViewCell.m in Sources */,
 				2EE757CA201030CA00FB75C5 /* TopImageView.m in Sources */,

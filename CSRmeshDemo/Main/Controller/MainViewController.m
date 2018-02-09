@@ -12,7 +12,6 @@
 #import "CSRAreaEntity.h"
 #import "AreaModel.h"
 #import "CSRDeviceEntity.h"
-#import "DeviceModel.h"
 #import "AddDevcieViewController.h"
 #import "DeviceModelManager.h"
 #import "ImproveTouchingExperience.h"
@@ -29,6 +28,7 @@
 #import "CSRDatabaseManager.h"
 
 #import "GroupViewController.h"
+#import <CSRmesh/GroupModelApi.h>
 
 @interface MainViewController ()<MainCollectionViewDelegate,PlaceColorIconPickerViewDelegate>
 {
@@ -46,6 +46,7 @@
 @property (nonatomic,strong) ControlMaskView *maskLayer;
 @property (nonatomic,assign) BOOL mainCVEditting;
 @property (nonatomic,strong) UIActivityIndicatorView *spinner;
+@property (nonatomic,strong) CSRAreaEntity *areaEntity;
 
 @end
 
@@ -102,14 +103,12 @@
 
 - (void)getMainDataArray {
     [_mainCollectionView.dataArray removeAllObjects];
-    
-    NSMutableArray *deviceIdWasInAreaArray =[[NSMutableArray alloc] init];
+    __block NSMutableArray *deviceIdWasInAreaArray =[[NSMutableArray alloc] init];
     NSMutableArray *areaMutableArray =  [[[CSRAppStateManager sharedInstance].selectedPlace.areas allObjects] mutableCopy];
     if (areaMutableArray != nil || [areaMutableArray count] != 0) {
         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"areaName" ascending:YES]; //@"name"
         [areaMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
         [areaMutableArray enumerateObjectsUsingBlock:^(CSRAreaEntity *area, NSUInteger idx, BOOL * _Nonnull stop) {
-            
             for (CSRDeviceEntity *deviceEntity in area.devices) {
                 [deviceIdWasInAreaArray addObject:deviceEntity.deviceId];
             }
@@ -130,15 +129,12 @@
             }
         }];
     }
-    
     [_mainCollectionView.dataArray addObject:@0];
     
     [_mainCollectionView reloadData];
-    
 }
 
 - (void)mainCollectionViewEditlayoutView {
-    
     [self.mainCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell *cell, NSUInteger idx, BOOL * _Nonnull stop) {
         if (_mainCVEditting) {
             if ([cell.deviceId isEqualToNumber:@1000]) {
@@ -194,21 +190,30 @@
     UIAlertAction *camera = [UIAlertAction actionWithTitle:@"Create New Group" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         GroupViewController *gvc = [[GroupViewController alloc] init];
-        gvc.isEditing = YES;
+        __weak MainViewController *weakSelf = self;
+        gvc.handle = ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [weakSelf getMainDataArray];
+            });
+            
+        };
+        gvc.isCreateNewArea = YES;
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:gvc];
         CATransition *animation = [CATransition animation];
         [animation setDuration:0.3];
         [animation setType:kCATransitionMoveIn];
         [animation setSubtype:kCATransitionFromRight];
         [self.view.window.layer addAnimation:animation forKey:nil];
-        [self presentViewController:gvc animated:NO completion:nil];
+        [self presentViewController:nav animated:NO completion:nil];
         
     }];
     UIAlertAction *album = [UIAlertAction actionWithTitle:@"Search New Devices" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         if ([cellDeviceId isEqualToNumber:@1000]) {
             AddDevcieViewController *addVC = [[AddDevcieViewController alloc] init];
+            __weak MainViewController *weakSelf = self;
             addVC.handle = ^{
-                [self getMainDataArray];
+                [weakSelf getMainDataArray];
             };
             CATransition *animation = [CATransition animation];
             [animation setDuration:0.3];
@@ -232,12 +237,36 @@
     
 }
 
-- (void)mainCollectionViewDelegatePanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId withPanState:(UIGestureRecognizerState)state {
-    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+- (void)mainCollectionViewDelegatePanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId groupId:(NSNumber *)groupId withPanState:(UIGestureRecognizerState)state {
+    
     if (state == UIGestureRecognizerStateBegan) {
-        self.originalLevel = model.level;
+        if ([deviceId isEqualToNumber:@2000]) {
+            [_mainCollectionView.dataArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                if ([obj isKindOfClass:[CSRAreaEntity class]]) {
+                    CSRAreaEntity *MyAreaEntity = (CSRAreaEntity *)obj;
+                    if ([MyAreaEntity.areaID isEqualToNumber:groupId]) {
+                        NSInteger evenBrightness = 0;
+                        for (CSRDeviceEntity *deviceEntity in MyAreaEntity.devices) {
+                            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceEntity.deviceId];
+                            if ([model.powerState boolValue]) {
+                                NSInteger fixStatus = [model.level integerValue]? [model.level integerValue]:0;
+                                evenBrightness += fixStatus;
+                            }
+                        }
+                        
+                        self.originalLevel = @(evenBrightness/MyAreaEntity.devices.count);
+                    }
+                }
+            }];
+            [[DeviceModelManager sharedInstance] setLevelWithDeviceId:groupId withLevel:self.originalLevel withState:state];
+        }else {
+            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+            self.originalLevel = model.level;
+            [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:self.originalLevel withState:state];
+        }
+        
         [self.improver beginImproving];
-        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:self.originalLevel withState:state];
+        
         return;
     }
     if (state == UIGestureRecognizerStateChanged || state == UIGestureRecognizerStateEnded) {
@@ -247,7 +276,13 @@
         }
         CGFloat percentage = updateLevel/255.0*100;
         [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
-        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state];
+        
+        
+        if ([deviceId isEqualToNumber:@2000]) {
+            [[DeviceModelManager sharedInstance] setLevelWithDeviceId:groupId withLevel:@(updateLevel) withState:state];
+        }else {
+            [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state];
+        }
         
         if (state == UIGestureRecognizerStateEnded) {
             [self hideControlMaskLayer];
@@ -328,21 +363,92 @@
         UIPopoverPresentationController *popover = nav.popoverPresentationController;
         popover.sourceRect = mainCell.bounds;
         popover.sourceView = mainCell;
+    }else if ([mainCell.deviceId isEqualToNumber:@2000]) {
+        GroupViewController *gvc = [[GroupViewController alloc] init];
+        __weak MainViewController *weakSelf = self;
+        gvc.handle = ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [weakSelf getMainDataArray];
+            });
+        };
+        gvc.isCreateNewArea = NO;
+        gvc.areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:mainCell.groupId];
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:gvc];
+        CATransition *animation = [CATransition animation];
+        [animation setDuration:0.3];
+        [animation setType:kCATransitionMoveIn];
+        [animation setSubtype:kCATransitionFromRight];
+        [self.view.window.layer addAnimation:animation forKey:nil];
+        [self presentViewController:nav animated:NO completion:nil];
     }
 }
 
-- (void)mainCollectionViewDelegateDeleteDeviceAction:(NSNumber *)cellDeviceId {
-    meshDevice = [[CSRDevicesManager sharedInstance] getDeviceFromDeviceId:cellDeviceId];
-    CSRPlaceEntity *placeEntity = [CSRAppStateManager sharedInstance].selectedPlace;
-    deleteDeviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:cellDeviceId];
-    
-    if (![CSRUtilities isStringEmpty:placeEntity.passPhrase]) {
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Delete Device" message:[NSString stringWithFormat:@"Are you sure that you want to delete this device :%@?",meshDevice.name] preferredStyle:UIAlertControllerStyleAlert];
+- (void)mainCollectionViewDelegateDeleteDeviceAction:(NSNumber *)cellDeviceId cellGroupId:(NSNumber *)cellGroupId{
+    if ([cellDeviceId isEqualToNumber:@2000]) {
+        _areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:cellGroupId];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Delete Group" message:[NSString stringWithFormat:@"Are you sure that you want to delete this group :%@?",_areaEntity.areaName] preferredStyle:UIAlertControllerStyleAlert];
         [alertController.view setTintColor:DARKORAGE];
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            if (meshDevice) {
-                [[CSRDevicesManager sharedInstance] initiateRemoveDevice:meshDevice];
+        __weak MainViewController *weakSelf = self;
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+            for (CSRDeviceEntity *deviceEntity in _areaEntity.devices) {
+                NSNumber *groupIndex = [weakSelf getValueByIndex:deviceEntity];
+                [[GroupModelApi sharedInstance] setModelGroupId:deviceEntity.deviceId
+                                                        modelNo:@(0xff)
+                                                     groupIndex:groupIndex
+                                                       instance:@(0)
+                                                        groupId:@(0)
+                                                        success:^(NSNumber * _Nullable deviceId,
+                                                                  NSNumber * _Nullable modelNo,
+                                                                  NSNumber * _Nullable groupIndex,
+                                                                  NSNumber * _Nullable instance,
+                                                                  NSNumber * _Nullable groupId) {
+                                                            uint16_t *dataToModify = (uint16_t*)deviceEntity.groups.bytes;
+                                                            NSMutableArray *desiredGroups = [NSMutableArray new];
+                                                            for (int count=0; count < deviceEntity.groups.length/2; count++, dataToModify++) {
+                                                                NSNumber *groupValue = @(*dataToModify);
+                                                                [desiredGroups addObject:groupValue];
+                                                            }
+                                                            
+                                                            if (groupIndex && [groupIndex integerValue]<desiredGroups.count) {
+                                                                
+                                                                NSNumber *areaValue = [desiredGroups objectAtIndex:[groupIndex integerValue]];
+                                                                
+                                                                CSRAreaEntity *areaEntity = [[[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"CSRAreaEntity" withPredicate:@"areaID == %@", areaValue] firstObject];
+                                                                
+                                                                if (areaEntity) {
+                                                                    
+                                                                    [_areaEntity removeDevicesObject:deviceEntity];
+                                                                }
+                                                                
+                                                                
+                                                                NSMutableData *myData = (NSMutableData*)deviceEntity.groups;
+                                                                uint16_t desiredValue = [groupId unsignedShortValue];
+                                                                int groupIndexInt = [groupIndex intValue];
+                                                                if (groupIndexInt>-1) {
+                                                                    uint16_t *groups = (uint16_t *) myData.mutableBytes;
+                                                                    *(groups + groupIndexInt) = desiredValue;
+                                                                }
+                                                                deviceEntity.groups = (NSData*)myData;
+                                                                
+                                                                [[CSRDatabaseManager sharedInstance] saveContext];
+                                                            }
+                                                        }
+                                                        failure:^(NSError * _Nullable error) {
+                                                            NSLog(@"mesh timeout");
+                                                        }];
+                [NSThread sleepForTimeInterval:0.3];
+                
             }
+            
+            [[CSRDatabaseManager sharedInstance] removeAreaFromDatabaseWithAreaId:cellGroupId];
+            [self getMainDataArray];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [weakSelf mainCollectionViewEditlayoutView];
+                [_spinner stopAnimating];
+                [_spinner setHidden:YES];
+            });
+            
         }];
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
             [_spinner stopAnimating];
@@ -355,13 +461,55 @@
         [self.view addSubview:_spinner];
         _spinner.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
         [_spinner startAnimating];
+        
+        
+    }else{
+        meshDevice = [[CSRDevicesManager sharedInstance] getDeviceFromDeviceId:cellDeviceId];
+        CSRPlaceEntity *placeEntity = [CSRAppStateManager sharedInstance].selectedPlace;
+        deleteDeviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:cellDeviceId];
+        
+        if (![CSRUtilities isStringEmpty:placeEntity.passPhrase]) {
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Delete Device" message:[NSString stringWithFormat:@"Are you sure that you want to delete this device :%@?",meshDevice.name] preferredStyle:UIAlertControllerStyleAlert];
+            [alertController.view setTintColor:DARKORAGE];
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                if (meshDevice) {
+                    [[CSRDevicesManager sharedInstance] initiateRemoveDevice:meshDevice];
+                }
+            }];
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                [_spinner stopAnimating];
+                [_spinner setHidden:YES];
+            }];
+            [alertController addAction:okAction];
+            [alertController addAction:cancelAction];
+            [self presentViewController:alertController animated:YES completion:nil];
+            _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            [self.view addSubview:_spinner];
+            _spinner.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
+            [_spinner startAnimating];
+        }
     }
+}
+
+//method to getIndexByValue
+- (NSNumber *) getValueByIndex:(CSRDeviceEntity*)deviceEntity
+{
+    uint16_t *dataToModify = (uint16_t*)deviceEntity.groups.bytes;
+    
+    for (int count=0; count < deviceEntity.groups.length/2; count++, dataToModify++) {
+        if (*dataToModify == [_areaEntity.areaID unsignedShortValue]) {
+            return @(count);
+            
+        } else if (*dataToModify == 0){
+            return @(count);
+        }
+    }
+    
+    return @(-1);
 }
 
 -(void)deleteStatus:(NSNotification *)notification
 {
-    
-    
     NSNumber *num = notification.userInfo[@"boolFlag"];
     if ([num boolValue] == NO) {
         

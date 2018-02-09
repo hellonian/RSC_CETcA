@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "--53.png",
+      "filename" : "Area_Pantry.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "--53@2x.png",
+      "filename" : "Area_Pantry@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "--53@3x.png",
+      "filename" : "Area_Pantry@3x.png",
       "scale" : "3x"
     }
   ],

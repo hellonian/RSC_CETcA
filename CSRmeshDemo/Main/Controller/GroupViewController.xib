@@ -16,6 +16,7 @@
                 <outlet property="backItem" destination="AxW-sY-k9a" id="5UK-IB-QnZ"/>
                 <outlet property="editItem" destination="HJZ-lb-IPq" id="I9H-Oj-pH1"/>
                 <outlet property="groupIconImageView" destination="Udf-Mv-Bw5" id="wBZ-ZC-AWv"/>
+                <outlet property="groupNameLabel" destination="EPs-4y-Hz9" id="4xx-Qg-vXz"/>
                 <outlet property="groupNameTF" destination="aHb-IC-OPi" id="W65-7g-7ay"/>
                 <outlet property="iconEditBtn" destination="hIn-g5-Tac" id="gbk-d1-Iiz"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -53,14 +54,13 @@
                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
                             <textInputTraits key="textInputTraits"/>
                         </textField>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AxW-sY-k9a">
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AxW-sY-k9a">
                             <rect key="frame" x="0.0" y="40" width="64" height="44"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="64" id="2nH-04-9dH"/>
                                 <constraint firstAttribute="height" constant="44" id="fvz-5t-83o"/>
                             </constraints>
-                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                            <state key="normal" title="Back">
+                            <state key="normal" title="Back" image="Btn_back">
                                 <color key="titleColor" red="0.91764705882352937" green="0.36862745098039218" blue="0.070588235294117646" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </state>
                             <connections>
@@ -84,37 +84,50 @@
                         <constraint firstAttribute="width" secondItem="GwJ-QK-ItL" secondAttribute="height" multiplier="640:290" id="uxC-sH-JSA"/>
                     </constraints>
                 </imageView>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bedroom_highlight" translatesAutoresizingMaskIntoConstraints="NO" id="Udf-Mv-Bw5">
-                    <rect key="frame" x="298" y="175" width="72" height="72"/>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bedroom_highlight" translatesAutoresizingMaskIntoConstraints="NO" id="Udf-Mv-Bw5">
+                    <rect key="frame" x="295" y="176" width="72" height="72"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="72" id="ULH-j8-cQ9"/>
                         <constraint firstAttribute="width" constant="72" id="kcN-7f-eDZ"/>
                     </constraints>
                 </imageView>
                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hIn-g5-Tac">
-                    <rect key="frame" x="330" y="185" width="30" height="30"/>
+                    <rect key="frame" x="331" y="180" width="32" height="32"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="30" id="cUa-Qj-RLm"/>
-                        <constraint firstAttribute="height" constant="30" id="gAH-nQ-Glo"/>
+                        <constraint firstAttribute="width" constant="32" id="cUa-Qj-RLm"/>
+                        <constraint firstAttribute="height" constant="32" id="gAH-nQ-Glo"/>
                     </constraints>
-                    <state key="normal" image="delete"/>
+                    <state key="normal" image="Avatar_Edit"/>
                     <connections>
                         <action selector="iconEditAction:" destination="-1" eventType="touchUpInside" id="ktM-7u-pev"/>
                     </connections>
                 </button>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EPs-4y-Hz9">
+                    <rect key="frame" x="295" y="229" width="72" height="14"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="14" id="ahh-yg-Hmq"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                    <color key="textColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" red="0.76470588235294112" green="0.76470588235294112" blue="0.76470588235294112" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="Udf-Mv-Bw5" secondAttribute="trailing" constant="5" id="IQ8-YD-YCN"/>
+                <constraint firstItem="EPs-4y-Hz9" firstAttribute="trailing" secondItem="Udf-Mv-Bw5" secondAttribute="trailing" id="4pE-Hf-BpH"/>
+                <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="Udf-Mv-Bw5" secondAttribute="trailing" constant="8" id="IQ8-YD-YCN"/>
+                <constraint firstItem="EPs-4y-Hz9" firstAttribute="bottom" secondItem="Udf-Mv-Bw5" secondAttribute="bottom" constant="-5" id="Nka-OV-beU"/>
                 <constraint firstItem="1qK-Rh-dPz" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="WHT-Vp-Pl7"/>
                 <constraint firstItem="1qK-Rh-dPz" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="ZNx-Wy-wWB"/>
+                <constraint firstItem="EPs-4y-Hz9" firstAttribute="leading" secondItem="Udf-Mv-Bw5" secondAttribute="leading" id="ZPu-vG-T45"/>
                 <constraint firstItem="1qK-Rh-dPz" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="cMb-vr-Ohm"/>
-                <constraint firstItem="Udf-Mv-Bw5" firstAttribute="bottom" secondItem="GwJ-QK-ItL" secondAttribute="bottom" constant="-7" id="djY-g7-u1L"/>
+                <constraint firstItem="Udf-Mv-Bw5" firstAttribute="bottom" secondItem="GwJ-QK-ItL" secondAttribute="bottom" constant="-6" id="djY-g7-u1L"/>
                 <constraint firstItem="GwJ-QK-ItL" firstAttribute="top" secondItem="1qK-Rh-dPz" secondAttribute="bottom" id="hub-Kl-olW"/>
                 <constraint firstItem="GwJ-QK-ItL" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="i8r-uT-oe6"/>
                 <constraint firstItem="GwJ-QK-ItL" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" constant="64" id="sEk-So-AgS"/>
-                <constraint firstItem="hIn-g5-Tac" firstAttribute="trailing" secondItem="Udf-Mv-Bw5" secondAttribute="trailing" constant="-10" id="uAl-rF-xrC"/>
-                <constraint firstItem="hIn-g5-Tac" firstAttribute="top" secondItem="Udf-Mv-Bw5" secondAttribute="top" constant="10" id="x5s-70-QQy"/>
+                <constraint firstItem="hIn-g5-Tac" firstAttribute="trailing" secondItem="Udf-Mv-Bw5" secondAttribute="trailing" constant="-4" id="uAl-rF-xrC"/>
+                <constraint firstItem="EPs-4y-Hz9" firstAttribute="centerX" secondItem="Udf-Mv-Bw5" secondAttribute="centerX" id="uiR-Y9-bg5"/>
+                <constraint firstItem="hIn-g5-Tac" firstAttribute="top" secondItem="Udf-Mv-Bw5" secondAttribute="top" constant="4" id="x5s-70-QQy"/>
                 <constraint firstItem="GwJ-QK-ItL" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="zJC-zg-swM"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
@@ -122,8 +135,9 @@
         </view>
     </objects>
     <resources>
+        <image name="Avatar_Edit" width="32" height="32"/>
+        <image name="Btn_back" width="18" height="18"/>
         <image name="bedroom_highlight" width="72" height="72"/>
-        <image name="delete" width="64" height="64"/>
         <image name="topbg" width="427" height="193"/>
     </resources>
 </document>

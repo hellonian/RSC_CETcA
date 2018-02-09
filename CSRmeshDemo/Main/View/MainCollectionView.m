@@ -50,15 +50,6 @@
     return [self.dataArray count];
 }
 
-//- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-//    if ([_cellIdentifier isEqualToString:@"MainCollectionViewCell"]) {
-//        id cell = [self.dataArray objectAtIndex:indexPath.row];
-//        if ([cell isKindOfClass:[NSNumber class]]) {
-//            NSLog(@"tapppp");
-//        }
-//    }
-//}
-
 - (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
     if ([_cellIdentifier isEqualToString:@"MainCollectionViewCell"]) {
         return YES;
@@ -81,9 +72,9 @@
     }
 }
 
-- (void)superCollectionViewCellDelegatePanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId withPanState:(UIGestureRecognizerState)state {
-    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewDelegatePanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
-        [self.mainDelegate mainCollectionViewDelegatePanBrightnessWithTouchPoint:touchPoint withOrigin:origin toLight:deviceId withPanState:state];
+- (void)superCollectionViewCellDelegatePanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId groupId:(NSNumber *)groupId withPanState:(UIGestureRecognizerState)state {
+    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewDelegatePanBrightnessWithTouchPoint:withOrigin:toLight:groupId:withPanState:)]) {
+        [self.mainDelegate mainCollectionViewDelegatePanBrightnessWithTouchPoint:touchPoint withOrigin:origin toLight:deviceId groupId:groupId withPanState:state];
     }
 }
 
@@ -99,9 +90,9 @@
     }
 }
 
-- (void)superCollectionViewCellDelegateDeleteDeviceAction:(NSNumber *)cellDeviceId {
-    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewDelegateDeleteDeviceAction:)]) {
-        [self.mainDelegate mainCollectionViewDelegateDeleteDeviceAction:cellDeviceId];
+- (void)superCollectionViewCellDelegateDeleteDeviceAction:(NSNumber *)cellDeviceId cellGroupId:(NSNumber *)cellGroupId{
+    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewDelegateDeleteDeviceAction:cellGroupId:)]) {
+        [self.mainDelegate mainCollectionViewDelegateDeleteDeviceAction:cellDeviceId cellGroupId:cellGroupId];
     }
 }
 
@@ -133,6 +124,12 @@
         }
     }
     
+}
+
+- (void)superCollectionViewCellDelegateSelectAction:(NSNumber *)cellDeviceId {
+    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewDelegateSelectAction:)]) {
+        [self.mainDelegate mainCollectionViewDelegateSelectAction:cellDeviceId];
+    }
 }
 
 #pragma mark - lazy

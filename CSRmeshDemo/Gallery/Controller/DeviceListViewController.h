@@ -8,6 +8,19 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSInteger,DeviceListSelectMode)
+{
+    DeviceListSelectMode_Single = 0,
+    DeviceListSelectMode_Multiple
+};
+
+typedef void(^DeviceListSelectedHandle)(NSArray *devices);
+
 @interface DeviceListViewController : UIViewController
+
+@property (nonatomic,assign)DeviceListSelectMode selectMode;
+@property (nonatomic,strong)NSArray *originalMembers;
+
+- (void)getSelectedDevices:(DeviceListSelectedHandle)handle;
 
 @end

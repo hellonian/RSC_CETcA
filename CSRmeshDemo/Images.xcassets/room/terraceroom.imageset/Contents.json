@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "--57.png",
+      "filename" : "Area_Gazebo.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "--57@2x.png",
+      "filename" : "Area_Gazebo@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "--57@3x.png",
+      "filename" : "Area_Gazebo@3x.png",
       "scale" : "3x"
     }
   ],

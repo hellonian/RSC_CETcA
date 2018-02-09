@@ -8,6 +8,7 @@
 
 @implementation CSRAreaEntity
 
+@dynamic areaIconNum;
 @dynamic areaID;
 @dynamic areaName;
 @dynamic areaImage;

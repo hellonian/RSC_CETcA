@@ -7,7 +7,10 @@
 //
 
 #import "GalleryDetailViewController.h"
+
 #import "ConfiguredDeviceListController.h"
+#import "DeviceListViewController.h"
+
 #import "GalleryDropView.h"
 #import "CSRDatabaseManager.h"
 #import "GalleryEntity.h"
@@ -209,6 +212,7 @@
 }
 
 - (void)galleryAddAction:(UIBarButtonItem *)item {
+    /*
     ConfiguredDeviceListController *list = [[ConfiguredDeviceListController alloc] initWithItemPerSection:3 cellIdentifier:@"LightClusterCell"];
     [list setSelectMode:Single];
     [list setSelectDeviceHandle:^(NSArray *selectedDevice) {
@@ -229,6 +233,28 @@
         
         }
     }];
+     */
+    DeviceListViewController *list = [[DeviceListViewController alloc] init];
+    list.selectMode = DeviceListSelectMode_Single;
+    [list getSelectedDevices:^(NSArray *devices) {
+        if (devices.count > 0) {
+            NSNumber *deviceId = devices[0];
+            if (!_isNewAdd) {
+                _isChange = YES;
+            }
+            GalleryDropView *dropView = [[GalleryDropView alloc] initWithFrame:CGRectMake(0, 0, 128, 128)];
+            dropView.deviceId = deviceId;
+            dropView.isEditing = YES;
+            dropView.delegate = self;
+            
+            CSRmeshDevice *device = [[CSRDevicesManager sharedInstance] getDeviceFromDeviceId:deviceId];
+            dropView.kindName = device.shortName;
+            
+            [_controlImageView addDropViewInCenter:dropView];
+        }
+    }];
+    
+    
     [self.navigationController pushViewController:list animated:YES];
     
 }

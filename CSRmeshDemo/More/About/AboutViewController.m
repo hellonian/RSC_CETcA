@@ -9,6 +9,7 @@
 #import "AboutViewController.h"
 
 #import "DeviceModelManager.h"
+#import <CSRmesh/LightModelApi.h>
 
 @interface AboutViewController ()
 
@@ -28,22 +29,25 @@
 }
 - (IBAction)btn1:(id)sender {
     
-    NSLog(@"%@",[DeviceModelManager sharedInstance].allDevices);
+    [[LightModelApi sharedInstance] setLevel:@32770 level:@100 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+        
+    } failure:^(NSError * _Nullable error) {
+        
+    }];
     
 }
 - (IBAction)btn2:(id)sender {
-    NSArray *array = [DeviceModelManager sharedInstance].allDevices;
-    
-    [array enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSLog(@">>> %@ >>> %@",model.level,model.powerState);
+    [[LightModelApi sharedInstance] setLevel:@32770 level:@200 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+        
+    } failure:^(NSError * _Nullable error) {
+        
     }];
     
 }
 - (IBAction)btn3:(id)sender {
-    NSArray *array = [DeviceModelManager sharedInstance].allDevices;
-    
-    [array enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
-        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:model.deviceId withPowerState:@(![model.powerState boolValue])];
+    [[LightModelApi sharedInstance] setLevel:@32770 level:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+        
+    } failure:^(NSError * _Nullable error) {
         
     }];
     

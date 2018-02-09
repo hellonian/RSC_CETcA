@@ -18,12 +18,17 @@
                 <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="o2Q-aQ-5bQ">
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="o2Q-aQ-5bQ">
                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     </imageView>
                 </subviews>
             </view>
+            <constraints>
+                <constraint firstItem="o2Q-aQ-5bQ" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="BQw-We-tlN"/>
+                <constraint firstAttribute="trailing" secondItem="o2Q-aQ-5bQ" secondAttribute="trailing" id="DTA-fr-YTM"/>
+                <constraint firstAttribute="bottom" secondItem="o2Q-aQ-5bQ" secondAttribute="bottom" id="XHP-kw-mdG"/>
+                <constraint firstItem="o2Q-aQ-5bQ" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="h9c-6C-xkl"/>
+            </constraints>
             <connections>
                 <outlet property="placeIcon" destination="o2Q-aQ-5bQ" id="mMt-w0-5am"/>
             </connections>

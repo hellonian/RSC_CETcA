@@ -30,8 +30,8 @@
     CGFloat offsetImage = (self.bounds.size.height-self.imageView.bounds.size.height)*0.5;
     CGFloat offsetTitle = (self.bounds.size.height-self.titleLabel.bounds.size.height)*0.5;
     
-    self.imageEdgeInsets = UIEdgeInsetsMake(-offsetImage, 0, offsetImage, -self.titleLabel.bounds.size.width);
-    self.titleEdgeInsets = UIEdgeInsetsMake(offsetTitle, -self.imageView.bounds.size.width, -offsetTitle+4, 0);
+    self.imageEdgeInsets = UIEdgeInsetsMake(-offsetImage+5, 0, offsetImage-5, -self.titleLabel.bounds.size.width);
+    self.titleEdgeInsets = UIEdgeInsetsMake(offsetTitle-4, -self.imageView.bounds.size.width, -offsetTitle+4, 0);
 }
 
 @end

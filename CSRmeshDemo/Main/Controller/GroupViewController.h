@@ -8,10 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "MainCollectionView.h"
+#import "CSRAreaEntity.h"
+
+typedef void(^GroupViewHandle)(void);
 
 @interface GroupViewController : UIViewController
 
-@property (nonatomic,assign) BOOL isEditing;
+@property (nonatomic,assign) BOOL isCreateNewArea;
 @property (nonatomic,strong) MainCollectionView *devicesCollectionView;
+@property (nonatomic,strong) CSRAreaEntity *areaEntity;
+@property (nonatomic,copy) GroupViewHandle handle;
 
 @end

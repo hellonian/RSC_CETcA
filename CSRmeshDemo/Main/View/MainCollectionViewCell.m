@@ -11,6 +11,8 @@
 #import "CSRAreaEntity.h"
 #import "DeviceModelManager.h"
 #import "CSRmeshDevice.h"
+#import "CSRConstants.h"
+#import "SingleDeviceModel.h"
 
 typedef enum : NSUInteger {
     PanGestureMoveDirectionNone,
@@ -31,6 +33,7 @@ typedef enum : NSUInteger {
 @property (nonatomic,assign) PanGestureMoveDirection direction;
 @property (weak, nonatomic) IBOutlet UIButton *deleteBtn;
 @property (weak, nonatomic) IBOutlet UIImageView *moveImageView;
+@property (weak, nonatomic) IBOutlet UIView *bottomView;
 
 
 @end
@@ -60,24 +63,48 @@ typedef enum : NSUInteger {
 
 - (void)configureCellWithiInfo:(id)info withCellIndexPath:(NSIndexPath *)indexPath{
     self.hidden = NO;
-//    if ([info isKindOfClass:[NSString class]]) {
-//        self.iconView.image = [UIImage imageNamed:@"dimmersingle"];
-//        self.nameLabel.text = @"D350BT";
-//    }
+
     if ([info isKindOfClass:[CSRAreaEntity class]]) {
         CSRAreaEntity *areaEntity = (CSRAreaEntity *)info;
         self.groupId = areaEntity.areaID;
         self.deviceId = @2000;
         
         self.groupMembers = [areaEntity.devices allObjects];
-//        self.iconView.image = areaEntity.image;
+        self.nameLabel.hidden = NO;
+        self.nameLabel.text = areaEntity.areaName;
+        self.kindLabel.hidden = NO;
+        NSString *kind;
+        for (CSRDeviceEntity *deviceEntity in self.groupMembers) {
+            NSString *str = [deviceEntity.shortName isEqualToString:@"D350BT"]? @"Dimmer":@"Switch";
+            if (kind.length>0) {
+                kind = [NSString stringWithFormat:@"%@ %@",kind,str];
+            }else {
+                kind = str;
+            }
+        }
+        self.kindLabel.text = kind;
+        if ([kind containsString:@"Dimmer"]) {
+            self.levelLabel.hidden = NO;
+        }else {
+            self.levelLabel.hidden = YES;
+        }
+        
+        if ([areaEntity.areaIconNum isEqualToNumber:@99]) {
+            self.iconView.image = [UIImage imageWithData:areaEntity.areaImage];
+        }else {
+            NSArray *iconArray = kGroupIcons;
+            NSString *imageString = [iconArray objectAtIndex:[areaEntity.areaIconNum integerValue]];
+            self.iconView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@room",imageString]];
+        }
+        
+        [self adjustGroupCellBgcolorAndLevelLabel];
+        self.bottomView.hidden = NO;
         return;
     }
     
     if ([info isKindOfClass:[CSRDeviceEntity class]]) {
         
         CSRDeviceEntity *deviceEntity = (CSRDeviceEntity *)info;
-        NSLog(@">> %@ >> %@ ",deviceEntity.name,deviceEntity.shortName);
         
         self.groupId = @1000;
         self.deviceId = deviceEntity.deviceId;
@@ -97,9 +124,30 @@ typedef enum : NSUInteger {
         self.cellIndexPath = indexPath;
         
         [self adjustCellBgcolorAndLevelLabelWithDeviceId:deviceEntity.deviceId];
+        self.bottomView.hidden = NO;
+        return;
+    }
+    
+    if ([info isKindOfClass:[SingleDeviceModel class]]) {
         
-        NSLog(@">> %d",self.hidden);
-        
+        SingleDeviceModel *device = (SingleDeviceModel *)info;
+        self.groupId = @2000;
+        self.deviceId = device.deviceId;
+        self.nameLabel.hidden = NO;
+        self.nameLabel.text = device.deviceName;
+        self.kindLabel.hidden = NO;
+        if ([device.deviceShortName isEqualToString:@"D350BT"]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_Dimmer"];
+            self.kindLabel.text = @"Dimmer";
+            self.levelLabel.hidden = NO;
+        }
+        if ([device.deviceShortName isEqualToString:@"S350BT"]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_Switch"];
+            self.kindLabel.text = @"Switch";
+            self.levelLabel.hidden = YES;
+        }
+        self.cellIndexPath = indexPath;
+        self.bottomView.hidden = YES;
         return;
     }
     
@@ -119,6 +167,7 @@ typedef enum : NSUInteger {
         self.levelLabel.hidden = YES;
         self.deleteBtn.hidden = YES;
         self.moveImageView.hidden = YES;
+        self.bottomView.hidden = YES;
         return;
     }
     
@@ -140,6 +189,8 @@ typedef enum : NSUInteger {
             self.iconView.image = [UIImage imageNamed:@"singleBtnRemote"];
         }
         self.cellIndexPath = indexPath;
+        self.bottomView.hidden = YES;
+        return;
     }
     
 }
@@ -147,24 +198,75 @@ typedef enum : NSUInteger {
 - (void)adjustCellBgcolorAndLevelLabelWithDeviceId:(NSNumber *)deviceId {
     DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
     if (![model.powerState boolValue]) {
-        self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
+        if ([_groupId isEqualToNumber:@1000]) {
+            self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+            self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+        }else {
+            self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
+        }
+        
         if ([model.shortName isEqualToString:@"D350BT"]) {
             self.levelLabel.text = @"0%";
         }
     }else {
-        self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
+        if ([_groupId isEqualToNumber:@1000]) {
+            self.nameLabel.textColor = DARKORAGE;
+            self.levelLabel.textColor = DARKORAGE;
+        }else {
+            self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
+        }
+        
         if ([model.shortName isEqualToString:@"D350BT"]) {
             self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level floatValue]/255.0*100];
         }
     }
 }
 
+- (void)adjustGroupCellBgcolorAndLevelLabel {
+    __block NSInteger evenBrightness = 0;
+    [_groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceEntity.deviceId];
+        if ([model.powerState boolValue]) {
+            NSInteger fixStatus = [model.level integerValue]? [model.level integerValue]:0;
+            evenBrightness += fixStatus;
+        }
+        
+    }];
+    
+    NSInteger perBrightness = evenBrightness/_groupMembers.count;
+    if (perBrightness) {
+        self.nameLabel.textColor = DARKORAGE;
+        self.levelLabel.textColor = DARKORAGE;
+        self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
+        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",perBrightness/255.0*100];
+    }else {
+        self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+        self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+        self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
+        self.levelLabel.text = @"0%";
+    }
+    
+}
+
 - (void)setPowerStateSuccess:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
-    if ([deviceId isEqualToNumber:_deviceId]) {
+
+    if ([_deviceId isEqualToNumber:@2000]) {
+        __block BOOL exist;
+        [_groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([deviceEntity.deviceId isEqualToNumber:deviceId]) {
+                exist = YES;
+                *stop = YES;
+            }
+        }];
+        if (exist) {
+            [self adjustGroupCellBgcolorAndLevelLabel];
+        }
+    }else if ([deviceId isEqualToNumber:_deviceId]) {
         [self adjustCellBgcolorAndLevelLabelWithDeviceId:deviceId];
     }
+    
 }
 
 - (void)mainCellTapGestureAction:(UITapGestureRecognizer *)sender {
@@ -174,8 +276,18 @@ typedef enum : NSUInteger {
             if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateAddDeviceAction:cellIndexPath:)]) {
                 [self.superCellDelegate superCollectionViewCellDelegateAddDeviceAction:self.deviceId cellIndexPath:self.cellIndexPath];
             }
-        }
-        else {
+        }else if ([self.deviceId isEqualToNumber:@2000]) {
+            __block BOOL isPowerOn = 0;
+            [self.groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *entity, NSUInteger idx, BOOL * _Nonnull stop) {
+                DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:entity.deviceId];
+                if ([model.powerState boolValue]) {
+                    isPowerOn = YES;
+                    *stop = YES;
+                }
+            }];
+            [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:self.groupId withPowerState:@(!isPowerOn)];
+            
+        }else {
             DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
             [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(![model.powerState boolValue])];
         }
@@ -183,7 +295,7 @@ typedef enum : NSUInteger {
 }
 
 - (void)mainCellPanGestureAction:(UIPanGestureRecognizer *)sender {
-    if (![self.deviceId isEqualToNumber:@1000] && ![self.deviceId isEqualToNumber:@3000] && [self.kindLabel.text containsString:@"Dimmer"]) {
+    if (![self.groupId isEqualToNumber:@4000] && [self.kindLabel.text containsString:@"Dimmer"]) {
         CGPoint translation = [sender translationInView:self];
         CGPoint touchPoint = [sender locationInView:self.superview];
         switch (sender.state) {
@@ -191,8 +303,8 @@ typedef enum : NSUInteger {
             {
                 _direction = PanGestureMoveDirectionNone;
                 
-                if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegatePanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
-                    [self.superCellDelegate superCollectionViewCellDelegatePanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId withPanState:sender.state];
+                if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegatePanBrightnessWithTouchPoint:withOrigin:toLight:groupId:withPanState:)]) {
+                    [self.superCellDelegate superCollectionViewCellDelegatePanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId groupId:self.groupId withPanState:sender.state];
                 }
                 break;
             }
@@ -202,8 +314,8 @@ typedef enum : NSUInteger {
                     _direction = [self determineCameraDirectionIfNeeded:translation];
                 }
                 if (_direction == PanGestureMoveDirectionHorizontal) {
-                    if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegatePanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
-                        [self.superCellDelegate superCollectionViewCellDelegatePanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId withPanState:sender.state];
+                    if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegatePanBrightnessWithTouchPoint:withOrigin:toLight:groupId:withPanState:)]) {
+                        [self.superCellDelegate superCollectionViewCellDelegatePanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId groupId:self.groupId withPanState:sender.state];
                     }
                 }
                 
@@ -211,8 +323,8 @@ typedef enum : NSUInteger {
             }
             case UIGestureRecognizerStateEnded:
             {
-                if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegatePanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
-                    [self.superCellDelegate superCollectionViewCellDelegatePanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId withPanState:sender.state];
+                if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegatePanBrightnessWithTouchPoint:withOrigin:toLight:groupId:withPanState:)]) {
+                    [self.superCellDelegate superCollectionViewCellDelegatePanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId groupId:self.groupId withPanState:sender.state];
                 }
                 break;
             }
@@ -284,11 +396,17 @@ typedef enum : NSUInteger {
 }
 
 - (IBAction)deleteMainCell:(UIButton *)sender {
-    if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateDeleteDeviceAction:)]) {
-        [self.superCellDelegate superCollectionViewCellDelegateDeleteDeviceAction:self.deviceId];
+    if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateDeleteDeviceAction:cellGroupId:)]) {
+        [self.superCellDelegate superCollectionViewCellDelegateDeleteDeviceAction:self.deviceId cellGroupId:self.groupId];
     }
 }
 
+- (IBAction)selectAction:(UIButton *)sender {
+    if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateSelectAction:)]) {
+        [self.superCellDelegate superCollectionViewCellDelegateSelectAction:self.deviceId];
+    }
+    
+}
 
 
 @end

@@ -32,7 +32,7 @@
 
 #define kSceneIcons @[@"home", @"away", @"party", @"tv", @"reading", @"dinning"];
 
-#define kGroupIcons @[@"livingroom",@"bedroom",@"dinningroom",@"washroom",@"studyroom",@"kettleroom",@"atticroom",@"stairroom",@"fitnessroom",@"plantroom",@"panroom",@"terraceroom",@"bookcaseroom",@"stoolroom",@"talkingroom",@"warehouseroom",@"corridorroom"];
+#define kGroupIcons @[@"living",@"bed",@"dinning",@"wash",@"study",@"kettle",@"attic",@"stair",@"fitness",@"plant",@"pan",@"terrace",@"bookcase",@"stool",@"talking",@"warehouse",@"corridor"];
 
 
 #pragma mark - Notifications

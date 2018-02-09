@@ -13,6 +13,7 @@
 @property (nonatomic,strong) NSNumber *deviceId;
 @property (nonatomic,strong) NSNumber *groupId;
 @property (nonatomic,strong) NSArray *groupMembers;
+@property (weak, nonatomic) IBOutlet UIButton *seleteButton;
 
 - (void)showDeleteBtnAndMoveImageView:(BOOL)value;
 
