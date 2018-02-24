@@ -22,6 +22,7 @@
     NSTimer *timer;
     NSNumber *currentLevel;
     UIGestureRecognizerState currentState;
+    PanGestureMoveDirection moveDirection;
 }
 
 @end
@@ -134,9 +135,10 @@
     }];
 }
 
-- (void)setLevelWithDeviceId:(NSNumber *)deviceId withLevel:(NSNumber *)level withState:(UIGestureRecognizerState)state {
+- (void)setLevelWithDeviceId:(NSNumber *)deviceId withLevel:(NSNumber *)level withState:(UIGestureRecognizerState)state direction:(PanGestureMoveDirection)direction{
     currentState = state;
     currentLevel = level;
+    moveDirection = direction;
     if (state == UIGestureRecognizerStateBegan) {
         timer = [NSTimer timerWithTimeInterval:0.12 target:self selector:@selector(timerMethod:) userInfo:deviceId repeats:YES];
         [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
@@ -146,11 +148,14 @@
 - (void)timerMethod:(NSTimer *)infotimer {
     @synchronized (self) {
         NSNumber *deviceId = infotimer.userInfo;
-        [[LightModelApi sharedInstance] setLevel:deviceId level:currentLevel success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-            
-        } failure:^(NSError * _Nullable error) {
-            
-        }];
+        if (moveDirection == PanGestureMoveDirectionHorizontal) {
+            [[LightModelApi sharedInstance] setLevel:deviceId level:currentLevel success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                
+            } failure:^(NSError * _Nullable error) {
+                
+            }];
+        }
+        
         if (currentState == UIGestureRecognizerStateEnded) {
             NSLog(@"定时器结束！！🔔🔔🔔🔔🔔🔔🔔🔔🔔🔔🔔");
             [timer invalidate];

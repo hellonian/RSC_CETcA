@@ -25,5 +25,6 @@
 @dynamic shortName;
 @dynamic drops;
 @dynamic sortId;
+@dynamic isEditting;
 
 @end

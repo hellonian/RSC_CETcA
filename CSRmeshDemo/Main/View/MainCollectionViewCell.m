@@ -14,12 +14,6 @@
 #import "CSRConstants.h"
 #import "SingleDeviceModel.h"
 
-typedef enum : NSUInteger {
-    PanGestureMoveDirectionNone,
-    PanGestureMoveDirectionVertical,
-    PanGestureMoveDirectionHorizontal,
-} PanGestureMoveDirection;
-
 @interface MainCollectionViewCell ()<UIGestureRecognizerDelegate>
 {
     CGFloat distanceX;
@@ -99,6 +93,7 @@ typedef enum : NSUInteger {
         self.cellIndexPath = indexPath;
         [self adjustGroupCellBgcolorAndLevelLabel];
         self.bottomView.hidden = NO;
+        [self showDeleteBtnAndMoveImageView:![areaEntity.isEditting boolValue]];
         return;
     }
     
@@ -125,6 +120,7 @@ typedef enum : NSUInteger {
         
         [self adjustCellBgcolorAndLevelLabelWithDeviceId:deviceEntity.deviceId];
         self.bottomView.hidden = NO;
+        [self showDeleteBtnAndMoveImageView:![deviceEntity.isEditting boolValue]];
         return;
     }
     
@@ -153,7 +149,6 @@ typedef enum : NSUInteger {
     }
     
     if ([info isKindOfClass:[NSNumber class]]) {
-        self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
         self.groupId = @4000;
         NSNumber *num = (NSNumber *)info;
         if ([num isEqualToNumber:@0]) {
@@ -161,6 +156,7 @@ typedef enum : NSUInteger {
         }else if ([num isEqualToNumber:@1]) {
             self.deviceId = @4000;
         }
+        self.kindLabel.text = @"addItem";
         self.iconView.image = [UIImage imageNamed:@"addroom"];
         self.cellIndexPath = indexPath;
         self.nameLabel.hidden = YES;
@@ -179,7 +175,7 @@ typedef enum : NSUInteger {
         self.deviceId = @3000;
         NSString *appearanceShortname = [[NSString alloc] initWithData:device.appearanceShortname encoding:NSUTF8StringEncoding];
         self.nameLabel.text = appearanceShortname;
-        self.kindLabel.text = [NSString stringWithFormat:@"%@",device.appearanceValue];
+        self.kindLabel.text = [NSString stringWithFormat:@"%@",[device.uuid.UUIDString substringFromIndex:24]];
         if ([appearanceShortname containsString:@"D350BT"]) {
             self.iconView.image = [UIImage imageNamed:@"dimmersingle"];
         }else if ([appearanceShortname containsString:@"S350BT"]) {
@@ -272,7 +268,7 @@ typedef enum : NSUInteger {
 
 - (void)mainCellTapGestureAction:(UITapGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateEnded) {
-        NSLog(@"maincell00");
+        NSLog(@"maincell00 groupId:%@ deviceId:%@",_groupId,_deviceId);
         if (self.kindLabel.text.length > 0) {
             if ([self.deviceId isEqualToNumber:@1000] || [self.deviceId isEqualToNumber:@3000] || [self.deviceId isEqualToNumber:@4000]) {
                 if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateAddDeviceAction:cellIndexPath:)]) {
@@ -309,13 +305,14 @@ typedef enum : NSUInteger {
     if (![self.groupId isEqualToNumber:@4000] && [self.kindLabel.text containsString:@"Dimmer"]) {
         CGPoint translation = [sender translationInView:self];
         CGPoint touchPoint = [sender locationInView:self.superview];
+        NSLog(@"_direction-->%ld",_direction);
         switch (sender.state) {
             case UIGestureRecognizerStateBegan:
             {
                 _direction = PanGestureMoveDirectionNone;
                 
-                if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegatePanBrightnessWithTouchPoint:withOrigin:toLight:groupId:withPanState:)]) {
-                    [self.superCellDelegate superCollectionViewCellDelegatePanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId groupId:self.groupId withPanState:sender.state];
+                if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegatePanBrightnessWithTouchPoint:withOrigin:toLight:groupId:withPanState:direction:)]) {
+                    [self.superCellDelegate superCollectionViewCellDelegatePanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId groupId:self.groupId withPanState:sender.state direction:_direction];
                 }
                 break;
             }
@@ -325,8 +322,8 @@ typedef enum : NSUInteger {
                     _direction = [self determineCameraDirectionIfNeeded:translation];
                 }
                 if (_direction == PanGestureMoveDirectionHorizontal) {
-                    if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegatePanBrightnessWithTouchPoint:withOrigin:toLight:groupId:withPanState:)]) {
-                        [self.superCellDelegate superCollectionViewCellDelegatePanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId groupId:self.groupId withPanState:sender.state];
+                    if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegatePanBrightnessWithTouchPoint:withOrigin:toLight:groupId:withPanState:direction:)]) {
+                        [self.superCellDelegate superCollectionViewCellDelegatePanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId groupId:self.groupId withPanState:sender.state direction:_direction];
                     }
                 }
                 
@@ -334,8 +331,8 @@ typedef enum : NSUInteger {
             }
             case UIGestureRecognizerStateEnded:
             {
-                if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegatePanBrightnessWithTouchPoint:withOrigin:toLight:groupId:withPanState:)]) {
-                    [self.superCellDelegate superCollectionViewCellDelegatePanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId groupId:self.groupId withPanState:sender.state];
+                if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegatePanBrightnessWithTouchPoint:withOrigin:toLight:groupId:withPanState:direction:)]) {
+                    [self.superCellDelegate superCollectionViewCellDelegatePanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId groupId:self.groupId withPanState:sender.state direction:_direction];
                 }
                 break;
             }

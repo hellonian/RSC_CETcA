@@ -25,8 +25,6 @@
         self.alpha = 0.9;
         self.layer.cornerRadius = 14;
         self.layer.masksToBounds = YES;
-        self.layer.borderColor = [[UIColor colorWithRed:195/255.0 green:195/255.0 blue:195/255.0 alpha:1] CGColor];
-        self.layer.borderWidth = 1;
     }
     return self;
 }

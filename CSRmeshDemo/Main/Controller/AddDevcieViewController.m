@@ -200,12 +200,19 @@
             [[CSRDevicesManager sharedInstance] setAttentionPreAssociation:_selectedDevice.deviceHash attentionState:@(1) withDuration:@(6000)];
             
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Are you sure to add the selected device？" message:nil preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+            NSMutableAttributedString *attributedTitle = [[NSMutableAttributedString alloc] initWithString:@"Are you sure to add the selected device?"];
+            [attributedTitle addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1] range:NSMakeRange(0, [[attributedTitle string] length])];
+            [alert setValue:attributedTitle forKey:@"attributedTitle"];
+            
+            UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"CANCEL" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
                 
             }];
-            UIAlertAction *confirm = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [cancel setValue:DARKORAGE forKey:@"titleTextColor"];
+            UIAlertAction *confirm = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 [self associateDevice];
             }];
+            [confirm setValue:DARKORAGE forKey:@"titleTextColor"];
             [alert addAction:cancel];
             [alert addAction:confirm];
             [self presentViewController:alert animated:YES completion:nil];

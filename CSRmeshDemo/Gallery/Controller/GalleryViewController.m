@@ -49,7 +49,7 @@
     UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(galleryEditAction:)];
     self.navigationItem.rightBarButtonItem = edit;
     self.navigationItem.leftBarButtonItem = nil;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getData) name:@"reGetData" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getData) name:@"reGetDataForPlaceChanged" object:nil];
 
     self.improver = [[ImproveTouchingExperience alloc] init];
     _isEditing = NO;
@@ -665,7 +665,7 @@
     if (state == UIGestureRecognizerStateBegan) {
         self.originalLevel = model.level;
         [self.improver beginImproving];
-        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:self.originalLevel withState:state];
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:self.originalLevel withState:state direction:PanGestureMoveDirectionHorizontal];
         return;
     }
     if (state == UIGestureRecognizerStateChanged || state == UIGestureRecognizerStateEnded) {
@@ -675,7 +675,7 @@
         }
         CGFloat percentage = updateLevel/255.0*100;
         [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
-        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state];
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state direction:PanGestureMoveDirectionHorizontal];
         
         if (state == UIGestureRecognizerStateEnded) {
             [self hideControlMaskLayer];

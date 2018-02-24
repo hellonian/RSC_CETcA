@@ -270,7 +270,7 @@
         for (int i=0; i<5; i++) {
             CSRAreaEntity *defaultArea = [NSEntityDescription insertNewObjectForEntityForName:@"CSRAreaEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
             
-            defaultArea.areaID = @(i);
+            defaultArea.areaID = @(i+1);
             defaultArea.areaName = defaultAreaNames[i];
             defaultArea.areaIconNum = @(i);
             defaultArea.sortId = @(i);

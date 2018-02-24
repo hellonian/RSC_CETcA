@@ -73,9 +73,9 @@
     }
 }
 
-- (void)superCollectionViewCellDelegatePanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId groupId:(NSNumber *)groupId withPanState:(UIGestureRecognizerState)state {
-    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewDelegatePanBrightnessWithTouchPoint:withOrigin:toLight:groupId:withPanState:)]) {
-        [self.mainDelegate mainCollectionViewDelegatePanBrightnessWithTouchPoint:touchPoint withOrigin:origin toLight:deviceId groupId:groupId withPanState:state];
+- (void)superCollectionViewCellDelegatePanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId groupId:(NSNumber *)groupId withPanState:(UIGestureRecognizerState)state direction:(PanGestureMoveDirection)direction{
+    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewDelegatePanBrightnessWithTouchPoint:withOrigin:toLight:groupId:withPanState:direction:)]) {
+        [self.mainDelegate mainCollectionViewDelegatePanBrightnessWithTouchPoint:touchPoint withOrigin:origin toLight:deviceId groupId:groupId withPanState:state direction:direction];
     }
 }
 

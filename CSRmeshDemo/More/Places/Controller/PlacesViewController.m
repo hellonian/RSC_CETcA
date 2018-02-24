@@ -172,7 +172,7 @@
                                                          [[CSRAppStateManager sharedInstance] setupPlace];
                                                          
                                                          [self.tableView reloadData];
-                                                         [[NSNotificationCenter defaultCenter] postNotificationName:@"reGetData" object:nil];
+                                                         [[NSNotificationCenter defaultCenter] postNotificationName:@"reGetDataForPlaceChanged" object:nil];
                                                      }];
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"CANCEL"

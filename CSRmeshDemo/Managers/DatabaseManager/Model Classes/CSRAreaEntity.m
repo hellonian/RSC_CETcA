@@ -15,5 +15,6 @@
 @dynamic favourite;
 @dynamic sortId;
 @dynamic devices;
+@dynamic isEditting;
 
 @end

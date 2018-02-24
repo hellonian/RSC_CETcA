@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "DeviceModel.h"
+#import "SuperCollectionViewCell.h"
 
 @interface DeviceModelManager : NSObject
 
@@ -17,6 +18,6 @@
 
 - (DeviceModel *)getDeviceModelByDeviceId:(NSNumber *)deviceId;
 - (void)setPowerStateWithDeviceId:(NSNumber *)deviceId withPowerState:(NSNumber *)powerState;
-- (void)setLevelWithDeviceId:(NSNumber *)deviceId withLevel:(NSNumber *)level withState:(UIGestureRecognizerState)state;
+- (void)setLevelWithDeviceId:(NSNumber *)deviceId withLevel:(NSNumber *)level withState:(UIGestureRecognizerState)state direction:(PanGestureMoveDirection)direction;
 
 @end

@@ -6,6 +6,7 @@
         <attribute name="areaImage" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="areaName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="favourite" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="isEditting" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="sortId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <relationship name="devices" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CSRDeviceEntity" inverseName="areas" inverseEntity="CSRDeviceEntity" syncable="YES"/>
         <relationship name="place" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CSRPlaceEntity" inverseName="areas" inverseEntity="CSRPlaceEntity" syncable="YES"/>
@@ -30,6 +31,7 @@
         <attribute name="favourite" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="groups" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="isAssociated" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="isEditting" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="modelHigh" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="modelLow" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
@@ -140,9 +142,9 @@
         <relationship name="scene" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SceneEntity" inverseName="members" inverseEntity="SceneEntity" syncable="YES"/>
     </entity>
     <elements>
-        <element name="CSRAreaEntity" positionX="81" positionY="-207" width="128" height="165"/>
+        <element name="CSRAreaEntity" positionX="81" positionY="-207" width="128" height="180"/>
         <element name="CSRControllerEntity" positionX="-495" positionY="18" width="128" height="180"/>
-        <element name="CSRDeviceEntity" positionX="61" positionY="200" width="128" height="330"/>
+        <element name="CSRDeviceEntity" positionX="61" positionY="200" width="128" height="345"/>
         <element name="CSRDeviceEventsEntity" positionX="-621" positionY="305" width="128" height="133"/>
         <element name="CSREventEntity" positionX="-434" positionY="288" width="128" height="180"/>
         <element name="CSRGatewayEntity" positionX="-191" positionY="269" width="128" height="178"/>

@@ -59,6 +59,8 @@
     UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editMainView)];
     self.navigationItem.rightBarButtonItem = edit;
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reGetDataForPlaceChanged) name:@"reGetDataForPlaceChanged" object:nil];
+    
     self.improver = [[ImproveTouchingExperience alloc] init];
     
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
@@ -110,6 +112,7 @@
             for (CSRDeviceEntity *deviceEntity in area.devices) {
                 [deviceIdWasInAreaArray addObject:deviceEntity.deviceId];
             }
+            area.isEditting = @(_mainCVEditting);
             [_mainCollectionView.dataArray addObject:area];
         }];
     }
@@ -119,6 +122,7 @@
         [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([deviceEntity.shortName isEqualToString:@"D350BT"] || [deviceEntity.shortName isEqualToString:@"S350BT"]) {
                 if (![deviceIdWasInAreaArray containsObject:deviceEntity.deviceId]) {
+                    deviceEntity.isEditting = @(_mainCVEditting);
                     [_mainCollectionView.dataArray addObject:deviceEntity];
                 }
             }
@@ -134,22 +138,34 @@
 }
 
 - (void)mainCollectionViewEditlayoutView {
-    [self.mainCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell *cell, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (_mainCVEditting) {
-            if ([cell.deviceId isEqualToNumber:@1000]) {
-                cell.hidden = YES;
-            }else {
-                [cell showDeleteBtnAndMoveImageView:NO];
-            }
+    [self.mainCollectionView.dataArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj isKindOfClass:[CSRAreaEntity class]]) {
+            CSRAreaEntity *areaEntity = (CSRAreaEntity *)obj;
+            areaEntity.isEditting = @(_mainCVEditting);
         }
-        else {
-            if ([cell.deviceId isEqualToNumber:@1000]) {
-                cell.hidden = NO;
-            }else {
-                [cell showDeleteBtnAndMoveImageView:YES];
+        if ([obj isKindOfClass:[CSRDeviceEntity class]]) {
+            CSRDeviceEntity *deviceEntity = (CSRDeviceEntity *)obj;
+            deviceEntity.isEditting = @(_mainCVEditting);
+        }
+        if ([obj isKindOfClass:[NSNumber class]]) {
+            if (_mainCVEditting) {
+                [self.mainCollectionView.dataArray removeObject:obj];
             }
         }
     }];
+    if (!_mainCVEditting) {
+        __block BOOL exit=0;
+        [self.mainCollectionView.dataArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([obj isKindOfClass:[NSNumber class]]) {
+                exit = YES;
+                *stop = YES;
+            }
+        }];
+        if (!exit) {
+            [self.mainCollectionView.dataArray addObject:@0];
+        }
+    }
+    [self.mainCollectionView reloadData];
 }
 
 - (void)getSceneDataArray {
@@ -300,7 +316,7 @@
     
 }
 
-- (void)mainCollectionViewDelegatePanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId groupId:(NSNumber *)groupId withPanState:(UIGestureRecognizerState)state {
+- (void)mainCollectionViewDelegatePanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId groupId:(NSNumber *)groupId withPanState:(UIGestureRecognizerState)state direction:(PanGestureMoveDirection)direction{
     
     if (state == UIGestureRecognizerStateBegan) {
         if ([deviceId isEqualToNumber:@2000]) {
@@ -321,11 +337,11 @@
                     }
                 }
             }];
-            [[DeviceModelManager sharedInstance] setLevelWithDeviceId:groupId withLevel:self.originalLevel withState:state];
+            [[DeviceModelManager sharedInstance] setLevelWithDeviceId:groupId withLevel:self.originalLevel withState:state direction:direction];
         }else {
             DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
             self.originalLevel = model.level;
-            [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:self.originalLevel withState:state];
+            [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:self.originalLevel withState:state direction:direction];
         }
         
         [self.improver beginImproving];
@@ -342,9 +358,9 @@
         
         
         if ([deviceId isEqualToNumber:@2000]) {
-            [[DeviceModelManager sharedInstance] setLevelWithDeviceId:groupId withLevel:@(updateLevel) withState:state];
+            [[DeviceModelManager sharedInstance] setLevelWithDeviceId:groupId withLevel:@(updateLevel) withState:state direction:direction];
         }else {
-            [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state];
+            [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state direction:direction];
         }
         
         if (state == UIGestureRecognizerStateEnded) {
@@ -531,7 +547,7 @@
         deleteDeviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:cellDeviceId];
         
         if (![CSRUtilities isStringEmpty:placeEntity.passPhrase]) {
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Delete Device" message:[NSString stringWithFormat:@"Are you sure that you want to delete this device :%@?",meshDevice.name] preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Delete Device" message:[NSString stringWithFormat:@"Are you sure that you want to delete this device : %@?",meshDevice.name] preferredStyle:UIAlertControllerStyleAlert];
             [alertController.view setTintColor:DARKORAGE];
             UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 if (meshDevice) {
@@ -656,6 +672,11 @@
     
     [self presentViewController:alertController animated:YES completion:nil];
     
+}
+
+- (void)reGetDataForPlaceChanged {
+    [self getMainDataArray];
+    [self getSceneDataArray];
 }
 
 
