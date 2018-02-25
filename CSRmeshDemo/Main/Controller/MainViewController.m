@@ -277,6 +277,7 @@
             
         };
         gvc.isCreateNewArea = YES;
+        gvc.isFromEmptyGroup = NO;
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:gvc];
         CATransition *animation = [CATransition animation];
         [animation setDuration:0.3];
@@ -289,18 +290,7 @@
     UIAlertAction *album = [UIAlertAction actionWithTitle:@"Search New Devices" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         if ([cellDeviceId isEqualToNumber:@1000]) {
-            AddDevcieViewController *addVC = [[AddDevcieViewController alloc] init];
-            __weak MainViewController *weakSelf = self;
-            addVC.handle = ^{
-                [weakSelf getMainDataArray];
-            };
-            CATransition *animation = [CATransition animation];
-            [animation setDuration:0.3];
-            [animation setType:kCATransitionMoveIn];
-            [animation setSubtype:kCATransitionFromRight];
-            [self.view.window.layer addAnimation:animation forKey:nil];
-            UINavigationController *nav= [[UINavigationController alloc] initWithRootViewController:addVC];
-            [self presentViewController:nav animated:NO completion:nil];
+            [self presentToAddViewController];
         }
         
     }];
@@ -312,8 +302,21 @@
     [alert addAction:cancel];
     
     [self presentViewController:alert animated:YES completion:nil];
-    
-    
+}
+
+- (void)presentToAddViewController {
+    AddDevcieViewController *addVC = [[AddDevcieViewController alloc] init];
+    __weak MainViewController *weakSelf = self;
+    addVC.handle = ^{
+        [weakSelf getMainDataArray];
+    };
+    CATransition *animation = [CATransition animation];
+    [animation setDuration:0.3];
+    [animation setType:kCATransitionMoveIn];
+    [animation setSubtype:kCATransitionFromRight];
+    [self.view.window.layer addAnimation:animation forKey:nil];
+    UINavigationController *nav= [[UINavigationController alloc] initWithRootViewController:addVC];
+    [self presentViewController:nav animated:NO completion:nil];
 }
 
 - (void)mainCollectionViewDelegatePanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId groupId:(NSNumber *)groupId withPanState:(UIGestureRecognizerState)state direction:(PanGestureMoveDirection)direction{
@@ -386,6 +389,7 @@
     selectedSceneId = sceneId;
     if ([actionName isEqualToString:@"Edit"]) {
         NSLog(@"Edit");
+        
         return;
     }
     if ([actionName isEqualToString:@"Icon"]) {
@@ -402,17 +406,23 @@
     }
     if ([actionName isEqualToString:@"Rename"]) {
         NSLog(@"Rename");
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Rename" message:@"Enter a name for this scene" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Rename" message:@"Enter a name for the scene." preferredStyle:UIAlertControllerStyleAlert];
         NSMutableAttributedString *hogan = [[NSMutableAttributedString alloc] initWithString:@"Rename"];
-        [hogan addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(0, [[hogan string] length])];
+        [hogan addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1] range:NSMakeRange(0, [[hogan string] length])];
         [alert setValue:hogan forKey:@"attributedTitle"];
+        NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:@"Enter a name for the scene."];
+        [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
+        [alert setValue:attributedMessage forKey:@"attributedMessage"];
+        [alert.view setTintColor:DARKORAGE];
         UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
         UIAlertAction *confirm = [UIAlertAction actionWithTitle:@"Save" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             UITextField *renameTextField = alert.textFields.firstObject;
             if (![CSRUtilities isStringEmpty:renameTextField.text]){
                 
-                
-                
+                SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:sceneId];
+                sceneEntity.sceneName = renameTextField.text;
+                [[CSRDatabaseManager sharedInstance] saveContext];
+                [self getSceneDataArray];
             }
             
         }];
@@ -435,6 +445,10 @@
     if ([mainCell.groupId isEqualToNumber:@1000]) {
         DeviceViewController *dvc = [[DeviceViewController alloc] init];
         dvc.deviceId = mainCell.deviceId;
+        __weak MainViewController *weakSelf = self;
+        dvc.reloadDataHandle = ^{
+            [weakSelf getMainDataArray];
+        };
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
         nav.modalTransitionStyle = UIModalPresentationPopover;
         [self presentViewController:nav animated:YES completion:nil];
@@ -450,6 +464,7 @@
             });
         };
         gvc.isCreateNewArea = NO;
+        gvc.isFromEmptyGroup = NO;
         gvc.areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:mainCell.groupId];
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:gvc];
         CATransition *animation = [CATransition animation];
@@ -587,31 +602,60 @@
 }
 
 - (void)mainCollectionViewDelegateClickEmptyGroupCellAction:(NSIndexPath *)cellIndexPath {
-    NSLog(@"空组");
-//    NSArray *devices = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
-//    __block BOOL exist;
-//    [devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-//        if ([obj isKindOfClass:[CSRDeviceEntity class]]) {
-//            <#statements#>
-//        }
-//    }];
-//    if (<#condition#>) {
-//        <#statements#>
-//    }
-//    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"This group is" message:nil preferredStyle:UIAlertControllerStyleAlert];
-//    [alertController.view setTintColor:DARKORAGE];
-//    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//        if (meshDevice) {
-//            [[CSRDevicesManager sharedInstance] initiateRemoveDevice:meshDevice];
-//        }
-//    }];
-//    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-//        [_spinner stopAnimating];
-//        [_spinner setHidden:YES];
-//    }];
-//    [alertController addAction:okAction];
-//    [alertController addAction:cancelAction];
-//    [self presentViewController:alertController animated:YES completion:nil];
+    
+    NSArray *devices = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
+    __block BOOL exist=0;
+    [devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([deviceEntity.shortName isEqualToString:@"D350BT"] || [deviceEntity.shortName isEqualToString:@"S350BT"]) {
+            exist = YES;
+            *stop = YES;
+        }
+    }];
+    if (exist) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"No device in this group,choose devices now?" preferredStyle:UIAlertControllerStyleAlert];
+        NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:@"No device in this group,choose devices now?"];
+        [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
+        [alertController setValue:attributedMessage forKey:@"attributedMessage"];
+        [alertController.view setTintColor:DARKORAGE];
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+            GroupViewController *gvc = [[GroupViewController alloc] init];
+            __weak MainViewController *weakSelf = self;
+            gvc.handle = ^{
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [weakSelf getMainDataArray];
+                });
+            };
+            gvc.isCreateNewArea = NO;
+            gvc.isFromEmptyGroup = YES;
+            gvc.areaEntity = [_mainCollectionView.dataArray objectAtIndex:cellIndexPath.row];
+            
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:gvc];
+            [self presentViewController:nav animated:NO completion:nil];
+            
+        }];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        [alertController addAction:okAction];
+        [alertController addAction:cancelAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }else {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"No bluetooth device has been added for this place,search and add devices now?" preferredStyle:UIAlertControllerStyleAlert];
+        NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:@"No bluetooth device has been added for this place,search and add devices now?"];
+        [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
+        [alertController setValue:attributedMessage forKey:@"attributedMessage"];
+        [alertController.view setTintColor:DARKORAGE];
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self presentToAddViewController];
+        }];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        [alertController addAction:okAction];
+        [alertController addAction:cancelAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
 }
 
 #pragma mark - notification
@@ -685,8 +729,20 @@
 - (id)selectedItem:(id)item {
     NSString *imageString = (NSString *)item;
     
-    NSLog(@"%@",imageString);
-    
+    NSArray *iconArray = kSceneIcons;
+    __block NSNumber *iconNum = nil;
+    [iconArray enumerateObjectsUsingBlock:^(NSString *iconString, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([iconString isEqualToString:imageString]) {
+            iconNum = @(idx);
+            *stop = YES;
+        }
+    }];
+    if (iconNum) {
+        SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:selectedSceneId];
+        sceneEntity.iconID = iconNum;
+        [[CSRDatabaseManager sharedInstance] saveContext];
+        [self getSceneDataArray];
+    }
     return nil;
 }
 

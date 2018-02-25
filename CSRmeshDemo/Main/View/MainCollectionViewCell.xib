@@ -81,7 +81,7 @@
                             <constraint firstAttribute="width" constant="22" id="Grj-xn-sbB"/>
                             <constraint firstAttribute="height" constant="22" id="U8Z-LP-YI8"/>
                         </constraints>
-                        <state key="normal" image="smallCircle"/>
+                        <state key="normal" image="To_select"/>
                         <connections>
                             <action selector="selectAction:" destination="gTV-IL-0wX" eventType="touchUpInside" id="F7V-Qd-5dH"/>
                         </connections>
@@ -132,7 +132,7 @@
     <resources>
         <image name="Btn_Delete" width="32" height="32"/>
         <image name="Btn_Move" width="32" height="32"/>
+        <image name="To_select" width="22" height="22"/>
         <image name="livingroom" width="120" height="90"/>
-        <image name="smallCircle" width="17" height="17"/>
     </resources>
 </document>

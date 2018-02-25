@@ -18,5 +18,6 @@ typedef void(^GroupViewHandle)(void);
 @property (nonatomic,strong) MainCollectionView *devicesCollectionView;
 @property (nonatomic,strong) CSRAreaEntity *areaEntity;
 @property (nonatomic,copy) GroupViewHandle handle;
+@property (nonatomic,assign) BOOL isFromEmptyGroup;
 
 @end

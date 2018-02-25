@@ -66,11 +66,12 @@
         [_devicesCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell *cell, NSUInteger idx, BOOL * _Nonnull stop) {
             cell.seleteButton.hidden = NO;
             [self.originalMembers enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stoppp) {
-                if ([obj isKindOfClass:[CSRDeviceEntity class]]) {
-                    CSRDeviceEntity *deviceEntity = (CSRDeviceEntity *)obj;
+                if ([obj isKindOfClass:[SingleDeviceModel class]]) {
+                    SingleDeviceModel *deviceEntity = (SingleDeviceModel *)obj;
                     if ([cell.deviceId isEqualToNumber:deviceEntity.deviceId]) {
                         cell.seleteButton.selected = YES;
-                        [cell.seleteButton setImage:[UIImage imageNamed:@"ColourCircle"] forState:UIControlStateNormal];
+                        NSLog(@">><<>><<");
+                        [cell.seleteButton setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
                         [self.selectedDevices addObject:cell.deviceId];
                         *stoppp = YES;
                     }

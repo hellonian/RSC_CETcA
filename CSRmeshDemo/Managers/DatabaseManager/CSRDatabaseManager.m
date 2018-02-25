@@ -486,6 +486,17 @@
     return foundDeviceEntity;
 }
 
+- (SceneEntity *)getSceneEntityWithId:(NSNumber *)sceneId{
+    __block SceneEntity *foundSceneEntity = nil;
+    [[CSRAppStateManager sharedInstance].selectedPlace.scenes enumerateObjectsUsingBlock:^(SceneEntity * _Nonnull obj, BOOL * _Nonnull stop) {
+        if ([obj.sceneID isEqualToNumber:sceneId]) {
+            foundSceneEntity = obj;
+            *stop = YES;
+        }
+    }];
+    return foundSceneEntity;
+}
+
 - (NSNumber *)getNextFreeIDOfType:(NSString *)typeString {
     
     if ([typeString isEqualToString:@"CSRDeviceEntity"]) {

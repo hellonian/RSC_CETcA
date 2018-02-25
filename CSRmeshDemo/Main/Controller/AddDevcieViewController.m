@@ -202,7 +202,7 @@
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Are you sure to add the selected device？" message:nil preferredStyle:UIAlertControllerStyleAlert];
             
             NSMutableAttributedString *attributedTitle = [[NSMutableAttributedString alloc] initWithString:@"Are you sure to add the selected device?"];
-            [attributedTitle addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1] range:NSMakeRange(0, [[attributedTitle string] length])];
+            [attributedTitle addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedTitle string] length])];
             [alert setValue:attributedTitle forKey:@"attributedTitle"];
             
             UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"CANCEL" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {

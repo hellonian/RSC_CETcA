@@ -12,6 +12,7 @@
 #import "GalleryEntity.h"
 #import "DropEntity.h"
 #import "CSRDeviceEntity.h"
+#import "SceneEntity.h"
 
 @interface CSRDatabaseManager : NSObject {
     BOOL newDatabase;
@@ -55,6 +56,7 @@
 - (CSRDeviceEntity *)getDeviceEntityWithId:(NSNumber *)deviceId;
 - (CSRSettingsEntity *)fetchSettingsEntity;
 - (CSRSettingsEntity *)settingsForCurrentlySelectedPlace;
+- (SceneEntity *)getSceneEntityWithId:(NSNumber *)sceneId;
 
 - (void) saveDeviceModel :(NSNumber *) deviceNumber modelNumber:(NSData *) modelNumber infoType:(NSNumber *) infoType;
 

@@ -99,12 +99,13 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="255" minValue="0.0" maxValue="255" translatesAutoresizingMaskIntoConstraints="NO" id="8Cl-t0-0uR">
-                            <rect key="frame" x="42" y="6" width="267" height="31"/>
+                            <rect key="frame" x="42" y="7" width="267" height="31"/>
                             <color key="minimumTrackTintColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
                                 <action selector="leveSliderValueChanged:" destination="-1" eventType="valueChanged" id="GYM-bw-8pL"/>
                                 <action selector="levelSliderTouchDown:" destination="-1" eventType="touchDown" id="Aum-WX-GlX"/>
                                 <action selector="levelSliderTouchUpInSide:" destination="-1" eventType="touchUpInside" id="mi7-TE-0lW"/>
+                                <action selector="levelSliderTouchUpOutSide:" destination="-1" eventType="touchUpOutside" id="FRv-XI-L7O"/>
                             </connections>
                         </slider>
                     </subviews>

@@ -8,8 +8,9 @@
 
 #import "DeviceViewController.h"
 #import "DeviceModelManager.h"
+#import "CSRDatabaseManager.h"
 
-@interface DeviceViewController ()
+@interface DeviceViewController ()<UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *nameTF;
 @property (weak, nonatomic) IBOutlet UISwitch *powerStateSwitch;
@@ -17,6 +18,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *levelLabel;
 @property (nonatomic,assign) BOOL sliderIsMoving;
 @property (nonatomic,strong) DeviceModel *device;
+@property (nonatomic,copy) NSString *originalName;
 
 @end
 
@@ -31,6 +33,8 @@
         self.navigationItem.rightBarButtonItem = done;
     }
     
+    self.nameTF.delegate = self;
+    
     if (_deviceId) {
         _device = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
         if ([_device.shortName isEqualToString:@"S350BT"]) {
@@ -39,6 +43,7 @@
         
         self.navigationItem.title = _device.name;
         self.nameTF.text = _device.name;
+        self.originalName = _device.name;
         self.powerStateSwitch.on = [_device.powerState boolValue];
         self.sliderIsMoving = NO;
         [self powerSwitchAndLevelSlider:_device.shortName powerState:_device.powerState level:_device.level];
@@ -121,20 +126,41 @@
     [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId withLevel:@(sender.value) withState:UIGestureRecognizerStateBegan direction:PanGestureMoveDirectionHorizontal];
 }
 
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (IBAction)levelSliderTouchUpOutSide:(UISlider *)sender {
+    _sliderIsMoving = YES;
+    [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
 }
 
-/*
-#pragma mark - Navigation
+#pragma mark - UITextFieldDelegate
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    textField.backgroundColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1];
+    return YES;
 }
-*/
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    textField.backgroundColor = [UIColor whiteColor];
+    [textField resignFirstResponder];
+    return YES;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    [self saveNickName];
+}
+
+#pragma mark - 保存修改后的灯名
+
+- (void)saveNickName {
+    if (![_nameTF.text isEqualToString:_originalName] && _nameTF.text.length > 0) {
+        self.navigationItem.title = _nameTF.text;
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:self.deviceId];
+        deviceEntity.name = _nameTF.text;
+        [[CSRDatabaseManager sharedInstance] saveContext];
+        if (self.reloadDataHandle) {
+            self.reloadDataHandle();
+        }
+    }
+    
+}
 
 @end

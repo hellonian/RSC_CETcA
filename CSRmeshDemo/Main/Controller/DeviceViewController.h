@@ -11,5 +11,6 @@
 @interface DeviceViewController : UIViewController
 
 @property (nonatomic,strong) NSNumber *deviceId;
+@property (nonatomic,copy) void (^reloadDataHandle)(void);
 
 @end

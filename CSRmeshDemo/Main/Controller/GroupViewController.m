@@ -105,6 +105,34 @@
     }
     
     [self.view addSubview:_devicesCollectionView];
+    
+    if (_isFromEmptyGroup) {
+        [self editItemAction:self.editItem];
+        DeviceListViewController *list = [[DeviceListViewController alloc] init];
+        list.selectMode = DeviceListSelectMode_Multiple;
+        
+        list.originalMembers = _devicesCollectionView.dataArray;
+        
+        [list getSelectedDevices:^(NSArray *devices) {
+            self.hasChanged = YES;
+            [_devicesCollectionView.dataArray removeAllObjects];
+            
+            [devices enumerateObjectsUsingBlock:^(NSNumber *deviceId, NSUInteger idx, BOOL * _Nonnull stop) {
+                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+                SingleDeviceModel *deviceModel = [[SingleDeviceModel alloc] init];
+                deviceModel.deviceId = deviceId;
+                deviceModel.deviceName = deviceEntity.name;
+                deviceModel.deviceShortName = deviceEntity.shortName;
+                [_devicesCollectionView.dataArray insertObject:deviceModel atIndex:0];
+            }];
+            
+            [_devicesCollectionView.dataArray addObject:@1];
+            [_devicesCollectionView reloadData];
+            
+        }];
+        
+        [self.navigationController pushViewController:list animated:YES];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -139,8 +167,6 @@
         _hud.delegate = self;
         
         [self performSelector:@selector(doneAction) withObject:nil afterDelay:0.01];
-        
-        
     }
     
 }
@@ -546,7 +572,6 @@
 - (id)selectedItem:(id)item {
     NSString *imageString = (NSString *)item;
     
-    NSLog(@"%@",imageString);
     self.hasChanged = YES;
     self.groupIconImageView.alpha = 1;
     self.groupIconImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@room_highlight",imageString]];
