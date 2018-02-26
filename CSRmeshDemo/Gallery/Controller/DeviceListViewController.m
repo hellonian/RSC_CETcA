@@ -12,12 +12,18 @@
 #import "CSRDeviceEntity.h"
 #import "MainCollectionViewCell.h"
 #import "SingleDeviceModel.h"
+#import "DeviceModelManager.h"
+#import "ImproveTouchingExperience.h"
+#import "ControlMaskView.h"
 
 @interface DeviceListViewController ()<MainCollectionViewDelegate>
 
 @property (nonatomic,strong) MainCollectionView *devicesCollectionView;
 @property (nonatomic,strong) NSMutableArray *selectedDevices;
 @property (nonatomic,copy) DeviceListSelectedHandle handle;
+@property (nonatomic,strong) NSNumber *originalLevel;
+@property (nonatomic,strong) ImproveTouchingExperience *improver;
+@property (nonatomic,strong) ControlMaskView *maskLayer;
 
 @end
 
@@ -62,6 +68,8 @@
     
     [self.view addSubview:_devicesCollectionView];
     
+    self.improver = [[ImproveTouchingExperience alloc] init];
+    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [_devicesCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell *cell, NSUInteger idx, BOOL * _Nonnull stop) {
             cell.seleteButton.hidden = NO;
@@ -70,7 +78,6 @@
                     SingleDeviceModel *deviceEntity = (SingleDeviceModel *)obj;
                     if ([cell.deviceId isEqualToNumber:deviceEntity.deviceId]) {
                         cell.seleteButton.selected = YES;
-                        NSLog(@">><<>><<");
                         [cell.seleteButton setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
                         [self.selectedDevices addObject:cell.deviceId];
                         *stoppp = YES;
@@ -147,19 +154,52 @@
     return _selectedDevices;
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+#pragma mark - MainCollectionViewDelegate
+
+- (void)mainCollectionViewDelegatePanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId groupId:(NSNumber *)groupId withPanState:(UIGestureRecognizerState)state direction:(PanGestureMoveDirection)direction {
+    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+    if (state == UIGestureRecognizerStateBegan) {
+        self.originalLevel = model.level;
+        [self.improver beginImproving];
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:self.originalLevel withState:state direction:direction];
+        return;
+    }
+    if (state == UIGestureRecognizerStateChanged || state == UIGestureRecognizerStateEnded) {
+        NSInteger updateLevel = [self.improver improveTouching:touchPoint referencePoint:origin primaryBrightness:[self.originalLevel integerValue]];
+        if (updateLevel < 13) {
+            updateLevel = 13;
+        }
+        CGFloat percentage = updateLevel/255.0*100;
+        [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state direction:direction];
+        
+        if (state == UIGestureRecognizerStateEnded) {
+            [self hideControlMaskLayer];
+        }
+        return;
+    }
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)hideControlMaskLayer {
+    if (_maskLayer && _maskLayer.superview) {
+        [self.maskLayer removeFromSuperview];
+    }
 }
-*/
+
+- (void)showControlMaskLayerWithAlpha:(CGFloat)percentage text:(NSString*)text {
+    if (!_maskLayer.superview) {
+        [[UIApplication sharedApplication].keyWindow addSubview:self.maskLayer];
+    }
+    [self.maskLayer updateProgress:percentage withText:text];
+}
+
+#pragma mark - lazy
+
+- (ControlMaskView*)maskLayer {
+    if (!_maskLayer) {
+        _maskLayer = [[ControlMaskView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    }
+    return _maskLayer;
+}
 
 @end

@@ -14,5 +14,6 @@
 @property (nonatomic, retain) NSNumber *deviceID;
 @property (nonatomic, retain) NSNumber *powerState;
 @property (nonatomic, retain) NSNumber *level;
+@property (nonatomic, retain) NSString *kindString;
 
 @end

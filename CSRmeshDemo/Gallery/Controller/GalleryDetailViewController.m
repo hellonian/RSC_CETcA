@@ -267,10 +267,14 @@
     }
     
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"Remove light?" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"CANCEL" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:@"Remove light?"];
+    [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
+    [alertController setValue:attributedMessage forKey:@"attributedMessage"];
+    alertController.view.tintColor = DARKORAGE;
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         
     }];
-    UIAlertAction *removeAction = [UIAlertAction actionWithTitle:@"REMOVE" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *removeAction = [UIAlertAction actionWithTitle:@"Remove" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         GalleryDropView *dropView = (GalleryDropView *)view;
         [_controlImageView deleteDropView:view];
         

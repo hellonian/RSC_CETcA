@@ -29,6 +29,10 @@
 
 #import "GroupViewController.h"
 #import <CSRmesh/GroupModelApi.h>
+#import "DeviceListViewController.h"
+#import "SingleDeviceModel.h"
+#import "SceneMemberEntity.h"
+#import <CSRmesh/LightModelApi.h>
 
 @interface MainViewController ()<MainCollectionViewDelegate,PlaceColorIconPickerViewDelegate>
 {
@@ -390,6 +394,44 @@
     if ([actionName isEqualToString:@"Edit"]) {
         NSLog(@"Edit");
         
+        DeviceListViewController *list = [[DeviceListViewController alloc] init];
+        list.selectMode = DeviceListSelectMode_Multiple;
+
+        SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:sceneId];
+        NSArray *members = [sceneEntity.members allObjects];
+        __block NSMutableArray *singleDevices = [[NSMutableArray alloc] init];
+        [members enumerateObjectsUsingBlock:^(SceneMemberEntity *sceneMember, NSUInteger idx, BOOL * _Nonnull stop) {
+            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sceneMember.deviceID];
+            SingleDeviceModel *deviceModel = [[SingleDeviceModel alloc] init];
+            deviceModel.deviceId = deviceEntity.deviceId;
+            deviceModel.deviceName = deviceEntity.name;
+            deviceModel.deviceShortName = deviceEntity.shortName;
+            [singleDevices addObject:deviceModel];
+        }];
+        list.originalMembers = singleDevices;
+
+        [list getSelectedDevices:^(NSArray *devices) {
+            NSLog(@"%@",devices);
+            [members enumerateObjectsUsingBlock:^(SceneMemberEntity *sceneMember, NSUInteger idx, BOOL * _Nonnull stop) {
+                [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:sceneMember];
+                [[CSRDatabaseManager sharedInstance] saveContext];
+            }];
+            [devices enumerateObjectsUsingBlock:^(NSNumber *deviceId, NSUInteger idx, BOOL * _Nonnull stop) {
+                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+                SceneMemberEntity *sceneMember = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+                sceneMember.deviceID = deviceId;
+                sceneMember.kindString = deviceModel.shortName;
+                sceneMember.powerState = deviceModel.powerState;
+                sceneMember.level = [deviceModel.powerState boolValue]? deviceModel.level:@0;
+                [sceneEntity addMembersObject:sceneMember];
+                [[CSRDatabaseManager sharedInstance] saveContext];
+            }];
+            
+            
+        }];
+        
+        [self.navigationController pushViewController:list animated:YES];
+        
         return;
     }
     if ([actionName isEqualToString:@"Icon"]) {
@@ -437,6 +479,24 @@
         
         return;
     }
+}
+
+//点击场景单元
+- (void)mainCollectionViewCellDelegateSceneCellTapAction:(NSNumber *)sceneId {
+    SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:sceneId];
+    NSArray *members = [sceneEntity.members allObjects];
+    [members enumerateObjectsUsingBlock:^(SceneMemberEntity *sceneMember, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([sceneMember.kindString isEqualToString:@"S350BT"]) {
+            [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:sceneMember.powerState];
+        }else if ([sceneMember.kindString isEqualToString:@"D350BT"]) {
+            [[LightModelApi sharedInstance] setLevel:sceneMember.deviceID level:sceneMember.level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                
+            } failure:^(NSError * _Nullable error) {
+                
+            }];
+        }
+        
+    }];
 }
 
 - (void)mainCollectionViewDelegateLongPressAction:(id)cell {

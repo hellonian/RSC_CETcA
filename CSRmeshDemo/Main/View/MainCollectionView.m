@@ -85,6 +85,12 @@
     }
 }
 
+- (void)superCollectionViewCellDelegateSceneCellTapAction:(NSNumber *)sceneId {
+    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewCellDelegateSceneCellTapAction:)]) {
+        [self.mainDelegate mainCollectionViewCellDelegateSceneCellTapAction:sceneId];
+    }
+}
+
 - (void)superCollectionViewCellDelegateLongPressAction:(id)cell {
     if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewDelegateLongPressAction:)]) {
         [self.mainDelegate mainCollectionViewDelegateLongPressAction:cell];

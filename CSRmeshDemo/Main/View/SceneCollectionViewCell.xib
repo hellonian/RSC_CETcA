@@ -21,6 +21,9 @@
                 <rect key="frame" x="0.0" y="0.0" width="175" height="197"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Oaf-uC-ANh">
+                        <rect key="frame" x="0.0" y="0.0" width="175" height="197"/>
+                    </imageView>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="uAk-st-FmO">
                         <rect key="frame" x="41" y="52" width="93" height="93"/>
                         <constraints>
@@ -41,15 +44,20 @@
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="XgI-h0-Kja" secondAttribute="trailing" id="2yc-X2-0Ja"/>
                 <constraint firstItem="XgI-h0-Kja" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="8F3-AP-5f4"/>
+                <constraint firstAttribute="trailing" secondItem="Oaf-uC-ANh" secondAttribute="trailing" id="CAg-5a-hjx"/>
                 <constraint firstItem="uAk-st-FmO" firstAttribute="width" secondItem="gTV-IL-0wX" secondAttribute="width" multiplier="32:60" id="Mic-WF-db0"/>
+                <constraint firstItem="Oaf-uC-ANh" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="UKP-Mg-d3d"/>
+                <constraint firstItem="Oaf-uC-ANh" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="Yt2-aY-Dcu"/>
                 <constraint firstItem="uAk-st-FmO" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="gMQ-Zw-N9E"/>
                 <constraint firstItem="uAk-st-FmO" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="kNg-hb-Cxv"/>
+                <constraint firstAttribute="bottom" secondItem="Oaf-uC-ANh" secondAttribute="bottom" id="nlP-FH-6pf"/>
                 <constraint firstItem="XgI-h0-Kja" firstAttribute="top" secondItem="uAk-st-FmO" secondAttribute="bottom" id="ps5-gT-Jjc"/>
                 <constraint firstItem="XgI-h0-Kja" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="xBm-h7-DUr"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="SEy-5g-ep8"/>
             <size key="customSize" width="175" height="197"/>
             <connections>
+                <outlet property="bgImageView" destination="Oaf-uC-ANh" id="bTo-VW-BAQ"/>
                 <outlet property="iconView" destination="uAk-st-FmO" id="sB7-ry-cWN"/>
                 <outlet property="nameLabel" destination="XgI-h0-Kja" id="RFO-Xz-8cT"/>
             </connections>

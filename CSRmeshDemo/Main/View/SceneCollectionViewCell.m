@@ -12,6 +12,7 @@
 
 @interface SceneCollectionViewCell ()
 
+@property (weak, nonatomic) IBOutlet UIImageView *bgImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *iconView;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (nonatomic,strong) NSArray *iconArray;
@@ -38,12 +39,15 @@
         self.iconView.highlightedImage = [UIImage imageNamed:[NSString stringWithFormat:@"Scene_%@_orange",iconString]];
         self.nameLabel.text = sceneEntity.sceneName;
         self.nameLabel.highlightedTextColor = DARKORAGE;
+        self.bgImageView.image = [UIImage imageNamed:@"sceneSelect"];
+        self.bgImageView.highlightedImage = [UIImage imageNamed:@"sceneSelected"];
         self.sceneId = sceneEntity.sceneID;
         if ([sceneEntity.sceneID isEqualToNumber:@0] || [sceneEntity.sceneID isEqualToNumber:@1]) {
             [self addGestureRecognizer:[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(defaultCelllongTap:)]];
         }else {
             [self addGestureRecognizer:[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(customCelllongTap:)]];
         }
+        [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(sceneCellTap:)]];
         
         return;
     }  
@@ -70,6 +74,14 @@
         [menu setMenuItems:@[edit,icon,rename]];
         [menu setTargetRect:self.bounds inView:self];
         [menu setMenuVisible:YES animated:YES];
+    }
+}
+
+- (void)sceneCellTap:(UITapGestureRecognizer *)tapRecognizer {
+    if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
+        if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateSceneCellTapAction:)]) {
+            [self.superCellDelegate superCollectionViewCellDelegateSceneCellTapAction:self.sceneId];
+        }
     }
 }
 

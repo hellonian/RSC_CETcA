@@ -19,6 +19,7 @@
 - (void)mainCollectionViewDelegateDeleteDeviceAction:(NSNumber *)cellDeviceId cellGroupId:(NSNumber *)cellGroupId;
 - (void)mainCollectionViewDelegateSelectAction:(NSNumber *)cellDeviceId;
 - (void)mainCollectionViewDelegateClickEmptyGroupCellAction:(NSIndexPath *)cellIndexPath;
+- (void)mainCollectionViewCellDelegateSceneCellTapAction:(NSNumber *)sceneId;
 
 @end
 

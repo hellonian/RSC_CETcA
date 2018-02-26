@@ -13,5 +13,6 @@
 @dynamic deviceID;
 @dynamic powerState;
 @dynamic level;
+@dynamic kindString;
 
 @end

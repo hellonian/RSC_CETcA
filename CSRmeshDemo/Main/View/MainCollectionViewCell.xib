@@ -76,10 +76,10 @@
                         </connections>
                     </button>
                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mn2-go-13h">
-                        <rect key="frame" x="5" y="5" width="22" height="22"/>
+                        <rect key="frame" x="0.0" y="0.0" width="32" height="32"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="22" id="Grj-xn-sbB"/>
-                            <constraint firstAttribute="height" constant="22" id="U8Z-LP-YI8"/>
+                            <constraint firstAttribute="width" constant="32" id="Grj-xn-sbB"/>
+                            <constraint firstAttribute="height" constant="32" id="U8Z-LP-YI8"/>
                         </constraints>
                         <state key="normal" image="To_select"/>
                         <connections>
@@ -95,7 +95,7 @@
                 <constraint firstAttribute="bottom" secondItem="HJS-BX-HjA" secondAttribute="bottom" id="8Gx-Pd-Rdq"/>
                 <constraint firstItem="HJS-BX-HjA" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="AbY-Ay-V58"/>
                 <constraint firstItem="HJS-BX-HjA" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="Dcw-hB-00P"/>
-                <constraint firstItem="mn2-go-13h" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="5" id="Gd0-xI-JNP"/>
+                <constraint firstItem="mn2-go-13h" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="Gd0-xI-JNP"/>
                 <constraint firstAttribute="trailing" secondItem="HJS-BX-HjA" secondAttribute="trailing" id="Mvb-92-zZg"/>
                 <constraint firstItem="rFB-ER-6RS" firstAttribute="top" secondItem="Ghm-qb-6Mx" secondAttribute="bottom" id="UGt-TF-lfZ"/>
                 <constraint firstAttribute="trailing" secondItem="cWD-U5-f2w" secondAttribute="trailing" constant="8" id="VLL-H4-Piu"/>
@@ -106,7 +106,7 @@
                 <constraint firstAttribute="trailing" secondItem="rFB-ER-6RS" secondAttribute="trailing" id="awb-B4-a39"/>
                 <constraint firstAttribute="trailing" secondItem="Fgg-20-apY" secondAttribute="trailing" id="bc4-ft-kcz"/>
                 <constraint firstItem="KpC-8R-RDV" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="efn-h2-s6O"/>
-                <constraint firstItem="mn2-go-13h" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="5" id="hU1-f6-0oP"/>
+                <constraint firstItem="mn2-go-13h" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="hU1-f6-0oP"/>
                 <constraint firstItem="rFB-ER-6RS" firstAttribute="top" secondItem="cWD-U5-f2w" secondAttribute="bottom" id="lIz-R0-HNN"/>
                 <constraint firstItem="KpC-8R-RDV" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="m4k-zh-Gwn"/>
                 <constraint firstItem="SEy-5g-ep8" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="oIW-bG-HsO"/>
