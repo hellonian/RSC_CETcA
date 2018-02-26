@@ -39,8 +39,6 @@
         self.iconView.highlightedImage = [UIImage imageNamed:[NSString stringWithFormat:@"Scene_%@_orange",iconString]];
         self.nameLabel.text = sceneEntity.sceneName;
         self.nameLabel.highlightedTextColor = DARKORAGE;
-        self.bgImageView.image = [UIImage imageNamed:@"sceneSelect"];
-        self.bgImageView.highlightedImage = [UIImage imageNamed:@"sceneSelected"];
         self.sceneId = sceneEntity.sceneID;
         if ([sceneEntity.sceneID isEqualToNumber:@0] || [sceneEntity.sceneID isEqualToNumber:@1]) {
             [self addGestureRecognizer:[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(defaultCelllongTap:)]];

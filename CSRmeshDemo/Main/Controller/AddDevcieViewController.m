@@ -30,7 +30,20 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.view.backgroundColor = [UIColor colorWithRed:195/255.0 green:195/255.0 blue:195/255.0 alpha:1];
     self.navigationItem.title = @"Search New Devices";
-    UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:self action:@selector(addVCBackAction)];
+    
+    UIButton *letfButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImage *btnImage = [UIImage imageNamed:@"Btn_back"];
+    [letfButton setImage:btnImage forState:UIControlStateNormal];
+    NSString *btnTitle = @" Back";
+    [letfButton setTitle:btnTitle forState:UIControlStateNormal];
+    [letfButton setTitleColor:DARKORAGE forState:UIControlStateNormal];
+    CGSize buttonTitleLabelSize = [btnTitle sizeWithAttributes:@{NSFontAttributeName:letfButton.titleLabel.font}]; //文本尺寸
+    CGSize buttonImageSize = btnImage.size;   //图片尺寸
+    letfButton.frame = CGRectMake(0,0,
+                              buttonImageSize.width + buttonTitleLabelSize.width,
+                              buttonImageSize.height);
+    [letfButton addTarget:self action:@selector(addVCBackAction) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithCustomView:letfButton];
     self.navigationItem.leftBarButtonItem = left;
     
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];

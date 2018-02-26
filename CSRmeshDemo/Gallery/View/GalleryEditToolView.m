@@ -13,9 +13,9 @@
 - (id)init {
     self = [super init];
     if (self) {
-        self.bounds = CGRectMake(0, 0, WIDTH, 40);
+        self.bounds = CGRectMake(0, 0, WIDTH, 30);
         self.backgroundColor = DARKORAGE;
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(WIDTH-40, 0, 40, 40)];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(WIDTH-30, 0, 30, 30)];
         imageView.image = [UIImage imageNamed:@"burger"];
         [self addSubview:imageView];
         self.isLimitHeight = -1.0f;
@@ -32,17 +32,15 @@
             touchPoint.x = WIDTH/2.0f;
             self.center = touchPoint;
             if (self.delegate && [self.delegate respondsToSelector:@selector(adjustControlImageSize:adjustHeight:)]) {
-                [self.delegate adjustControlImageSize:self.tag-100 adjustHeight:(touchPoint.y + 20.0)/WIDTH];
+                [self.delegate adjustControlImageSize:self.tag-100 adjustHeight:(touchPoint.y + 15.0)/WIDTH];
             }
         }
-        
     }
     if (sender.state == UIGestureRecognizerStateEnded) {
         if (_isLimitHeight>0) {
             [UIView animateWithDuration:0.3 animations:^{
-                self.center = CGPointMake(WIDTH/2.0f, _isLimitHeight*WIDTH-20);
+                self.center = CGPointMake(WIDTH/2.0f, _isLimitHeight*WIDTH-15);
             }];
-            
         }
         _isLimitHeight = -1.0f;
     }

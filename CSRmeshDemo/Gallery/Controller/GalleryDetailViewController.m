@@ -107,7 +107,20 @@
     }else {
         UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(galleryDetailEditAction:)];
         self.navigationItem.rightBarButtonItem = edit;
-        UIBarButtonItem *close = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStylePlain target:self action:@selector(galleryDetailCloseAction:)];
+        
+        UIButton *letfButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIImage *btnImage = [UIImage imageNamed:@"Btn_back"];
+        [letfButton setImage:btnImage forState:UIControlStateNormal];
+        NSString *btnTitle = @" Close";
+        [letfButton setTitle:btnTitle forState:UIControlStateNormal];
+        [letfButton setTitleColor:DARKORAGE forState:UIControlStateNormal];
+        CGSize buttonTitleLabelSize = [btnTitle sizeWithAttributes:@{NSFontAttributeName:letfButton.titleLabel.font}]; //文本尺寸
+        CGSize buttonImageSize = btnImage.size;   //图片尺寸
+        letfButton.frame = CGRectMake(0,0,
+                                      buttonImageSize.width + buttonTitleLabelSize.width,
+                                      buttonImageSize.height);
+        [letfButton addTarget:self action:@selector(galleryDetailCloseAction:) forControlEvents:UIControlEventTouchUpInside];
+        UIBarButtonItem *close = [[UIBarButtonItem alloc] initWithCustomView:letfButton];
         self.navigationItem.leftBarButtonItem = close;
     }
     
@@ -149,9 +162,6 @@
         float boundWR = 0.549 * _controlImageView.bounds.size.width/_controlImageView.bounds.size.height;
         
         GalleryEntity *galleryEntity = [[CSRDatabaseManager sharedInstance] saveNewGallery:galleryIdNumber galleryImage:_image galleryBoundeWR:@(boundWR) galleryBoundHR:@(0.549) newGalleryId:nil];
-        
-//        [[CSRAppStateManager sharedInstance].selectedPlace addGallerysObject:galleryEntity];
-//        [[CSRDatabaseManager sharedInstance] saveContext];
         
         [_controlImageView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([obj isKindOfClass:[GalleryDropView class]]) {

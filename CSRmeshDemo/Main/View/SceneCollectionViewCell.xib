@@ -21,7 +21,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="175" height="197"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Oaf-uC-ANh">
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sceneSelect" highlightedImage="sceneSelected" translatesAutoresizingMaskIntoConstraints="NO" id="Oaf-uC-ANh">
                         <rect key="frame" x="0.0" y="0.0" width="175" height="197"/>
                     </imageView>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="uAk-st-FmO">
@@ -64,4 +64,8 @@
             <point key="canvasLocation" x="87.5" y="125.5"/>
         </collectionViewCell>
     </objects>
+    <resources>
+        <image name="sceneSelect" width="60" height="74"/>
+        <image name="sceneSelected" width="60" height="74"/>
+    </resources>
 </document>

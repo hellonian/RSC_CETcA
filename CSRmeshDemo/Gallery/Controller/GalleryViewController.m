@@ -176,10 +176,14 @@
 
 - (void) galleryControlImageViewDeleteAction:(id)sender {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"Remove photo?" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"CANCEL" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:@"Remove photo?"];
+    [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
+    [alertController setValue:attributedMessage forKey:@"attributedMessage"];
+    [alertController.view setTintColor:DARKORAGE];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         
     }];
-    UIAlertAction *removeAction = [UIAlertAction actionWithTitle:@"REMOVE" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *removeAction = [UIAlertAction actionWithTitle:@"Remove" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         GalleryControlImageView *controlImageView = (GalleryControlImageView *)sender;
         
@@ -431,14 +435,14 @@
 - (void)layoutViewRightFrame {
 
     __block float rowHeight = 0;
-    __block float allWidth = 1/17.0;
-    __block float allHeight = 1/17.0;
+    __block float allWidth = 4/320.0;
+    __block float allHeight = 4/320.0;
     __block float verticalInterVal;
     __block NSInteger rowIdx = 0;
     if (_isEditing) {
-        verticalInterVal = 40.0/WIDTH;
+        verticalInterVal = 30.0/WIDTH;
     }else{
-        verticalInterVal = 1/17.0;
+        verticalInterVal = 4/320.0;
     }
     
     [self.controlImageViewArray enumerateObjectsUsingBlock:^(GalleryControlImageView *controlImageView, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -447,23 +451,24 @@
         
         if (idx == 0) {
             if (_adjustRow == 0) {
-                rowHeight = _adjustHeight - 1/17.0 - verticalInterVal;
+                rowHeight = _adjustHeight - 4/320.0 - verticalInterVal;
             }else {
                 rowHeight = controlImageView.bounds.size.height/WIDTH;
             }
             
-            if (rowHeight > (1-2/17.0)/4.0*3.0) {
-                rowHeight = (1-2/17.0)/4.0*3.0;
+            if (rowHeight > (1-8/320.0)/4.0*3.0) {
+                rowHeight = (1-8/320.0)/4.0*3.0;
                 [self limitToolViewWithRowIdx:rowIdx withHeight:allHeight + rowHeight + verticalInterVal];
             }
-            if (rowHeight < 78/289.0) {
-                rowHeight = 78/289.0;
+            if (rowHeight < (1-4*4/320.0)/3.0/4.0*3.0) {
+                rowHeight = (1-4*4/320.0)/3.0/4.0*3.0;
                 [self limitToolViewWithRowIdx:rowIdx withHeight:allHeight + rowHeight + verticalInterVal];
             }
             
         }
         float boundW = controlImageView.bounds.size.width/controlImageView.bounds.size.height*rowHeight;
-        allWidth = allWidth + boundW + 1/17.0;
+        allWidth = allWidth + boundW + 4/320.0;
+        
         if (allWidth > 1.0) {
             rowIdx++;
             
@@ -471,12 +476,12 @@
                 float oldRowHeight = rowHeight;
                 rowHeight = _adjustHeight - allHeight - rowHeight - 2*verticalInterVal;
                 
-                if (rowHeight > (1-2/17.0)/4.0*3.0) {
-                    rowHeight = (1-2/17.0)/4.0*3.0;
+                if (rowHeight > (1-8/320.0)/4.0*3.0) {
+                    rowHeight = (1-8/320.0)/4.0*3.0;
                     [self limitToolViewWithRowIdx:rowIdx withHeight:allHeight + oldRowHeight + 2*verticalInterVal + rowHeight];
                 }
-                if (rowHeight < 78/289.0) {
-                    rowHeight = 78/289.0;
+                if (rowHeight < (1-4*4/320.0)/3.0/4.0*3.0) {
+                    rowHeight = (1-4*4/320.0)/3.0/4.0*3.0;
                     [self limitToolViewWithRowIdx:rowIdx withHeight:allHeight + oldRowHeight + 2*verticalInterVal + rowHeight];
                     
                 }
@@ -491,8 +496,8 @@
             
             
             
-            allWidth = 1/17.0 + boundW + 1/17.0;
-            controlImageView.frame = CGRectMake(1/17.0 * WIDTH, allHeight * WIDTH, boundW * WIDTH, rowHeight * WIDTH);
+            allWidth = 4/320.0 + boundW + 4/320.0;
+            controlImageView.frame = CGRectMake(4/320.0 * WIDTH, allHeight * WIDTH, boundW * WIDTH, rowHeight * WIDTH);
             controlImageView.tag = idx;
             [controlImageView adjustDropViewInRightLocation];
             if (_adjustRow != rowIdx) {
@@ -500,7 +505,7 @@
                     [self.toolViewArray enumerateObjectsUsingBlock:^(GalleryEditToolView * toolView, NSUInteger idx, BOOL * _Nonnull stop) {
                         if (toolView.tag == rowIdx + 100) {
                             if (_isEditing) {
-                                toolView.center = CGPointMake(WIDTH/2, (allHeight+rowHeight) * WIDTH + 20);
+                                toolView.center = CGPointMake(WIDTH/2, (allHeight+rowHeight) * WIDTH + 15);
                                 [self.scrollView addSubview:toolView];
                                 [self.scrollView sendSubviewToBack:toolView];
                             }else {
@@ -518,7 +523,7 @@
             
         }else {
             if (idx==0) {
-                controlImageView.frame = CGRectMake(1/17.0 * WIDTH, allHeight * WIDTH, boundW * WIDTH, rowHeight * WIDTH);
+                controlImageView.frame = CGRectMake(4/320.0 * WIDTH, allHeight * WIDTH, boundW * WIDTH, rowHeight * WIDTH);
                 controlImageView.tag = idx;
                 [controlImageView adjustDropViewInRightLocation];
                 if (_adjustRow != 0) {
@@ -526,7 +531,7 @@
                         
                         if (toolView.tag == rowIdx + 100) {
                             if (_isEditing) {
-                                toolView.center = CGPointMake(WIDTH/2, (allHeight+rowHeight) * WIDTH + 20);
+                                toolView.center = CGPointMake(WIDTH/2, (allHeight+rowHeight) * WIDTH + 15);
                                 [self.scrollView addSubview:toolView];
                                 [self.scrollView sendSubviewToBack:toolView];
                             }else {
@@ -538,7 +543,7 @@
                 }
                 
             }else {
-                controlImageView.frame = CGRectMake((allWidth-boundW-1/17.0) * WIDTH, allHeight * WIDTH, boundW * WIDTH, rowHeight * WIDTH);
+                controlImageView.frame = CGRectMake((allWidth-boundW-4/320.0) * WIDTH, allHeight * WIDTH, boundW * WIDTH, rowHeight * WIDTH);
                 controlImageView.tag = idx;
                 [controlImageView adjustDropViewInRightLocation];
             }
@@ -570,14 +575,14 @@
     [self.toolViewArray removeAllObjects];
     [self.scrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     __block float rowHeight = 0;
-    __block float allWidth = 1/17.0;
-    __block float allHeight = 1/17.0;
+    __block float allWidth = 4/320.0;
+    __block float allHeight = 4/320.0;
     __block float verticalInterVal;
     __block NSInteger rowIdx = 0;
     if (_isEditing) {
-        verticalInterVal = 40.0/WIDTH;
+        verticalInterVal = 30.0/WIDTH;
     }else{
-        verticalInterVal = 1/17.0;
+        verticalInterVal = 4/320.0;
     }
     
     [self.galleryEntitys enumerateObjectsUsingBlock:^(GalleryEntity *galleryEntity, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -588,7 +593,7 @@
         }
         float boundW = [galleryEntity.boundWidth floatValue]/[galleryEntity.boundHeight floatValue] * rowHeight;
         
-        allWidth = allWidth + boundW + 1/17.0;
+        allWidth = allWidth + boundW + 4/320.0;
         
         if (allWidth > 1.0) {
             
@@ -597,9 +602,9 @@
             allHeight = allHeight + rowHeight + verticalInterVal;
             rowHeight = [galleryEntity.boundHeight floatValue];
             boundW = [galleryEntity.boundWidth floatValue];
-            allWidth = 1/17.0 + boundW + 1/17.0;
+            allWidth = 4/320.0 + boundW + 4/320.0;
             
-            controlImageViewFrame = CGRectMake(1/17.0 * WIDTH, allHeight * WIDTH, boundW * WIDTH, rowHeight * WIDTH);
+            controlImageViewFrame = CGRectMake(4/320.0 * WIDTH, allHeight * WIDTH, boundW * WIDTH, rowHeight * WIDTH);
             
             GalleryEditToolView *toolView = [self addEditToolView:allHeight+rowHeight rowIdx:rowIdx+100];
             if (_isEditing) {
@@ -609,13 +614,13 @@
             
         }else {
             if (idx == 0) {
-                controlImageViewFrame = CGRectMake(1/17.0 * WIDTH, allHeight * WIDTH, boundW * WIDTH, rowHeight * WIDTH);
+                controlImageViewFrame = CGRectMake(4/320.0 * WIDTH, allHeight * WIDTH, boundW * WIDTH, rowHeight * WIDTH);
                 GalleryEditToolView *toolView = [self addEditToolView:allHeight+rowHeight rowIdx:rowIdx+100];
                 if (_isEditing) {
                     [self.scrollView addSubview:toolView];
                 }
             }else {
-                controlImageViewFrame = CGRectMake((allWidth-boundW-1/17.0) * WIDTH, allHeight * WIDTH, boundW * WIDTH, rowHeight * WIDTH);
+                controlImageViewFrame = CGRectMake((allWidth-boundW-4/320.0) * WIDTH, allHeight * WIDTH, boundW * WIDTH, rowHeight * WIDTH);
             }
         }
         
@@ -630,7 +635,7 @@
 - (GalleryEditToolView *) addEditToolView:(float)value rowIdx:(NSInteger)rowIdx {
     
     GalleryEditToolView *toolView = [[GalleryEditToolView alloc] init];
-    toolView.center = CGPointMake(WIDTH/2, value * WIDTH + 20);
+    toolView.center = CGPointMake(WIDTH/2, value * WIDTH + 15);
     toolView.tag = rowIdx;
     toolView.delegate = self;
     

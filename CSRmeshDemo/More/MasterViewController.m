@@ -28,17 +28,17 @@
     self.navigationItem.title = @"More";
     self.view.backgroundColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1];
     
-    imageArray = @[@"place",
-                   @"share",
-                   @"time.png",
-                   @"update.png",
-                   @"remoteImage",
+    imageArray = @[@"Setting_places",
+                   @"Setting_share",
+                   @"Setting_timer",
+                   @"Setting_FWupgrade",
+                   @"Setting_remote",
                    @"musicIcon",
-                   @"about"];
+                   @"Setting_about"];
     titleArray = @[@"Places",
                    @"Share",
                    @"Timer",
-                   @"Update",
+                   @"FW Update",
                    @"Remote",
                    @"Music",
                    @"About"];

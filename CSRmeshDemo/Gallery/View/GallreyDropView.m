@@ -18,7 +18,7 @@
     self = [super initWithFrame:fixFrame];
     
     if (self) {
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.9];
         self.layer.cornerRadius = unit/2;
         self.layer.borderWidth =1;
         self.layer.borderColor = [UIColor darkGrayColor].CGColor;
@@ -111,9 +111,9 @@
     if (![model.powerState boolValue]) {
         self.backgroundColor = [UIColor clearColor];
     }else if ([self.kindName isEqualToString:@"S350BT"]) {
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.9];;
     }else if ([self.kindName isEqualToString:@"D350BT"]){
-        self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:[model.level floatValue]/255.0];
+        self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:[model.level floatValue]/255.0*0.9];
     }
 }
 

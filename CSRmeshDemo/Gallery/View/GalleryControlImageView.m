@@ -32,8 +32,8 @@
         
         self.drops = [[NSMutableArray alloc] init];
         _deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _deleteButton.frame = CGRectMake(-10, -10, 30, 30);
-        [_deleteButton setBackgroundImage:[UIImage imageNamed:@"icon_delete"] forState:UIControlStateNormal];
+        _deleteButton.frame = CGRectMake(0, 0, 32, 32);
+        [_deleteButton setBackgroundImage:[UIImage imageNamed:@"Btn_Delete"] forState:UIControlStateNormal];
         [_deleteButton addTarget:self action:@selector(deleteAction:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_deleteButton];
         
