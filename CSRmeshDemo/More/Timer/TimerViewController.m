@@ -36,12 +36,13 @@
     [self.view addSubview:imageView];
     self.navigationItem.title = @"Timers";
     self.automaticallyAdjustsScrollViewInsets = NO;
-    
+    if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Setting_back"] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
+        self.navigationItem.leftBarButtonItem = left;
+    }
     
     UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editClick)];
     self.navigationItem.rightBarButtonItem = edit;
-    UIBarButtonItem *close = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStylePlain target:self action:@selector(closeClick)];
-    self.navigationItem.leftBarButtonItem = close;
     
     [self updateTableView];
     [self loadData];
@@ -68,8 +69,13 @@
     [self updateTableView];
 }
 
-- (void)closeClick {
-    [self.navigationController popViewControllerAnimated:YES];
+- (void)backSetting{
+    CATransition *animation = [CATransition animation];
+    [animation setDuration:0.3];
+    [animation setType:kCATransitionMoveIn];
+    [animation setSubtype:kCATransitionFromLeft];
+    [self.view.window.layer addAnimation:animation forKey:nil];
+    [self dismissViewControllerAnimated:NO completion:nil];
 }
 
 - (void)editClick {

@@ -25,54 +25,61 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.automaticallyAdjustsScrollViewInsets = NO;
-    self.navigationItem.title = @"More";
+    self.navigationItem.title = @"Setting";
     self.view.backgroundColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1];
     
-    imageArray = @[@"Setting_places",
-                   @"Setting_share",
-                   @"Setting_timer",
-                   @"Setting_FWupgrade",
-                   @"Setting_remote",
-                   @"musicIcon",
-                   @"Setting_about"];
-    titleArray = @[@"Places",
-                   @"Share",
-                   @"Timer",
-                   @"FW Update",
-                   @"Remote",
-                   @"Music",
-                   @"About"];
+    imageArray =@[@[@"Setting_places",
+                    @"Setting_share"],
+                  @[@"Setting_timer",
+                    @"Setting_remote",
+                    @"Setting_FWupgrade"],
+                  @[@"Setting_language",
+                    @"Setting_help",
+                    @"Setting_about"]];
+    titleArray = @[@[@"Places",
+                     @"Share"],
+                   @[@"Timer",
+                     @"Remote",
+                     @"FW Update"],
+                   @[@"Language",
+                     @"Help",
+                     @"About"]];
     
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.backgroundColor = [UIColor clearColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.view addSubview:self.tableView];
     
     
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return [titleArray count];
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    NSArray *array = titleArray[section];
+    return [array count];
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.textLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
     }
-    cell.textLabel.text = titleArray[indexPath.row];
-    cell.imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@",imageArray[indexPath.row]]];
+    cell.textLabel.text = titleArray[indexPath.section][indexPath.row];
+    cell.imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@",imageArray[indexPath.section][indexPath.row]]];
     return cell;
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 54.0;
+    return 42.0;
 }
+
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath{
-    [self.delegate didSelectRowAtMaster:indexPath.row];
+    [self.delegate didSelectRowAtMaster:indexPath];
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
@@ -80,23 +87,7 @@
 
 - (void)updateViewConstraints {
     [super updateViewConstraints];
-//    NSLog(@"updateViewConstraints>>>master");
     [self.tableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(64, 0, 0, 0)];
 }
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

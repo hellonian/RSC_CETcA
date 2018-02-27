@@ -8,7 +8,6 @@
 
 #import "PlacesViewController.h"
 #import "CSRDatabaseManager.h"
-#import "PlaceTableViewCell.h"
 #import "CSRPlaceEntity.h"
 #import "CSRConstants.h"
 #import "CSRmeshStyleKit.h"
@@ -30,16 +29,21 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     self.navigationItem.title = @"Places";
+    if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Setting_back"] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
+        self.navigationItem.leftBarButtonItem = left;
+    }
+    
     UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editAction)];
     self.navigationItem.rightBarButtonItem = edit;
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"PlaceTableViewCell" bundle:nil] forCellReuseIdentifier:PlaceTableViewCellIdentifier];
+    self.view.backgroundColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1];
+    
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.rowHeight = 65.0;
-    self.tableView.tableFooterView = [[UIView alloc] init];
-    
-    
+    self.tableView.rowHeight = 42.0;
+    self.tableView.backgroundView = [[UIView alloc] init];
+    self.tableView.backgroundColor = [UIColor clearColor];
 }
 
 - (void)editAction {
@@ -59,11 +63,25 @@
 }
 
 - (void)doneAction {
+    if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Setting_back"] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
+        self.navigationItem.leftBarButtonItem = left;
+    }else {
+        self.navigationItem.leftBarButtonItem = nil;
+    }
     UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editAction)];
     self.navigationItem.rightBarButtonItem = edit;
-    self.navigationItem.leftBarButtonItem = nil;
     
     _isEdit = NO;
+}
+
+- (void)backSetting{
+    CATransition *animation = [CATransition animation];
+    [animation setDuration:0.3];
+    [animation setType:kCATransitionMoveIn];
+    [animation setSubtype:kCATransitionFromLeft];
+    [self.view.window.layer addAnimation:animation forKey:nil];
+    [self dismissViewControllerAnimated:NO completion:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -89,44 +107,30 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    PlaceTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:PlaceTableViewCellIdentifier forIndexPath:indexPath];
-    if (self.placesArray && [self.placesArray count]>0) {
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+        cell.textLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+    }
+    if (self.placesArray && [self.placesArray count] > 0) {
         CSRPlaceEntity *placeEntity = [self.placesArray objectAtIndex:indexPath.row];
         if (placeEntity) {
-            if (placeEntity.iconID) {
-                NSArray *placeIcons = kPlaceIcons;
-                [placeIcons enumerateObjectsUsingBlock:^(NSDictionary *placeDictionary, NSUInteger idx, BOOL * _Nonnull stop) {
-                    if ([placeDictionary[@"id"] integerValue] > -1 && [placeDictionary[@"id"] integerValue] == [placeEntity.iconID integerValue]) {
-                        SEL imageSelector = NSSelectorFromString(placeDictionary[@"iconImage"]);
-                        if ([CSRmeshStyleKit respondsToSelector:imageSelector]) {
-                            cell.placeIcon.image = [CSRmeshStyleKit performSelector:imageSelector];
-                        }
-                        *stop = YES;
-                    }
-                }];
-            }
-            
-            cell.placeIcon.image = [cell.placeIcon.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-            cell.placeIcon.tintColor = [UIColor whiteColor];
-            
-            cell.placeIcon.backgroundColor = [CSRUtilities colorFromRGB:[placeEntity.color integerValue]];
-            cell.placeIcon.layer.cornerRadius = 5;
-            cell.placeIcon.layer.borderColor = [[UIColor lightGrayColor] CGColor];
-            cell.placeIcon.layer.borderWidth = .5;
-            cell.placeNameLabel.text = placeEntity.name;
-            
+            cell.textLabel.text = placeEntity.name;
             if ([CSRAppStateManager sharedInstance].selectedPlace && [[placeEntity objectID] isEqual:[[CSRAppStateManager sharedInstance].selectedPlace objectID]]) {
-                cell.currentPlaceIndicator.hidden = NO;
-                cell.currentPlaceIndicator.image = [CSRmeshStyleKit imageOfThick_circle];
                 _selectedRow = indexPath.row;
+                cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Be_selected"]];
             }else {
-                cell.currentPlaceIndicator.hidden = YES;
+                cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"To_select"]];
             }
         }
     }
-    UIImageView *image = [[UIImageView alloc] initWithImage:[CSRmeshStyleKit imageOfGear]];
-    cell.accessoryView = image;
+    
     return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 0.01f;
 }
 
 #pragma mark - table view delegate
@@ -157,8 +161,15 @@
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Alert!"
                                                                              message:[NSString stringWithFormat:@"Are you sure you want to switch place to the %@.",placeEntuty.name]
                                                                       preferredStyle:UIAlertControllerStyleAlert];
+    NSMutableAttributedString *attributedTitle = [[NSMutableAttributedString alloc] initWithString:@"Alert!"];
+    [attributedTitle addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1] range:NSMakeRange(0, [[attributedTitle string] length])];
+    [alertController setValue:attributedTitle forKey:@"attributedTitle"];
+    NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"Are you sure you want to switch place to the %@.",placeEntuty.name]];
+    [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
+    [alertController setValue:attributedMessage forKey:@"attributedMessage"];
+    [alertController.view setTintColor:DARKORAGE];
     
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK"
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"Yes"
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction *action) {
                                                          [CSRAppStateManager sharedInstance].selectedPlace = placeEntuty;
@@ -175,7 +186,7 @@
                                                          [[NSNotificationCenter defaultCenter] postNotificationName:@"reGetDataForPlaceChanged" object:nil];
                                                      }];
     
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"CANCEL"
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel"
                                                      style:UIAlertActionStyleCancel 
                                                    handler:^(UIAlertAction * _Nonnull action) {
         
@@ -195,19 +206,6 @@
     return _placesArray;
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

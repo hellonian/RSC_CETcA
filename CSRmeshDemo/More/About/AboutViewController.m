@@ -10,8 +10,11 @@
 
 #import "DeviceModelManager.h"
 #import <CSRmesh/LightModelApi.h>
+#import "PureLayout.h"
 
 @interface AboutViewController ()
+@property (weak, nonatomic) IBOutlet UILabel *copyrightLabel;
+@property (weak, nonatomic) IBOutlet UILabel *wwwLabel;
 
 @end
 
@@ -21,51 +24,31 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.navigationItem.title = @"About";
+    if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Setting_back"] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
+        self.navigationItem.leftBarButtonItem = left;
+        [self.copyrightLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:10.0];
+    }else {
+        [self.copyrightLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:60.0];
+    }
+    
+    [self.copyrightLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [self.copyrightLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20.0];
+    [self.copyrightLabel autoSetDimension:ALDimensionHeight toSize:21.0];
+    
+    [self.wwwLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [self.wwwLabel autoSetDimension:ALDimensionHeight toSize:21.0];
+    [self.wwwLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20.0];
+    [self.wwwLabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.copyrightLabel];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)backSetting{
+    CATransition *animation = [CATransition animation];
+    [animation setDuration:0.3];
+    [animation setType:kCATransitionMoveIn];
+    [animation setSubtype:kCATransitionFromLeft];
+    [self.view.window.layer addAnimation:animation forKey:nil];
+    [self dismissViewControllerAnimated:NO completion:nil];
 }
-- (IBAction)btn1:(id)sender {
-    
-    [[LightModelApi sharedInstance] setLevel:@32770 level:@100 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-        
-    } failure:^(NSError * _Nullable error) {
-        
-    }];
-    
-}
-- (IBAction)btn2:(id)sender {
-    [[LightModelApi sharedInstance] setLevel:@32770 level:@200 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-        
-    } failure:^(NSError * _Nullable error) {
-        
-    }];
-    
-}
-- (IBAction)btn3:(id)sender {
-    [[LightModelApi sharedInstance] setLevel:@32770 level:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-        
-    } failure:^(NSError * _Nullable error) {
-        
-    }];
-    
-    
-}
-- (IBAction)btn4:(id)sender {
-}
-- (IBAction)btn5:(id)sender {
-}
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

@@ -394,43 +394,7 @@
     if ([actionName isEqualToString:@"Edit"]) {
         NSLog(@"Edit");
         
-        DeviceListViewController *list = [[DeviceListViewController alloc] init];
-        list.selectMode = DeviceListSelectMode_Multiple;
-
-        SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:sceneId];
-        NSArray *members = [sceneEntity.members allObjects];
-        __block NSMutableArray *singleDevices = [[NSMutableArray alloc] init];
-        [members enumerateObjectsUsingBlock:^(SceneMemberEntity *sceneMember, NSUInteger idx, BOOL * _Nonnull stop) {
-            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sceneMember.deviceID];
-            SingleDeviceModel *deviceModel = [[SingleDeviceModel alloc] init];
-            deviceModel.deviceId = deviceEntity.deviceId;
-            deviceModel.deviceName = deviceEntity.name;
-            deviceModel.deviceShortName = deviceEntity.shortName;
-            [singleDevices addObject:deviceModel];
-        }];
-        list.originalMembers = singleDevices;
-
-        [list getSelectedDevices:^(NSArray *devices) {
-            NSLog(@"%@",devices);
-            [members enumerateObjectsUsingBlock:^(SceneMemberEntity *sceneMember, NSUInteger idx, BOOL * _Nonnull stop) {
-                [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:sceneMember];
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            }];
-            [devices enumerateObjectsUsingBlock:^(NSNumber *deviceId, NSUInteger idx, BOOL * _Nonnull stop) {
-                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
-                SceneMemberEntity *sceneMember = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
-                sceneMember.deviceID = deviceId;
-                sceneMember.kindString = deviceModel.shortName;
-                sceneMember.powerState = deviceModel.powerState;
-                sceneMember.level = [deviceModel.powerState boolValue]? deviceModel.level:@0;
-                [sceneEntity addMembersObject:sceneMember];
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            }];
-            
-            
-        }];
-        
-        [self.navigationController pushViewController:list animated:YES];
+        [self editScene];
         
         return;
     }
@@ -472,7 +436,7 @@
         [alert addAction:confirm];
         
         [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-            
+
         }];
         
         [self presentViewController:alert animated:YES completion:nil];
@@ -481,22 +445,90 @@
     }
 }
 
+- (void)editScene {
+    DeviceListViewController *list = [[DeviceListViewController alloc] init];
+    list.selectMode = DeviceListSelectMode_Multiple;
+    
+    SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:selectedSceneId];
+    NSArray *members = [sceneEntity.members allObjects];
+    __block NSMutableArray *singleDevices = [[NSMutableArray alloc] init];
+    [members enumerateObjectsUsingBlock:^(SceneMemberEntity *sceneMember, NSUInteger idx, BOOL * _Nonnull stop) {
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sceneMember.deviceID];
+        SingleDeviceModel *deviceModel = [[SingleDeviceModel alloc] init];
+        deviceModel.deviceId = deviceEntity.deviceId;
+        deviceModel.deviceName = deviceEntity.name;
+        deviceModel.deviceShortName = deviceEntity.shortName;
+        [singleDevices addObject:deviceModel];
+    }];
+    list.originalMembers = singleDevices;
+    
+    [list getSelectedDevices:^(NSArray *devices) {
+        
+        [members enumerateObjectsUsingBlock:^(SceneMemberEntity *sceneMember, NSUInteger idx, BOOL * _Nonnull stop) {
+            [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:sceneMember];
+            [[CSRDatabaseManager sharedInstance] saveContext];
+        }];
+        [devices enumerateObjectsUsingBlock:^(NSNumber *deviceId, NSUInteger idx, BOOL * _Nonnull stop) {
+            DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+            SceneMemberEntity *sceneMember = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+            sceneMember.deviceID = deviceId;
+            sceneMember.kindString = deviceModel.shortName;
+            sceneMember.powerState = deviceModel.powerState;
+            sceneMember.level = [deviceModel.powerState boolValue]? deviceModel.level:@0;
+            [sceneEntity addMembersObject:sceneMember];
+            [[CSRDatabaseManager sharedInstance] saveContext];
+        }];
+        
+        
+    }];
+    
+    [self.navigationController pushViewController:list animated:YES];
+}
+
 //点击场景单元
 - (void)mainCollectionViewCellDelegateSceneCellTapAction:(NSNumber *)sceneId {
     SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:sceneId];
     NSArray *members = [sceneEntity.members allObjects];
-    [members enumerateObjectsUsingBlock:^(SceneMemberEntity *sceneMember, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([sceneMember.kindString isEqualToString:@"S350BT"]) {
-            [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:sceneMember.powerState];
-        }else if ([sceneMember.kindString isEqualToString:@"D350BT"]) {
-            [[LightModelApi sharedInstance] setLevel:sceneMember.deviceID level:sceneMember.level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-                
-            } failure:^(NSError * _Nullable error) {
+    if ([members count]>0) {
+        [members enumerateObjectsUsingBlock:^(SceneMemberEntity *sceneMember, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([sceneMember.kindString isEqualToString:@"S350BT"]) {
+                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:sceneMember.powerState];
+            }else if ([sceneMember.kindString isEqualToString:@"D350BT"]) {
+                [[LightModelApi sharedInstance] setLevel:sceneMember.deviceID level:sceneMember.level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                    
+                } failure:^(NSError * _Nullable error) {
+                    
+                }];
+            }
+            
+        }];
+    }else {
+        if ([self determineDeviceHasBeenAdded]) {
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Empty Scene" message:@"Edit scene now?" preferredStyle:UIAlertControllerStyleAlert];
+            NSMutableAttributedString *attributedTitle = [[NSMutableAttributedString alloc] initWithString:@"Empty Scene"];
+            [attributedTitle addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1] range:NSMakeRange(0, [[attributedTitle string] length])];
+            [alertController setValue:attributedTitle forKey:@"attributedTitle"];
+            NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:@"Edit scene now?"];
+            [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
+            [alertController setValue:attributedMessage forKey:@"attributedMessage"];
+            [alertController.view setTintColor:DARKORAGE];
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                selectedSceneId = sceneId;
+                [self editScene];
                 
             }];
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                
+            }];
+            [alertController addAction:okAction];
+            [alertController addAction:cancelAction];
+            [self presentViewController:alertController animated:YES completion:nil];
+        }else {
+            [self noDevicHasBeenAddedAlert];
         }
         
-    }];
+    }
+    
 }
 
 - (void)mainCollectionViewDelegateLongPressAction:(id)cell {
@@ -663,15 +695,7 @@
 
 - (void)mainCollectionViewDelegateClickEmptyGroupCellAction:(NSIndexPath *)cellIndexPath {
     
-    NSArray *devices = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
-    __block BOOL exist=0;
-    [devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([deviceEntity.shortName isEqualToString:@"D350BT"] || [deviceEntity.shortName isEqualToString:@"S350BT"]) {
-            exist = YES;
-            *stop = YES;
-        }
-    }];
-    if (exist) {
+    if ([self determineDeviceHasBeenAdded]) {
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"No device in this group,choose devices now?" preferredStyle:UIAlertControllerStyleAlert];
         NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:@"No device in this group,choose devices now?"];
         [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
@@ -701,21 +725,37 @@
         [alertController addAction:cancelAction];
         [self presentViewController:alertController animated:YES completion:nil];
     }else {
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"No bluetooth device has been added for this place,search and add devices now?" preferredStyle:UIAlertControllerStyleAlert];
-        NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:@"No bluetooth device has been added for this place,search and add devices now?"];
-        [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
-        [alertController setValue:attributedMessage forKey:@"attributedMessage"];
-        [alertController.view setTintColor:DARKORAGE];
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self presentToAddViewController];
-        }];
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-            
-        }];
-        [alertController addAction:okAction];
-        [alertController addAction:cancelAction];
-        [self presentViewController:alertController animated:YES completion:nil];
+        [self noDevicHasBeenAddedAlert];
     }
+}
+
+- (BOOL)determineDeviceHasBeenAdded{
+    NSArray *devices = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
+    __block BOOL exist=0;
+    [devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([deviceEntity.shortName isEqualToString:@"D350BT"] || [deviceEntity.shortName isEqualToString:@"S350BT"]) {
+            exist = YES;
+            *stop = YES;
+        }
+    }];
+    return exist;
+}
+
+- (void)noDevicHasBeenAddedAlert {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"No bluetooth device has been added for this place,search and add devices now?" preferredStyle:UIAlertControllerStyleAlert];
+    NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:@"No bluetooth device has been added for this place,search and add devices now?"];
+    [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
+    [alertController setValue:attributedMessage forKey:@"attributedMessage"];
+    [alertController.view setTintColor:DARKORAGE];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self presentToAddViewController];
+    }];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [alertController addAction:okAction];
+    [alertController addAction:cancelAction];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 #pragma mark - notification

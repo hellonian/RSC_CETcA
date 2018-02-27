@@ -30,7 +30,7 @@
                         </constraints>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ghm-qb-6Mx">
-                        <rect key="frame" x="8" y="75" width="91" height="14"/>
+                        <rect key="frame" x="8" y="75" width="101" height="14"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="14" id="3oT-zN-cv4"/>
                         </constraints>
@@ -48,9 +48,9 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cWD-U5-f2w">
-                        <rect key="frame" x="99" y="75" width="40" height="14"/>
+                        <rect key="frame" x="109" y="75" width="30" height="14"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="40" id="7sr-P1-tci"/>
+                            <constraint firstAttribute="width" constant="30" id="7sr-P1-tci"/>
                             <constraint firstAttribute="height" constant="14" id="fso-mf-Giz"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="10"/>

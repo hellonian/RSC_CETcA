@@ -38,6 +38,10 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     self.navigationItem.title = @"Share";
+    if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Setting_back"] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
+        self.navigationItem.leftBarButtonItem = left;
+    }
     [self.view addSubview:self.chooseView];
     constraint = [self.chooseView autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.view withOffset:100];
     [self.chooseView autoPinEdge:ALEdgeLeft toEdge:ALEdgeLeft ofView:self.view];
@@ -45,6 +49,14 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
     [self.chooseView autoSetDimension:ALDimensionHeight toSize:150];
 }
 
+- (void)backSetting{
+    CATransition *animation = [CATransition animation];
+    [animation setDuration:0.3];
+    [animation setType:kCATransitionMoveIn];
+    [animation setSubtype:kCATransitionFromLeft];
+    [self.view.window.layer addAnimation:animation forKey:nil];
+    [self dismissViewControllerAnimated:NO completion:nil];
+}
 
 - (IBAction)share:(UIButton *)sender {
     

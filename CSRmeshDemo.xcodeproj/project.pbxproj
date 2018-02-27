@@ -167,8 +167,6 @@
 		2E2E70901FF5DE60002D1C1D /* PlaceColorIconPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70331FF5DE60002D1C1D /* PlaceColorIconPickerView.m */; };
 		2E2E70911FF5DE60002D1C1D /* PlaceIconCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70351FF5DE60002D1C1D /* PlaceIconCollectionViewCell.m */; };
 		2E2E70921FF5DE60002D1C1D /* PlaceIconCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E70361FF5DE60002D1C1D /* PlaceIconCollectionViewCell.xib */; };
-		2E2E70931FF5DE60002D1C1D /* PlaceTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70381FF5DE60002D1C1D /* PlaceTableViewCell.m */; };
-		2E2E70941FF5DE60002D1C1D /* PlaceTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E70391FF5DE60002D1C1D /* PlaceTableViewCell.xib */; };
 		2E2E70951FF5DE60002D1C1D /* RemoteTCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E703C1FF5DE60002D1C1D /* RemoteTCell.m */; };
 		2E2E70961FF5DE60002D1C1D /* RemoteTCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E703D1FF5DE60002D1C1D /* RemoteTCell.xib */; };
 		2E2E70971FF5DE60002D1C1D /* RemoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E703F1FF5DE60002D1C1D /* RemoteViewController.m */; };
@@ -249,6 +247,10 @@
 		2EE95A831FAB0F9700E1F945 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE95A821FAB0F9700E1F945 /* ViewController.m */; };
 		2EEA6E361F453B1300895CE2 /* ControlMaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EEA6E341F453B1300895CE2 /* ControlMaskView.m */; };
 		2EF2DB5A200DA6CF00A1B236 /* DeviceModelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF2DB59200DA6CF00A1B236 /* DeviceModelManager.m */; };
+		2EF332502045030100565374 /* LanguageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF3324E2045030100565374 /* LanguageViewController.m */; };
+		2EF332512045030100565374 /* LanguageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EF3324F2045030100565374 /* LanguageViewController.xib */; };
+		2EF332552045031300565374 /* HelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF332532045031300565374 /* HelpViewController.m */; };
+		2EF332562045031300565374 /* HelpViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EF332542045031300565374 /* HelpViewController.xib */; };
 		2EF5F07C1F445AC30069C594 /* ImproveTouchingExperience.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF5F07B1F445AC30069C594 /* ImproveTouchingExperience.m */; };
 		2EF718291FFB224800901918 /* GalleryEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF718281FFB224800901918 /* GalleryEntity.m */; };
 		2EF7182C1FFB265A00901918 /* DropEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF7182B1FFB265A00901918 /* DropEntity.m */; };
@@ -563,9 +565,6 @@
 		2E2E70341FF5DE60002D1C1D /* PlaceIconCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaceIconCollectionViewCell.h; sourceTree = "<group>"; };
 		2E2E70351FF5DE60002D1C1D /* PlaceIconCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaceIconCollectionViewCell.m; sourceTree = "<group>"; };
 		2E2E70361FF5DE60002D1C1D /* PlaceIconCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlaceIconCollectionViewCell.xib; sourceTree = "<group>"; };
-		2E2E70371FF5DE60002D1C1D /* PlaceTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaceTableViewCell.h; sourceTree = "<group>"; };
-		2E2E70381FF5DE60002D1C1D /* PlaceTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaceTableViewCell.m; sourceTree = "<group>"; };
-		2E2E70391FF5DE60002D1C1D /* PlaceTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlaceTableViewCell.xib; sourceTree = "<group>"; };
 		2E2E703B1FF5DE60002D1C1D /* RemoteTCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteTCell.h; sourceTree = "<group>"; };
 		2E2E703C1FF5DE60002D1C1D /* RemoteTCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemoteTCell.m; sourceTree = "<group>"; };
 		2E2E703D1FF5DE60002D1C1D /* RemoteTCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RemoteTCell.xib; sourceTree = "<group>"; };
@@ -702,6 +701,12 @@
 		2EEA6E341F453B1300895CE2 /* ControlMaskView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControlMaskView.m; sourceTree = "<group>"; };
 		2EF2DB58200DA6CF00A1B236 /* DeviceModelManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceModelManager.h; sourceTree = "<group>"; };
 		2EF2DB59200DA6CF00A1B236 /* DeviceModelManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeviceModelManager.m; sourceTree = "<group>"; };
+		2EF3324D2045030100565374 /* LanguageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LanguageViewController.h; sourceTree = "<group>"; };
+		2EF3324E2045030100565374 /* LanguageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LanguageViewController.m; sourceTree = "<group>"; };
+		2EF3324F2045030100565374 /* LanguageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LanguageViewController.xib; sourceTree = "<group>"; };
+		2EF332522045031300565374 /* HelpViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelpViewController.h; sourceTree = "<group>"; };
+		2EF332532045031300565374 /* HelpViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelpViewController.m; sourceTree = "<group>"; };
+		2EF332542045031300565374 /* HelpViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HelpViewController.xib; sourceTree = "<group>"; };
 		2EF5F07A1F445AC30069C594 /* ImproveTouchingExperience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImproveTouchingExperience.h; sourceTree = "<group>"; };
 		2EF5F07B1F445AC30069C594 /* ImproveTouchingExperience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImproveTouchingExperience.m; sourceTree = "<group>"; };
 		2EF718271FFB224800901918 /* GalleryEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GalleryEntity.h; sourceTree = "<group>"; };
@@ -1465,13 +1470,15 @@
 				2E2E70081FF5DE60002D1C1D /* MasterViewController.m */,
 				2E2E70091FF5DE60002D1C1D /* MoreViewController.h */,
 				2E2E700A1FF5DE60002D1C1D /* MoreViewController.m */,
-				2E2E70031FF5DE60002D1C1D /* About */,
-				2E2E700B1FF5DE60002D1C1D /* Music */,
 				2E2E70251FF5DE60002D1C1D /* Places */,
+				2EF3324B204502CA00565374 /* Help */,
+				2EF3324C204502CA00565374 /* Language */,
+				2E2E700B1FF5DE60002D1C1D /* Music */,
 				2E2E703A1FF5DE60002D1C1D /* Remote */,
 				2E2E70431FF5DE60002D1C1D /* Share */,
 				2E2E70551FF5DE60002D1C1D /* Timer */,
 				2E2E70671FF5DE60002D1C1D /* Update */,
+				2E2E70031FF5DE60002D1C1D /* About */,
 			);
 			path = More;
 			sourceTree = "<group>";
@@ -1594,9 +1601,6 @@
 				2E2E70361FF5DE60002D1C1D /* PlaceIconCollectionViewCell.xib */,
 				2E2E70321FF5DE60002D1C1D /* PlaceColorIconPickerView.h */,
 				2E2E70331FF5DE60002D1C1D /* PlaceColorIconPickerView.m */,
-				2E2E70371FF5DE60002D1C1D /* PlaceTableViewCell.h */,
-				2E2E70381FF5DE60002D1C1D /* PlaceTableViewCell.m */,
-				2E2E70391FF5DE60002D1C1D /* PlaceTableViewCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1854,6 +1858,26 @@
 				2E2E70021FF5DE60002D1C1D /* More */,
 			);
 			name = controller;
+			sourceTree = "<group>";
+		};
+		2EF3324B204502CA00565374 /* Help */ = {
+			isa = PBXGroup;
+			children = (
+				2EF332522045031300565374 /* HelpViewController.h */,
+				2EF332532045031300565374 /* HelpViewController.m */,
+				2EF332542045031300565374 /* HelpViewController.xib */,
+			);
+			path = Help;
+			sourceTree = "<group>";
+		};
+		2EF3324C204502CA00565374 /* Language */ = {
+			isa = PBXGroup;
+			children = (
+				2EF3324D2045030100565374 /* LanguageViewController.h */,
+				2EF3324E2045030100565374 /* LanguageViewController.m */,
+				2EF3324F2045030100565374 /* LanguageViewController.xib */,
+			);
+			path = Language;
 			sourceTree = "<group>";
 		};
 		2EF7182D1FFB2B9C00901918 /* Model */ = {
@@ -2345,6 +2369,7 @@
 				2E2E6FCA1FF5DAFC002D1C1D /* scence7.png in Resources */,
 				2E2E6FCD1FF5DAFC002D1C1D /* scene15.png in Resources */,
 				2E2E6FBC1FF5DAFC002D1C1D /* scence10.png in Resources */,
+				2EF332512045030100565374 /* LanguageViewController.xib in Resources */,
 				2E2E6FC41FF5DAFC002D1C1D /* scence19.png in Resources */,
 				2E2E6FCB1FF5DAFC002D1C1D /* scence8.png in Resources */,
 				2E2E709E1FF5DE60002D1C1D /* QRCodeGenerateVC.xib in Resources */,
@@ -2360,7 +2385,6 @@
 				F43AA3B71CAA7EDB00C1EDF8 /* Controllers.storyboard in Resources */,
 				2E2E6FB21FF5DAFC002D1C1D /* icon_all_light_off@2x.png in Resources */,
 				2E2E708F1FF5DE60002D1C1D /* PlaceColorCollectionViewCell.xib in Resources */,
-				2E2E70941FF5DE60002D1C1D /* PlaceTableViewCell.xib in Resources */,
 				2E2E70AA1FF5DE60002D1C1D /* TimerCell.xib in Resources */,
 				2E2E70851FF5DE60002D1C1D /* particleTexture.png in Resources */,
 				2E2E6FD01FF5DAFC002D1C1D /* switch_csr.png in Resources */,
@@ -2380,6 +2404,7 @@
 				2E3B965C200F2553000BD086 /* DeviceDetailViewController.xib in Resources */,
 				2E2E6FBD1FF5DAFC002D1C1D /* scence11.png in Resources */,
 				2EF718341FFB2C0600901918 /* GalleryViewController.xib in Resources */,
+				2EF332562045031300565374 /* HelpViewController.xib in Resources */,
 				2E2E70001FF5DCB4002D1C1D /* SceneIconsViewController.xib in Resources */,
 				CE7BADE01C85A83D0096F4FE /* Events.storyboard in Resources */,
 				2E2E6FB91FF5DAFC002D1C1D /* remoteImage@2x.png in Resources */,
@@ -2478,7 +2503,6 @@
 				2E3B965A200F2553000BD086 /* AreaViewController.m in Sources */,
 				2E3A65F7202BF97300B3E425 /* SingleDeviceModel.m in Sources */,
 				CED927FF1C8759D1003B6110 /* CSREventDetailsViewController.m in Sources */,
-				2E2E70931FF5DE60002D1C1D /* PlaceTableViewCell.m in Sources */,
 				2EE757CA201030CA00FB75C5 /* TopImageView.m in Sources */,
 				2EE757C720102B7B00FB75C5 /* MainCollectionView.m in Sources */,
 				2E2E70951FF5DE60002D1C1D /* RemoteTCell.m in Sources */,
@@ -2622,6 +2646,7 @@
 				2E2E70A71FF5DE60002D1C1D /* EveTypeViewController.m in Sources */,
 				CE165B181BAC7160002D0637 /* CSRFavouritesCollectionViewCell.m in Sources */,
 				0D835B6D1B9749E700FF4376 /* CSRPlacesColorIconPickerViewController.m in Sources */,
+				2EF332552045031300565374 /* HelpViewController.m in Sources */,
 				F47B99921C908D0100A050C8 /* CSREventsManager.m in Sources */,
 				2E2E6F791FF5D92B002D1C1D /* ConfiguredDeviceListController.m in Sources */,
 				2E2E6FFB1FF5DCB4002D1C1D /* LightSceneBringer.m in Sources */,
@@ -2662,6 +2687,7 @@
 				2E2E707F1FF5DE60002D1C1D /* MusicDimmerChooseVC.m in Sources */,
 				2EAD4EA82004A4BB003733CA /* GalleryEditToolView.m in Sources */,
 				2E2E707B1FF5DE60002D1C1D /* AboutViewController.m in Sources */,
+				2EF332502045030100565374 /* LanguageViewController.m in Sources */,
 				F43AA3BE1CAA83ED00C1EDF8 /* CSRNewControllersViewController.m in Sources */,
 				F477A9161C9AE8AB00ABDF31 /* CSRLightRGBVC.m in Sources */,
 				2EE95A831FAB0F9700E1F945 /* ViewController.m in Sources */,

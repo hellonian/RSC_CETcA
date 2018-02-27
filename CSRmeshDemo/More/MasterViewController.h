@@ -10,7 +10,7 @@
 
 @protocol masterDelegate <NSObject>
 
-- (void) didSelectRowAtMaster:(NSInteger)row;
+- (void) didSelectRowAtMaster:(NSIndexPath *)indexPath;
 
 @end
 

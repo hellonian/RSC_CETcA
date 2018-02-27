@@ -14,8 +14,6 @@
 
 @property (weak, nonatomic) IBOutlet UITextField *placeNameTF;
 @property (weak, nonatomic) IBOutlet UITextField *placeNetworkKeyTF;
-@property (weak, nonatomic) IBOutlet UIButton *placeIconSelectionButton;
-@property (weak, nonatomic) IBOutlet UIButton *placeColorSelectionButton;
 @property (weak, nonatomic) IBOutlet CSRCheckbox *showPasswordCheckbox;
 @property (nonatomic,strong) CSRPlaceEntity *placeEntity;
 @property (weak, nonatomic) IBOutlet UIButton *deleteButton;

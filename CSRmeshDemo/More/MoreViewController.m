@@ -16,6 +16,8 @@
 #import "ShareViewController.h"
 #import "MusicListTableViewController.h"
 #import "PlacesViewController.h"
+#import "LanguageViewController.h"
+#import "HelpViewController.h"
 
 @interface MoreViewController ()<UISplitViewControllerDelegate,masterDelegate>
 
@@ -30,6 +32,8 @@
 @property (nonatomic,strong) UINavigationController *masterViewManager;
 @property (nonatomic,strong) UINavigationController *detailViewManger;
 @property (nonatomic,strong) MusicListTableViewController *musicVC;
+@property (nonatomic,strong) LanguageViewController *languageVC;
+@property (nonatomic,strong) HelpViewController *helpVC;
 
 @end
 
@@ -64,6 +68,9 @@
     self.musicVC = [[MusicListTableViewController alloc] init];
     self.placesVC = [[PlacesViewController alloc] init];
     self.masterVC = [[MasterViewController alloc] init];
+    self.languageVC = [[LanguageViewController alloc] init];
+    self.helpVC = [[HelpViewController alloc] init];
+    
     self.masterVC.delegate = self;
     
     self.masterViewManager = [[UINavigationController alloc] initWithRootViewController:self.masterVC];
@@ -99,68 +106,132 @@
 
 #pragma mark - masterDelegate
 
-- (void) didSelectRowAtMaster:(NSInteger)row {
+- (void) didSelectRowAtMaster:(NSIndexPath *)indexPath {
     if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
-        [self pushViewConrollerWithRow:row];
+        [self pushViewConrollerWithRow:indexPath];
         return;
     }
     
     NSMutableArray *vcs = [NSMutableArray arrayWithArray:self.detailViewManger.childViewControllers];
     [vcs removeAllObjects];
-    switch (row) {
+    switch (indexPath.section) {
         case 0:
-            [vcs addObject:self.placesVC];
+        {
+            switch (indexPath.row) {
+                case 0:
+                    [vcs addObject:self.placesVC];
+                    break;
+                case 1:
+                    [vcs addObject:self.shareVC];
+                    break;
+                default:
+                    break;
+            }
             break;
+        }
         case 1:
-            [vcs addObject:self.shareVC];
+        {
+            switch (indexPath.row) {
+                case 0:
+                    [vcs addObject:self.timerVC];
+                    break;
+                case 1:
+                    [vcs addObject:self.remoteVC];
+                    break;
+                case 2:
+                    [vcs addObject:self.updateVC];
+                    break;
+                default:
+                    break;
+            }
             break;
+        }
         case 2:
-            [vcs addObject:self.timerVC];
+        {
+            switch (indexPath.row) {
+                case 0:
+                    [vcs addObject:self.languageVC];
+                    break;
+                case 1:
+                    [vcs addObject:self.helpVC];
+                    break;
+                case 2:
+                    [vcs addObject:self.aboutVC];
+                    break;
+                default:
+                    break;
+            }
             break;
-        case 3:
-            [vcs addObject:self.updateVC];
-            break;
-        case 4:
-            [vcs addObject:self.remoteVC];
-            break;
-        case 5:
-            [vcs addObject:self.musicVC];
-            break;
-        case 6:
-            [vcs addObject:self.aboutVC];
-            break;
+        }
         default:
             break;
     }
     [self.detailViewManger setViewControllers:vcs];
 }
 
-- (void)pushViewConrollerWithRow: (NSInteger)row {
-    switch (row) {
+- (void)pushViewConrollerWithRow: (NSIndexPath *)indexPath {
+    switch (indexPath.section) {
         case 0:
-            [self.masterViewManager pushViewController:self.placesVC animated:YES];
+        {
+            switch (indexPath.row) {
+                case 0:
+                    [self pushViewConrollerW:self.placesVC];
+                    break;
+                case 1:
+                    [self pushViewConrollerW:self.shareVC];
+                    break;
+                default:
+                    break;
+            }
             break;
+        }
         case 1:
-            [self.masterViewManager pushViewController:self.shareVC animated:YES];
+        {
+            switch (indexPath.row) {
+                case 0:
+                    [self pushViewConrollerW:self.timerVC];
+                    break;
+                case 1:
+                    [self pushViewConrollerW:self.remoteVC];
+                    break;
+                case 2:
+                    [self pushViewConrollerW:self.updateVC];
+                    break;
+                default:
+                    break;
+            }
             break;
+        }
         case 2:
-            [self.masterViewManager pushViewController:self.timerVC animated:YES];
+        {
+            switch (indexPath.row) {
+                case 0:
+                    [self pushViewConrollerW:self.languageVC];
+                    break;
+                case 1:
+                    [self pushViewConrollerW:self.helpVC];
+                    break;
+                case 2:
+                    [self pushViewConrollerW:self.aboutVC];
+                    break;
+                default:
+                    break;
+            }
             break;
-        case 3:
-            [self.masterViewManager pushViewController:self.updateVC animated:YES];
-            break;
-        case 4:
-            [self.masterViewManager pushViewController:self.remoteVC animated:YES];
-            break;
-        case 5:
-            [self.masterViewManager pushViewController:self.musicVC animated:YES];
-            break;
-        case 6:
-            [self.masterViewManager pushViewController:self.aboutVC animated:YES];
-            break;
+        }
         default:
             break;
     }
+}
+
+- (void)pushViewConrollerW:(UIViewController *)vc {
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    CATransition *animation = [CATransition animation];
+    [animation setDuration:0.3];
+    [animation setType:kCATransitionMoveIn];
+    [animation setSubtype:kCATransitionFromRight];
+    [self.view.window.layer addAnimation:animation forKey:nil];
+    [self presentViewController:nav animated:NO completion:nil];
 }
 
 #pragma mark - AutoLayout

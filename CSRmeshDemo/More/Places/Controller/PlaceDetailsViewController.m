@@ -18,12 +18,7 @@
 #import "CSRAppStateManager.h"
 #import "SceneEntity.h"
 
-@interface PlaceDetailsViewController ()<UITextFieldDelegate,CSRCheckboxDelegate,PlaceColorIconPickerViewDelegate,CSRCheckboxDelegate>
-{
-    NSUInteger pickerMode;
-    PlaceColorIconPickerView *pickerView;
-    NSUInteger placeIconId;
-}
+@interface PlaceDetailsViewController ()<UITextFieldDelegate,CSRCheckboxDelegate,CSRCheckboxDelegate>
 
 @end
 
@@ -46,18 +41,6 @@
     UIBarButtonItem *save = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveAction)];
     self.navigationItem.rightBarButtonItem = save;
     
-    _placeColorSelectionButton.backgroundColor = [UIColor clearColor];
-    _placeColorSelectionButton.layer.cornerRadius = _placeColorSelectionButton.bounds.size.width / 2;
-    _placeColorSelectionButton.layer.borderColor = [[UIColor lightGrayColor] CGColor];
-    _placeColorSelectionButton.layer.borderWidth = 0.5;
-    
-    _placeIconSelectionButton.backgroundColor = [UIColor clearColor];
-    _placeIconSelectionButton.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-    _placeIconSelectionButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-    _placeIconSelectionButton.imageView.image = [_placeIconSelectionButton.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    [_placeIconSelectionButton.imageView sizeToFit];
-    _placeIconSelectionButton.tintColor = [UIColor grayColor];
-    
     [_deleteButton setImage:[[CSRmeshStyleKit imageOfTrashcan] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
     _deleteButton.imageView.tintColor = [UIColor whiteColor];
     [_deleteButton setTitle:@"Delete" forState:UIControlStateNormal];
@@ -67,25 +50,6 @@
     }
     if (_placeEntity && ![CSRUtilities isStringEmpty:_placeEntity.passPhrase]) {
         _placeNetworkKeyTF.text = _placeEntity.passPhrase;
-    }
-    if ([_placeEntity.iconID integerValue] > -1) {
-        NSArray *placeIcons = kPlaceIcons;
-        [placeIcons enumerateObjectsUsingBlock:^(NSDictionary *placeIconsDictionary, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([placeIconsDictionary[@"id"] integerValue] > -1 && [placeIconsDictionary[@"id"] integerValue] == [_placeEntity.iconID integerValue]) {
-                SEL imageSelector = NSSelectorFromString(placeIconsDictionary[@"iconImage"]);
-                if ([CSRmeshStyleKit respondsToSelector:imageSelector]) {
-                    [_placeIconSelectionButton setImage:(UIImage *)[CSRmeshStyleKit performSelector:imageSelector] forState:UIControlStateNormal];
-                    _placeIconSelectionButton.imageView.tintColor = [UIColor grayColor];
-                }
-                *stop = YES;
-            }
-        }];
-    }
-    if (_placeEntity.color) {
-        _placeColorSelectionButton.backgroundColor = [CSRUtilities colorFromRGB:[_placeEntity.color integerValue]];
-    }
-    if (!_placeIconSelectionButton.imageView.image) {
-        [_placeIconSelectionButton setImage:[CSRmeshStyleKit imageOfHouse] forState:UIControlStateNormal];
     }
     
 }
@@ -104,17 +68,14 @@
 }
 
 - (void)saveAction {
-    if (!placeIconId) {
-        placeIconId = [_placeEntity.iconID integerValue];
-    }
     
     if (_placeEntity && ![CSRUtilities isStringEmpty:_placeEntity.passPhrase]) {
         if (![CSRUtilities isStringEmpty:_placeNameTF.text] && ![CSRUtilities isStringEmpty:_placeNetworkKeyTF.text]) {
             
             _placeEntity.name = _placeNameTF.text;
             _placeEntity.passPhrase = _placeNetworkKeyTF.text;
-            _placeEntity.color = @([CSRUtilities rgbFromColor:_placeColorSelectionButton.backgroundColor]);
-            _placeEntity.iconID = @(placeIconId);
+            _placeEntity.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
+            _placeEntity.iconID = @(8);
             _placeEntity.owner = @"My place";
             _placeEntity.networkKey = nil;
             
@@ -137,8 +98,8 @@
             
             _placeEntity.name = _placeNameTF.text;
             _placeEntity.passPhrase = _placeNetworkKeyTF.text;
-            _placeEntity.color = @([CSRUtilities rgbFromColor:_placeColorSelectionButton.backgroundColor]);
-            _placeEntity.iconID = @(placeIconId);
+            _placeEntity.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
+            _placeEntity.iconID = @(8);
             _placeEntity.owner = @"My place";
             _placeEntity.networkKey = nil;
             
@@ -229,28 +190,6 @@
     
 }
 
-- (IBAction)openPicker:(UIButton *)sender {
-    if (!pickerView) {
-        
-        if ([sender isEqual:_placeColorSelectionButton]) {
-            pickerMode = CollectionViewPickerMode_PlaceColorPicker;
-        }
-        else if ([sender isEqual:_placeIconSelectionButton]){
-            pickerMode = CollectionViewPickerMode_PlaceIconPicker;
-        }
-        
-        pickerView = [[PlaceColorIconPickerView alloc] initWithFrame:CGRectMake((WIDTH-277)/2, (HEIGHT-240)/2, 277, 240) withMode:pickerMode];
-        
-        pickerView.delegate = self;
-        
-        [UIView animateWithDuration:0.5 animations:^{
-            [self.view addSubview:pickerView];
-            [pickerView autoCenterInSuperview];
-            [pickerView autoSetDimensionsToSize:CGSizeMake(277, 240)];
-        }];
-    }
-}
-
 - (IBAction)deletePlace:(id)sender
 {
     if (![[_placeEntity objectID] isEqual:[[CSRAppStateManager sharedInstance].selectedPlace objectID]]) {
@@ -276,38 +215,6 @@
 {
     [textField resignFirstResponder];
     return NO;
-}
-
-#pragma mark - <PlaceColorIconPickerViewDelegate>
-
-- (id)selectedItem:(id)item {
-    if (pickerMode == CollectionViewPickerMode_PlaceColorPicker) {
-        NSString *selectedColorHex = (NSString *)item;
-        _placeColorSelectionButton.backgroundColor = [CSRUtilities colorFromHex:selectedColorHex];
-    }
-    else if (pickerMode == CollectionViewPickerMode_PlaceIconPicker) {
-        NSDictionary *iconImageDictionary = (NSDictionary *)item;
-        placeIconId = [(NSNumber *)iconImageDictionary[@"id"] integerValue];
-        SEL imageSelector = NSSelectorFromString(iconImageDictionary[@"iconImage"]);
-        if ([CSRmeshStyleKit respondsToSelector:imageSelector]) {
-            [_placeIconSelectionButton setImage:(UIImage *)[CSRmeshStyleKit performSelector:imageSelector] forState:UIControlStateNormal];
-        }
-        
-        _placeIconSelectionButton.imageView.image = [_placeIconSelectionButton.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        [_placeIconSelectionButton.imageView sizeToFit];
-        _placeIconSelectionButton.imageView.tintColor = [UIColor grayColor];
-        
-    }
-    return nil;
-}
-
-- (void)cancel:(UIButton *)sender {
-    if (pickerView) {
-        [UIView animateWithDuration:0.5 animations:^{
-            [pickerView removeFromSuperview];
-            pickerView = nil;
-        }];
-    }
 }
 
 #pragma mark - <CSRCheckbox>
