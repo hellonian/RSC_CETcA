@@ -64,7 +64,7 @@
     
     if (schedule.state) {
         [self.enSwitch setOn:YES];
-        self.fireDateLabel.textColor = [UIColor whiteColor];
+        self.fireDateLabel.textColor = [UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1];
     }else {
         [self.enSwitch setOn:NO];
         self.fireDateLabel.textColor = [UIColor lightGrayColor];
@@ -72,7 +72,7 @@
     
 }
 - (IBAction)changeAlarmState:(UISwitch *)sender {
-    self.fireDateLabel.textColor = sender.on? [UIColor whiteColor]:[UIColor lightGrayColor];
+    self.fireDateLabel.textColor = sender.on? [UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1]:[UIColor lightGrayColor];
     [[DataModelManager shareInstance] enAlarmForDevice:self.deviceId stata:sender.on index:self.index];
 }
 

@@ -61,6 +61,7 @@
     
     _peripheralsList.delegate = self;
     _peripheralsList.dataSource = self;
+    _peripheralsList.tableFooterView = [[UIView alloc] init];
     
     NSString *urlString = @"http://39.108.152.134/firware.php";
     AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];

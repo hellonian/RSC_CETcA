@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -20,9 +20,6 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bgImage" translatesAutoresizingMaskIntoConstraints="NO" id="W5b-jD-hey">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                </imageView>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="RAA-sV-W9M">
                     <rect key="frame" x="87.5" y="233.5" width="200" height="200"/>
                     <constraints>
@@ -31,19 +28,12 @@
                     </constraints>
                 </imageView>
             </subviews>
-            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color key="backgroundColor" red="0.86274509799999999" green="0.86274509799999999" blue="0.86274509799999999" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="W5b-jD-hey" secondAttribute="bottom" id="5zh-VE-F3O"/>
-                <constraint firstAttribute="trailing" secondItem="W5b-jD-hey" secondAttribute="trailing" id="9YD-ie-ZmE"/>
-                <constraint firstItem="W5b-jD-hey" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="Zrf-gC-zfg"/>
                 <constraint firstItem="RAA-sV-W9M" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="aUz-jj-mJC"/>
-                <constraint firstItem="W5b-jD-hey" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="oZK-Uu-mtG"/>
                 <constraint firstItem="RAA-sV-W9M" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="vg5-5M-Ppu"/>
             </constraints>
             <point key="canvasLocation" x="25.5" y="52.5"/>
         </view>
     </objects>
-    <resources>
-        <image name="bgImage" width="750" height="1334"/>
-    </resources>
 </document>

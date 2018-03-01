@@ -22,15 +22,15 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="actec" translatesAutoresizingMaskIntoConstraints="NO" id="yBi-Ea-ROH">
-                    <rect key="frame" x="67.5" y="128" width="240" height="120"/>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="yBi-Ea-ROH">
+                    <rect key="frame" x="124" y="156.5" width="127" height="47"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="240" id="2SY-bb-TH5"/>
-                        <constraint firstAttribute="height" constant="120" id="k1M-dn-8UX"/>
+                        <constraint firstAttribute="width" constant="127" id="2SY-bb-TH5"/>
+                        <constraint firstAttribute="height" constant="47" id="k1M-dn-8UX"/>
                     </constraints>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="厦门亚锝电子科技有限公司" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8PH-vm-dr3">
-                    <rect key="frame" x="20" y="258" width="335" height="21"/>
+                    <rect key="frame" x="20" y="213.5" width="335" height="21"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="21" id="NJ9-Ac-NGi"/>
                     </constraints>
@@ -39,9 +39,9 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Xiamen AcTEC Electronics Co., Ltd" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H0d-dU-mRL">
-                    <rect key="frame" x="20" y="279" width="335.5" height="21"/>
+                    <rect key="frame" x="20" y="235.5" width="335.5" height="20"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="21" id="yVC-9q-dSl"/>
+                        <constraint firstAttribute="height" constant="20" id="yVC-9q-dSl"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                     <color key="textColor" red="0.31372549020000001" green="0.31372549020000001" blue="0.31372549020000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -50,42 +50,42 @@
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="www.actec.com.cn" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mlt-PY-ElI">
                     <rect key="frame" x="20" y="556" width="335" height="21"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="11"/>
                     <color key="textColor" red="0.31372549020000001" green="0.31372549020000001" blue="0.31372549020000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Copyright©2018 AcTEC" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3ZH-AO-cbj">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Copyright©2017-2018 AcTEC" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3ZH-AO-cbj">
                     <rect key="frame" x="20" y="577" width="335" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="11"/>
                     <color key="textColor" red="0.31372549020000001" green="0.31372549020000001" blue="0.31372549020000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Version 2.0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fR3-yP-Qst">
-                    <rect key="frame" x="20" y="310" width="336.5" height="21"/>
+                    <rect key="frame" x="20" y="267.5" width="336.5" height="20"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="21" id="eRR-aK-Tbj"/>
+                        <constraint firstAttribute="height" constant="20" id="eRR-aK-Tbj"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                    <color key="textColor" red="0.31372549020000001" green="0.31372549020000001" blue="0.31372549020000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="textColor" red="0.47058823529411764" green="0.47058823529411764" blue="0.47058823529411764" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="For iOS 9.0 or higher" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dX0-Eh-hFf">
-                    <rect key="frame" x="20" y="331" width="335.5" height="21"/>
+                    <rect key="frame" x="20" y="287.5" width="335.5" height="21"/>
                     <constraints>
                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="21" id="8K1-up-Vze"/>
                         <constraint firstAttribute="height" constant="21" id="xOA-5B-oPn"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                    <color key="textColor" red="0.31372549020000001" green="0.31372549020000001" blue="0.31372549020000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="textColor" red="0.47058823529999999" green="0.47058823529999999" blue="0.47058823529999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
-                <constraint firstItem="H0d-dU-mRL" firstAttribute="top" secondItem="8PH-vm-dr3" secondAttribute="bottom" id="Clv-W8-Gw2"/>
+                <constraint firstItem="H0d-dU-mRL" firstAttribute="top" secondItem="8PH-vm-dr3" secondAttribute="bottom" constant="1" id="Clv-W8-Gw2"/>
                 <constraint firstItem="dX0-Eh-hFf" firstAttribute="centerX" secondItem="yBi-Ea-ROH" secondAttribute="centerX" id="EKy-ie-U9j"/>
-                <constraint firstItem="fR3-yP-Qst" firstAttribute="top" secondItem="H0d-dU-mRL" secondAttribute="bottom" constant="10" id="I3C-0H-tma"/>
+                <constraint firstItem="fR3-yP-Qst" firstAttribute="top" secondItem="H0d-dU-mRL" secondAttribute="bottom" constant="12" id="I3C-0H-tma"/>
                 <constraint firstItem="dX0-Eh-hFf" firstAttribute="top" secondItem="fR3-yP-Qst" secondAttribute="bottom" id="J7S-Bg-o4b"/>
                 <constraint firstItem="fR3-yP-Qst" firstAttribute="centerX" secondItem="yBi-Ea-ROH" secondAttribute="centerX" id="MIv-N4-Meq"/>
                 <constraint firstItem="H0d-dU-mRL" firstAttribute="leading" secondItem="fje-Ql-qU2" secondAttribute="leading" constant="20" id="UK3-hz-k8t"/>
@@ -93,7 +93,7 @@
                 <constraint firstItem="8PH-vm-dr3" firstAttribute="top" secondItem="yBi-Ea-ROH" secondAttribute="bottom" constant="10" id="Xot-z5-nJx"/>
                 <constraint firstItem="H0d-dU-mRL" firstAttribute="centerX" secondItem="yBi-Ea-ROH" secondAttribute="centerX" id="ZgO-JZ-9xf"/>
                 <constraint firstItem="8PH-vm-dr3" firstAttribute="centerX" secondItem="yBi-Ea-ROH" secondAttribute="centerX" id="brO-ku-Vtp"/>
-                <constraint firstItem="yBi-Ea-ROH" firstAttribute="centerY" secondItem="fje-Ql-qU2" secondAttribute="centerY" multiplier="0.563" id="je2-CL-Xzg"/>
+                <constraint firstItem="yBi-Ea-ROH" firstAttribute="centerY" secondItem="fje-Ql-qU2" secondAttribute="centerY" multiplier="0.54" id="je2-CL-Xzg"/>
                 <constraint firstItem="8PH-vm-dr3" firstAttribute="leading" secondItem="fje-Ql-qU2" secondAttribute="leading" constant="20" id="kbc-1y-d9c"/>
                 <constraint firstItem="yBi-Ea-ROH" firstAttribute="centerX" secondItem="fje-Ql-qU2" secondAttribute="centerX" id="nms-Sy-OOP"/>
                 <constraint firstItem="fR3-yP-Qst" firstAttribute="leading" secondItem="fje-Ql-qU2" secondAttribute="leading" constant="20" id="sCP-sE-UHP"/>
@@ -102,6 +102,6 @@
         </view>
     </objects>
     <resources>
-        <image name="actec" width="240" height="120"/>
+        <image name="logo" width="126" height="46"/>
     </resources>
 </document>

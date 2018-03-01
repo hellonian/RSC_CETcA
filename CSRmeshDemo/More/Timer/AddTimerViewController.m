@@ -16,6 +16,7 @@
 #import "EveTypeViewController.h"
 #import "TimerTool.h"
 #import <MBProgressHUD.h>
+#import "DeviceListViewController.h"
 
 @interface AddTimerViewController ()<MBProgressHUDDelegate>
 
@@ -148,14 +149,27 @@
 
 - (IBAction)chooseDevices:(UIButton *)sender {
     
-    ConfiguredDeviceListController *list = [[ConfiguredDeviceListController alloc] initWithItemPerSection:3 cellIdentifier:@"LightClusterCell"];
-    [list setSelectMode:Single];
-    [list setSelectDeviceHandle:^(NSArray *selectedDevice) {
-        NSNumber *deviceId = selectedDevice[0];
-        self.deviceId = deviceId;
-        self.device = [[CSRDevicesManager sharedInstance] getDeviceFromDeviceId:deviceId];
-        [sender setTitle:[NSString stringWithFormat:@"%@ >",self.device.name] forState:UIControlStateNormal];
-        [self enanledRightItem];
+//    ConfiguredDeviceListController *list = [[ConfiguredDeviceListController alloc] initWithItemPerSection:3 cellIdentifier:@"LightClusterCell"];
+//    [list setSelectMode:Single];
+//    [list setSelectDeviceHandle:^(NSArray *selectedDevice) {
+//        NSNumber *deviceId = selectedDevice[0];
+//        self.deviceId = deviceId;
+//        self.device = [[CSRDevicesManager sharedInstance] getDeviceFromDeviceId:deviceId];
+//        [sender setTitle:[NSString stringWithFormat:@"%@ >",self.device.name] forState:UIControlStateNormal];
+//        [self enanledRightItem];
+//    }];
+//    [self.navigationController pushViewController:list animated:YES];
+    
+    DeviceListViewController *list = [[DeviceListViewController alloc] init];
+    list.selectMode = DeviceListSelectMode_Single;
+    [list getSelectedDevices:^(NSArray *devices) {
+        if (devices.count > 0) {
+            NSNumber *deviceId = devices[0];
+            self.deviceId = deviceId;
+            self.device = [[CSRDevicesManager sharedInstance] getDeviceFromDeviceId:deviceId];
+            [sender setTitle:[NSString stringWithFormat:@"%@ >",self.device.name] forState:UIControlStateNormal];
+            [self enanledRightItem];
+        }
     }];
     [self.navigationController pushViewController:list animated:YES];
     
@@ -196,10 +210,9 @@
     {
         //         循环获取属性的名字   property_getName函数返回一个属性的名称
         NSString *getPropertyName = [NSString stringWithCString:property_getName(pProperty[i]) encoding:NSUTF8StringEncoding];
-        NSString *getPropertyNameString = [NSString stringWithCString:property_getAttributes(pProperty[i]) encoding:NSUTF8StringEncoding];
         if([getPropertyName isEqualToString:@"textColor"])
         {
-            [picker setValue:[UIColor whiteColor] forKey:@"textColor"];
+            [picker setValue:DARKORAGE forKey:@"textColor"];
         }
         
         

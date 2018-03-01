@@ -71,7 +71,7 @@
     flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
     flowLayout.minimumLineSpacing = WIDTH*8.0/640.0;
     flowLayout.minimumInteritemSpacing = WIDTH*8.0/640.0;
-    flowLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, WIDTH*3/160.0);
+    flowLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, floor(WIDTH*3/160.0));
     flowLayout.itemSize = CGSizeMake(WIDTH*3/8.0, WIDTH*9/32.0);
     _mainCollectionView = [[MainCollectionView alloc] initWithFrame:CGRectMake(WIDTH*7/32.0, WIDTH*151/320.0+64, WIDTH*25/32.0, HEIGHT-114-WIDTH*157/320.0) collectionViewLayout:flowLayout cellIdentifier:@"MainCollectionViewCell"];
     _mainCollectionView.mainDelegate = self;
@@ -304,6 +304,14 @@
     [alert addAction:camera];
     [alert addAction:album];
     [alert addAction:cancel];
+    
+    [self.mainCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell *cell, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([cell.deviceId isEqualToNumber:@1000]) {
+            alert.popoverPresentationController.sourceRect = cell.bounds;
+            alert.popoverPresentationController.sourceView = cell;
+            *stop = YES;
+        }
+    }];
     
     [self presentViewController:alert animated:YES completion:nil];
 }

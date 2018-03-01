@@ -31,9 +31,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bgImage"]];
-    imageView.frame = [UIScreen mainScreen].bounds;
-    [self.view addSubview:imageView];
+    self.view.backgroundColor = [UIColor colorWithRed:220/255.0 green:220/255.0 blue:220/255.0 alpha:1];
     self.navigationItem.title = @"Timers";
     self.automaticallyAdjustsScrollViewInsets = NO;
     if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
@@ -92,8 +90,12 @@
 - (void)doneClick {
     UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editClick)];
     self.navigationItem.rightBarButtonItem = edit;
-    UIBarButtonItem *close = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStylePlain target:self action:@selector(closeClick)];
-    self.navigationItem.leftBarButtonItem = close;
+    if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Setting_back"] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
+        self.navigationItem.leftBarButtonItem = left;
+    }else {
+        self.navigationItem.leftBarButtonItem = nil;
+    }
     
     self.tableView.editing = NO;
 //    [self.tableView reloadData];
@@ -137,7 +139,10 @@
 - (void)updateTableView {
     if ([self.dataDic count] == 0) {
         [self.view addSubview:self.noneDataView];
-        [_noneDataView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(100, 50, 100, 50)];
+        [_noneDataView autoSetDimension:ALDimensionWidth toSize:190.0];
+        [_noneDataView autoSetDimension:ALDimensionHeight toSize:262.0];
+        [_noneDataView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+        [_noneDataView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:119.0];
         [self.tableView removeFromSuperview];
     }else {
         [self.view addSubview:self.tableView];
@@ -182,11 +187,11 @@
     UITableViewHeaderFooterView *header = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"head"];
     if (!header) {
         header = [[UITableViewHeaderFooterView alloc] initWithReuseIdentifier:@"head"];
-        header.contentView.backgroundColor = [UIColor colorWithRed:192/255.0 green:192/255.0 blue:192/255.0 alpha:1];
+        header.contentView.backgroundColor = [UIColor colorWithRed:240/255.0 green:240/255.0 blue:240/255.0 alpha:1];
         UILabel *label = [[UILabel alloc] init];
         label.frame = CGRectMake(10, 5, 150, 34);
         label.tag = 201709111736;
-        label.textColor = DARKORAGE;
+        label.textColor = [UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1];
         [header.contentView addSubview:label];
     }
     UILabel *lab = (UILabel *)[header.contentView viewWithTag:201709111736];
@@ -262,17 +267,16 @@
 - (UIView *)noneDataView {
     if (!_noneDataView) {
         _noneDataView = [[UIView alloc] init];
-//        [self.view addSubview:_noneDataView];
         
         UIImageView *imageView = [[UIImageView alloc] init];
-        imageView.image = [UIImage imageNamed:@"nonetimer"];
+        imageView.image = [UIImage imageNamed:@"Timer_bg"];
         [_noneDataView addSubview:imageView];
         
         UILabel *label = [[UILabel alloc] init];
         label.text = @"Timers allow you to turn ON and OFF based in time.";
-        label.font = [UIFont systemFontOfSize:14];
+        label.font = [UIFont systemFontOfSize:11];
         label.textAlignment = NSTextAlignmentCenter;
-        label.textColor = [UIColor lightGrayColor];
+        label.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
         label.numberOfLines = 0;
         [_noneDataView addSubview:label];
         
@@ -282,19 +286,18 @@
         [btn addTarget:self action:@selector(addClick) forControlEvents:UIControlEventTouchUpInside];
         [_noneDataView addSubview:btn];
         
-//        [_noneDataView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(100, 50, 100, 50)];
         [imageView autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:_noneDataView];
-        [imageView autoPinEdge:ALEdgeLeft toEdge:ALEdgeLeft ofView:_noneDataView];
-        [imageView autoPinEdge:ALEdgeRight toEdge:ALEdgeRight ofView:_noneDataView];
-        [imageView autoMatchDimension:ALDimensionWidth toDimension:ALDimensionHeight ofView:imageView];
-        [label autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:imageView];
-        [label autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:_noneDataView];
-        [label autoAlignAxisToSuperviewAxis:ALAxisVertical];
-        [label autoSetDimension:ALDimensionHeight toSize:50];
-        [btn autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:label withOffset:40];
-        [btn autoAlignAxisToSuperviewAxis:ALAxisVertical];
-        [btn autoConstrainAttribute:ALAttributeWidth toAttribute:ALAttributeWidth ofView:_noneDataView withMultiplier:0.5];
-        [btn autoSetDimension:ALDimensionHeight toSize:40];
+        [imageView autoSetDimension:ALDimensionHeight toSize:172.0];
+        [imageView autoSetDimension:ALDimensionWidth toSize:172.0];
+        [imageView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+        [label autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:imageView withOffset:20.0];
+        [label autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+        [label autoPinEdgeToSuperviewEdge:ALEdgeRight];
+        [label autoSetDimension:ALDimensionHeight toSize:40];
+        [btn autoPinEdgeToSuperviewEdge:ALEdgeBottom];
+        [btn autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+        [btn autoPinEdgeToSuperviewEdge:ALEdgeRight];
+        [btn autoSetDimension:ALDimensionHeight toSize:15];
         
     }
     return _noneDataView;
@@ -316,20 +319,5 @@
     hud = nil;
     
 }
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

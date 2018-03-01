@@ -177,13 +177,13 @@
         self.nameLabel.text = appearanceShortname;
         self.kindLabel.text = [NSString stringWithFormat:@"%@",[device.uuid.UUIDString substringFromIndex:24]];
         if ([appearanceShortname containsString:@"D350BT"]) {
-            self.iconView.image = [UIImage imageNamed:@"dimmersingle"];
+            self.iconView.image = [UIImage imageNamed:@"Device_Dimmer"];
         }else if ([appearanceShortname containsString:@"S350BT"]) {
-            self.iconView.image = [UIImage imageNamed:@"switchsingle"];
+            self.iconView.image = [UIImage imageNamed:@"Device_Switch"];
         }else if ([appearanceShortname containsString:@"RC350"]) {
-            self.iconView.image = [UIImage imageNamed:@"remoteIcon"];
+            self.iconView.image = [UIImage imageNamed:@"Device_Remote1"];
         }else if ([appearanceShortname containsString:@"RC351"]) {
-            self.iconView.image = [UIImage imageNamed:@"singleBtnRemote"];
+            self.iconView.image = [UIImage imageNamed:@"Device_Remote2"];
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;

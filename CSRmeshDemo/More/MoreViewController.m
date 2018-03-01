@@ -42,10 +42,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bgImage"]];
-    imageView.frame = [UIScreen mainScreen].bounds;
-    [self.view addSubview:imageView];
-    
     self.automaticallyAdjustsScrollViewInsets = NO;
     
     [self layoutView];

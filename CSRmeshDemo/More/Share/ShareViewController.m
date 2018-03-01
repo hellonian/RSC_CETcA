@@ -43,7 +43,7 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
         self.navigationItem.leftBarButtonItem = left;
     }
     [self.view addSubview:self.chooseView];
-    constraint = [self.chooseView autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.view withOffset:100];
+    constraint = [self.chooseView autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.view withOffset:150];
     [self.chooseView autoPinEdge:ALEdgeLeft toEdge:ALEdgeLeft ofView:self.view];
     [self.chooseView autoPinEdge:ALEdgeRight toEdge:ALEdgeRight ofView:self.view];
     [self.chooseView autoSetDimension:ALDimensionHeight toSize:150];
@@ -60,7 +60,7 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
 
 - (IBAction)share:(UIButton *)sender {
     
-    constraint.constant = -50;
+    constraint.constant = 0;
     [UIView animateWithDuration:0.5 animations:^{
         [self.chooseView layoutIfNeeded];
     }];
@@ -79,14 +79,14 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
     switch (currenShareDirection) {
         case ShareOut:
         {
-            constraint.constant = 100;
+            constraint.constant = 150;
             QRCodeGenerateVC *VC = [[QRCodeGenerateVC alloc] init];
             [self.navigationController pushViewController:VC animated:YES];
             break;
         }
         case ShareIn:
         {
-            constraint.constant = 100;
+            constraint.constant = 150;
             QRCodeScanningVC *scanVC = [[QRCodeScanningVC alloc] init];
             scanVC.handle = ^(NSString *uuid) {
                 
@@ -122,7 +122,7 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
     switch (currenShareDirection) {
         case ShareOut:
         {
-            constraint.constant = 100;
+            constraint.constant = 150;
             ZHViewController *ZHVC = [[ZHViewController alloc] init];
             ZHVC.shareDirection = ShareOut;
             [self.navigationController pushViewController:ZHVC animated:YES];
@@ -130,7 +130,7 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
         }
         case ShareIn:
         {
-            constraint.constant = 100;
+            constraint.constant = 150;
             ZHViewController *ZHVC = [[ZHViewController alloc] init];
             ZHVC.shareDirection = ShareIn;
             ZHVC.handle = ^(NSString *name,NSString *password) {
@@ -242,7 +242,7 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    constraint.constant = 100;
+    constraint.constant = 150;
     [UIView animateWithDuration:0.5 animations:^{
         [self.chooseView layoutIfNeeded];
     }];
