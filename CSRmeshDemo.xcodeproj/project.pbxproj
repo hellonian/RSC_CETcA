@@ -234,6 +234,12 @@
 		2EAD4EA82004A4BB003733CA /* GalleryEditToolView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAD4EA72004A4BB003733CA /* GalleryEditToolView.m */; };
 		2EAF24751F417AAE00FB092A /* LightBringer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF24721F417AAE00FB092A /* LightBringer.m */; };
 		2EAF24761F417AAE00FB092A /* LightGroupBringer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF24741F417AAE00FB092A /* LightGroupBringer.m */; };
+		2EC3893A204921C2004D822D /* TimerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC38938204921C2004D822D /* TimerTableViewCell.m */; };
+		2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EC38939204921C2004D822D /* TimerTableViewCell.xib */; };
+		2EC3893F204939CE004D822D /* TimerDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC3893D204939CE004D822D /* TimerDetailViewController.m */; };
+		2EC38940204939CE004D822D /* TimerDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EC3893E204939CE004D822D /* TimerDetailViewController.xib */; };
+		2ED3963C204D09A00068B666 /* TimerEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963B204D09A00068B666 /* TimerEntity.m */; };
+		2ED3963F204D09D20068B666 /* TimerDeviceEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */; };
 		2ED974471F3AED0F000F20C9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2ED974491F3AED0F000F20C9 /* LaunchScreen.storyboard */; };
 		2EE757C720102B7B00FB75C5 /* MainCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE757C620102B7B00FB75C5 /* MainCollectionView.m */; };
 		2EE757CA201030CA00FB75C5 /* TopImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE757C9201030CA00FB75C5 /* TopImageView.m */; };
@@ -677,6 +683,16 @@
 		2EAF24721F417AAE00FB092A /* LightBringer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LightBringer.m; sourceTree = "<group>"; };
 		2EAF24731F417AAE00FB092A /* LightGroupBringer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LightGroupBringer.h; sourceTree = "<group>"; };
 		2EAF24741F417AAE00FB092A /* LightGroupBringer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LightGroupBringer.m; sourceTree = "<group>"; };
+		2EC38937204921C2004D822D /* TimerTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerTableViewCell.h; sourceTree = "<group>"; };
+		2EC38938204921C2004D822D /* TimerTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerTableViewCell.m; sourceTree = "<group>"; };
+		2EC38939204921C2004D822D /* TimerTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TimerTableViewCell.xib; sourceTree = "<group>"; };
+		2EC3893C204939CE004D822D /* TimerDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerDetailViewController.h; sourceTree = "<group>"; };
+		2EC3893D204939CE004D822D /* TimerDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerDetailViewController.m; sourceTree = "<group>"; };
+		2EC3893E204939CE004D822D /* TimerDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TimerDetailViewController.xib; sourceTree = "<group>"; };
+		2ED3963A204D09A00068B666 /* TimerEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerEntity.h; sourceTree = "<group>"; };
+		2ED3963B204D09A00068B666 /* TimerEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerEntity.m; sourceTree = "<group>"; };
+		2ED3963D204D09D20068B666 /* TimerDeviceEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerDeviceEntity.h; sourceTree = "<group>"; };
+		2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerDeviceEntity.m; sourceTree = "<group>"; };
 		2ED974481F3AED0F000F20C9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2EE757C520102B7B00FB75C5 /* MainCollectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainCollectionView.h; sourceTree = "<group>"; };
 		2EE757C620102B7B00FB75C5 /* MainCollectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainCollectionView.m; sourceTree = "<group>"; };
@@ -1609,6 +1625,12 @@
 			children = (
 				2E2E70631FF5DE60002D1C1D /* TimerViewController.h */,
 				2E2E70641FF5DE60002D1C1D /* TimerViewController.m */,
+				2EC38937204921C2004D822D /* TimerTableViewCell.h */,
+				2EC38938204921C2004D822D /* TimerTableViewCell.m */,
+				2EC38939204921C2004D822D /* TimerTableViewCell.xib */,
+				2EC3893C204939CE004D822D /* TimerDetailViewController.h */,
+				2EC3893D204939CE004D822D /* TimerDetailViewController.m */,
+				2EC3893E204939CE004D822D /* TimerDetailViewController.xib */,
 				2E2E70561FF5DE60002D1C1D /* AddTimerViewController.h */,
 				2E2E70571FF5DE60002D1C1D /* AddTimerViewController.m */,
 				2E2E70581FF5DE60002D1C1D /* AddTimerViewController.xib */,
@@ -2163,6 +2185,10 @@
 				2E2000A820182260000AD8C3 /* SceneEntity.m */,
 				2E2000AA2018227E000AD8C3 /* SceneMemberEntity.h */,
 				2E2000AB2018227E000AD8C3 /* SceneMemberEntity.m */,
+				2ED3963A204D09A00068B666 /* TimerEntity.h */,
+				2ED3963B204D09A00068B666 /* TimerEntity.m */,
+				2ED3963D204D09D20068B666 /* TimerDeviceEntity.h */,
+				2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */,
 			);
 			name = "Model Classes";
 			sourceTree = "<group>";
@@ -2346,6 +2372,7 @@
 				2E2E6FAE1FF5DAFC002D1C1D /* blackbg.png in Resources */,
 				2E2E708D1FF5DE60002D1C1D /* PlacesViewController.xib in Resources */,
 				2EE757D72010B23100FB75C5 /* SceneCollectionViewCell.xib in Resources */,
+				2EC38940204939CE004D822D /* TimerDetailViewController.xib in Resources */,
 				2E2E70A51FF5DE60002D1C1D /* AddTimerViewController.xib in Resources */,
 				2E2E6FBF1FF5DAFC002D1C1D /* scence13.png in Resources */,
 				CE1DE0AF1BFB82840009C1D1 /* ThermostatWIthColor.png in Resources */,
@@ -2398,6 +2425,7 @@
 				2E2EBFA41FAC2FF400CEA401 /* cskey_db.json in Resources */,
 				2E86234A2019DB28004EF0E0 /* DeviceViewController.xib in Resources */,
 				2E2E6FB71FF5DAFC002D1C1D /* nonetimer.png in Resources */,
+				2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */,
 				2E2E6FC51FF5DAFC002D1C1D /* scence2.png in Resources */,
 				2E2E6FC21FF5DAFC002D1C1D /* scence17.png in Resources */,
 				2E2E6FBE1FF5DAFC002D1C1D /* scence12.png in Resources */,
@@ -2470,6 +2498,7 @@
 				2E3B965A200F2553000BD086 /* AreaViewController.m in Sources */,
 				2E3A65F7202BF97300B3E425 /* SingleDeviceModel.m in Sources */,
 				CED927FF1C8759D1003B6110 /* CSREventDetailsViewController.m in Sources */,
+				2EC3893F204939CE004D822D /* TimerDetailViewController.m in Sources */,
 				2EE757CA201030CA00FB75C5 /* TopImageView.m in Sources */,
 				2EE757C720102B7B00FB75C5 /* MainCollectionView.m in Sources */,
 				0D835B371B9749E600FF4376 /* CBPeripheral+Info.m in Sources */,
@@ -2533,6 +2562,7 @@
 				2E2E70B51FF5DE60002D1C1D /* UpdateDeviceModel.m in Sources */,
 				CED928031C8759D1003B6110 /* CSREventEditViewController.m in Sources */,
 				2E6A021A1F39893400111312 /* MainTabBarController.m in Sources */,
+				2EC3893A204921C2004D822D /* TimerTableViewCell.m in Sources */,
 				2E2E70AB1FF5DE60002D1C1D /* TimerTool.m in Sources */,
 				0D835B551B9749E600FF4376 /* CSRMenuViewController.m in Sources */,
 				F4658A1F1C99747A00C284F4 /* CSRDeviceEventsEntity+CoreDataProperties.m in Sources */,
@@ -2541,6 +2571,7 @@
 				2E3B966D200F25DF000BD086 /* LightClusterCell.m in Sources */,
 				0D835B571B9749E600FF4376 /* CSRAreaTableViewCell.m in Sources */,
 				2E2E6FFC1FF5DCB4002D1C1D /* SceneCell.m in Sources */,
+				2ED3963F204D09D20068B666 /* TimerDeviceEntity.m in Sources */,
 				0D835B581B9749E600FF4376 /* CSRDeviceSelectionTableViewCell.m in Sources */,
 				CED9EF061BD66C4C004EBAB0 /* CSRAreaSelectionManager.m in Sources */,
 				CE182C841BBD364200124808 /* CSRSegmentDevicesViewController.m in Sources */,
@@ -2620,6 +2651,7 @@
 				2E3B967F200F3847000BD086 /* MainViewController.m in Sources */,
 				F4658A211C99747A00C284F4 /* CSREventEntity+CoreDataProperties.m in Sources */,
 				2E2E70831FF5DE60002D1C1D /* MusicPlayTools.m in Sources */,
+				2ED3963C204D09A00068B666 /* TimerEntity.m in Sources */,
 				F4C85EB01CB3EF92003E1FF3 /* CSRPlaceEntity+CoreDataProperties.m in Sources */,
 				0D835B6E1B9749E700FF4376 /* CSRLoginViewController.m in Sources */,
 				0D835B6F1B9749E700FF4376 /* CSRSwitchableTableViewCell.m in Sources */,

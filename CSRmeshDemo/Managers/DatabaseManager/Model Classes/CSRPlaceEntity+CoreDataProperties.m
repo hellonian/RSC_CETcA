@@ -23,5 +23,6 @@
 @dynamic user;
 @dynamic gallerys;
 @dynamic scenes;
+@dynamic timers;
 
 @end

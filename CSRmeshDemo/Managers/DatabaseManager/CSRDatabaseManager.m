@@ -619,6 +619,16 @@
         }
         return [self getFreeIdFromArray:[allIdsArray copy]];
         
+    }else if ([typeString isEqualToString:@"TimerEntity"]) {
+        
+        NSMutableArray *allIdsArray = [NSMutableArray new];
+        
+        for (TimerEntity *timer in [CSRAppStateManager sharedInstance].selectedPlace.timers) {
+            [allIdsArray addObject:timer.timerID];
+        }
+        
+        return [self getFreeIdFromArray:[allIdsArray copy]];
+        
     }
     return @(-1);
 }
@@ -970,6 +980,33 @@
 
     return nil;
 
+}
+
+#pragma mark - timer
+
+- (TimerEntity *)saveNewTimer:(NSNumber *)timerID timerName:(NSString *)name enabled:(NSNumber *)enabled fireTime:(NSDate *)time fireDate:(NSDate *)date repeatStr:(NSString *)repeatStr {
+    __block TimerEntity *newTimerEntity;
+    [[CSRAppStateManager sharedInstance].selectedPlace.timers enumerateObjectsUsingBlock:^(TimerEntity * _Nonnull obj, BOOL * _Nonnull stop) {
+        if ([obj.timerID isEqualToNumber:timerID]) {
+            newTimerEntity = obj;
+            *stop = YES;
+        }
+    }];
+    if (!newTimerEntity) {
+        newTimerEntity = [NSEntityDescription insertNewObjectForEntityForName:@"TimerEntity" inManagedObjectContext:self.managedObjectContext];
+    }
+    
+    newTimerEntity.timerID = timerID;
+    newTimerEntity.name = name;
+    newTimerEntity.enabled = enabled;
+    newTimerEntity.fireTime = time;
+    newTimerEntity.fireDate = date;
+    newTimerEntity.repeat = repeatStr;
+    
+    [[CSRAppStateManager sharedInstance].selectedPlace addTimersObject:newTimerEntity];
+    [self saveContext];
+    
+    return newTimerEntity;
 }
 
 @end

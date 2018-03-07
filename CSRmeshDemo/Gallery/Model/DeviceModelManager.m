@@ -23,6 +23,7 @@
     NSNumber *currentLevel;
     UIGestureRecognizerState currentState;
     PanGestureMoveDirection moveDirection;
+    NSNumber *currentMeshRequestId;
 }
 
 @end
@@ -46,6 +47,7 @@
         [[PowerModelApi sharedInstance] addDelegate:self];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(physicalButtonActionCall:) name:@"physicalButtonActionCall" object:nil];
         [DataModelManager shareInstance];
+        currentMeshRequestId = @0;
         
         NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
         if (mutableArray != nil && [mutableArray count] != 0) {
@@ -61,6 +63,7 @@
                     model.shortName = deviceEntity.shortName;
                     model.name = deviceEntity.name;
                     [_allDevices addObject:model];
+                    [[DataModelManager shareInstance] setDeviceTime:deviceEntity.deviceId];
                 }
             }
         }
@@ -74,10 +77,14 @@
     __block BOOL exist;
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
-            model.powerState = powerState;
-            model.level = level;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
-            NSLog(@"调光回调 powerState--> %@ --> %@",powerState,level);
+            if ([meshRequestId integerValue] > [currentMeshRequestId integerValue] || ([meshRequestId integerValue] - [currentMeshRequestId integerValue]) < -240) {
+                model.powerState = powerState;
+                model.level = level;
+                currentMeshRequestId = meshRequestId;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
+                NSLog(@"调光回调 powerState--> %@ --> %@ ==> %@",powerState,level,meshRequestId);
+            }
+            
             exist = YES;
             *stop = YES;
         }
@@ -88,7 +95,11 @@
         model.deviceId = deviceEntity.deviceId;
         model.shortName = deviceEntity.shortName;
         model.name = deviceEntity.name;
+        model.powerState = powerState;
+        model.level = level;
+        currentMeshRequestId = meshRequestId;
         [_allDevices addObject:model];
+        [[DataModelManager shareInstance] setDeviceTime:deviceEntity.deviceId];
     }
 }
 
@@ -98,9 +109,13 @@
     __block BOOL exist;
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
-            model.powerState = state;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId}];
-            NSLog(@"开关回调 powerState--> %@",state);
+            if ([meshRequestId integerValue] > [currentMeshRequestId integerValue] || ([meshRequestId integerValue] - [currentMeshRequestId integerValue]) < -240) {
+                model.powerState = state;
+                currentMeshRequestId = meshRequestId;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId}];
+                NSLog(@"开关回调 powerState--> %@ ==> %@",state,meshRequestId);
+            }
+            
             exist = YES;
             *stop = YES;
         }
@@ -111,7 +126,10 @@
         model.deviceId = deviceEntity.deviceId;
         model.shortName = deviceEntity.shortName;
         model.name = deviceEntity.name;
+        model.powerState = state;
+        currentMeshRequestId = meshRequestId;
         [_allDevices addObject:model];
+        [[DataModelManager shareInstance] setDeviceTime:deviceEntity.deviceId];
     }
 }
 

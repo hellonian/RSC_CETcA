@@ -432,7 +432,7 @@
         [[CSRBridgeRoaming sharedInstance] connectedPeripheral:peripheral];
         NSLog (@"BRIDGE CONNECTED %@",peripheral.name);
         [self stopScan];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"setAllDevicesTime" object:nil];
+        
 #endif
     
     if(bleDelegate && [bleDelegate respondsToSelector:@selector(discoveredBridge)])

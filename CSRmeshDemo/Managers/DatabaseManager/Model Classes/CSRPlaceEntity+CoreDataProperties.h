@@ -26,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) CSRUserEntity *user;
 @property (nullable, nonatomic, retain) NSSet<GalleryEntity *> *gallerys;
 @property (nullable, nonatomic, retain) NSSet<SceneEntity *> *scenes;
+@property (nullable, nonatomic, retain) NSSet<TimerEntity *> *timers;
 
 @end
 
@@ -65,6 +66,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeScenesObject:(SceneEntity *)value;
 - (void)addScenes:(NSSet<SceneEntity *> *)values;
 - (void)removeScenes:(NSSet<SceneEntity *> *)values;
+
+- (void)addTimersObject:(TimerEntity *)value;
+- (void)removeTimersObject:(TimerEntity *)value;
+- (void)addTimers:(NSSet<TimerEntity *> *)values;
+- (void)removeTimers:(NSSet<TimerEntity *> *)values;
 
 @end
 

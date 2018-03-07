@@ -12,6 +12,7 @@
 #import "CSRUserEntity.h"
 #import "GalleryEntity.h"
 #import "SceneEntity.h"
+#import "TimerEntity.h"
 
 @implementation CSRPlaceEntity
 

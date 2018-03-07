@@ -149,7 +149,12 @@
         cmdStr = [NSString stringWithFormat:@"700b010000%@%@%@%@",str1,str2,str3,str4];
         
     }else if ([_remoteEntity.shortName isEqualToString:@"RC351"]) {
-        NSString *string = [self exchangePositionOfDeviceId:_sSelectOneLabel.tag];
+        NSString *string;
+        if (_sSelectOneLabel.tag == 0) {
+            string = @"ffff";
+        }else {
+            string = [self exchangePositionOfDeviceId:_sSelectOneLabel.tag];
+        }
         cmdStr = [NSString stringWithFormat:@"700b010000%@ffffffffffff",string];
     }
     [self showHudTogether];

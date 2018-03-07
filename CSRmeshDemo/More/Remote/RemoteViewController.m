@@ -117,6 +117,11 @@
         cell.textLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
     }
     CSRDeviceEntity *deviceEntity = self.dataArray[indexPath.row];
+    if ([deviceEntity.shortName isEqualToString:@"RC350"]) {
+        cell.imageView.image = [UIImage imageNamed:@"Setting_fremote"];
+    }else if ([deviceEntity.shortName isEqualToString:@"RC351"]) {
+        cell.imageView.image = [UIImage imageNamed:@"Setting_sremote"];
+    }
     cell.textLabel.text = deviceEntity.name;
     return cell;
 }
@@ -154,6 +159,7 @@
         _tableView.dataSource = self;
         _tableView.backgroundView = [[UIView alloc] init];
         _tableView.backgroundColor = [UIColor clearColor];
+        _tableView.rowHeight = 42.0f;
     }
     return _tableView;
 }
