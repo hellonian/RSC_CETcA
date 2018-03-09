@@ -194,7 +194,7 @@
             model.powerState = [NSNumber numberWithBool:[state boolValue]];
             model.level = level;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
-            NSLog(@"物理按钮反馈");
+            NSLog(@"物理按钮反馈>>>%@",level);
             *stop = YES;
         }
     }];

@@ -121,7 +121,7 @@
     NSString *newStr = [dateStr stringByReplacingCharactersInRange:NSMakeRange(12, 2) withString:@"00"];
     NSDate *time = [dateFormate dateFromString:newStr];
     
-    [[DataModelManager shareInstance] addAlarmForDevice:self.deviceId alarmIndex:timerIndex fireDate:self.datePicker.date fireTime:time repeat:repeatStr eveType:self.eveType level:self.level];
+//    [[DataModelManager shareInstance] addAlarmForDevice:self.deviceId alarmIndex:timerIndex fireDate:self.datePicker.date fireTime:time repeat:repeatStr eveType:self.eveType level:self.level];
 }
 
 - (IBAction)choosEveType:(UIButton *)sender {

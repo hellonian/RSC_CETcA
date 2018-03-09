@@ -311,7 +311,7 @@
         }
         else if (!_isUpdateScaning && adString != nil ) {
             
-            BOOL exist = [[adString substringToIndex:12] boolValue];
+            BOOL exist = [[adString substringFromIndex:13] boolValue];
             if (exist) {
                 [[CSRBridgeRoaming sharedInstance] didDiscoverBridgeDevice:central peripheral:peripheral advertisment:advertisementData RSSI:RSSI];
             }

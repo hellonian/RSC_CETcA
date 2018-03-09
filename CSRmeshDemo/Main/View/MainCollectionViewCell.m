@@ -214,6 +214,10 @@
         }
         
         if ([model.shortName isEqualToString:@"D350BT"]) {
+            if ([model.level floatValue]/255.0*100>0 && [model.level floatValue]/255.0*100 < 1.0) {
+                self.levelLabel.text = @"1%";
+                return;
+            }
             self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level floatValue]/255.0*100];
         }
     }

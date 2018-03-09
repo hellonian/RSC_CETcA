@@ -11,6 +11,8 @@
 #import "PureLayout.h"
 #import "CSRAppStateManager.h"
 #import "TimerTableViewCell.h"
+#import "CSRDeviceEntity.h"
+#import "DataModelManager.h"
 
 @interface TimerViewController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -38,6 +40,16 @@
     
     [self getData];
     [self layoutView];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveTimerProfile:) name:kTimerProfile object:nil];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kTimerProfile object:nil];
 }
 
 - (void)backSetting{
@@ -108,6 +120,31 @@
         self.dataArray = timerMutableArray;
         
     }
+    
+    [self getDeviceTimer];
+    
+    
+    
+}
+
+- (void)getDeviceTimer {
+    NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
+    if (mutableArray != nil || [mutableArray count] != 0) {
+        [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([deviceEntity.shortName isEqualToString:@"D350BT"] || [deviceEntity.shortName isEqualToString:@"S350BT"]) {
+                
+                [[DataModelManager shareInstance] readAlarmMessageByDeviceId:deviceEntity.deviceId];
+                
+            }
+        }];
+    }
+}
+
+- (void)receiveTimerProfile:(NSNotification *)result {
+    NSDictionary *timerInfo = result.userInfo;
+    NSArray *timersArray = [timerInfo objectForKey:kTimerProfile];
+    NSNumber *deviceId = [timerInfo objectForKey:@"deviceId"];
+    
     
     
     

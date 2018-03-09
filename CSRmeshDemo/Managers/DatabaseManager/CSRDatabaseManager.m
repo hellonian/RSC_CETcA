@@ -633,6 +633,61 @@
     return @(-1);
 }
 
+- (NSNumber *)getNextFreeTimerIDOfDeivice:(NSNumber *)deviceId {
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"TimerDeviceEntity"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"deviceID == %@",deviceId]];
+    request.predicate = predicate;
+    NSArray *resArray = [_managedObjectContext executeFetchRequest:request error:nil];
+    NSMutableArray *allTimerIndexs = [NSMutableArray new];
+    for (TimerDeviceEntity *timerDevice in resArray) {
+        [allTimerIndexs addObject:timerDevice.timerIndex];
+    }
+    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
+    [allTimerIndexs sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+    
+    __block int previousAddress = 0x0f;
+    __block BOOL found = NO;
+    __block int objValue;
+    if (!allTimerIndexs || (allTimerIndexs && [allTimerIndexs count] < 1)) {
+        return @(0x10);
+    } else {
+        
+        [allTimerIndexs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            objValue = [(NSNumber*)obj intValue];
+            
+            if ((objValue - previousAddress) > 1) {
+                
+                // found gap
+                objValue = previousAddress + 1; // 0x8000
+                
+                found=YES;
+                *stop=YES;
+                
+            } else {
+                
+                previousAddress = [(NSNumber*)obj intValue];
+                
+            }
+            
+        }];
+        
+        if (!found) {
+            if (objValue != 0x2f) {
+                // free Device Id
+                objValue ++;
+                found = YES;
+            }
+        }
+        
+        if (!found) {
+            return @(-1);
+        }
+        
+        return @(objValue);
+    }
+    
+}
+
 - (NSNumber *)getFreeIdFromArray:(NSArray*)collectionArray {
     
     NSMutableArray *collectionMutableArray = [collectionArray mutableCopy];

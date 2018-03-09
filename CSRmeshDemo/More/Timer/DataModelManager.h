@@ -28,10 +28,10 @@ extern NSString * const kTimerProfile;
 
 + (instancetype)shareInstance;
 - (void)sendCmdData:(NSString *)hexStrCmd  toDeviceId:(NSNumber *)deviceId;
-- (void)ReadAlarmMessageByDeviceId:(NSNumber *)deviceId;
+- (void)readAlarmMessageByDeviceId:(NSNumber *)deviceId;
 - (void)setDeviceTime:(NSNumber *)deviceId;
 - (void)readDeviceTime:(NSNumber *)deviceId;
-- (void)addAlarmForDevice:(NSNumber *)deviceId alarmIndex:(NSInteger)index fireDate:(NSDate *)fireDate fireTime:(NSDate *)fireTime repeat:(NSString *)repeat eveType:(NSString *)alarnActionType level:(NSInteger)level;
+- (void)addAlarmForDevice:(NSNumber *)deviceId alarmIndex:(NSInteger)index enabled:(BOOL)enabled fireDate:(NSDate *)fireDate fireTime:(NSDate *)fireTime repeat:(NSString *)repeat eveType:(NSString *)alarnActionType level:(NSInteger)level;
 - (void)enAlarmForDevice:(NSNumber *)deviceId stata:(BOOL)state index:(NSInteger)index;
 - (void)deleteAlarmForDevice:(NSNumber *)deviceId index:(NSInteger)index;
 

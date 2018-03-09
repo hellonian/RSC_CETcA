@@ -15,6 +15,7 @@
 #import "TimerEntity.h"
 #import "CSRUtilities.h"
 #import "TimerDeviceEntity.h"
+#import "DataModelManager.h"
 
 @interface TimerDetailViewController ()<UITextFieldDelegate>
 
@@ -25,6 +26,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *devicesListLabel;
 @property (weak, nonatomic) IBOutlet UITextField *nameTF;
 @property (weak, nonatomic) IBOutlet UISwitch *enabledSwitch;
+@property (nonatomic,strong) NSArray *deviceIds;
 
 
 @end
@@ -81,6 +83,12 @@
                 }
             }]; 
         }
+    }else {
+        [self.view addSubview:self.weekView];
+        [self.weekView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+        [self.weekView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.repeatChooseSegment withOffset:43.0];
+        [self.weekView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+        [self.weekView autoSetDimension:ALDimensionHeight toSize:29.0];
     }
     
 }
@@ -145,6 +153,7 @@
                 string = [NSString stringWithFormat:@"%@ %@",string,device.name];
             }];
             self.devicesListLabel.text = string;
+            self.deviceIds = devices;
         }
     }];
     [self.navigationController pushViewController:list animated:YES];
@@ -207,9 +216,40 @@
     
     TimerEntity *timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:enabled fireTime:time fireDate:_datePicker.date repeatStr:repeatStr];
     
+    for (NSNumber *deviceId in self.deviceIds) {
+        NSNumber *timerIndex = [[CSRDatabaseManager sharedInstance] getNextFreeTimerIDOfDeivice:deviceId];
+        NSLog(@"><><><><><> %@",timerIndex);
+        
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+        NSString *eveType;
+        if ([model.shortName isEqualToString:@"S350BT"]) {
+            if ([model.powerState boolValue]) {
+                eveType = @"10";
+            }else {
+                eveType = @"11";
+            }
+        }else if ([model.shortName isEqualToString:@"D350BT"]) {
+            if ([model.powerState boolValue]) {
+                eveType = @"12";
+            }else {
+                eveType = @"11";
+            }
+        }
+        [[DataModelManager shareInstance] addAlarmForDevice:deviceId alarmIndex:[timerIndex integerValue] enabled:[enabled boolValue] fireDate:_datePicker.date fireTime:time repeat:repeatStr eveType:eveType level:[model.level integerValue]];
+        
+    }
+    
+    
+    
     if (self.handle) {
         self.handle();
     }
+}
+
+- (IBAction)deleteTimerAction:(UIButton *)sender {
+    
+    
+    
 }
 
 @end

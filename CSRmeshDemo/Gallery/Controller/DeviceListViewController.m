@@ -15,6 +15,7 @@
 #import "DeviceModelManager.h"
 #import "ImproveTouchingExperience.h"
 #import "ControlMaskView.h"
+#import <CSRmesh/LightModelApi.h>
 
 @interface DeviceListViewController ()<MainCollectionViewDelegate>
 
@@ -166,11 +167,16 @@
     }
     if (state == UIGestureRecognizerStateChanged || state == UIGestureRecognizerStateEnded) {
         NSInteger updateLevel = [self.improver improveTouching:touchPoint referencePoint:origin primaryBrightness:[self.originalLevel integerValue]];
-        if (updateLevel < 13) {
-            updateLevel = 13;
-        }
+
         CGFloat percentage = updateLevel/255.0*100;
         [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
+        if (updateLevel == 0) {
+            [[LightModelApi sharedInstance] setLevel:deviceId level:@1 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                
+            } failure:^(NSError * _Nullable error) {
+                
+            }];
+        }
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state direction:direction];
         
         if (state == UIGestureRecognizerStateEnded) {

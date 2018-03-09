@@ -14,6 +14,7 @@
 #import "CSRDeviceEntity.h"
 #import "SceneEntity.h"
 #import "TimerEntity.h"
+#import "TimerDeviceEntity.h"
 
 @interface CSRDatabaseManager : NSObject {
     BOOL newDatabase;
@@ -62,5 +63,7 @@
 - (void) saveDeviceModel :(NSNumber *) deviceNumber modelNumber:(NSData *) modelNumber infoType:(NSNumber *) infoType;
 
 - (TimerEntity *)saveNewTimer:(NSNumber *)timerID timerName:(NSString *)name enabled:(NSNumber *)enabled fireTime:(NSDate *)time fireDate:(NSDate *)date repeatStr:(NSString *)repeatStr;
+
+- (NSNumber *)getNextFreeTimerIDOfDeivice:(NSNumber *)deviceId;
 
 @end

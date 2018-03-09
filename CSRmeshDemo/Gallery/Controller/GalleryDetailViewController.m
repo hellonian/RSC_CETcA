@@ -8,7 +8,6 @@
 
 #import "GalleryDetailViewController.h"
 
-#import "ConfiguredDeviceListController.h"
 #import "DeviceListViewController.h"
 
 #import "GalleryDropView.h"
@@ -23,6 +22,7 @@
 #import "DeviceModelManager.h"
 #import "ImproveTouchingExperience.h"
 #import "ControlMaskView.h"
+#import <CSRmesh/LightModelApi.h>
 
 @interface GalleryDetailViewController ()<GalleryControlImageViewDelegate,GalleryDropViewDelegate>
 
@@ -222,28 +222,7 @@
 }
 
 - (void)galleryAddAction:(UIBarButtonItem *)item {
-    /*
-    ConfiguredDeviceListController *list = [[ConfiguredDeviceListController alloc] initWithItemPerSection:3 cellIdentifier:@"LightClusterCell"];
-    [list setSelectMode:Single];
-    [list setSelectDeviceHandle:^(NSArray *selectedDevice) {
-        if (selectedDevice.count > 0) {
-            NSNumber *deviceId = selectedDevice[0];
-            if (!_isNewAdd) {
-                _isChange = YES;
-            }
-            GalleryDropView *dropView = [[GalleryDropView alloc] initWithFrame:CGRectMake(0, 0, 128, 128)];
-            dropView.deviceId = deviceId;
-            dropView.isEditing = YES;
-            dropView.delegate = self;
-            
-            CSRmeshDevice *device = [[CSRDevicesManager sharedInstance] getDeviceFromDeviceId:deviceId];
-            dropView.kindName = device.shortName;
-            
-            [_controlImageView addDropViewInCenter:dropView];
-        
-        }
-    }];
-     */
+
     DeviceListViewController *list = [[DeviceListViewController alloc] init];
     list.selectMode = DeviceListSelectMode_Single;
     [list getSelectedDevices:^(NSArray *devices) {
@@ -327,12 +306,15 @@
     }
     if (state == UIGestureRecognizerStateChanged || state == UIGestureRecognizerStateEnded) {
         NSInteger updateLevel = [self.improver improveTouching:touchPoint referencePoint:origin primaryBrightness:[self.originalLevel integerValue]];
-        if (updateLevel < 13) {
-            updateLevel = 13;
-        }
         CGFloat percentage = updateLevel/255.0*100;
         [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
-        
+        if (updateLevel == 0) {
+            [[LightModelApi sharedInstance] setLevel:deviceId level:@1 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                
+            } failure:^(NSError * _Nullable error) {
+                
+            }];
+        }
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state direction:PanGestureMoveDirectionHorizontal];
         
         if (state == UIGestureRecognizerStateEnded) {

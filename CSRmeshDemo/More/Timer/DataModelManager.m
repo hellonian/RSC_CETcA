@@ -47,16 +47,18 @@ static DataModelManager *manager = nil;
 }
 
 - (void)sendCmdData:(NSString *)hexStrCmd  toDeviceId:(NSNumber *)deviceId {
+    if (deviceId) {
+        [_manager sendData:deviceId data:[self dataForHexString:hexStrCmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+            
+        } failure:^(NSError * _Nonnull error) {
+            
+        }];
+    }
     
-    [_manager sendData:deviceId data:[self dataForHexString:hexStrCmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-        
-    } failure:^(NSError * _Nonnull error) {
-        
-    }];
 }
 
 //添加闹钟
-- (void)addAlarmForDevice:(NSNumber *)deviceId alarmIndex:(NSInteger)index fireDate:(NSDate *)fireDate fireTime:(NSDate *)fireTime repeat:(NSString *)repeat eveType:(NSString *)alarnActionType level:(NSInteger)level {
+- (void)addAlarmForDevice:(NSNumber *)deviceId alarmIndex:(NSInteger)index enabled:(BOOL)enabled fireDate:(NSDate *)fireDate fireTime:(NSDate *)fireTime repeat:(NSString *)repeat eveType:(NSString *)alarnActionType level:(NSInteger)level {
     
     NSString *indexStr = [self stringWithHexNumber:index];
     
@@ -77,7 +79,7 @@ static DataModelManager *manager = nil;
 }
 
 //读取单灯闹钟列表
-- (void)ReadAlarmMessageByDeviceId:(NSNumber *)deviceId {
+- (void)readAlarmMessageByDeviceId:(NSNumber *)deviceId {
     [self sendCmdData:@"820100" toDeviceId:deviceId];
 }
 

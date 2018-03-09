@@ -24,6 +24,10 @@
 
 @property   (strong, nonatomic) NSMutableSet  *connectedBridges;
 @property   (strong, nonatomic) NSMutableSet  *connectingBridges;
+
+@property (nonatomic,assign) BOOL connectting;
+@property (nonatomic,assign) NSInteger num;
+
 @end
 
 
@@ -57,6 +61,8 @@
         
         connectedBridges = [NSMutableSet set];
         connectingBridges = [NSMutableSet set];
+        _connectting = NO;
+        _num = 0;
         
         // start background timer thread at 1 second intervals
         [NSTimer scheduledTimerWithTimeInterval:1.0
@@ -77,6 +83,15 @@
     static BOOL active=NO;
     if (active==NO) {
         active=YES;
+        
+        if (_connectting) {
+            _num++;
+            if (_num == 5) {
+                [connectingBridges removeAllObjects];
+                _connectting = NO;
+                _num = 0;
+            }
+        }
         
         NSMutableArray *removals = [NSMutableArray array];
         if ([[CSRmeshSettings sharedInstance] getBleConnectMode] != CSR_BLE_CONNECTIONS_MANUAL) {
@@ -162,16 +177,17 @@
     NSMutableDictionary *returnValue = [NSMutableDictionary dictionary];
 
     NSInteger totalBridges = [[CSRmeshSettings sharedInstance] getBleConnectMode];
-    
     if (connectedBridges.count<totalBridges && connectingBridges.count<(totalBridges-connectedBridges.count)) {
         
         BOOL found=NO;
-        for (CBPeripheral *bridge in connectedBridges)
+        for (CBPeripheral *bridge in connectedBridges) {
             if ([bridge isEqual:peripheral])
                 found=YES;
+        }
         CSRBluetoothLE *manager = [CSRBluetoothLE sharedInstance];
         if (!found && !manager.isUpdatePage) {
             [[CSRBluetoothLE sharedInstance] connectPeripheralNoCheck:peripheral];
+            _connectting = YES;
             [connectingBridges addObject:peripheral];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"kCSRBridgeDiscoveryViewControllerWillRefreshUINotification" object:nil];
         }
@@ -184,6 +200,7 @@
     // Disconnected a peripheral
     // Called when a peripheral is diconnected, may or may not be a bridge type of peripheral
 -(void) disconnectedPeripheral:(CBPeripheral *) peripheral {
+    _connectting = NO;
     [connectedBridges removeObject:peripheral];
     [connectingBridges removeObject:peripheral];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"kCSRBridgeDiscoveryViewControllerWillRefreshUINotification" object:nil];
