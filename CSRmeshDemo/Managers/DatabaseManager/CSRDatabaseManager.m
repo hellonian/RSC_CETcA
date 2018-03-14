@@ -1064,4 +1064,12 @@
     return newTimerEntity;
 }
 
+- (NSArray *)foundTimerDevice:(NSNumber *)deviceId timeIndex:(NSNumber *)timeImdex {
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"TimerDeviceEntity"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"deviceID == %@ && timerIndex == %@",deviceId,timeImdex]];
+    request.predicate = predicate;
+    NSArray *resArray = [_managedObjectContext executeFetchRequest:request error:nil];
+    return resArray;
+}
+
 @end

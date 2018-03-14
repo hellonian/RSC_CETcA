@@ -14,6 +14,9 @@
 #import "CSRDeviceEntity.h"
 #import "DataModelManager.h"
 
+#import "CSRDatabaseManager.h"
+
+
 @interface TimerViewController ()<UITableViewDelegate,UITableViewDataSource>
 
 @property (nonatomic,strong) UITableView *tableView;
@@ -35,8 +38,8 @@
         self.navigationItem.leftBarButtonItem = left;
     }
     
-    UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editClick)];
-    self.navigationItem.rightBarButtonItem = edit;
+    UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addClick)];
+    self.navigationItem.rightBarButtonItem = add;
     
     [self getData];
     [self layoutView];
@@ -61,28 +64,9 @@
     [self dismissViewControllerAnimated:NO completion:nil];
 }
 
-- (void)editClick {
-    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneClick)];
-    self.navigationItem.rightBarButtonItem = done;
-    UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addClick)];
-    self.navigationItem.leftBarButtonItem = add;
-    
-}
-
-- (void)doneClick {
-    UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editClick)];
-    self.navigationItem.rightBarButtonItem = edit;
-    if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
-        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Setting_back"] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
-        self.navigationItem.leftBarButtonItem = left;
-    }else {
-        self.navigationItem.leftBarButtonItem = nil;
-    }
-    
-}
-
 - (void)addClick {
     TimerDetailViewController *tdvc = [[TimerDetailViewController alloc] init];
+    tdvc.newadd = YES;
     __weak TimerViewController *weakSelf = self;
     tdvc.handle = ^{
         [weakSelf getData];
@@ -143,11 +127,53 @@
 - (void)receiveTimerProfile:(NSNotification *)result {
     NSDictionary *timerInfo = result.userInfo;
     NSArray *timersArray = [timerInfo objectForKey:kTimerProfile];
-    NSNumber *deviceId = [timerInfo objectForKey:@"deviceId"];
+//    NSNumber *deviceId = [timerInfo objectForKey:@"deviceId"];
     
+    [timersArray enumerateObjectsUsingBlock:^(TimeSchedule *time, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        NSDateFormatter *dateFormate = [[NSDateFormatter alloc] init];
+        [dateFormate setDateFormat:@"yyyyMMddHHmmss"];
+        NSString *dateString = [dateFormate stringFromDate:time.fireDate];
+        NSString *timeStr = [dateString stringByReplacingCharactersInRange:NSMakeRange(0, 8) withString:@"20180101"];
+        NSDate *mytime = [dateFormate dateFromString:timeStr];
+        
+        NSString *dateStr = [dateString stringByReplacingCharactersInRange:NSMakeRange(8, 6) withString:@"000000"];
+        NSDate *myDate = [dateFormate dateFromString:dateStr];
+        
+        __block BOOL exist = 0;
+        [self.dataArray enumerateObjectsUsingBlock:^(TimerEntity *timerEntity, NSUInteger idx, BOOL * _Nonnull stopp) {
+            
+            [timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timerDevice, BOOL * _Nonnull stoppp) {
+
+                if ([timerDevice.deviceID isEqualToNumber:time.deviceId]&&[timerDevice.timerIndex integerValue]==time.timerIndex&&[timerEntity.enabled boolValue] == time.state && [timerEntity.fireTime isEqualToDate:mytime] && [timerEntity.fireDate isEqualToDate:myDate] && [timerEntity.repeat isEqualToString:time.repeat]) {
+                    
+                    exist = YES;
+                    timerDevice.alive = @(YES);
+                    *stopp = YES;
+                }
+            }];
+        }];
+        
+        if (!exist) {
+            
+            NSNumber *timerIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"TimerEntity"];
+            NSString *name = [NSString stringWithFormat:@"timer %@",timerIdNumber];
+            
+            TimerEntity *timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:@(time.state) fireTime:mytime fireDate:myDate repeatStr:time.repeat];
+            
+            NSArray *resArray = [[CSRDatabaseManager sharedInstance] foundTimerDevice:time.deviceId timeIndex:@(time.timerIndex)];
+            if (!resArray || (resArray && [resArray count] < 1)) {
+                TimerDeviceEntity *newTimerDeviceEntity = [NSEntityDescription insertNewObjectForEntityForName:@"TimerDeviceEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+                newTimerDeviceEntity.deviceID = time.deviceId;
+                newTimerDeviceEntity.timerIndex = @(time.timerIndex);
+                [timerEntity addTimerDevicesObject:newTimerDeviceEntity];
+                [[CSRDatabaseManager sharedInstance] saveContext];
+            }
+            [self getData];
+        }
+    }];
     
-    
-    
+    [self.tableView reloadData];
 }
 
 #pragma mark - UITableViewDelegate,UITableViewDataSource
@@ -170,6 +196,7 @@
     TimerDetailViewController *tdvc = [[TimerDetailViewController alloc] init];
     TimerEntity *timerEntity = [_dataArray objectAtIndex:indexPath.row];
     tdvc.timerEntity = timerEntity;
+    tdvc.newadd = NO;
     __weak TimerViewController *weakSelf = self;
     tdvc.handle = ^{
         [weakSelf getData];

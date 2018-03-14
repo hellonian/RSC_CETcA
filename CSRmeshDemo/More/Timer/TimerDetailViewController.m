@@ -16,8 +16,10 @@
 #import "CSRUtilities.h"
 #import "TimerDeviceEntity.h"
 #import "DataModelManager.h"
+#import "CSRAppStateManager.h"
+#import <MBProgressHUD.h>
 
-@interface TimerDetailViewController ()<UITextFieldDelegate>
+@interface TimerDetailViewController ()<UITextFieldDelegate,MBProgressHUDDelegate>
 
 @property (weak, nonatomic) IBOutlet UIDatePicker *timerPicker;
 @property (strong, nonatomic) IBOutlet UIDatePicker *datePicker;
@@ -26,7 +28,12 @@
 @property (weak, nonatomic) IBOutlet UILabel *devicesListLabel;
 @property (weak, nonatomic) IBOutlet UITextField *nameTF;
 @property (weak, nonatomic) IBOutlet UISwitch *enabledSwitch;
-@property (nonatomic,strong) NSArray *deviceIds;
+@property (nonatomic,strong) NSMutableArray *deviceIds;
+@property (nonatomic,strong) NSMutableDictionary *deviceIdsAndIndexs;
+@property (weak, nonatomic) IBOutlet UIButton *deleteButton;
+@property (nonatomic,strong) NSMutableArray *deleteTimers;
+@property (nonatomic,strong) NSMutableArray *backs;
+@property (nonatomic,strong) MBProgressHUD *hud;
 
 
 @end
@@ -44,7 +51,7 @@
     [self setDatePickerTextColor:self.datePicker];
     self.nameTF.delegate = self;
     
-    if (self.timerEntity) {
+    if (!self.newadd && self.timerEntity) {
         self.navigationItem.title = self.timerEntity.name;
         self.nameTF.text = self.timerEntity.name;
         [self.enabledSwitch setOn:[self.timerEntity.enabled boolValue]];
@@ -52,10 +59,18 @@
         for (TimerDeviceEntity *timerDevice in self.timerEntity.timerDevices) {
             CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:timerDevice.deviceID];
             devciesList = [NSString stringWithFormat:@"%@  %@",devciesList,deviceEntity.name];
+            NSMutableAttributedString *hintString=[[NSMutableAttributedString alloc]initWithString:devciesList];
+            if (![timerDevice.alive boolValue]) {
+                NSRange range=[[hintString string]rangeOfString:deviceEntity.name];
+                [hintString addAttribute:NSForegroundColorAttributeName value:DARKORAGE range:range];
+            }
+            self.devicesListLabel.attributedText = hintString;
+            [self.deviceIds addObject:timerDevice.deviceID];
         }
-        self.devicesListLabel.text = devciesList;
+        
         [self.timerPicker setDate:self.timerEntity.fireTime];
-        if ([self.timerEntity.repeat integerValue] == 0) {
+        if ([self.timerEntity.repeat isEqualToString:@"00000000"]) {
+            [self.repeatChooseSegment setSelectedSegmentIndex:1];
             [self.view addSubview:self.datePicker];
             [self.datePicker autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [self.datePicker autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.repeatChooseSegment withOffset:8.0];
@@ -65,6 +80,7 @@
             [self.datePicker setDate:self.timerEntity.fireDate];
             
         }else {
+            [self.repeatChooseSegment setSelectedSegmentIndex:0];
             [self.view addSubview:self.weekView];
             [self.weekView autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [self.weekView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.repeatChooseSegment withOffset:43.0];
@@ -73,7 +89,7 @@
             
             NSString *repeat = [self.timerEntity.repeat substringFromIndex:1];
             [self.weekView.subviews enumerateObjectsUsingBlock:^(UIButton * btn, NSUInteger idx, BOOL * _Nonnull stop) {
-                NSString *str = [repeat substringWithRange:NSMakeRange(idx, 1)];
+                NSString *str = [repeat substringWithRange:NSMakeRange(6-idx, 1)];
                 if ([str boolValue]) {
                     btn.selected = YES;
                     [btn setBackgroundImage:[UIImage imageNamed:@"weekBtnSelected"] forState:UIControlStateNormal];
@@ -89,8 +105,23 @@
         [self.weekView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.repeatChooseSegment withOffset:43.0];
         [self.weekView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
         [self.weekView autoSetDimension:ALDimensionHeight toSize:29.0];
+        [self.deleteButton removeFromSuperview];
     }
     
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addTimerToDeviceCall:) name:@"addAlarmCall" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteTimerCall:) name:@"deleteAlarmCall" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeAlarmEnabledCall:) name:@"changeAlarmEnabledCall" object:nil];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"addAlarmCall" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"deleteAlarmCall" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeAlarmEnabledCall" object:nil];
 }
 
 #pragma mark - 修改日期选择器的字体颜色
@@ -153,7 +184,7 @@
                 string = [NSString stringWithFormat:@"%@ %@",string,device.name];
             }];
             self.devicesListLabel.text = string;
-            self.deviceIds = devices;
+            self.deviceIds = [NSMutableArray arrayWithArray:devices];
         }
     }];
     [self.navigationController pushViewController:list animated:YES];
@@ -172,10 +203,6 @@
     return YES;
 }
 
-- (void)textFieldDidEndEditing:(UITextField *)textField {
-//    [self saveNickName];
-}
-
 #pragma mark - weekButton
 
 - (IBAction)weekButtonClick:(UIButton *)sender {
@@ -185,8 +212,24 @@
 }
 
 - (void)doneAction {
+    _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    _hud.mode = MBProgressHUDModeIndeterminate;
+    _hud.delegate = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(15.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [_hud hideAnimated:YES];
+        [self showTextHud:@"ERROR"];
+    });
     
-    NSNumber *timerIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"TimerEntity"];
+    NSNumber *timerIdNumber;
+    if (_newadd) {
+        if (!_timerEntity) {
+            timerIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"TimerEntity"];
+        }
+    }else {
+        if (_timerEntity) {
+            timerIdNumber = _timerEntity.timerID;
+        }
+    }
     
     NSString *name;
     if (![CSRUtilities isStringEmpty:_nameTF.text]) {
@@ -201,7 +244,10 @@
     [dateFormate setDateFormat:@"yyyyMMddHHmmss"];
     NSString *dateStr = [dateFormate stringFromDate:_timerPicker.date];
     NSString *newStr = [dateStr stringByReplacingCharactersInRange:NSMakeRange(12, 2) withString:@"00"];
+    newStr = [dateStr stringByReplacingCharactersInRange:NSMakeRange(0, 8) withString:@"20180101"];
     NSDate *time = [dateFormate dateFromString:newStr];
+    
+    NSDate *date;
     
     NSString *repeatStr = @"";
     if (_repeatChooseSegment.selectedSegmentIndex == 0) {
@@ -209,17 +255,33 @@
             repeatStr = [NSString stringWithFormat:@"%d%@",btn.selected,repeatStr];
         }
         repeatStr = [NSString stringWithFormat:@"0%@",repeatStr];
-    }else {
-        repeatStr = @"0";
-    }
-    NSLog(@"str>> %@",repeatStr);
-    
-    TimerEntity *timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:enabled fireTime:time fireDate:_datePicker.date repeatStr:repeatStr];
-    
-    for (NSNumber *deviceId in self.deviceIds) {
-        NSNumber *timerIndex = [[CSRDatabaseManager sharedInstance] getNextFreeTimerIDOfDeivice:deviceId];
-        NSLog(@"><><><><><> %@",timerIndex);
         
+        date = [dateFormate dateFromString:@"20180101000000"];
+    }else {
+        repeatStr = @"00000000";
+        
+        NSString *dateString = [dateFormate stringFromDate:_datePicker.date];
+        NSString *newString = [dateString stringByReplacingCharactersInRange:NSMakeRange(8, 6) withString:@"000000"];
+        date = [dateFormate dateFromString:newString];
+        
+    }
+    
+    if (!_newadd) {
+        [_timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timerDevice, BOOL * _Nonnull stop) {
+            
+            [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:timerDevice];
+            [[CSRDatabaseManager sharedInstance] saveContext];
+        }];
+    }
+    
+    _timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:enabled fireTime:time fireDate:date repeatStr:repeatStr];
+
+    for (NSNumber *deviceId in self.deviceIds) {
+        
+        NSNumber *timerIndex = [[CSRDatabaseManager sharedInstance] getNextFreeTimerIDOfDeivice:deviceId];
+
+        [self.deviceIdsAndIndexs setObject:timerIndex forKey:[NSString stringWithFormat:@"%@",deviceId]];
+
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
         NSString *eveType;
         if ([model.shortName isEqualToString:@"S350BT"]) {
@@ -235,21 +297,168 @@
                 eveType = @"11";
             }
         }
-        [[DataModelManager shareInstance] addAlarmForDevice:deviceId alarmIndex:[timerIndex integerValue] enabled:[enabled boolValue] fireDate:_datePicker.date fireTime:time repeat:repeatStr eveType:eveType level:[model.level integerValue]];
+        [[DataModelManager shareInstance] addAlarmForDevice:deviceId alarmIndex:[timerIndex integerValue] enabled:[enabled boolValue] fireDate:date fireTime:time repeat:repeatStr eveType:eveType level:[model.level integerValue]];
         
     }
     
     
     
-    if (self.handle) {
-        self.handle();
+
+}
+
+- (void)addTimerToDeviceCall:(NSNotification *)result {
+    NSDictionary *resultDic = result.userInfo;
+    NSString *resultStr = [resultDic objectForKey:@"addAlarmCall"];
+    NSNumber *deviceId = [resultDic objectForKey:@"deviceId"];
+    if ([resultStr boolValue]) {
+        NSNumber *index = [self.deviceIdsAndIndexs objectForKey:[NSString stringWithFormat:@"%@",deviceId]];
+        __block TimerDeviceEntity *newTimerDeviceEntity;
+        [_timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timerDevice, BOOL * _Nonnull stop) {
+            if ([timerDevice.deviceID isEqualToNumber:deviceId] && [timerDevice.timerIndex isEqualToNumber:index]) {
+                newTimerDeviceEntity = timerDevice;
+                *stop = YES;
+            }
+        }];
+        if (!newTimerDeviceEntity) {
+            newTimerDeviceEntity = [NSEntityDescription insertNewObjectForEntityForName:@"TimerDeviceEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+        }
+        newTimerDeviceEntity.deviceID = deviceId;
+        newTimerDeviceEntity.timerIndex = index;
+        [_timerEntity addTimerDevicesObject:newTimerDeviceEntity];
+        [[CSRDatabaseManager sharedInstance] saveContext];
+        
+        [self.backs addObject:deviceId];
+        if ([self.backs count] == [self.deviceIds count]) {
+            if (self.handle) {
+                self.handle();
+            }
+            [_hud hideAnimated:YES];
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    }else {
+        [_hud hideAnimated:YES];
+        [self showTextHud:@"ERROR"];
+    }
+}
+
+- (void)deleteTimerCall:(NSNotification *)result {
+    NSDictionary *resultDic = result.userInfo;
+    NSString *state = [resultDic objectForKey:@"deleteAlarmCall"];
+    NSNumber *deviceId = [resultDic objectForKey:@"deviceId"];
+    if ([state boolValue]) {
+        
+        [self.deleteTimers enumerateObjectsUsingBlock:^(TimerDeviceEntity *timeDevice, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([timeDevice.deviceID isEqualToNumber:deviceId]) {
+                [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:timeDevice];
+                [[CSRDatabaseManager sharedInstance] saveContext];
+                if (self.handle) {
+                    self.handle();
+                }
+                [_hud hideAnimated:YES];
+                [self.navigationController popViewControllerAnimated:YES];
+            }
+        }];
+    }else {
+        [_hud hideAnimated:YES];
+        [self showTextHud:@"ERROR"];
+    }
+    
+}
+
+- (void)changeAlarmEnabledCall:(NSNotification *)result {
+    NSDictionary *resultDic = result.userInfo;
+    NSString *state = [resultDic objectForKey:@"changeAlarmEnabledCall"];
+//    NSNumber *deviceId = [resultDic objectForKey:@"deviceId"];
+    if ([state boolValue]) {
+        
+        [self showTextHud:@"SUCCESS"];
+        if (self.handle) {
+            self.handle();
+        }
+    }else {
+        [self showTextHud:@"ERROR"];
     }
 }
 
 - (IBAction)deleteTimerAction:(UIButton *)sender {
+    _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    _hud.mode = MBProgressHUDModeIndeterminate;
+    _hud.delegate = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(15.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (self.handle) {
+            self.handle();
+        }
+        [_hud hideAnimated:YES];
+        [self showTextHud:@"ERROR"];
+        [self.navigationController popViewControllerAnimated:YES];
+    });
     
+    [_timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timeDevice, BOOL * _Nonnull stop) {
+        if (timeDevice) {
+            [[DataModelManager shareInstance] deleteAlarmForDevice:timeDevice.deviceID index:[timeDevice.timerIndex integerValue]];
+            [self.deleteTimers addObject:timeDevice];
+        }
+    }];
     
+    [[CSRAppStateManager sharedInstance].selectedPlace removeTimersObject:self.timerEntity];
+    [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:self.timerEntity];
+    [[CSRDatabaseManager sharedInstance] saveContext];
     
+}
+
+- (IBAction)changeEnabled:(UISwitch *)sender {
+    if (!_newadd && _timerEntity) {
+        [_timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timerDevice, BOOL * _Nonnull stop) {
+            [[DataModelManager shareInstance] enAlarmForDevice:timerDevice.deviceID stata:sender.on index:[timerDevice.timerIndex integerValue]];
+        }];
+        
+        _timerEntity.enabled = @(sender.on);
+        [[CSRDatabaseManager sharedInstance] saveContext];
+    }
+}
+
+- (NSMutableDictionary *)deviceIdsAndIndexs {
+    if (!_deviceIdsAndIndexs) {
+        _deviceIdsAndIndexs = [NSMutableDictionary new];
+    }
+    return _deviceIdsAndIndexs;
+}
+
+- (NSMutableArray *)deleteTimers {
+    if (!_deleteTimers) {
+        _deleteTimers = [NSMutableArray new];
+    }
+    return _deleteTimers;
+}
+
+- (NSMutableArray *)backs {
+    if (!_backs) {
+        _backs = [NSMutableArray new];
+    }
+    return _backs;
+}
+
+- (NSMutableArray *)deviceIds {
+    if (!_deviceIds) {
+        _deviceIds = [NSMutableArray new];
+    }
+    return _deviceIds;
+}
+
+#pragma mark - MBProgressHUDDelegate
+
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+    [hud removeFromSuperview];
+    hud = nil;
+}
+
+- (void)showTextHud:(NSString *)text {
+    MBProgressHUD *successHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    successHud.mode = MBProgressHUDModeText;
+    successHud.label.text = text;
+    successHud.label.numberOfLines = 0;
+    successHud.delegate = self;
+    [successHud hideAnimated:YES afterDelay:1.5f];
 }
 
 @end

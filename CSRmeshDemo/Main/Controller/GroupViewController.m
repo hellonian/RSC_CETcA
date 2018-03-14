@@ -21,7 +21,7 @@
 #import "DeviceViewController.h"
 #import "CSRConstants.h"
 #import "SingleDeviceModel.h"
-#import <CSRmesh/LightModelApi.h>
+//#import <CSRmesh/LightModelApi.h>
 
 @interface GroupViewController ()<UITextFieldDelegate,PlaceColorIconPickerViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,MainCollectionViewDelegate,MBProgressHUDDelegate>
 {
@@ -438,13 +438,13 @@
 
         CGFloat percentage = updateLevel/255.0*100;
         [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
-        if (updateLevel == 0) {
-            [[LightModelApi sharedInstance] setLevel:deviceId level:@1 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-                
-            } failure:^(NSError * _Nullable error) {
-                
-            }];
-        }
+//        if (updateLevel == 0) {
+//            [[LightModelApi sharedInstance] setLevel:deviceId level:@1 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+//
+//            } failure:^(NSError * _Nullable error) {
+//
+//            }];
+//        }
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state direction:direction];
         
         if (state == UIGestureRecognizerStateEnded) {

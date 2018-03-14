@@ -66,4 +66,6 @@
 
 - (NSNumber *)getNextFreeTimerIDOfDeivice:(NSNumber *)deviceId;
 
+- (NSArray *)foundTimerDevice:(NSNumber *)deviceId timeIndex:(NSNumber *)timeImdex;
+
 @end

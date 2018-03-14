@@ -7,6 +7,9 @@
 //
 
 #import "TimerTableViewCell.h"
+#import "TimerDeviceEntity.h"
+#import "DataModelManager.h"
+#import "CSRDatabaseManager.h"
 
 @implementation TimerTableViewCell
 
@@ -16,6 +19,7 @@
 }
 
 - (void)configureCellWithInfo:(TimerEntity *)timerEntity {
+    self.timerEntity = timerEntity;
     self.nameLabel.text = timerEntity.name;
     
     NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init];
@@ -24,7 +28,6 @@
     self.fireTimeLabel.text = timeStr;
     
     NSString *repeatStr = timerEntity.repeat;
-    NSLog(@"repeat %@",repeatStr);
     if ([repeatStr isEqualToString:@"01111111"]) {
         self.repeatLabel.text = @"everyday";
     }else if ([repeatStr isEqualToString:@"01000001"]) {
@@ -50,7 +53,43 @@
     
     BOOL enabled = [timerEntity.enabled boolValue]? YES:NO;
     [self.enabledSwitch setOn:enabled];
+    if (enabled) {
+        self.nameLabel.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+        self.fireTimeLabel.textColor = [UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1];
+        self.repeatLabel.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+    }else {
+        self.nameLabel.textColor = [UIColor colorWithRed:180/255.0 green:180/255.0 blue:180/255.0 alpha:1];
+        self.fireTimeLabel.textColor = [UIColor colorWithRed:140/255.0 green:140/255.0 blue:140/255.0 alpha:1];
+        self.repeatLabel.textColor = [UIColor colorWithRed:180/255.0 green:180/255.0 blue:180/255.0 alpha:1];
+    }
     
+    for (TimerDeviceEntity *timerDevice in timerEntity.timerDevices) {
+        if ([timerDevice.alive boolValue]) {
+            _missImageView.hidden = YES;
+        }else {
+            _missImageView.hidden = NO;
+            return;
+        }
+    }
+}
+
+- (IBAction)changeEnabled:(UISwitch *)sender {
+    if (_timerEntity) {
+        [_timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timerDevice, BOOL * _Nonnull stop) {
+            [[DataModelManager shareInstance] enAlarmForDevice:timerDevice.deviceID stata:sender.on index:[timerDevice.timerIndex integerValue]];
+        }];
+        _timerEntity.enabled = @(sender.on);
+        [[CSRDatabaseManager sharedInstance] saveContext];
+        if (sender.on) {
+            self.nameLabel.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+            self.fireTimeLabel.textColor = [UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1];
+            self.repeatLabel.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+        }else {
+            self.nameLabel.textColor = [UIColor colorWithRed:180/255.0 green:180/255.0 blue:180/255.0 alpha:1];
+            self.fireTimeLabel.textColor = [UIColor colorWithRed:140/255.0 green:140/255.0 blue:140/255.0 alpha:1];
+            self.repeatLabel.textColor = [UIColor colorWithRed:180/255.0 green:180/255.0 blue:180/255.0 alpha:1];
+        }
+    }
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

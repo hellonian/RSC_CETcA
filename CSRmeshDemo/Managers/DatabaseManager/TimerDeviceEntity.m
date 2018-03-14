@@ -12,5 +12,6 @@
 
 @dynamic deviceID;
 @dynamic timerIndex;
+@dynamic alive;
 
 @end

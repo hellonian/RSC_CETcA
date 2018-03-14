@@ -52,17 +52,29 @@
                     <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Abp-Wv-u7D">
                         <rect key="frame" x="267" y="29" width="51" height="31"/>
                         <color key="onTintColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <connections>
+                            <action selector="changeEnabled:" destination="KGk-i7-Jjw" eventType="valueChanged" id="Fg1-EU-x9V"/>
+                        </connections>
                     </switch>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Setting_new FW" translatesAutoresizingMaskIntoConstraints="NO" id="RzA-uT-0Ig">
+                        <rect key="frame" x="15" y="37" width="6" height="6"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="6" id="0WE-es-BKC"/>
+                            <constraint firstAttribute="width" constant="6" id="fOb-36-RB5"/>
+                        </constraints>
+                    </imageView>
                 </subviews>
                 <constraints>
                     <constraint firstItem="Abp-Wv-u7D" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="084-Xh-gSu"/>
                     <constraint firstAttribute="trailing" secondItem="Abp-Wv-u7D" secondAttribute="trailing" constant="16" id="7xd-yp-sDg"/>
                     <constraint firstItem="5JO-fD-oa9" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="36" id="9ut-DC-EYK"/>
                     <constraint firstItem="iKv-qR-ZgA" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="JTf-jC-Qx9"/>
+                    <constraint firstItem="RzA-uT-0Ig" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="37" id="e2u-d5-PXu"/>
                     <constraint firstItem="iKv-qR-ZgA" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="120" id="fI5-HO-n8h"/>
                     <constraint firstAttribute="trailing" secondItem="ZXh-i6-wv5" secondAttribute="trailing" constant="16" id="jwp-db-RAh"/>
                     <constraint firstItem="ZXh-i6-wv5" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="36" id="mBW-80-8QY"/>
                     <constraint firstItem="iKv-qR-ZgA" firstAttribute="bottom" secondItem="5JO-fD-oa9" secondAttribute="bottom" id="tuY-lu-wfg"/>
+                    <constraint firstItem="RzA-uT-0Ig" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="x3i-oJ-9KR"/>
                     <constraint firstAttribute="bottom" secondItem="ZXh-i6-wv5" secondAttribute="bottom" constant="-0.5" id="xR8-VM-bQz"/>
                 </constraints>
             </tableViewCellContentView>
@@ -70,10 +82,14 @@
             <connections>
                 <outlet property="enabledSwitch" destination="Abp-Wv-u7D" id="ZBD-ZO-bHb"/>
                 <outlet property="fireTimeLabel" destination="5JO-fD-oa9" id="6Sv-3I-Gjr"/>
+                <outlet property="missImageView" destination="RzA-uT-0Ig" id="O4Y-3b-82G"/>
                 <outlet property="nameLabel" destination="iKv-qR-ZgA" id="fGf-zc-x5p"/>
                 <outlet property="repeatLabel" destination="ZXh-i6-wv5" id="xgA-1o-YbF"/>
             </connections>
             <point key="canvasLocation" x="17" y="26"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <image name="Setting_new FW" width="6" height="6"/>
+    </resources>
 </document>

@@ -22,7 +22,7 @@
 #import "DeviceModelManager.h"
 #import "ImproveTouchingExperience.h"
 #import "ControlMaskView.h"
-#import <CSRmesh/LightModelApi.h>
+//#import <CSRmesh/LightModelApi.h>
 
 @interface GalleryDetailViewController ()<GalleryControlImageViewDelegate,GalleryDropViewDelegate>
 
@@ -308,13 +308,13 @@
         NSInteger updateLevel = [self.improver improveTouching:touchPoint referencePoint:origin primaryBrightness:[self.originalLevel integerValue]];
         CGFloat percentage = updateLevel/255.0*100;
         [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
-        if (updateLevel == 0) {
-            [[LightModelApi sharedInstance] setLevel:deviceId level:@1 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-                
-            } failure:^(NSError * _Nullable error) {
-                
-            }];
-        }
+//        if (updateLevel == 0) {
+//            [[LightModelApi sharedInstance] setLevel:deviceId level:@1 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+//
+//            } failure:^(NSError * _Nullable error) {
+//
+//            }];
+//        }
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state direction:PanGestureMoveDirectionHorizontal];
         
         if (state == UIGestureRecognizerStateEnded) {

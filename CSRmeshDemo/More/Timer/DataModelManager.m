@@ -71,9 +71,9 @@ static DataModelManager *manager = nil;
     
     NSString *repeatString = [self stringWithHexNumber:[repeatNumberStr integerValue]];
     
-    NSString *cmd = [NSString stringWithFormat:@"8310%@01%@%@%@%@%@0000000000",indexStr,YMdString,hmsString,repeatString,alarnActionType,levelString];
-    
-    _schedule = [self analyzeTimeScheduleData:[NSString stringWithFormat:@"%@01%@%@%@%@%@0000000000",indexStr,YMdString,hmsString,repeatString,alarnActionType,levelString] forLight:deviceId];
+    NSString *cmd = [NSString stringWithFormat:@"8310%@0%d%@%@%@%@%@0000000000",indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString];
+    NSLog(@">> --> %@",cmd);
+    _schedule = [self analyzeTimeScheduleData:[NSString stringWithFormat:@"%@0%d%@%@%@%@%@0000000000",indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString] forLight:deviceId];
     
     [self sendCmdData:cmd toDeviceId:deviceId];
 }
@@ -136,7 +136,7 @@ static DataModelManager *manager = nil;
     //添加闹钟回调
     if ([dataStr hasPrefix:@"a3"]) {
         NSString *suffixStr = [dataStr substringWithRange:NSMakeRange(6, 2)];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"addAlarmCall" object:nil userInfo:@{@"addAlarmCall":suffixStr}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"addAlarmCall" object:nil userInfo:@{@"addAlarmCall":suffixStr,@"deviceId":sourceDeviceId}];
         if ([suffixStr boolValue]&&self.delegate&&[self.delegate respondsToSelector:@selector(addAlarmSuccessCall:)]) {
             [self.delegate addAlarmSuccessCall:_schedule];
         }
@@ -145,12 +145,13 @@ static DataModelManager *manager = nil;
     //删除闹钟回调
     if ([dataStr hasPrefix:@"a5"]) {
         NSString *suffixStr = [dataStr substringWithRange:NSMakeRange(6, 2)];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteAlarmCall" object:nil userInfo:@{@"deleteAlarmCall":suffixStr}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteAlarmCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"deleteAlarmCall":suffixStr}];
     }
     
     //关闭或开启闹钟回调
     if ([dataStr hasPrefix:@"a4"]) {
-        
+        NSString *suffixStr = [dataStr substringWithRange:NSMakeRange(6, 2)];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"changeAlarmEnabledCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"changeAlarmEnabledCall":suffixStr}];
     }
     
     //实物按钮动作反馈

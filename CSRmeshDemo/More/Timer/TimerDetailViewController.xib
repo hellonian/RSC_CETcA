@@ -15,6 +15,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TimerDetailViewController">
             <connections>
                 <outlet property="datePicker" destination="w3K-Zg-65E" id="4OH-JZ-ZgX"/>
+                <outlet property="deleteButton" destination="d4f-vi-gnE" id="4eV-zF-izJ"/>
                 <outlet property="devicesListLabel" destination="PHj-0v-Oid" id="2s6-gC-5y3"/>
                 <outlet property="enabledSwitch" destination="JNO-b5-kfu" id="Y3J-aA-ge6"/>
                 <outlet property="nameTF" destination="e1Z-CZ-CIf" id="vkb-Wf-KhT"/>
@@ -73,6 +74,9 @@
                         <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JNO-b5-kfu">
                             <rect key="frame" x="310" y="51" width="51" height="31"/>
                             <color key="onTintColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <connections>
+                                <action selector="changeEnabled:" destination="-1" eventType="valueChanged" id="U0Y-Nm-3Nh"/>
+                            </connections>
                         </switch>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Device" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cuE-FI-c1W">
                             <rect key="frame" x="20" y="102" width="65" height="20"/>
@@ -140,10 +144,9 @@
                     </constraints>
                 </view>
                 <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="time" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="ZG8-9S-pgV">
-                    <rect key="frame" x="118" y="256" width="140" height="100"/>
+                    <rect key="frame" x="20" y="256" width="336" height="100"/>
                     <color key="tintColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="140" id="SCo-Tr-HaM"/>
                         <constraint firstAttribute="height" constant="100" id="gwO-jH-a9m"/>
                     </constraints>
                     <date key="date" timeIntervalSinceReferenceDate="541673101.68923199">
@@ -187,6 +190,7 @@
                 <constraint firstItem="FDN-St-Kl2" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="JVx-Jx-DT0"/>
                 <constraint firstItem="FDN-St-Kl2" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="JfP-xM-Wns"/>
                 <constraint firstItem="wdX-Ff-gEZ" firstAttribute="top" secondItem="ZG8-9S-pgV" secondAttribute="bottom" constant="8" id="QC3-dT-i9S"/>
+                <constraint firstItem="ZG8-9S-pgV" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="20" id="XPw-No-CfE"/>
                 <constraint firstItem="d4f-vi-gnE" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="ewv-FB-xSr"/>
                 <constraint firstItem="ZG8-9S-pgV" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="jUg-f2-zij"/>
                 <constraint firstItem="wdX-Ff-gEZ" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="qhF-Oi-6ce"/>

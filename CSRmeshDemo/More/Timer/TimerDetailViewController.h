@@ -15,5 +15,6 @@ typedef void(^TimerSettingDoneBlock)(void);
 
 @property (nonatomic,strong) TimerSettingDoneBlock handle;
 @property (nonatomic,strong) TimerEntity *timerEntity;
+@property (nonatomic,assign) BOOL newadd;
 
 @end
