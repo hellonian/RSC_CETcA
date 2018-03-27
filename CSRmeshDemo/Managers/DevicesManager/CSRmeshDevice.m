@@ -335,7 +335,7 @@
                                                             NSMutableData *groupInstancesData = [NSMutableData dataWithLength:(index*2)];
                                                             deviceEntity.nGroups = numberOfModelGroupIds;
                                                             
-                                                            deviceEntity.groups = groupInstancesData;
+                                                            deviceEntity.groups = [CSRUtilities hexStringFromData:groupInstancesData];
                                                             //                                                        NSLog(@"numberOfModelGroupIds :%@ and groupInstancesData :%@", numberOfModelGroupIds, groupInstancesData);
                                                         }
                                                         

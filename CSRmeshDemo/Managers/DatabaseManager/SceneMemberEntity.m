@@ -14,5 +14,6 @@
 @dynamic powerState;
 @dynamic level;
 @dynamic kindString;
+@dynamic sceneID;
 
 @end

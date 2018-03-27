@@ -322,6 +322,7 @@
         if (!newTimerDeviceEntity) {
             newTimerDeviceEntity = [NSEntityDescription insertNewObjectForEntityForName:@"TimerDeviceEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
         }
+        newTimerDeviceEntity.timerID = _timerEntity.timerID;
         newTimerDeviceEntity.deviceID = deviceId;
         newTimerDeviceEntity.timerIndex = index;
         [_timerEntity addTimerDevicesObject:newTimerDeviceEntity];

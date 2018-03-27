@@ -179,6 +179,16 @@ static DataModelManager *manager = nil;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"getFirmwareVersion" object:nil userInfo:@{@"getFirmwareVersion":@([self numberWithHexString:firmwareVersion]),@"deviceId":sourceDeviceId}];
     }
     
+    //获取遥控器电量
+    if ([dataStr hasPrefix:@"b2"]) {
+        NSString *batterylow = [dataStr substringWithRange:NSMakeRange(6, 2)];
+        NSString *batteryhight = [dataStr substringWithRange:NSMakeRange(8, 2)];
+        NSInteger battery = [self numberWithHexString:[NSString stringWithFormat:@"%@%@",batteryhight,batterylow]];
+        NSInteger batteryPercent = (battery-2100)*99/900+1;
+ 
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"getRemoteBattery" object:nil userInfo:@{@"batteryPercent":[NSNumber numberWithInteger:batteryPercent],@"deviceId":sourceDeviceId}];
+    }
+    
 }
 
 - (void)didReceiveStreamData:(NSNumber *)deviceId streamNumber:(NSNumber *)streamNumber data:(NSData *)data {
@@ -216,16 +226,47 @@ static DataModelManager *manager = nil;
         NSInteger num = [self numberWithHexString:[firstStr substringWithRange:NSMakeRange(4, 2)]];
         NSMutableArray *timersArray = [[NSMutableArray alloc] init];
         for (NSInteger i=0; i<num; i++) {
-            NSString *perStr = [string substringWithRange:NSMakeRange(i*32+11, 32)];////
-            TimeSchedule *schedule = [self analyzeTimeScheduleData:perStr forLight:deviceId];
-            [timersArray addObject:schedule];
+            if (string.length > (i*32+11+32-2)) {
+                NSString *perStr = [string substringWithRange:NSMakeRange(i*32+11, 32)];////
+                TimeSchedule *schedule = [self analyzeTimeScheduleData:perStr forLight:deviceId];
+                [timersArray addObject:schedule];
+            }
+            
         }
         if ([timersArray count] > 0) {
             [[NSNotificationCenter defaultCenter] postNotificationName:kTimerProfile object:nil userInfo:@{kTimerProfile:timersArray,@"deviceId":deviceId}];
         }
     }
     
+    //获取遥控器配置
+    if ([firstStr hasPrefix:@"b1"]) {
+        NSString *string = @"actec";
+        for (NSNumber *key in ary) {
+            NSData *preData = [dic objectForKey:key];
+            string = [NSString stringWithFormat:@"%@%@",string,[self hexStringForData:preData]];
+        }
+        if (string.length > 30) {
+            NSString *deviceID11 = [string substringWithRange:NSMakeRange(15, 4)];
+            NSString *deviceID1 = [self exchangeLowHight:deviceID11];
+            NSString *deviceID22 = [string substringWithRange:NSMakeRange(19, 4)];
+             NSString *deviceID2 = [self exchangeLowHight:deviceID22];
+            NSString *deviceID33 = [string substringWithRange:NSMakeRange(23, 4)];
+             NSString *deviceID3 = [self exchangeLowHight:deviceID33];
+            NSString *deviceID44 = [string substringWithRange:NSMakeRange(27, 4)];
+             NSString *deviceID4 = [self exchangeLowHight:deviceID44];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"getRemoteConfiguration" object:nil userInfo:@{@"deviceID1":[NSNumber numberWithInteger:[self numberWithHexString:deviceID1]],@"deviceID2":[NSNumber numberWithInteger:[self numberWithHexString:deviceID2]],@"deviceID3":[NSNumber numberWithInteger:[self numberWithHexString:deviceID3]],@"deviceID4":[NSNumber numberWithInteger:[self numberWithHexString:deviceID4]],@"deviceId":deviceId}];
+        }
+        
+    }
+    
     [self.deviceKeyDic removeObjectForKey:deviceId];
+}
+
+- (NSString *)exchangeLowHight:(NSString *)string {
+    NSString *str1 = [string substringToIndex:2];
+    NSString *str2 = [string substringFromIndex:2];
+    NSString *newString = [NSString stringWithFormat:@"%@%@",str2,str1];
+    return newString;
 }
 
 - (TimeSchedule *)analyzeTimeScheduleData:(NSString *)dataString forLight:(NSNumber *)deviceId {

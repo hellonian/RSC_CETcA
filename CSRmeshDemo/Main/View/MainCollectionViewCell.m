@@ -180,7 +180,7 @@
             self.iconView.image = [UIImage imageNamed:@"Device_Dimmer"];
         }else if ([appearanceShortname containsString:@"S350BT"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Switch"];
-        }else if ([appearanceShortname containsString:@"RC350"]) {
+        }else if ([appearanceShortname containsString:@"RB01"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote1"];
         }else if ([appearanceShortname containsString:@"RC351"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote2"];

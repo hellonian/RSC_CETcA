@@ -31,7 +31,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FDN-St-Kl2">
-                    <rect key="frame" x="0.0" y="114" width="375" height="134"/>
+                    <rect key="frame" x="0.0" y="94" width="375" height="134"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wUm-A4-Zcg">
                             <rect key="frame" x="20" y="44" width="355" height="1"/>
@@ -144,7 +144,7 @@
                     </constraints>
                 </view>
                 <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="time" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="ZG8-9S-pgV">
-                    <rect key="frame" x="20" y="256" width="336" height="100"/>
+                    <rect key="frame" x="20" y="236" width="336" height="100"/>
                     <color key="tintColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="100" id="gwO-jH-a9m"/>
@@ -154,7 +154,7 @@
                     </date>
                 </datePicker>
                 <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="wdX-Ff-gEZ">
-                    <rect key="frame" x="117.5" y="364" width="140" height="31"/>
+                    <rect key="frame" x="117.5" y="344" width="140" height="31"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="2Ge-ou-M3j"/>
                         <constraint firstAttribute="width" constant="140" id="daf-x2-2Og"/>
@@ -184,13 +184,13 @@
             </subviews>
             <color key="backgroundColor" red="0.86274509799999999" green="0.86274509799999999" blue="0.86274509799999999" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstItem="FDN-St-Kl2" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" constant="94" id="8Ok-yO-6bh"/>
                 <constraint firstItem="d4f-vi-gnE" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="CtU-R7-GaQ"/>
                 <constraint firstItem="d4f-vi-gnE" firstAttribute="bottom" secondItem="Q5M-cg-NOt" secondAttribute="bottom" id="JU0-F9-Dzb"/>
                 <constraint firstItem="FDN-St-Kl2" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="JVx-Jx-DT0"/>
                 <constraint firstItem="FDN-St-Kl2" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="JfP-xM-Wns"/>
                 <constraint firstItem="wdX-Ff-gEZ" firstAttribute="top" secondItem="ZG8-9S-pgV" secondAttribute="bottom" constant="8" id="QC3-dT-i9S"/>
                 <constraint firstItem="ZG8-9S-pgV" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="20" id="XPw-No-CfE"/>
+                <constraint firstItem="FDN-St-Kl2" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="94" id="eS6-dr-WNW"/>
                 <constraint firstItem="d4f-vi-gnE" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="ewv-FB-xSr"/>
                 <constraint firstItem="ZG8-9S-pgV" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="jUg-f2-zij"/>
                 <constraint firstItem="wdX-Ff-gEZ" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="qhF-Oi-6ce"/>

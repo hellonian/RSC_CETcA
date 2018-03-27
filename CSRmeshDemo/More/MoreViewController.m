@@ -13,11 +13,11 @@
 #import "MasterViewController.h"
 #import "PureLayout.h"
 #import "RemoteViewController.h"
-#import "ShareViewController.h"
 #import "MusicListTableViewController.h"
 #import "PlacesViewController.h"
 #import "LanguageViewController.h"
 #import "HelpViewController.h"
+#import "SharePlaceViewController.h"
 
 @interface MoreViewController ()<UISplitViewControllerDelegate,masterDelegate>
 
@@ -26,7 +26,7 @@
 @property (nonatomic,strong) TimerViewController *timerVC;
 @property (nonatomic,strong) DiscoverViewController *updateVC;
 @property (nonatomic,strong) AboutViewController *aboutVC;
-@property (nonatomic,strong) ShareViewController *shareVC;
+@property (nonatomic,strong) SharePlaceViewController *shareVC;
 @property (nonatomic,strong) MasterViewController *masterVC;
 @property (nonatomic,strong) PlacesViewController *placesVC;
 @property (nonatomic,strong) UINavigationController *masterViewManager;
@@ -60,7 +60,7 @@
     self.timerVC = [[TimerViewController alloc] init];
     self.updateVC = [[DiscoverViewController alloc] init];
     self.aboutVC = [[AboutViewController alloc] init];
-    self.shareVC = [[ShareViewController alloc] init];
+    self.shareVC = [[SharePlaceViewController alloc] init];
     self.musicVC = [[MusicListTableViewController alloc] init];
     self.placesVC = [[PlacesViewController alloc] init];
     self.masterVC = [[MasterViewController alloc] init];

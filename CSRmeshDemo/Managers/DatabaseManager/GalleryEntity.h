@@ -25,7 +25,7 @@
 
 - (void)addDropsObject:(DropEntity *)value;
 - (void)removeDropsObject:(DropEntity *)value;
-- (void)addDevices:(NSSet *)values;
+- (void)addDrops:(NSSet *)values;
 - (void)removeDrops:(NSSet *)values;
 
 @end

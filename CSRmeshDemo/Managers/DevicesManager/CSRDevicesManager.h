@@ -56,7 +56,7 @@
 
 - (void) deleteDevicesInArray;
 
-- (CSRAreaEntity*) addMeshArea:(NSString*)name;
+//- (CSRAreaEntity*) addMeshArea:(NSString*)name;
 
 //Get mesh device and mesh group object
 - (CSRmeshArea *) getArea :(NSInteger) offset;

@@ -64,6 +64,7 @@
                     model.name = deviceEntity.name;
                     [_allDevices addObject:model];
                     [[DataModelManager shareInstance] setDeviceTime:deviceEntity.deviceId];
+                    [NSThread sleepForTimeInterval:0.2];
                 }
             }
         }
@@ -147,10 +148,31 @@
 
 - (void)setPowerStateWithDeviceId:(NSNumber *)deviceId withPowerState:(NSNumber *)powerState {
     [[PowerModelApi sharedInstance] setPowerState:deviceId state:powerState success:^(NSNumber * _Nullable deviceId, NSNumber * _Nullable state) {
-        
+        NSLog(@"开关命令block内部回调 %@ <-- %@",state,deviceId);
+        __block BOOL exist;
+        [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([model.deviceId isEqualToNumber:deviceId]) {
+                model.powerState = state;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId}];
+                
+                exist = YES;
+                *stop = YES;
+            }
+        }];
+        if (!exist) {
+            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+            DeviceModel *model = [[DeviceModel alloc] init];
+            model.deviceId = deviceEntity.deviceId;
+            model.shortName = deviceEntity.shortName;
+            model.name = deviceEntity.name;
+            model.powerState = state;
+            [_allDevices addObject:model];
+            [[DataModelManager shareInstance] setDeviceTime:deviceEntity.deviceId];
+        }
     } failure:^(NSError * _Nullable error) {
-        
+
     }];
+    
 }
 
 - (void)setLevelWithDeviceId:(NSNumber *)deviceId withLevel:(NSNumber *)level withState:(UIGestureRecognizerState)state direction:(PanGestureMoveDirection)direction{
@@ -169,8 +191,33 @@
         if (moveDirection == PanGestureMoveDirectionHorizontal) {
             [[LightModelApi sharedInstance] setLevel:deviceId level:currentLevel success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
                 
+                __block BOOL exist;
+                [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
+                    if ([model.deviceId isEqualToNumber:deviceId]) {
+                        
+                            model.powerState = powerState;
+                            model.level = currentLevel;
+                        
+                            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
+                        
+                        exist = YES;
+                        *stop = YES;
+                    }
+                    
+                }];
+                if (!exist) {
+                    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+                    DeviceModel *model = [[DeviceModel alloc] init];
+                    model.deviceId = deviceEntity.deviceId;
+                    model.shortName = deviceEntity.shortName;
+                    model.name = deviceEntity.name;
+                    model.powerState = powerState;
+                    model.level = currentLevel;
+                    [_allDevices addObject:model];
+                    [[DataModelManager shareInstance] setDeviceTime:deviceEntity.deviceId];
+                }
             } failure:^(NSError * _Nullable error) {
-                
+
             }];
         }
         

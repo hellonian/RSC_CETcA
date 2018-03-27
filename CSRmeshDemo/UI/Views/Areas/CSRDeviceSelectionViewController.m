@@ -165,7 +165,8 @@
 {
     CSRDeviceEntity *deviceEntity = [_devicesArray objectAtIndex:selectedIndex];
     uint16_t area = [areaId unsignedShortValue];
-    uint16_t *areas = (uint16_t*)deviceEntity.groups.bytes;
+    NSData *groups = [CSRUtilities dataForHexString:deviceEntity.groups];
+    uint16_t *areas = (uint16_t*)groups.bytes;
     
     BOOL found = NO;
     for (int i =0; i < deviceEntity.groups.length/2; i++) {
@@ -238,7 +239,8 @@
 //method to getIndexByValue
 - (NSNumber *) getValueByIndex:(CSRDeviceEntity*)deviceEntity
 {
-    uint16_t *dataToModify = (uint16_t*)deviceEntity.groups.bytes;
+    NSData *groups = [CSRUtilities dataForHexString:deviceEntity.groups];
+    uint16_t *dataToModify = (uint16_t*)groups.bytes;
     
     for (int count=0; count < deviceEntity.groups.length/2; count++, dataToModify++) {
         if (*dataToModify == [_areaEntity.areaID unsignedShortValue]) {
@@ -293,7 +295,7 @@
                                                                     *(groups + groupIndexInt) = desiredValue;
                                                                 }
                                                                 
-                                                                deviceEntity.groups = (NSData*)myData;
+                                                                deviceEntity.groups = [CSRUtilities stringFromData:(NSData*)myData];
                                                                 NSLog(@"deviceEntity.groups :%@", myData);
                                                                 CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId: desired];
                                                                 
@@ -334,8 +336,8 @@
                                                               NSNumber *groupIndex,
                                                               NSNumber *instance,
                                                               NSNumber *desired) {
-                                                        
-                                                        uint16_t *dataToModify = (uint16_t*)deviceEntity.groups.bytes;
+                                                        NSData *groups = [CSRUtilities dataForHexString:deviceEntity.groups];
+                                                        uint16_t *dataToModify = (uint16_t*)groups.bytes;
                                                         NSMutableArray *desiredGroups = [NSMutableArray new];
                                                         for (int count=0; count < deviceEntity.groups.length/2; count++, dataToModify++) {
                                                             NSNumber *groupValue = @(*dataToModify);
@@ -358,7 +360,7 @@
                                                             *(groups + groupIndexInt) = desiredValue;
                                                         }
                                                         
-                                                        deviceEntity.groups = (NSData*)myData;
+                                                        deviceEntity.groups = [CSRUtilities stringFromData:(NSData*)myData];
                                                         
                                                         [[CSRDatabaseManager sharedInstance] saveContext];
                                                         

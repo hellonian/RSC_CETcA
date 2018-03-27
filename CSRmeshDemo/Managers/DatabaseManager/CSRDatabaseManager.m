@@ -847,7 +847,7 @@
 
 #pragma mark - AREA Methods
 
-- (CSRAreaEntity*)saveNewArea:(NSNumber *)areaId areaName:(NSString *)areaName areaImage:(UIImage *)image areaIconNum:(NSNumber *)iconNum {
+- (CSRAreaEntity*)saveNewArea:(NSNumber *)areaId areaName:(NSString *)areaName areaImage:(UIImage *)image areaIconNum:(NSNumber *)iconNum sortId:(NSNumber *)sortId {
     
     __block CSRAreaEntity *newAreaEntity;
     
@@ -876,8 +876,8 @@
         NSData *areaImageData = UIImageJPEGRepresentation(image, 0.5);
         newAreaEntity.areaImage = areaImageData;
     }
-    NSNumber *sorId = [self getNextFreeIDOfType:@"SortId"];
-    newAreaEntity.sortId = sorId;
+//    NSNumber *sorId = [self getNextFreeIDOfType:@"SortId"];
+    newAreaEntity.sortId = sortId;
     
     [[CSRAppStateManager sharedInstance].selectedPlace addAreasObject:newAreaEntity];
     [self saveContext];
@@ -1022,6 +1022,7 @@
             newDropEntity = [NSEntityDescription insertNewObjectForEntityForName:@"DropEntity" inManagedObjectContext:self.managedObjectContext];
         }
 
+        newDropEntity.galleryID = gelleryId;
         newDropEntity.dropID = dropId;
         newDropEntity.device = device;
         newDropEntity.boundRatio = boundRatio;

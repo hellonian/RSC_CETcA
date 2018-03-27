@@ -94,4 +94,7 @@
 //compression and decompression class methods
 + (NSData*) uncompressGZip:(NSData*) compressedData;
 
++ (NSString *)hexStringForData: (NSData *)data;
++ (NSData*)dataForHexString:(NSString*)hexString;
+
 @end

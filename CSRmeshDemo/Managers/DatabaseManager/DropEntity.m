@@ -16,5 +16,6 @@
 @dynamic centerYRatio;
 @dynamic device;
 @dynamic dropID;
+@dynamic galleryID;
 
 @end

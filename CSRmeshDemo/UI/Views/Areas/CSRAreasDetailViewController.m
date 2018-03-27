@@ -218,7 +218,7 @@
     } else {
         if (![CSRUtilities isStringEmpty:_areaTitleTextField.text]) {
 
-            _areaEntity = [[CSRDevicesManager sharedInstance] addMeshArea:_areaTitleTextField.text];
+//            _areaEntity = [[CSRDevicesManager sharedInstance] addMeshArea:_areaTitleTextField.text];
             [[CSRAppStateManager sharedInstance].selectedPlace addAreasObject:_areaEntity];
             [[CSRDatabaseManager sharedInstance] saveContext];
         } else {
@@ -264,7 +264,7 @@
     } else {
         if (![CSRUtilities isStringEmpty:_areaTitleTextField.text]) {
             
-            _areaEntity = [[CSRDevicesManager sharedInstance] addMeshArea:_areaTitleTextField.text];
+//            _areaEntity = [[CSRDevicesManager sharedInstance] addMeshArea:_areaTitleTextField.text];
             [[CSRAppStateManager sharedInstance].selectedPlace addAreasObject:_areaEntity];
             
         } else {
@@ -302,8 +302,8 @@
                                                                   NSNumber *groupIndex,
                                                                   NSNumber *instance,
                                                                   NSNumber *desired) {
-                                                            
-                                                            uint16_t *dataToModify = (uint16_t*)localDeviceEntity.groups.bytes;
+                                                            NSData *groups = [CSRUtilities dataForHexString:localDeviceEntity.groups];
+                                                            uint16_t *dataToModify = (uint16_t*)groups.bytes;
                                                             NSMutableArray *desiredGroups = [NSMutableArray new];
                                                             for (int count=0; count < localDeviceEntity.groups.length/2; count++, dataToModify++) {
                                                                 NSNumber *groupValue = @(*dataToModify);
@@ -329,7 +329,7 @@
                                                                     uint16_t *groups = (uint16_t *) myData.mutableBytes;
                                                                     *(groups + groupIndexInt) = desiredValue;
                                                                 }
-                                                                localDeviceEntity.groups = (NSData*)myData;
+                                                                localDeviceEntity.groups = [CSRUtilities hexStringFromData:(NSData*)myData];
                                                                 
                                                                 [[CSRDatabaseManager sharedInstance] saveContext];
                                                             }
@@ -363,8 +363,8 @@
 //method to getIndexByValue
 - (NSNumber *) getValueByIndex:(CSRDeviceEntity*)deviceEntity
 {
-    
-    uint16_t *dataToModify = (uint16_t*)deviceEntity.groups.bytes;
+    NSData *groups = [CSRUtilities dataForHexString:deviceEntity.groups];
+    uint16_t *dataToModify = (uint16_t*)groups.bytes;
     
     for (int count=0; count < deviceEntity.groups.length/2; count++, dataToModify++) {
         if (*dataToModify == [_areaEntity.areaID unsignedShortValue]) {

@@ -489,6 +489,7 @@
         [devices enumerateObjectsUsingBlock:^(NSNumber *deviceId, NSUInteger idx, BOOL * _Nonnull stop) {
             DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
             SceneMemberEntity *sceneMember = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+            sceneMember.sceneID = sceneEntity.sceneID;
             sceneMember.deviceID = deviceId;
             sceneMember.kindString = deviceModel.shortName;
             sceneMember.powerState = deviceModel.powerState;
@@ -606,7 +607,8 @@
                                                                   NSNumber * _Nullable groupIndex,
                                                                   NSNumber * _Nullable instance,
                                                                   NSNumber * _Nullable groupId) {
-                                                            uint16_t *dataToModify = (uint16_t*)deviceEntity.groups.bytes;
+                                                            NSData *groups = [CSRUtilities dataForHexString:deviceEntity.groups];
+                                                            uint16_t *dataToModify = (uint16_t*)groups.bytes;
                                                             NSMutableArray *desiredGroups = [NSMutableArray new];
                                                             for (int count=0; count < deviceEntity.groups.length/2; count++, dataToModify++) {
                                                                 NSNumber *groupValue = @(*dataToModify);
@@ -625,15 +627,14 @@
                                                                 }
                                                                 
                                                                 
-                                                                NSMutableData *myData = (NSMutableData*)deviceEntity.groups;
+                                                                NSMutableData *myData = (NSMutableData*)[CSRUtilities dataForHexString:deviceEntity.groups];
                                                                 uint16_t desiredValue = [groupId unsignedShortValue];
                                                                 int groupIndexInt = [groupIndex intValue];
                                                                 if (groupIndexInt>-1) {
                                                                     uint16_t *groups = (uint16_t *) myData.mutableBytes;
                                                                     *(groups + groupIndexInt) = desiredValue;
                                                                 }
-                                                                deviceEntity.groups = (NSData*)myData;
-                                                                
+                                                                deviceEntity.groups = [CSRUtilities hexStringFromData:(NSData*)myData];
                                                                 [[CSRDatabaseManager sharedInstance] saveContext];
                                                             }
                                                         }
@@ -697,7 +698,8 @@
 //method to getIndexByValue
 - (NSNumber *) getValueByIndex:(CSRDeviceEntity*)deviceEntity
 {
-    uint16_t *dataToModify = (uint16_t*)deviceEntity.groups.bytes;
+    NSData *groups = [CSRUtilities dataForHexString:deviceEntity.groups];
+    uint16_t *dataToModify = (uint16_t*)groups.bytes;
     
     for (int count=0; count < deviceEntity.groups.length/2; count++, dataToModify++) {
         if (*dataToModify == [_areaEntity.areaID unsignedShortValue]) {

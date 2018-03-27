@@ -11,6 +11,7 @@
 
 @interface TimerDeviceEntity : NSManagedObject
 
+@property (nonatomic,retain) NSNumber *timerID;
 @property (nonatomic,retain) NSNumber *deviceID;
 @property (nonatomic,retain) NSNumber *timerIndex;
 @property (nonatomic,retain) NSNumber *alive;

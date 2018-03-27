@@ -5,14 +5,14 @@
 
 #import <UIKit/UIKit.h>
 #import "MainTabBarController.h"
-//#import "CSRManagePlacesViewController.h"
+#import "PlacesViewController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
-//@property (nonatomic, retain) CSRManagePlacesViewController *managePlacesViewController;
+@property (nonatomic, retain) PlacesViewController *managePlacesViewController;
 //
-//@property (nonatomic, retain) NSURL *passingURL;
+@property (nonatomic, retain) NSURL *passingURL;
 //@property (nonatomic) BOOL updateInProgress;
 //@property (nonatomic) NSString *updateFileName;
 //@property (nonatomic) double updateProgress;

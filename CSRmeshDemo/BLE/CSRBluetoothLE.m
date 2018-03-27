@@ -17,6 +17,7 @@
 #import "CSRDeviceEntity.h"
 
 #import "OTAU.h"
+#import "CSRUtilities.h"
 
 // Uncomment to enable brige roaming
 #define   BRIDGE_ROAMING_ENABLE
@@ -289,7 +290,7 @@
     NSString *adString;
     if (advertisementData[@"kCBAdvDataManufacturerData"]) {
         NSData *adData = advertisementData[@"kCBAdvDataManufacturerData"];
-        adString = [[self hexStringForData:adData] uppercaseString];
+        adString = [[CSRUtilities hexStringForData:adData] uppercaseString];
         [peripheral setUuidString:adString];
     }
 
@@ -301,23 +302,23 @@
     } else {
         [peripheral setIsBridgeService:@(NO)];
     }
-
+    
     if ([messageStatus integerValue] == IS_BRIDGE || [messageStatus integerValue] == IS_BRIDGE_DISCOVERED_SERVICE) {
 #ifdef BRIDGE_ROAMING_ENABLE
         
-        NSArray *array = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
-        if (array.count == 0 || array == nil) {
+//        NSArray *array = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
+//        if (array.count == 0 || array == nil) {
             [[CSRBridgeRoaming sharedInstance] didDiscoverBridgeDevice:central peripheral:peripheral advertisment:advertisementData RSSI:RSSI];
-        }
-        else if (!_isUpdateScaning && adString != nil ) {
-            
-            BOOL exist = [[adString substringFromIndex:13] boolValue];
-            if (exist) {
-                [[CSRBridgeRoaming sharedInstance] didDiscoverBridgeDevice:central peripheral:peripheral advertisment:advertisementData RSSI:RSSI];
-            }
-            
-        }
-        
+//        }
+//        else if (!_isUpdateScaning && adString != nil ) {
+//
+//            BOOL exist = [[adString substringFromIndex:13] boolValue];
+//            if (exist) {
+//                [[CSRBridgeRoaming sharedInstance] didDiscoverBridgeDevice:central peripheral:peripheral advertisment:advertisementData RSSI:RSSI];
+//            }
+//
+//        }
+//
 #endif
         
         if (![discoveredBridges containsObject:peripheral]) {
@@ -339,28 +340,6 @@
             [self didDiscoverPeripheral:peripheral];
         }
     }
-}
-
-//二进制数据转十六进制字符串
-- (NSString *)hexStringForData: (NSData *)data {
-    if (!data || [data length] == 0) {
-        return @"";
-    }
-    NSMutableString *string = [[NSMutableString alloc] initWithCapacity:[data length]];
-    
-    [data enumerateByteRangesUsingBlock:^(const void *bytes, NSRange byteRange, BOOL *stop) {
-        unsigned char *dataBytes = (unsigned char*)bytes;
-        for (NSInteger i = 0; i < byteRange.length; i++) {
-            NSString *hexStr = [NSString stringWithFormat:@"%x", (dataBytes[i]) & 0xff];
-            if ([hexStr length] == 2) {
-                [string appendString:hexStr];
-            } else {
-                [string appendFormat:@"0%@", hexStr];
-            }
-        }
-    }];
-    
-    return string;
 }
 
     //============================================================================
@@ -492,7 +471,7 @@
                     NSLog(@" -Found service %@",service.UUID);
                     [self statusMessage:[NSString stringWithFormat:@"1313>>%@\n",service.UUID]];
                     if ([service.UUID isEqual:uuid]) {
-                        isOtau=YES;
+                        isOtau = YES;
                         appDelegate.peripheralInBoot = [NSNumber numberWithBool: NO];
                         [self didChangeMode];
                         [peripheral discoverCharacteristics:nil forService:service];
@@ -627,27 +606,7 @@
         NSLog (@"Can't subscribe for notification to %@ of %@", characteristic.UUID, peripheral.name);
     else
         NSLog (@"Did subscribe for notification to %@ of %@", characteristic.UUID, peripheral.name);
-//        static dispatch_once_t onceToken;
-//        dispatch_once(&onceToken, ^{
-//            [[LightModelApi sharedInstance] addDelegate:self];
-//            NSSet *devices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
-//            for (CSRDeviceEntity *deviceEntity in devices) {
-//                
-//                [[LightModelApi sharedInstance] getState:deviceEntity.deviceId success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-//                    NSLog(@"获取所有设备状态");
-//                } failure:^(NSError * _Nullable error) {
-//                    
-//                }];
-//            }
-//            
-//        });
     
-}
-
-- (void)didGetLightState:(NSNumber *)deviceId red:(NSNumber *)red green:(NSNumber *)green blue:(NSNumber *)blue level:(NSNumber *)level powerState:(NSNumber *)powerState colorTemperature:(NSNumber *)colorTemperature supports:(NSNumber *)supports meshRequestId:(NSNumber *)meshRequestId {
-    
-    [self.bleDelegate updateItemClusterDeviceId:deviceId level:level powerState:powerState];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"getAllDeviceState" object:nil userInfo:@{@"deviceId":deviceId,@"level":level,@"powerState":powerState}];
 }
 
     //============================================================================

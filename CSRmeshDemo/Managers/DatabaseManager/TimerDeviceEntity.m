@@ -10,6 +10,7 @@
 
 @implementation TimerDeviceEntity
 
+@dynamic timerID;
 @dynamic deviceID;
 @dynamic timerIndex;
 @dynamic alive;

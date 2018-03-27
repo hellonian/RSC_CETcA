@@ -18,5 +18,6 @@
 @property (nonatomic, retain) NSNumber * centerYRatio;
 @property (nonatomic, retain) CSRDeviceEntity * device;
 @property (nonatomic, retain) NSNumber * dropID;
+@property (nonatomic, retain) NSNumber * galleryID;
 
 @end

@@ -30,13 +30,13 @@
                                     <constraint firstAttribute="width" secondItem="TNq-yX-3vN" secondAttribute="height" multiplier="2:1" id="zaT-PS-bpP"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Copyright © 2017 - 2018 AcTEC(Fuzhou) Electronics Co., Ltd. All rights reserved." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CNO-2Q-wko">
-                                <rect key="frame" x="47.5" y="607" width="280" height="40"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Copyright © 2017 - 2018 AcTEC" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CNO-2Q-wko">
+                                <rect key="frame" x="47.5" y="627" width="280" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="Bhy-U9-kPf"/>
                                     <constraint firstAttribute="width" constant="280" id="D7C-Yu-Elz"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                 <color key="textColor" red="0.39215686274509803" green="0.39215686274509803" blue="0.39215686274509803" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -45,7 +45,7 @@
                         <constraints>
                             <constraint firstItem="TNq-yX-3vN" firstAttribute="centerY" secondItem="hHr-Ic-DFM" secondAttribute="centerY" multiplier="0.618" id="24u-Mr-uaK"/>
                             <constraint firstItem="CNO-2Q-wko" firstAttribute="centerX" secondItem="hHr-Ic-DFM" secondAttribute="centerX" id="6qy-eg-weQ"/>
-                            <constraint firstItem="ibu-iX-V6H" firstAttribute="top" secondItem="CNO-2Q-wko" secondAttribute="bottom" constant="20" id="NQu-aI-9rn"/>
+                            <constraint firstItem="ibu-iX-V6H" firstAttribute="top" secondItem="CNO-2Q-wko" secondAttribute="bottom" id="NQu-aI-9rn"/>
                             <constraint firstItem="TNq-yX-3vN" firstAttribute="centerX" secondItem="hHr-Ic-DFM" secondAttribute="centerX" id="XZo-rX-oit"/>
                         </constraints>
                     </view>

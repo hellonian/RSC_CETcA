@@ -11,5 +11,6 @@
 @interface PlacesViewController : UIViewController
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (nonatomic, retain) NSURL *importedURL;
 
 @end

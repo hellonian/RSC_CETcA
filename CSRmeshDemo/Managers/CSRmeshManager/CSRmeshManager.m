@@ -67,7 +67,6 @@
 -(void) didDiscoverDevice:(CBUUID *)uuid rssi:(NSNumber *)rssi
 {
     // Notify all listeners
-    NSLog(@"uuid>>mesh>> %@",uuid);
     NSMutableDictionary *objects = [NSMutableDictionary dictionary];
     if (uuid)
         [objects setObject:uuid forKey:kDeviceUuidString];

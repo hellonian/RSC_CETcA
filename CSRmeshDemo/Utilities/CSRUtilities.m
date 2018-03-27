@@ -944,5 +944,67 @@
     }
 }
 
+//二进制数据转十六进制字符串
++ (NSString *)hexStringForData: (NSData *)data {
+    if (!data || [data length] == 0) {
+        return @"";
+    }
+    NSMutableString *string = [[NSMutableString alloc] initWithCapacity:[data length]];
+    
+    [data enumerateByteRangesUsingBlock:^(const void *bytes, NSRange byteRange, BOOL *stop) {
+        unsigned char *dataBytes = (unsigned char*)bytes;
+        for (NSInteger i = 0; i < byteRange.length; i++) {
+            NSString *hexStr = [NSString stringWithFormat:@"%x", (dataBytes[i]) & 0xff];
+            if ([hexStr length] == 2) {
+                [string appendString:hexStr];
+            } else {
+                [string appendFormat:@"0%@", hexStr];
+            }
+        }
+    }];
+    
+    return string;
+}
+
+//十六进制字符串转二进制数据
++ (NSData*)dataForHexString:(NSString*)hexString
+{
+    if (hexString == nil) {
+        return nil;
+    }
+    const char* ch = [[hexString lowercaseString] cStringUsingEncoding:NSUTF8StringEncoding];
+    NSMutableData* data = [NSMutableData data];
+    while (*ch) {
+        if (*ch == ' ') {
+            continue;
+        }
+        char byte = 0;
+        if ('0' <= *ch && *ch <= '9') {
+            byte = *ch - '0';
+        }
+        else if ('a' <= *ch && *ch <= 'f') {
+            byte = *ch - 'a' + 10;
+        }
+        else if ('A' <= *ch && *ch <= 'F') {
+            byte = *ch - 'A' + 10;
+        }
+        ch++;
+        byte = byte << 4;
+        if (*ch) {
+            if ('0' <= *ch && *ch <= '9') {
+                byte += *ch - '0';
+            } else if ('a' <= *ch && *ch <= 'f') {
+                byte += *ch - 'a' + 10;
+            }
+            else if('A' <= *ch && *ch <= 'F')
+            {
+                byte += *ch - 'A' + 10;
+            }
+            ch++;
+        }
+        [data appendBytes:&byte length:1];
+    }
+    return data;
+}
 
 @end

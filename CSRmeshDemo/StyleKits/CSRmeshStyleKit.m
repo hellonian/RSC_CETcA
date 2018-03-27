@@ -4427,7 +4427,8 @@ static UIImage* _imageOfColorPalette = nil;
 + (void)drawControllerDevice
 {
     //// Color Declarations
-    UIColor* color15 = [UIColor colorWithRed: 0.251 green: 0.333 blue: 0.702 alpha: 1];
+//    UIColor* color15 = [UIColor colorWithRed: 0.251 green: 0.333 blue: 0.702 alpha: 1];
+    UIColor* color15 = DARKORAGE;
 
     //// Bezier Drawing
     UIBezierPath* bezierPath = [UIBezierPath bezierPath];

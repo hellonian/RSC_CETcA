@@ -31,8 +31,10 @@
     // Do any additional setup after loading the view.
     
     self.view.backgroundColor = [UIColor colorWithRed:220/255.0 green:220/255.0 blue:220/255.0 alpha:1];
-    self.automaticallyAdjustsScrollViewInsets = NO;
     self.navigationItem.title = @"Remotes";
+    if (@available(iOS 11.0, *)) {
+        self.additionalSafeAreaInsets = UIEdgeInsetsMake(-35, 0, 0, 0);
+    }
     if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
         UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Setting_back"] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
         self.navigationItem.leftBarButtonItem = left;
@@ -76,7 +78,7 @@
     NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
     if (mutableArray != nil || [mutableArray count] != 0) {
         for (CSRDeviceEntity *deviceEntity in mutableArray) {
-            if ([deviceEntity.shortName isEqualToString:@"RC350"] || [deviceEntity.shortName isEqualToString:@"RC351"]) {
+            if ([deviceEntity.shortName isEqualToString:@"RB01"] || [deviceEntity.shortName isEqualToString:@"RC351"]) {
                 [self.dataArray addObject:deviceEntity];
             }
         }
@@ -94,9 +96,9 @@
     }else {
         [self.view addSubview:self.tableView];
         if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
-            [_tableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(64, 0, 0, 0)];
+            [_tableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         }else {
-            [_tableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(64, 0, 50, 0)];
+            [_tableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 0, 50, 0)];
         }
         [self.noneDataView removeFromSuperview];
         [self.tableView reloadData];
@@ -117,7 +119,7 @@
         cell.textLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
     }
     CSRDeviceEntity *deviceEntity = self.dataArray[indexPath.row];
-    if ([deviceEntity.shortName isEqualToString:@"RC350"]) {
+    if ([deviceEntity.shortName isEqualToString:@"RB01"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_fremote"];
     }else if ([deviceEntity.shortName isEqualToString:@"RC351"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_sremote"];
@@ -159,7 +161,7 @@
         _tableView.dataSource = self;
         _tableView.backgroundView = [[UIView alloc] init];
         _tableView.backgroundColor = [UIColor clearColor];
-        _tableView.rowHeight = 42.0f;
+        _tableView.rowHeight = 60.0f;
     }
     return _tableView;
 }

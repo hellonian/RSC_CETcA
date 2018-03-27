@@ -32,6 +32,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *sSelectOneLabel;
 @property (nonatomic,strong) MBProgressHUD *hub;
 @property (nonatomic,assign) BOOL setSuccess;
+@property (weak, nonatomic) IBOutlet UILabel *batteryLabel;
 
 @end
 
@@ -45,7 +46,7 @@
     self.nameTF.text = self.remoteEntity.name;
     self.originalName = self.remoteEntity.name;
     
-    if ([self.remoteEntity.shortName isEqualToString:@"RC350"]) {
+    if ([self.remoteEntity.shortName isEqualToString:@"RB01"]) {
         [self.view addSubview:self.fiveRemoteView];
         [self.fiveRemoteView autoSetDimension:ALDimensionHeight toSize:179.0f];
         [self.fiveRemoteView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
@@ -72,6 +73,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(settingRemoteCall:)
                                                  name:@"settingRemoteCall" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getRemoteConfiguration:) name:@"getRemoteConfiguration" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getRemoteBattery:) name:@"getRemoteBattery" object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -79,7 +82,9 @@
                                                     name:kCSRDeviceManagerDeviceFoundForReset
                                                   object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:@"settingRemoteCall" object:nil];
+                                                    name:@"getRemoteConfiguration" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:@"getRemoteBattery" object:nil];
 }
 
 - (IBAction)fSelectDevice:(UIButton *)sender {
@@ -121,7 +126,7 @@
 
 - (void)doneAction {
     NSString *cmdStr;
-    if ([_remoteEntity.shortName isEqualToString:@"RC350"]) {
+    if ([_remoteEntity.shortName isEqualToString:@"RB01"]) {
         NSString *str1;
         NSString *str2;
         NSString *str3;
@@ -194,6 +199,72 @@
         });
         
     });
+}
+
+- (IBAction)readAction:(UIButton *)sender {
+    [self showHudTogether];
+    [[DataModelManager shareInstance] sendCmdData:@"72020000" toDeviceId:_remoteEntity.deviceId];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[DataModelManager shareInstance] sendCmdData:@"710100" toDeviceId:_remoteEntity.deviceId];
+    });
+}
+
+- (void)getRemoteConfiguration:(NSNotification *)notification {
+    NSDictionary *dic = notification.userInfo;
+    NSNumber *deviceID1 = dic[@"deviceID1"];
+    NSNumber *deviceID2 = dic[@"deviceID2"];
+    NSNumber *deviceID3 = dic[@"deviceID3"];
+    NSNumber *deviceID4 = dic[@"deviceID4"];
+    
+    if ([self.remoteEntity.shortName isEqualToString:@"RB01"]) {
+        if ([deviceID1 isEqualToNumber:@(65535)]) {
+            _fSelectOneLabel.text = @"NULL";
+        }else {
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID1];
+            _fSelectOneLabel.text = [NSString stringWithFormat:@"%@(%@)",device.name,deviceID1];
+        }
+        if ([deviceID2 isEqualToNumber:@(65535)]) {
+            _fSelectTwoLabel.text = @"NULL";
+        }else {
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID2];
+            _fSelectTwoLabel.text = [NSString stringWithFormat:@"%@(%@)",device.name,deviceID2];
+        }
+        if ([deviceID3 isEqualToNumber:@(65535)]) {
+            _fSelectThreeLabel.text = @"NULL";
+        }else {
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID3];
+            _fSelectThreeLabel.text = [NSString stringWithFormat:@"%@(%@)",device.name,deviceID3];
+        }
+        if ([deviceID4 isEqualToNumber:@(65535)]) {
+            _fSelectFourLabel.text = @"NULL";
+        }else {
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID4];
+            _fSelectFourLabel.text = [NSString stringWithFormat:@"%@(%@)",device.name,deviceID4];
+        }
+        
+    }else if ([self.remoteEntity.shortName isEqualToString:@"RC351"]) {
+        if ([deviceID1 isEqualToNumber:@(65535)]) {
+            _sSelectOneLabel.text = @"NULL";
+        }else {
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID1];
+            _sSelectOneLabel.text = [NSString stringWithFormat:@"%@(%@)",device.name,deviceID1];
+        }
+    }
+    _setSuccess = YES;
+    [_hub hideAnimated:YES];
+}
+
+- (void)getRemoteBattery:(NSNotification *)notification {
+    NSDictionary *dic = notification.userInfo;
+    NSInteger battery = [dic[@"batteryPercent"] integerValue];
+    if (battery<1) {
+        battery = 1;
+    }
+    if (battery>100) {
+        battery =100;
+    }
+    self.batteryLabel.text = [NSString stringWithFormat:@"Battery:%ld%%",battery];
 }
 
 - (void)settingRemoteCall:(NSNotification *)notification {

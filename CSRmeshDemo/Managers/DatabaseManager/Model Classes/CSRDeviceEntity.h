@@ -14,7 +14,7 @@
 @property (nonatomic, retain) NSData * deviceHash;
 @property (nonatomic, strong) NSNumber * deviceId;
 @property (nonatomic, retain) NSNumber * favourite;
-@property (nonatomic, retain) NSData * groups;
+@property (nonatomic, retain) NSString * groups;
 @property (nonatomic, retain) NSNumber * isAssociated;
 @property (nonatomic, retain) NSData * modelHigh;
 @property (nonatomic, retain) NSData * modelLow;

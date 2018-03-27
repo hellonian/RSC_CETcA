@@ -17,5 +17,11 @@
 @property (weak, nonatomic) IBOutlet CSRCheckbox *showPasswordCheckbox;
 @property (nonatomic,strong) CSRPlaceEntity *placeEntity;
 @property (weak, nonatomic) IBOutlet UIButton *deleteButton;
+@property (weak, nonatomic) IBOutlet UILabel *networkKeyLabel;
+@property (weak, nonatomic) IBOutlet UILabel *showPasswordLabel;
+@property (weak, nonatomic) IBOutlet UIView *passwordLineView;
+@property (weak, nonatomic) IBOutlet UIButton *exportButton;
+
+@property (nonatomic, retain) NSURL *importedURL;
 
 @end

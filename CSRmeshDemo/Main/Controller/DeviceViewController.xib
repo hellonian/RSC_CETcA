@@ -25,7 +25,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jqF-CI-kaG">
-                    <rect key="frame" x="0.0" y="120" width="375" height="89"/>
+                    <rect key="frame" x="0.0" y="94" width="375" height="89"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4m7-Pn-lZ6">
                             <rect key="frame" x="20" y="44" width="355" height="0.5"/>
@@ -87,7 +87,7 @@
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9f4-UH-vng">
-                    <rect key="frame" x="0.0" y="297" width="375" height="44"/>
+                    <rect key="frame" x="0.0" y="271" width="375" height="44"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lRY-vT-dpa">
                             <rect key="frame" x="315" y="12" width="40" height="20"/>
@@ -121,13 +121,13 @@
                     </constraints>
                 </view>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Ico_sun" translatesAutoresizingMaskIntoConstraints="NO" id="b4F-Y7-1Xh">
-                    <rect key="frame" x="14" y="311" width="16" height="16"/>
+                    <rect key="frame" x="14" y="285" width="16" height="16"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="16" id="GgJ-R7-SZm"/>
                     </constraints>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Brightness" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ClO-Me-qxg">
-                    <rect key="frame" x="20" y="265" width="100" height="20"/>
+                    <rect key="frame" x="20" y="239" width="100" height="20"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="100" id="YKj-WZ-enp"/>
                         <constraint firstAttribute="height" constant="20" id="oaV-qD-ceF"/>
@@ -145,11 +145,11 @@
                 <constraint firstItem="ClO-Me-qxg" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="20" id="NlE-Pu-tfx"/>
                 <constraint firstItem="9f4-UH-vng" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="SN6-Pp-haC"/>
                 <constraint firstItem="jqF-CI-kaG" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="Uyd-Gr-jXu"/>
+                <constraint firstItem="jqF-CI-kaG" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="94" id="ZOm-aA-w57"/>
                 <constraint firstItem="9f4-UH-vng" firstAttribute="leading" secondItem="b4F-Y7-1Xh" secondAttribute="leading" constant="-14" id="ccW-6M-fW2"/>
                 <constraint firstItem="9f4-UH-vng" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="mdy-nQ-9dr"/>
                 <constraint firstItem="9f4-UH-vng" firstAttribute="top" secondItem="jqF-CI-kaG" secondAttribute="bottom" constant="88" id="pIT-U7-tby"/>
                 <constraint firstItem="jqF-CI-kaG" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="r7v-Aj-u3I"/>
-                <constraint firstItem="jqF-CI-kaG" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" constant="100" id="yWv-Ik-oQg"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <point key="canvasLocation" x="24.5" y="52.5"/>

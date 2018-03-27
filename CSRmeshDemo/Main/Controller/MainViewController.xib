@@ -22,7 +22,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="topbg" translatesAutoresizingMaskIntoConstraints="NO" id="K7E-gQ-cG5" customClass="TopImageView">
-                    <rect key="frame" x="0.0" y="84" width="375" height="170"/>
+                    <rect key="frame" x="0.0" y="64" width="375" height="170"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="K7E-gQ-cG5" secondAttribute="height" multiplier="640:290" id="eTz-vF-HdY"/>
                     </constraints>
@@ -30,12 +30,12 @@
             </subviews>
             <color key="backgroundColor" red="0.76470588235294112" green="0.76470588235294112" blue="0.76470588235294112" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
+                <constraint firstItem="K7E-gQ-cG5" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="64" id="GCl-yy-pL0"/>
                 <constraint firstItem="K7E-gQ-cG5" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="Ji0-Mk-AEx"/>
                 <constraint firstItem="K7E-gQ-cG5" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="Qb3-Re-Fup"/>
-                <constraint firstItem="K7E-gQ-cG5" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" constant="64" id="XCl-EK-KIz"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
-            <point key="canvasLocation" x="24.5" y="51.5"/>
+            <point key="canvasLocation" x="23" y="-9"/>
         </view>
     </objects>
     <resources>

@@ -21,7 +21,7 @@
 #import "DeviceViewController.h"
 #import "CSRConstants.h"
 #import "SingleDeviceModel.h"
-//#import <CSRmesh/LightModelApi.h>
+#import "CSRUtilities.h"
 
 @interface GroupViewController ()<UITextFieldDelegate,PlaceColorIconPickerViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,MainCollectionViewDelegate,MBProgressHUDDelegate>
 {
@@ -204,7 +204,8 @@
         
         if (self.isCreateNewArea) {
             areaIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRAreaEntity"];
-            [self saveArea:areaIdNumber];
+            NSNumber *sortId = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"SortId"];
+            [self saveArea:areaIdNumber sortId:sortId];
         }else if (self.hasChanged) {
             areaIdNumber = _areaEntity.areaID;
             
@@ -220,7 +221,8 @@
                                                                   NSNumber * _Nullable groupIndex,
                                                                   NSNumber * _Nullable instance,
                                                                   NSNumber * _Nullable groupId) {
-                                                            uint16_t *dataToModify = (uint16_t*)deviceEntity.groups.bytes;
+                                                            NSData *groups = [CSRUtilities dataForHexString:deviceEntity.groups];
+                                                            uint16_t *dataToModify = (uint16_t*)groups.bytes;
                                                             NSMutableArray *desiredGroups = [NSMutableArray new];
                                                             for (int count=0; count < deviceEntity.groups.length/2; count++, dataToModify++) {
                                                                 NSNumber *groupValue = @(*dataToModify);
@@ -239,15 +241,14 @@
                                                                 }
                                                                 
                                                                 
-                                                                NSMutableData *myData = (NSMutableData*)deviceEntity.groups;
+                                                                NSMutableData *myData = (NSMutableData*)[CSRUtilities dataForHexString:deviceEntity.groups];
                                                                 uint16_t desiredValue = [groupId unsignedShortValue];
                                                                 int groupIndexInt = [groupIndex intValue];
                                                                 if (groupIndexInt>-1) {
                                                                     uint16_t *groups = (uint16_t *) myData.mutableBytes;
                                                                     *(groups + groupIndexInt) = desiredValue;
                                                                 }
-                                                                deviceEntity.groups = (NSData*)myData;
-                                                                
+                                                                deviceEntity.groups = [CSRUtilities hexStringFromData:(NSData*)myData];
                                                                 [[CSRDatabaseManager sharedInstance] saveContext];
                                                             }
                                                         }
@@ -257,7 +258,7 @@
                 [NSThread sleepForTimeInterval:0.3];
             }
             
-            [self saveArea:areaIdNumber];
+            [self saveArea:areaIdNumber sortId:_areaEntity.sortId];
         }
         
     }
@@ -265,8 +266,9 @@
     [_hud hideAnimated:YES];
 }
 
-- (void)saveArea:(NSNumber *)areaIdNumber {
-    _areaEntity = [[CSRDatabaseManager sharedInstance] saveNewArea:areaIdNumber areaName:_groupNameTF.text areaImage:iconImage areaIconNum:iconNum];
+- (void)saveArea:(NSNumber *)areaIdNumber sortId:(NSNumber *)sortId{
+    
+    _areaEntity = [[CSRDatabaseManager sharedInstance] saveNewArea:areaIdNumber areaName:_groupNameTF.text areaImage:iconImage areaIconNum:iconNum sortId:sortId];
     __weak GroupViewController *weakSelf = self;
     [_devicesCollectionView.dataArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([obj isKindOfClass:[SingleDeviceModel class]]) {
@@ -274,6 +276,7 @@
             CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:singleDevice.deviceId];
             NSNumber *groupIndex = [weakSelf getValueByIndex:deviceEntity];
             if (![groupIndex isEqual:@(-1)]) {
+                
                 [[GroupModelApi sharedInstance] setModelGroupId:deviceEntity.deviceId
                                                         modelNo:@(0xff)
                                                      groupIndex:groupIndex
@@ -284,7 +287,7 @@
                                                                   NSNumber * _Nullable groupIndex,
                                                                   NSNumber * _Nullable instance,
                                                                   NSNumber * _Nullable groupId) {
-                                                            NSMutableData *myData = (NSMutableData*)deviceEntity.groups;
+                                                            NSMutableData *myData = (NSMutableData*)[CSRUtilities dataForHexString:deviceEntity.groups];
                                                             uint16_t desiredValue = [groupId unsignedShortValue];
                                                             int groupIndexInt = [groupIndex intValue];
                                                             if (groupIndexInt>-1) {
@@ -292,7 +295,7 @@
                                                                 *(groups + groupIndexInt) = desiredValue;
                                                             }
                                                             
-                                                            deviceEntity.groups = (NSData*)myData;
+                                                            deviceEntity.groups = [CSRUtilities hexStringFromData:(NSData*)myData];
                                                             CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId: groupId];
                                                             
                                                             if (areaEntity) {
@@ -318,7 +321,9 @@
 //method to getIndexByValue
 - (NSNumber *) getValueByIndex:(CSRDeviceEntity*)deviceEntity
 {
-    uint16_t *dataToModify = (uint16_t*)deviceEntity.groups.bytes;
+    NSData *groups = [CSRUtilities dataForHexString:deviceEntity.groups];
+    uint16_t *dataToModify = (uint16_t*)groups.bytes;
+//    uint16_t *dataToModify = (uint16_t*)deviceEntity.groups.bytes;
     
     for (int count=0; count < deviceEntity.groups.length/2; count++, dataToModify++) {
         if (*dataToModify == [_areaEntity.areaID unsignedShortValue]) {
