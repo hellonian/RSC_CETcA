@@ -90,7 +90,7 @@
         [[CSRBluetoothLE sharedInstance] disconnectPeripheral:_targetModel.peripheral];
     }
     
-    NSArray *imgAry = @[@"s350bt",@"d350bt",@"rc350",@"rc351"];
+    NSArray *imgAry = @[@"S350BT",@"D350BT",@"RB01",@"RB02"];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     for (NSString *imgStr in imgAry) {
         NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/%@.img",imgStr]];
@@ -132,16 +132,18 @@
     _hud.label.text = @"firmware downloading: 0%";
     _hud.label.font = [UIFont systemFontOfSize:14];
     
-    NSString *urlString = [NSString stringWithFormat:@"http://39.108.152.134/%@.php",[_targetModel.kind lowercaseString]];
+    NSString *urlString = [NSString stringWithFormat:@"http://39.108.152.134/%@.php",_targetModel.kind];
+    NSLog(@"====> %@",urlString);
     AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
     sessionManager.responseSerializer.acceptableContentTypes = nil;
     __weak UpdateViewController *weakSelf = self;
     [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         NSDictionary *dic = (NSDictionary *)responseObject;
+        NSLog(@"==>>>> %@",dic);
         NSString *downloadAddress = dic[@"Download_address"];
         [weakSelf downloadfirware:downloadAddress];
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@",error);
+        NSLog(@"==>>>> %@",error);
         dispatch_async(dispatch_get_main_queue(), ^{
             self.hud.label.text = [NSString stringWithFormat:@"error:%@",error];
         });
@@ -150,12 +152,13 @@
 
 - (void)downloadfirware:(NSString *)urlString {
     
-    
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
+    NSString *fileName = [urlString lastPathComponent];
+    NSLog(@"--->> %@",fileName);
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     NSProgress *progress = nil;
     NSURLSessionDownloadTask *task = [manager downloadTaskWithRequest:request progress:&progress destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-        NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/s350bt.img"];
+        NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/%@",fileName]];
         _firmwareFilename = path;
         
         __weak UpdateViewController *weakSelf = self;
@@ -171,7 +174,7 @@
         
     } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
         if (error) {
-            NSLog(@"%@",error);
+            NSLog(@"--->> %@",error);
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.hud.label.text = [NSString stringWithFormat:@"error:%@",error];
             });
@@ -423,12 +426,15 @@
     NSString *title;
     
     title = @"OTAU";
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
-                                                    message:message
-                                                   delegate:nil
-                                          cancelButtonTitle:@"OK"
-                                          otherButtonTitles:nil];
-    [alert show];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title
+                                                                             message:message
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    [alertController.view setTintColor:DARKORAGE];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [alertController addAction:okAction];
+    [self presentViewController:alertController animated:YES completion:nil];
     if ([message isEqualToString:@"Success: Application Update"]) {
         _outUpdate = YES;
     }
@@ -461,13 +467,15 @@
     
     // Lookup Error string from error code
     NSString *errorString = NSLocalizedStringFromTable (errorCodeString, @"ErrorCodes", nil);
-    
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"OTAU Error"
-                                                    message:errorString
-                                                   delegate:nil
-                                          cancelButtonTitle:@"OK"
-                                          otherButtonTitles:nil];
-    [alert show];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"OTAU Error"
+                                                                             message:errorString
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    [alertController.view setTintColor:DARKORAGE];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [alertController addAction:okAction];
+    [self presentViewController:alertController animated:YES completion:nil];
     
     [self setStartAndAbortButtonLook];
 }

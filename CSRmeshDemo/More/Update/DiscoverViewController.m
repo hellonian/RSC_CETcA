@@ -61,22 +61,25 @@
     
     _peripheralsList.delegate = self;
     _peripheralsList.dataSource = self;
-    _peripheralsList.tableFooterView = [[UIView alloc] init];
+    _peripheralsList.rowHeight = 60.0f;
+    _peripheralsList.backgroundView = [[UIView alloc] init];
+    _peripheralsList.backgroundColor = [UIColor clearColor];
     
     NSString *urlString = @"http://39.108.152.134/firware.php";
     AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
     sessionManager.responseSerializer.acceptableContentTypes = nil;
     [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         NSDictionary *dic = (NSDictionary *)responseObject;
-        NSLog(@"%@",dic);
+        NSLog(@">>>>> %@",dic);
         SLatestV = [dic[@"S350BT"] integerValue];
         DLatestV = [dic[@"D350BT"] integerValue];
-        RfLatestV = [dic[@"RC350"] integerValue];
-        RoLatestV = [dic[@"RC351"] integerValue];
+        RfLatestV = [dic[@"RB01"] integerValue];
+        RoLatestV = [dic[@"RB02"] integerValue];
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"%@",error);
     }];
     
+
 }
 
 - (void)backSetting{
@@ -94,6 +97,7 @@
     [[CSRBluetoothLE sharedInstance] setBleDelegate:self];
     [[CSRBluetoothLE sharedInstance] setIsUpdateScaning:YES];
     [[CSRBluetoothLE sharedInstance] startScan];
+    NSLog(@"%ld %ld %ld %ld",(long)SLatestV,(long)DLatestV,(long)RfLatestV,(long)RoLatestV);
 }
 
 -(void)viewDidDisappear:(BOOL)animated
@@ -119,6 +123,10 @@
     return [_devices count];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 0.01f;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
@@ -130,11 +138,24 @@
     UpdateDeviceModel *upModel = [_devices objectAtIndex:indexPath.row];
     cell.textLabel.text = upModel.name;
     if (upModel.isLatest) {
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"kind:%@   version:%ld |Lastest",upModel.kind,(long)upModel.firwareVersion];
+        if ([upModel.kind isEqualToString:@"D350BT"]) {
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"Dimmer   version:%ld   Lastest",(long)upModel.firwareVersion];
+        }else if ([upModel.kind isEqualToString:@"S350BT"]) {
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"Switch   version:%ld   Lastest",(long)upModel.firwareVersion];
+        }else {
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"%@   version:%ld   Lastest",upModel.kind,(long)upModel.firwareVersion];
+        }
+        
         cell.detailTextLabel.textColor = [UIColor darkTextColor];
     }else{
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"kind:%@   version:%ld |Need update",upModel.kind,(long)upModel.firwareVersion];
-        cell.detailTextLabel.textColor = [UIColor redColor];
+        if ([upModel.kind isEqualToString:@"D350BT"]) {
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"Dimmer   version:%ld   Need update",(long)upModel.firwareVersion];
+        }else if ([upModel.kind isEqualToString:@"S350BT"]) {
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"Switch   version:%ld   Need update",(long)upModel.firwareVersion];
+        }else {
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"%@   version:%ld   Need update",upModel.kind,(long)upModel.firwareVersion];
+        }
+        cell.detailTextLabel.textColor = DARKORAGE;
     }
     
     
@@ -164,11 +185,8 @@
             UpdateViewController *uvc = [[UpdateViewController alloc] init];
             uvc.targetModel = model;
             [self.navigationController pushViewController:uvc animated:YES];
-            
         }
-        
     }
-    
 }
 
 
@@ -248,7 +266,7 @@
     NSDictionary *dic = notification.userInfo;
     NSNumber *deviceId = dic[@"deviceId"];
     NSInteger firmwareVersion = [dic[@"getFirmwareVersion"] integerValue];
-    
+    NSLog(@"<<<>>> %ld",firmwareVersion);
     [_devices enumerateObjectsUsingBlock:^(UpdateDeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([deviceId isEqualToNumber:model.deviceId]) {
             model.firwareVersion = firmwareVersion;
@@ -266,14 +284,14 @@
                     model.isLatest = NO;
                 }
             }
-            if ([model.kind isEqualToString:@"RC350"]) {
+            if ([model.kind isEqualToString:@"RB01"]) {
                 if (firmwareVersion == RfLatestV) {
                     model.isLatest = YES;
                 }else{
                     model.isLatest = NO;
                 }
             }
-            if ([model.kind isEqualToString:@"RC351"]) {
+            if ([model.kind isEqualToString:@"RB02"]) {
                 if (firmwareVersion == RoLatestV) {
                     model.isLatest = YES;
                 }else{
@@ -292,8 +310,15 @@
 {
     NSString *title     = @"Bluetooth Power";
     NSString *message   = @"You must turn on Bluetooth in Settings in order to use LE";
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [alertView show];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title
+                                                                             message:message
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    [alertController.view setTintColor:DARKORAGE];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [alertController addAction:okAction];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 //============================================================================

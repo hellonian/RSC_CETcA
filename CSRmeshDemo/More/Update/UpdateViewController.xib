@@ -181,7 +181,7 @@
                     </connections>
                 </button>
                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pq7-tp-nQB">
-                    <rect key="frame" x="0.0" y="384" width="375" height="233"/>
+                    <rect key="frame" x="0.0" y="384" width="375" height="283"/>
                     <color key="backgroundColor" red="0.94894276489999996" green="0.94894276489999996" blue="0.94894276489999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -234,7 +234,7 @@
                 <constraint firstItem="ksg-tI-v9A" firstAttribute="top" secondItem="f3X-yE-4R5" secondAttribute="bottom" id="ETc-rC-rxS"/>
                 <constraint firstItem="Q68-8s-4ab" firstAttribute="width" secondItem="JXF-4I-twY" secondAttribute="width" id="FnT-nl-Hwb"/>
                 <constraint firstItem="wK8-lf-cCO" firstAttribute="top" secondItem="Kj5-pA-M8e" secondAttribute="top" id="GG0-RI-Sn4"/>
-                <constraint firstAttribute="bottom" secondItem="Pq7-tp-nQB" secondAttribute="bottom" constant="50" id="GaL-q5-VR5"/>
+                <constraint firstAttribute="bottom" secondItem="Pq7-tp-nQB" secondAttribute="bottom" id="GaL-q5-VR5"/>
                 <constraint firstItem="Pq7-tp-nQB" firstAttribute="top" secondItem="ZDs-cq-VNq" secondAttribute="bottom" id="Gag-jE-B9U"/>
                 <constraint firstItem="Kj5-pA-M8e" firstAttribute="leading" secondItem="JXF-4I-twY" secondAttribute="leading" id="Gun-Nt-cH6"/>
                 <constraint firstItem="f3X-yE-4R5" firstAttribute="leading" secondItem="JXF-4I-twY" secondAttribute="leading" id="Gw1-Yg-Kmn"/>

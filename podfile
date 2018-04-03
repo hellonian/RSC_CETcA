@@ -7,7 +7,7 @@ workspace 'CSRmeshDemo.xcworkspace'
 
 target 'CSRmeshDemo' do
     project 'CSRmeshDemo.xcodeproj'
-    pod 'AFNetworking', '~> 2.5.3'
+    pod 'AFNetworking','~> 2.5.3'
     pod 'ZipArchive'
     pod 'OpenSSL', '~> 1.0'
     pod 'PureLayout'
@@ -15,5 +15,4 @@ target 'CSRmeshDemo' do
     pod 'MBProgressHUD'
     pod 'SGQRCode'
     pod 'OHMySQL'
-    pod 'GoldRaccoon'
 end

@@ -74,7 +74,7 @@
                                              selector:@selector(settingRemoteCall:)
                                                  name:@"settingRemoteCall" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getRemoteConfiguration:) name:@"getRemoteConfiguration" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getRemoteBattery:) name:@"getRemoteBattery" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getRemoteBattery:) name:@"getRemoteBattery" object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -83,8 +83,8 @@
                                                   object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:@"getRemoteConfiguration" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:@"getRemoteBattery" object:nil];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self
+//                                                    name:@"getRemoteBattery" object:nil];
 }
 
 - (IBAction)fSelectDevice:(UIButton *)sender {
@@ -178,7 +178,7 @@
     _hub = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     _hub.mode = MBProgressHUDModeDeterminateHorizontalBar;
     _hub.delegate = self;
-    _hub.label.text = @"Please press the button in the middle of the remote five times continuously";
+    _hub.label.text = @"Please press the button in the middle of the remote nine times continuously";
     _hub.label.font = [UIFont systemFontOfSize:13];
     _hub.label.numberOfLines = 0;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
@@ -203,11 +203,11 @@
 
 - (IBAction)readAction:(UIButton *)sender {
     [self showHudTogether];
-    [[DataModelManager shareInstance] sendCmdData:@"72020000" toDeviceId:_remoteEntity.deviceId];
+//    [[DataModelManager shareInstance] sendCmdData:@"72020000" toDeviceId:_remoteEntity.deviceId];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [[DataModelManager shareInstance] sendCmdData:@"710100" toDeviceId:_remoteEntity.deviceId];
-    });
+//    });
 }
 
 - (void)getRemoteConfiguration:(NSNotification *)notification {
@@ -255,17 +255,17 @@
     [_hub hideAnimated:YES];
 }
 
-- (void)getRemoteBattery:(NSNotification *)notification {
-    NSDictionary *dic = notification.userInfo;
-    NSInteger battery = [dic[@"batteryPercent"] integerValue];
-    if (battery<1) {
-        battery = 1;
-    }
-    if (battery>100) {
-        battery =100;
-    }
-    self.batteryLabel.text = [NSString stringWithFormat:@"Battery:%ld%%",battery];
-}
+//- (void)getRemoteBattery:(NSNotification *)notification {
+//    NSDictionary *dic = notification.userInfo;
+//    NSInteger battery = [dic[@"batteryPercent"] integerValue];
+//    if (battery<1) {
+//        battery = 1;
+//    }
+//    if (battery>100) {
+//        battery =100;
+//    }
+//    self.batteryLabel.text = [NSString stringWithFormat:@"Battery:%ld%%",(long)battery];
+//}
 
 - (void)settingRemoteCall:(NSNotification *)notification {
     NSDictionary *dic = notification.userInfo;

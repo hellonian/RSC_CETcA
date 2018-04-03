@@ -561,7 +561,7 @@
             [weakSelf getMainDataArray];
         };
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
-        nav.modalTransitionStyle = UIModalPresentationPopover;
+        nav.modalPresentationStyle = UIModalPresentationPopover;
         [self presentViewController:nav animated:YES completion:nil];
         UIPopoverPresentationController *popover = nav.popoverPresentationController;
         popover.sourceRect = mainCell.bounds;
@@ -588,6 +588,7 @@
 }
 
 - (void)mainCollectionViewDelegateDeleteDeviceAction:(NSNumber *)cellDeviceId cellGroupId:(NSNumber *)cellGroupId{
+    
     if ([cellDeviceId isEqualToNumber:@2000]) {
         _areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:cellGroupId];
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Delete Group" message:[NSString stringWithFormat:@"Are you sure that you want to delete this group :%@?",_areaEntity.areaName] preferredStyle:UIAlertControllerStyleAlert];
@@ -801,6 +802,7 @@
             [weakSelf mainCollectionViewEditlayoutView];
         });
         [_spinner stopAnimating];
+        [_spinner setHidden:YES];
     }
 }
 
@@ -830,6 +832,7 @@
                                                          [self getMainDataArray];
                                                          [self mainCollectionViewEditlayoutView];
                                                          [_spinner stopAnimating];
+                                                         [_spinner setHidden:YES];
                                                      }];
     [alertController addAction:okAction];
     [alertController addAction:cancelAction];

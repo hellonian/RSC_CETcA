@@ -51,6 +51,10 @@
     [self setDatePickerTextColor:self.datePicker];
     self.nameTF.delegate = self;
     
+    if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPad) {
+        [self.deleteButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:50.0];
+    }
+    
     if (!self.newadd && self.timerEntity) {
         self.navigationItem.title = self.timerEntity.name;
         self.nameTF.text = self.timerEntity.name;

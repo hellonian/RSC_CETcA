@@ -180,14 +180,14 @@ static DataModelManager *manager = nil;
     }
     
     //获取遥控器电量
-    if ([dataStr hasPrefix:@"b2"]) {
-        NSString *batterylow = [dataStr substringWithRange:NSMakeRange(6, 2)];
-        NSString *batteryhight = [dataStr substringWithRange:NSMakeRange(8, 2)];
-        NSInteger battery = [self numberWithHexString:[NSString stringWithFormat:@"%@%@",batteryhight,batterylow]];
-        NSInteger batteryPercent = (battery-2100)*99/900+1;
- 
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"getRemoteBattery" object:nil userInfo:@{@"batteryPercent":[NSNumber numberWithInteger:batteryPercent],@"deviceId":sourceDeviceId}];
-    }
+//    if ([dataStr hasPrefix:@"b2"]) {
+//        NSString *batterylow = [dataStr substringWithRange:NSMakeRange(6, 2)];
+//        NSString *batteryhight = [dataStr substringWithRange:NSMakeRange(8, 2)];
+//        NSInteger battery = [self numberWithHexString:[NSString stringWithFormat:@"%@%@",batteryhight,batterylow]];
+//        NSInteger batteryPercent = (battery-2100)*99/900+1;
+//
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"getRemoteBattery" object:nil userInfo:@{@"batteryPercent":[NSNumber numberWithInteger:batteryPercent],@"deviceId":sourceDeviceId}];
+//    }
     
 }
 
@@ -302,7 +302,7 @@ static DataModelManager *manager = nil;
     NSInteger hour = [self numberWithHexString:[dateStrInData substringWithRange:NSMakeRange(6, 2)]];
     NSInteger minute = [self numberWithHexString:[dateStrInData substringWithRange:NSMakeRange(8, 2)]];
     NSInteger second = [self numberWithHexString:[dateStrInData substringWithRange:NSMakeRange(10, 2)]];
-    NSString *dateStr = [NSString stringWithFormat:@"%ld-%ld-%ld %ld:%ld:%ld",year,month,day,hour,minute,second];
+    NSString *dateStr = [NSString stringWithFormat:@"%ld-%ld-%ld %ld:%ld:%ld",(long)year,(long)month,(long)day,(long)hour,(long)minute,(long)second];
     NSDateFormatter *format = [[NSDateFormatter alloc] init];
     [format setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     NSDate *date = [format dateFromString:dateStr];

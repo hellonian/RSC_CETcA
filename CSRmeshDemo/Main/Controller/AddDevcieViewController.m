@@ -14,10 +14,15 @@
 #import "CSRConstants.h"
 
 @interface AddDevcieViewController ()<MBProgressHUDDelegate,MainCollectionViewDelegate>
+{
+    NSTimer *timer;
+    NSInteger num;
+}
 
 @property (nonatomic,strong) MainCollectionView *mainCollectionView;
 @property (nonatomic,strong) MBProgressHUD *searchHud;
 @property (nonatomic,strong) MBProgressHUD *associateHud;
+@property (nonatomic,strong) MBProgressHUD *noneNewHud;
 @property (nonatomic,strong) CSRmeshDevice *selectedDevice;
 
 @end
@@ -93,6 +98,8 @@
     _searchHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     _searchHud.mode = MBProgressHUDModeIndeterminate;
     _searchHud.delegate = self;
+    timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerMethd:) userInfo:nil repeats:YES];
+    num = 0;
     
     [[CSRBluetoothLE sharedInstance] setScanner:YES source:self];
     [[CSRDevicesManager sharedInstance] setDeviceDiscoveryFilter:self mode:YES];
@@ -120,6 +127,30 @@
     [[CSRDevicesManager sharedInstance] setDeviceDiscoveryFilter:self mode:NO];
 }
 
+- (void)timerMethd:(id)userInfo {
+    num++;
+    if (num == 20) {
+        [_searchHud hideAnimated:YES];
+        _noneNewHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        _noneNewHud.mode = MBProgressHUDModeText;
+        _noneNewHud.delegate = self;
+        _noneNewHud.label.text = @"No new device was found.";
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            if (_noneNewHud) {
+                [_noneNewHud hideAnimated:YES];
+            }
+            CATransition *animation = [CATransition animation];
+            [animation setDuration:0.3];
+            [animation setType:kCATransitionMoveIn];
+            [animation setSubtype:kCATransitionFromLeft];
+            [self.view.window.layer addAnimation:animation forKey:nil];
+            [self dismissViewControllerAnimated:NO completion:nil];
+        });
+        [timer invalidate];
+        timer = nil;
+    }
+}
+
 - (void)getDataArray {
     [_mainCollectionView.dataArray removeAllObjects];
     
@@ -128,6 +159,11 @@
     }
     if ([_mainCollectionView.dataArray count]>0) {
         [_searchHud hideAnimated:YES];
+        [timer invalidate];
+        timer = nil;
+        if (_noneNewHud) {
+            [_noneNewHud hideAnimated:YES];
+        }
     }
     [_mainCollectionView reloadData];
 }
