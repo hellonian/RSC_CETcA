@@ -124,7 +124,6 @@
     //============================================================================
     // Connect peripheral without checking how many are connected
 -(void) connectPeripheralNoCheck:(CBPeripheral *) peripheral {
-    NSLog(@"~~~~~~~~~1111");
     if ([peripheral state]!=CBPeripheralStateConnected) {
         [centralManager connectPeripheral:peripheral options:nil];
     }
@@ -158,7 +157,9 @@
     @synchronized(self) {
         if ([centralManager state] == CBCentralManagerStatePoweredOn) {
             //////////////////////////////////////////////////////////////////
-            [_foundPeripherals removeAllObjects];
+            if (_isUpdateFW) {
+                [_foundPeripherals removeAllObjects];
+            }
             
             NSDictionary *options = [self createDiscoveryOptions];
             [centralManager scanForPeripheralsWithServices:nil options:options];
@@ -226,7 +227,10 @@
         case CBCentralManagerStatePoweredOff: {
             NSLog(@"Central Powered OFF");
             [self statusMessage:[NSString stringWithFormat:@"Bluetooth Powered Off\n"]];
-            [_foundPeripherals removeAllObjects];
+            if (_isUpdateFW) {
+                [_foundPeripherals removeAllObjects];
+            }
+            
             [self discoveryDidRefresh];
             [self discoveryStatePoweredOff];
             if(bleDelegate && [bleDelegate respondsToSelector:@selector(CBPowerIsOff)])
@@ -247,7 +251,9 @@
         case CBCentralManagerStatePoweredOn: {
             NSLog(@"Central powered ON");
             [self statusMessage:[NSString stringWithFormat:@"Bluetooth Powered On\n"]];
-            [_foundPeripherals removeAllObjects];
+            if (_isUpdateFW) {
+                [_foundPeripherals removeAllObjects];
+            }
             if(bleDelegate && [bleDelegate respondsToSelector:@selector(CBPoweredOn)])
                 [bleDelegate CBPoweredOn];
             
@@ -293,60 +299,45 @@
         adString = [[CSRUtilities hexStringForData:adData] uppercaseString];
         [peripheral setUuidString:adString];
     }
-
-    NSMutableDictionary *enhancedAdvertismentData = [NSMutableDictionary dictionaryWithDictionary:advertisementData];
-    enhancedAdvertismentData [CSR_PERIPHERAL] = peripheral;
-    NSNumber *messageStatus = [[MeshServiceApi sharedInstance] processMeshAdvert:enhancedAdvertismentData RSSI:RSSI];
-    if ([messageStatus integerValue] == IS_BRIDGE_DISCOVERED_SERVICE) {
-        [peripheral setIsBridgeService:@(YES)];
-    } else {
-        [peripheral setIsBridgeService:@(NO)];
+    
+    if (self.isUpdateFW ) {
+        if (![_foundPeripherals containsObject:peripheral]) {
+            [_foundPeripherals addObject:peripheral];
+            [self discoveryDidRefresh];
+        }
+        [self didDiscoverPeripheral:peripheral];
+    }else {
+        
+        NSMutableDictionary *enhancedAdvertismentData = [NSMutableDictionary dictionaryWithDictionary:advertisementData];
+        enhancedAdvertismentData [CSR_PERIPHERAL] = peripheral;
+        NSNumber *messageStatus = [[MeshServiceApi sharedInstance] processMeshAdvert:enhancedAdvertismentData RSSI:RSSI];
+        if ([messageStatus integerValue] == IS_BRIDGE_DISCOVERED_SERVICE) {
+            [peripheral setIsBridgeService:@(YES)];
+        } else {
+            [peripheral setIsBridgeService:@(NO)];
+        }
+        
+        if ([messageStatus integerValue] == IS_BRIDGE || [messageStatus integerValue] == IS_BRIDGE_DISCOVERED_SERVICE) {
+#ifdef BRIDGE_ROAMING_ENABLE
+            [[CSRBridgeRoaming sharedInstance] didDiscoverBridgeDevice:central peripheral:peripheral advertisment:advertisementData RSSI:RSSI];
+#endif
+            
+            if (![discoveredBridges containsObject:peripheral]) {
+                [discoveredBridges addObject:peripheral];
+            }
+            [peripheral setLocalName:advertisementData[CBAdvertisementDataLocalNameKey]];
+            if(bleDelegate && [bleDelegate respondsToSelector:@selector(discoveredBridge)]) {
+                [bleDelegate discoveredBridge];
+            }
+            
+        }
     }
     
-    if ([messageStatus integerValue] == IS_BRIDGE || [messageStatus integerValue] == IS_BRIDGE_DISCOVERED_SERVICE) {
-#ifdef BRIDGE_ROAMING_ENABLE
-        
-//        NSArray *array = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
-//        if (array.count == 0 || array == nil) {
-            [[CSRBridgeRoaming sharedInstance] didDiscoverBridgeDevice:central peripheral:peripheral advertisment:advertisementData RSSI:RSSI];
-//        }
-//        else if (!_isUpdateScaning && adString != nil ) {
-//
-//            BOOL exist = [[adString substringFromIndex:13] boolValue];
-//            if (exist) {
-//                [[CSRBridgeRoaming sharedInstance] didDiscoverBridgeDevice:central peripheral:peripheral advertisment:advertisementData RSSI:RSSI];
-//            }
-//
-//        }
-//
-#endif
-        
-        if (![discoveredBridges containsObject:peripheral]) {
-            [discoveredBridges addObject:peripheral];
-        }
-        [peripheral setLocalName:advertisementData[CBAdvertisementDataLocalNameKey]];
-        if(bleDelegate && [bleDelegate respondsToSelector:@selector(discoveredBridge)]) {
-            [bleDelegate discoveredBridge];
-        }
-        //////////////////////////////////////////////////////////////////
-        
-        
-        
-        if (self.isUpdateScaning ) {
-            if (![_foundPeripherals containsObject:peripheral]) {
-                [_foundPeripherals addObject:peripheral];
-                [self discoveryDidRefresh];
-            }
-            [self didDiscoverPeripheral:peripheral];
-        }
-    }
 }
 
     //============================================================================
     // This callback occurs if the RSSI has changed
 - (void) peripheralDidUpdateRSSI:(CBPeripheral *)peripheral error:(NSError *)error {
-    
-//    [peripheral setRssi:peripheral.RSSI];
     
     if(bleDelegate && [bleDelegate respondsToSelector:@selector(discoveredBridge)]) {
         [bleDelegate discoveredBridge];
@@ -370,7 +361,7 @@
     
     // if also connected to another Bridge then disconnect from that.
     
-    if (_isUpdateScaning||_isUpdatePage) {
+    if (_isUpdateFW) {
         [_connectedPeripherals addObject:peripheral];
         [self statusMessage:[NSString stringWithFormat:@"1010>>Established Connection To Peripheral %@\n",peripheral.name]];
         peripheral.delegate=self;
@@ -392,9 +383,7 @@
         [self didConnectPeripheral:peripheral];
         
     }else {
-        
-    
-    
+
     [_connectedPeripherals addObject:peripheral];
     
     peripheral.delegate=self;
@@ -426,28 +415,24 @@
     if ([_connectedPeripherals containsObject:peripheral]) {
         [_connectedPeripherals removeObject:peripheral];
         [[MeshServiceApi sharedInstance] disconnectBridge:peripheral];
-
-//#ifdef  BRIDGE_DISCONNECT_ALERT
+        
+        //#ifdef  BRIDGE_DISCONNECT_ALERT
         NSLog (@"BRIDGE DISCONNECTED : %@",peripheral.name);
-
-//#endif
+        
+        //#endif
         
         // Call up Bridge Select View
-//#ifdef BRIDGE_ROAMING_ENABLE
+        //#ifdef BRIDGE_ROAMING_ENABLE
         [[CSRBridgeRoaming sharedInstance] disconnectedPeripheral:peripheral];
-//#endif
-
+        //#endif
+        
         // Call up Bridge Select View
         if (_connectedPeripherals.count==0)
             [[NSNotificationCenter defaultCenter] postNotificationName:@"BridgeDisconnectedNotification" object:nil];
     }
-    
-    NSLog(@"}}}}}}}%d{{{}}}%d",_isUpdatePage,_isUpdateScaning);
-    [self statusMessage:[NSString stringWithFormat:@"88>>Removed Connection To Peripheral %@\n",peripheral.name]];
-    [self didDisconnect:peripheral error:error];
-    if (_isUpdateScaning && _outUpdate) {
-        
-        [self connectPeripheralNoCheck:_updatePeripheral];
+    if(_isUpdateFW) {
+        [self statusMessage:[NSString stringWithFormat:@"Removed Connection To Peripheral %@\n",peripheral.name]];
+        [self didDisconnect:peripheral error:error];
     }
 }
 
@@ -455,7 +440,7 @@
     // peripheral:discoverServices initiated this callback
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
-    if (_isUpdateScaning||_isUpdatePage) {
+    if (_isUpdateFW) {
         bool isOtau=NO;
         NSLog(@"did discover services for peripheral %@",peripheral.name);
         if (error == nil) {
@@ -522,36 +507,39 @@
 #define MESH_MTL_CHAR_ADVERT        @"C4EDC000-9DAF-11E3-800A-00025B000B00"
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
-    if (error == nil) {
-        [[MeshServiceApi sharedInstance] connectBridge:peripheral enableBridgeNotification:@([[CSRmeshSettings sharedInstance] getBleListenMode])];
-        // Inform BridgeRoaming that a peripheral has disconnected
-        
-        for (CBCharacteristic *characteristic in service.characteristics) {
-            if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:MESH_MTL_CHAR_ADVERT]]) {
-                [self subscribeToMeshSimNotifyChar:peripheral :characteristic];
+    
+    if (!_isUpdateFW) {
+        if (error == nil) {
+            [[MeshServiceApi sharedInstance] connectBridge:peripheral enableBridgeNotification:@([[CSRmeshSettings sharedInstance] getBleListenMode])];
+            // Inform BridgeRoaming that a peripheral has disconnected
+            
+            for (CBCharacteristic *characteristic in service.characteristics) {
+                if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:MESH_MTL_CHAR_ADVERT]]) {
+                    [self subscribeToMeshSimNotifyChar:peripheral :characteristic];
+                }
             }
-        }
-        
-        [peripheral setIsBridgeService:@(YES)];
-        if(bleDelegate && [bleDelegate respondsToSelector:@selector(didConnectBridge:)])
-            [bleDelegate didConnectBridge:peripheral];
-        
+            
+            [peripheral setIsBridgeService:@(YES)];
+            if(bleDelegate && [bleDelegate respondsToSelector:@selector(didConnectBridge:)])
+                [bleDelegate didConnectBridge:peripheral];
+            
 #ifdef BRIDGE_ROAMING_ENABLE
-        [[CSRBridgeRoaming sharedInstance] connectedPeripheral:peripheral];
+            [[CSRBridgeRoaming sharedInstance] connectedPeripheral:peripheral];
 #endif
-        
-        if (_isUpdateScaning||_isUpdatePage) {
+        }
+
+    }else {
+        if (error == nil) {
             CBUUID *uuid = [CBUUID UUIDWithString:serviceApplicationOtauUuid];
             CBUUID *bl_uuid = [CBUUID UUIDWithString:serviceBootOtauUuid];
-
+            
             if ([service.UUID isEqual:uuid] || [service.UUID isEqual:bl_uuid]) {
                 AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
                 appDelegate.discoveredChars = [NSNumber numberWithBool: YES];
-                NSLog(@"44444444");
                 [self otauPeripheralTest:peripheral :YES];
             }
         }
-
+        
     }
 }
     

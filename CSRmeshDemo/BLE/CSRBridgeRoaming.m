@@ -184,8 +184,8 @@
             if ([bridge isEqual:peripheral])
                 found=YES;
         }
-        CSRBluetoothLE *manager = [CSRBluetoothLE sharedInstance];
-        if (!found && !manager.isUpdatePage) {
+        
+        if (!found) {
             [[CSRBluetoothLE sharedInstance] connectPeripheralNoCheck:peripheral];
             _connectting = YES;
             [connectingBridges addObject:peripheral];

@@ -20,7 +20,6 @@
 @property BOOL isAbortButton;
 @property BOOL peripheralConnected;
 @property (nonatomic,strong) MBProgressHUD *hud;
-@property (nonatomic,assign) BOOL outUpdate;
 
 
 @end
@@ -79,16 +78,9 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [[CSRBluetoothLE sharedInstance] setIsUpdatePage:YES];
-    _outUpdate = NO;
 }
 -(void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [[CSRBluetoothLE sharedInstance] setIsUpdatePage:NO];
-    if (_outUpdate) {
-        [[CSRBluetoothLE sharedInstance] setOutUpdate:NO];
-        [[CSRBluetoothLE sharedInstance] disconnectPeripheral:_targetModel.peripheral];
-    }
     
     NSArray *imgAry = @[@"S350BT",@"D350BT",@"RB01",@"RB02"];
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -123,8 +115,6 @@
 }
 
 - (IBAction)chooseFirmare:(UIButton *)sender {
-    NSLog(@"chooseFirmware");
-    
     _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     _hud.delegate = self;
     _hud.label.numberOfLines = 0;
@@ -133,17 +123,14 @@
     _hud.label.font = [UIFont systemFontOfSize:14];
     
     NSString *urlString = [NSString stringWithFormat:@"http://39.108.152.134/%@.php",_targetModel.kind];
-    NSLog(@"====> %@",urlString);
     AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
     sessionManager.responseSerializer.acceptableContentTypes = nil;
     __weak UpdateViewController *weakSelf = self;
     [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         NSDictionary *dic = (NSDictionary *)responseObject;
-        NSLog(@"==>>>> %@",dic);
         NSString *downloadAddress = dic[@"Download_address"];
         [weakSelf downloadfirware:downloadAddress];
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"==>>>> %@",error);
         dispatch_async(dispatch_get_main_queue(), ^{
             self.hud.label.text = [NSString stringWithFormat:@"error:%@",error];
         });
@@ -154,7 +141,6 @@
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     NSString *fileName = [urlString lastPathComponent];
-    NSLog(@"--->> %@",fileName);
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     NSProgress *progress = nil;
     NSURLSessionDownloadTask *task = [manager downloadTaskWithRequest:request progress:&progress destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
@@ -174,7 +160,6 @@
         
     } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
         if (error) {
-            NSLog(@"--->> %@",error);
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.hud.label.text = [NSString stringWithFormat:@"error:%@",error];
             });
@@ -424,20 +409,31 @@
     _isUpdateRunning=NO;
     [self setStartAndAbortButtonLook];
     NSString *title;
-    
     title = @"OTAU";
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title
                                                                              message:message
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController.view setTintColor:DARKORAGE];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        if ([message isEqualToString:@"Success: Application Update"]) {
+            [[CSRBluetoothLE sharedInstance] setIsUpdateFW:NO];
+            [[CSRBluetoothLE sharedInstance] disconnectPeripheral:_targetModel.peripheral];
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [[CSRBluetoothLE sharedInstance] connectPeripheralNoCheck:_targetModel.peripheral];
+            });
+            
+            CATransition *animation = [CATransition animation];
+            [animation setDuration:0.3];
+            [animation setType:kCATransitionMoveIn];
+            [animation setSubtype:kCATransitionFromLeft];
+            [self.view.window.layer addAnimation:animation forKey:nil];
+            [self dismissViewControllerAnimated:NO completion:nil];
+        }
         
     }];
     [alertController addAction:okAction];
     [self presentViewController:alertController animated:YES completion:nil];
-    if ([message isEqualToString:@"Success: Application Update"]) {
-        _outUpdate = YES;
-    }
 }
 
 //============================================================================

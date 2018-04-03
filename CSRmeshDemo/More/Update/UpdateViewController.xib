@@ -120,9 +120,6 @@
                     <state key="normal" title="set target">
                         <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </state>
-                    <connections>
-                        <action selector="chooseTarger:" destination="-1" eventType="touchUpInside" id="nkD-TA-Mn2"/>
-                    </connections>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-" lineBreakMode="headTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YWa-V5-izH">
                     <rect key="frame" x="147" y="179" width="212" height="21"/>

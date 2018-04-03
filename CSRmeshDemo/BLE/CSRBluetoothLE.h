@@ -65,13 +65,8 @@
 @property (nonatomic) CBCentralManagerState cbCentralManagerState;
 
 ///////////////////////////////////////////////////////////////////////
-@property (nonatomic,assign) BOOL isUpdateScaning;
-@property (nonatomic,assign) BOOL isUpdatePage;
-@property (nonatomic,assign) BOOL outUpdate;
+@property (nonatomic,assign) BOOL isUpdateFW;
 @property (nonatomic,strong) NSMutableArray *foundPeripherals;
-
 @property (nonatomic,strong) NSMutableArray *connectedPeripherals;
-
-@property (nonatomic,strong) CBPeripheral *updatePeripheral;
 
 @end

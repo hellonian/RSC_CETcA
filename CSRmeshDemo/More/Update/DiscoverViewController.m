@@ -31,6 +31,7 @@
 #import "AFHTTPSessionManager.h"
 #import "UpdateViewController.h"
 
+
 @interface DiscoverViewController ()<UITableViewDelegate,UITableViewDataSource,CSRBluetoothLEDelegate>
 {
     NSInteger SLatestV;
@@ -70,7 +71,6 @@
     sessionManager.responseSerializer.acceptableContentTypes = nil;
     [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         NSDictionary *dic = (NSDictionary *)responseObject;
-        NSLog(@">>>>> %@",dic);
         SLatestV = [dic[@"S350BT"] integerValue];
         DLatestV = [dic[@"D350BT"] integerValue];
         RfLatestV = [dic[@"RB01"] integerValue];
@@ -78,6 +78,7 @@
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"%@",error);
     }];
+    
     
 
 }
@@ -95,16 +96,14 @@
     [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getFirmwareVersion:) name:@"getFirmwareVersion" object:nil];
     [[CSRBluetoothLE sharedInstance] setBleDelegate:self];
-    [[CSRBluetoothLE sharedInstance] setIsUpdateScaning:YES];
+    [[CSRBluetoothLE sharedInstance] setIsUpdateFW:YES];
     [[CSRBluetoothLE sharedInstance] startScan];
-    NSLog(@"%ld %ld %ld %ld",(long)SLatestV,(long)DLatestV,(long)RfLatestV,(long)RoLatestV);
 }
 
 -(void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
     [[CSRBluetoothLE sharedInstance] setBleDelegate:nil];
-    [[CSRBluetoothLE sharedInstance] setIsUpdateScaning:NO];
     [_devices removeAllObjects];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"getFirmwareVersion" object:nil];
 }
@@ -170,22 +169,25 @@
     
     if (!model.isLatest) {
         NSArray *connectedPeripherals = [[CSRBluetoothLE sharedInstance] connectedPeripherals];
-        
-        if ([model.peripheral state] != CBPeripheralStateConnected) {
-            for (CBPeripheral *connectedPeripheral in connectedPeripherals) {
-                if ([connectedPeripheral state] == CBPeripheralStateConnected) {
-                    [[CSRBluetoothLE sharedInstance] setOutUpdate:YES];
-                    [[CSRBluetoothLE sharedInstance] setUpdatePeripheral:model.peripheral];
-                    [[CSRBluetoothLE sharedInstance] disconnectPeripheral:connectedPeripheral];
-                    break;
-                }
+        for (CBPeripheral *connectedPeripheral  in connectedPeripherals) {
+            if ([connectedPeripheral state] == CBPeripheralStateConnected) {
+                [[CSRBluetoothLE sharedInstance] disconnectPeripheral:connectedPeripheral];
+                break;
             }
+        }
+    
+    
+        if ([model.peripheral state] != CBPeripheralStateConnected) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [[CSRBluetoothLE sharedInstance] connectPeripheralNoCheck:model.peripheral];
+            });
         }
         else if ([self isOTAUPeripheral:model.peripheral]){
             UpdateViewController *uvc = [[UpdateViewController alloc] init];
             uvc.targetModel = model;
             [self.navigationController pushViewController:uvc animated:YES];
         }
+    
     }
 }
 
@@ -266,7 +268,6 @@
     NSDictionary *dic = notification.userInfo;
     NSNumber *deviceId = dic[@"deviceId"];
     NSInteger firmwareVersion = [dic[@"getFirmwareVersion"] integerValue];
-    NSLog(@"<<<>>> %ld",firmwareVersion);
     [_devices enumerateObjectsUsingBlock:^(UpdateDeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([deviceId isEqualToNumber:model.deviceId]) {
             model.firwareVersion = firmwareVersion;
