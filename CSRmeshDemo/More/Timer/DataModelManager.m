@@ -11,6 +11,7 @@
 #import "TimeSchedule.h"
 #import "CSRmeshDevice.h"
 #import "CSRDevicesManager.h"
+#import "CSRUtilities.h"
 
 @interface DataModelManager ()<DataModelApiDelegate>
 {
@@ -48,7 +49,7 @@ static DataModelManager *manager = nil;
 
 - (void)sendCmdData:(NSString *)hexStrCmd  toDeviceId:(NSNumber *)deviceId {
     if (deviceId) {
-        [_manager sendData:deviceId data:[self dataForHexString:hexStrCmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+        [_manager sendData:deviceId data:[CSRUtilities dataForHexString:hexStrCmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
             
         } failure:^(NSError * _Nonnull error) {
             
@@ -345,47 +346,6 @@ static DataModelManager *manager = nil;
 }
 
 #pragma mark - 数据类型转化
-
-//十六进制字符串转二进制数据
-- (NSData*)dataForHexString:(NSString*)hexString
-{
-    if (hexString == nil) {
-        return nil;
-    }
-    const char* ch = [[hexString lowercaseString] cStringUsingEncoding:NSUTF8StringEncoding];
-    NSMutableData* data = [NSMutableData data];
-    while (*ch) {
-        if (*ch == ' ') {
-            continue;
-        }
-        char byte = 0;
-        if ('0' <= *ch && *ch <= '9') {
-            byte = *ch - '0';
-        }
-        else if ('a' <= *ch && *ch <= 'f') {
-            byte = *ch - 'a' + 10;
-        }
-        else if ('A' <= *ch && *ch <= 'F') {
-            byte = *ch - 'A' + 10;
-        }
-        ch++;
-        byte = byte << 4;
-        if (*ch) {
-            if ('0' <= *ch && *ch <= '9') {
-                byte += *ch - '0';
-            } else if ('a' <= *ch && *ch <= 'f') {
-                byte += *ch - 'a' + 10;
-            }
-            else if('A' <= *ch && *ch <= 'F')
-            {
-                byte += *ch - 'A' + 10;
-            }
-            ch++;
-        }
-        [data appendBytes:&byte length:1];
-    }
-    return data;
-}
 
 //二进制数据转十六进制字符串
 - (NSString *)hexStringForData: (NSData *)data {

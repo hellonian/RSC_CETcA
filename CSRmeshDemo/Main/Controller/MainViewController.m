@@ -32,6 +32,7 @@
 #import "DeviceListViewController.h"
 #import "SingleDeviceModel.h"
 #import "SceneMemberEntity.h"
+#import "DataModelManager.h"
 
 @interface MainViewController ()<MainCollectionViewDelegate,PlaceColorIconPickerViewDelegate>
 {
@@ -514,9 +515,33 @@
                 [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:sceneMember.powerState];
             }else if ([sceneMember.kindString isEqualToString:@"D350BT"]||[sceneMember.kindString isEqualToString:@"D350SBT"]) {
                 [[LightModelApi sharedInstance] setLevel:sceneMember.deviceID level:sceneMember.level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-                    
+                    __block BOOL exist;
+                    [[DeviceModelManager sharedInstance].allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
+                        if ([model.deviceId isEqualToNumber:deviceId]) {
+                            
+                            model.powerState = powerState;
+                            model.level = sceneMember.level;
+                            
+                            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
+                            
+                            exist = YES;
+                            *stop = YES;
+                        }
+                        
+                    }];
+                    if (!exist) {
+                        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+                        DeviceModel *model = [[DeviceModel alloc] init];
+                        model.deviceId = deviceEntity.deviceId;
+                        model.shortName = deviceEntity.shortName;
+                        model.name = deviceEntity.name;
+                        model.powerState = powerState;
+                        model.level = sceneMember.level;
+                        [[DeviceModelManager sharedInstance].allDevices addObject:model];
+                        [[DataModelManager shareInstance] setDeviceTime:deviceEntity.deviceId];
+                    }
                 } failure:^(NSError * _Nullable error) {
-                    
+
                 }];
             }
             

@@ -36,6 +36,5 @@ extern NSString * const kTimerProfile;
 - (void)deleteAlarmForDevice:(NSNumber *)deviceId index:(NSInteger)index;
 
 - (NSString *)hexStringForData: (NSData *)data;
-- (NSData*)dataForHexString:(NSString*)hexString;
 
 @end

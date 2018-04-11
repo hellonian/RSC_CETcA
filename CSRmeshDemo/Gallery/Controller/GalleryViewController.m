@@ -19,7 +19,7 @@
 #import "DeviceModelManager.h"
 #import "ImproveTouchingExperience.h"
 #import "ControlMaskView.h"
-//#import <CSRmesh/LightModelApi.h>
+#import "CSRUtilities.h"
 
 @interface GalleryViewController ()<UINavigationControllerDelegate,UIImagePickerControllerDelegate,GalleryEditToolViewDelegate,GalleryControlImageViewDelegate,MBProgressHUDDelegate,GalleryDropViewDelegate>
 
@@ -325,7 +325,7 @@
     
     GalleryDetailViewController *gdvc = [[GalleryDetailViewController alloc] init];
     gdvc.isNewAdd = YES;
-    gdvc.image = [self fixOrientation:image];
+    gdvc.image = [CSRUtilities fixOrientation:image];
     gdvc.isEditing = YES;
     gdvc.handle = ^{
         [self getData];
@@ -334,84 +334,6 @@
     UINavigationController *nav= [[UINavigationController alloc] initWithRootViewController:gdvc];
     [nav setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
     [self presentViewController:nav animated:NO completion:nil];
-}
-
-//相机拍的照片带有imageOrientation属性，在显示的时候会自动摆正方向，而存放的时候按统一方向存放，开发使用时需摆正方向。
-- (UIImage *)fixOrientation:(UIImage *)aImage {
-    
-    // No-op if the orientation is already correct
-    if (aImage.imageOrientation == UIImageOrientationUp)
-        return aImage;
-    
-    // We need to calculate the proper transformation to make the image upright.
-    // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.
-    CGAffineTransform transform = CGAffineTransformIdentity;
-    
-    switch (aImage.imageOrientation) {
-        case UIImageOrientationDown:
-        case UIImageOrientationDownMirrored:
-            transform = CGAffineTransformTranslate(transform, aImage.size.width, aImage.size.height);
-            transform = CGAffineTransformRotate(transform, M_PI);
-            break;
-            
-        case UIImageOrientationLeft:
-        case UIImageOrientationLeftMirrored:
-            transform = CGAffineTransformTranslate(transform, aImage.size.width, 0);
-            transform = CGAffineTransformRotate(transform, M_PI_2);
-            break;
-            
-        case UIImageOrientationRight:
-        case UIImageOrientationRightMirrored:
-            transform = CGAffineTransformTranslate(transform, 0, aImage.size.height);
-            transform = CGAffineTransformRotate(transform, -M_PI_2);
-            break;
-        default:
-            break;
-    }
-    
-    switch (aImage.imageOrientation) {
-        case UIImageOrientationUpMirrored:
-        case UIImageOrientationDownMirrored:
-            transform = CGAffineTransformTranslate(transform, aImage.size.width, 0);
-            transform = CGAffineTransformScale(transform, -1, 1);
-            break;
-            
-        case UIImageOrientationLeftMirrored:
-        case UIImageOrientationRightMirrored:
-            transform = CGAffineTransformTranslate(transform, aImage.size.height, 0);
-            transform = CGAffineTransformScale(transform, -1, 1);
-            break;
-        default:
-            break;
-    }
-    
-    // Now we draw the underlying CGImage into a new context, applying the transform
-    // calculated above.
-    CGContextRef ctx = CGBitmapContextCreate(NULL, aImage.size.width, aImage.size.height,
-                                             CGImageGetBitsPerComponent(aImage.CGImage), 0,
-                                             CGImageGetColorSpace(aImage.CGImage),
-                                             CGImageGetBitmapInfo(aImage.CGImage));
-    CGContextConcatCTM(ctx, transform);
-    switch (aImage.imageOrientation) {
-        case UIImageOrientationLeft:
-        case UIImageOrientationLeftMirrored:
-        case UIImageOrientationRight:
-        case UIImageOrientationRightMirrored:
-            // Grr...
-            CGContextDrawImage(ctx, CGRectMake(0,0,aImage.size.height,aImage.size.width), aImage.CGImage);
-            break;
-            
-        default:
-            CGContextDrawImage(ctx, CGRectMake(0,0,aImage.size.width,aImage.size.height), aImage.CGImage);
-            break;
-    }
-    
-    // And now we just create a new UIImage from the drawing context
-    CGImageRef cgimg = CGBitmapContextCreateImage(ctx);
-    UIImage *img = [UIImage imageWithCGImage:cgimg];
-    CGContextRelease(ctx);
-    CGImageRelease(cgimg);
-    return img;
 }
 
 #pragma mark - getData
@@ -678,13 +600,6 @@
         NSInteger updateLevel = [self.improver improveTouching:touchPoint referencePoint:origin primaryBrightness:[self.originalLevel integerValue]];
         CGFloat percentage = updateLevel/255.0*100;
         [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
-//        if (updateLevel == 0) {
-//            [[LightModelApi sharedInstance] setLevel:deviceId level:@1 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-//
-//            } failure:^(NSError * _Nullable error) {
-//
-//            }];
-//        }
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state direction:PanGestureMoveDirectionHorizontal];
         
         if (state == UIGestureRecognizerStateEnded) {

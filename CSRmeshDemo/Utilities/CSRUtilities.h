@@ -96,5 +96,6 @@
 
 + (NSString *)hexStringForData: (NSData *)data;
 + (NSData*)dataForHexString:(NSString*)hexString;
++ (UIImage *)fixOrientation:(UIImage *)aImage;
 
 @end
