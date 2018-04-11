@@ -78,12 +78,12 @@
     __block BOOL exist;
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
-            if ([meshRequestId integerValue] > [currentMeshRequestId integerValue] || ([meshRequestId integerValue] - [currentMeshRequestId integerValue]) < -240) {
+            if ([meshRequestId integerValue] > [currentMeshRequestId integerValue] || ([meshRequestId integerValue] - [currentMeshRequestId integerValue]) < -240 || [meshRequestId integerValue] == [currentMeshRequestId integerValue]) {
                 model.powerState = powerState;
                 model.level = level;
                 currentMeshRequestId = meshRequestId;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
-                NSLog(@"调光回调 powerState--> %@ --> %@ ==> %@",powerState,level,meshRequestId);
+                NSLog(@"调光回调deviceId--> %@ powerState--> %@ --> %@ ",deviceId,powerState,level);
             }
             
             exist = YES;
@@ -110,11 +110,11 @@
     __block BOOL exist;
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
-            if ([meshRequestId integerValue] > [currentMeshRequestId integerValue] || ([meshRequestId integerValue] - [currentMeshRequestId integerValue]) < -240) {
+            if ([meshRequestId integerValue] > [currentMeshRequestId integerValue] || ([meshRequestId integerValue] - [currentMeshRequestId integerValue]) < -240 || [meshRequestId integerValue] == [currentMeshRequestId integerValue]) {
                 model.powerState = state;
                 currentMeshRequestId = meshRequestId;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId}];
-                NSLog(@"开关回调 powerState--> %@ ==> %@",state,meshRequestId);
+                NSLog(@"开关回调 deviceId --> %@ powerState--> %@",deviceId,state);
             }
             
             exist = YES;
@@ -180,7 +180,7 @@
     currentLevel = level;
     moveDirection = direction;
     if (state == UIGestureRecognizerStateBegan) {
-        timer = [NSTimer timerWithTimeInterval:0.12 target:self selector:@selector(timerMethod:) userInfo:deviceId repeats:YES];
+        timer = [NSTimer timerWithTimeInterval:0.5 target:self selector:@selector(timerMethod:) userInfo:deviceId repeats:YES];
         [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
     }
 }

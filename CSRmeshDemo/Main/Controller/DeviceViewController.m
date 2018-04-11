@@ -9,7 +9,6 @@
 #import "DeviceViewController.h"
 #import "DeviceModelManager.h"
 #import "CSRDatabaseManager.h"
-//#import <CSRmesh/LightModelApi.h>
 
 @interface DeviceViewController ()<UITextFieldDelegate>
 
@@ -88,9 +87,6 @@
     else {
         if ([power boolValue]) {
             [self.powerStateSwitch setOn:YES];
-            if ([level integerValue]<3) {
-                level = @3;
-            }
             if (!_sliderIsMoving) {
                 [self.levelSlider setValue:[level integerValue]];
             }
@@ -113,29 +109,16 @@
 }
 
 - (IBAction)powerStateSwitch:(UISwitch *)sender {
-    _sliderIsMoving = NO;
+//    _sliderIsMoving = NO;
     [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(sender.on)];
 }
 
 - (IBAction)levelSliderTouchUpInSide:(UISlider *)sender {
-//    if (sender.value == 0) {
-//        [[LightModelApi sharedInstance] setLevel:_deviceId level:@1 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-//
-//        } failure:^(NSError * _Nullable error) {
-//
-//        }];
-//    }
+    _sliderIsMoving = NO;
     [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
 }
 
 - (IBAction)leveSliderValueChanged:(UISlider *)sender {
-//    if (sender.value == 0) {
-//        [[LightModelApi sharedInstance] setLevel:_deviceId level:@1 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-//
-//        } failure:^(NSError * _Nullable error) {
-//
-//        }];
-//    }
     [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId withLevel:@(sender.value) withState:UIGestureRecognizerStateChanged direction:PanGestureMoveDirectionHorizontal];
 }
 
@@ -145,14 +128,7 @@
 }
 
 - (IBAction)levelSliderTouchUpOutSide:(UISlider *)sender {
-    _sliderIsMoving = YES;
-//    if (sender.value == 0) {
-//        [[LightModelApi sharedInstance] setLevel:_deviceId level:@1 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-//
-//        } failure:^(NSError * _Nullable error) {
-//
-//        }];
-//    }
+    _sliderIsMoving = NO;
     [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
 }
 

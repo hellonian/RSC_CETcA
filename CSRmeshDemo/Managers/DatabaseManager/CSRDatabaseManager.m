@@ -517,10 +517,21 @@
             [allDeviceIds addObject:controller.deviceId];
         }
         
-        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
-        [allDeviceIds sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+        NSInteger objValue;
+        for (; ; ) {
+            objValue = arc4random()%32752+32769;
+            if ([allDeviceIds containsObject:[NSNumber numberWithInteger:objValue]]) {
+                continue;
+            }
+            return [NSNumber numberWithInteger:objValue];
+        }
         
         
+        
+        /*
+         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
+         [allDeviceIds sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+         
         __block int previousAddress = 0x8000;
         __block BOOL found = NO;
         __block int objValue;
@@ -560,7 +571,9 @@
             }
             
             return @(objValue);
+         
         }
+         */
     } else if ([typeString isEqualToString:@"CSRAreaEntity"]) {
         NSMutableArray *allIdsArray = [NSMutableArray new];
         

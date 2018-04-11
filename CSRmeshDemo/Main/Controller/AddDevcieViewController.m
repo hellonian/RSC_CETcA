@@ -220,7 +220,7 @@
 
     if ([completedSteps floatValue] <= [totalSteps floatValue] && [completedSteps floatValue] > 0) {
         CGFloat completed = [completedSteps floatValue]/[totalSteps floatValue];
-        _associateHud.label.text = [NSString stringWithFormat:@"Associating device: %.0f%%", (completed * 100)];
+        _associateHud.label.text = [NSString stringWithFormat:@"Associating: %.0f%%", (completed * 100)];
         _associateHud.progress = completed;
         if (completed >= 1) {
             [_associateHud hideAnimated:YES];
@@ -279,7 +279,7 @@
         _associateHud.delegate = self;
         _associateHud.label.font = [UIFont systemFontOfSize:13];
         _associateHud.label.numberOfLines = 0;
-        _associateHud.label.text = @"Associating device: 0%";
+        _associateHud.label.text = @"Associating: 0%";
     }
 }
 

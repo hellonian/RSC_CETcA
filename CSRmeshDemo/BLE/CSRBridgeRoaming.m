@@ -200,7 +200,6 @@
     // Disconnected a peripheral
     // Called when a peripheral is diconnected, may or may not be a bridge type of peripheral
 -(void) disconnectedPeripheral:(CBPeripheral *) peripheral {
-    _connectting = NO;
     [connectedBridges removeObject:peripheral];
     [connectingBridges removeObject:peripheral];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"kCSRBridgeDiscoveryViewControllerWillRefreshUINotification" object:nil];
@@ -211,6 +210,7 @@
     // connected a peripheral
     // Called when a peripheral is connected, may or may not be a bridge type of peripheral
 -(void) connectedPeripheral:(CBPeripheral *) peripheral {
+    _connectting = NO;
     [connectedBridges addObject:peripheral];
     [connectingBridges removeObject:peripheral];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"kCSRBridgeDiscoveryViewControllerWillRefreshUINotification" object:nil];

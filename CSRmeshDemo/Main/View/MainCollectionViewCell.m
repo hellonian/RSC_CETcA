@@ -69,7 +69,7 @@
         self.kindLabel.hidden = NO;
         NSString *kind;
         for (CSRDeviceEntity *deviceEntity in self.groupMembers) {
-            NSString *str = [deviceEntity.shortName isEqualToString:@"D350BT"]? @"Dimmer":@"Switch";
+            NSString *str = [deviceEntity.shortName isEqualToString:@"S350BT"]? @"Switch":@"Dimmer";
             if (kind.length>0) {
                 kind = [NSString stringWithFormat:@"%@ %@",kind,str];
             }else {
@@ -106,7 +106,7 @@
         self.nameLabel.hidden = NO;
         self.nameLabel.text = deviceEntity.name;
         self.kindLabel.hidden = NO;
-        if ([deviceEntity.shortName isEqualToString:@"D350BT"]) {
+        if ([deviceEntity.shortName isEqualToString:@"D350BT"]||[deviceEntity.shortName isEqualToString:@"D350SBT"]) {
             self.iconView.image = [UIImage imageNamed:@"dimmersingle"];
             self.kindLabel.text = @"Dimmer";
             self.levelLabel.hidden = NO;
@@ -132,7 +132,7 @@
         self.nameLabel.hidden = NO;
         self.nameLabel.text = device.deviceName;
         self.kindLabel.hidden = NO;
-        if ([device.deviceShortName isEqualToString:@"D350BT"]) {
+        if ([device.deviceShortName isEqualToString:@"D350BT"] || [device.deviceShortName isEqualToString:@"D350SBT"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Dimmer"];
             self.kindLabel.text = @"Dimmer";
             self.levelLabel.hidden = NO;
@@ -176,7 +176,7 @@
         NSString *appearanceShortname = [[NSString alloc] initWithData:device.appearanceShortname encoding:NSUTF8StringEncoding];
         self.nameLabel.text = appearanceShortname;
         self.kindLabel.text = [NSString stringWithFormat:@"%@",[device.uuid.UUIDString substringFromIndex:24]];
-        if ([appearanceShortname containsString:@"D350BT"]) {
+        if ([appearanceShortname containsString:@"D350BT"] || [appearanceShortname containsString:@"D350SBT"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Dimmer"];
         }else if ([appearanceShortname containsString:@"S350BT"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Switch"];
@@ -202,7 +202,7 @@
             self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
         }
         
-        if ([model.shortName isEqualToString:@"D350BT"]) {
+        if ([model.shortName isEqualToString:@"D350BT"]||[model.shortName isEqualToString:@"D350SBT"]) {
             self.levelLabel.text = @"0%";
         }
     }else {
@@ -213,7 +213,7 @@
             self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
         }
         
-        if ([model.shortName isEqualToString:@"D350BT"]) {
+        if ([model.shortName isEqualToString:@"D350BT"]||[model.shortName isEqualToString:@"D350SBT"]) {
             if ([model.level floatValue]/255.0*100>0 && [model.level floatValue]/255.0*100 < 1.0) {
                 self.levelLabel.text = @"1%";
                 return;
