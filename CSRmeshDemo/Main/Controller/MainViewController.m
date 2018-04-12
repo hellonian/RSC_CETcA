@@ -124,7 +124,7 @@
     NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
     if (mutableArray != nil || [mutableArray count] != 0) {
         [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([deviceEntity.shortName isEqualToString:@"D350BT"] || [deviceEntity.shortName isEqualToString:@"S350BT"] || [deviceEntity.shortName isEqualToString:@"D350SBT"]) {
+            if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName]) {
                 if (![deviceIdWasInAreaArray containsObject:deviceEntity.deviceId]) {
                     deviceEntity.isEditting = @(_mainCVEditting);
                     [_mainCollectionView.dataArray addObject:deviceEntity];

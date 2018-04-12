@@ -13,6 +13,7 @@
 #import "CSRmeshDevice.h"
 #import "CSRConstants.h"
 #import "SingleDeviceModel.h"
+#import "CSRUtilities.h"
 
 @interface MainCollectionViewCell ()<UIGestureRecognizerDelegate>
 {
@@ -69,7 +70,7 @@
         self.kindLabel.hidden = NO;
         NSString *kind;
         for (CSRDeviceEntity *deviceEntity in self.groupMembers) {
-            NSString *str = [deviceEntity.shortName isEqualToString:@"S350BT"]? @"Switch":@"Dimmer";
+            NSString *str = [CSRUtilities belongToDimmer:deviceEntity.shortName]? @"Dimmer":@"Switch";
             if (kind.length>0) {
                 kind = [NSString stringWithFormat:@"%@ %@",kind,str];
             }else {
@@ -106,12 +107,12 @@
         self.nameLabel.hidden = NO;
         self.nameLabel.text = deviceEntity.name;
         self.kindLabel.hidden = NO;
-        if ([deviceEntity.shortName isEqualToString:@"D350BT"]||[deviceEntity.shortName isEqualToString:@"D350SBT"]) {
+        if ([CSRUtilities belongToDimmer:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"dimmersingle"];
             self.kindLabel.text = @"Dimmer";
             self.levelLabel.hidden = NO;
         }
-        if ([deviceEntity.shortName isEqualToString:@"S350BT"]) {
+        if ([CSRUtilities belongToSwitch:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"switchsingle"];
             self.kindLabel.text = @"Switch";
             self.levelLabel.hidden = YES;
@@ -132,12 +133,12 @@
         self.nameLabel.hidden = NO;
         self.nameLabel.text = device.deviceName;
         self.kindLabel.hidden = NO;
-        if ([device.deviceShortName isEqualToString:@"D350BT"] || [device.deviceShortName isEqualToString:@"D350SBT"]) {
+        if ([CSRUtilities belongToDimmer:device.deviceShortName]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Dimmer"];
             self.kindLabel.text = @"Dimmer";
             self.levelLabel.hidden = NO;
         }
-        if ([device.deviceShortName isEqualToString:@"S350BT"]) {
+        if ([CSRUtilities belongToSwitch:device.deviceShortName]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Switch"];
             self.kindLabel.text = @"Switch";
             self.levelLabel.hidden = YES;
@@ -174,15 +175,17 @@
         self.groupId = @4000;
         self.deviceId = @3000;
         NSString *appearanceShortname = [[NSString alloc] initWithData:device.appearanceShortname encoding:NSUTF8StringEncoding];
+        //去除不易察觉的空格
+        appearanceShortname = [appearanceShortname stringByTrimmingCharactersInSet:[NSCharacterSet controlCharacterSet]];
         self.nameLabel.text = appearanceShortname;
         self.kindLabel.text = [NSString stringWithFormat:@"%@",[device.uuid.UUIDString substringFromIndex:24]];
-        if ([appearanceShortname containsString:@"D350BT"] || [appearanceShortname containsString:@"D350SBT"]) {
+        if ([CSRUtilities belongToDimmer:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Dimmer"];
-        }else if ([appearanceShortname containsString:@"S350BT"]) {
+        }else if ([CSRUtilities belongToSwitch:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Switch"];
         }else if ([appearanceShortname containsString:@"RB01"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote1"];
-        }else if ([appearanceShortname containsString:@"RC351"]) {
+        }else if ([appearanceShortname containsString:@"RB02"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote2"];
         }
         self.cellIndexPath = indexPath;
@@ -202,7 +205,7 @@
             self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
         }
         
-        if ([model.shortName isEqualToString:@"D350BT"]||[model.shortName isEqualToString:@"D350SBT"]) {
+        if ([CSRUtilities belongToDimmer:model.shortName]) {
             self.levelLabel.text = @"0%";
         }
     }else {
@@ -213,7 +216,7 @@
             self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
         }
         
-        if ([model.shortName isEqualToString:@"D350BT"]||[model.shortName isEqualToString:@"D350SBT"]) {
+        if ([CSRUtilities belongToDimmer:model.shortName]) {
             if ([model.level floatValue]/255.0*100>0 && [model.level floatValue]/255.0*100 < 1.0) {
                 self.levelLabel.text = @"1%";
                 return;

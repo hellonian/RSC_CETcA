@@ -15,6 +15,7 @@
 #import "DeviceModelManager.h"
 #import "ImproveTouchingExperience.h"
 #import "ControlMaskView.h"
+#import "CSRUtilities.h"
 
 @interface DeviceListViewController ()<MainCollectionViewDelegate>
 
@@ -58,7 +59,7 @@
         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
         [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
         [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([deviceEntity.shortName isEqualToString:@"D350BT"] || [deviceEntity.shortName isEqualToString:@"S350BT"]) {
+            if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName]) {
                 SingleDeviceModel *singleDevice = [[SingleDeviceModel alloc] init];
                 singleDevice.deviceId = deviceEntity.deviceId;
                 singleDevice.deviceName = deviceEntity.name;
@@ -88,8 +89,6 @@
             }];
         }];
     });
-    
-    
 }
 
 - (void)mainCollectionViewDelegateSelectAction:(NSNumber *)cellDeviceId {

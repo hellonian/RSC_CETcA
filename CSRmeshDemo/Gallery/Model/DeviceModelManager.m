@@ -16,6 +16,7 @@
 #import "DataModelManager.h"
 
 #import "CSRDatabaseManager.h"
+#import "CSRUtilities.h"
 
 @interface DeviceModelManager ()<LightModelApiDelegate,PowerModelApiDelegate>
 {
@@ -60,7 +61,7 @@
             [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             
             for (CSRDeviceEntity *deviceEntity in mutableArray) {
-                if ([deviceEntity.shortName isEqualToString:@"S350BT"] || [deviceEntity.shortName isEqualToString:@"D350BT"]) {
+                if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName]) {
                     
                     [[LightModelApi sharedInstance] getState:deviceEntity.deviceId success:nil failure:nil];
                     

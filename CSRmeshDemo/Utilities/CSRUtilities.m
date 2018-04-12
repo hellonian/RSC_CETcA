@@ -1085,5 +1085,25 @@
     return img;
 }
 
++ (BOOL)belongToDimmer:(NSString *)shortName {
+    if ([kDimmers containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToSwitch:(NSString *)shortName {
+    if ([kSwitchs containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToRemote:(NSString *)shortName {
+    if ([kRemotes containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
 
 @end

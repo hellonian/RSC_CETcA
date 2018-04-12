@@ -98,4 +98,8 @@
 + (NSData*)dataForHexString:(NSString*)hexString;
 + (UIImage *)fixOrientation:(UIImage *)aImage;
 
++ (BOOL)belongToDimmer:(NSString *)shortName;
++ (BOOL)belongToSwitch:(NSString *)shortName;
++ (BOOL)belongToRemote:(NSString *)shortName;
+
 @end

@@ -9,6 +9,7 @@
 #import "DeviceViewController.h"
 #import "DeviceModelManager.h"
 #import "CSRDatabaseManager.h"
+#import "CSRUtilities.h"
 
 @interface DeviceViewController ()<UITextFieldDelegate>
 
@@ -37,7 +38,7 @@
     
     if (_deviceId) {
         _device = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-        if ([_device.shortName isEqualToString:@"S350BT"]) {
+        if ([CSRUtilities belongToSwitch:_device.shortName]) {
             [self.levelSlider setEnabled:NO];
         }
         
@@ -73,7 +74,7 @@
 }
 
 - (void)powerSwitchAndLevelSlider:(NSString *)kindString powerState:(NSNumber *)power level:(NSNumber *)level {
-    if ([kindString isEqualToString:@"S350BT"]) {
+    if ([CSRUtilities belongToSwitch:kindString]) {
         if ([power boolValue]) {
             [self.powerStateSwitch setOn:YES];
             [self.levelSlider setValue:255];

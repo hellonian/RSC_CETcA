@@ -28,11 +28,15 @@
 
 #define kPlaceColors @[@"#f44336", @"#e91e63", @"#9c27b0", @"#3f51b5", @"#2196f3", @"#00bcd4", @"#009688", @"#4caf50", @"#8bc34a", @"#cddc39", @"#ffba00", @"#ff9800", @"#795548", @"#9e9e9e", @"#607d8b"]
 
-#define kPlaceIcons @[@{@"id":@(0), @"iconImage":@"imageOfIconNewCar"}, @{@"id":@(1), @"iconImage":@"imageOfIconNewBuilding"}, @{@"id":@(2), @"iconImage":@"imageOfIconNewCoffee"}, @{@"id":@(3), @"iconImage":@"imageOfIconNewWorld"}, @{@"id":@(4), @"iconImage":@"imageOfIconNewFactory"}, @{@"id":@(5), @"iconImage":@"imageOfIconNewFoot"}, @{@"id":@(6), @"iconImage":@"imageOfIconNewGame"}, @{@"id":@(7), @"iconImage":@"imageOfIconNewHealth"}, @{@"id":@(8), @"iconImage":@"imageOfIconNewHome"}, @{@"id":@(9), @"iconImage":@"imageOfIconNewMovie"}, @{@"id":@(10), @"iconImage":@"imageOfIconNewSchool"}, @{@"id":@(11), @"iconImage":@"imageOfIconNewStadium"}, @{@"id":@(12), @"iconImage":@"imageOfIconNewSuitcase"}, @{@"id":@(13), @"iconImage":@"imageOfIconNewView"}, @{@"id":@(14), @"iconImage":@"imageOfIconNewIndustry"}];
+#define kPlaceIcons @[@{@"id":@(0), @"iconImage":@"imageOfIconNewCar"}, @{@"id":@(1), @"iconImage":@"imageOfIconNewBuilding"}, @{@"id":@(2), @"iconImage":@"imageOfIconNewCoffee"}, @{@"id":@(3), @"iconImage":@"imageOfIconNewWorld"}, @{@"id":@(4), @"iconImage":@"imageOfIconNewFactory"}, @{@"id":@(5), @"iconImage":@"imageOfIconNewFoot"}, @{@"id":@(6), @"iconImage":@"imageOfIconNewGame"}, @{@"id":@(7), @"iconImage":@"imageOfIconNewHealth"}, @{@"id":@(8), @"iconImage":@"imageOfIconNewHome"}, @{@"id":@(9), @"iconImage":@"imageOfIconNewMovie"}, @{@"id":@(10), @"iconImage":@"imageOfIconNewSchool"}, @{@"id":@(11), @"iconImage":@"imageOfIconNewStadium"}, @{@"id":@(12), @"iconImage":@"imageOfIconNewSuitcase"}, @{@"id":@(13), @"iconImage":@"imageOfIconNewView"}, @{@"id":@(14), @"iconImage":@"imageOfIconNewIndustry"}]
 
-#define kSceneIcons @[@"home", @"sleep", @"party", @"TV", @"reading", @"away", @"getup", @"dining", @"custom"];
+#define kSceneIcons @[@"home", @"sleep", @"party", @"TV", @"reading", @"away", @"getup", @"dining", @"custom"]
 
-#define kGroupIcons @[@"living",@"bed",@"dinning",@"wash",@"pan",@"study",@"kettle",@"attic",@"stair",@"fitness",@"plant",@"terrace",@"bookcase",@"stool",@"talking",@"warehouse",@"corridor"];
+#define kGroupIcons @[@"living",@"bed",@"dinning",@"wash",@"pan",@"study",@"kettle",@"attic",@"stair",@"fitness",@"plant",@"terrace",@"bookcase",@"stool",@"talking",@"warehouse",@"corridor"]
+
+#define kDimmers @[@"D350BT",@"D350B-H",@"D350SB-T1",@"D350B",@"D300IB",@"D300SB-T3"]
+#define kSwitchs @[@"S350BT",@"S350B",@"S1400IB"@"S350B-H"]
+#define kRemotes @[@"RB01",@"RB02"]
 
 
 #pragma mark - Notifications

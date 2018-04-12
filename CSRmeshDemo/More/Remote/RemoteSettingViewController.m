@@ -52,7 +52,7 @@
         [self.fiveRemoteView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
         [self.fiveRemoteView autoPinEdgeToSuperviewEdge:ALEdgeRight];
         [self.fiveRemoteView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameBgView withOffset:30];
-    }else if ([self.remoteEntity.shortName isEqualToString:@"RC351"]) {
+    }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]) {
         [self.view addSubview:self.singleRemoteView];
         [self.singleRemoteView autoSetDimension:ALDimensionHeight toSize:44.0f];
         [self.singleRemoteView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
@@ -153,7 +153,7 @@
         }
         cmdStr = [NSString stringWithFormat:@"700b010000%@%@%@%@",str1,str2,str3,str4];
         
-    }else if ([_remoteEntity.shortName isEqualToString:@"RC351"]) {
+    }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]) {
         NSString *string;
         if (_sSelectOneLabel.tag == 0) {
             string = @"ffff";
@@ -243,7 +243,7 @@
             _fSelectFourLabel.text = [NSString stringWithFormat:@"%@(%@)",device.name,deviceID4];
         }
         
-    }else if ([self.remoteEntity.shortName isEqualToString:@"RC351"]) {
+    }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]) {
         if ([deviceID1 isEqualToNumber:@(65535)]) {
             _sSelectOneLabel.text = @"NULL";
         }else {

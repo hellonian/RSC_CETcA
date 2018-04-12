@@ -13,6 +13,7 @@
 #import "PureLayout.h"
 #import "AddDevcieViewController.h"
 #import "RemoteSettingViewController.h"
+#import "CSRUtilities.h"
 
 @interface RemoteViewController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -78,7 +79,7 @@
     NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
     if (mutableArray != nil || [mutableArray count] != 0) {
         for (CSRDeviceEntity *deviceEntity in mutableArray) {
-            if ([deviceEntity.shortName isEqualToString:@"RB01"] || [deviceEntity.shortName isEqualToString:@"RC351"]) {
+            if ([CSRUtilities belongToRemote:deviceEntity.shortName]) {
                 [self.dataArray addObject:deviceEntity];
             }
         }
@@ -121,7 +122,7 @@
     CSRDeviceEntity *deviceEntity = self.dataArray[indexPath.row];
     if ([deviceEntity.shortName isEqualToString:@"RB01"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_fremote"];
-    }else if ([deviceEntity.shortName isEqualToString:@"RC351"]) {
+    }else if ([deviceEntity.shortName isEqualToString:@"RB02"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_sremote"];
     }
     cell.textLabel.text = deviceEntity.name;
