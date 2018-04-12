@@ -24,6 +24,7 @@
     UIGestureRecognizerState currentState;
     PanGestureMoveDirection moveDirection;
     NSNumber *currentMeshRequestId;
+    BOOL isFirstGetState;
 }
 
 @end
@@ -48,11 +49,16 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(physicalButtonActionCall:) name:@"physicalButtonActionCall" object:nil];
         [DataModelManager shareInstance];
         currentMeshRequestId = @0;
+        isFirstGetState = YES;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            isFirstGetState = NO;
+        });
         
         NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
         if (mutableArray != nil && [mutableArray count] != 0) {
             NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
             [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+            
             for (CSRDeviceEntity *deviceEntity in mutableArray) {
                 if ([deviceEntity.shortName isEqualToString:@"S350BT"] || [deviceEntity.shortName isEqualToString:@"D350BT"]) {
                     
@@ -64,7 +70,6 @@
                     model.name = deviceEntity.name;
                     [_allDevices addObject:model];
                     [[DataModelManager shareInstance] setDeviceTime:deviceEntity.deviceId];
-                    [NSThread sleepForTimeInterval:0.2];
                 }
             }
         }
@@ -78,14 +83,23 @@
     __block BOOL exist;
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
-            if ([meshRequestId integerValue] > [currentMeshRequestId integerValue] || ([meshRequestId integerValue] - [currentMeshRequestId integerValue]) < -240 || [meshRequestId integerValue] == [currentMeshRequestId integerValue]) {
+            
+            if (isFirstGetState) {
                 model.powerState = powerState;
                 model.level = level;
                 currentMeshRequestId = meshRequestId;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
-                NSLog(@"调光回调deviceId--> %@ powerState--> %@ --> %@ ",deviceId,powerState,level);
+                NSLog(@"调光回调isFirstGetState deviceId--> %@ powerState--> %@ --> %@ ",deviceId,powerState,level);
+                
+            }else{
+                if ([meshRequestId integerValue] > [currentMeshRequestId integerValue] || ([meshRequestId integerValue] - [currentMeshRequestId integerValue]) < -240 || [meshRequestId integerValue] == [currentMeshRequestId integerValue]) {
+                    model.powerState = powerState;
+                    model.level = level;
+                    currentMeshRequestId = meshRequestId;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
+                    NSLog(@"调光回调deviceId--> %@ powerState--> %@ --> %@ ",deviceId,powerState,level);
+                }
             }
-            
             exist = YES;
             *stop = YES;
         }
@@ -179,7 +193,7 @@
     currentState = state;
     currentLevel = level;
     moveDirection = direction;
-    if (state == UIGestureRecognizerStateBegan) {
+    if (state == UIGestureRecognizerStateBegan && !timer) {
         timer = [NSTimer timerWithTimeInterval:0.5 target:self selector:@selector(timerMethod:) userInfo:deviceId repeats:YES];
         [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
     }
@@ -235,11 +249,15 @@
     NSString *state = userInfo[@"powerState"];
     NSNumber *deviceId = userInfo[@"deviceId"];
     NSNumber *level = userInfo[@"level"];
-    
+    __block NSNumber *passLevel = level;
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
             model.powerState = [NSNumber numberWithBool:[state boolValue]];
-            model.level = level;
+            
+            if ([passLevel integerValue] < 3) {
+                passLevel = @3;
+            }
+            model.level = passLevel;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
             NSLog(@"物理按钮反馈>>>%@",level);
             *stop = YES;

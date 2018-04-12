@@ -15,7 +15,6 @@
 #import "DeviceModelManager.h"
 #import "ImproveTouchingExperience.h"
 #import "ControlMaskView.h"
-//#import <CSRmesh/LightModelApi.h>
 
 @interface DeviceListViewController ()<MainCollectionViewDelegate>
 
@@ -40,7 +39,9 @@
     
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(finishSelectingDevice)];
     self.navigationItem.rightBarButtonItem = done;
-    self.navigationItem.rightBarButtonItem.enabled = NO;
+    if (self.selectMode == DeviceListSelectMode_Single) {
+        self.navigationItem.rightBarButtonItem.enabled = NO;
+    }
     
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
     flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
@@ -126,12 +127,14 @@
         }];
     }
     
-    
-    if ([self.selectedDevices count]>0) {
-        self.navigationItem.rightBarButtonItem.enabled = YES;
-    }else {
-        self.navigationItem.rightBarButtonItem.enabled = NO;
+    if (self.selectMode == DeviceListSelectMode_Single) {
+        if ([self.selectedDevices count]>0) {
+            self.navigationItem.rightBarButtonItem.enabled = YES;
+        }else {
+            self.navigationItem.rightBarButtonItem.enabled = NO;
+        }
     }
+    
 }
 
 - (void)finishSelectingDevice {
@@ -170,13 +173,7 @@
 
         CGFloat percentage = updateLevel/255.0*100;
         [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
-//        if (updateLevel == 0) {
-//            [[LightModelApi sharedInstance] setLevel:deviceId level:@1 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-//
-//            } failure:^(NSError * _Nullable error) {
-//
-//            }];
-//        }
+
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state direction:direction];
         
         if (state == UIGestureRecognizerStateEnded) {

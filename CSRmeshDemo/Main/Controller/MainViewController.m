@@ -370,22 +370,8 @@
         [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
         
         if ([deviceId isEqualToNumber:@2000]) {
-//            if (updateLevel == 0) {
-//                [[LightModelApi sharedInstance] setLevel:groupId level:@1 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-//
-//                } failure:^(NSError * _Nullable error) {
-//
-//                }];
-//            }
             [[DeviceModelManager sharedInstance] setLevelWithDeviceId:groupId withLevel:@(updateLevel) withState:state direction:direction];
         }else {
-//            if (updateLevel == 0) {
-//                [[LightModelApi sharedInstance] setLevel:deviceId level:@1 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-//
-//                } failure:^(NSError * _Nullable error) {
-//
-//                }];
-//            }
             [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state direction:direction];
         }
         
@@ -473,11 +459,14 @@
     __block NSMutableArray *singleDevices = [[NSMutableArray alloc] init];
     [members enumerateObjectsUsingBlock:^(SceneMemberEntity *sceneMember, NSUInteger idx, BOOL * _Nonnull stop) {
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sceneMember.deviceID];
-        SingleDeviceModel *deviceModel = [[SingleDeviceModel alloc] init];
-        deviceModel.deviceId = deviceEntity.deviceId;
-        deviceModel.deviceName = deviceEntity.name;
-        deviceModel.deviceShortName = deviceEntity.shortName;
-        [singleDevices addObject:deviceModel];
+        if (deviceEntity) {
+            SingleDeviceModel *deviceModel = [[SingleDeviceModel alloc] init];
+            deviceModel.deviceId = deviceEntity.deviceId;
+            deviceModel.deviceName = deviceEntity.name;
+            deviceModel.deviceShortName = deviceEntity.shortName;
+            [singleDevices addObject:deviceModel];
+        }
+        
     }];
     list.originalMembers = singleDevices;
     

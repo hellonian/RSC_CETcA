@@ -180,13 +180,6 @@
         }];
         [alert addAction:okAction];
         [self presentViewController:alert animated:YES completion:nil];
-    }else if ([_devicesCollectionView.dataArray count] < 2) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Please select devices." message:nil preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            
-        }];
-        [alert addAction:okAction];
-        [self presentViewController:alert animated:YES completion:nil];
     }else {
         [self.editItem setTitle:@"Edit" forState:UIControlStateNormal];
         self.iconEditBtn.hidden = YES;
@@ -443,13 +436,6 @@
 
         CGFloat percentage = updateLevel/255.0*100;
         [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
-//        if (updateLevel == 0) {
-//            [[LightModelApi sharedInstance] setLevel:deviceId level:@1 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-//
-//            } failure:^(NSError * _Nullable error) {
-//
-//            }];
-//        }
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state direction:direction];
         
         if (state == UIGestureRecognizerStateEnded) {

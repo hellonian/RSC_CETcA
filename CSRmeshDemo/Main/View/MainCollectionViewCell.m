@@ -309,7 +309,7 @@
     if (![self.groupId isEqualToNumber:@4000] && [self.kindLabel.text containsString:@"Dimmer"]) {
         CGPoint translation = [sender translationInView:self];
         CGPoint touchPoint = [sender locationInView:self.superview];
-        NSLog(@"_direction-->%ld",_direction);
+        
         switch (sender.state) {
             case UIGestureRecognizerStateBegan:
             {
