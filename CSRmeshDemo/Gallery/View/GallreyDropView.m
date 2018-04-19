@@ -8,6 +8,7 @@
 
 #import "GalleryDropView.h"
 #import "DeviceModelManager.h"
+#import "CSRUtilities.h"
 
 @implementation GalleryDropView
 
@@ -45,7 +46,7 @@
     
     switch (sender.state) {
         case UIGestureRecognizerStateBegan:
-            if (!_isEditing && [self.kindName isEqualToString:@"D350BT"] && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
+            if (!_isEditing && [CSRUtilities belongToDimmer:self.kindName] && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
                 [self.delegate galleryDropViewPanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId withPanState:sender.state];
             }
             
@@ -69,7 +70,7 @@
                 self.center = touchPoint;
             }
             
-            if (!_isEditing && [self.kindName isEqualToString:@"D350BT"] && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
+            if (!_isEditing && [CSRUtilities belongToDimmer:self.kindName] && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
                 [self.delegate galleryDropViewPanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId withPanState:sender.state];
             }
             
@@ -78,7 +79,7 @@
             if (_isEditing && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanLocationAction:)]) {
                 [self.delegate galleryDropViewPanLocationAction:@(YES)];
             }
-            if (!_isEditing && [self.kindName isEqualToString:@"D350BT"] && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
+            if (!_isEditing && [CSRUtilities belongToDimmer:self.kindName] && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
                 [self.delegate galleryDropViewPanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId withPanState:sender.state];
             }
             
@@ -110,9 +111,9 @@
     DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
     if (![model.powerState boolValue]) {
         self.backgroundColor = [UIColor clearColor];
-    }else if ([self.kindName isEqualToString:@"S350BT"]) {
+    }else if ([CSRUtilities belongToSwitch:self.kindName]) {
         self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.9];;
-    }else if ([self.kindName isEqualToString:@"D350BT"]){
+    }else if ([CSRUtilities belongToDimmer:self.kindName]){
         self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:[model.level floatValue]/255.0*0.9];
     }
 }

@@ -609,7 +609,7 @@
     }else if ([typeString isEqualToString:@"CSREventEntity"]) {
         NSMutableArray *allIdsArray = [NSMutableArray new];
         
-        NSArray *allEventsArray = [[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"CSREventEntity" withPredicate:nil];
+        NSArray *allEventsArray = [self fetchObjectsWithEntityName:@"CSREventEntity" withPredicate:nil];
         
         for (CSREventEntity *event in allEventsArray) {
             
@@ -642,6 +642,14 @@
         
         return [self getFreeIdFromArray:[allIdsArray copy]];
         
+    }else if ([typeString isEqualToString:@"GallerySortId"]) {
+        NSMutableArray *allIdsArray = [NSMutableArray new];
+        
+        for (GalleryEntity *gallery in [CSRAppStateManager sharedInstance].selectedPlace.gallerys) {
+            [allIdsArray addObject:gallery.sortId];
+        }
+        
+        return [self getFreeIdFromArray:[allIdsArray copy]];
     }
     return @(-1);
 }
@@ -888,6 +896,8 @@
     if ([iconNum isEqualToNumber:@99]) {
         NSData *areaImageData = UIImageJPEGRepresentation(image, 0.5);
         newAreaEntity.areaImage = areaImageData;
+    }else {
+        newAreaEntity.areaImage = nil;
     }
 //    NSNumber *sorId = [self getNextFreeIDOfType:@"SortId"];
     newAreaEntity.sortId = sortId;
@@ -975,7 +985,7 @@
 
 #pragma mark - Gallery Methods
 
-- (GalleryEntity *)saveNewGallery:(NSNumber *)galleryId galleryImage:(UIImage *)image galleryBoundeWR:(NSNumber *)boundWR galleryBoundHR:(NSNumber *)boundHR newGalleryId:(NSNumber *)newGalleryId
+- (GalleryEntity *)saveNewGallery:(NSNumber *)galleryId galleryImage:(UIImage *)image galleryBoundeWR:(NSNumber *)boundWR
 {
     
     __block GalleryEntity *newGalleryEntity;
@@ -999,18 +1009,27 @@
     
     NSData *galleryImageData = UIImageJPEGRepresentation(image, 0.5);
     newGalleryEntity.galleryImage = galleryImageData;
-    if (newGalleryId != nil) {
-        newGalleryEntity.galleryID = newGalleryId;
-    }else {
-        newGalleryEntity.galleryID = galleryId;
-    }
+    newGalleryEntity.galleryID = galleryId;
     newGalleryEntity.boundWidth = boundWR;
-    newGalleryEntity.boundHeight = boundHR;
+    newGalleryEntity.boundHeight = @(0.549);
+    NSNumber *soriId = [self getNextFreeIDOfType:@"GallerySortId"];
+    newGalleryEntity.sortId = soriId;
     [[CSRAppStateManager sharedInstance].selectedPlace addGallerysObject:newGalleryEntity];
     [self saveContext];
     
     return newGalleryEntity;
     
+}
+
+- (GalleryEntity *)getGalleryEntityWithID:(NSNumber *)galleryID {
+    __block GalleryEntity *foundGalleryEntity = nil;
+    [[CSRAppStateManager sharedInstance].selectedPlace.gallerys enumerateObjectsUsingBlock:^(GalleryEntity * _Nonnull obj, BOOL * _Nonnull stop) {
+        if ([obj.galleryID isEqualToNumber:galleryID]) {
+            foundGalleryEntity = obj;
+            *stop = YES;
+        }
+    }];
+    return foundGalleryEntity;
 }
 
 #pragma mark - Drop Methods

@@ -46,7 +46,8 @@
 - (void) removeAreaFromDatabaseWithAreaId:(NSNumber*)areaId;
 
 //Gallery
-- (GalleryEntity *)saveNewGallery:(NSNumber *)galleryId galleryImage:(UIImage *)image galleryBoundeWR:(NSNumber *)boundWR galleryBoundHR:(NSNumber *)boundHR newGalleryId:(NSNumber *)newGalleryId;
+- (GalleryEntity *)saveNewGallery:(NSNumber *)galleryId galleryImage:(UIImage *)image galleryBoundeWR:(NSNumber *)boundWR;
+- (GalleryEntity *)getGalleryEntityWithID:(NSNumber *)galleryID;
 
 //Drop
 - (DropEntity *)saveNewDrop:(NSNumber *)dropId device:(CSRDeviceEntity *)device dropBoundRatio:(NSNumber *)boundRatio centerXRatio:(NSNumber *)centerXRatio centerYRatio:(NSNumber *)centerYRatio galleryId:(NSNumber *)gelleryId;

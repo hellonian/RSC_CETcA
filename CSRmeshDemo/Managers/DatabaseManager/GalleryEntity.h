@@ -18,6 +18,7 @@
 @property (nonatomic,retain) NSNumber *boundWidth;
 @property (nonatomic,retain) NSNumber *boundHeight;
 @property (nonatomic,retain) NSSet *drops;
+@property (nonatomic,retain) NSNumber *sortId;
 
 @end
 

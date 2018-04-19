@@ -83,9 +83,10 @@
     static BOOL active=NO;
     if (active==NO) {
         active=YES;
-        
+//        NSLog(@">>>>>>_connectting>>> %d",_connectting);
         if (_connectting) {
             _num++;
+//            NSLog(@">>>>>>_num>>> %ld",_num);
             if (_num == 5) {
                 [connectingBridges removeAllObjects];
                 _connectting = NO;
@@ -186,7 +187,9 @@
         }
         
         if (!found) {
+//            NSLog(@">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             [[CSRBluetoothLE sharedInstance] connectPeripheralNoCheck:peripheral];
+//            NSLog(@">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>SSSSSSSSS");
             _connectting = YES;
             [connectingBridges addObject:peripheral];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"kCSRBridgeDiscoveryViewControllerWillRefreshUINotification" object:nil];
@@ -210,6 +213,7 @@
     // connected a peripheral
     // Called when a peripheral is connected, may or may not be a bridge type of peripheral
 -(void) connectedPeripheral:(CBPeripheral *) peripheral {
+//    NSLog(@"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     _connectting = NO;
     [connectedBridges addObject:peripheral];
     [connectingBridges removeObject:peripheral];

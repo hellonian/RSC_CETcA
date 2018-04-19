@@ -38,6 +38,7 @@
     NSInteger DLatestV;
     NSInteger RfLatestV;
     NSInteger RoLatestV;
+    NSInteger DHLatestV;
 }
 
 @property (strong, nonatomic) NSIndexPath *selectedCell;
@@ -71,6 +72,7 @@
     sessionManager.responseSerializer.acceptableContentTypes = nil;
     [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         NSDictionary *dic = (NSDictionary *)responseObject;
+        DHLatestV = [dic[@"D350B-H"] integerValue];
         SLatestV = [dic[@"S350BT"] integerValue];
         DLatestV = [dic[@"D350BT"] integerValue];
         RfLatestV = [dic[@"RB01"] integerValue];
@@ -294,6 +296,13 @@
             }
             if ([model.kind isEqualToString:@"RB02"]) {
                 if (firmwareVersion == RoLatestV) {
+                    model.isLatest = YES;
+                }else{
+                    model.isLatest = NO;
+                }
+            }
+            if ([model.kind isEqualToString:@"D350B-H"]) {
+                if (firmwareVersion == DHLatestV) {
                     model.isLatest = YES;
                 }else{
                     model.isLatest = NO;

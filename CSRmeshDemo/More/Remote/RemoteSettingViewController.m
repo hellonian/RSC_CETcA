@@ -178,7 +178,7 @@
     _hub = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     _hub.mode = MBProgressHUDModeDeterminateHorizontalBar;
     _hub.delegate = self;
-    _hub.label.text = @"Please press the button in the middle of the remote nine times continuously";
+    _hub.label.text = @"Please press any button on the remote six times continuously";
     _hub.label.font = [UIFont systemFontOfSize:13];
     _hub.label.numberOfLines = 0;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
@@ -303,6 +303,13 @@
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
     [self saveNickName];
+}
+
+#pragma mark -
+
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+    [hud removeFromSuperview];
+    hud = nil;
 }
 
 #pragma mark - 保存修改后的灯名

@@ -109,20 +109,17 @@
         [weakSelf layoutViewRightFrame];
     }];
     
-    
-    
-    [self.controlImageViewArray enumerateObjectsUsingBlock:^(GalleryControlImageView *controlImageView, NSUInteger idx, BOOL * _Nonnull stop) {
-        [controlImageView removePanGestureRecognizer];
-        if (_isChange) {
-            [[CSRDatabaseManager sharedInstance] saveNewGallery:controlImageView.galleryId galleryImage:controlImageView.image galleryBoundeWR:@(controlImageView.bounds.size.width/WIDTH) galleryBoundHR:@(controlImageView.bounds.size.height/WIDTH) newGalleryId:@(idx+1)];
-        }
-    }];
-    
-//    [self.scrollView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//        if ([obj isKindOfClass:[GalleryDropView class]]) {
-//            [obj removeFromSuperview];
-//        }
-//    }];
+    if (_isChange) {
+        [self.controlImageViewArray enumerateObjectsUsingBlock:^(GalleryControlImageView *controlImageView, NSUInteger idx, BOOL * _Nonnull stop) {
+            [controlImageView removePanGestureRecognizer];
+            
+            GalleryEntity *gallery = [[CSRDatabaseManager sharedInstance] getGalleryEntityWithID:controlImageView.galleryId];
+            gallery.sortId = @(idx);
+            gallery.boundWidth = @(controlImageView.bounds.size.width/WIDTH);
+            gallery.boundHeight = @(controlImageView.bounds.size.height/WIDTH);
+            [[CSRDatabaseManager sharedInstance] saveContext];
+        }];
+    }
     
     [_hud hideAnimated:YES];
 }
@@ -302,7 +299,6 @@
 
 - (void)galleryControlImageViewPresentDetailViewAction:(id)sender {
     NSNumber *galleryId = (NSNumber *)sender;
-    
     GalleryDetailViewController *detailVC = [[GalleryDetailViewController alloc] init];
     detailVC.isNewAdd = NO;
     detailVC.galleryId = galleryId;
@@ -339,10 +335,9 @@
 #pragma mark - getData
 
 - (void)getData {
-    
     NSMutableArray *galleryMutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.gallerys allObjects] mutableCopy];
     if (galleryMutableArray != nil || [galleryMutableArray count] != 0 ) {
-        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"galleryID" ascending:YES];
+        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
         [galleryMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
         
         self.galleryEntitys = galleryMutableArray;

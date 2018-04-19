@@ -82,7 +82,7 @@
 -(void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     
-    NSArray *imgAry = @[@"S350BT",@"D350BT",@"RB01",@"RB02"];
+    NSArray *imgAry = @[@"S350BT",@"D350BT",@"RB01",@"RB02",@"D350B-H"];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     for (NSString *imgStr in imgAry) {
         NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/%@.img",imgStr]];

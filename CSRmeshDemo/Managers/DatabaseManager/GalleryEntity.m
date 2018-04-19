@@ -16,5 +16,6 @@
 @dynamic boundWidth;
 @dynamic boundHeight;
 @dynamic drops;
+@dynamic sortId;
 
 @end

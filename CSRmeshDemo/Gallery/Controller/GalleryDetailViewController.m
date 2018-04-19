@@ -32,6 +32,7 @@
 @property (nonatomic,strong) NSNumber *originalLevel;
 @property (nonatomic,strong) ImproveTouchingExperience *improver;
 @property (nonatomic,strong) ControlMaskView *maskLayer;
+@property (nonatomic,assign) BOOL backRefresh;
 
 @end
 
@@ -64,7 +65,6 @@
     }
     else if (_galleryId)
     {
-        
         _controlImageView.isEditing = NO;
         NSArray *gallerys = [[CSRAppStateManager sharedInstance].selectedPlace.gallerys allObjects];
         [gallerys enumerateObjectsUsingBlock:^(GalleryEntity *galleryEntity, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -139,11 +139,7 @@
 
 - (void)galleryDetailCloseAction:(UIBarButtonItem *)item {
     
-    if (_isNewAdd) {
-        if (self.handle) {
-            self.handle();
-        }
-    }else if (_isChange) {
+    if (_isChange || _backRefresh) {
         if (self.handle) {
             self.handle();
             _isChange = NO;
@@ -157,10 +153,13 @@
     _isEditing = NO;
     [self prepareNavigationItem];
     if (_isNewAdd) {
+        _isNewAdd = NO;
+        _backRefresh = YES;
         NSNumber *galleryIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"GalleryEntity"];
+        _galleryId = galleryIdNumber;
         float boundWR = 0.549 * _controlImageView.bounds.size.width/_controlImageView.bounds.size.height;
         
-        GalleryEntity *galleryEntity = [[CSRDatabaseManager sharedInstance] saveNewGallery:galleryIdNumber galleryImage:_image galleryBoundeWR:@(boundWR) galleryBoundHR:@(0.549) newGalleryId:nil];
+        GalleryEntity *galleryEntity = [[CSRDatabaseManager sharedInstance] saveNewGallery:galleryIdNumber galleryImage:_image galleryBoundeWR:@(boundWR)];
         
         [_controlImageView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([obj isKindOfClass:[GalleryDropView class]]) {
@@ -179,9 +178,8 @@
                 }];
                 
                 NSNumber *dropIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"DropEntity"];
-                
+                dropView.dropId = dropIdNumber;
                 DropEntity *dropEntity = [[CSRDatabaseManager sharedInstance] saveNewDrop:dropIdNumber device:device dropBoundRatio:@(boundR) centerXRatio:@(centerXR) centerYRatio:@(centerYR) galleryId:galleryIdNumber];
-                
                 if (dropEntity) {
                     [galleryEntity addDropsObject:dropEntity];
                     [[CSRDatabaseManager sharedInstance] saveContext];
@@ -207,11 +205,13 @@
                 }];
                 
                 NSNumber *dropIdNumber;
+                
                 DropEntity *dropEntity = [[[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"DropEntity" withPredicate:@"dropID == %@",dropView.dropId] firstObject];
                 if (dropEntity) {
                     dropIdNumber = dropEntity.dropID;
                 }else {
                     dropIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"DropEntity"];
+                    dropView.dropId = dropIdNumber;
                 }
                 [[CSRDatabaseManager sharedInstance] saveNewDrop:dropIdNumber device:device dropBoundRatio:@(boundR) centerXRatio:@(centerXR) centerYRatio:@(centerYR) galleryId:_galleryId];
                 
