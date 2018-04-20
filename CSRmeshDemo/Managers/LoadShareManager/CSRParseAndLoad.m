@@ -20,6 +20,9 @@
     
     NSManagedObjectContext *managedObjectContext;
 }
+
+@property (nonatomic,strong)CSRPlaceEntity *sharePlace;
+
 @end
 
 @implementation CSRParseAndLoad
@@ -33,53 +36,106 @@
     return self;
 }
 
-- (void) deleteEntitiesInSelectedPlace
+- (void) deleteEntitiesInSelectedPlace:(CSRPlaceEntity *)placeEntity
 {
     //Delete already devices, areas, gateway and (cloudTenancyID,cloudMeshID,cloudSiteID)
-    [[CSRAppStateManager sharedInstance].selectedPlace removeAreas:[CSRAppStateManager sharedInstance].selectedPlace.areas];
-    for (CSRAreaEntity *area in [CSRAppStateManager sharedInstance].selectedPlace.areas) {
+    [placeEntity removeAreas:placeEntity.areas];
+    for (CSRAreaEntity *area in placeEntity.areas) {
         [managedObjectContext deleteObject:area];
     }
     
-    NSSet *gallerys = [CSRAppStateManager sharedInstance].selectedPlace.gallerys;
-    [[CSRAppStateManager sharedInstance].selectedPlace removeGallerys:gallerys];
+    NSSet *gallerys = placeEntity.gallerys;
+    [placeEntity removeGallerys:gallerys];
     for (GalleryEntity *gallery in gallerys) {
+        [gallery removeDrops:gallery.drops];
         for (DropEntity *drop in gallery.drops) {
             [managedObjectContext deleteObject:drop];
         }
         [managedObjectContext deleteObject:gallery];
     }
     
-    NSSet *scenes = [CSRAppStateManager sharedInstance].selectedPlace.scenes;
-    [[CSRAppStateManager sharedInstance].selectedPlace removeScenes:scenes];
+    NSSet *scenes = placeEntity.scenes;
+    [placeEntity removeScenes:scenes];
     for (SceneEntity *scene in scenes) {
+        [scene removeMembers:scene.members];
         for (SceneMemberEntity *member in scene.members) {
             [managedObjectContext deleteObject:member];
         }
         [managedObjectContext deleteObject:scene];
     }
     
-    NSSet *timers = [CSRAppStateManager sharedInstance].selectedPlace.timers;
-    [[CSRAppStateManager sharedInstance].selectedPlace removeScenes:timers];
+    NSSet *timers = placeEntity.timers;
+    [placeEntity removeScenes:timers];
     for (TimerEntity *timer in timers) {
+        [timer removeTimerDevices:timer.timerDevices];
         for (TimerDeviceEntity *timerDevice in timer.timerDevices) {
             [managedObjectContext deleteObject:timerDevice];
         }
         [managedObjectContext deleteObject:timer];
     }
     
-    [[CSRAppStateManager sharedInstance].selectedPlace removeDevices:[CSRAppStateManager sharedInstance].selectedPlace.devices];
-    [[CSRAppStateManager sharedInstance].selectedPlace removeGateways:[CSRAppStateManager sharedInstance].selectedPlace.gateways];
-    [CSRAppStateManager sharedInstance].selectedPlace.settings.cloudTenancyID = nil;
-    [CSRAppStateManager sharedInstance].selectedPlace.settings.cloudMeshID = nil;
-    [CSRAppStateManager sharedInstance].selectedPlace.cloudSiteID = nil;
+    [placeEntity removeDevices:placeEntity.devices];
+    [placeEntity removeGateways:placeEntity.gateways];
+    placeEntity.settings.cloudTenancyID = nil;
+    placeEntity.settings.cloudMeshID = nil;
+    placeEntity.cloudSiteID = nil;
     
     [[CSRDatabaseManager sharedInstance] saveContext];
     
 }
 
-- (void) parseIncomingDictionary:(NSDictionary *)parsingDictionary
+- (void)checkForSettings
 {
+    if (self.sharePlace.settings) {
+        
+        self.sharePlace.settings.retryInterval = @500;
+        self.sharePlace.settings.retryCount = @10;
+        self.sharePlace.settings.concurrentConnections = @1;
+        self.sharePlace.settings.listeningMode = @1;
+        
+    } else {
+        
+        CSRSettingsEntity *settings = [NSEntityDescription insertNewObjectForEntityForName:@"CSRSettingsEntity"
+                                                                    inManagedObjectContext:managedObjectContext];
+        settings.retryInterval = @500;
+        settings.retryCount = @10;
+        settings.concurrentConnections = @1;
+        settings.listeningMode = @1;
+        
+        self.sharePlace.settings = settings;
+        
+    }
+}
+
+- (CSRPlaceEntity *) parseIncomingDictionary:(NSDictionary *)parsingDictionary
+{
+    if (parsingDictionary[@"place"]) {
+        NSDictionary *placeDict = parsingDictionary[@"place"];
+        NSArray *placesArray = [[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"CSRPlaceEntity" withPredicate:@"name == %@",placeDict[@"placeName"],@"passPhrase == %@",placeDict[@"placePassword"]];
+        if (placesArray && placesArray.count>0) {
+            
+            self.sharePlace = [placesArray firstObject];
+            [self deleteEntitiesInSelectedPlace:[placesArray firstObject]];
+            
+            
+        }else {
+            self.sharePlace = [NSEntityDescription insertNewObjectForEntityForName:@"CSRPlaceEntity"
+                                                            inManagedObjectContext:managedObjectContext];
+            
+            self.sharePlace.name = placeDict[@"placeName"];
+            self.sharePlace.passPhrase = placeDict[@"placePassword"];
+            self.sharePlace.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
+            self.sharePlace.iconID = @(8);
+            self.sharePlace.owner = @"My place";
+            self.sharePlace.networkKey = nil;
+            [self checkForSettings];
+            [[CSRDatabaseManager sharedInstance] saveContext];
+            [[CSRAppStateManager sharedInstance] setupPlace];
+        }
+        
+        
+    }
+    
     if (parsingDictionary[@"areas_list"])
     {
         for (NSDictionary *areaDict in parsingDictionary[@"areas_list"]) {
@@ -95,8 +151,8 @@
             groupObj.sortId = areaDict[@"sortId"];
             groupObj.areaImage = areaImageData;
             
-            if ([CSRAppStateManager sharedInstance].selectedPlace) {
-                [[CSRAppStateManager sharedInstance].selectedPlace addAreasObject:groupObj];
+            if (self.sharePlace) {
+                [self.sharePlace addAreasObject:groupObj];
             }
         }
     }
@@ -119,10 +175,18 @@
                 
                 uint16_t desiredValue = [obj unsignedShortValue];
                 [groups appendBytes:&desiredValue length:sizeof(desiredValue)];
-                CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:@(desiredValue)];
                 
-                if (areaEntity) {
-                    [deviceEntity addAreasObject:areaEntity];
+                __block CSRAreaEntity *foundAreaEntity = nil;
+                [self.sharePlace.areas enumerateObjectsUsingBlock:^(id  _Nonnull obj, BOOL * _Nonnull stop) {
+                    CSRAreaEntity *areaEntity = (CSRAreaEntity *)obj;
+                    if ([areaEntity.areaID isEqualToNumber:@(desiredValue)]) {
+                        foundAreaEntity = areaEntity;
+                        *stop = YES;
+                    }
+                }];
+                
+                if (foundAreaEntity) {
+                    [deviceEntity addAreasObject:foundAreaEntity];
                 }
             }];
             NSData *authCode = [CSRUtilities IntToNSData:[deviceDict[@"authCode"] unsignedLongLongValue]];
@@ -141,26 +205,12 @@
             deviceEntity.favourite = deviceDict[@"isFavourite"];
             deviceEntity.sortId = deviceDict[@"sortId"];
             
-            if ([CSRAppStateManager sharedInstance].selectedPlace) {
-                [[CSRAppStateManager sharedInstance].selectedPlace addDevicesObject:deviceEntity];
+            if (self.sharePlace) {
+                [self.sharePlace addDevicesObject:deviceEntity];
             }
         }
         
         [[CSRDatabaseManager sharedInstance] loadDatabase];
-    }
-    
-    if (parsingDictionary[@"drops_list"]) {
-        for (NSDictionary *dropDict in parsingDictionary[@"drops_list"]) {
-            DropEntity *dropObj = [NSEntityDescription insertNewObjectForEntityForName:@"DropEntity" inManagedObjectContext:managedObjectContext];
-            dropObj.galleryID = dropDict[@"galleryID"];
-            dropObj.dropID = dropDict[@"dropID"];
-            dropObj.boundRatio = dropDict[@"boundRatio"];
-            dropObj.centerYRatio = dropDict[@"centerYRatio"];
-            dropObj.centerXRatio = dropDict[@"centerXRatio"];
-            
-            CSRDeviceEntity *deviceEntyity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:dropDict[@"deviceID"]];
-            dropObj.device = deviceEntyity;
-        }
     }
     
     if (parsingDictionary[@"gallerys_list"]) {
@@ -168,40 +218,60 @@
             GalleryEntity *galleryObj = [NSEntityDescription insertNewObjectForEntityForName:@"GalleryEntity" inManagedObjectContext:managedObjectContext];
             NSData *galleryImageData = [CSRUtilities dataForHexString:galleryDict[@"galleryImage"]];
             
-            NSArray *drops = [[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"DropEntity" withPredicate:@"galleryID == %@",galleryDict[@"galleryID"]];
-            [galleryObj addDrops:[NSSet setWithArray:drops]];
-            
             galleryObj.galleryID = galleryDict[@"galleryID"];
             galleryObj.galleryImage = galleryImageData;
             galleryObj.boundWidth = galleryDict[@"boundWidth"];
             galleryObj.boundHeight = galleryDict[@"boundHeight"];
+            galleryObj.sortId = galleryDict[@"sortId"];
             
-            if ([CSRAppStateManager sharedInstance].selectedPlace) {
-                [[CSRAppStateManager sharedInstance].selectedPlace addGallerysObject:galleryObj];
+            NSMutableArray *drops = [NSMutableArray new];
+            if (parsingDictionary[@"drops_list"]) {
+                for (NSDictionary *dropDict in parsingDictionary[@"drops_list"]) {
+                    if ([dropDict[@"galleryID"] isEqualToNumber:galleryDict[@"galleryID"]]) {
+                        DropEntity *dropObj = [NSEntityDescription insertNewObjectForEntityForName:@"DropEntity" inManagedObjectContext:managedObjectContext];
+                        dropObj.galleryID = dropDict[@"galleryID"];
+                        dropObj.dropID = dropDict[@"dropID"];
+                        dropObj.boundRatio = dropDict[@"boundRatio"];
+                        dropObj.centerYRatio = dropDict[@"centerYRatio"];
+                        dropObj.centerXRatio = dropDict[@"centerXRatio"];
+                        dropObj.deviceID = dropDict[@"deviceID"];
+                        dropObj.kindName = dropDict[@"kindName"];
+                        [drops addObject:dropObj];
+                    }
+                }
+            }
+            [galleryObj addDrops:[NSSet setWithArray:drops]];
+            
+            if (self.sharePlace) {
+                [self.sharePlace addGallerysObject:galleryObj];
             }
         }
     }
     
-    if (parsingDictionary[@"sceneMembers_list"]) {
-        for (NSDictionary *sceneMemberDict in parsingDictionary[@"sceneMembers_list"]) {
-            SceneMemberEntity *sceneMemberObj = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:managedObjectContext];
-            sceneMemberObj.sceneID = sceneMemberDict[@"sceneID"];
-            sceneMemberObj.deviceID = sceneMemberDict[@"deviceID"];
-            sceneMemberObj.powerState = sceneMemberDict[@"powerState"];
-            sceneMemberObj.level = sceneMemberDict[@"level"];
-            sceneMemberObj.kindString = sceneMemberDict[@"kindString"];
-        }
-    }
     if (parsingDictionary[@"scenes_list"]) {
         for (NSDictionary * sceneDict in parsingDictionary[@"scenes_list"]) {
             SceneEntity *sceneObj = [NSEntityDescription insertNewObjectForEntityForName:@"SceneEntity" inManagedObjectContext:managedObjectContext];
             sceneObj.sceneID = sceneDict[@"sceneID"];
             sceneObj.iconID = sceneDict[@"iconID"];
             sceneObj.sceneName = sceneDict[@"sceneName"];
-            NSArray *members = [[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"SceneMemberEntity" withPredicate:@"sceneID == %@",sceneDict[@"sceneID"]];
+
+            NSMutableArray *members = [NSMutableArray new];
+            if (parsingDictionary[@"sceneMembers_list"]) {
+                for (NSDictionary *sceneMemberDict in parsingDictionary[@"sceneMembers_list"]) {
+                    if ([sceneMemberDict[@"sceneID"] isEqualToNumber:sceneDict[@"sceneID"]]) {
+                        SceneMemberEntity *sceneMemberObj = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:managedObjectContext];
+                        sceneMemberObj.sceneID = sceneMemberDict[@"sceneID"];
+                        sceneMemberObj.deviceID = sceneMemberDict[@"deviceID"];
+                        sceneMemberObj.powerState = sceneMemberDict[@"powerState"];
+                        sceneMemberObj.level = sceneMemberDict[@"level"];
+                        sceneMemberObj.kindString = sceneMemberDict[@"kindString"];
+                        [members addObject:sceneMemberObj];
+                    }
+                }
+            }
             [sceneObj addMembers:[NSSet setWithArray:members]];
-            if ([CSRAppStateManager sharedInstance].selectedPlace) {
-                [[CSRAppStateManager sharedInstance].selectedPlace addScenesObject:sceneObj];
+            if (self.sharePlace) {
+                [self.sharePlace addScenesObject:sceneObj];
             }
         }
     }
@@ -227,8 +297,8 @@
             timerObj.repeat = timerDict[@"repeat"];
             NSArray *timerDevices = [[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"TimerDeviceEntity" withPredicate:@"timerID == %@",timerDict[@"timerID"]];
             [timerObj addTimerDevices:[NSSet setWithArray:timerDevices]];
-            if ([CSRAppStateManager sharedInstance].selectedPlace) {
-                [[CSRAppStateManager sharedInstance].selectedPlace addTimersObject:timerObj];
+            if (self.sharePlace) {
+                [self.sharePlace addTimersObject:timerObj];
             }
         }
     }
@@ -261,8 +331,8 @@
             gatewayObj.state = gatewayDict[@"state"];
             gatewayObj.deviceHash = devHash;
             
-            if ([CSRAppStateManager sharedInstance].selectedPlace) {
-                [[CSRAppStateManager sharedInstance].selectedPlace addGatewaysObject:gatewayObj];
+            if (self.sharePlace) {
+                [self.sharePlace addGatewaysObject:gatewayObj];
             }
         }
     }
@@ -275,11 +345,12 @@
             settingsEntity.cloudMeshID = restDict[@"cloudMeshID"];
             settingsEntity.cloudTenancyID = restDict[@"cloudTenantID"];
             
-            CSRPlaceEntity *placeEntity = [[CSRAppStateManager sharedInstance] selectedPlace];
-            placeEntity.cloudSiteID = restDict[@"cloudSiteID"];
+//            CSRPlaceEntity *placeEntity = [[CSRAppStateManager sharedInstance] selectedPlace];
+            self.sharePlace.cloudSiteID = restDict[@"cloudSiteID"];
         }
     }
     [[CSRDatabaseManager sharedInstance] saveContext];
+    return self.sharePlace;
 }
 
 #pragma mark -
@@ -298,6 +369,13 @@
     NSMutableArray *timerDevicesArray = [NSMutableArray new];
     NSMutableArray *gatewayArray = [NSMutableArray new];
     NSMutableArray *restArray = [NSMutableArray new];
+    
+    ///////////////////PlaceNamePassword//////////////////////////////////////
+    CSRPlaceEntity *place = [CSRAppStateManager sharedInstance].selectedPlace;
+    if (place) {
+        [jsonDictionary setObject:@{@"placeName":place.name,@"placePassword":place.passPhrase} forKey:@"place"];
+    }
+
     
     ///////////////////Devices//////////////////////////////////////
         
@@ -354,7 +432,7 @@
                                     @"isFavourite":(area.favourite) ? (area.favourite) : @0,
                                     @"areaIconNum":(area.areaIconNum) ? (area.areaIconNum):@0,
                                     @"areaImage":areaImage ? areaImage : @"",
-                                    @"sortId":(area.sortId) ? (area.sortId) : @0,
+                                    @"sortId":(area.sortId) ? (area.sortId) : @0
                                     }];
             
         }
@@ -371,7 +449,8 @@
         [gallerysArray addObject:@{@"galleryID":(gallery.galleryID)?(gallery.galleryID):@0,
                                    @"galleryImage":galleryImage?galleryImage:@"",
                                    @"boundWidth":(gallery.boundWidth)?(gallery.boundWidth):@0,
-                                   @"boundHeight":(gallery.boundHeight)?(gallery.boundHeight):@0
+                                   @"boundHeight":(gallery.boundHeight)?(gallery.boundHeight):@0,
+                                   @"sortId":(gallery.sortId)?(gallery.sortId):@88
                                 }];
         
         for (DropEntity *drop in gallery.drops) {
@@ -380,7 +459,8 @@
                                     @"boundRatio":(drop.boundRatio)?(drop.boundRatio):@0,
                                     @"centerXRatio":(drop.centerXRatio)?(drop.centerXRatio):@0,
                                     @"centerYRatio":(drop.centerYRatio)?(drop.centerYRatio):@0,
-                                    @"deviceID":(drop.device.deviceId)?(drop.device.deviceId):@0
+                                    @"deviceID":(drop.deviceID)?(drop.deviceID):@0,
+                                    @"kindName":(drop.kindName)?(drop.kindName):@""
                                     }];
         }
         

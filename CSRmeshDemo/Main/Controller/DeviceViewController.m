@@ -77,11 +77,11 @@
     if ([CSRUtilities belongToSwitch:kindString]) {
         if ([power boolValue]) {
             [self.powerStateSwitch setOn:YES];
-            [self.levelSlider setValue:255];
+            [self.levelSlider setValue:255.0f animated:YES];
             self.levelLabel.text = @"100%";
         }else {
             [self.powerStateSwitch setOn:NO];
-            [self.levelSlider setValue:0];
+            [self.levelSlider setValue:0 animated:YES];
             self.levelLabel.text = @"0%";
         }
     }
@@ -89,12 +89,12 @@
         if ([power boolValue]) {
             [self.powerStateSwitch setOn:YES];
             if (!_sliderIsMoving) {
-                [self.levelSlider setValue:[level integerValue]];
+                [self.levelSlider setValue:(CGFloat)[level integerValue] animated:YES];
             }
             self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[level integerValue]/255.0*100];
         }else {
             [self.powerStateSwitch setOn:NO];
-            [self.levelSlider setValue:0];
+            [self.levelSlider setValue:0 animated:YES];
             self.levelLabel.text = @"0%";
         }
     }

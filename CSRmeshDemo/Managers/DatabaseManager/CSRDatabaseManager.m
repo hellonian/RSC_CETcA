@@ -1056,7 +1056,8 @@
 
         newDropEntity.galleryID = gelleryId;
         newDropEntity.dropID = dropId;
-        newDropEntity.device = device;
+        newDropEntity.deviceID = device.deviceId;
+        newDropEntity.kindName = device.shortName;
         newDropEntity.boundRatio = boundRatio;
         newDropEntity.centerXRatio = centerXRatio;
         newDropEntity.centerYRatio = centerYRatio;

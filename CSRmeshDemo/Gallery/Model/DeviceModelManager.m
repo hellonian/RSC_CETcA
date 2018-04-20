@@ -24,8 +24,6 @@
     NSNumber *currentLevel;
     UIGestureRecognizerState currentState;
     PanGestureMoveDirection moveDirection;
-    NSNumber *currentMeshRequestId;
-    BOOL isFirstGetState;
 }
 
 @end
@@ -49,11 +47,6 @@
         [[PowerModelApi sharedInstance] addDelegate:self];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(physicalButtonActionCall:) name:@"physicalButtonActionCall" object:nil];
         [DataModelManager shareInstance];
-        currentMeshRequestId = @0;
-        isFirstGetState = YES;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            isFirstGetState = NO;
-        });
         
         NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
         if (mutableArray != nil && [mutableArray count] != 0) {
@@ -84,23 +77,10 @@
     __block BOOL exist;
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
-            
-            if (isFirstGetState) {
-                model.powerState = powerState;
-                model.level = level;
-                currentMeshRequestId = meshRequestId;
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
-                NSLog(@"调光回调isFirstGetState deviceId--> %@ powerState--> %@ --> %@ ",deviceId,powerState,level);
-                
-            }else{
-                if ([meshRequestId integerValue] > [currentMeshRequestId integerValue] || ([meshRequestId integerValue] - [currentMeshRequestId integerValue]) < -240 || [meshRequestId integerValue] == [currentMeshRequestId integerValue]) {
-                    model.powerState = powerState;
-                    model.level = level;
-                    currentMeshRequestId = meshRequestId;
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
-                    NSLog(@"调光回调deviceId--> %@ powerState--> %@ --> %@ ",deviceId,powerState,level);
-                }
-            }
+            model.powerState = powerState;
+            model.level = level;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
+            NSLog(@"调光回调 deviceId--> %@ powerState--> %@ --> %@ ",deviceId,powerState,level);
             exist = YES;
             *stop = YES;
         }
@@ -113,7 +93,6 @@
         model.name = deviceEntity.name;
         model.powerState = powerState;
         model.level = level;
-        currentMeshRequestId = meshRequestId;
         [_allDevices addObject:model];
         [[DataModelManager shareInstance] setDeviceTime:deviceEntity.deviceId];
     }
@@ -125,12 +104,9 @@
     __block BOOL exist;
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
-            if ([meshRequestId integerValue] > [currentMeshRequestId integerValue] || ([meshRequestId integerValue] - [currentMeshRequestId integerValue]) < -240 || [meshRequestId integerValue] == [currentMeshRequestId integerValue]) {
-                model.powerState = state;
-                currentMeshRequestId = meshRequestId;
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId}];
-                NSLog(@"开关回调 deviceId --> %@ powerState--> %@",deviceId,state);
-            }
+            model.powerState = state;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId}];
+            NSLog(@"开关回调 deviceId --> %@ powerState--> %@",deviceId,state);
             
             exist = YES;
             *stop = YES;
@@ -143,7 +119,6 @@
         model.shortName = deviceEntity.shortName;
         model.name = deviceEntity.name;
         model.powerState = state;
-        currentMeshRequestId = meshRequestId;
         [_allDevices addObject:model];
         [[DataModelManager shareInstance] setDeviceTime:deviceEntity.deviceId];
     }
@@ -153,9 +128,11 @@
 #pragma mark - private methods
 
 - (DeviceModel *)getDeviceModelByDeviceId:(NSNumber *)deviceId {
-    for (DeviceModel *model in _allDevices) {
-        if ([model.deviceId isEqualToNumber:deviceId]) {
-            return model;
+    if (deviceId) {
+        for (DeviceModel *model in _allDevices) {
+            if ([model.deviceId isEqualToNumber:deviceId]) {
+                return model;
+            }
         }
     }
     return nil;
@@ -163,27 +140,7 @@
 
 - (void)setPowerStateWithDeviceId:(NSNumber *)deviceId withPowerState:(NSNumber *)powerState {
     [[PowerModelApi sharedInstance] setPowerState:deviceId state:powerState success:^(NSNumber * _Nullable deviceId, NSNumber * _Nullable state) {
-        NSLog(@"开关命令block内部回调 %@ <-- %@",state,deviceId);
-        __block BOOL exist;
-        [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([model.deviceId isEqualToNumber:deviceId]) {
-                model.powerState = state;
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId}];
-                
-                exist = YES;
-                *stop = YES;
-            }
-        }];
-        if (!exist) {
-            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
-            DeviceModel *model = [[DeviceModel alloc] init];
-            model.deviceId = deviceEntity.deviceId;
-            model.shortName = deviceEntity.shortName;
-            model.name = deviceEntity.name;
-            model.powerState = state;
-            [_allDevices addObject:model];
-            [[DataModelManager shareInstance] setDeviceTime:deviceEntity.deviceId];
-        }
+        
     } failure:^(NSError * _Nullable error) {
 
     }];
@@ -206,31 +163,6 @@
         if (moveDirection == PanGestureMoveDirectionHorizontal) {
             [[LightModelApi sharedInstance] setLevel:deviceId level:currentLevel success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
                 
-                __block BOOL exist;
-                [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
-                    if ([model.deviceId isEqualToNumber:deviceId]) {
-                        
-                            model.powerState = powerState;
-                            model.level = currentLevel;
-                        
-                            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
-                        
-                        exist = YES;
-                        *stop = YES;
-                    }
-                    
-                }];
-                if (!exist) {
-                    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
-                    DeviceModel *model = [[DeviceModel alloc] init];
-                    model.deviceId = deviceEntity.deviceId;
-                    model.shortName = deviceEntity.shortName;
-                    model.name = deviceEntity.name;
-                    model.powerState = powerState;
-                    model.level = currentLevel;
-                    [_allDevices addObject:model];
-                    [[DataModelManager shareInstance] setDeviceTime:deviceEntity.deviceId];
-                }
             } failure:^(NSError * _Nullable error) {
 
             }];

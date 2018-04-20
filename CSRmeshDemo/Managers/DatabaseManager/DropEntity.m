@@ -7,15 +7,15 @@
 //
 
 #import "DropEntity.h"
-#import "CSRDeviceEntity.h"
 
 @implementation DropEntity
 
 @dynamic boundRatio;
 @dynamic centerXRatio;
 @dynamic centerYRatio;
-@dynamic device;
 @dynamic dropID;
 @dynamic galleryID;
+@dynamic deviceID;
+@dynamic kindName;
 
 @end

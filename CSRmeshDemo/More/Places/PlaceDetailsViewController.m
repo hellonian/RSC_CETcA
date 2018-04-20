@@ -20,8 +20,17 @@
 #import "AppDelegate.h"
 #import "ZipArchive.h"
 #import "CSRParseAndLoad.h"
+#import <MultipeerConnectivity/MultipeerConnectivity.h>
+#import <MBProgressHUD.h>
 
-@interface PlaceDetailsViewController ()<UITextFieldDelegate,CSRCheckboxDelegate,CSRCheckboxDelegate>
+@interface PlaceDetailsViewController ()<UITextFieldDelegate,CSRCheckboxDelegate,CSRCheckboxDelegate,MCNearbyServiceBrowserDelegate,MCBrowserViewControllerDelegate>
+
+@property (nonatomic,strong)MCPeerID * peerID;
+@property (nonatomic,strong)MCSession * session;
+@property (nonatomic,strong)MCNearbyServiceBrowser * brower;
+@property (nonatomic,strong)MCBrowserViewController * browserViewController;
+@property (nonatomic,strong) MBProgressHUD *hud;
+@property (nonatomic,strong) NSString *oldName;
 
 @end
 
@@ -32,7 +41,6 @@
     // Do any additional setup after loading the view from its nib.
     _placeNameTF.delegate = self;
     _placeNetworkKeyTF.delegate = self;
-    _placeNetworkKeyTF.secureTextEntry = YES;
     
     _showPasswordCheckbox.delegate = self;
     _showPasswordCheckbox.selected = YES;
@@ -40,6 +48,7 @@
     
     UIBarButtonItem *save = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveAction)];
     self.navigationItem.rightBarButtonItem = save;
+    self.navigationItem.rightBarButtonItem.enabled = NO;
     
     [_deleteButton setImage:[[CSRmeshStyleKit imageOfTrashcan] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
     _deleteButton.imageView.tintColor = [UIColor whiteColor];
@@ -47,11 +56,12 @@
     
     if (_placeEntity.name) {
         _placeNameTF.text = _placeEntity.name;
+        _oldName = _placeEntity.name;
     }
     if (_placeEntity && ![CSRUtilities isStringEmpty:_placeEntity.passPhrase]) {
         _placeNetworkKeyTF.text = _placeEntity.passPhrase;
     }else if (!_placeEntity) {
-        _placeNetworkKeyTF.text = _placeEntity.passPhrase;
+        
     } else {
         _placeNetworkKeyTF.hidden = YES;
         _networkKeyLabel.hidden = YES;
@@ -251,7 +261,7 @@
     } else if (_placeEntity && _importedURL && ![CSRUtilities isStringEmpty:_placeEntity.passPhrase]) {
         
         if (![CSRUtilities isStringEmpty:_placeNameTF.text] ) {
-            NSLog(@"333333333");
+            NSLog(@">>>444");
             _placeEntity.name = _placeNameTF.text;
             _placeEntity.passPhrase = _placeNetworkKeyTF.text;
             _placeEntity.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
@@ -271,7 +281,7 @@
         }
     } else if (!_placeEntity && _importedURL) {
         if (![CSRUtilities isStringEmpty:_placeNameTF.text] && ![CSRUtilities isStringEmpty:_placeNetworkKeyTF.text]) {
-            NSLog(@"222222222");
+            NSLog(@">>>555");
             CSRPlaceEntity *newPlace = [NSEntityDescription insertNewObjectForEntityForName:@"CSRPlaceEntity"
                                                                      inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
             
@@ -294,7 +304,7 @@
         }
         
     } else if (_placeEntity && _importedURL && [CSRUtilities isStringEmpty:_placeEntity.passPhrase]) {
-        NSLog(@"111111111");
+        NSLog(@">>>666");
         if (![CSRUtilities isStringEmpty:_placeNameTF.text]) {
             _placeEntity.name = _placeNameTF.text;
             _placeEntity.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
@@ -345,7 +355,7 @@
     [[CSRAppStateManager sharedInstance] setupPlace];
     
     CSRParseAndLoad *parseLoad = [[CSRParseAndLoad alloc] init];
-    [parseLoad deleteEntitiesInSelectedPlace]; //Delete Core data Entities
+//    [parseLoad deleteEntitiesInSelectedPlace]; //Delete Core data Entities
     [parseLoad parseIncomingDictionary:jsonDictionary]; //parse and load fresh data
 }
 
@@ -416,62 +426,17 @@
 
 - (IBAction)exportPlace:(id)sender {
     
-    CSRParseAndLoad *parseLoad = [[CSRParseAndLoad alloc] init];
+    _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    _hud.label.text = @"Searching applicant······";
     
-    NSData *jsonData = [parseLoad composeDatabase];
+    NSString *name = [UIDevice currentDevice].name;
+    _peerID = [[MCPeerID alloc]initWithDisplayName:name];
+    _session = [[MCSession alloc]initWithPeer:_peerID];
     
-    NSError *error;
-    NSString *jsonString;
-    if (jsonData) {
-        jsonString = [CSRUtilities stringFromData:jsonData];
-    } else {
-        NSLog(@"Got an error while NSJSONSerialization:%@", error);
-    }
+    _brower = [[MCNearbyServiceBrowser alloc]initWithPeer:_peerID serviceType:@"actec-place"];
+    _brower.delegate = self;
+    [_brower startBrowsingForPeers];
     
-    CSRPlaceEntity *placeEntity = [[CSRAppStateManager sharedInstance] selectedPlace];
-    
-    NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString* dPath = [paths objectAtIndex:0];
-    NSString* zipfile = [dPath stringByAppendingPathComponent:@"AcTEC.zip"];
-    
-    NSString *appFile = [NSString stringWithFormat:@"%@_%@", placeEntity.name, @"Database.qti"];
-    NSString *realPath = [dPath stringByAppendingPathComponent:appFile] ;
-    [jsonString writeToFile:realPath atomically:YES encoding:NSUTF8StringEncoding error:&error];
-    
-    
-    ZipArchive* zip = [[ZipArchive alloc] init];
-    if([zip CreateZipFile2:zipfile Password:[[MeshServiceApi sharedInstance] getMeshId]])
-    {
-        NSLog(@"Zip File Created");
-        if([zip addFileToZip:realPath newname:@"MyFile.qti"])
-        {
-            NSLog(@"File Added to zip");
-        }
-    }
-    
-    NSURL *jsonURL = [NSURL fileURLWithPath:zipfile];
-    
-    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[jsonURL]
-                                                                             applicationActivities:nil];
-    [activityVC setValue:@"JSON Attached" forKey:@"subject"];
-    
-    activityVC.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
-        if (completed) {
-            NSLog(@"Activity completed");
-        } else {
-            if (activityType == NULL) {
-                NSLog(@"User dismissed the view controller without making a selection");
-            } else {
-                NSLog(@"Activity was not performed");
-            }
-        }
-    };
-    [self presentViewController:activityVC animated:YES completion:nil];
-    if ([activityVC respondsToSelector:@selector(popoverPresentationController)]) {
-        UIPopoverPresentationController *activity = [activityVC popoverPresentationController];
-        activity.sourceRect = CGRectMake(10, 10, 200, 100);
-        activity.sourceView = (UIButton *)sender;
-    }
 }
 
 
@@ -481,7 +446,35 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [textField resignFirstResponder];
+    
     return NO;
+}
+
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    
+    if (![CSRUtilities isStringEmpty:_placeNameTF.text] && ![CSRUtilities isStringEmpty:_placeNetworkKeyTF.text]) {
+        if (_placeEntity) {
+            if (![_placeNameTF.text isEqualToString:_oldName]) {
+                self.navigationItem.rightBarButtonItem.enabled = YES;
+            }else {
+                self.navigationItem.rightBarButtonItem.enabled = NO;
+            }
+        }else {
+            self.navigationItem.rightBarButtonItem.enabled = YES;
+        }
+        
+    }else {
+        self.navigationItem.rightBarButtonItem.enabled = NO;
+    }
+    
+}
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    if (_placeEntity && textField.tag == 2) {
+        return NO;
+    }
+    return YES;
 }
 
 #pragma mark - <CSRCheckbox>
@@ -492,6 +485,44 @@
     }else {
         _placeNetworkKeyTF.secureTextEntry = _showPasswordCheckbox.selected;
     }
+}
+
+#pragma MC相关代理方法
+
+- (void)browser:(MCNearbyServiceBrowser *)browser foundPeer:(MCPeerID *)peerID withDiscoveryInfo:(NSDictionary *)info{
+    if (_browserViewController == nil) {
+        _browserViewController = [[MCBrowserViewController alloc]initWithServiceType:@"actec-place" session:_session];
+        _browserViewController.delegate = self;
+        [self presentViewController:_browserViewController animated:YES completion:nil];
+        if (_hud) {
+            [_hud hideAnimated:NO];
+        }
+    }
+}
+
+- (void)browser:(MCNearbyServiceBrowser *)browser lostPeer:(MCPeerID *)peerID {
+    
+}
+
+#pragma mark - BrowserViewController附近用户列表视图相关代理方法
+
+- (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController{
+
+    CSRParseAndLoad *parseLoad = [[CSRParseAndLoad alloc] init];
+    NSData *jsonData = [parseLoad composeDatabase];
+    
+    [_session sendData:jsonData toPeers:_session.connectedPeers withMode:MCSessionSendDataUnreliable error:nil];
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+    _browserViewController = nil;
+    
+}
+
+- (void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController{
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+    _browserViewController = nil;
+    
 }
 
 @end

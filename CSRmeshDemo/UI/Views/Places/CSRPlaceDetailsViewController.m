@@ -434,7 +434,7 @@
     [[CSRAppStateManager sharedInstance] setupPlace];
 
     CSRParseAndLoad *parseLoad = [[CSRParseAndLoad alloc] init];
-    [parseLoad deleteEntitiesInSelectedPlace]; //Delete Core data Entities
+//    [parseLoad deleteEntitiesInSelectedPlace]; //Delete Core data Entities
     [parseLoad parseIncomingDictionary:jsonDictionary]; //parse and load fresh data
 }
 

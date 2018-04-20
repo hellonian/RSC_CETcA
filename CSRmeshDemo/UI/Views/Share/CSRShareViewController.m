@@ -204,7 +204,7 @@
     
     if (!error && jsonDictionary) {
         CSRParseAndLoad *parseLoad = [[CSRParseAndLoad alloc] init];
-        [parseLoad deleteEntitiesInSelectedPlace];
+//        [parseLoad deleteEntitiesInSelectedPlace];
         [parseLoad parseIncomingDictionary:jsonDictionary];
     } else {
         NSLog(@"%@", [error localizedDescription]);

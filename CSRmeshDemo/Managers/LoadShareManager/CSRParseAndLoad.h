@@ -3,12 +3,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "CSRPlaceEntity.h"
 
 @interface CSRParseAndLoad : NSObject
 
-- (void) deleteEntitiesInSelectedPlace;
+- (void) deleteEntitiesInSelectedPlace:(CSRPlaceEntity *)placeEntity;
 
-- (void) parseIncomingDictionary:(NSDictionary*)parsingDictionary;
+- (CSRPlaceEntity *) parseIncomingDictionary:(NSDictionary*)parsingDictionary;
 - (NSData *) composeDatabase;
 
 

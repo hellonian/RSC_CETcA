@@ -102,7 +102,7 @@
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
     
-    if ([deviceId isEqualToNumber:_deviceId]) {
+    if (_deviceId && [deviceId isEqualToNumber:_deviceId]) {
         [self adjustDropViewBgcolorWithdeviceId:deviceId];
     }
 }
@@ -111,10 +111,13 @@
     DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
     if (![model.powerState boolValue]) {
         self.backgroundColor = [UIColor clearColor];
+        self.layer.borderColor = [UIColor darkGrayColor].CGColor;
     }else if ([CSRUtilities belongToSwitch:self.kindName]) {
-        self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.9];;
+        self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.9];
+        self.layer.borderColor = DARKORAGE.CGColor;
     }else if ([CSRUtilities belongToDimmer:self.kindName]){
         self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:[model.level floatValue]/255.0*0.9];
+        self.layer.borderColor = DARKORAGE.CGColor;
     }
 }
 

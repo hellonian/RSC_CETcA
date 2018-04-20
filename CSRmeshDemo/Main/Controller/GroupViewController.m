@@ -498,6 +498,7 @@
     [iconArray enumerateObjectsUsingBlock:^(NSString *iconString, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([iconString isEqualToString:imageString]) {
             iconNum = @(idx);
+            iconImage = nil;
             *stop = YES;
         }
     }];

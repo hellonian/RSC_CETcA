@@ -500,9 +500,9 @@
     NSArray *members = [sceneEntity.members allObjects];
     if ([members count]>0) {
         [members enumerateObjectsUsingBlock:^(SceneMemberEntity *sceneMember, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([sceneMember.kindString isEqualToString:@"S350BT"]) {
+            if ([CSRUtilities belongToSwitch:sceneMember.kindString]) {
                 [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:sceneMember.powerState];
-            }else if ([sceneMember.kindString isEqualToString:@"D350BT"]||[sceneMember.kindString isEqualToString:@"D350SBT"]) {
+            }else if ([CSRUtilities belongToDimmer:sceneMember.kindString]) {
                 [[LightModelApi sharedInstance] setLevel:sceneMember.deviceID level:sceneMember.level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
                     __block BOOL exist;
                     [[DeviceModelManager sharedInstance].allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -768,7 +768,7 @@
     NSArray *devices = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
     __block BOOL exist=0;
     [devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([deviceEntity.shortName isEqualToString:@"D350BT"] || [deviceEntity.shortName isEqualToString:@"S350BT"] || [deviceEntity.shortName isEqualToString:@"D350SBT"]) {
+        if ([CSRUtilities belongToDimmer:deviceEntity.shortName]||[CSRUtilities belongToSwitch:deviceEntity.shortName]) {
             exist = YES;
             *stop = YES;
         }

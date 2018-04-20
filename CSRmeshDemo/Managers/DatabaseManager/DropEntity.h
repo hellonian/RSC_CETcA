@@ -9,15 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class CSRDeviceEntity;
-
 @interface DropEntity : NSManagedObject
 
 @property (nonatomic, retain) NSNumber * boundRatio;
 @property (nonatomic, retain) NSNumber * centerXRatio;
 @property (nonatomic, retain) NSNumber * centerYRatio;
-@property (nonatomic, retain) CSRDeviceEntity * device;
 @property (nonatomic, retain) NSNumber * dropID;
 @property (nonatomic, retain) NSNumber * galleryID;
+@property (nonatomic, retain) NSNumber * deviceID;
+@property (nonatomic, retain) NSString * kindName;
 
 @end

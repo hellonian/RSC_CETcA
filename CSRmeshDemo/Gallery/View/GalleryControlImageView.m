@@ -85,15 +85,15 @@
     dropView.boundRatio = drop.boundRatio;
     dropView.centerXRatio = drop.centerXRatio;
     dropView.centerYRatio = drop.centerYRatio;
-    dropView.deviceId = drop.device.deviceId;
+    dropView.deviceId = drop.deviceID;
     dropView.dropId = drop.dropID;
-    dropView.kindName = drop.device.shortName;
+    dropView.kindName = drop.kindName;
     [self addSubview:dropView];
     [dropView adjustDropViewBgcolorWithdeviceId:dropView.deviceId];
     [self.drops addObject:dropView];
     
     return dropView;
-}
+}                            
 
 
 
