@@ -22,6 +22,4 @@
 @property (weak, nonatomic) IBOutlet UIView *passwordLineView;
 @property (weak, nonatomic) IBOutlet UIButton *exportButton;
 
-@property (nonatomic, retain) NSURL *importedURL;
-
 @end

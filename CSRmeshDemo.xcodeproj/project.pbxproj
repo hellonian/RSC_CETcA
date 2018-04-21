@@ -93,14 +93,6 @@
 		2E06A4FF20205B0E007B8BEA /* GroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E06A4FD20205B0E007B8BEA /* GroupViewController.m */; };
 		2E06A50020205B0E007B8BEA /* GroupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E06A4FE20205B0E007B8BEA /* GroupViewController.xib */; };
 		2E07CD591F42A5F40081F6D0 /* HitTestAlrightCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E07CD581F42A5F40081F6D0 /* HitTestAlrightCollectionView.m */; };
-		2E1C6978205A60C200F28B58 /* ControllersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E1C696C205A60C100F28B58 /* ControllersViewController.m */; };
-		2E1C6979205A60C200F28B58 /* ControllersViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E1C696D205A60C100F28B58 /* ControllersViewController.xib */; };
-		2E1C697A205A60C200F28B58 /* JoinPlaceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E1C696F205A60C100F28B58 /* JoinPlaceViewController.m */; };
-		2E1C697B205A60C200F28B58 /* JoinPlaceViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E1C6970205A60C100F28B58 /* JoinPlaceViewController.xib */; };
-		2E1C697C205A60C200F28B58 /* NewControllersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E1C6972205A60C100F28B58 /* NewControllersViewController.m */; };
-		2E1C697D205A60C200F28B58 /* NewControllersViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E1C6973205A60C100F28B58 /* NewControllersViewController.xib */; };
-		2E1C697E205A60C200F28B58 /* SharePlaceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E1C6975205A60C100F28B58 /* SharePlaceViewController.m */; };
-		2E1C697F205A60C200F28B58 /* SharePlaceViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E1C6976205A60C100F28B58 /* SharePlaceViewController.xib */; };
 		2E2000A920182260000AD8C3 /* SceneEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2000A820182260000AD8C3 /* SceneEntity.m */; };
 		2E2000AC2018227E000AD8C3 /* SceneMemberEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2000AB2018227E000AD8C3 /* SceneMemberEntity.m */; };
 		2E2533EE20219850002A6EC3 /* DeviceListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2533ED20219850002A6EC3 /* DeviceListViewController.m */; };
@@ -220,10 +212,6 @@
 		2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EC38939204921C2004D822D /* TimerTableViewCell.xib */; };
 		2EC3893F204939CE004D822D /* TimerDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC3893D204939CE004D822D /* TimerDetailViewController.m */; };
 		2EC38940204939CE004D822D /* TimerDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EC3893E204939CE004D822D /* TimerDetailViewController.xib */; };
-		2ECB5214205BABED00FFCA77 /* ControllerAssociationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ECB5212205BABED00FFCA77 /* ControllerAssociationVC.m */; };
-		2ECB5215205BABED00FFCA77 /* ControllerAssociationVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2ECB5213205BABED00FFCA77 /* ControllerAssociationVC.xib */; };
-		2ECB521C205BD92200FFCA77 /* ControllerDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ECB521A205BD92200FFCA77 /* ControllerDetailVC.m */; };
-		2ECB521D205BD92200FFCA77 /* ControllerDetailVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2ECB521B205BD92200FFCA77 /* ControllerDetailVC.xib */; };
 		2ED3963C204D09A00068B666 /* TimerEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963B204D09A00068B666 /* TimerEntity.m */; };
 		2ED3963F204D09D20068B666 /* TimerDeviceEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */; };
 		2ED974471F3AED0F000F20C9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2ED974491F3AED0F000F20C9 /* LaunchScreen.storyboard */; };
@@ -454,18 +442,6 @@
 		2E06A4FE20205B0E007B8BEA /* GroupViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupViewController.xib; sourceTree = "<group>"; };
 		2E07CD571F42A5F40081F6D0 /* HitTestAlrightCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HitTestAlrightCollectionView.h; sourceTree = "<group>"; };
 		2E07CD581F42A5F40081F6D0 /* HitTestAlrightCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HitTestAlrightCollectionView.m; sourceTree = "<group>"; };
-		2E1C696B205A60C100F28B58 /* ControllersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControllersViewController.h; sourceTree = "<group>"; };
-		2E1C696C205A60C100F28B58 /* ControllersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControllersViewController.m; sourceTree = "<group>"; };
-		2E1C696D205A60C100F28B58 /* ControllersViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ControllersViewController.xib; sourceTree = "<group>"; };
-		2E1C696E205A60C100F28B58 /* JoinPlaceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JoinPlaceViewController.h; sourceTree = "<group>"; };
-		2E1C696F205A60C100F28B58 /* JoinPlaceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JoinPlaceViewController.m; sourceTree = "<group>"; };
-		2E1C6970205A60C100F28B58 /* JoinPlaceViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JoinPlaceViewController.xib; sourceTree = "<group>"; };
-		2E1C6971205A60C100F28B58 /* NewControllersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewControllersViewController.h; sourceTree = "<group>"; };
-		2E1C6972205A60C100F28B58 /* NewControllersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewControllersViewController.m; sourceTree = "<group>"; };
-		2E1C6973205A60C100F28B58 /* NewControllersViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NewControllersViewController.xib; sourceTree = "<group>"; };
-		2E1C6974205A60C100F28B58 /* SharePlaceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharePlaceViewController.h; sourceTree = "<group>"; };
-		2E1C6975205A60C100F28B58 /* SharePlaceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharePlaceViewController.m; sourceTree = "<group>"; };
-		2E1C6976205A60C100F28B58 /* SharePlaceViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SharePlaceViewController.xib; sourceTree = "<group>"; };
 		2E2000A720182260000AD8C3 /* SceneEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneEntity.h; sourceTree = "<group>"; };
 		2E2000A820182260000AD8C3 /* SceneEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneEntity.m; sourceTree = "<group>"; };
 		2E2000AA2018227E000AD8C3 /* SceneMemberEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneMemberEntity.h; sourceTree = "<group>"; };
@@ -643,12 +619,6 @@
 		2EC3893C204939CE004D822D /* TimerDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerDetailViewController.h; sourceTree = "<group>"; };
 		2EC3893D204939CE004D822D /* TimerDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerDetailViewController.m; sourceTree = "<group>"; };
 		2EC3893E204939CE004D822D /* TimerDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TimerDetailViewController.xib; sourceTree = "<group>"; };
-		2ECB5211205BABED00FFCA77 /* ControllerAssociationVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ControllerAssociationVC.h; sourceTree = "<group>"; };
-		2ECB5212205BABED00FFCA77 /* ControllerAssociationVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ControllerAssociationVC.m; sourceTree = "<group>"; };
-		2ECB5213205BABED00FFCA77 /* ControllerAssociationVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ControllerAssociationVC.xib; sourceTree = "<group>"; };
-		2ECB5219205BD92200FFCA77 /* ControllerDetailVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ControllerDetailVC.h; sourceTree = "<group>"; };
-		2ECB521A205BD92200FFCA77 /* ControllerDetailVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ControllerDetailVC.m; sourceTree = "<group>"; };
-		2ECB521B205BD92200FFCA77 /* ControllerDetailVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ControllerDetailVC.xib; sourceTree = "<group>"; };
 		2ED3963A204D09A00068B666 /* TimerEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerEntity.h; sourceTree = "<group>"; };
 		2ED3963B204D09A00068B666 /* TimerEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerEntity.m; sourceTree = "<group>"; };
 		2ED3963D204D09D20068B666 /* TimerDeviceEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerDeviceEntity.h; sourceTree = "<group>"; };
@@ -1424,7 +1394,6 @@
 				2EF3324C204502CA00565374 /* Language */,
 				2E2E700B1FF5DE60002D1C1D /* Music */,
 				2E2E703A1FF5DE60002D1C1D /* Remote */,
-				2E2E70431FF5DE60002D1C1D /* Share */,
 				2E2E70551FF5DE60002D1C1D /* Timer */,
 				2E2E70671FF5DE60002D1C1D /* Update */,
 				2E2E70031FF5DE60002D1C1D /* About */,
@@ -1532,31 +1501,6 @@
 				2E3EA7C420479F8900AFD4B8 /* RemoteSettingViewController.xib */,
 			);
 			path = Remote;
-			sourceTree = "<group>";
-		};
-		2E2E70431FF5DE60002D1C1D /* Share */ = {
-			isa = PBXGroup;
-			children = (
-				2E1C6974205A60C100F28B58 /* SharePlaceViewController.h */,
-				2E1C6975205A60C100F28B58 /* SharePlaceViewController.m */,
-				2E1C6976205A60C100F28B58 /* SharePlaceViewController.xib */,
-				2E1C696E205A60C100F28B58 /* JoinPlaceViewController.h */,
-				2E1C696F205A60C100F28B58 /* JoinPlaceViewController.m */,
-				2E1C6970205A60C100F28B58 /* JoinPlaceViewController.xib */,
-				2E1C696B205A60C100F28B58 /* ControllersViewController.h */,
-				2E1C696C205A60C100F28B58 /* ControllersViewController.m */,
-				2E1C696D205A60C100F28B58 /* ControllersViewController.xib */,
-				2E1C6971205A60C100F28B58 /* NewControllersViewController.h */,
-				2E1C6972205A60C100F28B58 /* NewControllersViewController.m */,
-				2E1C6973205A60C100F28B58 /* NewControllersViewController.xib */,
-				2ECB5211205BABED00FFCA77 /* ControllerAssociationVC.h */,
-				2ECB5212205BABED00FFCA77 /* ControllerAssociationVC.m */,
-				2ECB5213205BABED00FFCA77 /* ControllerAssociationVC.xib */,
-				2ECB5219205BD92200FFCA77 /* ControllerDetailVC.h */,
-				2ECB521A205BD92200FFCA77 /* ControllerDetailVC.m */,
-				2ECB521B205BD92200FFCA77 /* ControllerDetailVC.xib */,
-			);
-			path = Share;
 			sourceTree = "<group>";
 		};
 		2E2E70551FF5DE60002D1C1D /* Timer */ = {
@@ -2275,13 +2219,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E2E6FB41FF5DAFC002D1C1D /* icon_plus@2x.png in Resources */,
-				2ECB521D205BD92200FFCA77 /* ControllerDetailVC.xib in Resources */,
 				2E3B966C200F25DF000BD086 /* PrimaryItemCell.xib in Resources */,
 				2E2E6FB61FF5DAFC002D1C1D /* musicIcon@2x.png in Resources */,
 				2E3B966B200F25DF000BD086 /* LightClusterCell.xib in Resources */,
-				2ECB5215205BABED00FFCA77 /* ControllerAssociationVC.xib in Resources */,
 				2E2E6FD11FF5DAFC002D1C1D /* time@2x.png in Resources */,
-				2E1C697F205A60C200F28B58 /* SharePlaceViewController.xib in Resources */,
 				2E2E6FCF1FF5DAFC002D1C1D /* share@2x.png in Resources */,
 				2EE757D2201078A000FB75C5 /* MainCollectionViewCell.xib in Resources */,
 				2E3B9680200F3847000BD086 /* MainViewController.xib in Resources */,
@@ -2293,7 +2234,6 @@
 				2E2E6FCB1FF5DAFC002D1C1D /* scence8.png in Resources */,
 				2E2E6FB51FF5DAFC002D1C1D /* info.png in Resources */,
 				0D835B821B974A1100FF4376 /* Main.storyboard in Resources */,
-				2E1C697B205A60C200F28B58 /* JoinPlaceViewController.xib in Resources */,
 				2E2E6FAE1FF5DAFC002D1C1D /* blackbg.png in Resources */,
 				2E2E708D1FF5DE60002D1C1D /* PlacesViewController.xib in Resources */,
 				2EE757D72010B23100FB75C5 /* SceneCollectionViewCell.xib in Resources */,
@@ -2305,7 +2245,6 @@
 				2E2E708F1FF5DE60002D1C1D /* PlaceColorCollectionViewCell.xib in Resources */,
 				2E2E70851FF5DE60002D1C1D /* particleTexture.png in Resources */,
 				2E2E6FD01FF5DAFC002D1C1D /* switch_csr.png in Resources */,
-				2E1C6979205A60C200F28B58 /* ControllersViewController.xib in Resources */,
 				2E06A50020205B0E007B8BEA /* GroupViewController.xib in Resources */,
 				2E2E6FC31FF5DAFC002D1C1D /* scence18.png in Resources */,
 				2E2E6FC91FF5DAFC002D1C1D /* scence6.png in Resources */,
@@ -2321,7 +2260,6 @@
 				2E2E6FD21FF5DAFC002D1C1D /* update@2x.png in Resources */,
 				2E3B965C200F2553000BD086 /* DeviceDetailViewController.xib in Resources */,
 				2E2E6FBD1FF5DAFC002D1C1D /* scence11.png in Resources */,
-				2E1C697D205A60C200F28B58 /* NewControllersViewController.xib in Resources */,
 				2EF718341FFB2C0600901918 /* GalleryViewController.xib in Resources */,
 				2EF332562045031300565374 /* HelpViewController.xib in Resources */,
 				CE7BADE01C85A83D0096F4FE /* Events.storyboard in Resources */,
@@ -2431,7 +2369,6 @@
 				2EC3893F204939CE004D822D /* TimerDetailViewController.m in Sources */,
 				2EE757CA201030CA00FB75C5 /* TopImageView.m in Sources */,
 				2EE757C720102B7B00FB75C5 /* MainCollectionView.m in Sources */,
-				2E1C6978205A60C200F28B58 /* ControllersViewController.m in Sources */,
 				0D835B371B9749E600FF4376 /* CBPeripheral+Info.m in Sources */,
 				2E2E70B11FF5DE60002D1C1D /* NSMutableArray+Queue.m in Sources */,
 				CE8701C91C07566C00C6170F /* CSRQRScanViewController.m in Sources */,
@@ -2466,7 +2403,6 @@
 				2EE757CD2010763C00FB75C5 /* SuperCollectionViewCell.m in Sources */,
 				2EF718751FFB6C4D00901918 /* GalleryDetailViewController.m in Sources */,
 				CEB3B7E41C7F620800D0385B /* CSRLightColorCollectionCell.m in Sources */,
-				2ECB521C205BD92200FFCA77 /* ControllerDetailVC.m in Sources */,
 				CED928021C8759D1003B6110 /* CSRNewEventCreationViewController.m in Sources */,
 				2E2E70B01FF5DE60002D1C1D /* ApplicationImage.m in Sources */,
 				2E07CD591F42A5F40081F6D0 /* HitTestAlrightCollectionView.m in Sources */,
@@ -2577,7 +2513,6 @@
 				0D835B701B9749E700FF4376 /* CSRDetailsTableViewCell.m in Sources */,
 				F48095761CF89EC600F4BB10 /* CSRDeveloperOptionsViewController.m in Sources */,
 				0D835B711B9749E700FF4376 /* CSRActionTableViewCell.m in Sources */,
-				2E1C697E205A60C200F28B58 /* SharePlaceViewController.m in Sources */,
 				2E3B9675200F263A000BD086 /* DynamicIconView.m in Sources */,
 				0D835B721B9749E700FF4376 /* CSRBearerOptionTableViewCell.m in Sources */,
 				2EAF24761F417AAE00FB092A /* LightGroupBringer.m in Sources */,
@@ -2589,7 +2524,6 @@
 				2E2E70861FF5DE60002D1C1D /* MusicListTableViewCell.m in Sources */,
 				2EAF24751F417AAE00FB092A /* LightBringer.m in Sources */,
 				F4C85EA81CB3EE0E003E1FF3 /* CSRControllerEntity.m in Sources */,
-				2E1C697A205A60C200F28B58 /* JoinPlaceViewController.m in Sources */,
 				0D835B741B9749E700FF4376 /* CSRApplicationSettingsViewController.m in Sources */,
 				2E2E70821FF5DE60002D1C1D /* GetDataTools.m in Sources */,
 				F434C0661C919EF4001F6C58 /* CSREventsOnOffVC.m in Sources */,
@@ -2619,10 +2553,8 @@
 				0D835B7E1B9749E700FF4376 /* CSRmeshSettings.m in Sources */,
 				CE165B151BAC7156002D0637 /* CSRFavouritesCollectionViewController.m in Sources */,
 				2E2E707D1FF5DE60002D1C1D /* MasterViewController.m in Sources */,
-				2ECB5214205BABED00FFCA77 /* ControllerAssociationVC.m in Sources */,
 				2E6A02131F39884500111312 /* TabBarButton.m in Sources */,
 				F4658A221C99747A00C284F4 /* CSREventEntity.m in Sources */,
-				2E1C697C205A60C200F28B58 /* NewControllersViewController.m in Sources */,
 				2E2E70901FF5DE60002D1C1D /* PlaceColorIconPickerView.m in Sources */,
 				2E2E70911FF5DE60002D1C1D /* PlaceIconCollectionViewCell.m in Sources */,
 				2E3B9677200F263A000BD086 /* JQProgressView.m in Sources */,

@@ -135,8 +135,9 @@
     
     NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
     [_mainCollectionView.dataArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
-
-    [_mainCollectionView.dataArray addObject:@0];
+    if (_mainCVEditting) {
+        [self.mainCollectionView.dataArray addObject:@0];
+    }
     
     [_mainCollectionView reloadData];
 }
@@ -152,22 +153,13 @@
             deviceEntity.isEditting = @(_mainCVEditting);
         }
         if ([obj isKindOfClass:[NSNumber class]]) {
-            if (_mainCVEditting) {
+            if (!_mainCVEditting) {
                 [self.mainCollectionView.dataArray removeObject:obj];
             }
         }
     }];
-    if (!_mainCVEditting) {
-        __block BOOL exit=0;
-        [self.mainCollectionView.dataArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([obj isKindOfClass:[NSNumber class]]) {
-                exit = YES;
-                *stop = YES;
-            }
-        }];
-        if (!exit) {
-            [self.mainCollectionView.dataArray addObject:@0];
-        }
+    if (_mainCVEditting) {
+        [self.mainCollectionView.dataArray addObject:@0];
     }
     [self.mainCollectionView reloadData];
 }
@@ -909,19 +901,5 @@
     return _translucentBgView;
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

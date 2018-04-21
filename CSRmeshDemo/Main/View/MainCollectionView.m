@@ -60,8 +60,17 @@
 - (void)collectionView:(UICollectionView *)collectionView moveItemAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
     id objec = [self.dataArray objectAtIndex:sourceIndexPath.item];
     [self.dataArray removeObject:objec];
-    [self.dataArray insertObject:objec atIndex:destinationIndexPath.item];
+    
     self.isLocationChanged = YES;
+    
+    if (destinationIndexPath.item < self.dataArray.count-1) {
+        [self.dataArray insertObject:objec atIndex:destinationIndexPath.item];
+    }else {
+        [self.dataArray insertObject:objec atIndex:destinationIndexPath.item-1];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self reloadData];
+        });
+    }
 }
 
 

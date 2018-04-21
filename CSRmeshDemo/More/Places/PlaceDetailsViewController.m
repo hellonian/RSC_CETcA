@@ -69,7 +69,6 @@
         _passwordLineView.hidden = YES;
         _showPasswordLabel.hidden = YES;
     }
-    _importedURL = ((AppDelegate*)[UIApplication sharedApplication].delegate).passingURL;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -77,102 +76,24 @@
     if (!_placeEntity) {
         _deleteButton.hidden = YES;
         _exportButton.hidden = YES;
+    }else if (![[_placeEntity objectID] isEqual:[[CSRAppStateManager sharedInstance].selectedPlace objectID]]) {
+        _exportButton.hidden = YES;
     }
+    
 }
 
 #pragma mark - Actions
 
 - (void)saveAction {
-    /*
-    if (_placeEntity && ![CSRUtilities isStringEmpty:_placeEntity.passPhrase]) {
-        if (![CSRUtilities isStringEmpty:_placeNameTF.text] && ![CSRUtilities isStringEmpty:_placeNetworkKeyTF.text]) {
-            
-            _placeEntity.name = _placeNameTF.text;
-            _placeEntity.passPhrase = _placeNetworkKeyTF.text;
-            _placeEntity.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
-            _placeEntity.iconID = @(8);
-            _placeEntity.owner = @"My place";
-            _placeEntity.networkKey = nil;
-            
-            [self checkForSettings];
-            [[CSRDatabaseManager sharedInstance] saveContext];
-            [CSRUtilities saveObject:[[[[CSRAppStateManager sharedInstance].selectedPlace objectID] URIRepresentation] absoluteString] toDefaultsWithKey:@"kCSRLastSelectedPlaceID"];
-            [[CSRAppStateManager sharedInstance] setupPlace];
-            
-            [self dismissViewControllerAnimated:YES completion:nil];
-        }
-        else {
-            [self showAlert];
-        }
-    }
     
-    if (!_placeEntity) {
-        if (![CSRUtilities isStringEmpty:_placeNameTF.text] && ![CSRUtilities isStringEmpty:_placeNetworkKeyTF.text]) {
-            
-            _placeEntity = [NSEntityDescription insertNewObjectForEntityForName:@"CSRPlaceEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
-            
-            _placeEntity.name = _placeNameTF.text;
-            _placeEntity.passPhrase = _placeNetworkKeyTF.text;
-            _placeEntity.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
-            _placeEntity.iconID = @(8);
-            _placeEntity.owner = @"My place";
-            _placeEntity.networkKey = nil;
-            
-            [self checkForSettings];
-            [[CSRDatabaseManager sharedInstance] saveContext];
-            
-            for (int i=0; i<4; i++) {
-                SceneEntity *defaultScene = [NSEntityDescription insertNewObjectForEntityForName:@"SceneEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
-                
-                defaultScene.sceneID = @(i);
-                if (i==0) {
-                    defaultScene.iconID = @0;
-                    defaultScene.sceneName = @"Home";
-                }
-                if (i==1) {
-                    defaultScene.iconID = @5;
-                    defaultScene.sceneName = @"Away";
-                }
-                if (i==2 || i==3) {
-                    defaultScene.iconID = @8;
-                    defaultScene.sceneName = @"Custom";
-                }
-                
-                [_placeEntity addScenesObject:defaultScene];
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            }
-            
-            NSArray *defaultAreaNames = @[@"Livingroom",@"Bedroom",@"Diningroom",@"Washroom",@"Kitchen"];
-            for (int i=0; i<5; i++) {
-                CSRAreaEntity *defaultArea = [NSEntityDescription insertNewObjectForEntityForName:@"CSRAreaEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
-                
-                defaultArea.areaID = @(i+1);
-                defaultArea.areaName = defaultAreaNames[i];
-                defaultArea.areaIconNum = @(i);
-                defaultArea.sortId = @(i);
-                
-                [_placeEntity addAreasObject:defaultArea];
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            }
-            
-            [[CSRAppStateManager sharedInstance] setupPlace];
-            
-            [self dismissViewControllerAnimated:YES completion:nil];
-        }
-        else {
-            [self showAlert];
-        }
-    }
-    */
-    
-    if (_placeEntity && ![CSRUtilities isStringEmpty:_placeEntity.passPhrase] && !_importedURL) { //detail, configure
+    if (_placeEntity && ![CSRUtilities isStringEmpty:_placeEntity.passPhrase]) { //detail, configure
         NSLog(@">>>111");
         if (![CSRUtilities isStringEmpty:_placeNameTF.text] && ![CSRUtilities isStringEmpty:_placeNetworkKeyTF.text]) {
             _placeEntity.name = _placeNameTF.text;
             _placeEntity.passPhrase = _placeNetworkKeyTF.text;
-            _placeEntity.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
-            _placeEntity.iconID = @(8);
-            _placeEntity.owner = @"My place";
+//            _placeEntity.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
+//            _placeEntity.iconID = @(8);
+//            _placeEntity.owner = @"My place";
             _placeEntity.networkKey = nil;
             
             [self checkForSettings];
@@ -186,7 +107,7 @@
         }
         
         
-    } else if (!_placeEntity && !_importedURL) { //new place
+    } else if (!_placeEntity) { //new place
         NSLog(@">>>222");
         if (![CSRUtilities isStringEmpty:_placeNameTF.text] && ![CSRUtilities isStringEmpty:_placeNetworkKeyTF.text]) {
             _placeEntity = [NSEntityDescription insertNewObjectForEntityForName:@"CSRPlaceEntity"
@@ -243,122 +164,8 @@
         } else {
             [self showAlert];
         }
-    } else if (_placeEntity && [CSRUtilities isStringEmpty:_placeEntity.passPhrase] && !_importedURL) { //from MASP
-        NSLog(@">>>333");
-        if (![CSRUtilities isStringEmpty:_placeNameTF.text]) {
-            _placeEntity.name = _placeNameTF.text;
-            _placeEntity.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
-            _placeEntity.iconID = @(8);
-            
-            [self checkForSettings];
-            [[CSRDatabaseManager sharedInstance] saveContext];
-            
-            [self.navigationController popToRootViewControllerAnimated:YES];
-        } else {
-            [self showAlert];
-        }
-        
-    } else if (_placeEntity && _importedURL && ![CSRUtilities isStringEmpty:_placeEntity.passPhrase]) {
-        
-        if (![CSRUtilities isStringEmpty:_placeNameTF.text] ) {
-            NSLog(@">>>444");
-            _placeEntity.name = _placeNameTF.text;
-            _placeEntity.passPhrase = _placeNetworkKeyTF.text;
-            _placeEntity.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
-            _placeEntity.iconID = @(8);
-            _placeEntity.owner = @"My place";
-            _placeEntity.networkKey = nil;
-            
-            [self checkForSettings];
-            [[CSRAppStateManager sharedInstance] setSelectedPlace:_placeEntity];
-            [self unZipDecrypt];
-            [[MeshServiceApi sharedInstance] setNetworkPassPhrase:_placeNetworkKeyTF.text];
-            
-            ((AppDelegate*)[UIApplication sharedApplication].delegate).passingURL = nil;
-            [self.navigationController popViewControllerAnimated:YES];
-        } else {
-            [self showAlert];
-        }
-    } else if (!_placeEntity && _importedURL) {
-        if (![CSRUtilities isStringEmpty:_placeNameTF.text] && ![CSRUtilities isStringEmpty:_placeNetworkKeyTF.text]) {
-            NSLog(@">>>555");
-            CSRPlaceEntity *newPlace = [NSEntityDescription insertNewObjectForEntityForName:@"CSRPlaceEntity"
-                                                                     inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
-            
-            newPlace.name = _placeNameTF.text;
-            newPlace.passPhrase = _placeNetworkKeyTF.text;
-            _placeEntity.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
-            newPlace.iconID = @(8);
-            newPlace.owner = @"My place";
-            newPlace.networkKey = nil;
-            
-            [self checkForSettings];
-            [[CSRAppStateManager sharedInstance] setSelectedPlace:newPlace];
-            [self unZipDecrypt];
-            [[MeshServiceApi sharedInstance] setNetworkPassPhrase:_placeNetworkKeyTF.text];
-            
-            ((AppDelegate*)[UIApplication sharedApplication].delegate).passingURL = nil;
-            [self.navigationController popViewControllerAnimated:YES];
-        } else {
-            [self showAlert];
-        }
-        
-    } else if (_placeEntity && _importedURL && [CSRUtilities isStringEmpty:_placeEntity.passPhrase]) {
-        NSLog(@">>>666");
-        if (![CSRUtilities isStringEmpty:_placeNameTF.text]) {
-            _placeEntity.name = _placeNameTF.text;
-            _placeEntity.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
-            _placeEntity.iconID = @(8);
-            
-            [self checkForSettings];
-            [self unZipDecrypt];
-            
-            [[MeshServiceApi sharedInstance] setNetworkKey:_placeEntity.networkKey];
-            
-            ((AppDelegate*)[UIApplication sharedApplication].delegate).passingURL = nil;
-            [self.navigationController popViewControllerAnimated:YES];
-        } else {
-            [self showAlert];
-        }
-        
     }
 }
-
-- (void) unZipDecrypt {
-    
-    NSError *error = nil;
-    NSString *zipPath = [_importedURL path];
-    
-    NSString *outputPath = [CSRUtilities createFile:@"Regular"];
-    ZipArchive* zip = [[ZipArchive alloc] init];
-    if([zip UnzipOpenFile:zipPath Password:[[MeshServiceApi sharedInstance] getMeshId]])
-    {
-        if([zip UnzipFileTo:outputPath overWrite:YES])
-        {
-            NSLog(@"success");
-        } else {
-            //TODO: crash fix
-            NSLog(@"Zip is Wrong!!");
-        }
-        [zip UnzipCloseFile];
-    }
-    
-    NSArray * directoryContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:outputPath error:&error];
-    NSString *fullURLString = [outputPath stringByAppendingString:[NSString stringWithFormat:@"/%@", [directoryContents objectAtIndex:0]]];
-    NSString *validStr = [NSString stringWithFormat:@"file:///%@", fullURLString];
-    NSData *jsonDataImported = [NSData dataWithContentsOfURL:[NSURL URLWithString:validStr]];
-    
-    NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:jsonDataImported options:NSJSONReadingMutableLeaves error:&error];
-    
-    [CSRUtilities saveObject:[[[[CSRAppStateManager sharedInstance].selectedPlace objectID] URIRepresentation] absoluteString] toDefaultsWithKey:@"kCSRLastSelectedPlaceID"];
-    
-    [[CSRAppStateManager sharedInstance] setupPlace];
-    
-    CSRParseAndLoad *parseLoad = [[CSRParseAndLoad alloc] init];
-//    [parseLoad deleteEntitiesInSelectedPlace]; //Delete Core data Entities
-    [parseLoad parseIncomingDictionary:jsonDictionary]; //parse and load fresh data
-}
-
 
 - (void)checkForSettings
 {

@@ -17,7 +17,6 @@
 #import "PlacesViewController.h"
 #import "LanguageViewController.h"
 #import "HelpViewController.h"
-#import "SharePlaceViewController.h"
 
 @interface MoreViewController ()<UISplitViewControllerDelegate,masterDelegate>
 
@@ -26,7 +25,6 @@
 @property (nonatomic,strong) TimerViewController *timerVC;
 @property (nonatomic,strong) DiscoverViewController *updateVC;
 @property (nonatomic,strong) AboutViewController *aboutVC;
-@property (nonatomic,strong) SharePlaceViewController *shareVC;
 @property (nonatomic,strong) MasterViewController *masterVC;
 @property (nonatomic,strong) PlacesViewController *placesVC;
 @property (nonatomic,strong) UINavigationController *masterViewManager;
@@ -60,7 +58,6 @@
     self.timerVC = [[TimerViewController alloc] init];
     self.updateVC = [[DiscoverViewController alloc] init];
     self.aboutVC = [[AboutViewController alloc] init];
-    self.shareVC = [[SharePlaceViewController alloc] init];
     self.musicVC = [[MusicListTableViewController alloc] init];
     self.placesVC = [[PlacesViewController alloc] init];
     self.masterVC = [[MasterViewController alloc] init];
@@ -117,9 +114,6 @@
                 case 0:
                     [vcs addObject:self.placesVC];
                     break;
-                case 1:
-                    [vcs addObject:self.shareVC];
-                    break;
                 default:
                     break;
             }
@@ -172,9 +166,6 @@
             switch (indexPath.row) {
                 case 0:
                     [self pushViewConrollerW:self.placesVC];
-                    break;
-                case 1:
-                    [self pushViewConrollerW:self.shareVC];
                     break;
                 default:
                     break;
@@ -238,19 +229,6 @@
     [self.panel.view autoPinEdgesToSuperviewEdges];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

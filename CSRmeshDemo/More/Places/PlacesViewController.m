@@ -15,8 +15,6 @@
 #import "CSRAppStateManager.h"
 #import "PlaceDetailsViewController.h"
 
-#import "AppDelegate.h"
-
 #import <MBProgressHUD.h>
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import "CSRParseAndLoad.h"
@@ -53,8 +51,6 @@
     self.tableView.rowHeight = 60.0f;
     self.tableView.backgroundView = [[UIView alloc] init];
     self.tableView.backgroundColor = [UIColor clearColor];
-    
-    _importedURL = ((AppDelegate*)[UIApplication sharedApplication].delegate).passingURL;
 }
 
 - (void)addAction {
@@ -70,11 +66,12 @@
     }];
     UIAlertAction *join = [UIAlertAction actionWithTitle:@"Join a place" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
-        _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        _hud.delegate = self;
+        if (!_hud) {
+            _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            _hud.delegate = self;
+        }
         
         NSString * name = [UIDevice currentDevice].name;
-        NSLog(@"%@",name);
         _peerID = [[MCPeerID alloc]initWithDisplayName:name];
         _session = [[MCSession alloc]initWithPeer:_peerID];
         _session.delegate = self;
