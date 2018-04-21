@@ -30,7 +30,6 @@
 @property (weak, nonatomic) IBOutlet UIImageView *moveImageView;
 @property (weak, nonatomic) IBOutlet UIView *bottomView;
 
-
 @end
 
 @implementation MainCollectionViewCell
@@ -39,7 +38,6 @@
     [super awakeFromNib];
     // Initialization code
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setPowerStateSuccess:) name:@"setPowerStateSuccess" object:nil];
-    
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mainCellTapGestureAction:)];
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(mainCellPanGestureAction:)];
     panGesture.delegate = self;
@@ -52,8 +50,6 @@
     UIPanGestureRecognizer *movePanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(mainCellMovePanGestureAction:)];
     [self.moveImageView addGestureRecognizer:movePanGesture];
     
-    
-    
 }
 
 - (void)configureCellWithiInfo:(id)info withCellIndexPath:(NSIndexPath *)indexPath{
@@ -63,7 +59,7 @@
         CSRAreaEntity *areaEntity = (CSRAreaEntity *)info;
         self.groupId = areaEntity.areaID;
         self.deviceId = @2000;
-        
+        self.backNum = 0;
         self.groupMembers = [areaEntity.devices allObjects];
         self.nameLabel.hidden = NO;
         self.nameLabel.text = areaEntity.areaName;
@@ -255,22 +251,22 @@
 - (void)setPowerStateSuccess:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
-
     if ([_deviceId isEqualToNumber:@2000]) {
-        __block BOOL exist;
+        static int num;
         [_groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([deviceEntity.deviceId isEqualToNumber:deviceId]) {
-                exist = YES;
+                num = num+1;
                 *stop = YES;
             }
         }];
-        if (exist) {
+        
+        if (num == _groupMembers.count) {
+            num = 0;
             [self adjustGroupCellBgcolorAndLevelLabel];
         }
     }else if ([deviceId isEqualToNumber:_deviceId]) {
         [self adjustCellBgcolorAndLevelLabelWithDeviceId:deviceId];
     }
-    
 }
 
 - (void)mainCellTapGestureAction:(UITapGestureRecognizer *)sender {

@@ -77,10 +77,11 @@
     __block BOOL exist;
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
+            NSLog(@"调光回调 deviceId--> %@ powerState--> %@ --> %@ ",deviceId,powerState,level);
             model.powerState = powerState;
             model.level = level;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
-            NSLog(@"调光回调 deviceId--> %@ powerState--> %@ --> %@ ",deviceId,powerState,level);
+            
             exist = YES;
             *stop = YES;
         }
@@ -104,9 +105,9 @@
     __block BOOL exist;
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
+            NSLog(@"开关回调 deviceId --> %@ powerState--> %@",deviceId,state);
             model.powerState = state;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId}];
-            NSLog(@"开关回调 deviceId --> %@ powerState--> %@",deviceId,state);
             
             exist = YES;
             *stop = YES;

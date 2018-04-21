@@ -280,6 +280,7 @@
                                                                   NSNumber * _Nullable groupIndex,
                                                                   NSNumber * _Nullable instance,
                                                                   NSNumber * _Nullable groupId) {
+                                                            NSLog(@"%@ + %@ + %@ + %@ + %@",deviceId,modelNo,groupIndex,instance,groupId);
                                                             NSMutableData *myData = (NSMutableData*)[CSRUtilities dataForHexString:deviceEntity.groups];
                                                             uint16_t desiredValue = [groupId unsignedShortValue];
                                                             int groupIndexInt = [groupIndex intValue];
@@ -298,7 +299,7 @@
                                                             [[CSRDatabaseManager sharedInstance] saveContext];
                                                         }
                                                         failure:^(NSError * _Nullable error) {
-                                                            NSLog(@"mesh timeout");
+                                                            NSLog(@"mesh timeout +++ %@",error);
                                                         }];
             }
         }else {

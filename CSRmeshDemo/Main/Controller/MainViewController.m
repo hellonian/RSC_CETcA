@@ -136,7 +136,17 @@
     NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
     [_mainCollectionView.dataArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
     if (_mainCVEditting) {
-        [self.mainCollectionView.dataArray addObject:@0];
+        //在编辑状态下添加分组时避免重复生成加号
+        __block BOOL exit=0;
+        [self.mainCollectionView.dataArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([obj isKindOfClass:[NSNumber class]]) {
+                exit = YES;
+                *stop = YES;
+            }
+        }];
+        if (!exit) {
+            [self.mainCollectionView.dataArray addObject:@0];
+        }
     }
     
     [_mainCollectionView reloadData];
@@ -159,7 +169,16 @@
         }
     }];
     if (_mainCVEditting) {
-        [self.mainCollectionView.dataArray addObject:@0];
+        __block BOOL exit=0;
+        [self.mainCollectionView.dataArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([obj isKindOfClass:[NSNumber class]]) {
+                exit = YES;
+                *stop = YES;
+            }
+        }];
+        if (!exit) {
+            [self.mainCollectionView.dataArray addObject:@0];
+        }
     }
     [self.mainCollectionView reloadData];
 }
