@@ -59,7 +59,6 @@
         CSRAreaEntity *areaEntity = (CSRAreaEntity *)info;
         self.groupId = areaEntity.areaID;
         self.deviceId = @2000;
-        self.backNum = 0;
         self.groupMembers = [areaEntity.devices allObjects];
         self.nameLabel.hidden = NO;
         self.nameLabel.text = areaEntity.areaName;

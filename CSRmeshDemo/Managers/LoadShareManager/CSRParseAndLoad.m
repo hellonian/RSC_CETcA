@@ -204,6 +204,7 @@
             deviceEntity.isAssociated = deviceDict[@"isAssociated"];
             deviceEntity.favourite = deviceDict[@"isFavourite"];
             deviceEntity.sortId = deviceDict[@"sortId"];
+            deviceEntity.remoteBranch = deviceDict[@"remoteBranch"];
             
             if (self.sharePlace) {
                 [self.sharePlace addDevicesObject:deviceEntity];
@@ -411,7 +412,8 @@
                                           @"isAssociated":(device.isAssociated) ? (device.isAssociated) : @0,
                                           @"isFavourite":(device.favourite) ? (device.favourite) : @0,
                                           @"dhmKey" : dhmKey ? dhmKey : @"",
-                                          @"sortId": (device.sortId) ? (device.sortId):@0
+                                          @"sortId": (device.sortId) ? (device.sortId):@0,
+                                          @"remoteBranch":(device.remoteBranch)? (device.remoteBranch):@""
                                           }];
             }
         }

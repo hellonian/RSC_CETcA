@@ -1106,4 +1106,16 @@
     return NO;
 }
 
+//十六进制字符串转十进制数据
++ (NSInteger)numberWithHexString:(NSString *)hexString {
+    
+    const char *hexChar = [hexString cStringUsingEncoding:NSUTF8StringEncoding];
+    
+    int hexNumber;
+    
+    sscanf(hexChar, "%x", &hexNumber);
+    
+    return (NSInteger)hexNumber;
+}
+
 @end

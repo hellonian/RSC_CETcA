@@ -163,7 +163,7 @@ static DataModelManager *manager = nil;
         }
         primordial = seq;
         NSString *state = [dataStr substringWithRange:NSMakeRange(6, 2)];
-        NSInteger level = [self numberWithHexString:[dataStr substringWithRange:NSMakeRange(8, 2)]];
+        NSInteger level = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(8, 2)]];
         NSNumber *levelNum = [NSNumber numberWithInteger:level];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"physicalButtonActionCall" object:self userInfo:@{@"powerState":state,@"level":levelNum,@"deviceId":sourceDeviceId}];
     }
@@ -177,7 +177,7 @@ static DataModelManager *manager = nil;
     //获取固件版本
     if ([dataStr hasPrefix:@"a8"]) {
         NSString *firmwareVersion = [dataStr substringWithRange:NSMakeRange(16, 2)];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"getFirmwareVersion" object:nil userInfo:@{@"getFirmwareVersion":@([self numberWithHexString:firmwareVersion]),@"deviceId":sourceDeviceId}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"getFirmwareVersion" object:nil userInfo:@{@"getFirmwareVersion":@([CSRUtilities numberWithHexString:firmwareVersion]),@"deviceId":sourceDeviceId}];
     }
     
     //获取遥控器电量
@@ -224,7 +224,7 @@ static DataModelManager *manager = nil;
             NSData *preData = [dic objectForKey:key];
             string = [NSString stringWithFormat:@"%@%@",string,[self hexStringForData:preData]];
         }
-        NSInteger num = [self numberWithHexString:[firstStr substringWithRange:NSMakeRange(4, 2)]];
+        NSInteger num = [CSRUtilities numberWithHexString:[firstStr substringWithRange:NSMakeRange(4, 2)]];
         NSMutableArray *timersArray = [[NSMutableArray alloc] init];
         for (NSInteger i=0; i<num; i++) {
             if (string.length > (i*32+11+32-2)) {
@@ -255,7 +255,7 @@ static DataModelManager *manager = nil;
              NSString *deviceID3 = [self exchangeLowHight:deviceID33];
             NSString *deviceID44 = [string substringWithRange:NSMakeRange(27, 4)];
              NSString *deviceID4 = [self exchangeLowHight:deviceID44];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"getRemoteConfiguration" object:nil userInfo:@{@"deviceID1":[NSNumber numberWithInteger:[self numberWithHexString:deviceID1]],@"deviceID2":[NSNumber numberWithInteger:[self numberWithHexString:deviceID2]],@"deviceID3":[NSNumber numberWithInteger:[self numberWithHexString:deviceID3]],@"deviceID4":[NSNumber numberWithInteger:[self numberWithHexString:deviceID4]],@"deviceId":deviceId}];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"getRemoteConfiguration" object:nil userInfo:@{@"deviceID1":deviceID1,@"deviceID2":deviceID2,@"deviceID3":deviceID3,@"deviceID4":deviceID4,@"deviceId":deviceId}];
         }
         
     }
@@ -272,11 +272,11 @@ static DataModelManager *manager = nil;
 
 - (TimeSchedule *)analyzeTimeScheduleData:(NSString *)dataString forLight:(NSNumber *)deviceId {
     
-    NSInteger index = [self numberWithHexString:[dataString substringWithRange:NSMakeRange(0, 2)]];
+    NSInteger index = [CSRUtilities numberWithHexString:[dataString substringWithRange:NSMakeRange(0, 2)]];
     BOOL state = [[dataString substringWithRange:NSMakeRange(2, 2)] boolValue];
     NSString *repeat = [self getBinaryByhex:[dataString substringWithRange:NSMakeRange(16, 2)]];
     NSString *eveType = [dataString substringWithRange:NSMakeRange(18, 2)];
-    NSInteger level = [self numberWithHexString:[dataString substringWithRange:NSMakeRange(20, 2)]];
+    NSInteger level = [CSRUtilities numberWithHexString:[dataString substringWithRange:NSMakeRange(20, 2)]];
     
     NSString *dateStrInData = [dataString substringWithRange:NSMakeRange(4, 12)];
     NSDate *fireDate = [self dateForString:dateStrInData];
@@ -297,12 +297,12 @@ static DataModelManager *manager = nil;
 }
 
 - (NSDate *)dateForString:(NSString *)dateStrInData {
-    NSInteger year = [self numberWithHexString:[dateStrInData substringWithRange:NSMakeRange(0, 2)]] + 2000;
-    NSInteger month = [self numberWithHexString:[dateStrInData substringWithRange:NSMakeRange(2, 2)]];
-    NSInteger day = [self numberWithHexString:[dateStrInData substringWithRange:NSMakeRange(4, 2)]];
-    NSInteger hour = [self numberWithHexString:[dateStrInData substringWithRange:NSMakeRange(6, 2)]];
-    NSInteger minute = [self numberWithHexString:[dateStrInData substringWithRange:NSMakeRange(8, 2)]];
-    NSInteger second = [self numberWithHexString:[dateStrInData substringWithRange:NSMakeRange(10, 2)]];
+    NSInteger year = [CSRUtilities numberWithHexString:[dateStrInData substringWithRange:NSMakeRange(0, 2)]] + 2000;
+    NSInteger month = [CSRUtilities numberWithHexString:[dateStrInData substringWithRange:NSMakeRange(2, 2)]];
+    NSInteger day = [CSRUtilities numberWithHexString:[dateStrInData substringWithRange:NSMakeRange(4, 2)]];
+    NSInteger hour = [CSRUtilities numberWithHexString:[dateStrInData substringWithRange:NSMakeRange(6, 2)]];
+    NSInteger minute = [CSRUtilities numberWithHexString:[dateStrInData substringWithRange:NSMakeRange(8, 2)]];
+    NSInteger second = [CSRUtilities numberWithHexString:[dateStrInData substringWithRange:NSMakeRange(10, 2)]];
     NSString *dateStr = [NSString stringWithFormat:@"%ld-%ld-%ld %ld:%ld:%ld",(long)year,(long)month,(long)day,(long)hour,(long)minute,(long)second];
     NSDateFormatter *format = [[NSDateFormatter alloc] init];
     [format setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
@@ -367,18 +367,6 @@ static DataModelManager *manager = nil;
     }];
     
     return string;
-}
-
-//十六进制字符串转十进制数据
-- (NSInteger)numberWithHexString:(NSString *)hexString{
-    
-    const char *hexChar = [hexString cStringUsingEncoding:NSUTF8StringEncoding];
-    
-    int hexNumber;
-    
-    sscanf(hexChar, "%x", &hexNumber);
-    
-    return (NSInteger)hexNumber;
 }
 
 //十六进制字符串转二进制字符串

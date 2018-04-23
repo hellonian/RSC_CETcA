@@ -40,7 +40,7 @@
     
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(finishSelectingDevice)];
     self.navigationItem.rightBarButtonItem = done;
-    if (self.selectMode == DeviceListSelectMode_Single) {
+    if (self.selectMode == DeviceListSelectMode_ForDrop) {
         self.navigationItem.rightBarButtonItem.enabled = NO;
     }
     
@@ -93,7 +93,7 @@
 
 - (void)mainCollectionViewDelegateSelectAction:(NSNumber *)cellDeviceId {
 
-    if (self.selectMode == DeviceListSelectMode_Single) {
+    if (self.selectMode == DeviceListSelectMode_ForDrop) {
         [_devicesCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell *cell, NSUInteger idx, BOOL * _Nonnull stop) {
             
             if (cell.seleteButton.selected && ![cell.deviceId isEqualToNumber:cellDeviceId]) {
@@ -106,6 +106,30 @@
                 cell.seleteButton.selected = YES;
                 [cell.seleteButton setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
                 [self.selectedDevices addObject:cellDeviceId];
+            }
+        }];
+    }else if (self.selectMode == DeviceListSelectMode_Single) {
+        [_devicesCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell *cell, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([cell.deviceId isEqualToNumber:cellDeviceId]) {
+                if (cell.seleteButton.selected) {
+                    cell.seleteButton.selected = NO;
+                    [cell.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                    if ([self.selectedDevices containsObject:cell.deviceId]) {
+                        [self.selectedDevices removeObject:cell.deviceId];
+                    }
+                }else {
+                    cell.seleteButton.selected = YES;
+                    [cell.seleteButton setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+                    if (![self.selectedDevices containsObject:cell.deviceId]) {
+                        [self.selectedDevices addObject:cell.deviceId];
+                    }
+                }
+            }else if (cell.seleteButton.selected) {
+                cell.seleteButton.selected = NO;
+                [cell.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                if ([self.selectedDevices containsObject:cell.deviceId]) {
+                    [self.selectedDevices removeObject:cell.deviceId];
+                }
             }
         }];
     }else {
@@ -126,7 +150,7 @@
         }];
     }
     
-    if (self.selectMode == DeviceListSelectMode_Single) {
+    if (self.selectMode == DeviceListSelectMode_ForDrop) {
         if ([self.selectedDevices count]>0) {
             self.navigationItem.rightBarButtonItem.enabled = YES;
         }else {

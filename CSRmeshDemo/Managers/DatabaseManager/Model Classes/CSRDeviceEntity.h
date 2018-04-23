@@ -27,6 +27,7 @@
 @property (nonatomic, retain) NSSet *drops;
 @property (nonatomic, retain) NSNumber * sortId;
 @property (nonatomic, retain) NSNumber *isEditting;
+@property (nonatomic, retain) NSString * remoteBranch;
 
 @end
 

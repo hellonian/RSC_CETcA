@@ -223,7 +223,7 @@
 - (void)galleryAddAction:(UIBarButtonItem *)item {
 
     DeviceListViewController *list = [[DeviceListViewController alloc] init];
-    list.selectMode = DeviceListSelectMode_Single;
+    list.selectMode = DeviceListSelectMode_ForDrop;
     [list getSelectedDevices:^(NSArray *devices) {
         if (devices.count > 0) {
             NSNumber *deviceId = devices[0];

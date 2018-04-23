@@ -96,6 +96,7 @@
 
 + (NSString *)hexStringForData: (NSData *)data;
 + (NSData*)dataForHexString:(NSString*)hexString;
++ (NSInteger)numberWithHexString:(NSString *)hexString;
 + (UIImage *)fixOrientation:(UIImage *)aImage;
 
 + (BOOL)belongToDimmer:(NSString *)shortName;

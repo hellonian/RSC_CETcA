@@ -52,16 +52,39 @@
         [self.fiveRemoteView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
         [self.fiveRemoteView autoPinEdgeToSuperviewEdge:ALEdgeRight];
         [self.fiveRemoteView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameBgView withOffset:30];
+        
+        if (self.remoteEntity.remoteBranch && self.remoteEntity.remoteBranch.length == 16) {
+            NSString *myStr1 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(0, 4)];
+            CSRDeviceEntity *deviceEntity1 = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:@([CSRUtilities numberWithHexString:myStr1])];
+            self.fSelectOneLabel.text = deviceEntity1.name;
+            NSString *myStr2 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(4, 4)];
+            CSRDeviceEntity *deviceEntity2 = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:@([CSRUtilities numberWithHexString:myStr2])];
+            self.fSelectTwoLabel.text = deviceEntity2.name;
+            NSString *myStr3 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(8, 4)];
+            CSRDeviceEntity *deviceEntity3 = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:@([CSRUtilities numberWithHexString:myStr3])];
+            self.fSelectThreeLabel.text = deviceEntity3.name;
+            NSString *myStr4 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(12, 4)];
+            CSRDeviceEntity *deviceEntity4 = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:@([CSRUtilities numberWithHexString:myStr4])];
+            self.fSelectFourLabel.text = deviceEntity4.name;
+            
+        }
+        
     }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]) {
         [self.view addSubview:self.singleRemoteView];
         [self.singleRemoteView autoSetDimension:ALDimensionHeight toSize:44.0f];
         [self.singleRemoteView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
         [self.singleRemoteView autoPinEdgeToSuperviewEdge:ALEdgeRight];
         [self.singleRemoteView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameBgView withOffset:30];
+        
+        if (self.remoteEntity.remoteBranch && self.remoteEntity.remoteBranch.length == 4) {
+            CSRDeviceEntity *deviceEntity1 = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:@([CSRUtilities numberWithHexString:self.remoteEntity.remoteBranch])];
+            self.sSelectOneLabel.text = deviceEntity1.name;
+        }
     }
     
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneAction)];
     self.navigationItem.rightBarButtonItem = done;
+    self.navigationItem.rightBarButtonItem.enabled = NO;
     
 }
 
@@ -73,7 +96,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(settingRemoteCall:)
                                                  name:@"settingRemoteCall" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getRemoteConfiguration:) name:@"getRemoteConfiguration" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(getRemoteConfiguration:)
+                                                 name:@"getRemoteConfiguration" object:nil];
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getRemoteBattery:) name:@"getRemoteBattery" object:nil];
 }
 
@@ -91,32 +116,117 @@
     DeviceListViewController *list = [[DeviceListViewController alloc] init];
     list.selectMode = DeviceListSelectMode_Single;
     [list getSelectedDevices:^(NSArray *devices) {
+
         if ([devices count] > 0) {
             NSNumber *deviceId = devices[0];
             CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
             if (sender.tag == 100) {
                 _fSelectOneLabel.text = deviceEntity.name;
                 _fSelectOneLabel.tag = [deviceId integerValue];
+                
+                NSString *myStr1 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(0, 4)];
+                if ([CSRUtilities numberWithHexString:myStr1] != [deviceId integerValue] && !self.navigationItem.rightBarButtonItem.enabled) {
+                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                }
+                
                 return;
             }
             if (sender.tag == 101) {
                 _fSelectTwoLabel.text = deviceEntity.name;
                 _fSelectTwoLabel.tag = [deviceId integerValue];
+                
+                NSString *myStr2 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(4, 4)];
+                if ([CSRUtilities numberWithHexString:myStr2] != [deviceId integerValue] && !self.navigationItem.rightBarButtonItem.enabled) {
+                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                }
+                
                 return;
             }
             if (sender.tag == 102) {
                 _fSelectThreeLabel.text = deviceEntity.name;
                 _fSelectThreeLabel.tag = [deviceId integerValue];
+                
+                NSString *myStr3 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(8, 4)];
+                if ([CSRUtilities numberWithHexString:myStr3] != [deviceId integerValue] && !self.navigationItem.rightBarButtonItem.enabled) {
+                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                }
+                
                 return;
             }
             if (sender.tag == 103) {
                 _fSelectFourLabel.text = deviceEntity.name;
                 _fSelectFourLabel.tag = [deviceId integerValue];
+                
+                NSString *myStr4 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(12, 4)];
+                if ([CSRUtilities numberWithHexString:myStr4] != [deviceId integerValue] && !self.navigationItem.rightBarButtonItem.enabled) {
+                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                }
+                
                 return;
             }
             if (sender.tag == 200) {
                 _sSelectOneLabel.text = deviceEntity.name;
                 _sSelectOneLabel.tag = [deviceId integerValue];
+                
+                if ([CSRUtilities numberWithHexString:self.remoteEntity.remoteBranch] != [deviceId integerValue] && !self.navigationItem.rightBarButtonItem.enabled) {
+                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                }
+                
+                return;
+            }
+        }else {
+            if (sender.tag == 100) {
+                _fSelectOneLabel.text = @"";
+                _fSelectOneLabel.tag = 0;
+                
+                NSString *myStr1 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(0, 4)];
+                if (![myStr1 isEqualToString:@"ffff"] && !self.navigationItem.rightBarButtonItem.enabled) {
+                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                }
+                
+                return;
+            }
+            if (sender.tag == 101) {
+                _fSelectTwoLabel.text = @"";
+                _fSelectTwoLabel.tag = 0;
+                
+                NSString *myStr2 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(4, 4)];
+                if (![myStr2 isEqualToString:@"ffff"] && !self.navigationItem.rightBarButtonItem.enabled) {
+                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                }
+                
+                return;
+            }
+            if (sender.tag == 102) {
+                _fSelectThreeLabel.text = @"";
+                _fSelectThreeLabel.tag = 0;
+                
+                NSString *myStr3 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(8, 4)];
+                if (![myStr3 isEqualToString:@"ffff"] && !self.navigationItem.rightBarButtonItem.enabled) {
+                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                }
+                
+                return;
+            }
+            if (sender.tag == 103) {
+                _fSelectFourLabel.text = @"";
+                _fSelectFourLabel.tag = 0;
+                
+                NSString *myStr4 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(12, 4)];
+                if (![myStr4 isEqualToString:@"ffff"] && !self.navigationItem.rightBarButtonItem.enabled) {
+                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                }
+                
+                return;
+            }
+            if (sender.tag == 200) {
+                _sSelectOneLabel.text = @"";
+                _sSelectOneLabel.tag = 0;
+                
+                if (![self.remoteEntity.remoteBranch isEqualToString:@"ffff"] && !self.navigationItem.rightBarButtonItem.enabled) {
+                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                }
+                
                 return;
             }
         }
@@ -153,6 +263,13 @@
         }
         cmdStr = [NSString stringWithFormat:@"700b010000%@%@%@%@",str1,str2,str3,str4];
         
+        NSString *mystr1 = _fSelectOneLabel.tag == 0 ? @"ffff":[[NSString alloc] initWithFormat:@"%1lx",(long)_fSelectOneLabel.tag];
+        NSString *mystr2 = _fSelectTwoLabel.tag == 0 ? @"ffff":[[NSString alloc] initWithFormat:@"%1lx",(long)_fSelectTwoLabel.tag];
+        NSString *mystr3 = _fSelectThreeLabel.tag == 0 ? @"ffff":[[NSString alloc] initWithFormat:@"%1lx",(long)_fSelectThreeLabel.tag];
+        NSString *mystr4 = _fSelectFourLabel.tag == 0 ? @"ffff":[[NSString alloc] initWithFormat:@"%1lx",(long)_fSelectFourLabel.tag];
+        _remoteEntity.remoteBranch = [NSString stringWithFormat:@"%@%@%@%@",mystr1,mystr2,mystr3,mystr4];
+        [[CSRDatabaseManager sharedInstance] saveContext];
+        
     }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]) {
         NSString *string;
         if (_sSelectOneLabel.tag == 0) {
@@ -161,6 +278,10 @@
             string = [self exchangePositionOfDeviceId:_sSelectOneLabel.tag];
         }
         cmdStr = [NSString stringWithFormat:@"700b010000%@ffffffffffff",string];
+        
+        NSString *mystr1 = _sSelectOneLabel.tag == 0 ? @"ffff":[[NSString alloc] initWithFormat:@"%1lx",(long)_sSelectOneLabel.tag];
+        _remoteEntity.remoteBranch = mystr1;
+        [[CSRDatabaseManager sharedInstance] saveContext];
     }
     [self showHudTogether];
     [[DataModelManager shareInstance] sendCmdData:cmdStr toDeviceId:_remoteEntity.deviceId];
@@ -212,44 +333,57 @@
 
 - (void)getRemoteConfiguration:(NSNotification *)notification {
     NSDictionary *dic = notification.userInfo;
-    NSNumber *deviceID1 = dic[@"deviceID1"];
-    NSNumber *deviceID2 = dic[@"deviceID2"];
-    NSNumber *deviceID3 = dic[@"deviceID3"];
-    NSNumber *deviceID4 = dic[@"deviceID4"];
-    
+    NSString *deviceID1 = dic[@"deviceID1"];
+    NSString *deviceID2 = dic[@"deviceID2"];
+    NSString *deviceID3 = dic[@"deviceID3"];
+    NSString *deviceID4 = dic[@"deviceID4"];
     if ([self.remoteEntity.shortName isEqualToString:@"RB01"]) {
-        if ([deviceID1 isEqualToNumber:@(65535)]) {
-            _fSelectOneLabel.text = @"NULL";
+        
+        if ([deviceID1 isEqualToString:@"ffff"]) {
+            _fSelectOneLabel.text = @"";
         }else {
-            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID1];
-            _fSelectOneLabel.text = [NSString stringWithFormat:@"%@(%@)",device.name,deviceID1];
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:[NSNumber numberWithInteger:[CSRUtilities numberWithHexString:deviceID1]]];
+            _fSelectOneLabel.text = [NSString stringWithFormat:@"%@",device.name];
         }
-        if ([deviceID2 isEqualToNumber:@(65535)]) {
-            _fSelectTwoLabel.text = @"NULL";
+        if ([deviceID2 isEqualToString:@"ffff"]) {
+            _fSelectTwoLabel.text = @"";
         }else {
-            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID2];
-            _fSelectTwoLabel.text = [NSString stringWithFormat:@"%@(%@)",device.name,deviceID2];
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:[NSNumber numberWithInteger:[CSRUtilities numberWithHexString:deviceID2]]];
+            _fSelectTwoLabel.text = [NSString stringWithFormat:@"%@",device.name];
         }
-        if ([deviceID3 isEqualToNumber:@(65535)]) {
-            _fSelectThreeLabel.text = @"NULL";
+        if ([deviceID3 isEqualToString:@"ffff"]) {
+            _fSelectThreeLabel.text = @"";
         }else {
-            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID3];
-            _fSelectThreeLabel.text = [NSString stringWithFormat:@"%@(%@)",device.name,deviceID3];
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:[NSNumber numberWithInteger:[CSRUtilities numberWithHexString:deviceID3]]];
+            _fSelectThreeLabel.text = [NSString stringWithFormat:@"%@",device.name];
         }
-        if ([deviceID4 isEqualToNumber:@(65535)]) {
-            _fSelectFourLabel.text = @"NULL";
+        if ([deviceID4 isEqualToString:@"ffff"]) {
+            _fSelectFourLabel.text = @"";
         }else {
-            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID4];
-            _fSelectFourLabel.text = [NSString stringWithFormat:@"%@(%@)",device.name,deviceID4];
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:[NSNumber numberWithInteger:[CSRUtilities numberWithHexString:deviceID4]]];
+            _fSelectFourLabel.text = [NSString stringWithFormat:@"%@",device.name];
         }
         
-    }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]) {
-        if ([deviceID1 isEqualToNumber:@(65535)]) {
-            _sSelectOneLabel.text = @"NULL";
-        }else {
-            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID1];
-            _sSelectOneLabel.text = [NSString stringWithFormat:@"%@(%@)",device.name,deviceID1];
+        NSString *newString = [NSString stringWithFormat:@"%@%@%@%@",deviceID1,deviceID2,deviceID3,deviceID4];
+        if (![_remoteEntity.remoteBranch isEqualToString:newString]) {
+            _remoteEntity.remoteBranch = newString;
+            [[CSRDatabaseManager sharedInstance] saveContext];
         }
+        
+        
+    }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]) {
+        if ([deviceID1 isEqualToString:@"ffff"]) {
+            _sSelectOneLabel.text = @"";
+        }else {
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:[NSNumber numberWithInteger:[CSRUtilities numberWithHexString:deviceID1]]];
+            _sSelectOneLabel.text = [NSString stringWithFormat:@"%@",device.name];
+        }
+        
+        if (![_remoteEntity.remoteBranch isEqualToString:deviceID1]) {
+            _remoteEntity.remoteBranch = deviceID1;
+            [[CSRDatabaseManager sharedInstance] saveContext];
+        }
+        
     }
     _setSuccess = YES;
     [_hub hideAnimated:YES];
@@ -274,6 +408,9 @@
     if ([state boolValue]) {
         _setSuccess = YES;
         [self showTextHud:@"SUCCESS"];
+        if (self.navigationItem.rightBarButtonItem.enabled) {
+            self.navigationItem.rightBarButtonItem.enabled = NO;
+        }
     }else {
         _setSuccess = NO;
         [self showTextHud:@"ERROR"];

@@ -26,5 +26,6 @@
 @dynamic drops;
 @dynamic sortId;
 @dynamic isEditting;
+@dynamic remoteBranch;
 
 @end
