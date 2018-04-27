@@ -116,7 +116,6 @@
     DeviceListViewController *list = [[DeviceListViewController alloc] init];
     list.selectMode = DeviceListSelectMode_Single;
     [list getSelectedDevices:^(NSArray *devices) {
-
         if ([devices count] > 0) {
             NSNumber *deviceId = devices[0];
             CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
@@ -124,10 +123,17 @@
                 _fSelectOneLabel.text = deviceEntity.name;
                 _fSelectOneLabel.tag = [deviceId integerValue];
                 
-                NSString *myStr1 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(0, 4)];
-                if ([CSRUtilities numberWithHexString:myStr1] != [deviceId integerValue] && !self.navigationItem.rightBarButtonItem.enabled) {
-                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                if (self.remoteEntity.remoteBranch) {
+                    NSString *myStr1 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(0, 4)];
+                    if ([CSRUtilities numberWithHexString:myStr1] != [deviceId integerValue] && !self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
+                }else {
+                    if (!self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
                 }
+                
                 
                 return;
             }
@@ -135,10 +141,17 @@
                 _fSelectTwoLabel.text = deviceEntity.name;
                 _fSelectTwoLabel.tag = [deviceId integerValue];
                 
-                NSString *myStr2 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(4, 4)];
-                if ([CSRUtilities numberWithHexString:myStr2] != [deviceId integerValue] && !self.navigationItem.rightBarButtonItem.enabled) {
-                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                if (self.remoteEntity.remoteBranch) {
+                    NSString *myStr2 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(4, 4)];
+                    if ([CSRUtilities numberWithHexString:myStr2] != [deviceId integerValue] && !self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
+                }else {
+                    if (!self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
                 }
+                
                 
                 return;
             }
@@ -146,9 +159,15 @@
                 _fSelectThreeLabel.text = deviceEntity.name;
                 _fSelectThreeLabel.tag = [deviceId integerValue];
                 
-                NSString *myStr3 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(8, 4)];
-                if ([CSRUtilities numberWithHexString:myStr3] != [deviceId integerValue] && !self.navigationItem.rightBarButtonItem.enabled) {
-                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                if (self.remoteEntity.remoteBranch) {
+                    NSString *myStr3 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(8, 4)];
+                    if ([CSRUtilities numberWithHexString:myStr3] != [deviceId integerValue] && !self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
+                }else {
+                    if (!self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
                 }
                 
                 return;
@@ -157,9 +176,15 @@
                 _fSelectFourLabel.text = deviceEntity.name;
                 _fSelectFourLabel.tag = [deviceId integerValue];
                 
-                NSString *myStr4 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(12, 4)];
-                if ([CSRUtilities numberWithHexString:myStr4] != [deviceId integerValue] && !self.navigationItem.rightBarButtonItem.enabled) {
-                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                if (self.remoteEntity.remoteBranch) {
+                    NSString *myStr4 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(12, 4)];
+                    if ([CSRUtilities numberWithHexString:myStr4] != [deviceId integerValue] && !self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
+                }else {
+                    if (!self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
                 }
                 
                 return;
@@ -168,9 +193,16 @@
                 _sSelectOneLabel.text = deviceEntity.name;
                 _sSelectOneLabel.tag = [deviceId integerValue];
                 
-                if ([CSRUtilities numberWithHexString:self.remoteEntity.remoteBranch] != [deviceId integerValue] && !self.navigationItem.rightBarButtonItem.enabled) {
-                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                if (self.remoteEntity.remoteBranch) {
+                    if ([CSRUtilities numberWithHexString:self.remoteEntity.remoteBranch] != [deviceId integerValue] && !self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
+                }else {
+                    if (!self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
                 }
+                
                 
                 return;
             }
@@ -179,10 +211,17 @@
                 _fSelectOneLabel.text = @"";
                 _fSelectOneLabel.tag = 0;
                 
-                NSString *myStr1 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(0, 4)];
-                if (![myStr1 isEqualToString:@"ffff"] && !self.navigationItem.rightBarButtonItem.enabled) {
-                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                if (self.remoteEntity.remoteBranch) {
+                    NSString *myStr1 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(0, 4)];
+                    if (![myStr1 isEqualToString:@"ffff"] && !self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
+                }else {
+                    if (!self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
                 }
+                
                 
                 return;
             }
@@ -190,10 +229,17 @@
                 _fSelectTwoLabel.text = @"";
                 _fSelectTwoLabel.tag = 0;
                 
-                NSString *myStr2 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(4, 4)];
-                if (![myStr2 isEqualToString:@"ffff"] && !self.navigationItem.rightBarButtonItem.enabled) {
-                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                if (self.remoteEntity.remoteBranch) {
+                    NSString *myStr2 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(4, 4)];
+                    if (![myStr2 isEqualToString:@"ffff"] && !self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
+                }else {
+                    if (!self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
                 }
+                
                 
                 return;
             }
@@ -201,10 +247,17 @@
                 _fSelectThreeLabel.text = @"";
                 _fSelectThreeLabel.tag = 0;
                 
-                NSString *myStr3 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(8, 4)];
-                if (![myStr3 isEqualToString:@"ffff"] && !self.navigationItem.rightBarButtonItem.enabled) {
-                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                if (self.remoteEntity.remoteBranch) {
+                    NSString *myStr3 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(8, 4)];
+                    if (![myStr3 isEqualToString:@"ffff"] && !self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
+                }else {
+                    if (!self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
                 }
+                
                 
                 return;
             }
@@ -212,10 +265,17 @@
                 _fSelectFourLabel.text = @"";
                 _fSelectFourLabel.tag = 0;
                 
-                NSString *myStr4 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(12, 4)];
-                if (![myStr4 isEqualToString:@"ffff"] && !self.navigationItem.rightBarButtonItem.enabled) {
-                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                if (self.remoteEntity.remoteBranch) {
+                    NSString *myStr4 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(12, 4)];
+                    if (![myStr4 isEqualToString:@"ffff"] && !self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
+                }else {
+                    if (!self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
                 }
+                
                 
                 return;
             }
@@ -223,9 +283,16 @@
                 _sSelectOneLabel.text = @"";
                 _sSelectOneLabel.tag = 0;
                 
-                if (![self.remoteEntity.remoteBranch isEqualToString:@"ffff"] && !self.navigationItem.rightBarButtonItem.enabled) {
-                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                if (self.remoteEntity.remoteBranch) {
+                    if (![self.remoteEntity.remoteBranch isEqualToString:@"ffff"] && !self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
+                }else {
+                    if (!self.navigationItem.rightBarButtonItem.enabled) {
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    }
                 }
+                
                 
                 return;
             }

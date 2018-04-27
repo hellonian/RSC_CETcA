@@ -16,6 +16,7 @@
 #import "ImproveTouchingExperience.h"
 #import "ControlMaskView.h"
 #import "CSRUtilities.h"
+#import "CSRAreaEntity.h"
 
 @interface DeviceListViewController ()<MainCollectionViewDelegate>
 
@@ -54,19 +55,53 @@
     _devicesCollectionView = [[MainCollectionView alloc] initWithFrame:CGRectMake(WIDTH*3/160.0, WIDTH*12/640.0+64, WIDTH*157/160.0, HEIGHT-64-WIDTH*3/160.0) collectionViewLayout:flowLayout cellIdentifier:@"MainCollectionViewCell"];
     _devicesCollectionView.mainDelegate = self;
     
-    NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
-    if (mutableArray != nil || [mutableArray count] != 0) {
-        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-        [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
-        [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName]) {
-                SingleDeviceModel *singleDevice = [[SingleDeviceModel alloc] init];
-                singleDevice.deviceId = deviceEntity.deviceId;
-                singleDevice.deviceName = deviceEntity.name;
-                singleDevice.deviceShortName = deviceEntity.shortName;
-                [_devicesCollectionView.dataArray addObject:singleDevice];
-            }
-        }];
+    if (self.selectMode == DeviceListSelectMode_ForGroup) {
+        
+        if (self.originalMembers!=nil && [self.originalMembers count] != 0) {
+            [_devicesCollectionView.dataArray addObjectsFromArray:self.originalMembers];
+        }
+        
+        __block NSMutableArray *deviceIdWasInAreaArray =[[NSMutableArray alloc] init];
+        NSSet *areas =  [CSRAppStateManager sharedInstance].selectedPlace.areas;
+        if (areas != nil && [areas count] != 0) {
+            [areas enumerateObjectsUsingBlock:^(CSRAreaEntity *area, BOOL * _Nonnull stop) {
+                for (CSRDeviceEntity *deviceEntity in area.devices) {
+                    [deviceIdWasInAreaArray addObject:deviceEntity.deviceId];
+                }
+            }];
+        }
+        
+        NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
+        if (mutableArray != nil || [mutableArray count] != 0) {
+            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+            [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+            [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+                if (([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName]) && ![deviceIdWasInAreaArray containsObject:deviceEntity.deviceId]) {
+                    SingleDeviceModel *singleDevice = [[SingleDeviceModel alloc] init];
+                    singleDevice.deviceId = deviceEntity.deviceId;
+                    singleDevice.deviceName = deviceEntity.name;
+                    singleDevice.deviceShortName = deviceEntity.shortName;
+                    [_devicesCollectionView.dataArray addObject:singleDevice];
+                }
+            }];
+        }
+        
+        
+    }else {
+        NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
+        if (mutableArray != nil || [mutableArray count] != 0) {
+            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+            [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+            [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+                if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName]) {
+                    SingleDeviceModel *singleDevice = [[SingleDeviceModel alloc] init];
+                    singleDevice.deviceId = deviceEntity.deviceId;
+                    singleDevice.deviceName = deviceEntity.name;
+                    singleDevice.deviceShortName = deviceEntity.shortName;
+                    [_devicesCollectionView.dataArray addObject:singleDevice];
+                }
+            }];
+        }
     }
     
     [self.view addSubview:_devicesCollectionView];

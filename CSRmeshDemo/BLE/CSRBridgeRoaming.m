@@ -79,14 +79,11 @@
     // Timer thread will be triggered once per second
     // Any background functions can be placed here
 -(void) timerThread :(id) userInfo {
-   
     static BOOL active=NO;
     if (active==NO) {
         active=YES;
-//        NSLog(@">>>>>>_connectting>>> %d",_connectting);
         if (_connectting) {
             _num++;
-//            NSLog(@">>>>>>_num>>> %ld",_num);
             if (_num == 5) {
                 [connectingBridges removeAllObjects];
                 _connectting = NO;

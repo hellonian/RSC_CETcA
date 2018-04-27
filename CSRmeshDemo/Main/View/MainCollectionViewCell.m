@@ -14,6 +14,7 @@
 #import "CSRConstants.h"
 #import "SingleDeviceModel.h"
 #import "CSRUtilities.h"
+#import <CSRmesh/LightModelApi.h>
 
 @interface MainCollectionViewCell ()<UIGestureRecognizerDelegate>
 {
@@ -87,7 +88,6 @@
             self.iconView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@room",imageString]];
         }
         self.cellIndexPath = indexPath;
-        [self adjustGroupCellBgcolorAndLevelLabel];
         self.bottomView.hidden = NO;
         [self showDeleteBtnAndMoveImageView:![areaEntity.isEditting boolValue]];
         return;
@@ -113,7 +113,7 @@
             self.levelLabel.hidden = YES;
         }
         self.cellIndexPath = indexPath;
-        
+        [self adjustGroupCellBgcolorAndLevelLabel];
         [self adjustCellBgcolorAndLevelLabelWithDeviceId:deviceEntity.deviceId];
         self.bottomView.hidden = NO;
         [self showDeleteBtnAndMoveImageView:![deviceEntity.isEditting boolValue]];
@@ -219,49 +219,72 @@
             self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level floatValue]/255.0*100];
         }
     }
+    if (model.isleave) {
+        self.alpha = 0.2;
+    }else {
+        self.alpha = 1;
+    }
 }
 
 - (void)adjustGroupCellBgcolorAndLevelLabel {
-    __block NSInteger evenBrightness = 0;
-    [_groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceEntity.deviceId];
-        if ([model.powerState boolValue]) {
-            NSInteger fixStatus = [model.level integerValue]? [model.level integerValue]:0;
-            evenBrightness += fixStatus;
+    __block NSInteger brightness;
+    if (self.groupMembers.count == 0) {
+        self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+        self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+        self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
+    }else {
+        [self.groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *device, NSUInteger idx, BOOL * _Nonnull stop) {
+            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:device.deviceId];
+            if ([model.level integerValue]>brightness && !model.isleave) {
+                brightness = [model.level integerValue];
+            }
+        }];
+        if (brightness) {
+            self.nameLabel.textColor = DARKORAGE;
+            self.levelLabel.textColor = DARKORAGE;
+            self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
+        }else {
+            self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+            self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+            self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
         }
-        
-    }];
+    }
     
-    NSInteger perBrightness = evenBrightness/_groupMembers.count;
-    if (perBrightness) {
+}
+
+- (void)adjustGroupCellBgcolorAndLevelLabel:(NSNumber *)deviceId {
+    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+    
+    if ([model.powerState boolValue]) {
         self.nameLabel.textColor = DARKORAGE;
         self.levelLabel.textColor = DARKORAGE;
         self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
-        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",perBrightness/255.0*100];
+        if ([model.level floatValue]/255.0*100>0 && [model.level floatValue]/255.0*100 < 1.0) {
+            self.levelLabel.text = @"1%";
+        }else {
+            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
+        }
     }else {
         self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
         self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
         self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
         self.levelLabel.text = @"0%";
     }
-    
 }
 
 - (void)setPowerStateSuccess:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
     if ([_deviceId isEqualToNumber:@2000]) {
-        static int num;
+        __block BOOL exist;
         [_groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([deviceEntity.deviceId isEqualToNumber:deviceId]) {
-                num = num+1;
+                exist = YES;
                 *stop = YES;
             }
         }];
-        
-        if (num == _groupMembers.count) {
-            num = 0;
-            [self adjustGroupCellBgcolorAndLevelLabel];
+        if (exist) {
+            [self adjustGroupCellBgcolorAndLevelLabel:deviceId];
         }
     }else if ([deviceId isEqualToNumber:_deviceId]) {
         [self adjustCellBgcolorAndLevelLabelWithDeviceId:deviceId];
@@ -278,14 +301,26 @@
                 }
             }else if ([self.deviceId isEqualToNumber:@2000]) {
                 __block BOOL isPowerOn = 0;
+                __block NSInteger brightest = 0;
                 [self.groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *entity, NSUInteger idx, BOOL * _Nonnull stop) {
                     DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:entity.deviceId];
-                    if ([model.powerState boolValue]) {
+                    if ([model.powerState boolValue] && !model.isleave) {
                         isPowerOn = YES;
-                        *stop = YES;
+                    }
+                    if ([model.level integerValue]>brightest) {
+                        brightest = [model.level integerValue];
                     }
                 }];
-                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:self.groupId withPowerState:@(!isPowerOn)];
+                if (!isPowerOn) {
+                    [[LightModelApi sharedInstance] setLevel:self.groupId level:@(brightest) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                        
+                    } failure:^(NSError * _Nullable error) {
+                        
+                    }];
+                }else {
+                    [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:self.groupId withPowerState:@(0)];
+                }
+                
                 
             }else {
                 DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
@@ -417,6 +452,5 @@
     }
     
 }
-
 
 @end

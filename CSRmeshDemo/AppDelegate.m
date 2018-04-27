@@ -13,6 +13,8 @@
 #import "MoreViewController.h"
 
 #import "MainViewController.h"
+//#import "CSRBridgeRoaming.h"
+//#import "CSRBluetoothLE.h"
 
 @interface AppDelegate ()
 
@@ -65,11 +67,8 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
     
     self.mainTabBarController = [[MainTabBarController alloc] init];
     
-//    LightClusterViewController *lampsVC = [[LightClusterViewController alloc] initWithItemPerSection:3 cellIdentifier:@"LightClusterCell"];
     MainViewController *mainVC = [[MainViewController alloc] init];
     UINavigationController *mainNav = [[UINavigationController alloc] initWithRootViewController:mainVC];
-    
-//    SceneCollectionController *sceneVC = [[SceneCollectionController alloc] initWithItemPerSection:3 cellIdentifier:@"SceneCell"];
     
     GalleryViewController *galleryVC = [[GalleryViewController alloc] init];
     UINavigationController *galleryNav = [[UINavigationController alloc] initWithRootViewController:galleryVC];
@@ -78,10 +77,7 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
     
     NSArray *vcs = @[mainNav,galleryNav,moreVC];
     self.mainTabBarController.viewControllers = vcs;
-//    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:self.mainTabBarController];
     self.window.rootViewController = self.mainTabBarController;
-    
-//    [self loadDefaultSceneProfile];
     
 //    NSURL *url = (NSURL *)[launchOptions valueForKey:UIApplicationLaunchOptionsURLKey];
 //    if (url != nil && [url isFileURL]) {
@@ -107,21 +103,28 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
 //    }
 //    return YES;
 //}
-
+- (void)applicationWillResignActive:(UIApplication *)application {
+    
+}
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
+//    if ([[CSRBridgeRoaming sharedInstance] numberOfConnectedBridges] == 0) {
+//        [[CSRBluetoothLE sharedInstance] startScan];
+//    }
+    
     // Broadcast time
 //    [self broadcastTime];
     
 }
 
-//- (void)applicationDidEnterBackground:(UIApplication *)application
-//{
-//    
-//}
+- (void)applicationDidEnterBackground:(UIApplication *)application
+{
+    
+}
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
+    
 //    [[CSRDatabaseManager sharedInstance] saveContext];
     [[CSRAppStateManager sharedInstance] connectivityCheck];
 }
@@ -129,6 +132,7 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
+    
 //    [[CSRConnectionManager sharedInstance] shutDown];
 //    [[CSRDatabaseManager sharedInstance] saveContext];
 }

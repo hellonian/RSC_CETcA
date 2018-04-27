@@ -18,6 +18,7 @@
 
 #import "OTAU.h"
 #import "CSRUtilities.h"
+#import "DeviceModelManager.h"
 
 // Uncomment to enable brige roaming
 #define   BRIDGE_ROAMING_ENABLE
@@ -161,8 +162,9 @@
                 [_foundPeripherals removeAllObjects];
             }
             
+            CBUUID *uuid = [CBUUID UUIDWithString:@"FEF1"];
             NSDictionary *options = [self createDiscoveryOptions];
-            [centralManager scanForPeripheralsWithServices:nil options:options];
+            [centralManager scanForPeripheralsWithServices:@[uuid] options:options];
         }
     }
 }
@@ -257,9 +259,9 @@
             if(bleDelegate && [bleDelegate respondsToSelector:@selector(CBPoweredOn)])
                 [bleDelegate CBPoweredOn];
             
-            
+            CBUUID *uuid = [CBUUID UUIDWithString:@"FEF1"];
             NSDictionary *options = [self createDiscoveryOptions];
-            [centralManager scanForPeripheralsWithServices:nil options:options];
+            [centralManager scanForPeripheralsWithServices:@[uuid] options:options];
             pendingInit = NO;
             
             [self statusMessage:[NSString stringWithFormat:@"Scanning...\n"]];
@@ -291,7 +293,6 @@
     //  - Inform delegate of new discovery (for UI refresh)
 
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
-    
     [peripheral setRssi:RSSI];
     NSString *adString;
     if (advertisementData[@"kCBAdvDataManufacturerData"]) {
@@ -299,6 +300,8 @@
         adString = [[CSRUtilities hexStringForData:adData] uppercaseString];
         [peripheral setUuidString:adString];
     }
+    
+    
     
     if (self.isUpdateFW ) {
         if (![_foundPeripherals containsObject:peripheral]) {
@@ -319,6 +322,7 @@
         
         if ([messageStatus integerValue] == IS_BRIDGE || [messageStatus integerValue] == IS_BRIDGE_DISCOVERED_SERVICE) {
 #ifdef BRIDGE_ROAMING_ENABLE
+            
             [[CSRBridgeRoaming sharedInstance] didDiscoverBridgeDevice:central peripheral:peripheral advertisment:advertisementData RSSI:RSSI];
 #endif
             
@@ -400,6 +404,12 @@
         [[CSRBridgeRoaming sharedInstance] connectedPeripheral:peripheral];
         NSLog (@"BRIDGE CONNECTED %@",peripheral.name);
         [self stopScan];
+        
+        if (_connectedPeripherals.count>0) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"BridgeConnectedNotification" object:nil userInfo:@{@"peripheral":peripheral}];
+        }
+        
+        [[DeviceModelManager sharedInstance] getAllDevicesState];
         
 #endif
     

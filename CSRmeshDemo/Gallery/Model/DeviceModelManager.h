@@ -15,7 +15,7 @@
 @property (nonatomic, strong) NSMutableArray *allDevices;
 
 + (DeviceModelManager *)sharedInstance;
-
+- (void)getAllDevicesState;
 - (DeviceModel *)getDeviceModelByDeviceId:(NSNumber *)deviceId;
 - (void)setPowerStateWithDeviceId:(NSNumber *)deviceId withPowerState:(NSNumber *)powerState;
 - (void)setLevelWithDeviceId:(NSNumber *)deviceId withLevel:(NSNumber *)level withState:(UIGestureRecognizerState)state direction:(PanGestureMoveDirection)direction;

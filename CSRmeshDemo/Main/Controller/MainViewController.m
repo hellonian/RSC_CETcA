@@ -33,8 +33,10 @@
 #import "SingleDeviceModel.h"
 #import "SceneMemberEntity.h"
 #import "DataModelManager.h"
+#import <MBProgressHUD.h>
+#import "CBPeripheral+Info.h"
 
-@interface MainViewController ()<MainCollectionViewDelegate,PlaceColorIconPickerViewDelegate>
+@interface MainViewController ()<MainCollectionViewDelegate,PlaceColorIconPickerViewDelegate,MBProgressHUDDelegate>
 {
     NSNumber *selectedSceneId;
     PlaceColorIconPickerView *pickerView;
@@ -49,9 +51,12 @@
 @property (nonatomic,strong) ImproveTouchingExperience *improver;
 @property (nonatomic,strong) ControlMaskView *maskLayer;
 @property (nonatomic,assign) BOOL mainCVEditting;
-@property (nonatomic,strong) UIActivityIndicatorView *spinner;
 @property (nonatomic,strong) CSRAreaEntity *areaEntity;
 @property (nonatomic,strong) UIView *translucentBgView;
+@property (nonatomic,strong) MBProgressHUD *hud;
+
+@property (weak, nonatomic) IBOutlet UILabel *connectedBridgeLabel;
+
 @end
 
 @implementation MainViewController
@@ -64,6 +69,8 @@
     self.navigationItem.rightBarButtonItem = edit;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reGetDataForPlaceChanged) name:@"reGetDataForPlaceChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeConnectedNotification:) name:@"BridgeConnectedNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeDisconnectedNotification:) name:@"BridgeDisconnectedNotification" object:nil];
     
     self.improver = [[ImproveTouchingExperience alloc] init];
     
@@ -90,6 +97,16 @@
     [self getMainDataArray];
     [self getSceneDataArray];
     
+}
+
+- (void)bridgeConnectedNotification:(NSNotification *)notification {
+    NSDictionary *dic = notification.userInfo;
+    CBPeripheral *peripheral = dic[@"peripheral"];
+    _connectedBridgeLabel.text = [NSString stringWithFormat:@"%@  %@",peripheral.name,peripheral.uuidString];
+}
+
+- (void)bridgeDisconnectedNotification:(NSNotification *)notification {
+    _connectedBridgeLabel.text = @"disConnected";
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -675,24 +692,26 @@
             [self getMainDataArray];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [weakSelf mainCollectionViewEditlayoutView];
-                [_spinner stopAnimating];
-                [_spinner setHidden:YES];
+                if (_hud) {
+                    [_hud hideAnimated:YES];
+                }
             });
             
         }];
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-            [_spinner stopAnimating];
-            [_spinner setHidden:YES];
+            if (_hud) {
+                [_hud hideAnimated:YES];
+            }
+            
         }];
         [alertController addAction:okAction];
         [alertController addAction:cancelAction];
         [self presentViewController:alertController animated:YES completion:nil];
-        _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        [self.view addSubview:_spinner];
-        _spinner.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
-        [_spinner startAnimating];
-        
-        
+        if (!_hud) {
+            _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            _hud.mode = MBProgressHUDModeIndeterminate;
+            _hud.delegate = self;
+        }
     }else{
         meshDevice = [[CSRDevicesManager sharedInstance] getDeviceFromDeviceId:cellDeviceId];
         CSRPlaceEntity *placeEntity = [CSRAppStateManager sharedInstance].selectedPlace;
@@ -707,16 +726,18 @@
                 }
             }];
             UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-                [_spinner stopAnimating];
-                [_spinner setHidden:YES];
+                if (_hud) {
+                    [_hud hideAnimated:YES];
+                }
             }];
             [alertController addAction:okAction];
             [alertController addAction:cancelAction];
             [self presentViewController:alertController animated:YES completion:nil];
-            _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-            [self.view addSubview:_spinner];
-            _spinner.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
-            [_spinner startAnimating];
+            if (!_hud) {
+                _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+                _hud.mode = MBProgressHUDModeIndeterminate;
+                _hud.delegate = self;
+            }
         }
     }
 }
@@ -810,7 +831,6 @@
 {
     NSNumber *num = notification.userInfo[@"boolFlag"];
     if ([num boolValue] == NO) {
-        
         [self showForceAlert];
     } else {
         if(deleteDeviceEntity) {
@@ -826,14 +846,15 @@
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [weakSelf mainCollectionViewEditlayoutView];
         });
-        [_spinner stopAnimating];
-        [_spinner setHidden:YES];
+        if (_hud) {
+            [_hud hideAnimated:YES];
+        }
     }
 }
 
 - (void) showForceAlert
 {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Device Device"
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Delete Device"
                                                                              message:[NSString stringWithFormat:@"Device wasn't found. Do you want to delete %@ anyway?", meshDevice.name]
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController.view setTintColor:DARKORAGE];
@@ -856,8 +877,9 @@
                                                          [[CSRDevicesManager sharedInstance] setDeviceIdNumber:deviceNumber];
                                                          [self getMainDataArray];
                                                          [self mainCollectionViewEditlayoutView];
-                                                         [_spinner stopAnimating];
-                                                         [_spinner setHidden:YES];
+                                                         if (_hud) {
+                                                             [_hud hideAnimated:YES];
+                                                         }
                                                      }];
     [alertController addAction:okAction];
     [alertController addAction:cancelAction];
@@ -919,6 +941,14 @@
     }
     return _translucentBgView;
 }
+
+#pragma mark - MBProgressHUDDelegate
+
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+    [hud removeFromSuperview];
+    hud = nil;
+}
+
 
 
 @end

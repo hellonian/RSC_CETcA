@@ -28,6 +28,7 @@
     PlaceColorIconPickerView *pickerView;
     NSNumber *iconNum;
     UIImage *iconImage;
+    UIAlertController *alertController;
 }
 
 @property (weak, nonatomic) IBOutlet UIButton *editItem;
@@ -37,12 +38,15 @@
 @property (weak, nonatomic) IBOutlet UIImageView *groupIconImageView;
 @property (weak, nonatomic) IBOutlet UILabel *groupNameLabel;
 @property (nonatomic,strong) MBProgressHUD *hud;
+@property (nonatomic,strong) MBProgressHUD *failHud;
 @property (nonatomic,assign) BOOL hasChanged;
 @property (nonatomic,copy) NSString *oldName;
 @property (nonatomic,strong) NSNumber *originalLevel;
 @property (nonatomic,strong) ImproveTouchingExperience *improver;
 @property (nonatomic,strong) ControlMaskView *maskLayer;
 @property (nonatomic,strong) UIView *translucentBgView;
+@property (nonatomic,strong) NSMutableArray *groupLostDevices;
+@property (nonatomic,strong) NSMutableArray *groupRemoveDevices;
 
 @end
 
@@ -110,9 +114,10 @@
     if (_isFromEmptyGroup) {
         [self editItemAction:self.editItem];
         DeviceListViewController *list = [[DeviceListViewController alloc] init];
-        list.selectMode = DeviceListSelectMode_Multiple;
-        
-        list.originalMembers = _devicesCollectionView.dataArray;
+        list.selectMode = DeviceListSelectMode_ForGroup;
+        NSMutableArray *mutableArray = [_devicesCollectionView.dataArray mutableCopy];
+        [mutableArray removeLastObject];
+        list.originalMembers = mutableArray;
         
         [list getSelectedDevices:^(NSArray *devices) {
             self.hasChanged = YES;
@@ -162,11 +167,6 @@
         [_devicesCollectionView reloadData];
     }
     else {
-        
-        _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        _hud.mode = MBProgressHUDModeIndeterminate;
-        _hud.delegate = self;
-        
         [self performSelector:@selector(doneAction) withObject:nil afterDelay:0.01];
     }
     
@@ -175,12 +175,14 @@
 - (void)doneAction {
     if (_groupNameTF.text.length == 0) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Please enter a group name." message:nil preferredStyle:UIAlertControllerStyleAlert];
+        [alert.view setTintColor:DARKORAGE];
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
         }];
         [alert addAction:okAction];
         [self presentViewController:alert animated:YES completion:nil];
     }else {
+        
         [self.editItem setTitle:@"Edit" forState:UIControlStateNormal];
         self.iconEditBtn.hidden = YES;
         self.groupNameTF.enabled = NO;
@@ -200,40 +202,183 @@
             NSNumber *sortId = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"SortId"];
             [self saveArea:areaIdNumber sortId:sortId];
         }else if (self.hasChanged) {
+            _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            _hud.mode = MBProgressHUDModeIndeterminate;
+            _hud.delegate = self;
             areaIdNumber = _areaEntity.areaID;
+            NSInteger removeNum = 0;
             
             for (CSRDeviceEntity *deviceEntity in _areaEntity.devices) {
-                NSNumber *groupIndex = [self getValueByIndex:deviceEntity];
-                [[GroupModelApi sharedInstance] setModelGroupId:deviceEntity.deviceId
-                                                        modelNo:@(0xff)
-                                                     groupIndex:groupIndex
-                                                       instance:@(0)
-                                                        groupId:@(0)
-                                                        success:^(NSNumber * _Nullable deviceId,
-                                                                  NSNumber * _Nullable modelNo,
-                                                                  NSNumber * _Nullable groupIndex,
-                                                                  NSNumber * _Nullable instance,
-                                                                  NSNumber * _Nullable groupId) {
-                                                            NSData *groups = [CSRUtilities dataForHexString:deviceEntity.groups];
-                                                            uint16_t *dataToModify = (uint16_t*)groups.bytes;
-                                                            NSMutableArray *desiredGroups = [NSMutableArray new];
-                                                            for (int count=0; count < deviceEntity.groups.length/2; count++, dataToModify++) {
-                                                                NSNumber *groupValue = @(*dataToModify);
-                                                                [desiredGroups addObject:groupValue];
-                                                            }
-                                                            
-                                                            if (groupIndex && [groupIndex integerValue]<desiredGroups.count) {
+                
+                __block BOOL exist=0;
+                [_devicesCollectionView.dataArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    if ([obj isKindOfClass:[SingleDeviceModel class]]) {
+                        SingleDeviceModel *model = (SingleDeviceModel *)obj;
+                        
+                        if ([model.deviceId isEqual:deviceEntity.deviceId]) {
+                            exist = YES;
+                            *stop = YES;
+                        }
+                    }
+                }];
+                
+                if (!exist) {
+                    removeNum ++;
+                    NSNumber *groupIndex = [self getValueByIndex:deviceEntity];
+                    [[GroupModelApi sharedInstance] setModelGroupId:deviceEntity.deviceId
+                                                            modelNo:@(0xff)
+                                                         groupIndex:groupIndex
+                                                           instance:@(0)
+                                                            groupId:@(0)
+                                                            success:^(NSNumber * _Nullable deviceId,
+                                                                      NSNumber * _Nullable modelNo,
+                                                                      NSNumber * _Nullable groupIndex,
+                                                                      NSNumber * _Nullable instance,
+                                                                      NSNumber * _Nullable groupId) {
                                                                 
-                                                                NSNumber *areaValue = [desiredGroups objectAtIndex:[groupIndex integerValue]];
-                                                                
-                                                                CSRAreaEntity *areaEntity = [[[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"CSRAreaEntity" withPredicate:@"areaID == %@", areaValue] firstObject];
-                                                                
-                                                                if (areaEntity) {
-                                                                    
-                                                                    [_areaEntity removeDevicesObject:deviceEntity];
+                                                                NSData *groups = [CSRUtilities dataForHexString:deviceEntity.groups];
+                                                                uint16_t *dataToModify = (uint16_t*)groups.bytes;
+                                                                NSMutableArray *desiredGroups = [NSMutableArray new];
+                                                                for (int count=0; count < deviceEntity.groups.length/2; count++, dataToModify++) {
+                                                                    NSNumber *groupValue = @(*dataToModify);
+                                                                    [desiredGroups addObject:groupValue];
                                                                 }
                                                                 
+                                                                if (groupIndex && [groupIndex integerValue]<desiredGroups.count) {
+                                                                    
+                                                                    NSNumber *areaValue = [desiredGroups objectAtIndex:[groupIndex integerValue]];
+                                                                    
+                                                                    CSRAreaEntity *areaEntity = [[[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"CSRAreaEntity" withPredicate:@"areaID == %@", areaValue] firstObject];
+                                                                    
+                                                                    if (areaEntity) {
+                                                                        
+                                                                        [_areaEntity removeDevicesObject:deviceEntity];
+                                                                    }
+                                                                    
+                                                                    
+                                                                    NSMutableData *myData = (NSMutableData*)[CSRUtilities dataForHexString:deviceEntity.groups];
+                                                                    uint16_t desiredValue = [groupId unsignedShortValue];
+                                                                    int groupIndexInt = [groupIndex intValue];
+                                                                    if (groupIndexInt>-1) {
+                                                                        uint16_t *groups = (uint16_t *) myData.mutableBytes;
+                                                                        *(groups + groupIndexInt) = desiredValue;
+                                                                    }
+                                                                    deviceEntity.groups = [CSRUtilities hexStringFromData:(NSData*)myData];
+                                                                    [[CSRDatabaseManager sharedInstance] saveContext];
+                                                                }
                                                                 
+                                                                [self.groupRemoveDevices addObject:deviceEntity];
+                                                            }
+                                                            failure:^(NSError * _Nullable error) {
+                                                                NSLog(@">>>>> mesh timeout");
+                                                                
+                                                                if (!alertController) {
+                                                                    [self.groupLostDevices removeAllObjects];
+                                                                    [self.groupLostDevices addObject:deviceEntity];
+                                                                    alertController = [UIAlertController alertControllerWithTitle:@"Remove Group Member"
+                                                                                                                          message:[NSString stringWithFormat:@"Device wasn't found. Do you want to remove %@ anyway?", deviceEntity.name]
+                                                                                                                   preferredStyle:UIAlertControllerStyleAlert];
+                                                                    [alertController.view setTintColor:DARKORAGE];
+                                                                    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"NO"
+                                                                                                                           style:UIAlertActionStyleCancel
+                                                                                                                         handler:^(UIAlertAction *action) {
+                                                                                                                             for (CSRDeviceEntity *deviceEntity in self.groupLostDevices) {
+                                                                                                                                 SingleDeviceModel *deviceModel = [[SingleDeviceModel alloc] init];
+                                                                                                                                 deviceModel.deviceId = deviceEntity.deviceId;
+                                                                                                                                 deviceModel.deviceName = deviceEntity.name;
+                                                                                                                                 deviceModel.deviceShortName = deviceEntity.shortName;
+                                                                                                                                 [_devicesCollectionView.dataArray insertObject:deviceModel atIndex:0];
+                                                                                                                                 [_devicesCollectionView reloadData];
+                                                                                                                             }
+                                                                                                                             if (_hud) {
+                                                                                                                                 [_hud hideAnimated:YES];
+                                                                                                                             }
+                                                                                                                         }];
+                                                                    
+                                                                    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES"
+                                                                                                                       style:UIAlertActionStyleDefault
+                                                                                                                     handler:^(UIAlertAction *action) {
+                                                                                                                         
+                                                                                                                         for (CSRDeviceEntity *deviceEntity in self.groupLostDevices) {
+                                                                                                                             [_areaEntity removeDevicesObject:deviceEntity];
+                                                                                                                         }
+                                                                                                                         
+                                                                                                                         [[CSRDatabaseManager sharedInstance] saveContext];
+                                                                                                                         
+                                                                                                                         if (self.handle) {
+                                                                                                                             self.handle();
+                                                                                                                         }
+                                                                                                                         
+                                                                                                                         if (_hud) {
+                                                                                                                             [_hud hideAnimated:YES];
+                                                                                                                         }
+                                                                                                                         
+                                                                                                                     }];
+                                                                    [alertController addAction:okAction];
+                                                                    [alertController addAction:cancelAction];
+                                                                    
+                                                                    [self presentViewController:alertController animated:YES completion:nil];
+                                                                }else {
+                                                                    [self.groupLostDevices addObject:deviceEntity];
+                                                                    NSString *string= nil;
+                                                                    for (CSRDeviceEntity *deviceEntity in self.groupLostDevices) {
+                                                                        if (!string) {
+                                                                            string = deviceEntity.name;
+                                                                        }else {
+                                                                            string = [NSString stringWithFormat:@"%@ and %@",string,deviceEntity.name];
+                                                                        }
+                                                                        
+                                                                    }
+                                                                    alertController.message = [NSString stringWithFormat:@"Device wasn't found. Do you want to remove %@ anyway?", string];
+                                                                }
+                                                            }];
+                    [NSThread sleepForTimeInterval:0.3];
+                }
+                
+                
+                
+            }
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self saveArea:areaIdNumber sortId:_areaEntity.sortId];
+                if (_hud && ((removeNum>0 && removeNum == [self.groupRemoveDevices count]) || removeNum==0)) {
+                    [_hud hideAnimated:YES];
+                }
+            });
+            
+        }
+        
+    }
+}
+
+- (void)saveArea:(NSNumber *)areaIdNumber sortId:(NSNumber *)sortId{
+    
+    _areaEntity = [[CSRDatabaseManager sharedInstance] saveNewArea:areaIdNumber areaName:_groupNameTF.text areaImage:iconImage areaIconNum:iconNum sortId:sortId];
+    
+    for (id obj in _devicesCollectionView.dataArray) {
+        if ([obj isKindOfClass:[SingleDeviceModel class]]) {
+            SingleDeviceModel *model = (SingleDeviceModel *)obj;
+            __block BOOL exist;
+            [_areaEntity.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, BOOL * _Nonnull stop) {
+                if ([deviceEntity.deviceId isEqualToNumber:model.deviceId]) {
+                    exist = YES;
+                    *stop = YES;
+                }
+            }];
+            if (!exist) {
+                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:model.deviceId];
+                NSNumber *groupIndex = [self getValueByIndex:deviceEntity];
+                if (![groupIndex isEqual:@(-1)]) {
+                    [[GroupModelApi sharedInstance] setModelGroupId:deviceEntity.deviceId
+                                                            modelNo:@(0xff)
+                                                         groupIndex:groupIndex
+                                                           instance:@(0)
+                                                            groupId:_areaEntity.areaID
+                                                            success:^(NSNumber * _Nullable deviceId,
+                                                                      NSNumber * _Nullable modelNo,
+                                                                      NSNumber * _Nullable groupIndex,
+                                                                      NSNumber * _Nullable instance,
+                                                                      NSNumber * _Nullable groupId) {
                                                                 NSMutableData *myData = (NSMutableData*)[CSRUtilities dataForHexString:deviceEntity.groups];
                                                                 uint16_t desiredValue = [groupId unsignedShortValue];
                                                                 int groupIndexInt = [groupIndex intValue];
@@ -241,76 +386,31 @@
                                                                     uint16_t *groups = (uint16_t *) myData.mutableBytes;
                                                                     *(groups + groupIndexInt) = desiredValue;
                                                                 }
+                                                                
                                                                 deviceEntity.groups = [CSRUtilities hexStringFromData:(NSData*)myData];
+                                                                CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId: groupId];
+                                                                
+                                                                if (areaEntity) {
+                                                                    //NSLog(@"deviceEntity2 :%@", deviceEntity);
+                                                                    [_areaEntity addDevicesObject:deviceEntity];
+                                                                }
                                                                 [[CSRDatabaseManager sharedInstance] saveContext];
                                                             }
-                                                        }
-                                                        failure:^(NSError * _Nullable error) {
-                                                            NSLog(@"mesh timeout");
-                                                        }];
-                [NSThread sleepForTimeInterval:0.3];
+                                                            failure:^(NSError * _Nullable error) {
+                                                                NSLog(@"mesh timeout");
+                                                            }];
+                    [NSThread sleepForTimeInterval:0.3];
+                }
             }
-            
-            [self saveArea:areaIdNumber sortId:_areaEntity.sortId];
         }
         
     }
     
-    [_hud hideAnimated:YES];
-}
-
-- (void)saveArea:(NSNumber *)areaIdNumber sortId:(NSNumber *)sortId{
-    
-    _areaEntity = [[CSRDatabaseManager sharedInstance] saveNewArea:areaIdNumber areaName:_groupNameTF.text areaImage:iconImage areaIconNum:iconNum sortId:sortId];
-    __weak GroupViewController *weakSelf = self;
-    [_devicesCollectionView.dataArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([obj isKindOfClass:[SingleDeviceModel class]]) {
-            SingleDeviceModel *singleDevice = (SingleDeviceModel *)obj;
-            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:singleDevice.deviceId];
-            NSNumber *groupIndex = [weakSelf getValueByIndex:deviceEntity];
-            if (![groupIndex isEqual:@(-1)]) {
-                
-                [[GroupModelApi sharedInstance] setModelGroupId:deviceEntity.deviceId
-                                                        modelNo:@(0xff)
-                                                     groupIndex:groupIndex
-                                                       instance:@(0)
-                                                        groupId:_areaEntity.areaID
-                                                        success:^(NSNumber * _Nullable deviceId,
-                                                                  NSNumber * _Nullable modelNo,
-                                                                  NSNumber * _Nullable groupIndex,
-                                                                  NSNumber * _Nullable instance,
-                                                                  NSNumber * _Nullable groupId) {
-                                                            NSLog(@"%@ + %@ + %@ + %@ + %@",deviceId,modelNo,groupIndex,instance,groupId);
-                                                            NSMutableData *myData = (NSMutableData*)[CSRUtilities dataForHexString:deviceEntity.groups];
-                                                            uint16_t desiredValue = [groupId unsignedShortValue];
-                                                            int groupIndexInt = [groupIndex intValue];
-                                                            if (groupIndexInt>-1) {
-                                                                uint16_t *groups = (uint16_t *) myData.mutableBytes;
-                                                                *(groups + groupIndexInt) = desiredValue;
-                                                            }
-                                                            
-                                                            deviceEntity.groups = [CSRUtilities hexStringFromData:(NSData*)myData];
-                                                            CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId: groupId];
-                                                            
-                                                            if (areaEntity) {
-                                                                //NSLog(@"deviceEntity2 :%@", deviceEntity);
-                                                                [_areaEntity addDevicesObject:deviceEntity];
-                                                            }
-                                                            [[CSRDatabaseManager sharedInstance] saveContext];
-                                                        }
-                                                        failure:^(NSError * _Nullable error) {
-                                                            NSLog(@"mesh timeout +++ %@",error);
-                                                        }];
-            }
-        }else {
-            NSLog(@"Device has 4 areas or something went wrong");
-        }
-        [NSThread sleepForTimeInterval:0.3];
-    }];
     if (self.handle) {
         self.handle();
     }
 }
+
 
 //method to getIndexByValue
 - (NSNumber *) getValueByIndex:(CSRDeviceEntity*)deviceEntity
@@ -398,9 +498,11 @@
 - (void)mainCollectionViewTapCellAction:(NSNumber *)cellDeviceId cellIndexPath:(NSIndexPath *)indexPath {
     if ([cellDeviceId isEqualToNumber:@4000]) {
         DeviceListViewController *list = [[DeviceListViewController alloc] init];
-        list.selectMode = DeviceListSelectMode_Multiple;
+        list.selectMode = DeviceListSelectMode_ForGroup;
         
-        list.originalMembers = _devicesCollectionView.dataArray;
+        NSMutableArray *mutableArray = [_devicesCollectionView.dataArray mutableCopy];
+        [mutableArray removeLastObject];
+        list.originalMembers = mutableArray;
         
         [list getSelectedDevices:^(NSArray *devices) {
             self.hasChanged = YES;
@@ -548,6 +650,20 @@
         _translucentBgView.alpha = 0.4;
     }
     return _translucentBgView;
+}
+
+- (NSMutableArray *)groupLostDevices {
+    if (!_groupLostDevices) {
+        _groupLostDevices = [NSMutableArray new];
+    }
+    return _groupLostDevices;
+}
+
+- (NSMutableArray *)groupRemoveDevices {
+    if (!_groupRemoveDevices) {
+        _groupRemoveDevices = [NSMutableArray new];
+    }
+    return _groupRemoveDevices;
 }
 
 @end

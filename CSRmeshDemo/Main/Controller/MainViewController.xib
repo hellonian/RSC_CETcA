@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -13,6 +13,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MainViewController">
             <connections>
+                <outlet property="connectedBridgeLabel" destination="gvS-MG-asc" id="HUy-5T-J1A"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -27,15 +28,28 @@
                         <constraint firstAttribute="width" secondItem="K7E-gQ-cG5" secondAttribute="height" multiplier="640:290" id="eTz-vF-HdY"/>
                     </constraints>
                 </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gvS-MG-asc">
+                    <rect key="frame" x="16" y="64" width="343" height="20"/>
+                    <color key="backgroundColor" red="0.7245305031" green="0.86699288669999997" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="20" id="Mxo-b9-IWg"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" red="0.76470588235294112" green="0.76470588235294112" blue="0.76470588235294112" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="K7E-gQ-cG5" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="64" id="GCl-yy-pL0"/>
+                <constraint firstAttribute="trailing" secondItem="gvS-MG-asc" secondAttribute="trailing" constant="16" id="Jbq-xW-DLm"/>
                 <constraint firstItem="K7E-gQ-cG5" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="Ji0-Mk-AEx"/>
                 <constraint firstItem="K7E-gQ-cG5" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="Qb3-Re-Fup"/>
+                <constraint firstItem="gvS-MG-asc" firstAttribute="top" secondItem="K7E-gQ-cG5" secondAttribute="top" id="R0b-dI-iak"/>
+                <constraint firstItem="gvS-MG-asc" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="16" id="Toc-uf-ifb"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
-            <point key="canvasLocation" x="23" y="-9"/>
+            <point key="canvasLocation" x="22.5" y="-9.5"/>
         </view>
     </objects>
     <resources>

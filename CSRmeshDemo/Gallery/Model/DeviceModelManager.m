@@ -48,27 +48,42 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(physicalButtonActionCall:) name:@"physicalButtonActionCall" object:nil];
         [DataModelManager shareInstance];
         
-        NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
-        if (mutableArray != nil && [mutableArray count] != 0) {
-            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-            [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
-            
-            for (CSRDeviceEntity *deviceEntity in mutableArray) {
+        NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
+        if (allDevices != nil && [allDevices count] != 0) {
+            for (CSRDeviceEntity *deviceEntity in allDevices) {
                 if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName]) {
-                    
-                    [[LightModelApi sharedInstance] getState:deviceEntity.deviceId success:nil failure:nil];
-                    
                     DeviceModel *model = [[DeviceModel alloc] init];
                     model.deviceId = deviceEntity.deviceId;
                     model.shortName = deviceEntity.shortName;
                     model.name = deviceEntity.name;
                     [_allDevices addObject:model];
-                    [[DataModelManager shareInstance] setDeviceTime:deviceEntity.deviceId];
                 }
             }
         }
     }
     return self;
+}
+
+- (void)getAllDevicesState {
+    NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
+    if (allDevices != nil && [allDevices count] != 0) {
+        for (CSRDeviceEntity *deviceEntity in allDevices) {
+            if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName]) {
+                
+                [[LightModelApi sharedInstance] getState:deviceEntity.deviceId success:nil failure:nil];
+                [[LightModelApi sharedInstance] getState:deviceEntity.deviceId success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                    
+                } failure:^(NSError * _Nullable error) {
+                    NSLog(@">>> error : %@",error);
+                    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceEntity.deviceId];
+                    model.isleave = YES;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceEntity.deviceId}];
+                }];
+                
+                [[DataModelManager shareInstance] setDeviceTime:deviceEntity.deviceId];
+            }
+        }
+    }
 }
 
 #pragma mark - LightModelApiDelegate
@@ -80,6 +95,8 @@
             NSLog(@"调光回调 deviceId--> %@ powerState--> %@ --> %@ ",deviceId,powerState,level);
             model.powerState = powerState;
             model.level = level;
+            model.isleave = NO;
+            
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
             
             exist = YES;
@@ -94,6 +111,7 @@
         model.name = deviceEntity.name;
         model.powerState = powerState;
         model.level = level;
+        model.isleave = NO;
         [_allDevices addObject:model];
         [[DataModelManager shareInstance] setDeviceTime:deviceEntity.deviceId];
     }
@@ -107,6 +125,7 @@
         if ([model.deviceId isEqualToNumber:deviceId]) {
             NSLog(@"开关回调 deviceId --> %@ powerState--> %@",deviceId,state);
             model.powerState = state;
+            model.isleave = NO;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId}];
             
             exist = YES;
@@ -120,6 +139,7 @@
         model.shortName = deviceEntity.shortName;
         model.name = deviceEntity.name;
         model.powerState = state;
+        model.isleave = NO;
         [_allDevices addObject:model];
         [[DataModelManager shareInstance] setDeviceTime:deviceEntity.deviceId];
     }
@@ -143,7 +163,10 @@
     [[PowerModelApi sharedInstance] setPowerState:deviceId state:powerState success:^(NSNumber * _Nullable deviceId, NSNumber * _Nullable state) {
         
     } failure:^(NSError * _Nullable error) {
-
+        NSLog(@"error : %@",error);
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+        model.isleave = YES;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
     }];
     
 }
@@ -165,7 +188,10 @@
             [[LightModelApi sharedInstance] setLevel:deviceId level:currentLevel success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
                 
             } failure:^(NSError * _Nullable error) {
-
+                NSLog(@"error : >>>> %@",error);
+                DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+                model.isleave = YES;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
             }];
         }
         
