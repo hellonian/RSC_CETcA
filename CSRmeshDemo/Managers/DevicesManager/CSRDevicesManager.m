@@ -689,8 +689,8 @@
                                    authorisationCode:authCode
                                             deviceId:deviceId
                                              success:^(NSNumber *deviceId, NSData *deviceHash, NSData *dhmKey, NSNumber *meshRequestId) {
-        
                                                  [[LightModelApi sharedInstance] getState:deviceId success:nil failure:nil];
+
 //        [[NSNotificationCenter defaultCenter] postNotificationName:kCSRmeshManagerDeviceAssociationSuccessNotification
 //                                                            object:self
 //                                                          userInfo:@{@"deviceId": deviceId, @"deviceHash":deviceHash}];

@@ -35,7 +35,7 @@
 #define kGroupIcons @[@"living",@"bed",@"dinning",@"wash",@"pan",@"study",@"kettle",@"attic",@"stair",@"fitness",@"plant",@"terrace",@"bookcase",@"stool",@"talking",@"warehouse",@"corridor"]
 
 #define kDimmers @[@"D350BT",@"D350B-H",@"D350SB",@"D350B",@"D300IB",@"D300SB-T3"]
-#define kSwitchs @[@"S350BT",@"S350B",@"S1400IB"@"S350B-H"]
+#define kSwitchs @[@"S350BT",@"S350B",@"S1400IB",@"S350B-H"]
 #define kRemotes @[@"RB01",@"RB02"]
 
 

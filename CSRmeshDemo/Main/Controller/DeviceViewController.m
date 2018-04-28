@@ -158,6 +158,8 @@
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:self.deviceId];
         deviceEntity.name = _nameTF.text;
         [[CSRDatabaseManager sharedInstance] saveContext];
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:self.deviceId];
+        model.name = _nameTF.text;
         if (self.reloadDataHandle) {
             self.reloadDataHandle();
         }

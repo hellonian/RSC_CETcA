@@ -96,15 +96,7 @@
     _devicesCollectionView = [[MainCollectionView alloc] initWithFrame:CGRectMake(WIDTH*3/160.0, WIDTH*302/640.0+64, WIDTH*157/160.0, HEIGHT-64-WIDTH*302/640.0) collectionViewLayout:flowLayout cellIdentifier:@"MainCollectionViewCell"];
     _devicesCollectionView.mainDelegate = self;
     if (!self.isCreateNewArea) {
-        
-        [_areaEntity.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *device, BOOL * _Nonnull stop) {
-            SingleDeviceModel *deviceModel = [[SingleDeviceModel alloc] init];
-            deviceModel.deviceId = device.deviceId;
-            deviceModel.deviceName = device.name;
-            deviceModel.deviceShortName = device.shortName;
-            [_devicesCollectionView.dataArray addObject:deviceModel];
-        }];
-        
+        [self loadMemberData];
     }else{
         [_devicesCollectionView.dataArray addObject:@1];
     }
@@ -139,6 +131,17 @@
         
         [self.navigationController pushViewController:list animated:YES];
     }
+}
+
+- (void)loadMemberData {
+    [_devicesCollectionView.dataArray removeAllObjects];
+    [_areaEntity.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *device, BOOL * _Nonnull stop) {
+        SingleDeviceModel *deviceModel = [[SingleDeviceModel alloc] init];
+        deviceModel.deviceId = device.deviceId;
+        deviceModel.deviceName = device.name;
+        deviceModel.deviceShortName = device.shortName;
+        [_devicesCollectionView.dataArray addObject:deviceModel];
+    }];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -566,6 +569,11 @@
     if ([mainCell.groupId isEqualToNumber:@2000]) {
         DeviceViewController *dvc = [[DeviceViewController alloc] init];
         dvc.deviceId = mainCell.deviceId;
+        __weak GroupViewController *weakSelf = self;
+        dvc.reloadDataHandle = ^{
+            [weakSelf loadMemberData];
+            [_devicesCollectionView reloadData];
+        };
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
         nav.modalTransitionStyle = UIModalPresentationPopover;
         [self presentViewController:nav animated:YES completion:nil];
@@ -585,8 +593,6 @@
     self.groupIconImageView.alpha = 0.8;
     iconNum = @99;
     iconImage = image;
-    
-    
 }
 
 #pragma mark - PlaceColorIconPickerViewDelegate

@@ -40,36 +40,25 @@
         self.nameLabel.text = sceneEntity.sceneName;
         self.nameLabel.highlightedTextColor = DARKORAGE;
         self.sceneId = sceneEntity.sceneID;
-        if ([sceneEntity.sceneID isEqualToNumber:@0] || [sceneEntity.sceneID isEqualToNumber:@1]) {
-            [self addGestureRecognizer:[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(defaultCelllongTap:)]];
-        }else {
-            [self addGestureRecognizer:[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(customCelllongTap:)]];
-        }
+        [self addGestureRecognizer:[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(sceneCellLongTap:)]];
         [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(sceneCellTap:)]];
         
         return;
     }  
 }
 
-- (void)defaultCelllongTap:(UILongPressGestureRecognizer *)longRecognizer {
-    if (longRecognizer.state == UIGestureRecognizerStateBegan) {
-        [self becomeFirstResponder];
-        UIMenuController *menu=[UIMenuController sharedMenuController];
-        UIMenuItem *edit = [[UIMenuItem alloc]initWithTitle:@"Edit Scene" action:@selector(editSceneProfile)];
-        [menu setMenuItems:@[edit]];
-        [menu setTargetRect:self.bounds inView:self];
-        [menu setMenuVisible:YES animated:YES];
-    }
-}
-
-- (void)customCelllongTap:(UILongPressGestureRecognizer *)longRecognizer {
+- (void)sceneCellLongTap:(UILongPressGestureRecognizer *)longRecognizer {
     if (longRecognizer.state == UIGestureRecognizerStateBegan) {
         [self becomeFirstResponder];
         UIMenuController *menu=[UIMenuController sharedMenuController];
         UIMenuItem *edit = [[UIMenuItem alloc]initWithTitle:@"Edit Scene" action:@selector(editSceneProfile)];
         UIMenuItem *icon = [[UIMenuItem alloc]initWithTitle:@"Change Icon" action:@selector(changeSceneIcon)];
         UIMenuItem *rename = [[UIMenuItem alloc]initWithTitle:@"Rename" action:@selector(renameSceneProfile)];
-        [menu setMenuItems:@[edit,icon,rename]];
+        if ([self.sceneId isEqualToNumber:@0] || [self.sceneId isEqualToNumber:@1]) {
+            [menu setMenuItems:@[edit]];
+        }else {
+            [menu setMenuItems:@[edit,icon,rename]];
+        }
         [menu setTargetRect:self.bounds inView:self];
         [menu setMenuVisible:YES animated:YES];
     }

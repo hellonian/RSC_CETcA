@@ -288,13 +288,13 @@
 
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
         NSString *eveType;
-        if ([model.shortName isEqualToString:@"S350BT"]) {
+        if ([CSRUtilities belongToSwitch:model.shortName]) {
             if ([model.powerState boolValue]) {
                 eveType = @"10";
             }else {
                 eveType = @"11";
             }
-        }else if ([model.shortName isEqualToString:@"D350BT"]) {
+        }else if ([CSRUtilities belongToDimmer:model.shortName]) {
             if ([model.powerState boolValue]) {
                 eveType = @"12";
             }else {

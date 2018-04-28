@@ -88,6 +88,7 @@
             self.iconView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@room",imageString]];
         }
         self.cellIndexPath = indexPath;
+        [self adjustGroupCellBgcolorAndLevelLabel];
         self.bottomView.hidden = NO;
         [self showDeleteBtnAndMoveImageView:![areaEntity.isEditting boolValue]];
         return;
@@ -227,7 +228,7 @@
 }
 
 - (void)adjustGroupCellBgcolorAndLevelLabel {
-    __block NSInteger brightness;
+    __block NSInteger brightness = 0;
     if (self.groupMembers.count == 0) {
         self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
         self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
@@ -235,7 +236,7 @@
     }else {
         [self.groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *device, NSUInteger idx, BOOL * _Nonnull stop) {
             DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:device.deviceId];
-            if ([model.level integerValue]>brightness && !model.isleave) {
+            if ([model.powerState boolValue] && [model.level integerValue]>brightness && !model.isleave) {
                 brightness = [model.level integerValue];
             }
         }];
@@ -243,10 +244,16 @@
             self.nameLabel.textColor = DARKORAGE;
             self.levelLabel.textColor = DARKORAGE;
             self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
+            if (brightness/255.0*100>0 && brightness/255.0*100 < 1.0) {
+                self.levelLabel.text = @"1%";
+            }else {
+                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",brightness/255.0*100];
+            }
         }else {
             self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
             self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
             self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
+            self.levelLabel.text = @"0%";
         }
     }
     

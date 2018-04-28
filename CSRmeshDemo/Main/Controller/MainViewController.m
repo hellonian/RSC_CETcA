@@ -891,6 +891,7 @@
 - (void)reGetDataForPlaceChanged {
     [self getMainDataArray];
     [self getSceneDataArray];
+    [[DeviceModelManager sharedInstance] getAllDevicesState];
 }
 
 

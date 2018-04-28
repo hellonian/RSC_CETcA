@@ -152,10 +152,12 @@
 }
 
 - (void)getDataArray {
-    [_mainCollectionView.dataArray removeAllObjects];
     
     for (CSRmeshDevice *device in [[CSRDevicesManager sharedInstance] unassociatedMeshDevices]) {
-        [_mainCollectionView.dataArray addObject:device];
+        if (![_mainCollectionView.dataArray containsObject:device]) {
+            [_mainCollectionView.dataArray addObject:device];
+        }
+        
     }
     if ([_mainCollectionView.dataArray count]>0) {
         [_searchHud hideAnimated:YES];
@@ -173,7 +175,6 @@
 -(void)didDiscoverDeviceNotification:(NSNotification *)notification{
     if (![self alreadyDiscoveredDeviceFilteringWithDeviceUUID:(NSUUID *)notification.userInfo[kDeviceUuidString]]) {
         [[CSRDevicesManager sharedInstance] addDeviceWithUUID:notification.userInfo[kDeviceUuidString] andRSSI:notification.userInfo[kDeviceRssiString]];
-        [self getDataArray];
     }
 }
 
@@ -223,7 +224,16 @@
         _associateHud.label.text = [NSString stringWithFormat:@"Associating: %.0f%%", (completed * 100)];
         _associateHud.progress = completed;
         if (completed >= 1) {
-            [_associateHud hideAnimated:YES];
+            if ([_mainCollectionView.dataArray count] == 0) {
+                
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [_associateHud hideAnimated:YES];
+                    [self addVCBackAction];
+                });
+                
+            }else {
+                [_associateHud hideAnimated:YES];
+            }
         }
         [_mainCollectionView.dataArray removeObject:_selectedDevice];
         [_mainCollectionView reloadData];
