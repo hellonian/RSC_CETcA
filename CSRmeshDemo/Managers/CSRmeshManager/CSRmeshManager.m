@@ -109,6 +109,7 @@
 
 -(void) didAssociateDevice:(NSNumber *)deviceId deviceHash:(NSData *)deviceHash dhmKey:(NSData*)dhmKey meshRequestId:(NSNumber *)meshRequestId
 {
+    
     CSRmeshDevice *meshDevice = [[CSRDevicesManager sharedInstance] didAssociateDevice:deviceId deviceHash:deviceHash];
     
     // Create hash from exisitng gateway
@@ -153,9 +154,7 @@
                 meshDevice.name = [NSString stringWithFormat:@"%@ %d", shortName, (int)([deviceId intValue]&0x7fff)];
                 deviceEntity.name = meshDevice.name;
             }
-//            NSLog(@"uuid>> >> >> >><< %@ >> %@ >> %@",meshDevice.uuid,meshDevice.uuid.UUIDString,meshDevice.uuid.data);
             if (meshDevice.uuid) {
-//                NSLog(@"uuid>> >> >> >> %@ >> %@ >> %@",meshDevice.uuid,meshDevice.uuid.UUIDString,meshDevice.uuid.data);
                 deviceEntity.uuid = meshDevice.uuid.UUIDString;
             }
             NSNumber *sortId = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"SortId"];
@@ -213,6 +212,12 @@
         }
         
         [[CSRDevicesManager sharedInstance] createDeviceFromProperties:deviceDictionary];
+        
+        [[LightModelApi sharedInstance] getState:deviceId success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+            
+        } failure:^(NSError * _Nullable error) {
+            
+        }];
         
     } else {
         

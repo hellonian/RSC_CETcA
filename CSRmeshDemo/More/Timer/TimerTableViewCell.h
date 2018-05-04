@@ -15,7 +15,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *fireTimeLabel;
 @property (weak, nonatomic) IBOutlet UISwitch *enabledSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *repeatLabel;
-@property (weak, nonatomic) IBOutlet UIImageView *missImageView;
 @property (nonatomic,strong) TimerEntity *timerEntity;
 
 - (void)configureCellWithInfo:(TimerEntity *)timerEntity;

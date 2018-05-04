@@ -63,12 +63,13 @@
         for (TimerDeviceEntity *timerDevice in self.timerEntity.timerDevices) {
             CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:timerDevice.deviceID];
             devciesList = [NSString stringWithFormat:@"%@  %@",devciesList,deviceEntity.name];
-            NSMutableAttributedString *hintString=[[NSMutableAttributedString alloc]initWithString:devciesList];
-            if (![timerDevice.alive boolValue]) {
-                NSRange range=[[hintString string]rangeOfString:deviceEntity.name];
-                [hintString addAttribute:NSForegroundColorAttributeName value:DARKORAGE range:range];
-            }
-            self.devicesListLabel.attributedText = hintString;
+//            NSMutableAttributedString *hintString=[[NSMutableAttributedString alloc]initWithString:devciesList];
+//            if (![timerDevice.alive boolValue]&&deviceEntity.name) {
+//                NSRange range=[[hintString string]rangeOfString:deviceEntity.name];
+//                [hintString addAttribute:NSForegroundColorAttributeName value:DARKORAGE range:range];
+//            }
+//            self.devicesListLabel.attributedText = hintString;
+            self.devicesListLabel.text = devciesList;
             [self.deviceIds addObject:timerDevice.deviceID];
         }
         
@@ -223,6 +224,7 @@
         [_hud hideAnimated:YES];
         [self showTextHud:@"ERROR"];
     });
+    [self.backs removeAllObjects];
     
     NSNumber *timerIdNumber;
     if (_newadd) {
@@ -248,9 +250,9 @@
     [dateFormate setDateFormat:@"yyyyMMddHHmmss"];
     NSString *dateStr = [dateFormate stringFromDate:_timerPicker.date];
     NSString *newStr = [dateStr stringByReplacingCharactersInRange:NSMakeRange(12, 2) withString:@"00"];
-    newStr = [dateStr stringByReplacingCharactersInRange:NSMakeRange(0, 8) withString:@"20180101"];
+    newStr = [newStr stringByReplacingCharactersInRange:NSMakeRange(0, 8) withString:@"20180101"];
     NSDate *time = [dateFormate dateFromString:newStr];
-    
+    NSLog(@"timer >>> %@ \n newStr >>> %@",time,newStr);
     NSDate *date;
     
     NSString *repeatStr = @"";
@@ -283,6 +285,7 @@
     for (NSNumber *deviceId in self.deviceIds) {
         
         NSNumber *timerIndex = [[CSRDatabaseManager sharedInstance] getNextFreeTimerIDOfDeivice:deviceId];
+        NSLog(@"timerIndex--> %@",timerIndex);
 
         [self.deviceIdsAndIndexs setObject:timerIndex forKey:[NSString stringWithFormat:@"%@",deviceId]];
 
@@ -304,16 +307,14 @@
         [[DataModelManager shareInstance] addAlarmForDevice:deviceId alarmIndex:[timerIndex integerValue] enabled:[enabled boolValue] fireDate:date fireTime:time repeat:repeatStr eveType:eveType level:[model.level integerValue]];
         
     }
-    
-    
-    
-
 }
 
 - (void)addTimerToDeviceCall:(NSNotification *)result {
     NSDictionary *resultDic = result.userInfo;
     NSString *resultStr = [resultDic objectForKey:@"addAlarmCall"];
     NSNumber *deviceId = [resultDic objectForKey:@"deviceId"];
+    NSLog(@"---->> %@ ::: %@",deviceId,resultStr);
+    
     if ([resultStr boolValue]) {
         NSNumber *index = [self.deviceIdsAndIndexs objectForKey:[NSString stringWithFormat:@"%@",deviceId]];
         __block TimerDeviceEntity *newTimerDeviceEntity;
@@ -331,7 +332,7 @@
         newTimerDeviceEntity.timerIndex = index;
         [_timerEntity addTimerDevicesObject:newTimerDeviceEntity];
         [[CSRDatabaseManager sharedInstance] saveContext];
-        
+
         [self.backs addObject:deviceId];
         if ([self.backs count] == [self.deviceIds count]) {
             if (self.handle) {
@@ -342,7 +343,8 @@
         }
     }else {
         [_hud hideAnimated:YES];
-        [self showTextHud:@"ERROR"];
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+        [self showTextHud:[NSString stringWithFormat:@"ERROR:%@ set timer fail.",deviceEntity.name]];
     }
 }
 
@@ -351,7 +353,6 @@
     NSString *state = [resultDic objectForKey:@"deleteAlarmCall"];
     NSNumber *deviceId = [resultDic objectForKey:@"deviceId"];
     if ([state boolValue]) {
-        
         [self.deleteTimers enumerateObjectsUsingBlock:^(TimerDeviceEntity *timeDevice, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([timeDevice.deviceID isEqualToNumber:deviceId]) {
                 [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:timeDevice];
@@ -375,7 +376,6 @@
     NSString *state = [resultDic objectForKey:@"changeAlarmEnabledCall"];
 //    NSNumber *deviceId = [resultDic objectForKey:@"deviceId"];
     if ([state boolValue]) {
-        
         [self showTextHud:@"SUCCESS"];
         if (self.handle) {
             self.handle();
@@ -389,14 +389,6 @@
     _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     _hud.mode = MBProgressHUDModeIndeterminate;
     _hud.delegate = self;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(15.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if (self.handle) {
-            self.handle();
-        }
-        [_hud hideAnimated:YES];
-        [self showTextHud:@"ERROR"];
-        [self.navigationController popViewControllerAnimated:YES];
-    });
     
     [_timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timeDevice, BOOL * _Nonnull stop) {
         if (timeDevice) {

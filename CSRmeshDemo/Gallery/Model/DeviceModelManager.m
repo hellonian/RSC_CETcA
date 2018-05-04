@@ -87,7 +87,7 @@
 #pragma mark - LightModelApiDelegate
 
 - (void)didGetLightState:(NSNumber *)deviceId red:(NSNumber *)red green:(NSNumber *)green blue:(NSNumber *)blue level:(NSNumber *)level powerState:(NSNumber *)powerState colorTemperature:(NSNumber *)colorTemperature supports:(NSNumber *)supports meshRequestId:(NSNumber *)meshRequestId {
-    __block BOOL exist;
+    __block BOOL exist=NO ;
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
             NSLog(@"调光回调 deviceId--> %@ powerState--> %@ --> %@ ",deviceId,powerState,level);
@@ -215,6 +215,7 @@
             if ([passLevel integerValue] < 3) {
                 passLevel = @3;
             }
+            model.isleave = NO;
             model.level = passLevel;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
             NSLog(@"物理按钮反馈>>>%@",level);

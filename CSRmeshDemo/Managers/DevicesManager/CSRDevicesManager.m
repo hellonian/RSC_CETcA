@@ -689,7 +689,7 @@
                                    authorisationCode:authCode
                                             deviceId:deviceId
                                              success:^(NSNumber *deviceId, NSData *deviceHash, NSData *dhmKey, NSNumber *meshRequestId) {
-                                                 [[LightModelApi sharedInstance] getState:deviceId success:nil failure:nil];
+                                                 
 
 //        [[NSNotificationCenter defaultCenter] postNotificationName:kCSRmeshManagerDeviceAssociationSuccessNotification
 //                                                            object:self
@@ -828,7 +828,6 @@
 
 ////////////////////////////////////////
 -(void) setLevel:(NSNumber *)deviceId level:(NSNumber *)level {
-    NSLog(@"<<<<<<<<<<<<< %@",level);
     [[LightModelApi sharedInstance] setLevel:deviceId level:level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
         
     } failure:^(NSError * _Nullable error) {

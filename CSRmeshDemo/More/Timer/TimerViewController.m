@@ -47,16 +47,6 @@
     [self layoutView];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveTimerProfile:) name:kTimerProfile object:nil];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kTimerProfile object:nil];
-}
-
 - (void)backSetting{
     CATransition *animation = [CATransition animation];
     [animation setDuration:0.3];
@@ -108,76 +98,6 @@
         
     }
     
-    [self getDeviceTimer];
-    
-    
-    
-}
-
-- (void)getDeviceTimer {
-    NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
-    if (mutableArray != nil || [mutableArray count] != 0) {
-        [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName]) {
-                
-                [[DataModelManager shareInstance] readAlarmMessageByDeviceId:deviceEntity.deviceId];
-                
-            }
-        }];
-    }
-}
-
-- (void)receiveTimerProfile:(NSNotification *)result {
-    NSDictionary *timerInfo = result.userInfo;
-    NSArray *timersArray = [timerInfo objectForKey:kTimerProfile];
-//    NSNumber *deviceId = [timerInfo objectForKey:@"deviceId"];
-    
-    [timersArray enumerateObjectsUsingBlock:^(TimeSchedule *time, NSUInteger idx, BOOL * _Nonnull stop) {
-        
-        NSDateFormatter *dateFormate = [[NSDateFormatter alloc] init];
-        [dateFormate setDateFormat:@"yyyyMMddHHmmss"];
-        NSString *dateString = [dateFormate stringFromDate:time.fireDate];
-        NSString *timeStr = [dateString stringByReplacingCharactersInRange:NSMakeRange(0, 8) withString:@"20180101"];
-        NSDate *mytime = [dateFormate dateFromString:timeStr];
-        
-        NSString *dateStr = [dateString stringByReplacingCharactersInRange:NSMakeRange(8, 6) withString:@"000000"];
-        NSDate *myDate = [dateFormate dateFromString:dateStr];
-        
-        __block BOOL exist = 0;
-        [self.dataArray enumerateObjectsUsingBlock:^(TimerEntity *timerEntity, NSUInteger idx, BOOL * _Nonnull stopp) {
-            
-            [timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timerDevice, BOOL * _Nonnull stoppp) {
-
-                if ([timerDevice.deviceID isEqualToNumber:time.deviceId]&&[timerDevice.timerIndex integerValue]==time.timerIndex&&[timerEntity.enabled boolValue] == time.state && [timerEntity.fireTime isEqualToDate:mytime] && [timerEntity.fireDate isEqualToDate:myDate] && [timerEntity.repeat isEqualToString:time.repeat]) {
-                    
-                    exist = YES;
-                    timerDevice.alive = @(YES);
-                    *stopp = YES;
-                }
-            }];
-        }];
-        
-        if (!exist) {
-            
-            NSNumber *timerIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"TimerEntity"];
-            NSString *name = [NSString stringWithFormat:@"timer %@",timerIdNumber];
-            
-            TimerEntity *timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:@(time.state) fireTime:mytime fireDate:myDate repeatStr:time.repeat];
-            
-            NSArray *resArray = [[CSRDatabaseManager sharedInstance] foundTimerDevice:time.deviceId timeIndex:@(time.timerIndex)];
-            if (!resArray || (resArray && [resArray count] < 1)) {
-                TimerDeviceEntity *newTimerDeviceEntity = [NSEntityDescription insertNewObjectForEntityForName:@"TimerDeviceEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
-                newTimerDeviceEntity.timerID = timerIdNumber;
-                newTimerDeviceEntity.deviceID = time.deviceId;
-                newTimerDeviceEntity.timerIndex = @(time.timerIndex);
-                [timerEntity addTimerDevicesObject:newTimerDeviceEntity];
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            }
-            [self getData];
-        }
-    }];
-    
-    [self.tableView reloadData];
 }
 
 #pragma mark - UITableViewDelegate,UITableViewDataSource

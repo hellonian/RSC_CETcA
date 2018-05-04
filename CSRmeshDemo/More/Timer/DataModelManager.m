@@ -12,6 +12,7 @@
 #import "CSRmeshDevice.h"
 #import "CSRDevicesManager.h"
 #import "CSRUtilities.h"
+#import "CSRDatabaseManager.h"
 
 @interface DataModelManager ()<DataModelApiDelegate>
 {
@@ -76,7 +77,13 @@ static DataModelManager *manager = nil;
     NSLog(@">> --> %@",cmd);
     _schedule = [self analyzeTimeScheduleData:[NSString stringWithFormat:@"%@0%d%@%@%@%@%@0000000000",indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString] forLight:deviceId];
     
-    [self sendCmdData:cmd toDeviceId:deviceId];
+    if (deviceId) {
+        [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+            
+        } failure:^(NSError * _Nonnull error) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"addAlarmCall" object:nil userInfo:@{@"addAlarmCall":@"00",@"deviceId":deviceId}];
+        }];
+    }
 }
 
 //读取单灯闹钟列表
@@ -104,14 +111,26 @@ static DataModelManager *manager = nil;
     NSString *stataString = [NSString stringWithFormat:@"0%d",state];
     NSString *indexString = [self stringWithHexNumber:index];
     NSString *cmd = [NSString stringWithFormat:@"8402%@%@",indexString,stataString];
-    [self sendCmdData:cmd toDeviceId:deviceId];
+    if (deviceId) {
+        [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+            
+        } failure:^(NSError * _Nonnull error) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"changeAlarmEnabledCall" object:nil userInfo:@{@"deviceId":deviceId,@"changeAlarmEnabledCall":@"00"}];
+        }];
+    }
 }
 
 //删除设备闹钟
 - (void)deleteAlarmForDevice:(NSNumber *)deviceId index:(NSInteger)index {
     NSString *indexString = [self stringWithHexNumber:index];
     NSString *cmd = [NSString stringWithFormat:@"8501%@",indexString];
-    [self sendCmdData:cmd toDeviceId:deviceId];
+    if (deviceId) {
+        [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+            
+        } failure:^(NSError * _Nonnull error) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteAlarmCall" object:nil userInfo:@{@"deviceId":deviceId,@"deleteAlarmCall":@"00"}];
+        }];
+    }
 }
 
 
@@ -138,9 +157,9 @@ static DataModelManager *manager = nil;
     if ([dataStr hasPrefix:@"a3"]) {
         NSString *suffixStr = [dataStr substringWithRange:NSMakeRange(6, 2)];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"addAlarmCall" object:nil userInfo:@{@"addAlarmCall":suffixStr,@"deviceId":sourceDeviceId}];
-        if ([suffixStr boolValue]&&self.delegate&&[self.delegate respondsToSelector:@selector(addAlarmSuccessCall:)]) {
-            [self.delegate addAlarmSuccessCall:_schedule];
-        }
+//        if ([suffixStr boolValue]&&self.delegate&&[self.delegate respondsToSelector:@selector(addAlarmSuccessCall:)]) {
+//            [self.delegate addAlarmSuccessCall:_schedule];
+//        }
     }
     
     //删除闹钟回调
@@ -218,26 +237,26 @@ static DataModelManager *manager = nil;
     NSData *data = [dic objectForKey:ary[0]];
     NSString *firstStr = [self hexStringForData:data];
     
-    if ([firstStr hasPrefix:@"a2"]) {
-        NSString *string = @"actec";
-        for (NSNumber *key in ary) {
-            NSData *preData = [dic objectForKey:key];
-            string = [NSString stringWithFormat:@"%@%@",string,[self hexStringForData:preData]];
-        }
-        NSInteger num = [CSRUtilities numberWithHexString:[firstStr substringWithRange:NSMakeRange(4, 2)]];
-        NSMutableArray *timersArray = [[NSMutableArray alloc] init];
-        for (NSInteger i=0; i<num; i++) {
-            if (string.length > (i*32+11+32-2)) {
-                NSString *perStr = [string substringWithRange:NSMakeRange(i*32+11, 32)];////
-                TimeSchedule *schedule = [self analyzeTimeScheduleData:perStr forLight:deviceId];
-                [timersArray addObject:schedule];
-            }
-            
-        }
-        if ([timersArray count] > 0) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:kTimerProfile object:nil userInfo:@{kTimerProfile:timersArray,@"deviceId":deviceId}];
-        }
-    }
+//    if ([firstStr hasPrefix:@"a2"]) {
+//        NSString *string = @"actec";
+//        for (NSNumber *key in ary) {
+//            NSData *preData = [dic objectForKey:key];
+//            string = [NSString stringWithFormat:@"%@%@",string,[self hexStringForData:preData]];
+//        }
+//        NSLog(@"%@",string);
+//        NSInteger num = [CSRUtilities numberWithHexString:[firstStr substringWithRange:NSMakeRange(4, 2)]];
+//        NSMutableArray *timersArray = [[NSMutableArray alloc] init];
+//        for (NSInteger i=0; i<num; i++) {
+//            if (string.length > (i*32+11+32-2)) {
+//                NSString *perStr = [string substringWithRange:NSMakeRange(i*32+11, 32)];////
+//                TimeSchedule *schedule = [self analyzeTimeScheduleData:perStr forLight:deviceId];
+//                [timersArray addObject:schedule];
+//            }
+//        }
+//        if ([timersArray count] > 0) {
+//            [[NSNotificationCenter defaultCenter] postNotificationName:kTimerProfile object:nil userInfo:@{kTimerProfile:timersArray,@"deviceId":deviceId}];
+//        }
+//    }
     
     //获取遥控器配置
     if ([firstStr hasPrefix:@"b1"]) {

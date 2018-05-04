@@ -201,6 +201,7 @@
         NSNumber *areaIdNumber;
         
         if (self.isCreateNewArea) {
+            
             areaIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRAreaEntity"];
             NSNumber *sortId = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"SortId"];
             [self saveArea:areaIdNumber sortId:sortId];
@@ -212,7 +213,6 @@
             NSInteger removeNum = 0;
             
             for (CSRDeviceEntity *deviceEntity in _areaEntity.devices) {
-                
                 __block BOOL exist=0;
                 [_devicesCollectionView.dataArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                     if ([obj isKindOfClass:[SingleDeviceModel class]]) {
@@ -361,7 +361,7 @@
     for (id obj in _devicesCollectionView.dataArray) {
         if ([obj isKindOfClass:[SingleDeviceModel class]]) {
             SingleDeviceModel *model = (SingleDeviceModel *)obj;
-            __block BOOL exist;
+            __block BOOL exist=0;
             [_areaEntity.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, BOOL * _Nonnull stop) {
                 if ([deviceEntity.deviceId isEqualToNumber:model.deviceId]) {
                     exist = YES;

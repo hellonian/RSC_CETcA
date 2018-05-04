@@ -250,7 +250,6 @@
 #pragma mark - MainCollectionViewDelegate
 
 - (void)mainCollectionViewTapCellAction:(NSNumber *)cellDeviceId cellIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"addvc %ld",indexPath.row);
     
     if ([cellDeviceId isEqualToNumber:@3000]) {
         _selectedDevice = [_mainCollectionView.dataArray objectAtIndex:indexPath.row];

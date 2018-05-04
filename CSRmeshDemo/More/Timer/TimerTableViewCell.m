@@ -63,14 +63,6 @@
         self.repeatLabel.textColor = [UIColor colorWithRed:180/255.0 green:180/255.0 blue:180/255.0 alpha:1];
     }
     
-    for (TimerDeviceEntity *timerDevice in timerEntity.timerDevices) {
-        if ([timerDevice.alive boolValue]) {
-            _missImageView.hidden = YES;
-        }else {
-            _missImageView.hidden = NO;
-            return;
-        }
-    }
 }
 
 - (IBAction)changeEnabled:(UISwitch *)sender {
