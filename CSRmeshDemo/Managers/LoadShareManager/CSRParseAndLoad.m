@@ -169,13 +169,11 @@
             
             __block NSMutableData *groups = [NSMutableData data];
             NSArray *groupsArray = deviceDict[@"groups"];
-            
-            
             [groupsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
                 
                 uint16_t desiredValue = [obj unsignedShortValue];
-                [groups appendBytes:&desiredValue length:sizeof(desiredValue)];
-                
+                [groups appendBytes:&desiredValue length:1];
+
                 __block CSRAreaEntity *foundAreaEntity = nil;
                 [self.sharePlace.areas enumerateObjectsUsingBlock:^(id  _Nonnull obj, BOOL * _Nonnull stop) {
                     CSRAreaEntity *areaEntity = (CSRAreaEntity *)obj;
@@ -189,6 +187,7 @@
                     [deviceEntity addAreasObject:foundAreaEntity];
                 }
             }];
+
             NSData *authCode = [CSRUtilities IntToNSData:[deviceDict[@"authCode"] unsignedLongLongValue]];
             
             deviceEntity.deviceId = deviceDict[@"deviceID"];
@@ -389,12 +388,21 @@
                 uint64_t modelHigh = [CSRUtilities NSDataToInt:device.modelHigh];
                 NSString *dhmKey = [[NSString alloc] initWithData:device.dhmKey encoding:NSUTF8StringEncoding];
                 
-                NSData *groups = [CSRUtilities dataForHexString:device.groups];
-                uint16_t *choppedValue = (uint16_t*)groups.bytes;
-                NSMutableArray *groupsInArray = [NSMutableArray array];
-                for (int i = 0; i < device.groups.length/2; i++) {
-                    NSNumber *group = @(*choppedValue++);
-                    [groupsInArray addObject:group];
+//                NSData *groups = [CSRUtilities dataForHexString:device.groups];
+//                NSLog(@"<-- %@",groups);
+//                uint16_t *choppedValue = (uint16_t*)groups.bytes;
+//                NSMutableArray *groupsInArray = [NSMutableArray array];
+//                for (int i = 0; i < device.groups.length/2; i++) {
+//                    NSNumber *group = @(*choppedValue++);
+//                    NSLog(@"%@ --> %@",device.deviceId,group);
+//                    [groupsInArray addObject:group];
+//                }
+                NSMutableArray *groupsInArray = [[NSMutableArray alloc] init];
+                for (int i = 0; i<8; i++) {
+                    int j = i*2;
+                    NSString *str = [device.groups substringWithRange:NSMakeRange(j, 2)];
+                    NSNumber *num = @([str integerValue]);
+                    [groupsInArray addObject:num];
                 }
                 
                 uint16_t authCode = [CSRUtilities NSDataToInt:device.authCode];

@@ -238,7 +238,7 @@
         CSRPlaceEntity *defaultPlace = [NSEntityDescription insertNewObjectForEntityForName:@"CSRPlaceEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
         
         defaultPlace.name = @"iOSHouse";
-        defaultPlace.passPhrase = @"sj12";
+        defaultPlace.passPhrase = @"actec";
         defaultPlace.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
         defaultPlace.iconID = @(8);
         defaultPlace.owner = @"My place";

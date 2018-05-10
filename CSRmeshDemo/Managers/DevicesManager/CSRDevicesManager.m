@@ -374,8 +374,8 @@
     
     [[ConfigModelApi sharedInstance] discoverDevice:meshDevice.deviceId
                                             success:^(NSNumber * _Nullable deviceId, NSData * _Nullable deviceHash) {
-                                                NSLog(@"SJ21 deviceHash :%@", deviceHash);
-                                            [self resetDevice:meshDevice.deviceId withDeviceHash:deviceHash andDHMKey:meshDevice.dhmKey];
+                                                NSLog(@"SJ21 deviceHash :%@ --> %@", deviceId,deviceHash);
+                                                [self resetDevice:meshDevice.deviceId withDeviceHash:deviceHash andDHMKey:meshDevice.dhmKey];
                                                 [meshDevice setResetRetriesRemaining:20];
                                                 [meshDevice setResetTimer:[NSTimer scheduledTimerWithTimeInterval:0.5
                                                                                                            target:self
@@ -385,7 +385,7 @@
 //                                                meshDevice.uuid = nil;
                                                 meshDevice.pendingRemoval = YES;
                                                 flag = YES;
-                                                
+
                                                 NSMutableDictionary *objects = [NSMutableDictionary new];
                                                 [objects setObject:@(flag) forKey:@"boolFlag"];
                                                 [[NSNotificationCenter defaultCenter] postNotificationName:kCSRDeviceManagerDeviceFoundForReset object:self userInfo:objects];

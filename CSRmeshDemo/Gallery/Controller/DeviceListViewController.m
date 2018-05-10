@@ -81,7 +81,19 @@
                     singleDevice.deviceId = deviceEntity.deviceId;
                     singleDevice.deviceName = deviceEntity.name;
                     singleDevice.deviceShortName = deviceEntity.shortName;
-                    [_devicesCollectionView.dataArray addObject:singleDevice];
+                    
+                    __block BOOL exist = 0;
+                    [_devicesCollectionView.dataArray enumerateObjectsUsingBlock:^(SingleDeviceModel *singleDevice, NSUInteger idx, BOOL * _Nonnull newstop) {
+                        if ([singleDevice.deviceId isEqualToNumber:deviceEntity.deviceId]) {
+                            exist = YES;
+                            *newstop = YES;
+                        }
+                    }];
+                    
+                    if (!exist) {
+                        [_devicesCollectionView.dataArray addObject:singleDevice];
+                    }
+                    
                 }
             }];
         }

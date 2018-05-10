@@ -364,6 +364,10 @@
                 [deviceProperties setObject:device.deviceHash forKey:kDEVICE_HASH];
             }
             
+            if (device.dhmKey) {
+                [deviceProperties setObject:device.dhmKey forKey:kDEVICE_DHM];
+            }
+            
             if (device.authCode) {
                 [deviceProperties setObject:device.authCode forKey:kDEVICE_AUTH_CODE];
             }

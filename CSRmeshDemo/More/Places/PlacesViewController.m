@@ -97,6 +97,7 @@
 - (void)backSetting{
     if (_hud) {
         [_hud hideAnimated:YES];
+        _hud = nil;
     }
     [_advertiser stop];
     

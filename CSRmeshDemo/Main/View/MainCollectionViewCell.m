@@ -283,7 +283,7 @@
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
     if ([_deviceId isEqualToNumber:@2000]) {
-        __block BOOL exist;
+        __block BOOL exist=0; 
         [_groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([deviceEntity.deviceId isEqualToNumber:deviceId]) {
                 exist = YES;

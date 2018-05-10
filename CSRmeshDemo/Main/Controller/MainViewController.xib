@@ -28,13 +28,12 @@
                         <constraint firstAttribute="width" secondItem="K7E-gQ-cG5" secondAttribute="height" multiplier="640:290" id="eTz-vF-HdY"/>
                     </constraints>
                 </imageView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gvS-MG-asc">
-                    <rect key="frame" x="16" y="64" width="343" height="20"/>
-                    <color key="backgroundColor" red="0.7245305031" green="0.86699288669999997" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Not Available" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gvS-MG-asc">
+                    <rect key="frame" x="16" y="64" width="84.5" height="40"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="20" id="Mxo-b9-IWg"/>
+                        <constraint firstAttribute="height" constant="40" id="Mxo-b9-IWg"/>
                     </constraints>
-                    <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
@@ -42,7 +41,6 @@
             <color key="backgroundColor" red="0.76470588235294112" green="0.76470588235294112" blue="0.76470588235294112" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="K7E-gQ-cG5" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="64" id="GCl-yy-pL0"/>
-                <constraint firstAttribute="trailing" secondItem="gvS-MG-asc" secondAttribute="trailing" constant="16" id="Jbq-xW-DLm"/>
                 <constraint firstItem="K7E-gQ-cG5" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="Ji0-Mk-AEx"/>
                 <constraint firstItem="K7E-gQ-cG5" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="Qb3-Re-Fup"/>
                 <constraint firstItem="gvS-MG-asc" firstAttribute="top" secondItem="K7E-gQ-cG5" secondAttribute="top" id="R0b-dI-iak"/>

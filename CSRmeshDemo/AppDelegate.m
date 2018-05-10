@@ -13,8 +13,8 @@
 #import "MoreViewController.h"
 
 #import "MainViewController.h"
-//#import "CSRBridgeRoaming.h"
-//#import "CSRBluetoothLE.h"
+#import "CSRBridgeRoaming.h"
+#import "CSRBluetoothLE.h"
 
 @interface AppDelegate ()
 
@@ -109,9 +109,9 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-//    if ([[CSRBridgeRoaming sharedInstance] numberOfConnectedBridges] == 0) {
-//        [[CSRBluetoothLE sharedInstance] startScan];
-//    }
+    if ([[CSRBridgeRoaming sharedInstance] numberOfConnectedBridges] == 0) {
+        [[CSRBluetoothLE sharedInstance] startScan];
+    }
     
     // Broadcast time
 //    [self broadcastTime];

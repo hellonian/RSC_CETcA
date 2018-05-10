@@ -103,10 +103,13 @@
     NSDictionary *dic = notification.userInfo;
     CBPeripheral *peripheral = dic[@"peripheral"];
     _connectedBridgeLabel.text = [NSString stringWithFormat:@"%@  %@",peripheral.name,peripheral.uuidString];
+//    _connectedBridgeLabel.text = @"Connected";
+//    _connectedBridgeLabel.textColor = DARKORAGE;
 }
 
 - (void)bridgeDisconnectedNotification:(NSNotification *)notification {
-    _connectedBridgeLabel.text = @"disConnected";
+    _connectedBridgeLabel.text = @"Not Available";
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
