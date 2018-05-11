@@ -7,7 +7,6 @@
 #import "CSRBluetoothLE.h"
 #import "CSRUtilities.h"
 #import "CSRConstants.h"
-#import "CSRDevicesListViewController.h"
 #import "CSRAppStateManager.h"
 #import <CSRmesh/SensorModelApi.h>
 #import <CSRmesh/ActuatorModelApi.h>

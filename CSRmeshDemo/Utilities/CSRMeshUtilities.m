@@ -2,7 +2,7 @@
 // Copyright 2015 Qualcomm Technologies International, Ltd.
 //
 
-
+/*
 #import "CSRMeshUtilities.h"
 
 @implementation CSRMeshUtilities
@@ -206,3 +206,4 @@ const uint8_t shortcodeslookup[] ={'B','b','C','D','d','F','f','G','g','H','h','
 
 
 @end
+*/

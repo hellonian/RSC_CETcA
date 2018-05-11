@@ -2,7 +2,7 @@
 // Copyright 2015 Qualcomm Technologies International, Ltd.
 //
 
-
+/*
 #import <Foundation/Foundation.h>
 
 @interface CSRMeshUtilities : NSObject
@@ -90,3 +90,4 @@ typedef NS_ENUM(NSInteger, UUIDTreatmentMode)  {
 
 
 @end
+*/

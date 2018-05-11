@@ -13,6 +13,5 @@ target 'CSRmeshDemo' do
     pod 'PureLayout'
     pod 'MJRefresh'
     pod 'MBProgressHUD'
-    pod 'SGQRCode'
     pod 'OHMySQL'
 end
