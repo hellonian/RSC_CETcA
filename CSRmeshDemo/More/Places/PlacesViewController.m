@@ -188,12 +188,12 @@
 
 - (void) showAlert:(CSRPlaceEntity *)placeEntuty
 {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Alert!"
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@""
                                                                              message:[NSString stringWithFormat:@"Are you sure you want to switch place to the %@.",placeEntuty.name]
                                                                       preferredStyle:UIAlertControllerStyleAlert];
-    NSMutableAttributedString *attributedTitle = [[NSMutableAttributedString alloc] initWithString:@"Alert!"];
-    [attributedTitle addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1] range:NSMakeRange(0, [[attributedTitle string] length])];
-    [alertController setValue:attributedTitle forKey:@"attributedTitle"];
+//    NSMutableAttributedString *attributedTitle = [[NSMutableAttributedString alloc] initWithString:@"Alert!"];
+//    [attributedTitle addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1] range:NSMakeRange(0, [[attributedTitle string] length])];
+//    [alertController setValue:attributedTitle forKey:@"attributedTitle"];
     NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"Are you sure you want to switch place to the %@.",placeEntuty.name]];
     [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
     [alertController setValue:attributedMessage forKey:@"attributedMessage"];

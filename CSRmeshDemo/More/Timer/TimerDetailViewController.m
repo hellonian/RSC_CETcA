@@ -217,6 +217,16 @@
 }
 
 - (void)doneAction {
+    if ([self.deviceIds count]==0) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:@"You must choose one or more devices." preferredStyle:UIAlertControllerStyleAlert];
+        [alertController.view setTintColor:DARKORAGE];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        [alertController addAction:cancelAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+        return;
+    }
     _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     _hud.mode = MBProgressHUDModeIndeterminate;
     _hud.delegate = self;

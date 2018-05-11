@@ -78,6 +78,8 @@
         _exportButton.hidden = YES;
     }else if (![[_placeEntity objectID] isEqual:[[CSRAppStateManager sharedInstance].selectedPlace objectID]]) {
         _exportButton.hidden = YES;
+    }else if ([[_placeEntity objectID] isEqual:[[CSRAppStateManager sharedInstance].selectedPlace objectID]]) {
+        _deleteButton.hidden = YES;
     }
     
 }
@@ -223,6 +225,7 @@
         [self.navigationController popViewControllerAnimated:YES];
     } else {
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Can't Delete" message:@"You can't delete current selected place" preferredStyle:UIAlertControllerStyleAlert];
+        [alertController.view setTintColor:DARKORAGE];
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
             
         }];
