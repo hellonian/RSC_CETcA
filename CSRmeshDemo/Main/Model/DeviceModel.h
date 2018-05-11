@@ -17,5 +17,7 @@
 @property (nonatomic, strong) NSNumber *powerState;
 @property (nonatomic, assign) BOOL isForGroup;
 @property (nonatomic, assign) BOOL isShowDeleteBtn;
+@property (nonatomic, assign) BOOL isleave;
 
 @end
+

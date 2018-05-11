@@ -8,7 +8,6 @@
 #import "CSRUtilities.h"
 #import "CSRmeshSettings.h"
 #import "CSRMesh/TimeModelApi.h"
-#import "LightClusterViewController.h"
 #import "GalleryViewController.h"
 #import "MoreViewController.h"
 
