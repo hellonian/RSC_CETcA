@@ -47,17 +47,6 @@
 		2E2E707C1FF5DE60002D1C1D /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E70061FF5DE60002D1C1D /* AboutViewController.xib */; };
 		2E2E707D1FF5DE60002D1C1D /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70081FF5DE60002D1C1D /* MasterViewController.m */; };
 		2E2E707E1FF5DE60002D1C1D /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E700A1FF5DE60002D1C1D /* MoreViewController.m */; };
-		2E2E707F1FF5DE60002D1C1D /* MusicDimmerChooseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E700E1FF5DE60002D1C1D /* MusicDimmerChooseVC.m */; };
-		2E2E70801FF5DE60002D1C1D /* MusicListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70101FF5DE60002D1C1D /* MusicListTableViewController.m */; };
-		2E2E70811FF5DE60002D1C1D /* MusicPlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70121FF5DE60002D1C1D /* MusicPlayViewController.m */; };
-		2E2E70821FF5DE60002D1C1D /* GetDataTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70151FF5DE60002D1C1D /* GetDataTools.m */; };
-		2E2E70831FF5DE60002D1C1D /* MusicPlayTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70171FF5DE60002D1C1D /* MusicPlayTools.m */; };
-		2E2E70841FF5DE60002D1C1D /* MeterTable.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E701B1FF5DE60002D1C1D /* MeterTable.mm */; };
-		2E2E70851FF5DE60002D1C1D /* particleTexture.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E701C1FF5DE60002D1C1D /* particleTexture.png */; };
-		2E2E70861FF5DE60002D1C1D /* MusicListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E701F1FF5DE60002D1C1D /* MusicListTableViewCell.m */; };
-		2E2E70871FF5DE60002D1C1D /* MusicListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E70201FF5DE60002D1C1D /* MusicListTableViewCell.xib */; };
-		2E2E70881FF5DE60002D1C1D /* MusicPlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70221FF5DE60002D1C1D /* MusicPlayView.m */; };
-		2E2E70891FF5DE60002D1C1D /* VisualizerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70241FF5DE60002D1C1D /* VisualizerView.mm */; };
 		2E2E708A1FF5DE60002D1C1D /* PlaceDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70281FF5DE60002D1C1D /* PlaceDetailsViewController.m */; };
 		2E2E708B1FF5DE60002D1C1D /* PlaceDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E70291FF5DE60002D1C1D /* PlaceDetailsViewController.xib */; };
 		2E2E708C1FF5DE60002D1C1D /* PlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E702B1FF5DE60002D1C1D /* PlacesViewController.m */; };
@@ -216,26 +205,6 @@
 		2E2E70081FF5DE60002D1C1D /* MasterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
 		2E2E70091FF5DE60002D1C1D /* MoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoreViewController.h; sourceTree = "<group>"; };
 		2E2E700A1FF5DE60002D1C1D /* MoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoreViewController.m; sourceTree = "<group>"; };
-		2E2E700D1FF5DE60002D1C1D /* MusicDimmerChooseVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicDimmerChooseVC.h; sourceTree = "<group>"; };
-		2E2E700E1FF5DE60002D1C1D /* MusicDimmerChooseVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicDimmerChooseVC.m; sourceTree = "<group>"; };
-		2E2E700F1FF5DE60002D1C1D /* MusicListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicListTableViewController.h; sourceTree = "<group>"; };
-		2E2E70101FF5DE60002D1C1D /* MusicListTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicListTableViewController.m; sourceTree = "<group>"; };
-		2E2E70111FF5DE60002D1C1D /* MusicPlayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicPlayViewController.h; sourceTree = "<group>"; };
-		2E2E70121FF5DE60002D1C1D /* MusicPlayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicPlayViewController.m; sourceTree = "<group>"; };
-		2E2E70141FF5DE60002D1C1D /* GetDataTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetDataTools.h; sourceTree = "<group>"; };
-		2E2E70151FF5DE60002D1C1D /* GetDataTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetDataTools.m; sourceTree = "<group>"; };
-		2E2E70161FF5DE60002D1C1D /* MusicPlayTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicPlayTools.h; sourceTree = "<group>"; };
-		2E2E70171FF5DE60002D1C1D /* MusicPlayTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicPlayTools.m; sourceTree = "<group>"; };
-		2E2E701A1FF5DE60002D1C1D /* MeterTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeterTable.h; sourceTree = "<group>"; };
-		2E2E701B1FF5DE60002D1C1D /* MeterTable.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MeterTable.mm; sourceTree = "<group>"; };
-		2E2E701C1FF5DE60002D1C1D /* particleTexture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = particleTexture.png; sourceTree = "<group>"; };
-		2E2E701E1FF5DE60002D1C1D /* MusicListTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicListTableViewCell.h; sourceTree = "<group>"; };
-		2E2E701F1FF5DE60002D1C1D /* MusicListTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicListTableViewCell.m; sourceTree = "<group>"; };
-		2E2E70201FF5DE60002D1C1D /* MusicListTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MusicListTableViewCell.xib; sourceTree = "<group>"; };
-		2E2E70211FF5DE60002D1C1D /* MusicPlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicPlayView.h; sourceTree = "<group>"; };
-		2E2E70221FF5DE60002D1C1D /* MusicPlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicPlayView.m; sourceTree = "<group>"; };
-		2E2E70231FF5DE60002D1C1D /* VisualizerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VisualizerView.h; sourceTree = "<group>"; };
-		2E2E70241FF5DE60002D1C1D /* VisualizerView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VisualizerView.mm; sourceTree = "<group>"; };
 		2E2E70271FF5DE60002D1C1D /* PlaceDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaceDetailsViewController.h; sourceTree = "<group>"; };
 		2E2E70281FF5DE60002D1C1D /* PlaceDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaceDetailsViewController.m; sourceTree = "<group>"; };
 		2E2E70291FF5DE60002D1C1D /* PlaceDetailsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlaceDetailsViewController.xib; sourceTree = "<group>"; };
@@ -666,7 +635,6 @@
 				2E2E70251FF5DE60002D1C1D /* Places */,
 				2EF3324B204502CA00565374 /* Help */,
 				2EF3324C204502CA00565374 /* Language */,
-				2E2E700B1FF5DE60002D1C1D /* Music */,
 				2E2E703A1FF5DE60002D1C1D /* Remote */,
 				2E2E70551FF5DE60002D1C1D /* Timer */,
 				2E2E70671FF5DE60002D1C1D /* Update */,
@@ -683,73 +651,6 @@
 				2E2E70061FF5DE60002D1C1D /* AboutViewController.xib */,
 			);
 			path = About;
-			sourceTree = "<group>";
-		};
-		2E2E700B1FF5DE60002D1C1D /* Music */ = {
-			isa = PBXGroup;
-			children = (
-				2E2E700C1FF5DE60002D1C1D /* Controller */,
-				2E2E70131FF5DE60002D1C1D /* Tools */,
-				2E2E70181FF5DE60002D1C1D /* Universality */,
-				2E2E701D1FF5DE60002D1C1D /* View */,
-			);
-			path = Music;
-			sourceTree = "<group>";
-		};
-		2E2E700C1FF5DE60002D1C1D /* Controller */ = {
-			isa = PBXGroup;
-			children = (
-				2E2E700D1FF5DE60002D1C1D /* MusicDimmerChooseVC.h */,
-				2E2E700E1FF5DE60002D1C1D /* MusicDimmerChooseVC.m */,
-				2E2E700F1FF5DE60002D1C1D /* MusicListTableViewController.h */,
-				2E2E70101FF5DE60002D1C1D /* MusicListTableViewController.m */,
-				2E2E70111FF5DE60002D1C1D /* MusicPlayViewController.h */,
-				2E2E70121FF5DE60002D1C1D /* MusicPlayViewController.m */,
-			);
-			path = Controller;
-			sourceTree = "<group>";
-		};
-		2E2E70131FF5DE60002D1C1D /* Tools */ = {
-			isa = PBXGroup;
-			children = (
-				2E2E70141FF5DE60002D1C1D /* GetDataTools.h */,
-				2E2E70151FF5DE60002D1C1D /* GetDataTools.m */,
-				2E2E70161FF5DE60002D1C1D /* MusicPlayTools.h */,
-				2E2E70171FF5DE60002D1C1D /* MusicPlayTools.m */,
-			);
-			path = Tools;
-			sourceTree = "<group>";
-		};
-		2E2E70181FF5DE60002D1C1D /* Universality */ = {
-			isa = PBXGroup;
-			children = (
-				2E2E70191FF5DE60002D1C1D /* MeterTable */,
-				2E2E701C1FF5DE60002D1C1D /* particleTexture.png */,
-			);
-			path = Universality;
-			sourceTree = "<group>";
-		};
-		2E2E70191FF5DE60002D1C1D /* MeterTable */ = {
-			isa = PBXGroup;
-			children = (
-				2E2E701A1FF5DE60002D1C1D /* MeterTable.h */,
-				2E2E701B1FF5DE60002D1C1D /* MeterTable.mm */,
-			);
-			path = MeterTable;
-			sourceTree = "<group>";
-		};
-		2E2E701D1FF5DE60002D1C1D /* View */ = {
-			isa = PBXGroup;
-			children = (
-				2E2E701E1FF5DE60002D1C1D /* MusicListTableViewCell.h */,
-				2E2E701F1FF5DE60002D1C1D /* MusicListTableViewCell.m */,
-				2E2E70201FF5DE60002D1C1D /* MusicListTableViewCell.xib */,
-				2E2E70211FF5DE60002D1C1D /* MusicPlayView.h */,
-				2E2E70221FF5DE60002D1C1D /* MusicPlayView.m */,
-				2E2E70231FF5DE60002D1C1D /* VisualizerView.h */,
-				2E2E70241FF5DE60002D1C1D /* VisualizerView.mm */,
-			);
-			path = View;
 			sourceTree = "<group>";
 		};
 		2E2E70251FF5DE60002D1C1D /* Places */ = {
@@ -1171,7 +1072,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = CSR;
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "Cambridge Silicon Radio Ltd";
 				TargetAttributes = {
 					0DE95D011B297FFB006D0397 = {
@@ -1221,7 +1122,6 @@
 				2EC38940204939CE004D822D /* TimerDetailViewController.xib in Resources */,
 				CE1DE0AF1BFB82840009C1D1 /* ThermostatWIthColor.png in Resources */,
 				2E2E708F1FF5DE60002D1C1D /* PlaceColorCollectionViewCell.xib in Resources */,
-				2E2E70851FF5DE60002D1C1D /* particleTexture.png in Resources */,
 				2E06A50020205B0E007B8BEA /* GroupViewController.xib in Resources */,
 				2E6C26E720A5845E00BDB95A /* Main.storyboard in Resources */,
 				2E2E70AF1FF5DE60002D1C1D /* DiscoverViewController.xib in Resources */,
@@ -1240,7 +1140,6 @@
 				2E2EBFA41FAC2FF400CEA401 /* cskey_db.json in Resources */,
 				2E86234A2019DB28004EF0E0 /* DeviceViewController.xib in Resources */,
 				2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */,
-				2E2E70871FF5DE60002D1C1D /* MusicListTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1322,7 +1221,6 @@
 				2E2000A920182260000AD8C3 /* SceneEntity.m in Sources */,
 				0D835B3B1B9749E600FF4376 /* CSRMeshUtilities.m in Sources */,
 				0D835B941B975E8800FF4376 /* CSRAreaEntity.m in Sources */,
-				2E2E70891FF5DE60002D1C1D /* VisualizerView.mm in Sources */,
 				0D835B3C1B9749E600FF4376 /* CSRUtilities.m in Sources */,
 				0D835B3D1B9749E600FF4376 /* CSRmeshManager.m in Sources */,
 				0D835B3F1B9749E600FF4376 /* CSRParseAndLoad.m in Sources */,
@@ -1350,7 +1248,6 @@
 				0D835B561B9749E600FF4376 /* CSRCheckbox.m in Sources */,
 				2ED3963F204D09D20068B666 /* TimerDeviceEntity.m in Sources */,
 				2E2E708C1FF5DE60002D1C1D /* PlacesViewController.m in Sources */,
-				2E2E70811FF5DE60002D1C1D /* MusicPlayViewController.m in Sources */,
 				2EF7182C1FFB265A00901918 /* DropEntity.m in Sources */,
 				F4658A201C99747A00C284F4 /* CSRDeviceEventsEntity.m in Sources */,
 				2E2E70AD1FF5DE60002D1C1D /* TimeSchedule.m in Sources */,
@@ -1361,37 +1258,30 @@
 				F4C85EA71CB3EE0E003E1FF3 /* CSRControllerEntity+CoreDataProperties.m in Sources */,
 				2EAD479C1FFC76F3007D45E9 /* GallreyDropView.m in Sources */,
 				2E2E70971FF5DE60002D1C1D /* RemoteViewController.m in Sources */,
-				2E2E70841FF5DE60002D1C1D /* MeterTable.mm in Sources */,
 				2E2E708E1FF5DE60002D1C1D /* PlaceColorCollectionViewCell.m in Sources */,
 				2EF2DB5A200DA6CF00A1B236 /* DeviceModelManager.m in Sources */,
 				2EEA6E361F453B1300895CE2 /* ControlMaskView.m in Sources */,
 				2EAD47991FFC6DA8007D45E9 /* GalleryControlImageView.m in Sources */,
-				2E2E70881FF5DE60002D1C1D /* MusicPlayView.m in Sources */,
 				2E2E708A1FF5DE60002D1C1D /* PlaceDetailsViewController.m in Sources */,
 				2E2E707E1FF5DE60002D1C1D /* MoreViewController.m in Sources */,
 				2EF332552045031300565374 /* HelpViewController.m in Sources */,
 				2E3B967F200F3847000BD086 /* MainViewController.m in Sources */,
 				F4658A211C99747A00C284F4 /* CSREventEntity+CoreDataProperties.m in Sources */,
-				2E2E70831FF5DE60002D1C1D /* MusicPlayTools.m in Sources */,
 				2ED3963C204D09A00068B666 /* TimerEntity.m in Sources */,
 				F4C85EB01CB3EF92003E1FF3 /* CSRPlaceEntity+CoreDataProperties.m in Sources */,
 				2EE757D62010B23100FB75C5 /* SceneCollectionViewCell.m in Sources */,
 				2EF5F07C1F445AC30069C594 /* ImproveTouchingExperience.m in Sources */,
-				2E2E70861FF5DE60002D1C1D /* MusicListTableViewCell.m in Sources */,
 				F4C85EA81CB3EE0E003E1FF3 /* CSRControllerEntity.m in Sources */,
-				2E2E70821FF5DE60002D1C1D /* GetDataTools.m in Sources */,
 				2E3B9661200F2553000BD086 /* DeviceModel.m in Sources */,
 				2EE757D1201078A000FB75C5 /* MainCollectionViewCell.m in Sources */,
 				2E2E70B41FF5DE60002D1C1D /* OTAU.m in Sources */,
 				2E2E70B21FF5DE60002D1C1D /* PCM.m in Sources */,
-				2E2E707F1FF5DE60002D1C1D /* MusicDimmerChooseVC.m in Sources */,
 				2EAD4EA82004A4BB003733CA /* GalleryEditToolView.m in Sources */,
 				2E2E707B1FF5DE60002D1C1D /* AboutViewController.m in Sources */,
 				2EF332502045030100565374 /* LanguageViewController.m in Sources */,
 				2EE95A831FAB0F9700E1F945 /* ViewController.m in Sources */,
 				2E2000AC2018227E000AD8C3 /* SceneMemberEntity.m in Sources */,
 				CED2FE4E1BF25CF4004957C8 /* CSRmeshStyleKit.m in Sources */,
-				2E2E70801FF5DE60002D1C1D /* MusicListTableViewController.m in Sources */,
 				0D835B7C1B9749E700FF4376 /* CSRBridgeRoaming.m in Sources */,
 				0D835B7D1B9749E700FF4376 /* CSRBluetoothLE.m in Sources */,
 				0D835B7E1B9749E700FF4376 /* CSRmeshSettings.m in Sources */,
@@ -1441,12 +1331,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -1499,12 +1391,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -1544,6 +1438,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = NO;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: AcTEC (FUZHOU) ELECTRONICS CO., LTD. (5AEE5R2F69)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -1600,6 +1495,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = NO;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: AcTEC (FUZHOU) ELECTRONICS CO., LTD. (5AEE5R2F69)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;

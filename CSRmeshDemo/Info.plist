@@ -6,24 +6,6 @@
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
 	<string>AcTEC BLE</string>
-	<key>CFBundleDocumentTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeIconFiles</key>
-			<array/>
-			<key>CFBundleTypeName</key>
-			<string>CSR Mesh</string>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>LSHandlerRank</key>
-			<string>Owner</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>com.csr.CSRmeshDemo.zip</string>
-				<string>Damian-s.${PRODUCT_NAME:rfc1034identifier}</string>
-			</array>
-		</dict>
-	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -35,22 +17,13 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.0</string>
+	<string>2.0.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>fb1612314879046954</string>
-			</array>
-		</dict>
-	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>LSApplicationCategoryType</key>
+	<dict/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbauth</string>
@@ -74,14 +47,12 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<key>NSCameraUsageDescription</key>
-	<string></string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string></string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string></string>
-	<key>NSAppleMusicUsageDescription</key>
-	<string></string>
+	<string>AcTEC BLE need  use bluetooth.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Set the images of groups&apos; icons and gallery control mode need to use your Camera.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Set the images of groups&apos; icons and gallery control mode need to use your Photo Library.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>bluetooth-central</string>
@@ -145,7 +116,5 @@
 			</dict>
 		</dict>
 	</array>
-	<key>LSApplicationCategoryType</key>
-	<dict/>
 </dict>
 </plist>

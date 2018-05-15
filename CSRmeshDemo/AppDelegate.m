@@ -78,30 +78,9 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
     self.mainTabBarController.viewControllers = vcs;
     self.window.rootViewController = self.mainTabBarController;
     
-//    NSURL *url = (NSURL *)[launchOptions valueForKey:UIApplicationLaunchOptionsURLKey];
-//    if (url != nil && [url isFileURL]) {
-//        _urlImageFile = url;
-//    }
-    
     return YES;
 }
 
-//- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
-//    if (self.window) {
-//        if (url) {
-//            NSString *fileNameStr = [url lastPathComponent];
-//            NSString *doc = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/localFile"] stringByAppendingPathComponent:fileNameStr];
-//
-//            NSData *data = [NSData dataWithContentsOfURL:url];
-//            [data writeToFile:doc atomically:YES];
-//
-//            if (url != nil && [url isFileURL]) {
-//                _urlImageFile = url;
-//            }
-//        }
-//    }
-//    return YES;
-//}
 - (void)applicationWillResignActive:(UIApplication *)application {
     
 }
@@ -134,27 +113,6 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
     
 //    [[CSRConnectionManager sharedInstance] shutDown];
 //    [[CSRDatabaseManager sharedInstance] saveContext];
-}
-
-
-- (BOOL) application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-    
-    return YES;
-}
-
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
-{
- 
-    if (url != nil && [url isFileURL]) {
-        _managePlacesViewController = [[PlacesViewController alloc] init];
-        [_managePlacesViewController setImportedURL:url];
-        _passingURL = url;
-    }
- 
-    [[NSNotificationCenter defaultCenter] postNotificationName:kCSRImportPlaceDataNotification
-                                                        object:self
-                                                      userInfo:nil];
-    return YES;
 }
 
 /*

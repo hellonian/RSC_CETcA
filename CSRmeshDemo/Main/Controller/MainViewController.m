@@ -103,12 +103,12 @@
     CBPeripheral *peripheral = dic[@"peripheral"];
     _connectedBridgeLabel.text = [NSString stringWithFormat:@"%@  %@",peripheral.name,peripheral.uuidString];
 //    _connectedBridgeLabel.text = @"Connected";
-//    _connectedBridgeLabel.textColor = DARKORAGE;
+    _connectedBridgeLabel.textColor = [UIColor darkTextColor];
 }
 
 - (void)bridgeDisconnectedNotification:(NSNotification *)notification {
     _connectedBridgeLabel.text = @"Not Available";
-    
+    _connectedBridgeLabel.textColor = DARKORAGE;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -696,6 +696,7 @@
                 [weakSelf mainCollectionViewEditlayoutView];
                 if (_hud) {
                     [_hud hideAnimated:YES];
+                    _hud = nil;
                 }
             });
             
@@ -703,6 +704,7 @@
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
             if (_hud) {
                 [_hud hideAnimated:YES];
+                _hud = nil;
             }
             
         }];
@@ -730,6 +732,7 @@
             UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
                 if (_hud) {
                     [_hud hideAnimated:YES];
+                    _hud = nil;
                 }
             }];
             [alertController addAction:okAction];

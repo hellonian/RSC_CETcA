@@ -13,7 +13,6 @@
 #import "MasterViewController.h"
 #import "PureLayout.h"
 #import "RemoteViewController.h"
-#import "MusicListTableViewController.h"
 #import "PlacesViewController.h"
 #import "LanguageViewController.h"
 #import "HelpViewController.h"
@@ -29,7 +28,6 @@
 @property (nonatomic,strong) PlacesViewController *placesVC;
 @property (nonatomic,strong) UINavigationController *masterViewManager;
 @property (nonatomic,strong) UINavigationController *detailViewManger;
-@property (nonatomic,strong) MusicListTableViewController *musicVC;
 @property (nonatomic,strong) LanguageViewController *languageVC;
 @property (nonatomic,strong) HelpViewController *helpVC;
 
@@ -58,7 +56,6 @@
     self.timerVC = [[TimerViewController alloc] init];
     self.updateVC = [[DiscoverViewController alloc] init];
     self.aboutVC = [[AboutViewController alloc] init];
-    self.musicVC = [[MusicListTableViewController alloc] init];
     self.placesVC = [[PlacesViewController alloc] init];
     self.masterVC = [[MasterViewController alloc] init];
     self.languageVC = [[LanguageViewController alloc] init];

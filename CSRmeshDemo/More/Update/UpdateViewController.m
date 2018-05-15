@@ -49,12 +49,6 @@
     _statusLog.layoutManager.allowsNonContiguousLayout = NO;
     _isInitRunning = NO;
     
-    // Did we open App with email or dropbox attachment?
-    AppDelegate *appDelegate= (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    if (appDelegate.urlImageFile) {
-        [self handleOpenURL:appDelegate.urlImageFile];
-    }
-    
     if (_targetModel != nil) {
         [_targetName setTitle:[_targetModel name] forState:UIControlStateNormal];
         [_targetName setAlpha:1.0];
@@ -269,17 +263,6 @@
         [_percentLabel setHidden: YES];
         [_startButton setHidden:NO];
     }
-}
-
-/****************************************************************************/
-/*                                Open With.....                            */
-/****************************************************************************/
--(void) handleOpenURL:(NSURL *)url {
-    NSString *filename = [[url lastPathComponent] stringByDeletingPathExtension];
-    [_firmwareName setTitle:filename forState:UIControlStateNormal];
-    [_firmwareName setAlpha:1.0];
-    _firmwareFilename = url.path;
-    [self statusMessage:[NSString stringWithFormat:@"Imported File %@\n",_firmwareFilename]];
 }
 
 /****************************************************************************/

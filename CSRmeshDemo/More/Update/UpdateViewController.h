@@ -21,7 +21,6 @@
 @property (nonatomic,strong) UpdateDeviceModel *targetModel;
 @property (weak, nonatomic) IBOutlet UITextView *statusLog;
 
--(void) handleOpenURL:(NSURL *)url;
 - (IBAction)startUpdate:(id)sender;
 - (IBAction)abortUpdate:(id)sender;
 

@@ -280,7 +280,7 @@
         
     }
     
-    previousState = [centralManager state];
+    previousState = (CBCentralManagerState)[centralManager state];
     self.cbCentralManagerState = previousState;
 }
     

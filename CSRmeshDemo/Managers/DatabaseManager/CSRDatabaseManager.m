@@ -270,7 +270,7 @@
             [[CSRAppStateManager sharedInstance].selectedPlace addDevicesObject:deviceEntity];
             if (i<5 && i&1)
                 [odd addObject:deviceEntity];
-            else if (i<5 && !i&1)
+            else if (i<5 && (!i)&1)
                 [even addObject:deviceEntity];
         }
         

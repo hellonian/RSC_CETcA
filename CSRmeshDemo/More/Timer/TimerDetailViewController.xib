@@ -209,7 +209,7 @@
                         <constraint firstAttribute="width" secondItem="2gL-3g-yqk" secondAttribute="height" id="2Fq-JS-T4r"/>
                     </constraints>
                     <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <state key="normal" title="Sun" backgroundImage="btnbg.png"/>
+                    <state key="normal" title="Sun" backgroundImage="weekBtnSelected"/>
                     <connections>
                         <action selector="weekButtonClick:" destination="-1" eventType="touchUpInside" id="5Ei-jk-ihB"/>
                     </connections>
@@ -220,7 +220,7 @@
                         <constraint firstAttribute="width" secondItem="HqK-4Z-cN3" secondAttribute="height" id="FDp-gb-yjH"/>
                     </constraints>
                     <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <state key="normal" title="Mon" backgroundImage="btnbg.png">
+                    <state key="normal" title="Mon" backgroundImage="weekBtnSelected">
                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
@@ -233,7 +233,7 @@
                         <constraint firstAttribute="width" secondItem="oWO-Ir-HD0" secondAttribute="height" id="psf-xk-E7N"/>
                     </constraints>
                     <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <state key="normal" title="Tue" backgroundImage="btnbg.png">
+                    <state key="normal" title="Tue" backgroundImage="weekBtnSelected">
                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
@@ -246,7 +246,7 @@
                         <constraint firstAttribute="width" secondItem="ykC-99-o8w" secondAttribute="height" id="Qnf-BP-EMR"/>
                     </constraints>
                     <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <state key="normal" title="Wed" backgroundImage="btnbg.png"/>
+                    <state key="normal" title="Wed" backgroundImage="weekBtnSelected"/>
                     <connections>
                         <action selector="weekButtonClick:" destination="-1" eventType="touchUpInside" id="dSb-BF-lvk"/>
                     </connections>
@@ -257,7 +257,7 @@
                         <constraint firstAttribute="width" secondItem="XXG-aT-8P7" secondAttribute="height" id="Z0b-4Z-QR7"/>
                     </constraints>
                     <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <state key="normal" title="Thu" backgroundImage="btnbg.png"/>
+                    <state key="normal" title="Thu" backgroundImage="weekBtnSelected"/>
                     <connections>
                         <action selector="weekButtonClick:" destination="-1" eventType="touchUpInside" id="sYv-0w-Bif"/>
                     </connections>
@@ -268,7 +268,7 @@
                         <constraint firstAttribute="width" secondItem="9Ou-VB-VN6" secondAttribute="height" id="k5o-fq-ouj"/>
                     </constraints>
                     <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <state key="normal" title="Fri" backgroundImage="btnbg.png"/>
+                    <state key="normal" title="Fri" backgroundImage="weekBtnSelected"/>
                     <connections>
                         <action selector="weekButtonClick:" destination="-1" eventType="touchUpInside" id="llI-d6-AaL"/>
                     </connections>
@@ -279,7 +279,7 @@
                         <constraint firstAttribute="width" secondItem="OE9-ZL-AsL" secondAttribute="height" id="OCo-GQ-S0t"/>
                     </constraints>
                     <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <state key="normal" title="Sat" backgroundImage="btnbg.png"/>
+                    <state key="normal" title="Sat" backgroundImage="weekBtnSelected"/>
                     <connections>
                         <action selector="weekButtonClick:" destination="-1" eventType="touchUpInside" id="hb2-R7-fED"/>
                     </connections>
@@ -323,7 +323,7 @@
     </objects>
     <resources>
         <image name="Indicator" width="9" height="14"/>
-        <image name="btnbg.png" width="64" height="64"/>
         <image name="trashcan" width="21" height="21"/>
+        <image name="weekBtnSelected" width="43" height="43"/>
     </resources>
 </document>
