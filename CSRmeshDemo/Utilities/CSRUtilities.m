@@ -1106,6 +1106,13 @@
     return NO;
 }
 
++ (BOOL)belongToColorTemperatureDevice:(NSString *)shortName {
+    if ([kColorTemperaturesDevices containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
 //十六进制字符串转十进制数据
 + (NSInteger)numberWithHexString:(NSString *)hexString {
     

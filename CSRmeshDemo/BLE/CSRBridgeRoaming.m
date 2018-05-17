@@ -4,7 +4,6 @@
 
 #import "CSRBridgeRoaming.h"
 #import "CSRBluetoothLE.h"
-//#import "CSRmeshSettings.h"
 #import "CSRConstants.h"
 
 //TODO: not sure - may need to remove it
@@ -92,31 +91,22 @@
         }
 
         NSMutableArray *removals = [NSMutableArray array];
-//        if ([[CSRmeshSettings sharedInstance] getBleConnectMode] != CSR_BLE_CONNECTIONS_MANUAL) {
-            for (CBPeripheral *bridge in connectedBridges) {
-                if (bridge.state == CBPeripheralStateDisconnected) {
-                    [removals addObject:bridge];
-                }
+        for (CBPeripheral *bridge in connectedBridges) {
+            if (bridge.state == CBPeripheralStateDisconnected) {
+                [removals addObject:bridge];
             }
-//            for (CBPeripheral *bridge in connectingBridges) {
-//                if (bridge.state == CBPeripheralStateDisconnected) {
-//                    [removals addObject:bridge];
-//                }
-//            }
-            
-            if (removals.count) {
-                for (CBPeripheral *bridge in removals) {
-                    [connectedBridges removeObject:bridge];
-//                    [connectingBridges removeObject:bridge];
-                }
-            }
-            
-            if (connectedBridges.count < 1)
-                [[CSRBluetoothLE sharedInstance] setScanner:YES source:self];
-            else
-                [[CSRBluetoothLE sharedInstance] setScanner:NO source:self];
-//        }
+        }
         
+        if (removals.count) {
+            for (CBPeripheral *bridge in removals) {
+                [connectedBridges removeObject:bridge];
+            }
+        }
+        
+        if (connectedBridges.count < 1)
+            [[CSRBluetoothLE sharedInstance] setScanner:YES source:self];
+        else
+            [[CSRBluetoothLE sharedInstance] setScanner:NO source:self];
         self.numberOfConnectedBridges = [connectedBridges count];
     }
     active=NO;
@@ -199,8 +189,6 @@
     // Disconnected a peripheral
     // Called when a peripheral is diconnected, may or may not be a bridge type of peripheral
 -(void) disconnectedPeripheral:(CBPeripheral *) peripheral {
-//    [connectedBridges removeObject:peripheral];
-//    [connectingBridges removeObject:peripheral];
     [connectedBridges removeAllObjects];
     [connectingBridges removeAllObjects];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"kCSRBridgeDiscoveryViewControllerWillRefreshUINotification" object:nil];
@@ -215,7 +203,6 @@
     _num = 0;
     [connectedBridges removeAllObjects];
     [connectedBridges addObject:peripheral];
-//    [connectingBridges removeObject:peripheral];
     [connectingBridges removeAllObjects];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"kCSRBridgeDiscoveryViewControllerWillRefreshUINotification" object:nil];
 }

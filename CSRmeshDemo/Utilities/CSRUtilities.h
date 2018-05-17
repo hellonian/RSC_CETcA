@@ -102,5 +102,6 @@
 + (BOOL)belongToDimmer:(NSString *)shortName;
 + (BOOL)belongToSwitch:(NSString *)shortName;
 + (BOOL)belongToRemote:(NSString *)shortName;
++ (BOOL)belongToColorTemperatureDevice:(NSString *)shortName;
 
 @end

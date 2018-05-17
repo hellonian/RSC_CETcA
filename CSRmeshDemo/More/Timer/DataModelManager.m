@@ -133,6 +133,14 @@ static DataModelManager *manager = nil;
     }
 }
 
+- (void)changeColorTemperature:(NSNumber *)deviceId {
+    [self sendCmdData:@"8C0101" toDeviceId:deviceId];
+}
+
+- (void)resetColorTemperature:(NSNumber *)deviceId {
+    [self sendCmdData:@"8C0100" toDeviceId:deviceId];
+}
+
 
 #pragma mark - DataModelApiDelegate
 

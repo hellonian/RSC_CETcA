@@ -15,6 +15,7 @@
 #import "DeviceListViewController.h"
 #import "DataModelManager.h"
 #import <MBProgressHUD.h>
+#import "SingleDeviceModel.h"
 
 @interface RemoteSettingViewController ()<UITextFieldDelegate,MBProgressHUDDelegate>
 
@@ -57,16 +58,19 @@
             NSString *myStr1 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(0, 4)];
             CSRDeviceEntity *deviceEntity1 = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:@([CSRUtilities numberWithHexString:myStr1])];
             self.fSelectOneLabel.text = deviceEntity1.name;
+            self.fSelectOneLabel.tag = [CSRUtilities numberWithHexString:myStr1];
             NSString *myStr2 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(4, 4)];
             CSRDeviceEntity *deviceEntity2 = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:@([CSRUtilities numberWithHexString:myStr2])];
             self.fSelectTwoLabel.text = deviceEntity2.name;
+            self.fSelectTwoLabel.tag = [CSRUtilities numberWithHexString:myStr2];
             NSString *myStr3 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(8, 4)];
             CSRDeviceEntity *deviceEntity3 = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:@([CSRUtilities numberWithHexString:myStr3])];
             self.fSelectThreeLabel.text = deviceEntity3.name;
+            self.fSelectThreeLabel.tag = [CSRUtilities numberWithHexString:myStr3];
             NSString *myStr4 = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(12, 4)];
             CSRDeviceEntity *deviceEntity4 = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:@([CSRUtilities numberWithHexString:myStr4])];
             self.fSelectFourLabel.text = deviceEntity4.name;
-            
+            self.fSelectFourLabel.tag = [CSRUtilities numberWithHexString:myStr4];
         }
         
     }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]) {
@@ -79,6 +83,7 @@
         if (self.remoteEntity.remoteBranch && self.remoteEntity.remoteBranch.length == 4) {
             CSRDeviceEntity *deviceEntity1 = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:@([CSRUtilities numberWithHexString:self.remoteEntity.remoteBranch])];
             self.sSelectOneLabel.text = deviceEntity1.name;
+            self.sSelectOneLabel.tag = [self.remoteEntity.remoteBranch integerValue];
         }
     }
     
@@ -115,7 +120,36 @@
 - (IBAction)fSelectDevice:(UIButton *)sender {
     DeviceListViewController *list = [[DeviceListViewController alloc] init];
     list.selectMode = DeviceListSelectMode_Single;
+    
+    if (self.remoteEntity.remoteBranch) {
+        NSString *myStr;
+        if (sender.tag == 100) {
+            myStr = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(0, 4)];
+        }
+        if (sender.tag == 101) {
+            myStr = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(4, 4)];
+        }
+        if (sender.tag == 102) {
+            myStr = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(8, 4)];
+        }
+        if (sender.tag == 103) {
+            myStr = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(12, 4)];
+        }
+        if (sender.tag == 200) {
+            myStr = self.remoteEntity.remoteBranch;
+        }
+        if (![myStr isEqualToString:@"ffff"]) {
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:[NSNumber numberWithInteger:[CSRUtilities numberWithHexString:myStr]]];
+            SingleDeviceModel *deviceModel = [[SingleDeviceModel alloc] init];
+            deviceModel.deviceId = device.deviceId;
+            deviceModel.deviceName = device.name;
+            deviceModel.deviceShortName = device.shortName;
+            list.originalMembers = [NSArray arrayWithObject:deviceModel];
+        }
+    }
+    
     [list getSelectedDevices:^(NSArray *devices) {
+        
         if ([devices count] > 0) {
             NSNumber *deviceId = devices[0];
             CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
@@ -134,7 +168,6 @@
                     }
                 }
                 
-                
                 return;
             }
             if (sender.tag == 101) {
@@ -151,7 +184,6 @@
                         self.navigationItem.rightBarButtonItem.enabled = YES;
                     }
                 }
-                
                 
                 return;
             }
@@ -222,7 +254,6 @@
                     }
                 }
                 
-                
                 return;
             }
             if (sender.tag == 101) {
@@ -239,7 +270,6 @@
                         self.navigationItem.rightBarButtonItem.enabled = YES;
                     }
                 }
-                
                 
                 return;
             }
@@ -258,7 +288,6 @@
                     }
                 }
                 
-                
                 return;
             }
             if (sender.tag == 103) {
@@ -275,7 +304,6 @@
                         self.navigationItem.rightBarButtonItem.enabled = YES;
                     }
                 }
-                
                 
                 return;
             }

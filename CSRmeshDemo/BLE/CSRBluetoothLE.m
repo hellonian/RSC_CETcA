@@ -504,7 +504,6 @@
     if (error == nil) {
         if (peripheral.state==CBPeripheralStateConnected) {
             for (CBService *service in peripheral.services) {
-                NSLog(@"~~~~~~~~~~~~~~~~~~~~~>> %@",service.UUID);
                 [peripheral discoverCharacteristics:nil forService:service];
 
             }

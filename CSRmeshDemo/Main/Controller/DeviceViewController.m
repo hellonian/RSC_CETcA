@@ -10,6 +10,8 @@
 #import "DeviceModelManager.h"
 #import "CSRDatabaseManager.h"
 #import "CSRUtilities.h"
+#import "CSRConstants.h"
+#import "DataModelManager.h"
 
 @interface DeviceViewController ()<UITextFieldDelegate>
 
@@ -20,6 +22,8 @@
 @property (nonatomic,assign) BOOL sliderIsMoving;
 @property (nonatomic,strong) DeviceModel *device;
 @property (nonatomic,copy) NSString *originalName;
+@property (weak, nonatomic) IBOutlet UILabel *colorTemperatureLabel;
+@property (weak, nonatomic) IBOutlet UIView *colorTemperatureView;
 
 @end
 
@@ -49,7 +53,11 @@
         self.sliderIsMoving = NO;
         [self powerSwitchAndLevelSlider:_device.shortName powerState:_device.powerState level:_device.level];
         
-        NSLog(@"ddddddd");
+        if (![CSRUtilities belongToColorTemperatureDevice:_device.shortName]) {
+            self.colorTemperatureLabel.hidden = YES;
+            self.colorTemperatureView.hidden = YES;
+        }
+
     }
     
 }
@@ -165,6 +173,20 @@
         }
     }
     
+}
+
+- (IBAction)colorTemperatureChange:(UIButton *)sender {
+    [[DataModelManager shareInstance] changeColorTemperature:_deviceId];
+    sender.backgroundColor = [UIColor clearColor];
+}
+- (IBAction)touchUpOutside:(UIButton *)sender {
+    sender.backgroundColor = [UIColor colorWithRed:234/255.0 green:184/255.0 blue:63/255.0 alpha:1];
+}
+
+
+- (IBAction)colorTemperatureReset:(UIButton *)sender {
+    [[DataModelManager shareInstance] resetColorTemperature:_deviceId];
+    sender.backgroundColor = [UIColor clearColor];
 }
 
 @end
