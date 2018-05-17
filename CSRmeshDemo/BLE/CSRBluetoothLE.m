@@ -163,8 +163,9 @@
             }
             
             CBUUID *uuid = [CBUUID UUIDWithString:@"FEF1"];
+            CBUUID *uuid1 = [CBUUID UUIDWithString:@"00001016-D102-11E1-9B23-00025B00A5A5"];
             NSDictionary *options = [self createDiscoveryOptions];
-            [centralManager scanForPeripheralsWithServices:@[uuid] options:options];
+            [centralManager scanForPeripheralsWithServices:@[uuid,uuid1] options:options];
         }
     }
 }
@@ -260,8 +261,9 @@
                 [bleDelegate CBPoweredOn];
             
             CBUUID *uuid = [CBUUID UUIDWithString:@"FEF1"];
+            CBUUID *uuid1 = [CBUUID UUIDWithString:@"00001016-D102-11E1-9B23-00025B00A5A5"];
             NSDictionary *options = [self createDiscoveryOptions];
-            [centralManager scanForPeripheralsWithServices:@[uuid] options:options];
+            [centralManager scanForPeripheralsWithServices:@[uuid,uuid1] options:options];
             pendingInit = NO;
             
             [self statusMessage:[NSString stringWithFormat:@"Scanning...\n"]];
@@ -309,7 +311,7 @@
             [self discoveryDidRefresh];
         }
         [self didDiscoverPeripheral:peripheral];
-    }else {
+    }else if ([RSSI integerValue]>-80){
         
         NSMutableDictionary *enhancedAdvertismentData = [NSMutableDictionary dictionaryWithDictionary:advertisementData];
         enhancedAdvertismentData [CSR_PERIPHERAL] = peripheral;
@@ -502,6 +504,7 @@
     if (error == nil) {
         if (peripheral.state==CBPeripheralStateConnected) {
             for (CBService *service in peripheral.services) {
+                NSLog(@"~~~~~~~~~~~~~~~~~~~~~>> %@",service.UUID);
                 [peripheral discoverCharacteristics:nil forService:service];
 
             }

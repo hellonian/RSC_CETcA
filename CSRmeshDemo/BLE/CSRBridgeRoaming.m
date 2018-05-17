@@ -4,7 +4,7 @@
 
 #import "CSRBridgeRoaming.h"
 #import "CSRBluetoothLE.h"
-#import "CSRmeshSettings.h"
+//#import "CSRmeshSettings.h"
 #import "CSRConstants.h"
 
 //TODO: not sure - may need to remove it
@@ -90,9 +90,9 @@
                 _num = 0;
             }
         }
-        
+        NSLog(@"🚩🚩🚩 %ld <--> %ld => %ld => %d",connectingBridges.count,connectedBridges.count,_num,_connectting);
         NSMutableArray *removals = [NSMutableArray array];
-        if ([[CSRmeshSettings sharedInstance] getBleConnectMode] != CSR_BLE_CONNECTIONS_MANUAL) {
+//        if ([[CSRmeshSettings sharedInstance] getBleConnectMode] != CSR_BLE_CONNECTIONS_MANUAL) {
             for (CBPeripheral *bridge in connectedBridges) {
                 if (bridge.state == CBPeripheralStateDisconnected) {
                     [removals addObject:bridge];
@@ -107,15 +107,15 @@
             if (removals.count) {
                 for (CBPeripheral *bridge in removals) {
                     [connectedBridges removeObject:bridge];
-                    [connectingBridges removeObject:bridge];
+//                    [connectingBridges removeObject:bridge];
                 }
             }
             
-            if (connectedBridges.count < [[CSRmeshSettings sharedInstance] getBleConnectMode])
+            if (connectedBridges.count < 1)
                 [[CSRBluetoothLE sharedInstance] setScanner:YES source:self];
             else
                 [[CSRBluetoothLE sharedInstance] setScanner:NO source:self];
-        }
+//        }
         
         self.numberOfConnectedBridges = [connectedBridges count];
     }
@@ -174,8 +174,8 @@
     
     NSMutableDictionary *returnValue = [NSMutableDictionary dictionary];
 
-    NSInteger totalBridges = [[CSRmeshSettings sharedInstance] getBleConnectMode];
-    if (connectedBridges.count<totalBridges && connectingBridges.count<(totalBridges-connectedBridges.count)) {
+//    NSInteger totalBridges = [[CSRmeshSettings sharedInstance] getBleConnectMode];
+    if (connectedBridges.count<1 && connectingBridges.count<1) {
         
         BOOL found=NO;
         for (CBPeripheral *bridge in connectedBridges) {
@@ -184,10 +184,9 @@
         }
         
         if (!found) {
-//            NSLog(@">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             [[CSRBluetoothLE sharedInstance] connectPeripheralNoCheck:peripheral];
-//            NSLog(@">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>SSSSSSSSS");
             _connectting = YES;
+            _num = 0;
             [connectingBridges addObject:peripheral];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"kCSRBridgeDiscoveryViewControllerWillRefreshUINotification" object:nil];
         }
@@ -200,8 +199,10 @@
     // Disconnected a peripheral
     // Called when a peripheral is diconnected, may or may not be a bridge type of peripheral
 -(void) disconnectedPeripheral:(CBPeripheral *) peripheral {
-    [connectedBridges removeObject:peripheral];
-    [connectingBridges removeObject:peripheral];
+//    [connectedBridges removeObject:peripheral];
+//    [connectingBridges removeObject:peripheral];
+    [connectedBridges removeAllObjects];
+    [connectingBridges removeAllObjects];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"kCSRBridgeDiscoveryViewControllerWillRefreshUINotification" object:nil];
 }
 
@@ -210,10 +211,12 @@
     // connected a peripheral
     // Called when a peripheral is connected, may or may not be a bridge type of peripheral
 -(void) connectedPeripheral:(CBPeripheral *) peripheral {
-//    NSLog(@"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     _connectting = NO;
+    _num = 0;
+    [connectedBridges removeAllObjects];
     [connectedBridges addObject:peripheral];
-    [connectingBridges removeObject:peripheral];
+//    [connectingBridges removeObject:peripheral];
+    [connectingBridges removeAllObjects];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"kCSRBridgeDiscoveryViewControllerWillRefreshUINotification" object:nil];
 }
 
