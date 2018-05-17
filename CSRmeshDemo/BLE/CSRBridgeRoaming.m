@@ -90,7 +90,7 @@
                 _num = 0;
             }
         }
-        NSLog(@"🚩🚩🚩 %ld <--> %ld => %ld => %d",connectingBridges.count,connectedBridges.count,_num,_connectting);
+
         NSMutableArray *removals = [NSMutableArray array];
 //        if ([[CSRmeshSettings sharedInstance] getBleConnectMode] != CSR_BLE_CONNECTIONS_MANUAL) {
             for (CBPeripheral *bridge in connectedBridges) {

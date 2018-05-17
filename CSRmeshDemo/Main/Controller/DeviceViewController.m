@@ -49,7 +49,7 @@
         self.sliderIsMoving = NO;
         [self powerSwitchAndLevelSlider:_device.shortName powerState:_device.powerState level:_device.level];
         
-        
+        NSLog(@"ddddddd");
     }
     
 }
