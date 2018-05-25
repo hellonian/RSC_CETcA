@@ -257,16 +257,20 @@
                 defaultScene.iconID = @5;
                 defaultScene.sceneName = @"Away";
             }
-            if (i==2 || i==3) {
+            if (i==2) {
                 defaultScene.iconID = @8;
-                defaultScene.sceneName = @"Custom";
+                defaultScene.sceneName = @"Scene1";
+            }
+            if (i==3) {
+                defaultScene.iconID = @8;
+                defaultScene.sceneName = @"Scene2";
             }
             
             [defaultPlace addScenesObject:defaultScene];
             [[CSRDatabaseManager sharedInstance] saveContext];
         }
         
-        NSArray *defaultAreaNames = @[@"Livingroom",@"Bedroom",@"Diningroom",@"Washroom",@"Kitchen"];
+        NSArray *defaultAreaNames = @[@"Living room",@"Bed room",@"Dining room",@"Toilet",@"Kitchen"];
         for (int i=0; i<5; i++) {
             CSRAreaEntity *defaultArea = [NSEntityDescription insertNewObjectForEntityForName:@"CSRAreaEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
             

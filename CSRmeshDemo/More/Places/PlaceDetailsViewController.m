@@ -137,16 +137,20 @@
                     defaultScene.iconID = @5;
                     defaultScene.sceneName = @"Away";
                 }
-                if (i==2 || i==3) {
+                if (i==2) {
                     defaultScene.iconID = @8;
-                    defaultScene.sceneName = @"Custom";
+                    defaultScene.sceneName = @"Scene1";
+                }
+                if (i==2) {
+                    defaultScene.iconID = @8;
+                    defaultScene.sceneName = @"Scene2";
                 }
                 
                 [_placeEntity addScenesObject:defaultScene];
                 [[CSRDatabaseManager sharedInstance] saveContext];
             }
             
-            NSArray *defaultAreaNames = @[@"Livingroom",@"Bedroom",@"Diningroom",@"Washroom",@"Kitchen"];
+            NSArray *defaultAreaNames = @[@"Living room",@"Bed room",@"Dining room",@"Toilet",@"Kitchen"];
             for (int i=0; i<5; i++) {
                 CSRAreaEntity *defaultArea = [NSEntityDescription insertNewObjectForEntityForName:@"CSRAreaEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
                 
@@ -237,7 +241,7 @@
 - (IBAction)exportPlace:(id)sender {
     
     _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    _hud.label.text = @"Searching applicant······";
+    _hud.label.text = @"Searching recepient······";
     
     NSString *name = [UIDevice currentDevice].name;
     _peerID = [[MCPeerID alloc]initWithDisplayName:name];

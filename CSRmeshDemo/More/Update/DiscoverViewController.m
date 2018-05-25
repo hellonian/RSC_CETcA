@@ -140,21 +140,21 @@
     cell.textLabel.text = upModel.name;
     if (upModel.isLatest) {
         if ([upModel.kind isEqualToString:@"D350BT"]) {
-            cell.detailTextLabel.text = [NSString stringWithFormat:@"Dimmer   version:%ld   Lastest",(long)upModel.firwareVersion];
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"Dimmer   Version:%ld   Lastest",(long)upModel.firwareVersion];
         }else if ([upModel.kind isEqualToString:@"S350BT"]) {
-            cell.detailTextLabel.text = [NSString stringWithFormat:@"Switch   version:%ld   Lastest",(long)upModel.firwareVersion];
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"Switch   Version:%ld   Lastest",(long)upModel.firwareVersion];
         }else {
-            cell.detailTextLabel.text = [NSString stringWithFormat:@"%@   version:%ld   Lastest",upModel.kind,(long)upModel.firwareVersion];
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"%@   Version:%ld   Lastest",upModel.kind,(long)upModel.firwareVersion];
         }
         
         cell.detailTextLabel.textColor = [UIColor darkTextColor];
     }else{
         if ([upModel.kind isEqualToString:@"D350BT"]) {
-            cell.detailTextLabel.text = [NSString stringWithFormat:@"Dimmer   version:%ld   Need update",(long)upModel.firwareVersion];
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"Dimmer   Version:%ld   Need update",(long)upModel.firwareVersion];
         }else if ([upModel.kind isEqualToString:@"S350BT"]) {
-            cell.detailTextLabel.text = [NSString stringWithFormat:@"Switch   version:%ld   Need update",(long)upModel.firwareVersion];
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"Switch   Version:%ld   Need update",(long)upModel.firwareVersion];
         }else {
-            cell.detailTextLabel.text = [NSString stringWithFormat:@"%@   version:%ld   Need update",upModel.kind,(long)upModel.firwareVersion];
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"%@   Version:%ld   Need update",upModel.kind,(long)upModel.firwareVersion];
         }
         cell.detailTextLabel.textColor = DARKORAGE;
     }

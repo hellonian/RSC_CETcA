@@ -38,7 +38,7 @@
     titleArray = @[@[@"Places"],
                    @[@"Timer",
                      @"Remote",
-                     @"FW Update"],
+                     @"BT Version"],
                    @[@"Language",
                      @"Help",
                      @"About"]];

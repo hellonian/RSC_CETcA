@@ -166,7 +166,7 @@
         [_noneDataView addSubview:imageView];
         
         UILabel *label = [[UILabel alloc] init];
-        label.text = @"Timers allow you to turn ON and OFF based in time.";
+        label.text = @"Timers allow you to schedule ON and OFF based in time.";
         label.font = [UIFont systemFontOfSize:11];
         label.textAlignment = NSTextAlignmentCenter;
         label.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
