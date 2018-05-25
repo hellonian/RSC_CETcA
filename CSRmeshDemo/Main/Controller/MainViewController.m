@@ -853,6 +853,7 @@
         });
         if (_hud) {
             [_hud hideAnimated:YES];
+            _hud = nil;
         }
     }
 }
@@ -884,6 +885,7 @@
                                                          [self mainCollectionViewEditlayoutView];
                                                          if (_hud) {
                                                              [_hud hideAnimated:YES];
+                                                             _hud = nil;
                                                          }
                                                      }];
     [alertController addAction:okAction];

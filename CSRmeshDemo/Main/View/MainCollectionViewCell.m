@@ -193,37 +193,38 @@
 
 - (void)adjustCellBgcolorAndLevelLabelWithDeviceId:(NSNumber *)deviceId {
     DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
-    if (![model.powerState boolValue]) {
-        if ([_groupId isEqualToNumber:@1000]) {
-            self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
-            self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
-        }else {
-            self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
-        }
-        
-        if ([CSRUtilities belongToDimmer:model.shortName]) {
-            self.levelLabel.text = @"0%";
-        }
-    }else {
-        if ([_groupId isEqualToNumber:@1000]) {
-            self.nameLabel.textColor = DARKORAGE;
-            self.levelLabel.textColor = DARKORAGE;
-        }else {
-            self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
-        }
-        
-        if ([CSRUtilities belongToDimmer:model.shortName]) {
-            if ([model.level floatValue]/255.0*100>0 && [model.level floatValue]/255.0*100 < 1.0) {
-                self.levelLabel.text = @"1%";
-                return;
+    if (!model.isleave) {
+        if (![model.powerState boolValue]) {
+            if ([_groupId isEqualToNumber:@1000]) {
+                self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+                self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+            }else {
+                self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
             }
-            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level floatValue]/255.0*100];
+            
+            if ([CSRUtilities belongToDimmer:model.shortName]) {
+                self.levelLabel.text = @"0%";
+            }
+        }else {
+            if ([_groupId isEqualToNumber:@1000]) {
+                self.nameLabel.textColor = DARKORAGE;
+                self.levelLabel.textColor = DARKORAGE;
+            }else {
+                self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
+            }
+            
+            if ([CSRUtilities belongToDimmer:model.shortName]) {
+                if ([model.level floatValue]/255.0*100>0 && [model.level floatValue]/255.0*100 < 1.0) {
+                    self.levelLabel.text = @"1%";
+                    return;
+                }
+                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level floatValue]/255.0*100];
+            }
         }
-    }
-    if (model.isleave) {
-        self.alpha = 0.2;
+        
     }else {
-        self.alpha = 1;
+        self.nameLabel.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];;
+        self.levelLabel.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];;
     }
 }
 

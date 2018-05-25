@@ -33,6 +33,8 @@
 @interface CSRBluetoothLE () <CBCentralManagerDelegate, CBPeripheralDelegate,LightModelApiDelegate> {
 	CBCentralManager    *centralManager;
     BOOL                pendingInit;
+    NSInteger beforeRssi;
+    NSInteger lastRssi;
 }
 
     // Set of objects that request the scanner to be turned On
@@ -102,25 +104,25 @@
     //============================================================================
     // Connect peripheral, if already connected then disconnect first.
     // This should be called when the user selects a bridge
--(void) connectPeripheral:(CBPeripheral *) peripheral {
-    
-//    if ([[CSRmeshSettings sharedInstance] getBleListenMode] == CSRBleListenMode_ScanNotificationListen) {
-    
-//    } else {
-     if ([[CSRmeshSettings sharedInstance] getBleConnectMode]==CSR_BLE_CONNECTIONS_MANUAL) {
-        for (CBPeripheral *connectedPeripheral in _connectedPeripherals) {
-            if (connectedPeripheral && connectedPeripheral.state != CBPeripheralStateConnected)
-                [centralManager cancelPeripheralConnection:peripheral];
-        }
-        
-        [_connectedPeripherals removeAllObjects];
-
-        if ([peripheral state]!=CBPeripheralStateConnected) {
-            [centralManager connectPeripheral:peripheral options:nil];
-        }
-    }
-    
-}
+//-(void) connectPeripheral:(CBPeripheral *) peripheral {
+//
+////    if ([[CSRmeshSettings sharedInstance] getBleListenMode] == CSRBleListenMode_ScanNotificationListen) {
+//
+////    } else {
+//     if ([[CSRmeshSettings sharedInstance] getBleConnectMode]==CSR_BLE_CONNECTIONS_MANUAL) {
+//        for (CBPeripheral *connectedPeripheral in _connectedPeripherals) {
+//            if (connectedPeripheral && connectedPeripheral.state != CBPeripheralStateConnected)
+//                [centralManager cancelPeripheralConnection:peripheral];
+//        }
+//
+//        [_connectedPeripherals removeAllObjects];
+//
+//        if ([peripheral state]!=CBPeripheralStateConnected) {
+//            [centralManager connectPeripheral:peripheral options:nil];
+//        }
+//    }
+//
+//}
 
     //============================================================================
     // Connect peripheral without checking how many are connected
@@ -332,9 +334,9 @@
                 [discoveredBridges addObject:peripheral];
             }
             [peripheral setLocalName:advertisementData[CBAdvertisementDataLocalNameKey]];
-            if(bleDelegate && [bleDelegate respondsToSelector:@selector(discoveredBridge)]) {
-                [bleDelegate discoveredBridge];
-            }
+//            if(bleDelegate && [bleDelegate respondsToSelector:@selector(discoveredBridge)]) {
+//                [bleDelegate discoveredBridge];
+//            }
             
         }
     }
@@ -343,17 +345,28 @@
 
     //============================================================================
     // This callback occurs if the RSSI has changed
-- (void) peripheralDidUpdateRSSI:(CBPeripheral *)peripheral error:(NSError *)error {
-    
-    if(bleDelegate && [bleDelegate respondsToSelector:@selector(discoveredBridge)]) {
-        [bleDelegate discoveredBridge];
-    }
+//- (void) peripheralDidUpdateRSSI:(CBPeripheral *)peripheral error:(NSError *)error {
+//
+//    if(bleDelegate && [bleDelegate respondsToSelector:@selector(discoveredBridge)]) {
+//        [bleDelegate discoveredBridge];
+//    }
+//}
+
+- (void)readRssi:(CBPeripheral *)peripheral {
+    [peripheral readRSSI];
 }
 
 -(void) peripheral:(CBPeripheral *)peripheral didReadRSSI:(NSNumber *)RSSI error:(NSError *)error {
     
     [peripheral setRssi:RSSI];
     NSLog(@"RSSI returned %@", [RSSI stringValue]);
+    
+    if (beforeRssi < -90 && lastRssi < -90 && [RSSI integerValue] < -90) {
+        [self disconnectPeripheral:peripheral];
+    }else {
+        beforeRssi = lastRssi;
+        lastRssi = [RSSI integerValue];
+    }
 }
 
     //============================================================================
@@ -404,19 +417,19 @@
     
 #ifdef BRIDGE_ROAMING_ENABLE
         [[CSRBridgeRoaming sharedInstance] connectedPeripheral:peripheral];
-        NSLog (@"BRIDGE CONNECTED %@",peripheral.name);
+        NSLog (@"BRIDGE CONNECTED %@  %@",peripheral.name,peripheral.uuidString);
         [self stopScan];
         
-        if (_connectedPeripherals.count>0) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"BridgeConnectedNotification" object:nil userInfo:@{@"peripheral":peripheral}];
-        }
-        
-        [[DeviceModelManager sharedInstance] getAllDevicesState];
+//        if (_connectedPeripherals.count>0) {
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"BridgeConnectedNotification" object:nil userInfo:@{@"peripheral":peripheral}];
+//        }
+//
+//        [[DeviceModelManager sharedInstance] getAllDevicesState];
         
 #endif
     
-    if(bleDelegate && [bleDelegate respondsToSelector:@selector(discoveredBridge)])
-        [bleDelegate discoveredBridge];
+//    if(bleDelegate && [bleDelegate respondsToSelector:@selector(discoveredBridge)])
+//        [bleDelegate discoveredBridge];
 
     }
 }
@@ -538,6 +551,11 @@
 #ifdef BRIDGE_ROAMING_ENABLE
             [[CSRBridgeRoaming sharedInstance] connectedPeripheral:peripheral];
 #endif
+            if (_connectedPeripherals.count>0) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"BridgeConnectedNotification" object:nil userInfo:@{@"peripheral":peripheral}];
+            }
+            
+            [[DeviceModelManager sharedInstance] getAllDevicesState];
         }
 
     }else {

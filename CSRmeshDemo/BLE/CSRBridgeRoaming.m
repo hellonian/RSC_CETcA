@@ -64,7 +64,7 @@
         _num = 0;
         
         // start background timer thread at 1 second intervals
-        [NSTimer scheduledTimerWithTimeInterval:1.0
+        [NSTimer scheduledTimerWithTimeInterval:0.5
                                          target:self
                                        selector:@selector(timerThread:)
                                        userInfo:nil
@@ -83,7 +83,7 @@
         active=YES;
         if (_connectting) {
             _num++;
-            if (_num == 5) {
+            if (_num == 10) {
                 [connectingBridges removeAllObjects];
                 _connectting = NO;
                 _num = 0;
@@ -103,10 +103,14 @@
             }
         }
         
-        if (connectedBridges.count < 1)
+        if (connectedBridges.count < 1){
             [[CSRBluetoothLE sharedInstance] setScanner:YES source:self];
-        else
+        }else {
             [[CSRBluetoothLE sharedInstance] setScanner:NO source:self];
+        }
+        [connectedBridges enumerateObjectsUsingBlock:^(CBPeripheral *peripheral, BOOL * _Nonnull stop) {
+            [[CSRBluetoothLE sharedInstance] readRssi:peripheral];
+        }];
         self.numberOfConnectedBridges = [connectedBridges count];
     }
     active=NO;
@@ -164,12 +168,13 @@
     
     NSMutableDictionary *returnValue = [NSMutableDictionary dictionary];
 
-//    NSInteger totalBridges = [[CSRmeshSettings sharedInstance] getBleConnectMode];
     if (connectedBridges.count<1 && connectingBridges.count<1) {
         
         BOOL found=NO;
+        NSString *nowUuidString = [peripheral.uuidString substringToIndex:12];
         for (CBPeripheral *bridge in connectedBridges) {
-            if ([bridge isEqual:peripheral])
+            NSString *bridgeUuidString = [bridge.uuidString substringToIndex:12];
+            if ([bridgeUuidString isEqualToString:nowUuidString])
                 found=YES;
         }
         
@@ -178,7 +183,7 @@
             _connectting = YES;
             _num = 0;
             [connectingBridges addObject:peripheral];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"kCSRBridgeDiscoveryViewControllerWillRefreshUINotification" object:nil];
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"kCSRBridgeDiscoveryViewControllerWillRefreshUINotification" object:nil];
         }
     }
     
@@ -191,7 +196,7 @@
 -(void) disconnectedPeripheral:(CBPeripheral *) peripheral {
     [connectedBridges removeAllObjects];
     [connectingBridges removeAllObjects];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"kCSRBridgeDiscoveryViewControllerWillRefreshUINotification" object:nil];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"kCSRBridgeDiscoveryViewControllerWillRefreshUINotification" object:nil];
 }
 
 
@@ -201,10 +206,22 @@
 -(void) connectedPeripheral:(CBPeripheral *) peripheral {
     _connectting = NO;
     _num = 0;
-    [connectedBridges removeAllObjects];
-    [connectedBridges addObject:peripheral];
+//    [connectedBridges removeAllObjects];
+//    [connectedBridges addObject:peripheral];
+    NSString *nowUuidString = [peripheral.uuidString substringToIndex:12];
+    __block BOOL exist = 0;
+    [connectedBridges enumerateObjectsUsingBlock:^(CBPeripheral *connectedPeripheral, BOOL * _Nonnull stop) {
+        NSString *connectedUuidString = [connectedPeripheral.uuidString substringToIndex:12];
+        if ([connectedUuidString isEqualToString:nowUuidString]) {
+            exist = YES;
+            *stop = YES;
+        }
+    }];
+    if (!exist) {
+        [connectedBridges addObject:peripheral];
+    }
     [connectingBridges removeAllObjects];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"kCSRBridgeDiscoveryViewControllerWillRefreshUINotification" object:nil];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"kCSRBridgeDiscoveryViewControllerWillRefreshUINotification" object:nil];
 }
 
 @end

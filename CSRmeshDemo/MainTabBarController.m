@@ -7,8 +7,12 @@
 //
 
 #import "MainTabBarController.h"
+#import "PureLayout.h"
+#import <MBProgressHUD.h>
 
-@interface MainTabBarController ()<TabBarDelegate>
+@interface MainTabBarController ()<TabBarDelegate,MBProgressHUDDelegate>
+
+@property (nonatomic,strong) MBProgressHUD *hud;
 
 @end
 
@@ -19,13 +23,53 @@
     // Do any additional setup after loading the view.
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.view.backgroundColor = [UIColor blackColor];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeConnectedNotification:) name:@"BridgeConnectedNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeDisconnectedNotification:) name:@"BridgeDisconnectedNotification" object:nil];
+    
     self.tabBarView = [[TabBarView alloc]initWithFrame:CGRectMake(0, HEIGHT-50, WIDTH, 50)];
     self.tabBarView.delegate = self;
     [self.view addSubview:self.tabBarView];
+    [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+    [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+    [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeBottom];
+    [self.tabBarView autoSetDimension:ALDimensionHeight toSize:50.0f];
+    
+    [self creatHud];
     
 }
 -(void)didSelectedAtIndex:(NSInteger)index{
     self.selectedIndex = index;
+}
+
+- (void)bridgeConnectedNotification:(NSNotification *)notification {
+    if (_hud) {
+        [_hud hideAnimated:YES];
+        [_hud removeFromSuperview];
+        _hud = nil;
+    }
+}
+
+- (void)bridgeDisconnectedNotification:(NSNotification *)notification {
+    [self creatHud];
+}
+
+-(void)hudWasHidden:(MBProgressHUD *)hud {
+    [hud removeFromSuperview];
+    hud = nil;
+}
+
+- (void)creatHud {
+    if (!_hud) {
+        _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        _hud.mode = MBProgressHUDModeIndeterminate;
+        _hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
+        _hud.bezelView.backgroundColor = [UIColor clearColor];
+        _hud.backgroundView.backgroundColor = [UIColor blackColor];
+        _hud.backgroundView.alpha = 0.6;
+        _hud.activityIndicatorColor = [UIColor whiteColor];
+        _hud.delegate = self;
+    }
 }
 
 @end

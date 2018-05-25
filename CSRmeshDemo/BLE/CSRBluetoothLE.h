@@ -15,7 +15,7 @@
 @optional
 - (void) CBPowerIsOff;
 - (void) CBPoweredOn;
-- (void) discoveredBridge;
+//- (void) discoveredBridge;
 - (void) didConnectBridge :(CBPeripheral *) bridge;
 - (void) didDiscoverBridgeService :(CBPeripheral *) bridge;
 - (void) updateItemClusterDeviceId:(NSNumber *)deviceId level:(NSNumber *)level powerState:(NSNumber *)powerState;
@@ -42,7 +42,7 @@
 
     
 + (id) sharedInstance;
--(void) connectPeripheral:(CBPeripheral *) peripheral;
+//-(void) connectPeripheral:(CBPeripheral *) peripheral;
 -(void) disconnectPeripheral:(CBPeripheral *) peripheral;
 -(void) connectPeripheralNoCheck:(CBPeripheral *) peripheral;
 -(void) removeDiscoveredPeripheralsExceptConnected;
@@ -53,7 +53,7 @@
 
 -(void) setScanner :(BOOL) stateRequired source:(id) source;
 
-
+- (void)readRssi:(CBPeripheral *)peripheral;
 
 /////////////////////////////////////////////////////////////////////////
 -(NSArray *) retrievePeripheralsWithIdentifier:(NSUUID *) uuid;
