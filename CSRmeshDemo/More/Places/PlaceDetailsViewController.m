@@ -23,13 +23,14 @@
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import <MBProgressHUD.h>
 
-@interface PlaceDetailsViewController ()<UITextFieldDelegate,CSRCheckboxDelegate,CSRCheckboxDelegate,MCNearbyServiceBrowserDelegate,MCBrowserViewControllerDelegate>
+@interface PlaceDetailsViewController ()<UITextFieldDelegate,CSRCheckboxDelegate,CSRCheckboxDelegate,MCNearbyServiceBrowserDelegate,MCBrowserViewControllerDelegate,MCSessionDelegate>
 
 @property (nonatomic,strong)MCPeerID * peerID;
 @property (nonatomic,strong)MCSession * session;
 @property (nonatomic,strong)MCNearbyServiceBrowser * brower;
 @property (nonatomic,strong)MCBrowserViewController * browserViewController;
 @property (nonatomic,strong) MBProgressHUD *hud;
+@property (nonatomic,strong) MBProgressHUD *waitingHud;
 @property (nonatomic,strong) NSString *oldName;
 
 @end
@@ -246,6 +247,7 @@
     NSString *name = [UIDevice currentDevice].name;
     _peerID = [[MCPeerID alloc]initWithDisplayName:name];
     _session = [[MCSession alloc]initWithPeer:_peerID];
+    _session.delegate = self;
     
     _brower = [[MCNearbyServiceBrowser alloc]initWithPeer:_peerID serviceType:@"actec-place"];
     _brower.delegate = self;
@@ -310,6 +312,7 @@
         [self presentViewController:_browserViewController animated:YES completion:nil];
         if (_hud) {
             [_hud hideAnimated:NO];
+            _hud = nil;
         }
     }
 }
@@ -322,13 +325,13 @@
 
 - (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController{
 
+    _waitingHud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
+    _waitingHud.label.text = @"Transmitting data ······";
+    
     CSRParseAndLoad *parseLoad = [[CSRParseAndLoad alloc] init];
     NSData *jsonData = [parseLoad composeDatabase];
     
     [_session sendData:jsonData toPeers:_session.connectedPeers withMode:MCSessionSendDataUnreliable error:nil];
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-    _browserViewController = nil;
     
 }
 
@@ -336,6 +339,36 @@
     
     [self dismissViewControllerAnimated:YES completion:nil];
     _browserViewController = nil;
+    
+}
+
+- (void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID {
+    if ([[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] isEqualToString:@"接收完成"]) {
+        if (_waitingHud) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [_waitingHud hideAnimated:YES];
+                _waitingHud = nil;
+            });
+            
+        }
+        [self dismissViewControllerAnimated:YES completion:nil];
+        _browserViewController = nil;
+    }
+}
+
+- (void)session:(MCSession *)session didReceiveStream:(NSInputStream *)stream withName:(NSString *)streamName fromPeer:(MCPeerID *)peerID{
+    NSLog(@"didReceiveStream");
+}
+
+- (void)session:(MCSession *)session didStartReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID withProgress:(NSProgress *)progress{
+    NSLog(@"didStartReceivingResourceWithName");
+}
+
+- (void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(NSError *)error{
+    NSLog(@"didFinishReceivingResourceWithName");
+}
+
+- (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state {
     
 }
 

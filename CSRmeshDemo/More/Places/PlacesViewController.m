@@ -69,6 +69,8 @@
         if (!_hud) {
             _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
             _hud.delegate = self;
+            _hud.label.text = @"Keep the two phones at close range until the end of sharing automatically returns.";
+            _hud.label.numberOfLines = 0;
         }
         
         NSString * name = [UIDevice currentDevice].name;
@@ -96,17 +98,41 @@
 
 - (void)backSetting{
     if (_hud) {
-        [_hud hideAnimated:YES];
-        _hud = nil;
+        
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"You are requesting to join a place, and the return will terminate the request. Are you sure you want to return?" preferredStyle:UIAlertControllerStyleAlert];
+        NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:@"You are requesting to join a place, and the return will terminate the request. Are you sure you want to return?"];
+        [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
+        [alertController setValue:attributedMessage forKey:@"attributedMessage"];
+        [alertController.view setTintColor:DARKORAGE];
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [_hud hideAnimated:YES];
+            _hud = nil;
+            [_advertiser stop];
+            
+            CATransition *animation = [CATransition animation];
+            [animation setDuration:0.3];
+            [animation setType:kCATransitionMoveIn];
+            [animation setSubtype:kCATransitionFromLeft];
+            [self.view.window.layer addAnimation:animation forKey:nil];
+            [self dismissViewControllerAnimated:NO completion:nil];
+        }];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            return ;
+        }];
+        [alertController addAction:okAction];
+        [alertController addAction:cancelAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+        
+    }else {
+        CATransition *animation = [CATransition animation];
+        [animation setDuration:0.3];
+        [animation setType:kCATransitionMoveIn];
+        [animation setSubtype:kCATransitionFromLeft];
+        [self.view.window.layer addAnimation:animation forKey:nil];
+        [self dismissViewControllerAnimated:NO completion:nil];
     }
-    [_advertiser stop];
+
     
-    CATransition *animation = [CATransition animation];
-    [animation setDuration:0.3];
-    [animation setType:kCATransitionMoveIn];
-    [animation setSubtype:kCATransitionFromLeft];
-    [self.view.window.layer addAnimation:animation forKey:nil];
-    [self dismissViewControllerAnimated:NO completion:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -281,6 +307,17 @@
     NSError *error = nil;
     NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&error];
     CSRParseAndLoad *parseLoad = [[CSRParseAndLoad alloc] init];
+    
+    if (jsonDictionary[@"place"]) {
+        NSDictionary *placeDict = jsonDictionary[@"place"];
+        NSString *passPhrase = placeDict[@"placePassword"];
+        [self.placesArray enumerateObjectsUsingBlock:^(CSRPlaceEntity  *placeEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([placeEntity.passPhrase isEqualToString:passPhrase]) {
+                [parseLoad deleteEntitiesInSelectedPlace:placeEntity];
+                *stop = YES;
+            }
+        }];
+    }
     CSRPlaceEntity *sharePlace = [parseLoad parseIncomingDictionary:jsonDictionary];
     
     [CSRAppStateManager sharedInstance].selectedPlace = sharePlace;
@@ -292,12 +329,14 @@
     
     [[CSRAppStateManager sharedInstance] setupPlace];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^{
         [self refreshPlaces];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"reGetDataForPlaceChanged" object:nil];
         if (_hud) {
             [_hud hideAnimated:YES];
+            _hud = nil;
         }
+        [_session sendData:[@"接收完成" dataUsingEncoding:NSUTF8StringEncoding] toPeers:_session.connectedPeers withMode:MCSessionSendDataUnreliable error:nil];
     });
 
 }

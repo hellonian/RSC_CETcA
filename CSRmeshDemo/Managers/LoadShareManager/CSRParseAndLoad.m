@@ -65,7 +65,7 @@
     }
     
     NSSet *timers = placeEntity.timers;
-    [placeEntity removeScenes:timers];
+    [placeEntity removeTimers:timers];
     for (TimerEntity *timer in timers) {
         [timer removeTimerDevices:timer.timerDevices];
         for (TimerDeviceEntity *timerDevice in timer.timerDevices) {
@@ -76,9 +76,9 @@
     
     [placeEntity removeDevices:placeEntity.devices];
     [placeEntity removeGateways:placeEntity.gateways];
-    placeEntity.settings.cloudTenancyID = nil;
-    placeEntity.settings.cloudMeshID = nil;
-    placeEntity.cloudSiteID = nil;
+//    placeEntity.settings.cloudTenancyID = nil;
+//    placeEntity.settings.cloudMeshID = nil;
+//    placeEntity.cloudSiteID = nil;
     
     [[CSRDatabaseManager sharedInstance] saveContext];
     
