@@ -17,7 +17,7 @@
 - (void)mainCollectionViewDelegateSceneMenuAction:(NSNumber *)sceneId actionName:(NSString *)actionName;
 - (void)mainCollectionViewDelegateLongPressAction:(id)cell;
 - (void)mainCollectionViewDelegateDeleteDeviceAction:(NSNumber *)cellDeviceId cellGroupId:(NSNumber *)cellGroupId;
-- (void)mainCollectionViewDelegateSelectAction:(NSNumber *)cellDeviceId;
+- (void)mainCollectionViewDelegateSelectAction:(NSNumber *)cellDeviceId cellGroupId:(NSNumber *)cellGroupId cellSceneId:(NSNumber *)cellSceneId;
 - (void)mainCollectionViewDelegateClickEmptyGroupCellAction:(NSIndexPath *)cellIndexPath;
 - (void)mainCollectionViewCellDelegateSceneCellTapAction:(NSNumber *)sceneId;
 

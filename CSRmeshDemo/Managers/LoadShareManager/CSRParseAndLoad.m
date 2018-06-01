@@ -254,6 +254,7 @@
             sceneObj.sceneID = sceneDict[@"sceneID"];
             sceneObj.iconID = sceneDict[@"iconID"];
             sceneObj.sceneName = sceneDict[@"sceneName"];
+            sceneObj.rcIndex = sceneDict[@"rcIndex"];
 
             NSMutableArray *members = [NSMutableArray new];
             if (parsingDictionary[@"sceneMembers_list"]) {
@@ -484,7 +485,8 @@
     for (SceneEntity *scene in scenes) {
         [scenesArray addObject:@{@"sceneID":(scene.sceneID)?(scene.sceneID):@0,
                                  @"iconID":(scene.iconID)?(scene.iconID):@0,
-                                 @"sceneName":scene.sceneName?scene.sceneName:@""
+                                 @"sceneName":scene.sceneName?scene.sceneName:@"",
+                                 @"rcIndex":(scene.rcIndex)?(scene.rcIndex):@0
                                  }];
         
         for (SceneMemberEntity *sceneMember in scene.members) {

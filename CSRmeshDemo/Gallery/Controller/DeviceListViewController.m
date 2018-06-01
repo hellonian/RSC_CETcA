@@ -17,6 +17,7 @@
 #import "ControlMaskView.h"
 #import "CSRUtilities.h"
 #import "CSRAreaEntity.h"
+#import "SceneEntity.h"
 
 @interface DeviceListViewController ()<MainCollectionViewDelegate>
 
@@ -36,7 +37,7 @@
     // Do any additional setup after loading the view.
     self.navigationController.navigationBar.hidden = NO;
     self.automaticallyAdjustsScrollViewInsets = NO;
-    self.navigationItem.title = @"Choose device";
+    self.navigationItem.title = @"Select:";
     self.view.backgroundColor = [UIColor colorWithRed:195/255.0 green:195/255.0 blue:195/255.0 alpha:1];
     
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(finishSelectingDevice)];
@@ -99,6 +100,24 @@
         }
         
         
+    }else if (self.selectMode == DeviceListSelectMode_SelectGroup) {
+        
+        NSMutableArray *areaMutableArray =  [[[CSRAppStateManager sharedInstance].selectedPlace.areas allObjects] mutableCopy];
+        if (areaMutableArray != nil || [areaMutableArray count] != 0) {
+            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
+            [areaMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+            _devicesCollectionView.dataArray = areaMutableArray;
+        }
+        
+    }else if (self.selectMode == DeviceListSelectMode_SelectScene) {
+        
+        NSMutableArray *areaMutableArray =  [[[CSRAppStateManager sharedInstance].selectedPlace.scenes allObjects] mutableCopy];
+        if (areaMutableArray != nil || [areaMutableArray count] != 0) {
+            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sceneID" ascending:YES];
+            [areaMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+            _devicesCollectionView.dataArray = areaMutableArray;
+        }
+        
     }else {
         NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
         if (mutableArray != nil || [mutableArray count] != 0) {
@@ -106,6 +125,7 @@
             [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
                 if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName]) {
+                    NSLog(@"~~~~> %@",deviceEntity.deviceId);
                     SingleDeviceModel *singleDevice = [[SingleDeviceModel alloc] init];
                     singleDevice.deviceId = deviceEntity.deviceId;
                     singleDevice.deviceName = deviceEntity.name;
@@ -133,12 +153,31 @@
                         *stoppp = YES;
                     }
                 }
+                if ([obj isKindOfClass:[CSRAreaEntity class]]) {
+                    CSRAreaEntity *area = (CSRAreaEntity *)obj;
+                    if ([area.areaID isEqualToNumber:cell.groupId]) {
+                        cell.seleteButton.selected = YES;
+                        [cell.seleteButton setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+                        [self.selectedDevices addObject:cell.groupId];
+                        *stoppp = YES;
+                    }
+                }
+                
+                if ([obj isKindOfClass:[SceneEntity class]]) {
+                    SceneEntity *scene = (SceneEntity *)obj;
+                    if ([scene.rcIndex isEqualToNumber:cell.sceneId]) {
+                        cell.seleteButton.selected = YES;
+                        [cell.seleteButton setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+                        [self.selectedDevices addObject:cell.sceneId];
+                        *stoppp = YES;
+                    }
+                }
             }];
         }];
     });
 }
 
-- (void)mainCollectionViewDelegateSelectAction:(NSNumber *)cellDeviceId {
+- (void)mainCollectionViewDelegateSelectAction:(NSNumber *)cellDeviceId cellGroupId:(NSNumber *)cellGroupId cellSceneId:(NSNumber *)cellSceneId{
 
     if (self.selectMode == DeviceListSelectMode_ForDrop) {
         [_devicesCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell *cell, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -176,6 +215,54 @@
                 [cell.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
                 if ([self.selectedDevices containsObject:cell.deviceId]) {
                     [self.selectedDevices removeObject:cell.deviceId];
+                }
+            }
+        }];
+    }else if (self.selectMode == DeviceListSelectMode_SelectGroup) {
+        [_devicesCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell *cell, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([cell.groupId isEqualToNumber:cellGroupId]) {
+                if (cell.seleteButton.selected) {
+                    cell.seleteButton.selected = NO;
+                    [cell.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                    if ([self.selectedDevices containsObject:cell.groupId]) {
+                        [self.selectedDevices removeObject:cell.groupId];
+                    }
+                }else {
+                    cell.seleteButton.selected = YES;
+                    [cell.seleteButton setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+                    if (![self.selectedDevices containsObject:cell.groupId]) {
+                        [self.selectedDevices addObject:cell.groupId];
+                    }
+                }
+            }else if (cell.seleteButton.selected) {
+                cell.seleteButton.selected = NO;
+                [cell.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                if ([self.selectedDevices containsObject:cell.groupId]) {
+                    [self.selectedDevices removeObject:cell.groupId];
+                }
+            }
+        }];
+    }else if (self.selectMode == DeviceListSelectMode_SelectScene) {
+        [_devicesCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell *cell, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([cell.sceneId isEqualToNumber:cellSceneId]) {
+                if (cell.seleteButton.selected) {
+                    cell.seleteButton.selected = NO;
+                    [cell.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                    if ([self.selectedDevices containsObject:cell.sceneId]) {
+                        [self.selectedDevices removeObject:cell.sceneId];
+                    }
+                }else {
+                    cell.seleteButton.selected = YES;
+                    [cell.seleteButton setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+                    if (![self.selectedDevices containsObject:cell.sceneId]) {
+                        [self.selectedDevices addObject:cell.sceneId];
+                    }
+                }
+            }else if (cell.seleteButton.selected) {
+                cell.seleteButton.selected = NO;
+                [cell.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                if ([self.selectedDevices containsObject:cell.sceneId]) {
+                    [self.selectedDevices removeObject:cell.sceneId];
                 }
             }
         }];

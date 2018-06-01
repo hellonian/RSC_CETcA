@@ -15,6 +15,7 @@
 #import "SingleDeviceModel.h"
 #import "CSRUtilities.h"
 #import <CSRmesh/LightModelApi.h>
+#import "SceneEntity.h"
 
 @interface MainCollectionViewCell ()<UIGestureRecognizerDelegate>
 {
@@ -186,6 +187,23 @@
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
+        return;
+    }
+    
+    if ([info isKindOfClass:[SceneEntity class]]) {
+        SceneEntity *scene = (SceneEntity *)info;
+        self.nameLabel.hidden = NO;
+        self.kindLabel.hidden = YES;
+        self.levelLabel.hidden = YES;
+        self.deleteBtn.hidden = YES;
+        self.moveImageView.hidden = YES;
+        self.bottomView.hidden = YES;
+        NSString *iconString = kSceneIcons[[scene.iconID integerValue]];
+        self.iconView.image = [UIImage imageNamed:[NSString stringWithFormat:@"Scene_%@_select",iconString]];
+        self.nameLabel.text = scene.sceneName;
+        self.sceneId = scene.rcIndex;
+        self.groupId = @2000;
+        self.deviceId = @1000;
         return;
     }
     
@@ -455,8 +473,8 @@
 }
 
 - (IBAction)selectAction:(UIButton *)sender {
-    if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateSelectAction:)]) {
-        [self.superCellDelegate superCollectionViewCellDelegateSelectAction:self.deviceId];
+    if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateSelectAction:cellGroupId:cellSceneId:)]) {
+        [self.superCellDelegate superCollectionViewCellDelegateSelectAction:self.deviceId cellGroupId:self.groupId cellSceneId:self.sceneId];
     }
     
 }

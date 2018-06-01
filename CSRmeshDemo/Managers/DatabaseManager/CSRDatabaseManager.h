@@ -60,6 +60,7 @@
 - (CSRSettingsEntity *)fetchSettingsEntity;
 - (CSRSettingsEntity *)settingsForCurrentlySelectedPlace;
 - (SceneEntity *)getSceneEntityWithId:(NSNumber *)sceneId;
+- (SceneEntity *)getSceneEntityWithRcIndexId:(NSNumber *)rcIndex;
 
 - (void) saveDeviceModel :(NSNumber *) deviceNumber modelNumber:(NSData *) modelNumber infoType:(NSNumber *) infoType;
 

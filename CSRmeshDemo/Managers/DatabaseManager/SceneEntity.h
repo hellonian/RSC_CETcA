@@ -17,6 +17,7 @@
 @property (nonatomic,retain) NSNumber *iconID;
 @property (nonatomic,retain) NSString *sceneName;
 @property (nonatomic,retain) NSSet *members;
+@property (nonatomic,retain) NSNumber *rcIndex;
 
 @end
 

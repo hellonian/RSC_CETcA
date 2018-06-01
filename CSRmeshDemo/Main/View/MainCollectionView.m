@@ -142,9 +142,9 @@
     
 }
 
-- (void)superCollectionViewCellDelegateSelectAction:(NSNumber *)cellDeviceId {
-    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewDelegateSelectAction:)]) {
-        [self.mainDelegate mainCollectionViewDelegateSelectAction:cellDeviceId];
+- (void)superCollectionViewCellDelegateSelectAction:(NSNumber *)cellDeviceId cellGroupId:(NSNumber *)cellGroupId cellSceneId:(NSNumber *)cellSceneId{
+    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewDelegateSelectAction:cellGroupId:cellSceneId:)]) {
+        [self.mainDelegate mainCollectionViewDelegateSelectAction:cellDeviceId cellGroupId:cellGroupId cellSceneId:cellSceneId];
     }
 }
 

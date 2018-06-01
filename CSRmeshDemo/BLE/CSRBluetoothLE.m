@@ -359,7 +359,7 @@
 -(void) peripheral:(CBPeripheral *)peripheral didReadRSSI:(NSNumber *)RSSI error:(NSError *)error {
     
     [peripheral setRssi:RSSI];
-    NSLog(@"RSSI returned %@", [RSSI stringValue]);
+//    NSLog(@"RSSI returned %@", [RSSI stringValue]);
     
     if (beforeRssi < -90 && lastRssi < -90 && [RSSI integerValue] < -90) {
         [self disconnectPeripheral:peripheral];

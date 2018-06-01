@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14133" systemVersion="17E199" minimumToolsVersion="Xcode 4.3" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="1">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14133" systemVersion="17E202" minimumToolsVersion="Xcode 4.3" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="1">
     <entity name="CSRAreaEntity" representedClassName="CSRAreaEntity" syncable="YES">
         <attribute name="areaIconNum" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="areaID" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" indexed="YES" syncable="YES"/>
@@ -134,6 +134,7 @@
     </entity>
     <entity name="SceneEntity" representedClassName="SceneEntity" syncable="YES">
         <attribute name="iconID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="rcIndex" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="sceneID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="sceneName" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="members" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SceneMemberEntity" inverseName="scene" inverseEntity="SceneMemberEntity" syncable="YES"/>
@@ -176,7 +177,7 @@
         <element name="CSRUserEntity" positionX="-308" positionY="-279" width="128" height="120"/>
         <element name="DropEntity" positionX="-414" positionY="-126" width="128" height="165"/>
         <element name="GalleryEntity" positionX="-423" positionY="-135" width="128" height="150"/>
-        <element name="SceneEntity" positionX="-423" positionY="-135" width="128" height="120"/>
+        <element name="SceneEntity" positionX="-423" positionY="-135" width="128" height="135"/>
         <element name="SceneMemberEntity" positionX="-414" positionY="-126" width="128" height="135"/>
         <element name="TimerDeviceEntity" positionX="-414" positionY="-126" width="128" height="120"/>
         <element name="TimerEntity" positionX="-423" positionY="-135" width="128" height="165"/>

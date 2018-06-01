@@ -9,13 +9,14 @@
 #import "SceneCollectionViewCell.h"
 #import "SceneEntity.h"
 #import "CSRDeviceEntity.h"
+#import "CSRConstants.h"
 
 @interface SceneCollectionViewCell ()
 
 @property (weak, nonatomic) IBOutlet UIImageView *bgImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *iconView;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
-@property (nonatomic,strong) NSArray *iconArray;
+//@property (nonatomic,strong) NSArray *iconArray;
 
 
 @end
@@ -25,7 +26,7 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
-    _iconArray = @[@"home", @"sleep", @"party", @"TV", @"reading", @"away", @"getup", @"dining", @"custom"];
+//    _iconArray = @[@"home", @"sleep", @"party", @"TV", @"reading", @"away", @"getup", @"dining", @"custom"];
 }
 
 
@@ -34,7 +35,7 @@
     if ([info isKindOfClass:[SceneEntity class]]) {
         SceneEntity *sceneEntity = (SceneEntity *)info;
         
-        NSString *iconString = self.iconArray[[sceneEntity.iconID integerValue]];
+        NSString *iconString = kSceneIcons[[sceneEntity.iconID integerValue]];
         self.iconView.image = [UIImage imageNamed:[NSString stringWithFormat:@"Scene_%@_gray",iconString]];
         self.iconView.highlightedImage = [UIImage imageNamed:[NSString stringWithFormat:@"Scene_%@_orange",iconString]];
         self.nameLabel.text = sceneEntity.sceneName;

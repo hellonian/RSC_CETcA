@@ -15,5 +15,6 @@
 @dynamic iconID;
 @dynamic sceneName;
 @dynamic members;
+@dynamic rcIndex;
 
 @end
