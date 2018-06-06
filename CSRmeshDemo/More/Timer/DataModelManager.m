@@ -50,11 +50,13 @@ static DataModelManager *manager = nil;
 
 - (void)sendCmdData:(NSString *)hexStrCmd  toDeviceId:(NSNumber *)deviceId {
     if (deviceId) {
-        [_manager sendData:deviceId data:[CSRUtilities dataForHexString:hexStrCmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-            
-        } failure:^(NSError * _Nonnull error) {
-            
-        }];
+//        [_manager sendData:deviceId data:[CSRUtilities dataForHexString:hexStrCmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+//
+//        } failure:^(NSError * _Nonnull error) {
+//
+//        }];
+        NSNumber *num = [_manager sendData:@0 data:[CSRUtilities dataForHexString:hexStrCmd] success:nil failure:nil];
+        NSLog(@">>>>>> %@",num);
     }
     
 }
@@ -92,13 +94,14 @@ static DataModelManager *manager = nil;
 }
 
 //同步设备时间
-- (void)setDeviceTime:(NSNumber *)deviceId {
+- (void) setDeviceTime {
     NSDate *current = [NSDate date];
     NSString *dateString = [self hexStringForDate:current];
     
     NSString *cmd = [NSString stringWithFormat:@"8006%@",dateString];
 
-    [self sendCmdData:cmd toDeviceId:deviceId];
+    [_manager sendData:@0 data:[CSRUtilities dataForHexString:cmd] success:nil failure:nil];
+
 }
 
 //读取设备时间
@@ -184,11 +187,13 @@ static DataModelManager *manager = nil;
     
     //实物按钮动作反馈
     if ([dataStr hasPrefix:@"87"]) {
-        NSInteger seq = [[dataStr substringWithRange:NSMakeRange(4, 2)] integerValue];
-        if (seq && seq < primordial) {
+        
+        NSInteger seq = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(4, 2)]];
+        if (seq && (seq - primordial) < 0 && (seq - primordial) >-10) {
             return;
         }
         primordial = seq;
+        
         NSString *state = [dataStr substringWithRange:NSMakeRange(6, 2)];
         NSInteger level = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(8, 2)]];
         NSNumber *levelNum = [NSNumber numberWithInteger:level];
@@ -217,6 +222,9 @@ static DataModelManager *manager = nil;
 //        [[NSNotificationCenter defaultCenter] postNotificationName:@"getRemoteBattery" object:nil userInfo:@{@"batteryPercent":[NSNumber numberWithInteger:batteryPercent],@"deviceId":sourceDeviceId}];
 //    }
     
+    if ([dataStr hasPrefix:@"aa"]) {
+        [self setDeviceTime];
+    }
 }
 
 - (void)didReceiveStreamData:(NSNumber *)deviceId streamNumber:(NSNumber *)streamNumber data:(NSData *)data {

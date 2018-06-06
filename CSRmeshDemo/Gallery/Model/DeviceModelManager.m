@@ -65,11 +65,12 @@
 }
 
 - (void)getAllDevicesState {
+
     NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
     if (allDevices != nil && [allDevices count] != 0) {
         for (CSRDeviceEntity *deviceEntity in allDevices) {
             if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName]) {
-                
+
                 [[LightModelApi sharedInstance] getState:deviceEntity.deviceId success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
 
                 } failure:^(NSError * _Nullable error) {
@@ -111,7 +112,7 @@
         model.level = level;
         model.isleave = NO;
         [_allDevices addObject:model];
-        [[DataModelManager shareInstance] setDeviceTime:deviceEntity.deviceId];
+        [[DataModelManager shareInstance] setDeviceTime];
     }
 }
 
@@ -139,7 +140,7 @@
         model.powerState = state;
         model.isleave = NO;
         [_allDevices addObject:model];
-        [[DataModelManager shareInstance] setDeviceTime:deviceEntity.deviceId];
+        [[DataModelManager shareInstance] setDeviceTime];
     }
 }
 

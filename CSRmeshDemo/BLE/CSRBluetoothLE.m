@@ -19,6 +19,7 @@
 #import "OTAU.h"
 #import "CSRUtilities.h"
 #import "DeviceModelManager.h"
+#import "DataModelManager.h"
 
 // Uncomment to enable brige roaming
 #define   BRIDGE_ROAMING_ENABLE
@@ -555,6 +556,7 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"BridgeConnectedNotification" object:nil userInfo:@{@"peripheral":peripheral}];
             }
             
+            [[DataModelManager shareInstance] setDeviceTime];
             [[DeviceModelManager sharedInstance] getAllDevicesState];
         }
 

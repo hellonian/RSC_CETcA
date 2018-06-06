@@ -51,6 +51,7 @@
     self.navigationItem.rightBarButtonItem = edit;
     self.navigationItem.leftBarButtonItem = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getData) name:@"reGetDataForPlaceChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteDeviceEntity) name:@"deleteDeviceEntity" object:nil];
 
     self.improver = [[ImproveTouchingExperience alloc] init];
     _isEditing = NO;
@@ -60,11 +61,9 @@
     [self getData];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
+- (void)deleteDeviceEntity {
+    [self getData];
 }
-
 
 #pragma mark - actions
 

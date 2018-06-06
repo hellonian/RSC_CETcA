@@ -557,7 +557,7 @@
                         model.powerState = powerState;
                         model.level = sceneMember.level;
                         [[DeviceModelManager sharedInstance].allDevices addObject:model];
-                        [[DataModelManager shareInstance] setDeviceTime:deviceEntity.deviceId];
+                        [[DataModelManager shareInstance] setDeviceTime];
                     }
                 } failure:^(NSError * _Nullable error) {
 
@@ -841,7 +841,14 @@
         if(deleteDeviceEntity) {
             [[CSRAppStateManager sharedInstance].selectedPlace removeDevicesObject:deleteDeviceEntity];
             [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:deleteDeviceEntity];
+            
+            [[CSRDatabaseManager sharedInstance] dropEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
+            [[CSRDatabaseManager sharedInstance] sceneMemberEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
+            [[CSRDatabaseManager sharedInstance] timerDeviceEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
+            
             [[CSRDatabaseManager sharedInstance] saveContext];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteDeviceEntity" object:nil];
         }
         NSNumber *deviceNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRDeviceEntity"];
         [[CSRDevicesManager sharedInstance] setDeviceIdNumber:deviceNumber];
@@ -877,7 +884,14 @@
                                                          if(deleteDeviceEntity) {
                                                              [[CSRAppStateManager sharedInstance].selectedPlace removeDevicesObject:deleteDeviceEntity];
                                                              [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:deleteDeviceEntity];
+                                                             
+                                                             [[CSRDatabaseManager sharedInstance] dropEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
+                                                             [[CSRDatabaseManager sharedInstance] sceneMemberEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
+                                                             [[CSRDatabaseManager sharedInstance] timerDeviceEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
+                                                             
                                                              [[CSRDatabaseManager sharedInstance] saveContext];
+                                                             
+                                                             [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteDeviceEntity" object:nil];
                                                          }
                                                          NSNumber *deviceNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRDeviceEntity"];
                                                          [[CSRDevicesManager sharedInstance] setDeviceIdNumber:deviceNumber];

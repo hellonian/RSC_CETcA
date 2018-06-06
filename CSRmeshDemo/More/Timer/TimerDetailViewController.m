@@ -20,6 +20,14 @@
 #import <MBProgressHUD.h>
 
 @interface TimerDetailViewController ()<UITextFieldDelegate,MBProgressHUDDelegate>
+{
+    NSNumber *timerIdNumber;
+    NSString *name;
+    NSNumber *enabled;
+    NSDate *time;
+    NSDate *date;
+    NSString *repeatStr;
+}
 
 @property (weak, nonatomic) IBOutlet UIDatePicker *timerPicker;
 @property (strong, nonatomic) IBOutlet UIDatePicker *datePicker;
@@ -232,11 +240,12 @@
     _hud.delegate = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(15.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [_hud hideAnimated:YES];
+        _hud = nil;
         [self showTextHud:@"ERROR"];
     });
     [self.backs removeAllObjects];
     
-    NSNumber *timerIdNumber;
+//    NSNumber *timerIdNumber;
     if (_newadd) {
         if (!_timerEntity) {
             timerIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"TimerEntity"];
@@ -247,25 +256,25 @@
         }
     }
     
-    NSString *name;
+//    NSString *name;
     if (![CSRUtilities isStringEmpty:_nameTF.text]) {
         name = _nameTF.text;
     }else {
         name = [NSString stringWithFormat:@"timer %@",timerIdNumber];
     }
     
-    NSNumber *enabled = @(_enabledSwitch.on);
+    enabled = @(_enabledSwitch.on);
     
     NSDateFormatter *dateFormate = [[NSDateFormatter alloc] init];
     [dateFormate setDateFormat:@"yyyyMMddHHmmss"];
     NSString *dateStr = [dateFormate stringFromDate:_timerPicker.date];
     NSString *newStr = [dateStr stringByReplacingCharactersInRange:NSMakeRange(12, 2) withString:@"00"];
     newStr = [newStr stringByReplacingCharactersInRange:NSMakeRange(0, 8) withString:@"20180101"];
-    NSDate *time = [dateFormate dateFromString:newStr];
+    time = [dateFormate dateFromString:newStr];
     NSLog(@"timer >>> %@ \n newStr >>> %@",time,newStr);
-    NSDate *date;
+//    NSDate *date;
     
-    NSString *repeatStr = @"";
+    repeatStr = @"";
     if (_repeatChooseSegment.selectedSegmentIndex == 0) {
         for (UIButton *btn in self.weekView.subviews) {
             repeatStr = [NSString stringWithFormat:@"%d%@",btn.selected,repeatStr];
@@ -290,7 +299,7 @@
         }];
     }
     
-    _timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:enabled fireTime:time fireDate:date repeatStr:repeatStr];
+//    _timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:enabled fireTime:time fireDate:date repeatStr:repeatStr];
 
     for (NSNumber *deviceId in self.deviceIds) {
         
@@ -326,6 +335,7 @@
     NSLog(@"---->> %@ ::: %@",deviceId,resultStr);
     
     if ([resultStr boolValue]) {
+        _timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:enabled fireTime:time fireDate:date repeatStr:repeatStr];
         NSNumber *index = [self.deviceIdsAndIndexs objectForKey:[NSString stringWithFormat:@"%@",deviceId]];
         __block TimerDeviceEntity *newTimerDeviceEntity;
         [_timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timerDevice, BOOL * _Nonnull stop) {
@@ -349,12 +359,17 @@
                 self.handle();
             }
             [_hud hideAnimated:YES];
+            _hud = nil;
             [self.navigationController popViewControllerAnimated:YES];
         }
     }else {
         [_hud hideAnimated:YES];
+        _hud = nil;
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
         [self showTextHud:[NSString stringWithFormat:@"ERROR:%@ set timer fail.",deviceEntity.name]];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self.navigationController popViewControllerAnimated:YES];
+        });
     }
 }
 
@@ -371,12 +386,20 @@
                     self.handle();
                 }
                 [_hud hideAnimated:YES];
+                _hud = nil;
                 [self.navigationController popViewControllerAnimated:YES];
             }
         }];
     }else {
+        if (self.handle) {
+            self.handle();
+        }
         [_hud hideAnimated:YES];
-        [self showTextHud:@"ERROR"];
+        _hud = nil;
+        [self showTextHud:@"ERROR: not found device!"];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self.navigationController popViewControllerAnimated:YES];
+        });
     }
     
 }
@@ -411,6 +434,16 @@
     [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:self.timerEntity];
     [[CSRDatabaseManager sharedInstance] saveContext];
     
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        if (_hud) {
+//            if (self.handle) {
+//                self.handle();
+//            }
+//            [_hud hideAnimated:YES];
+//            _hud = nil;
+//            [self.navigationController popViewControllerAnimated:YES];
+//        }
+//    });
 }
 
 - (IBAction)changeEnabled:(UISwitch *)sender {
@@ -465,7 +498,7 @@
     successHud.label.text = text;
     successHud.label.numberOfLines = 0;
     successHud.delegate = self;
-    [successHud hideAnimated:YES afterDelay:1.5f];
+    [successHud hideAnimated:YES afterDelay:2.0f];
 }
 
 @end

@@ -32,6 +32,9 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor colorWithRed:220/255.0 green:220/255.0 blue:220/255.0 alpha:1];
     self.navigationItem.title = @"Timers";
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteDeviceEntity) name:@"deleteDeviceEntity" object:nil];
+    
     if (@available(iOS 11.0, *)) {
         self.additionalSafeAreaInsets = UIEdgeInsetsMake(-35, 0, 0, 0);
     }
@@ -43,6 +46,11 @@
     UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addClick)];
     self.navigationItem.rightBarButtonItem = add;
     
+    [self getData];
+    [self layoutView];
+}
+
+- (void)deleteDeviceEntity {
     [self getData];
     [self layoutView];
 }

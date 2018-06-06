@@ -1113,12 +1113,50 @@
     return newTimerEntity;
 }
 
+/*
 - (NSArray *)foundTimerDevice:(NSNumber *)deviceId timeIndex:(NSNumber *)timeImdex {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"TimerDeviceEntity"];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"deviceID == %@ && timerIndex == %@",deviceId,timeImdex]];
     request.predicate = predicate;
     NSArray *resArray = [_managedObjectContext executeFetchRequest:request error:nil];
     return resArray;
+}
+*/
+
+- (void)timerDeviceEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId {
+    [[CSRAppStateManager sharedInstance].selectedPlace.timers enumerateObjectsUsingBlock:^(TimerEntity * _Nonnull timer, BOOL * _Nonnull stop) {
+        [timer.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity  *timerDevice, BOOL * _Nonnull stop) {
+            if ([timerDevice.deviceID isEqualToNumber:deviceId]) {
+                [timer removeTimerDevicesObject:timerDevice];
+                [self.managedObjectContext deleteObject:timerDevice];
+            }
+        }];
+        if (timer.timerDevices.count == 0) {
+            [self.managedObjectContext deleteObject:timer];
+        }
+    }];
+}
+
+- (void)dropEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId {
+    [[CSRAppStateManager sharedInstance].selectedPlace.gallerys enumerateObjectsUsingBlock:^(GalleryEntity * _Nonnull gallery, BOOL * _Nonnull stop) {
+        [gallery.drops enumerateObjectsUsingBlock:^(DropEntity *drop, BOOL * _Nonnull stop) {
+            if ([drop.deviceID isEqualToNumber:deviceId]) {
+                [gallery removeDropsObject:drop];
+                [self.managedObjectContext deleteObject:drop];
+            }
+        }];
+    }];
+}
+
+- (void)sceneMemberEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId {
+    [[CSRAppStateManager sharedInstance].selectedPlace.scenes enumerateObjectsUsingBlock:^(SceneEntity * _Nonnull scene, BOOL * _Nonnull stop) {
+        [scene.members enumerateObjectsUsingBlock:^(SceneMemberEntity *member, BOOL * _Nonnull stop) {
+            if ([member.deviceID isEqualToNumber:deviceId]) {
+                [scene removeMembersObject:member];
+                [self.managedObjectContext deleteObject:member];
+            }
+        }];
+    }];
 }
 
 @end

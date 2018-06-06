@@ -13,6 +13,7 @@
 #import "DropEntity.h"
 #import "CSRDeviceEntity.h"
 #import "SceneEntity.h"
+#import "SceneMemberEntity.h"
 #import "TimerEntity.h"
 #import "TimerDeviceEntity.h"
 
@@ -68,6 +69,9 @@
 
 - (NSNumber *)getNextFreeTimerIDOfDeivice:(NSNumber *)deviceId;
 
-- (NSArray *)foundTimerDevice:(NSNumber *)deviceId timeIndex:(NSNumber *)timeImdex;
+//- (NSArray *)foundTimerDevice:(NSNumber *)deviceId timeIndex:(NSNumber *)timeImdex;
+- (void)timerDeviceEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId;
+- (void)dropEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId;
+- (void)sceneMemberEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId;
 
 @end

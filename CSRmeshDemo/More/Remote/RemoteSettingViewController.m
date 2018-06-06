@@ -256,11 +256,51 @@
         [self.singleRemoteView autoPinEdgeToSuperviewEdge:ALEdgeRight];
         [self.singleRemoteView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameBgView withOffset:30];
         
+        if (self.remoteEntity.remoteBranch && self.remoteEntity.remoteBranch.length > 0) {
+            NSString *rcIndex = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(2, 4)];
+            if ([rcIndex isEqualToString:@"0000"]) {
+                _sConrolOneLabel.text = @"Tap to select";
+                _sSelectOneLabel.text = @"";
+            }else if ([rcIndex isEqualToString:@"0100"]) {
+                _sConrolOneLabel.text = @"Control a lamp";
+                NSInteger deviceId = [self exchangePositionOfDeviceIdString:[self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(8, 4)]];
+                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:[NSNumber numberWithInteger:deviceId]];
+                if (deviceEntity) {
+                    _sSelectOneLabel.text = deviceEntity.name;
+                    _sSelectOneLabel.tag = deviceId;
+                }else {
+                    _sSelectOneLabel.text = @"Not found";
+                }
+            }else if ([rcIndex isEqualToString:@"0200"]) {
+                _sConrolOneLabel.text = @"Control a group";
+                NSInteger areaId = [self exchangePositionOfDeviceIdString:[self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(8, 4)]];
+                CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:[NSNumber numberWithInteger:areaId]];
+                if (areaEntity) {
+                    _sSelectOneLabel.text = areaEntity.areaName;
+                    _sSelectOneLabel.tag = areaId;
+                }else {
+                    _sSelectOneLabel.text = @"Not found";
+                }
+                
+            }else {
+                _sConrolOneLabel.text = @"Control a scene";
+                NSInteger rcIndexInt = [self exchangePositionOfDeviceIdString:rcIndex];
+                SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:[NSNumber numberWithInteger:rcIndexInt]];
+                if (sceneEntity) {
+                    _sSelectOneLabel.text = sceneEntity.sceneName;
+                    _sSelectOneLabel.tag = rcIndexInt;
+                }else {
+                    _sSelectOneLabel.text = @"Not found";
+                }
+            }
+        }
+        
+        /*
         if (self.remoteEntity.remoteBranch && self.remoteEntity.remoteBranch.length == 4) {
             CSRDeviceEntity *deviceEntity1 = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:@([CSRUtilities numberWithHexString:self.remoteEntity.remoteBranch])];
             self.sSelectOneLabel.text = deviceEntity1.name;
             self.sSelectOneLabel.tag = [self.remoteEntity.remoteBranch integerValue];
-        }
+        }*/
     }
     
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneAction)];
@@ -278,9 +318,9 @@
 //    [[NSNotificationCenter defaultCenter] addObserver:self
 //                                             selector:@selector(settingRemoteCall:)
 //                                                 name:@"settingRemoteCall" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(getRemoteConfiguration:)
-                                                 name:@"getRemoteConfiguration" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(getRemoteConfiguration:)
+//                                                 name:@"getRemoteConfiguration" object:nil];
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getRemoteBattery:) name:@"getRemoteBattery" object:nil];
     
 }
@@ -294,9 +334,9 @@
 //                                                    name:@"settingRemoteCall"
 //                                                  object:nil];
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:@"getRemoteConfiguration"
-                                                  object:nil];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self
+//                                                    name:@"getRemoteConfiguration"
+//                                                  object:nil];
 //    [[NSNotificationCenter defaultCenter] removeObserver:self
 //                                                    name:@"getRemoteBattery" object:nil];
 }
@@ -716,142 +756,166 @@
 
 - (void)doneAction {
     [self showHudTogether];
-    NSString *cmdStr1;
-    if ([_fConrolOneLabel.text containsString:@"lamp"] && ![_fSelectOneLabel.text isEqualToString:@"Not found"]) {
-        NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectOneLabel.tag];
-        cmdStr1 = [NSString stringWithFormat:@"73070101010001%@",deviceIdString];
-    }else if ([_fConrolOneLabel.text containsString:@"group"] && ![_fSelectOneLabel.text isEqualToString:@"Not found"]) {
-        NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectOneLabel.tag];
-        cmdStr1 = [NSString stringWithFormat:@"73070101020001%@",deviceIdString];
-    }else if ([_fConrolOneLabel.text containsString:@"scene"] && ![_fSelectOneLabel.text isEqualToString:@"Not found"]) {
-        cmdStr1 = [self cmdStringWithSceneRcIndex:_fSelectOneLabel.tag swIndex:1];
-    }else{
-        cmdStr1 = @"73050101000000";
-    }
     
-    NSString *cmdStr2;
-    if ([_fConrolTwoLabel.text containsString:@"lamp"] && ![_fSelectTwoLabel.text isEqualToString:@"Not found"]) {
-        NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectTwoLabel.tag];
-        cmdStr2 = [NSString stringWithFormat:@"73070102010001%@",deviceIdString];
-    }else if ([_fConrolTwoLabel.text containsString:@"group"] && ![_fSelectTwoLabel.text isEqualToString:@"Not found"]) {
-        NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectTwoLabel.tag];
-        cmdStr2 = [NSString stringWithFormat:@"73070102020001%@",deviceIdString];
-    }else if ([_fConrolTwoLabel.text containsString:@"scene"] && ![_fSelectTwoLabel.text isEqualToString:@"Not found"]) {
-        cmdStr2 = [self cmdStringWithSceneRcIndex:_fSelectTwoLabel.tag swIndex:2];
-    }else{
-        cmdStr2 = @"73050102000000";
-    }
-    
-    NSString *cmdStr3;
-    if ([_fConrolThreeLabel.text containsString:@"lamp"] && ![_fSelectThreeLabel.text isEqualToString:@"Not found"]) {
-        NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectThreeLabel.tag];
-        cmdStr3 = [NSString stringWithFormat:@"73070103010001%@",deviceIdString];
-    }else if ([_fConrolThreeLabel.text containsString:@"group"] && ![_fSelectThreeLabel.text isEqualToString:@"Not found"]) {
-        NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectThreeLabel.tag];
-        cmdStr3 = [NSString stringWithFormat:@"73070103020001%@",deviceIdString];
-    }else if ([_fConrolThreeLabel.text containsString:@"scene"] && ![_fSelectThreeLabel.text isEqualToString:@"Not found"]) {
-        cmdStr3 = [self cmdStringWithSceneRcIndex:_fSelectThreeLabel.tag swIndex:3];
-    }else{
-        cmdStr3 = @"73050103000000";
-    }
-    
-    NSString *cmdStr4;
-    if ([_fConrolFourLabel.text containsString:@"lamp"] && ![_fSelectFourLabel.text isEqualToString:@"Not found"]) {
-        NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectFourLabel.tag];
-        cmdStr4 = [NSString stringWithFormat:@"73070104010001%@",deviceIdString];
-    }else if ([_fConrolFourLabel.text containsString:@"group"] && ![_fSelectFourLabel.text isEqualToString:@"Not found"]) {
-        NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectFourLabel.tag];
-        cmdStr4 = [NSString stringWithFormat:@"73070104020001%@",deviceIdString];
-    }else if ([_fConrolFourLabel.text containsString:@"scene"] && ![_fSelectFourLabel.text isEqualToString:@"Not found"]) {
-        cmdStr4 = [self cmdStringWithSceneRcIndex:_fSelectFourLabel.tag swIndex:4];
-    }else {
-        cmdStr4 = @"73050104000000";
-    }
-    
-    dispatch_queue_t queue = dispatch_queue_create("串行", NULL);
-    dispatch_async(queue, ^{
-        
-        if (cmdStr1.length>0) {
-            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdStr1] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-                    dispatch_semaphore_signal(semaphore);
-                } failure:^(NSError * _Nonnull error) {
-                    
-                }];
-            });
-            
-            NSLog(@"信号量-1 第一个按键  %@",cmdStr1);
-            
+    if ([_remoteEntity.shortName isEqualToString:@"RB01"]) {
+        NSString *cmdStr1;
+        if ([_fConrolOneLabel.text containsString:@"lamp"] && ![_fSelectOneLabel.text isEqualToString:@"Not found"]) {
+            NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectOneLabel.tag];
+            cmdStr1 = [NSString stringWithFormat:@"73070101010001%@",deviceIdString];
+        }else if ([_fConrolOneLabel.text containsString:@"group"] && ![_fSelectOneLabel.text isEqualToString:@"Not found"]) {
+            NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectOneLabel.tag];
+            cmdStr1 = [NSString stringWithFormat:@"73070101020001%@",deviceIdString];
+        }else if ([_fConrolOneLabel.text containsString:@"scene"] && ![_fSelectOneLabel.text isEqualToString:@"Not found"]) {
+            cmdStr1 = [self cmdStringWithSceneRcIndex:_fSelectOneLabel.tag swIndex:1];
+        }else{
+            cmdStr1 = @"73050101000000";
         }
         
-    });
-    
-    dispatch_async(queue, ^{
-        
-        if (cmdStr2.length>0) {
-            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdStr2] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-                    dispatch_semaphore_signal(semaphore);
-                } failure:^(NSError * _Nonnull error) {
-                    
-                }];
-            });
-            
-            NSLog(@"信号量-1 第二个按键  %@",cmdStr2);
-            
+        NSString *cmdStr2;
+        if ([_fConrolTwoLabel.text containsString:@"lamp"] && ![_fSelectTwoLabel.text isEqualToString:@"Not found"]) {
+            NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectTwoLabel.tag];
+            cmdStr2 = [NSString stringWithFormat:@"73070102010001%@",deviceIdString];
+        }else if ([_fConrolTwoLabel.text containsString:@"group"] && ![_fSelectTwoLabel.text isEqualToString:@"Not found"]) {
+            NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectTwoLabel.tag];
+            cmdStr2 = [NSString stringWithFormat:@"73070102020001%@",deviceIdString];
+        }else if ([_fConrolTwoLabel.text containsString:@"scene"] && ![_fSelectTwoLabel.text isEqualToString:@"Not found"]) {
+            cmdStr2 = [self cmdStringWithSceneRcIndex:_fSelectTwoLabel.tag swIndex:2];
+        }else{
+            cmdStr2 = @"73050102000000";
         }
         
-    });
-    
-    dispatch_async(queue, ^{
-        
-        if (cmdStr3.length>0) {
-            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdStr3] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-                    dispatch_semaphore_signal(semaphore);
-                } failure:^(NSError * _Nonnull error) {
-                    
-                }];
-            });
-            
-            NSLog(@"信号量-1 第三个按键  %@",cmdStr3);
-            
+        NSString *cmdStr3;
+        if ([_fConrolThreeLabel.text containsString:@"lamp"] && ![_fSelectThreeLabel.text isEqualToString:@"Not found"]) {
+            NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectThreeLabel.tag];
+            cmdStr3 = [NSString stringWithFormat:@"73070103010001%@",deviceIdString];
+        }else if ([_fConrolThreeLabel.text containsString:@"group"] && ![_fSelectThreeLabel.text isEqualToString:@"Not found"]) {
+            NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectThreeLabel.tag];
+            cmdStr3 = [NSString stringWithFormat:@"73070103020001%@",deviceIdString];
+        }else if ([_fConrolThreeLabel.text containsString:@"scene"] && ![_fSelectThreeLabel.text isEqualToString:@"Not found"]) {
+            cmdStr3 = [self cmdStringWithSceneRcIndex:_fSelectThreeLabel.tag swIndex:3];
+        }else{
+            cmdStr3 = @"73050103000000";
         }
         
-    });
-    
-    
-    
-    dispatch_async(queue, ^{
-        
-        if (cmdStr4.length>0) {
-            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdStr4] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-                    NSLog(@"+++++++++++ 完成");
-                    
-                    dispatch_semaphore_signal(semaphore);
-                    NSString *remoteBranch = [NSString stringWithFormat:@"%@|%@|%@|%@",[cmdStr1 substringFromIndex:6],[cmdStr2 substringFromIndex:6],[cmdStr3 substringFromIndex:6],[cmdStr4 substringFromIndex:6]];
-                    _remoteEntity.remoteBranch = remoteBranch;
-                    [[CSRDatabaseManager sharedInstance] saveContext];
-                    _setSuccess = YES;
-                    [_hub hideAnimated:YES];
-                    [self showTextHud:@"SUCCESS"];
-                } failure:^(NSError * _Nonnull error) {
-                    
-                }];
-            });
-            
-            NSLog(@"信号量-1 第四个按键  %@",cmdStr4);
-            
+        NSString *cmdStr4;
+        if ([_fConrolFourLabel.text containsString:@"lamp"] && ![_fSelectFourLabel.text isEqualToString:@"Not found"]) {
+            NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectFourLabel.tag];
+            cmdStr4 = [NSString stringWithFormat:@"73070104010001%@",deviceIdString];
+        }else if ([_fConrolFourLabel.text containsString:@"group"] && ![_fSelectFourLabel.text isEqualToString:@"Not found"]) {
+            NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectFourLabel.tag];
+            cmdStr4 = [NSString stringWithFormat:@"73070104020001%@",deviceIdString];
+        }else if ([_fConrolFourLabel.text containsString:@"scene"] && ![_fSelectFourLabel.text isEqualToString:@"Not found"]) {
+            cmdStr4 = [self cmdStringWithSceneRcIndex:_fSelectFourLabel.tag swIndex:4];
+        }else {
+            cmdStr4 = @"73050104000000";
         }
         
-    });
-    
-    
+        dispatch_queue_t queue = dispatch_queue_create("串行", NULL);
+        dispatch_async(queue, ^{
+            
+            if (cmdStr1.length>0) {
+                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdStr1] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                        dispatch_semaphore_signal(semaphore);
+                    } failure:^(NSError * _Nonnull error) {
+                        
+                    }];
+                });
+                
+                NSLog(@"信号量-1 第一个按键  %@",cmdStr1);
+                
+            }
+            
+        });
+        
+        dispatch_async(queue, ^{
+            
+            if (cmdStr2.length>0) {
+                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdStr2] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                        dispatch_semaphore_signal(semaphore);
+                    } failure:^(NSError * _Nonnull error) {
+                        
+                    }];
+                });
+                
+                NSLog(@"信号量-1 第二个按键  %@",cmdStr2);
+                
+            }
+            
+        });
+        
+        dispatch_async(queue, ^{
+            
+            if (cmdStr3.length>0) {
+                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdStr3] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                        dispatch_semaphore_signal(semaphore);
+                    } failure:^(NSError * _Nonnull error) {
+                        
+                    }];
+                });
+                
+                NSLog(@"信号量-1 第三个按键  %@",cmdStr3);
+                
+            }
+            
+        });
+        
+        
+        
+        dispatch_async(queue, ^{
+            
+            if (cmdStr4.length>0) {
+                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdStr4] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                        NSLog(@"+++++++++++ 完成");
+                        
+                        dispatch_semaphore_signal(semaphore);
+                        NSString *remoteBranch = [NSString stringWithFormat:@"%@|%@|%@|%@",[cmdStr1 substringFromIndex:6],[cmdStr2 substringFromIndex:6],[cmdStr3 substringFromIndex:6],[cmdStr4 substringFromIndex:6]];
+                        _remoteEntity.remoteBranch = remoteBranch;
+                        [[CSRDatabaseManager sharedInstance] saveContext];
+                        _setSuccess = YES;
+                        [_hub hideAnimated:YES];
+                        [self showTextHud:@"SUCCESS"];
+                    } failure:^(NSError * _Nonnull error) {
+                        
+                    }];
+                });
+                
+                NSLog(@"信号量-1 第四个按键  %@",cmdStr4);
+                
+            }
+            
+        });
+    }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]) {
+        NSString *cmdStr1;
+        if ([_sConrolOneLabel.text containsString:@"lamp"] && ![_sSelectOneLabel.text isEqualToString:@"Not found"]) {
+            NSString *deviceIdString = [self exchangePositionOfDeviceId:_sSelectOneLabel.tag];
+            cmdStr1 = [NSString stringWithFormat:@"73070101010001%@",deviceIdString];
+        }else if ([_sConrolOneLabel.text containsString:@"group"] && ![_sSelectOneLabel.text isEqualToString:@"Not found"]) {
+            NSString *deviceIdString = [self exchangePositionOfDeviceId:_sSelectOneLabel.tag];
+            cmdStr1 = [NSString stringWithFormat:@"73070101020001%@",deviceIdString];
+        }else if ([_sConrolOneLabel.text containsString:@"scene"] && ![_sSelectOneLabel.text isEqualToString:@"Not found"]) {
+            cmdStr1 = [self cmdStringWithSceneRcIndex:_sSelectOneLabel.tag swIndex:1];
+        }else{
+            cmdStr1 = @"73050101000000";
+        }
+        [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdStr1] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+            NSString *remoteBranch = [NSString stringWithFormat:@"%@",[cmdStr1 substringFromIndex:6]];
+            _remoteEntity.remoteBranch = remoteBranch;
+            [[CSRDatabaseManager sharedInstance] saveContext];
+            _setSuccess = YES;
+            [_hub hideAnimated:YES];
+            [self showTextHud:@"SUCCESS"];
+        } failure:^(NSError * _Nonnull error) {
+            
+        }];
+    }
     
     
     

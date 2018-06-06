@@ -205,6 +205,7 @@
             areaIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRAreaEntity"];
             NSNumber *sortId = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"SortId"];
             [self saveArea:areaIdNumber sortId:sortId];
+            self.isCreateNewArea = NO;
         }else if (self.hasChanged) {
             _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
             _hud.mode = MBProgressHUDModeIndeterminate;
