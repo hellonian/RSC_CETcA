@@ -38,7 +38,12 @@
         NSString *iconString = kSceneIcons[[sceneEntity.iconID integerValue]];
         self.iconView.image = [UIImage imageNamed:[NSString stringWithFormat:@"Scene_%@_gray",iconString]];
         self.iconView.highlightedImage = [UIImage imageNamed:[NSString stringWithFormat:@"Scene_%@_orange",iconString]];
-        self.nameLabel.text = sceneEntity.sceneName;
+        if ([sceneEntity.sceneName isEqualToString:@"Home"] || [sceneEntity.sceneName isEqualToString:@"Away"] || [sceneEntity.sceneName isEqualToString:@"Scene1"] || [sceneEntity.sceneName isEqualToString:@"Scene2"]) {
+            self.nameLabel.text = AcTECLocalizedStringFromTable(sceneEntity.sceneName, @"Localizable");
+        }else {
+            self.nameLabel.text = sceneEntity.sceneName;
+        }
+        
         self.nameLabel.highlightedTextColor = DARKORAGE;
         self.sceneId = sceneEntity.sceneID;
         [self addGestureRecognizer:[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(sceneCellLongTap:)]];
@@ -52,9 +57,9 @@
     if (longRecognizer.state == UIGestureRecognizerStateBegan) {
         [self becomeFirstResponder];
         UIMenuController *menu=[UIMenuController sharedMenuController];
-        UIMenuItem *edit = [[UIMenuItem alloc]initWithTitle:@"Edit Scene" action:@selector(editSceneProfile)];
-        UIMenuItem *icon = [[UIMenuItem alloc]initWithTitle:@"Change Icon" action:@selector(changeSceneIcon)];
-        UIMenuItem *rename = [[UIMenuItem alloc]initWithTitle:@"Rename" action:@selector(renameSceneProfile)];
+        UIMenuItem *edit = [[UIMenuItem alloc]initWithTitle:AcTECLocalizedStringFromTable(@"EditScene", @"Localizable") action:@selector(editSceneProfile)];
+        UIMenuItem *icon = [[UIMenuItem alloc]initWithTitle:AcTECLocalizedStringFromTable(@"ChangeIcon", @"Localizable") action:@selector(changeSceneIcon)];
+        UIMenuItem *rename = [[UIMenuItem alloc]initWithTitle:AcTECLocalizedStringFromTable(@"Rename", @"Localizable") action:@selector(renameSceneProfile)];
         if ([self.sceneId isEqualToNumber:@0] || [self.sceneId isEqualToNumber:@1]) {
             [menu setMenuItems:@[edit]];
         }else {

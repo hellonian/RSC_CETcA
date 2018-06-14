@@ -30,16 +30,18 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange) name:ZZAppLanguageDidChangeNotification object:nil];
     self.view.backgroundColor = [UIColor colorWithRed:220/255.0 green:220/255.0 blue:220/255.0 alpha:1];
-    self.navigationItem.title = @"Timers";
+    self.navigationItem.title = AcTECLocalizedStringFromTable(@"Timer", @"Localizable");
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteDeviceEntity) name:@"deleteDeviceEntity" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteDeviceEntity) name:@"reGetDataForPlaceChanged" object:nil];
     
     if (@available(iOS 11.0, *)) {
         self.additionalSafeAreaInsets = UIEdgeInsetsMake(-35, 0, 0, 0);
     }
     if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
-        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Setting_back"] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
+        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:AcTECLocalizedStringFromTable(@"Setting_back", @"Localizable")] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
         self.navigationItem.leftBarButtonItem = left;
     }
     
@@ -174,7 +176,7 @@
         [_noneDataView addSubview:imageView];
         
         UILabel *label = [[UILabel alloc] init];
-        label.text = @"Timers allow you to schedule ON and OFF based in time.";
+        label.text = AcTECLocalizedStringFromTable(@"TimerIntroduce", @"Localizable");
         label.font = [UIFont systemFontOfSize:11];
         label.textAlignment = NSTextAlignmentCenter;
         label.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
@@ -182,7 +184,7 @@
         [_noneDataView addSubview:label];
         
         UIButton *btn = [[UIButton alloc] init];
-        [btn setTitle:@"Add a timer" forState:UIControlStateNormal];
+        [btn setTitle:AcTECLocalizedStringFromTable(@"AddTimer", @"Localizable") forState:UIControlStateNormal];
         [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(addClick) forControlEvents:UIControlEventTouchUpInside];
         [_noneDataView addSubview:btn];
@@ -202,6 +204,28 @@
         
     }
     return _noneDataView;
+}
+
+- (void)languageChange {
+    self.navigationItem.title = AcTECLocalizedStringFromTable(@"Timer", @"Localizable");
+    if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:AcTECLocalizedStringFromTable(@"Setting_back", @"Localizable")] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
+        self.navigationItem.leftBarButtonItem = left;
+    }
+    if (_noneDataView) {
+        [_noneDataView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([obj isKindOfClass:[UILabel class]]) {
+                UILabel *label = (UILabel *)obj;
+                label.text = AcTECLocalizedStringFromTable(@"TimerIntroduce", @"Localizable");
+            }else if ([obj isKindOfClass:[UIButton class]]) {
+                UIButton *btn = (UIButton *)obj;
+                [btn setTitle:AcTECLocalizedStringFromTable(@"AddTimer", @"Localizable") forState:UIControlStateNormal];
+            }
+        }];
+    }
+    if (_tableView) {
+        [_tableView reloadData];
+    }
 }
 
 @end

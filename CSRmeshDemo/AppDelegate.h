@@ -5,6 +5,9 @@
 
 #import <UIKit/UIKit.h>
 #import "MainTabBarController.h"
+#import "GalleryViewController.h"
+#import "MoreViewController.h"
+#import "MainViewController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 

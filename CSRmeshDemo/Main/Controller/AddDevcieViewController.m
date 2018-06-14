@@ -34,12 +34,12 @@
     // Do any additional setup after loading the view.
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.view.backgroundColor = [UIColor colorWithRed:195/255.0 green:195/255.0 blue:195/255.0 alpha:1];
-    self.navigationItem.title = @"Search New Devices";
+    self.navigationItem.title = AcTECLocalizedStringFromTable(@"SearchNewDevices", @"Localizable");
     
     UIButton *letfButton = [UIButton buttonWithType:UIButtonTypeCustom];
     UIImage *btnImage = [UIImage imageNamed:@"Btn_back"];
     [letfButton setImage:btnImage forState:UIControlStateNormal];
-    NSString *btnTitle = @" Back";
+    NSString *btnTitle = AcTECLocalizedStringFromTable(@"Back", @"Localizable");
     [letfButton setTitle:btnTitle forState:UIControlStateNormal];
     [letfButton setTitleColor:DARKORAGE forState:UIControlStateNormal];
     CGSize buttonTitleLabelSize = [btnTitle sizeWithAttributes:@{NSFontAttributeName:letfButton.titleLabel.font}]; //文本尺寸
@@ -134,7 +134,7 @@
         _noneNewHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         _noneNewHud.mode = MBProgressHUDModeText;
         _noneNewHud.delegate = self;
-        _noneNewHud.label.text = @"No new device was found.";
+        _noneNewHud.label.text = AcTECLocalizedStringFromTable(@"NoDeviceFound", @"Localizable");
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             if (_noneNewHud) {
                 [_noneNewHud hideAnimated:YES];
@@ -221,7 +221,8 @@
 
     if ([completedSteps floatValue] <= [totalSteps floatValue] && [completedSteps floatValue] > 0) {
         CGFloat completed = [completedSteps floatValue]/[totalSteps floatValue];
-        _associateHud.label.text = [NSString stringWithFormat:@"Associating: %.0f%%", (completed * 100)];
+        NSString *associating = AcTECLocalizedStringFromTable(@"Associating", @"Localizable");
+        _associateHud.label.text = [NSString stringWithFormat:@"%@: %.0f%%", associating,(completed * 100)];
         _associateHud.progress = completed;
         if (completed >= 1) {
             if ([_mainCollectionView.dataArray count] == 0) {
@@ -257,17 +258,17 @@
         if (_selectedDevice) {
             [[CSRDevicesManager sharedInstance] setAttentionPreAssociation:_selectedDevice.deviceHash attentionState:@(1) withDuration:@(6000)];
             
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Are you sure to add the selected device？" message:nil preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:nil preferredStyle:UIAlertControllerStyleAlert];
             
-            NSMutableAttributedString *attributedTitle = [[NSMutableAttributedString alloc] initWithString:@"Are you sure to add the selected device?"];
+            NSMutableAttributedString *attributedTitle = [[NSMutableAttributedString alloc] initWithString:AcTECLocalizedStringFromTable(@"AddDeviceAlert", @"Localizable")];
             [attributedTitle addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedTitle string] length])];
             [alert setValue:attributedTitle forKey:@"attributedTitle"];
             
-            UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"CANCEL" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
                 
             }];
             [cancel setValue:DARKORAGE forKey:@"titleTextColor"];
-            UIAlertAction *confirm = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            UIAlertAction *confirm = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 [self associateDevice];
             }];
             [confirm setValue:DARKORAGE forKey:@"titleTextColor"];
@@ -288,7 +289,7 @@
         _associateHud.delegate = self;
         _associateHud.label.font = [UIFont systemFontOfSize:13];
         _associateHud.label.numberOfLines = 0;
-        _associateHud.label.text = @"Associating: 0%";
+        _associateHud.label.text = [NSString stringWithFormat:@"%@: 0%%",AcTECLocalizedStringFromTable(@"Associating", @"Localizable")];
     }
 }
 

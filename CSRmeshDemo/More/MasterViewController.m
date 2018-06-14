@@ -25,7 +25,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.automaticallyAdjustsScrollViewInsets = NO;
-    self.navigationItem.title = @"Setting";
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange) name:ZZAppLanguageDidChangeNotification object:nil];
+    self.navigationItem.title = AcTECLocalizedStringFromTable(@"Setting", @"Localizable");
     self.view.backgroundColor = [UIColor colorWithRed:220/255.0 green:220/255.0 blue:220/255.0 alpha:1];
     
     imageArray =@[@[@"Setting_places"],
@@ -35,13 +36,13 @@
                   @[@"Setting_language",
                     @"Setting_help",
                     @"Setting_about"]];
-    titleArray = @[@[@"Places"],
-                   @[@"Timer",
-                     @"Remote",
-                     @"BT Version"],
-                   @[@"Language",
-                     @"Help",
-                     @"About"]];
+    titleArray = @[@[AcTECLocalizedStringFromTable(@"Place", @"Localizable")],
+                   @[AcTECLocalizedStringFromTable(@"Timer", @"Localizable"),
+                     AcTECLocalizedStringFromTable(@"Remote", @"Localizable"),
+                     AcTECLocalizedStringFromTable(@"BTVersion", @"Localizable")],
+                   @[AcTECLocalizedStringFromTable(@"Language", @"Localizable"),
+                     AcTECLocalizedStringFromTable(@"Help", @"Localizable"),
+                     AcTECLocalizedStringFromTable(@"About", @"Localizable")]];
     
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     self.tableView.delegate = self;
@@ -86,6 +87,18 @@
 - (void)updateViewConstraints {
     [super updateViewConstraints];
     [self.tableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(64, 0, 0, 0)];
+}
+
+- (void)languageChange {
+    self.navigationItem.title = AcTECLocalizedStringFromTable(@"Setting", @"Localizable");
+    titleArray = @[@[AcTECLocalizedStringFromTable(@"Place", @"Localizable")],
+                   @[AcTECLocalizedStringFromTable(@"Timer", @"Localizable"),
+                     AcTECLocalizedStringFromTable(@"Remote", @"Localizable"),
+                     AcTECLocalizedStringFromTable(@"BTVersion", @"Localizable")],
+                   @[AcTECLocalizedStringFromTable(@"Language", @"Localizable"),
+                     AcTECLocalizedStringFromTable(@"Help", @"Localizable"),
+                     AcTECLocalizedStringFromTable(@"About", @"Localizable")]];
+    [self.tableView reloadData];
 }
 
 @end

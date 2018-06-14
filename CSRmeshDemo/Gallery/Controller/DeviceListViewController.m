@@ -37,10 +37,20 @@
     // Do any additional setup after loading the view.
     self.navigationController.navigationBar.hidden = NO;
     self.automaticallyAdjustsScrollViewInsets = NO;
-    self.navigationItem.title = @"Select:";
+    self.navigationItem.title = AcTECLocalizedStringFromTable(@"Select", @"Localizable");
     self.view.backgroundColor = [UIColor colorWithRed:195/255.0 green:195/255.0 blue:195/255.0 alpha:1];
     
-    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(finishSelectingDevice)];
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn.bounds = CGRectMake(0, 0, 80, 40);
+    [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
+    [btn setTitle:AcTECLocalizedStringFromTable(@"Back", @"Localizable") forState:UIControlStateNormal];
+    [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+    btn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+    [btn addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
+    self.navigationItem.leftBarButtonItem = back;
+    
+    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(finishSelectingDevice)];
     self.navigationItem.rightBarButtonItem = done;
     if (self.selectMode == DeviceListSelectMode_ForDrop) {
         self.navigationItem.rightBarButtonItem.enabled = NO;
@@ -175,6 +185,10 @@
             }];
         }];
     });
+}
+
+- (void)backAction {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)mainCollectionViewDelegateSelectAction:(NSNumber *)cellDeviceId cellGroupId:(NSNumber *)cellGroupId cellSceneId:(NSNumber *)cellSceneId{

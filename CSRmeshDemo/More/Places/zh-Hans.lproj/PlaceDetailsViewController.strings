@@ -1,0 +1,21 @@
+
+/* Class = "UITextField"; placeholder = "Place name"; ObjectID = "Jd1-eJ-EqW"; */
+"Jd1-eJ-EqW.placeholder" = "名称";
+
+/* Class = "UILabel"; text = "Network key"; ObjectID = "bs7-mY-b11"; */
+"bs7-mY-b11.text" = "密码";
+
+/* Class = "UILabel"; text = "Place name"; ObjectID = "hYf-3F-9HS"; */
+"hYf-3F-9HS.text" = "名称";
+
+/* Class = "UIButton"; normalTitle = "Delete"; ObjectID = "lRG-Nx-Y7O"; */
+"lRG-Nx-Y7O.normalTitle" = "删除";
+
+/* Class = "UILabel"; text = "Show password"; ObjectID = "rQO-oA-8kS"; */
+"rQO-oA-8kS.text" = "显示密码";
+
+/* Class = "UIButton"; normalTitle = "Export Place File"; ObjectID = "uhH-7k-Gq3"; */
+"uhH-7k-Gq3.normalTitle" = "发送场所信息";
+
+/* Class = "UITextField"; placeholder = "Network key"; ObjectID = "zjv-Gy-2n3"; */
+"zjv-Gy-2n3.placeholder" = "密码";

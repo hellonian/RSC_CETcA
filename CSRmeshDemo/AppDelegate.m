@@ -8,10 +8,7 @@
 #import "CSRUtilities.h"
 #import "CSRmeshSettings.h"
 #import "CSRMesh/TimeModelApi.h"
-#import "GalleryViewController.h"
-#import "MoreViewController.h"
 
-#import "MainViewController.h"
 //#import "CSRBridgeRoaming.h"
 //#import "CSRBluetoothLE.h"
 

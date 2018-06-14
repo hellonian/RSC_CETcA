@@ -17,9 +17,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    self.navigationItem.title = @"Help";
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange) name:ZZAppLanguageDidChangeNotification object:nil];
+    self.navigationItem.title = AcTECLocalizedStringFromTable(@"Help", @"Localizable");
     if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
-        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Setting_back"] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
+        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:AcTECLocalizedStringFromTable(@"Setting_back", @"Localizable")] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
         self.navigationItem.leftBarButtonItem = left;
     }
 }
@@ -31,6 +32,14 @@
     [animation setSubtype:kCATransitionFromLeft];
     [self.view.window.layer addAnimation:animation forKey:nil];
     [self dismissViewControllerAnimated:NO completion:nil];
+}
+
+- (void)languageChange {
+    self.navigationItem.title = AcTECLocalizedStringFromTable(@"Help", @"Localizable");
+    if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:AcTECLocalizedStringFromTable(@"Setting_back", @"Localizable")] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
+        self.navigationItem.leftBarButtonItem = left;
+    }
 }
 
 - (void)didReceiveMemoryWarning {

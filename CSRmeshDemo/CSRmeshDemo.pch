@@ -17,7 +17,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <CoreData/CoreData.h>
-#import <MediaPlayer/MediaPlayer.h>
+#import "NSBundle+AppLanguageSwitch.h"
 
 #define CONFIG      @"CONFIG"
 #define LIGHT       @"LIGHT"
@@ -32,5 +32,10 @@
 #define BATTERY     @"BATTERY"
 #define SENSOR      @"SENSOR"
 #define ACTUATOR    @"ACTUATOR"
+
+#define AcTECLanguage @"AcTECLanguage"
+
+#define AcTECLocalizedStringFromTable(key, tableName) \
+[[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:[[NSUserDefaults standardUserDefaults] objectForKey:AcTECLanguage] ofType:@"lproj"]] localizedStringForKey:key value:nil table:tableName]
 
 #endif

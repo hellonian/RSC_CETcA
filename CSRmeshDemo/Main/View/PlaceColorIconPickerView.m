@@ -62,9 +62,9 @@
     }else if (_mode == CollectionViewPickerMode_PlaceIconPicker) {
         _titleLabel.text = @"Select image";
     }else if (_mode == CollectionViewPickerMode_SceneIconPicker) {
-        _titleLabel.text = @"Scene Icons";
+        _titleLabel.text = AcTECLocalizedStringFromTable(@"SceneIcons", @"Localizable");
     }else if (_mode == CollectionViewPickerMode_GroupIconPicker) {
-        _titleLabel.text = @"Group Icons";
+        _titleLabel.text = AcTECLocalizedStringFromTable(@"GroupIcons", @"Localizable");
     }
     [self addSubview:_titleLabel];
     
@@ -73,7 +73,7 @@
     [self addSubview:topLine];
     
     _cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(270*0.5-100, 160, 200, 20)];
-    [_cancelButton setTitle:@"CANCEL" forState:UIControlStateNormal];
+    [_cancelButton setTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") forState:UIControlStateNormal];
     [_cancelButton setTitleColor:DARKORAGE forState:UIControlStateNormal];
     [_cancelButton addTarget:self action:@selector(cancelAction:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_cancelButton];

@@ -138,6 +138,7 @@
     //============================================================================
     // Disconnect the given peripheral.
 -(void) disconnectPeripheral:(CBPeripheral *) peripheral {
+    NSLog(@"主动断开");
     [centralManager cancelPeripheralConnection:peripheral];
 }
 
@@ -306,7 +307,7 @@
         [peripheral setUuidString:adString];
     }
     
-    
+//    NSString *test = [adString substringToIndex:12];
     
     if (self.isUpdateFW ) {
         if (![_foundPeripherals containsObject:peripheral]) {

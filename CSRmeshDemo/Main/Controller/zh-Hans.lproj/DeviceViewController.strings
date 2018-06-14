@@ -1,0 +1,21 @@
+
+/* Class = "UILabel"; text = "Brightness"; ObjectID = "ClO-Me-qxg"; */
+"ClO-Me-qxg.text" = "亮度";
+
+/* Class = "UILabel"; text = "Reset"; ObjectID = "OV2-JY-QYi"; */
+"OV2-JY-QYi.text" = "重置色温";
+
+/* Class = "UILabel"; text = "Color Temperature"; ObjectID = "SZQ-9z-LDa"; */
+"SZQ-9z-LDa.text" = "色温";
+
+/* Class = "UILabel"; text = "开/关"; ObjectID = "Whw-sT-xn2"; */
+"Whw-sT-xn2.text" = "开/关";
+
+/* Class = "UILabel"; text = "设备名"; ObjectID = "g45-W0-rBI"; */
+"g45-W0-rBI.text" = "设备名";
+
+/* Class = "UILabel"; text = "Change"; ObjectID = "jzp-Uo-C7S"; */
+"jzp-Uo-C7S.text" = "改变色温";
+
+/* Class = "UILabel"; text = "100%"; ObjectID = "lRY-vT-dpa"; */
+"lRY-vT-dpa.text" = "100%";

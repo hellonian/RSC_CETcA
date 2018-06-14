@@ -1,17 +1,101 @@
-//
-// Copyright 2016 Qualcomm Technologies International, Ltd.
-//
+/* 
+  Localizable.strings
+  CSRmeshDemo
 
-/* Common strings */
+  Created by AcTEC on 2018/6/7.
+  Copyright © 2018年 Cambridge Silicon Radio Ltd. All rights reserved.
+*/
+"Main" = "Main";
+"Gallery" = "Gallery";
+"Setting" = "Setting";
+"English" = "English";
+"ChineseS" = "Chinese,Simplified";
+"Home" = "Home";
+"Away" = "Away";
+"Done" = "Done";
+"Edit" = "Edit";
+"Scene1" = "Scene1";
+"Scene2" = "Scene2";
+"EditScene" = "Edit Scene";
+"ChangeIcon" = "Change Icon";
+"Rename" = "Rename";
+"Living room" = "Living room";
+"Bed room" = "Bed room";
+"Dining room" = "Dining room";
+"Toilet" = "Toilet";
+"Kitchen" = "Kitchen";
+"Dimmer" = "Dimmer";
+"Switch" = "Switch";
+"NoDevicePlace" = "No bluetooth device has been added for this place, search and add devices now?";
+"Yes" = "Yes";
+"Cancel" = "Cancel";
+"CreatNewGroup" = "Creat New Group";
+"SearchNewDevices" = "Search New Devices";
+"AddDeviceAlert" = "Are you sure add the selected device？";
+"Associating" = "Associating";
+"Name" = "Name";
+"OnOff" = "ON/OFF";
+"Brightness" = "Brightness";
+"SceneNoDevice" = "No device in this scene,edit scene now?";
+"SceneIcons" = "Scene Icons";
+"GroupNoDevice" = "No device in this group,choose devices now?";
+"Select" = "Select:";
+"SelectDefaultIcon" = "Select default Icon";
+"Camera" = "Camera";
+"ChooseFromAlbum" = "Choose from Album";
+"DeleteGroup" = "Delete Group";
+"DeleteGroupAlert" = "Are you sure that you want to delete this group";
+"EnerGroupName" = "Please enter a group name.";
+"DeleteDevice" = "Delete Device";
+"DeleteDeviceAlert" = "Are you sure that you want to delete this device";
+"DeleteDeviceOffLine" = "Device wasn't found,Do you want to delete anyway";
+"RemovePhoto" = "Remove Photo?";
+"RemoveLight" = "Remove Light?";
+"Remove" = "Remove";
+"Place" = "Places";
+"Timer" = "Timers";
+"Remote" = "Remotes";
+"BTVersion" = "BT Version";
+"Language" = "Language";
+"Help" = "Help";
+"About" = "About";
+"CreatNewPlace" = "Creat a new place";
+"JoinPlace" = "Join a place";
+"SwitchPlaceAlert" = "Are you sure you want to switch place to the";
+"Save" = "Save";
+"SearchRecepient" = "Searching recepient·····";
+"KeepCloseAlert"  = "Keep the two phones at close range until the end of sharing automatically returns.";
+"returnAlert" = "You are requesting to join a place, and the return will terminate the request. Are you sure you want to return?";
+"NamePhraseEmpryAlert" = "Name and Pass Phrase should not be empty, please enter some values.";
+"DeleteCurrentPlaceAlert" = "You can't delete current selected place.";
+"TransmitData" = "Transmitting data ······";
+"TimerIntroduce" = "Timers allow you to schedule ON and OFF based in time.";
+"AddTimer" = "Add a timer";
+"MustChoose" = "You must choose one or more devices.";
+"Everyday" = "everyday";
+"EveryWeekend" = "every weekend";
+"EveryWeekday" = "every weekday";
+"Sun" = "Sun";
+"Fri" = "Fri";
+"Mon" = "Mon";
+"Sat" = "Sat";
+"Thu" = "Thu";
+"Tue" = "Tue";
+"Wed" = "Wed";
+"RemoteIntroduce" = "You can add your bluetooth remotes and assign lights to the buttons of the remotes.";
+"AddRemote" = "Add a remote";
+"TapToSelect" = "Tap to select";
+"ControlLamp" = "Control a lamp";
+"ControlGroup" = "Control a group";
+"ControlScene" = "Control a scene";
+"Notfound" = "Not found";
+"Clear" = "Clear";
+"Success" = "SUCCESS";
+"RemoteOpenAlert" = "Please press any button on the remote six times continuously";
+"TimeOut" = "Time out";
+"NoDeviceFound" = "No new device was found.";
+"Back" = " Back";
+"Setting_back" = "Setting_back_en";
+"GroupIcons" = "Group Icons";
+"EnterSceneName" = "Enter a name for the scene.";
 
-"warning"                   =   "Warning!";
-"unknownError"              =   "An Unknown error occurred.";
-"internetUnavailbleAlert"   =   "No internet connection.Please try after connecting to a network";
-
-//Events Creation View
-"Configuration"             =   "Configuration";
-"Devices"                   =   "Devices";
-"Tap to deactivate the event" =     "Tap to deactivate the event";
-"Event on"                  =   "Event on";
-"Repeat"                    =   "Repeat";
-"Event Name"                =   "Event Name";

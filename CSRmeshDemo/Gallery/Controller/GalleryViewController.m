@@ -46,8 +46,10 @@
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     
-    self.navigationItem.title = @"Gallery";
-    UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(galleryEditAction:)];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange) name:ZZAppLanguageDidChangeNotification object:nil];
+    
+    self.navigationItem.title = AcTECLocalizedStringFromTable(@"Gallery", @"Localizable");
+    UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Edit", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(galleryEditAction:)];
     self.navigationItem.rightBarButtonItem = edit;
     self.navigationItem.leftBarButtonItem = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getData) name:@"reGetDataForPlaceChanged" object:nil];
@@ -68,7 +70,7 @@
 #pragma mark - actions
 
 - (void)galleryEditAction:(UIBarButtonItem *)item {
-    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(galleryDoneAction:)];
+    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(galleryDoneAction:)];
     self.navigationItem.rightBarButtonItem = done;
     UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(galleryAddAction:)];
     self.navigationItem.leftBarButtonItem = add;
@@ -97,7 +99,7 @@
 }
 
 - (void)doneAction {
-    UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(galleryEditAction:)];
+    UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Edit", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(galleryEditAction:)];
     self.navigationItem.rightBarButtonItem = edit;
     self.navigationItem.leftBarButtonItem = nil;
     _isEditing = NO;
@@ -126,17 +128,17 @@
 - (void)galleryAddAction:(UIBarButtonItem *)item {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     [alert.view setTintColor:DARKORAGE];
-    UIAlertAction *camera = [UIAlertAction actionWithTitle:@"Camera" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *camera = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Camera", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         [self alertAction:0];
         
     }];
-    UIAlertAction *album = [UIAlertAction actionWithTitle:@"Choose from Album" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *album = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"ChooseFromAlbum", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         [self alertAction:1];
         
     }];
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         
     }];
     [alert addAction:camera];
@@ -172,15 +174,15 @@
 #pragma mark - <GalleryControlImageViewDelegate>
 
 - (void) galleryControlImageViewDeleteAction:(id)sender {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"Remove photo?" preferredStyle:UIAlertControllerStyleAlert];
-    NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:@"Remove photo?"];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"" preferredStyle:UIAlertControllerStyleAlert];
+    NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:AcTECLocalizedStringFromTable(@"RemovePhoto", @"Localizable")];
     [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
     [alertController setValue:attributedMessage forKey:@"attributedMessage"];
     [alertController.view setTintColor:DARKORAGE];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         
     }];
-    UIAlertAction *removeAction = [UIAlertAction actionWithTitle:@"Remove" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *removeAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Remove", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         GalleryControlImageView *controlImageView = (GalleryControlImageView *)sender;
         
@@ -661,5 +663,15 @@
     return _maskLayer;
 }
 
+- (void)languageChange {
+    self.navigationItem.title = AcTECLocalizedStringFromTable(@"Gallery", @"Localizable");
+    UIBarButtonItem *right;
+    if (_isEditing) {
+        right = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(galleryDoneAction: )];
+    }else {
+        right = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Edit", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(galleryEditAction:)];
+    }
+    self.navigationItem.rightBarButtonItem = right;
+}
 
 @end

@@ -33,6 +33,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange:) name:ZZAppLanguageDidChangeNotification object:nil];
+    
     if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
         UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(closeAction)];
         self.navigationItem.rightBarButtonItem = done;
@@ -187,6 +189,12 @@
 - (IBAction)colorTemperatureReset:(UIButton *)sender {
     [[DataModelManager shareInstance] resetColorTemperature:_deviceId];
     sender.backgroundColor = [UIColor clearColor];
+}
+
+- (void)languageChange:(id)sender {
+    if (self.isViewLoaded && !self.view.window) {
+        self.view = nil;
+    }
 }
 
 @end

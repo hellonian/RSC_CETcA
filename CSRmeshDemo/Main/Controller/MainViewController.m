@@ -34,6 +34,9 @@
 #import "DataModelManager.h"
 #import <MBProgressHUD.h>
 #import "CBPeripheral+Info.h"
+#import "TopImageView.h"
+
+#define KIsiPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
 
 @interface MainViewController ()<MainCollectionViewDelegate,PlaceColorIconPickerViewDelegate,MBProgressHUDDelegate>
 {
@@ -55,6 +58,7 @@
 @property (nonatomic,strong) MBProgressHUD *hud;
 
 @property (weak, nonatomic) IBOutlet UILabel *connectedBridgeLabel;
+@property (weak, nonatomic) IBOutlet TopImageView *topImageView;
 
 @end
 
@@ -63,8 +67,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    self.navigationItem.title = @"Main";
-    UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editMainView)];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange) name:ZZAppLanguageDidChangeNotification object:nil];
+    self.navigationItem.title = AcTECLocalizedStringFromTable(@"Main", @"Localizable");
+    UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Edit", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(editMainView)];
     self.navigationItem.rightBarButtonItem = edit;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reGetDataForPlaceChanged) name:@"reGetDataForPlaceChanged" object:nil];
@@ -73,25 +78,127 @@
     
     self.improver = [[ImproveTouchingExperience alloc] init];
     
+    if (@available(iOS 11.0,*)) {
+    }else {
+        [self.topImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:64.0f];
+    }
+    
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
     flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
     flowLayout.minimumLineSpacing = WIDTH*8.0/640.0;
     flowLayout.minimumInteritemSpacing = WIDTH*8.0/640.0;
     flowLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, floor(WIDTH*3/160.0));
     flowLayout.itemSize = CGSizeMake(WIDTH*3/8.0, WIDTH*9/32.0);
-    _mainCollectionView = [[MainCollectionView alloc] initWithFrame:CGRectMake(WIDTH*7/32.0, WIDTH*151/320.0+64, WIDTH*25/32.0, HEIGHT-114-WIDTH*157/320.0) collectionViewLayout:flowLayout cellIdentifier:@"MainCollectionViewCell"];
+    _mainCollectionView = [[MainCollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout cellIdentifier:@"MainCollectionViewCell"];
     _mainCollectionView.mainDelegate = self;
     [self.view addSubview:_mainCollectionView];
+    
+    [_mainCollectionView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    NSLayoutConstraint * main_top = [NSLayoutConstraint constraintWithItem:_mainCollectionView
+                                                                 attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.topImageView
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                multiplier:1.0
+                                                                  constant:WIDTH*3/160.0];
+    NSLayoutConstraint * main_left = [NSLayoutConstraint constraintWithItem:_mainCollectionView
+                                                                  attribute:NSLayoutAttributeLeft
+                                                                  relatedBy:NSLayoutRelationEqual
+                                                                     toItem:self.view
+                                                                  attribute:NSLayoutAttributeLeft
+                                                                 multiplier:1.0
+                                                                   constant:WIDTH*7/32.0];
+    NSLayoutConstraint * main_right = [NSLayoutConstraint constraintWithItem:_mainCollectionView
+                                                                   attribute:NSLayoutAttributeRight
+                                                                   relatedBy:NSLayoutRelationEqual
+                                                                      toItem:self.view
+                                                                   attribute:NSLayoutAttributeRight
+                                                                  multiplier:1.0
+                                                                    constant:0];
+    NSLayoutConstraint * main_bottom;
+    if (@available(iOS 11.0, *)) {
+        main_bottom = [NSLayoutConstraint constraintWithItem:_mainCollectionView
+                                                   attribute:NSLayoutAttributeBottom
+                                                   relatedBy:NSLayoutRelationEqual
+                                                      toItem:self.view.safeAreaLayoutGuide
+                                                   attribute:NSLayoutAttributeBottom
+                                                  multiplier:1.0
+                                                    constant:-WIDTH*3/160.0];
+    } else {
+        main_bottom = [NSLayoutConstraint constraintWithItem:_mainCollectionView
+                                                   attribute:NSLayoutAttributeBottom
+                                                   relatedBy:NSLayoutRelationEqual
+                                                      toItem:self.view
+                                                   attribute:NSLayoutAttributeBottom
+                                                  multiplier:1.0
+                                                    constant:-WIDTH*3/160.0-49];
+    }
+    [NSLayoutConstraint  activateConstraints:@[main_top,main_left,main_bottom,main_right]];
     
     UICollectionViewFlowLayout *sceneFlowLayout = [[UICollectionViewFlowLayout alloc] init];
     sceneFlowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
     sceneFlowLayout.minimumLineSpacing = 0;
     sceneFlowLayout.minimumInteritemSpacing = 0;
-    sceneFlowLayout.itemSize = CGSizeMake(WIDTH*3/16.0, (HEIGHT-114-WIDTH*157/320)/4.0);
-    _sceneCollectionView = [[MainCollectionView alloc] initWithFrame:CGRectMake(WIDTH*3/160.0, WIDTH*151/320.0+64, WIDTH*3/16.0, HEIGHT-114-WIDTH*157/320.0) collectionViewLayout:sceneFlowLayout cellIdentifier:@"SceneCollectionViewCell"];
+
+    if (KIsiPhoneX) {
+        sceneFlowLayout.itemSize = CGSizeMake(WIDTH*3/16.0, (HEIGHT-44-44-34-49-WIDTH*157/320)/4.0);
+    }else {
+        sceneFlowLayout.itemSize = CGSizeMake(WIDTH*3/16.0, (HEIGHT-113-WIDTH*157/320)/4.0);
+    }
+
+    _sceneCollectionView = [[MainCollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:sceneFlowLayout cellIdentifier:@"SceneCollectionViewCell"];
     _sceneCollectionView.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
     _sceneCollectionView.mainDelegate = self;
     [self.view addSubview:_sceneCollectionView];
+    [_sceneCollectionView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    NSLayoutConstraint *scene_top = [NSLayoutConstraint constraintWithItem:_sceneCollectionView
+                                                                 attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.topImageView
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                multiplier:1.0
+                                                                  constant:WIDTH*3/160.0];
+    NSLayoutConstraint *scene_left = [NSLayoutConstraint constraintWithItem:_sceneCollectionView
+                                                                  attribute:NSLayoutAttributeLeft
+                                                                  relatedBy:NSLayoutRelationEqual
+                                                                     toItem:self.view
+                                                                  attribute:NSLayoutAttributeLeft
+                                                                 multiplier:1.0
+                                                                   constant:WIDTH*3/160.0];
+    NSLayoutConstraint *scene_right = [NSLayoutConstraint constraintWithItem:_sceneCollectionView
+                                                                  attribute:NSLayoutAttributeRight
+                                                                  relatedBy:NSLayoutRelationEqual
+                                                                     toItem:_mainCollectionView
+                                                                  attribute:NSLayoutAttributeLeft
+                                                                 multiplier:1.0
+                                                                   constant:-WIDTH/80.0];
+    NSLayoutConstraint *scene_bottom;
+    if (@available(iOS 11.0, *)) {
+        scene_bottom = [NSLayoutConstraint constraintWithItem:_sceneCollectionView
+                                                   attribute:NSLayoutAttributeBottom
+                                                   relatedBy:NSLayoutRelationEqual
+                                                      toItem:self.view.safeAreaLayoutGuide
+                                                   attribute:NSLayoutAttributeBottom
+                                                  multiplier:1.0
+                                                    constant:-WIDTH*3/160.0];
+    } else {
+        scene_bottom = [NSLayoutConstraint constraintWithItem:_sceneCollectionView
+                                                    attribute:NSLayoutAttributeBottom
+                                                    relatedBy:NSLayoutRelationEqual
+                                                       toItem:self.view
+                                                    attribute:NSLayoutAttributeBottom
+                                                   multiplier:1.0
+                                                     constant:-WIDTH*3/160.0-49];
+    }
+    [NSLayoutConstraint  activateConstraints:@[scene_top,scene_left,scene_right,scene_bottom]];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (@available(iOS 11.0, *)) {
+            NSLog(@"-----> %f",self.view.safeAreaLayoutGuide.layoutFrame.size.height);
+        } else {
+            // Fallback on earlier versions
+        }
+    });
+    
     
     [self getMainDataArray];
     [self getSceneDataArray];
@@ -217,14 +324,14 @@
 }
 
 - (void)editMainView {
-    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneItemAction)];
+    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneItemAction)];
     self.navigationItem.rightBarButtonItem = done;
     _mainCVEditting = YES;
     [self mainCollectionViewEditlayoutView];
 }
 
 - (void)doneItemAction {
-    UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editMainView)];
+    UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Edit", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(editMainView)];
     self.navigationItem.rightBarButtonItem = edit;
     _mainCVEditting = NO;
     [self mainCollectionViewEditlayoutView];
@@ -300,7 +407,7 @@
     
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     [alert.view setTintColor:DARKORAGE];
-    UIAlertAction *camera = [UIAlertAction actionWithTitle:@"Create New Group" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *camera = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"CreatNewGroup", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         GroupViewController *gvc = [[GroupViewController alloc] init];
         __weak MainViewController *weakSelf = self;
@@ -321,14 +428,14 @@
         [self presentViewController:nav animated:NO completion:nil];
         
     }];
-    UIAlertAction *album = [UIAlertAction actionWithTitle:@"Search New Devices" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *album = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"SearchNewDevices", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         if ([cellDeviceId isEqualToNumber:@1000]) {
             [self presentToAddViewController];
         }
         
     }];
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         
     }];
     [alert addAction:camera];
@@ -447,16 +554,16 @@
     }
     if ([actionName isEqualToString:@"Rename"]) {
         NSLog(@"Rename");
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Rename" message:@"Enter a name for the scene." preferredStyle:UIAlertControllerStyleAlert];
-        NSMutableAttributedString *hogan = [[NSMutableAttributedString alloc] initWithString:@"Rename"];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+        NSMutableAttributedString *hogan = [[NSMutableAttributedString alloc] initWithString:AcTECLocalizedStringFromTable(@"Rename", @"Localizable")];
         [hogan addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1] range:NSMakeRange(0, [[hogan string] length])];
         [alert setValue:hogan forKey:@"attributedTitle"];
-        NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:@"Enter a name for the scene."];
+        NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:AcTECLocalizedStringFromTable(@"EnterSceneName", @"Localizable")];
         [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
         [alert setValue:attributedMessage forKey:@"attributedMessage"];
         [alert.view setTintColor:DARKORAGE];
-        UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
-        UIAlertAction *confirm = [UIAlertAction actionWithTitle:@"Save" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+        UIAlertAction *confirm = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Save", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             UITextField *renameTextField = alert.textFields.firstObject;
             if (![CSRUtilities isStringEmpty:renameTextField.text]){
                 
@@ -567,20 +674,17 @@
         }];
     }else {
         if ([self determineDeviceHasBeenAdded]) {
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Empty Scene" message:@"Edit scene now?" preferredStyle:UIAlertControllerStyleAlert];
-            NSMutableAttributedString *attributedTitle = [[NSMutableAttributedString alloc] initWithString:@"Empty Scene"];
-            [attributedTitle addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1] range:NSMakeRange(0, [[attributedTitle string] length])];
-            [alertController setValue:attributedTitle forKey:@"attributedTitle"];
-            NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:@"Edit scene now?"];
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+            NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:AcTECLocalizedStringFromTable(@"SceneNoDevice", @"Localizable")];
             [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
             [alertController setValue:attributedMessage forKey:@"attributedMessage"];
             [alertController.view setTintColor:DARKORAGE];
-            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 selectedSceneId = sceneId;
                 [self editScene];
                 
             }];
-            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
                 
             }];
             [alertController addAction:okAction];
@@ -635,10 +739,10 @@
     
     if ([cellDeviceId isEqualToNumber:@2000]) {
         _areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:cellGroupId];
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Delete Group" message:[NSString stringWithFormat:@"Are you sure that you want to delete this group :%@?",_areaEntity.areaName] preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:AcTECLocalizedStringFromTable(@"DeleteGroup", @"Localizable") message:[NSString stringWithFormat:@"%@ :%@?",AcTECLocalizedStringFromTable(@"DeleteGroupAlert", @"Localizable"),_areaEntity.areaName] preferredStyle:UIAlertControllerStyleAlert];
         [alertController.view setTintColor:DARKORAGE];
         __weak MainViewController *weakSelf = self;
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
             for (CSRDeviceEntity *deviceEntity in _areaEntity.devices) {
                 NSNumber *groupIndex = [weakSelf getValueByIndex:deviceEntity];
@@ -701,7 +805,7 @@
             });
             
         }];
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
             if (_hud) {
                 [_hud hideAnimated:YES];
                 _hud = nil;
@@ -722,14 +826,14 @@
         deleteDeviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:cellDeviceId];
         
         if (![CSRUtilities isStringEmpty:placeEntity.passPhrase]) {
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Delete Device" message:[NSString stringWithFormat:@"Are you sure that you want to delete this device : %@?",meshDevice.name] preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:AcTECLocalizedStringFromTable(@"DeleteDevice", @"Localizable") message:[NSString stringWithFormat:@"%@ : %@?",AcTECLocalizedStringFromTable(@"DeleteDeviceAlert", @"Localizable"),meshDevice.name] preferredStyle:UIAlertControllerStyleAlert];
             [alertController.view setTintColor:DARKORAGE];
-            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 if (meshDevice) {
                     [[CSRDevicesManager sharedInstance] initiateRemoveDevice:meshDevice];
                 }
             }];
-            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
                 if (_hud) {
                     [_hud hideAnimated:YES];
                     _hud = nil;
@@ -768,12 +872,12 @@
 - (void)mainCollectionViewDelegateClickEmptyGroupCellAction:(NSIndexPath *)cellIndexPath {
     
     if ([self determineDeviceHasBeenAdded]) {
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"No device in this group,choose devices now?" preferredStyle:UIAlertControllerStyleAlert];
-        NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:@"No device in this group,choose devices now?"];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"" preferredStyle:UIAlertControllerStyleAlert];
+        NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:AcTECLocalizedStringFromTable(@"GroupNoDevice", @"Localizable")];
         [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
         [alertController setValue:attributedMessage forKey:@"attributedMessage"];
         [alertController.view setTintColor:DARKORAGE];
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
             GroupViewController *gvc = [[GroupViewController alloc] init];
             __weak MainViewController *weakSelf = self;
@@ -790,7 +894,7 @@
             [self presentViewController:nav animated:NO completion:nil];
             
         }];
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
             
         }];
         [alertController addAction:okAction];
@@ -814,15 +918,15 @@
 }
 
 - (void)noDevicHasBeenAddedAlert {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"No bluetooth device has been added for this place,search and add devices now?" preferredStyle:UIAlertControllerStyleAlert];
-    NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:@"No bluetooth device has been added for this place,search and add devices now?"];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"" preferredStyle:UIAlertControllerStyleAlert];
+    NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:AcTECLocalizedStringFromTable(@"NoDevicePlace", @"Localizable")];
     [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
     [alertController setValue:attributedMessage forKey:@"attributedMessage"];
     [alertController.view setTintColor:DARKORAGE];
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self presentToAddViewController];
     }];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         
     }];
     [alertController addAction:okAction];
@@ -867,17 +971,20 @@
 
 - (void) showForceAlert
 {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Delete Device"
-                                                                             message:[NSString stringWithFormat:@"Device wasn't found. Do you want to delete %@ anyway?", meshDevice.name]
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:AcTECLocalizedStringFromTable(@"DeleteDevice", @"Localizable")
+                                                                             message:[NSString stringWithFormat:@"%@ %@ ？",AcTECLocalizedStringFromTable(@"DeleteDeviceOffLine", @"Localizable"), meshDevice.name]
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController.view setTintColor:DARKORAGE];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"NO"
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable")
                                                            style:UIAlertActionStyleCancel
                                                          handler:^(UIAlertAction *action) {
-
+                                                             if (_hud) {
+                                                                 [_hud hideAnimated:YES];
+                                                                 _hud = nil;
+                                                             }
                                                          }];
     
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES"
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable")
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction *action) {
                                                          
@@ -971,6 +1078,20 @@
     hud = nil;
 }
 
+- (void)languageChange {
+    self.navigationItem.title = AcTECLocalizedStringFromTable(@"Main", @"Localizable");
+    
+    UIBarButtonItem *right;
+    if (_mainCVEditting) {
+        right = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneItemAction)];
+    }else {
+        right = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Edit", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(editMainView)];
+    }
+    self.navigationItem.rightBarButtonItem = right;
+    
+    [self.sceneCollectionView reloadData];
+    [self.mainCollectionView reloadData];
+}
 
 
 @end

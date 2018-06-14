@@ -29,18 +29,24 @@
     
     NSString *repeatStr = timerEntity.repeat;
     if ([repeatStr isEqualToString:@"01111111"]) {
-        self.repeatLabel.text = @"everyday";
+        self.repeatLabel.text = AcTECLocalizedStringFromTable(@"Everyday", @"Localizable");
     }else if ([repeatStr isEqualToString:@"01000001"]) {
-        self.repeatLabel.text = @"every weekend";
+        self.repeatLabel.text = AcTECLocalizedStringFromTable(@"EveryWeekend", @"Localizable");
     }else if ([repeatStr isEqualToString:@"00111110"]) {
-        self.repeatLabel.text = @"every weekday";
+        self.repeatLabel.text = AcTECLocalizedStringFromTable(@"EveryWeekday", @"Localizable");
     }else if ([repeatStr integerValue] == 0) {
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:@"yyyy/MM/dd"];
         NSString *dateStr = [dateFormatter stringFromDate:timerEntity.fireDate];
         self.repeatLabel.text = dateStr;
     }else {
-        NSArray *weekArr = @[@"Sun",@"Mon",@"Tue",@"Wed",@"Thu",@"Fri",@"Sat"];
+        NSArray *weekArr = @[AcTECLocalizedStringFromTable(@"Sun", @"Localizable"),
+                             AcTECLocalizedStringFromTable(@"Mon", @"Localizable"),
+                             AcTECLocalizedStringFromTable(@"Tue", @"Localizable"),
+                             AcTECLocalizedStringFromTable(@"Wed", @"Localizable"),
+                             AcTECLocalizedStringFromTable(@"Thu", @"Localizable"),
+                             AcTECLocalizedStringFromTable(@"Fri", @"Localizable"),
+                             AcTECLocalizedStringFromTable(@"Sat", @"Localizable")];
         NSString *weekStr = @"";
         for (int i=7; i>0; i--) {
             NSString *perStr = [repeatStr substringWithRange:NSMakeRange(i, 1)];

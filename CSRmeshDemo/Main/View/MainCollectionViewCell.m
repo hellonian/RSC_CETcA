@@ -63,11 +63,15 @@
         self.deviceId = @2000;
         self.groupMembers = [areaEntity.devices allObjects];
         self.nameLabel.hidden = NO;
-        self.nameLabel.text = areaEntity.areaName;
+        if ([areaEntity.areaName isEqualToString:@"Living room"] || [areaEntity.areaName isEqualToString:@"Bed room"] || [areaEntity.areaName isEqualToString:@"Dining room"] || [areaEntity.areaName isEqualToString:@"Toilet"] || [areaEntity.areaName isEqualToString:@"Kitchen"]) {
+            self.nameLabel.text = AcTECLocalizedStringFromTable(areaEntity.areaName, @"Localizable");
+        }else {
+            self.nameLabel.text = areaEntity.areaName;
+        }
         self.kindLabel.hidden = NO;
         NSString *kind;
         for (CSRDeviceEntity *deviceEntity in self.groupMembers) {
-            NSString *str = [CSRUtilities belongToDimmer:deviceEntity.shortName]? @"Dimmer":@"Switch";
+            NSString *str = [CSRUtilities belongToDimmer:deviceEntity.shortName]? AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable"):AcTECLocalizedStringFromTable(@"Switch", @"Localizable");
             if (kind.length>0) {
                 kind = [NSString stringWithFormat:@"%@ %@",kind,str];
             }else {
@@ -75,7 +79,7 @@
             }
         }
         self.kindLabel.text = kind;
-        if ([kind containsString:@"Dimmer"]) {
+        if ([kind containsString:AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable")]) {
             self.levelLabel.hidden = NO;
         }else {
             self.levelLabel.hidden = YES;
@@ -106,12 +110,12 @@
         self.kindLabel.hidden = NO;
         if ([CSRUtilities belongToDimmer:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"dimmersingle"];
-            self.kindLabel.text = @"Dimmer";
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable");
             self.levelLabel.hidden = NO;
         }
         if ([CSRUtilities belongToSwitch:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"switchsingle"];
-            self.kindLabel.text = @"Switch";
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Switch", @"Localizable");
             self.levelLabel.hidden = YES;
         }
         self.cellIndexPath = indexPath;
@@ -132,12 +136,12 @@
         self.kindLabel.hidden = NO;
         if ([CSRUtilities belongToDimmer:device.deviceShortName]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Dimmer"];
-            self.kindLabel.text = @"Dimmer";
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable");
             self.levelLabel.hidden = NO;
         }
         if ([CSRUtilities belongToSwitch:device.deviceShortName]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Switch"];
-            self.kindLabel.text = @"Switch";
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Switch", @"Localizable");
             self.levelLabel.hidden = YES;
         }
         self.cellIndexPath = indexPath;
@@ -365,7 +369,7 @@
 }
 
 - (void)mainCellPanGestureAction:(UIPanGestureRecognizer *)sender {
-    if (![self.groupId isEqualToNumber:@4000] && [self.kindLabel.text containsString:@"Dimmer"]) {
+    if (![self.groupId isEqualToNumber:@4000] && [self.kindLabel.text containsString:AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable")]) {
         CGPoint translation = [sender translationInView:self];
         CGPoint touchPoint = [sender locationInView:self.superview];
         

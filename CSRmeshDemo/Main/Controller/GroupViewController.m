@@ -22,6 +22,7 @@
 #import "CSRConstants.h"
 #import "SingleDeviceModel.h"
 #import "CSRUtilities.h"
+#import "NSBundle+AppLanguageSwitch.h"
 
 @interface GroupViewController ()<UITextFieldDelegate,PlaceColorIconPickerViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,MainCollectionViewDelegate,MBProgressHUDDelegate>
 {
@@ -55,14 +56,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange:) name:ZZAppLanguageDidChangeNotification object:nil];
     self.groupNameTF.delegate = self;
     if (self.isCreateNewArea) {
-        [self.editItem setTitle:@"Done" forState:UIControlStateNormal];
+        [self.editItem setTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") forState:UIControlStateNormal];
         [self.groupNameTF becomeFirstResponder];
         self.groupNameTF.backgroundColor = [UIColor whiteColor];
         self.iconEditBtn.hidden = NO;
     }else {
-        [self.editItem setTitle:@"Edit" forState:UIControlStateNormal];
+        [self.editItem setTitle:AcTECLocalizedStringFromTable(@"Edit", @"Localizable") forState:UIControlStateNormal];
         self.iconEditBtn.hidden = YES;
         self.groupNameTF.enabled = NO;
         self.groupNameTF.text = _areaEntity.areaName;
@@ -161,8 +163,8 @@
 }
 
 - (IBAction)editItemAction:(UIButton *)sender {
-    if ([sender.titleLabel.text isEqualToString:@"Edit"]) {
-        [sender setTitle:@"Done" forState:UIControlStateNormal];
+    if ([sender.titleLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Edit", @"Localizable")]) {
+        [sender setTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") forState:UIControlStateNormal];
         self.iconEditBtn.hidden = NO;
         self.groupNameTF.enabled = YES;
         self.groupNameTF.backgroundColor = [UIColor whiteColor];
@@ -177,16 +179,16 @@
 
 - (void)doneAction {
     if (_groupNameTF.text.length == 0) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Please enter a group name." message:nil preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:AcTECLocalizedStringFromTable(@"EnerGroupName", @"Localizable") message:nil preferredStyle:UIAlertControllerStyleAlert];
         [alert.view setTintColor:DARKORAGE];
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
         }];
         [alert addAction:okAction];
         [self presentViewController:alert animated:YES completion:nil];
     }else {
         
-        [self.editItem setTitle:@"Edit" forState:UIControlStateNormal];
+        [self.editItem setTitle:AcTECLocalizedStringFromTable(@"Edit", @"Localizable") forState:UIControlStateNormal];
         self.iconEditBtn.hidden = YES;
         self.groupNameTF.enabled = NO;
         self.groupNameTF.backgroundColor = [UIColor clearColor];
@@ -439,7 +441,7 @@
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     [alert.view setTintColor:DARKORAGE];
     
-    UIAlertAction *icon = [UIAlertAction actionWithTitle:@"Select default iocn" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *icon = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"SelectDefaultIcon", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         if (!pickerView) {
             pickerView = [[PlaceColorIconPickerView alloc] initWithFrame:CGRectMake((WIDTH-270)/2, (HEIGHT-190)/2, 277, 190) withMode:CollectionViewPickerMode_GroupIconPicker];
@@ -452,17 +454,17 @@
         
     }];
     __weak GroupViewController *weakSelf = self;
-    UIAlertAction *camera = [UIAlertAction actionWithTitle:@"Camera" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *camera = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Camera", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         [weakSelf alertAction:0];
         
     }];
-    UIAlertAction *album = [UIAlertAction actionWithTitle:@"Choose from Album" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *album = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"ChooseFromAlbum", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         [weakSelf alertAction:1];
         
     }];
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         
     }];
     [alert addAction:icon];
@@ -671,6 +673,12 @@
         _groupRemoveDevices = [NSMutableArray new];
     }
     return _groupRemoveDevices;
+}
+
+- (void)languageChange:(id)sender {
+    if (self.isViewLoaded && !self.view.window) {
+        self.view = nil;
+    }
 }
 
 @end

@@ -47,13 +47,16 @@
     _showPasswordCheckbox.selected = YES;
     _showPasswordCheckbox.highlighted = NO;
     
-    UIBarButtonItem *save = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveAction)];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange:) name:ZZAppLanguageDidChangeNotification object:nil];
+    
+//    UIBarButtonItem *save = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveAction)];
+    UIBarButtonItem *save = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Save", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(saveAction)];
     self.navigationItem.rightBarButtonItem = save;
     self.navigationItem.rightBarButtonItem.enabled = NO;
     
     [_deleteButton setImage:[[CSRmeshStyleKit imageOfTrashcan] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
     _deleteButton.imageView.tintColor = [UIColor whiteColor];
-    [_deleteButton setTitle:@"Delete" forState:UIControlStateNormal];
+//    [_deleteButton setTitle:@"Delete" forState:UIControlStateNormal];
     
     if (_placeEntity.name) {
         _placeNameTF.text = _placeEntity.name;
@@ -200,13 +203,13 @@
 
 - (void) showAlert
 {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Alert!"
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@""
                                                                              message:@"Name and Pass Phrase should not be empty, please enter some values"
                                                                       preferredStyle:UIAlertControllerStyleAlert];
-    NSMutableAttributedString *attributedTitle = [[NSMutableAttributedString alloc] initWithString:@"Alert!"];
-    [attributedTitle addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1] range:NSMakeRange(0, [[attributedTitle string] length])];
-    [alertController setValue:attributedTitle forKey:@"attributedTitle"];
-    NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"AName and Pass Phrase should not be empty, please enter some values"]];
+//    NSMutableAttributedString *attributedTitle = [[NSMutableAttributedString alloc] initWithString:@"Alert!"];
+//    [attributedTitle addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1] range:NSMakeRange(0, [[attributedTitle string] length])];
+//    [alertController setValue:attributedTitle forKey:@"attributedTitle"];
+    NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:AcTECLocalizedStringFromTable(@"NamePhraseEmpryAlert", @"Localizable")];
     [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
     [alertController setValue:attributedMessage forKey:@"attributedMessage"];
     [alertController.view setTintColor:DARKORAGE];
@@ -230,9 +233,9 @@
         
         [self.navigationController popViewControllerAnimated:YES];
     } else {
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Can't Delete" message:@"You can't delete current selected place" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"DeleteCurrentPlaceAlert", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
         [alertController.view setTintColor:DARKORAGE];
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
             
         }];
         [alertController addAction:cancelAction];
@@ -243,7 +246,7 @@
 - (IBAction)exportPlace:(id)sender {
     
     _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    _hud.label.text = @"Searching recepient······";
+    _hud.label.text = AcTECLocalizedStringFromTable(@"SearchRecepient", @"Localizable");
     
     NSString *name = [UIDevice currentDevice].name;
     _peerID = [[MCPeerID alloc]initWithDisplayName:name];
@@ -327,7 +330,7 @@
 - (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController{
 
     _waitingHud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
-    _waitingHud.label.text = @"Transmitting data ······";
+    _waitingHud.label.text = AcTECLocalizedStringFromTable(@"TransmitData", @"Localizable");
     
     CSRParseAndLoad *parseLoad = [[CSRParseAndLoad alloc] init];
     NSData *jsonData = [parseLoad composeDatabase];
@@ -371,6 +374,12 @@
 
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state {
     
+}
+
+- (void)languageChange:(id)sender {
+    if (self.isViewLoaded && !self.view.window) {
+        self.view = nil;
+    }
 }
 
 @end

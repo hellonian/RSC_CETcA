@@ -39,7 +39,7 @@
 		0D835B951B97603600FF4376 /* CSRmesh.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CEE5E7381B398ABB0039F83C /* CSRmesh.xcdatamodeld */; };
 		0DE95D161B297FFB006D0397 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0DE95D151B297FFB006D0397 /* Images.xcassets */; };
 		2E06A4FF20205B0E007B8BEA /* GroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E06A4FD20205B0E007B8BEA /* GroupViewController.m */; };
-		2E06A50020205B0E007B8BEA /* GroupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E06A4FE20205B0E007B8BEA /* GroupViewController.xib */; };
+		2E1C839E20CFD782009BCC6D /* PlaceDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E1C83A020CFD782009BCC6D /* PlaceDetailsViewController.xib */; };
 		2E2000A920182260000AD8C3 /* SceneEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2000A820182260000AD8C3 /* SceneEntity.m */; };
 		2E2000AC2018227E000AD8C3 /* SceneMemberEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2000AB2018227E000AD8C3 /* SceneMemberEntity.m */; };
 		2E2533EE20219850002A6EC3 /* DeviceListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2533ED20219850002A6EC3 /* DeviceListViewController.m */; };
@@ -48,7 +48,6 @@
 		2E2E707D1FF5DE60002D1C1D /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70081FF5DE60002D1C1D /* MasterViewController.m */; };
 		2E2E707E1FF5DE60002D1C1D /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E700A1FF5DE60002D1C1D /* MoreViewController.m */; };
 		2E2E708A1FF5DE60002D1C1D /* PlaceDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70281FF5DE60002D1C1D /* PlaceDetailsViewController.m */; };
-		2E2E708B1FF5DE60002D1C1D /* PlaceDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E70291FF5DE60002D1C1D /* PlaceDetailsViewController.xib */; };
 		2E2E708C1FF5DE60002D1C1D /* PlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E702B1FF5DE60002D1C1D /* PlacesViewController.m */; };
 		2E2E708D1FF5DE60002D1C1D /* PlacesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E702C1FF5DE60002D1C1D /* PlacesViewController.xib */; };
 		2E2E708E1FF5DE60002D1C1D /* PlaceColorCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70301FF5DE60002D1C1D /* PlaceColorCollectionViewCell.m */; };
@@ -71,22 +70,27 @@
 		2E2E70B61FF5DE60002D1C1D /* UpdateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70791FF5DE60002D1C1D /* UpdateViewController.m */; };
 		2E2E70B71FF5DE60002D1C1D /* UpdateViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E707A1FF5DE60002D1C1D /* UpdateViewController.xib */; };
 		2E2EBFA41FAC2FF400CEA401 /* cskey_db.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E2EBF9F1FAC194400CEA401 /* cskey_db.json */; };
+		2E37074E20CE4C16000AF696 /* DeviceViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E37075020CE4C16000AF696 /* DeviceViewController.xib */; };
+		2E37075720CE647A000AF696 /* NSBundle+AppLanguageSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E37075520CE647A000AF696 /* NSBundle+AppLanguageSwitch.m */; };
+		2E37075820CE8337000AF696 /* GroupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E37075A20CE8337000AF696 /* GroupViewController.xib */; };
 		2E3A65F7202BF97300B3E425 /* SingleDeviceModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3A65F6202BF97300B3E425 /* SingleDeviceModel.m */; };
 		2E3B9661200F2553000BD086 /* DeviceModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3B9658200F2553000BD086 /* DeviceModel.m */; };
 		2E3B9677200F263A000BD086 /* JQProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3B9674200F263A000BD086 /* JQProgressView.m */; };
 		2E3B967F200F3847000BD086 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3B967D200F3847000BD086 /* MainViewController.m */; };
 		2E3B9680200F3847000BD086 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E3B967E200F3847000BD086 /* MainViewController.xib */; };
 		2E3EA7C520479F8900AFD4B8 /* RemoteSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3EA7C320479F8900AFD4B8 /* RemoteSettingViewController.m */; };
-		2E3EA7C620479F8900AFD4B8 /* RemoteSettingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E3EA7C420479F8900AFD4B8 /* RemoteSettingViewController.xib */; };
 		2E500B741FD8D6B9008303CE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D6E44EF1B3C4059000A44DD /* CoreGraphics.framework */; };
 		2E500B761FD8D6F3008303CE /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E500B751FD8D6F0008303CE /* MediaPlayer.framework */; };
 		2E500B781FD8D703008303CE /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E500B771FD8D6FE008303CE /* AVFoundation.framework */; };
 		2E6A02131F39884500111312 /* TabBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A020E1F39884500111312 /* TabBarButton.m */; };
 		2E6A02141F39884500111312 /* TabBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A02101F39884500111312 /* TabBarView.m */; };
 		2E6A021A1F39893400111312 /* MainTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A02171F39893400111312 /* MainTabBarController.m */; };
+		2E6BD7FD20D09B3200036CA2 /* TimerDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E6BD7FF20D09B3200036CA2 /* TimerDetailViewController.xib */; };
+		2E6BD80420D0AD6D00036CA2 /* RemoteSettingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E6BD80620D0AD6D00036CA2 /* RemoteSettingViewController.xib */; };
 		2E6C26E720A5845E00BDB95A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E6C26E620A5845E00BDB95A /* Main.storyboard */; };
 		2E8623492019DB28004EF0E0 /* DeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8623472019DB28004EF0E0 /* DeviceViewController.m */; };
-		2E86234A2019DB28004EF0E0 /* DeviceViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E8623482019DB28004EF0E0 /* DeviceViewController.xib */; };
+		2E9622BF20C913530097C617 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E9622C120C913530097C617 /* Localizable.strings */; };
+		2E9622C720C917EC0097C617 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E9622C920C917EC0097C617 /* InfoPlist.strings */; };
 		2EA708C32011C31300782209 /* AddDevcieViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EA708C22011C31300782209 /* AddDevcieViewController.m */; };
 		2EAD47991FFC6DA8007D45E9 /* GalleryControlImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAD47981FFC6DA8007D45E9 /* GalleryControlImageView.m */; };
 		2EAD479C1FFC76F3007D45E9 /* GallreyDropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAD479B1FFC76F3007D45E9 /* GallreyDropView.m */; };
@@ -94,7 +98,6 @@
 		2EC3893A204921C2004D822D /* TimerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC38938204921C2004D822D /* TimerTableViewCell.m */; };
 		2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EC38939204921C2004D822D /* TimerTableViewCell.xib */; };
 		2EC3893F204939CE004D822D /* TimerDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC3893D204939CE004D822D /* TimerDetailViewController.m */; };
-		2EC38940204939CE004D822D /* TimerDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EC3893E204939CE004D822D /* TimerDetailViewController.xib */; };
 		2ED3963C204D09A00068B666 /* TimerEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963B204D09A00068B666 /* TimerEntity.m */; };
 		2ED3963F204D09D20068B666 /* TimerDeviceEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */; };
 		2ED974471F3AED0F000F20C9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2ED974491F3AED0F000F20C9 /* LaunchScreen.storyboard */; };
@@ -123,7 +126,6 @@
 		CD94058E1D91598F00492624 /* CSRmeshRestClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD94058D1D91598F00492624 /* CSRmeshRestClient.framework */; };
 		CE04468D1C47E36F00263F15 /* CSRPeripheral.m in Sources */ = {isa = PBXBuildFile; fileRef = CE04468C1C47E36F00263F15 /* CSRPeripheral.m */; };
 		CE1DE0AF1BFB82840009C1D1 /* ThermostatWIthColor.png in Resources */ = {isa = PBXBuildFile; fileRef = CE1DE0AE1BFB82840009C1D1 /* ThermostatWIthColor.png */; };
-		CE7BADE71C85A8BA0096F4FE /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE7BADE51C85A8BA0096F4FE /* Localizable.strings */; };
 		CE88141E1BB4212800AE4D3C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D6E44F31B3C4059000A44DD /* QuartzCore.framework */; };
 		CED2FE4E1BF25CF4004957C8 /* CSRmeshStyleKit.m in Sources */ = {isa = PBXBuildFile; fileRef = CED2FE4D1BF25CF4004957C8 /* CSRmeshStyleKit.m */; };
 		F43D7A5C1D004225009ADD96 /* CSRGatewayEntity+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = F43D7A5B1D004225009ADD96 /* CSRGatewayEntity+CoreDataProperties.m */; };
@@ -191,7 +193,9 @@
 		0DE95D3E1B2990C4006D0397 /* CSRDatabaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CSRDatabaseManager.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		2E06A4FC20205B0E007B8BEA /* GroupViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GroupViewController.h; sourceTree = "<group>"; };
 		2E06A4FD20205B0E007B8BEA /* GroupViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GroupViewController.m; sourceTree = "<group>"; };
-		2E06A4FE20205B0E007B8BEA /* GroupViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupViewController.xib; sourceTree = "<group>"; };
+		2E1C839F20CFD782009BCC6D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PlaceDetailsViewController.xib; sourceTree = "<group>"; };
+		2E1C83A220CFD788009BCC6D /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/PlaceDetailsViewController.strings"; sourceTree = "<group>"; };
+		2E1C83A320CFD78B009BCC6D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
 		2E2000A720182260000AD8C3 /* SceneEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneEntity.h; sourceTree = "<group>"; };
 		2E2000A820182260000AD8C3 /* SceneEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneEntity.m; sourceTree = "<group>"; };
 		2E2000AA2018227E000AD8C3 /* SceneMemberEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneMemberEntity.h; sourceTree = "<group>"; };
@@ -207,7 +211,6 @@
 		2E2E700A1FF5DE60002D1C1D /* MoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoreViewController.m; sourceTree = "<group>"; };
 		2E2E70271FF5DE60002D1C1D /* PlaceDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaceDetailsViewController.h; sourceTree = "<group>"; };
 		2E2E70281FF5DE60002D1C1D /* PlaceDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaceDetailsViewController.m; sourceTree = "<group>"; };
-		2E2E70291FF5DE60002D1C1D /* PlaceDetailsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlaceDetailsViewController.xib; sourceTree = "<group>"; };
 		2E2E702A1FF5DE60002D1C1D /* PlacesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlacesViewController.h; sourceTree = "<group>"; };
 		2E2E702B1FF5DE60002D1C1D /* PlacesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlacesViewController.m; sourceTree = "<group>"; };
 		2E2E702C1FF5DE60002D1C1D /* PlacesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlacesViewController.xib; sourceTree = "<group>"; };
@@ -245,6 +248,14 @@
 		2E2E70791FF5DE60002D1C1D /* UpdateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateViewController.m; sourceTree = "<group>"; };
 		2E2E707A1FF5DE60002D1C1D /* UpdateViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UpdateViewController.xib; sourceTree = "<group>"; };
 		2E2EBF9F1FAC194400CEA401 /* cskey_db.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = cskey_db.json; sourceTree = "<group>"; };
+		2E37074F20CE4C16000AF696 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/DeviceViewController.xib; sourceTree = "<group>"; };
+		2E37075220CE4C1B000AF696 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
+		2E37075420CE4C1E000AF696 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/DeviceViewController.strings"; sourceTree = "<group>"; };
+		2E37075520CE647A000AF696 /* NSBundle+AppLanguageSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+AppLanguageSwitch.m"; sourceTree = "<group>"; };
+		2E37075620CE647A000AF696 /* NSBundle+AppLanguageSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+AppLanguageSwitch.h"; sourceTree = "<group>"; };
+		2E37075920CE8337000AF696 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/GroupViewController.xib; sourceTree = "<group>"; };
+		2E37075C20CE8339000AF696 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/GroupViewController.strings; sourceTree = "<group>"; };
+		2E37075E20CE833C000AF696 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/GroupViewController.strings"; sourceTree = "<group>"; };
 		2E3A65F5202BF97300B3E425 /* SingleDeviceModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SingleDeviceModel.h; sourceTree = "<group>"; };
 		2E3A65F6202BF97300B3E425 /* SingleDeviceModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SingleDeviceModel.m; sourceTree = "<group>"; };
 		2E3B9657200F2553000BD086 /* DeviceModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceModel.h; sourceTree = "<group>"; };
@@ -256,7 +267,6 @@
 		2E3B967E200F3847000BD086 /* MainViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
 		2E3EA7C220479F8900AFD4B8 /* RemoteSettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteSettingViewController.h; sourceTree = "<group>"; };
 		2E3EA7C320479F8900AFD4B8 /* RemoteSettingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteSettingViewController.m; sourceTree = "<group>"; };
-		2E3EA7C420479F8900AFD4B8 /* RemoteSettingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RemoteSettingViewController.xib; sourceTree = "<group>"; };
 		2E500B751FD8D6F0008303CE /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		2E500B771FD8D6FE008303CE /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		2E6A020D1F39884500111312 /* TabBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarButton.h; sourceTree = "<group>"; };
@@ -265,10 +275,20 @@
 		2E6A02101F39884500111312 /* TabBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarView.m; sourceTree = "<group>"; };
 		2E6A02161F39893400111312 /* MainTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainTabBarController.h; sourceTree = "<group>"; };
 		2E6A02171F39893400111312 /* MainTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainTabBarController.m; sourceTree = "<group>"; };
+		2E6BD7FE20D09B3200036CA2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/TimerDetailViewController.xib; sourceTree = "<group>"; };
+		2E6BD80120D09B3600036CA2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/TimerDetailViewController.strings; sourceTree = "<group>"; };
+		2E6BD80320D09B3700036CA2 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/TimerDetailViewController.strings"; sourceTree = "<group>"; };
+		2E6BD80520D0AD6D00036CA2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/RemoteSettingViewController.xib; sourceTree = "<group>"; };
+		2E6BD80820D0AD6F00036CA2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
+		2E6BD80A20D0AD7000036CA2 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/RemoteSettingViewController.strings"; sourceTree = "<group>"; };
 		2E6C26E620A5845E00BDB95A /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		2E8623462019DB28004EF0E0 /* DeviceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceViewController.h; sourceTree = "<group>"; };
 		2E8623472019DB28004EF0E0 /* DeviceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeviceViewController.m; sourceTree = "<group>"; };
-		2E8623482019DB28004EF0E0 /* DeviceViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DeviceViewController.xib; sourceTree = "<group>"; };
+		2E9622BB20C90DC40097C617 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		2E9622C320C9137E0097C617 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		2E9622C420C913C10097C617 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2E9622C820C917EC0097C617 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2E9622CA20C917EE0097C617 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		2EA708C12011C31300782209 /* AddDevcieViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddDevcieViewController.h; sourceTree = "<group>"; };
 		2EA708C22011C31300782209 /* AddDevcieViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddDevcieViewController.m; sourceTree = "<group>"; };
 		2EAD47971FFC6DA8007D45E9 /* GalleryControlImageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GalleryControlImageView.h; sourceTree = "<group>"; };
@@ -282,7 +302,6 @@
 		2EC38939204921C2004D822D /* TimerTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TimerTableViewCell.xib; sourceTree = "<group>"; };
 		2EC3893C204939CE004D822D /* TimerDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerDetailViewController.h; sourceTree = "<group>"; };
 		2EC3893D204939CE004D822D /* TimerDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerDetailViewController.m; sourceTree = "<group>"; };
-		2EC3893E204939CE004D822D /* TimerDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TimerDetailViewController.xib; sourceTree = "<group>"; };
 		2ED3963A204D09A00068B666 /* TimerEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerEntity.h; sourceTree = "<group>"; };
 		2ED3963B204D09A00068B666 /* TimerEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerEntity.m; sourceTree = "<group>"; };
 		2ED3963D204D09D20068B666 /* TimerDeviceEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerDeviceEntity.h; sourceTree = "<group>"; };
@@ -356,8 +375,6 @@
 		CE4054DF1C623F8B0026F70F /* ConfigUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConfigUtil.h; path = Utilities/ConfigUtil.h; sourceTree = "<group>"; };
 		CE4054E01C623F8B0026F70F /* ConfigUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConfigUtil.m; path = Utilities/ConfigUtil.m; sourceTree = "<group>"; };
 		CE76AE111B9D897800C0B687 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CE7BADE61C85A8BA0096F4FE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		CE7BADE81C85AA990096F4FE /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE80334D1B39997100A7E3F0 /* CSRDevicesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRDevicesManager.h; sourceTree = "<group>"; };
 		CE80334E1B39997100A7E3F0 /* CSRDevicesManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSRDevicesManager.m; sourceTree = "<group>"; };
 		CE80334F1B39997100A7E3F0 /* CSRmeshDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRmeshDevice.h; sourceTree = "<group>"; };
@@ -544,10 +561,11 @@
 			children = (
 				2E2EBF9F1FAC194400CEA401 /* cskey_db.json */,
 				F45350881CD8B043002D91AB /* SensorActuatorTypes.json */,
-				CE7BADE51C85A8BA0096F4FE /* Localizable.strings */,
 				CE76AE111B9D897800C0B687 /* Info.plist */,
 				CEADA8F21B3AF22E00D18D56 /* CSRmeshDemo.pch */,
 				0DE95D071B297FFB006D0397 /* main.m */,
+				2E9622C120C913530097C617 /* Localizable.strings */,
+				2E9622C920C917EC0097C617 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -601,6 +619,8 @@
 			children = (
 				CE96B5241B57AC48009BAF5A /* CBPeripheral+Info.h */,
 				CE96B5251B57AC48009BAF5A /* CBPeripheral+Info.m */,
+				2E37075620CE647A000AF696 /* NSBundle+AppLanguageSwitch.h */,
+				2E37075520CE647A000AF696 /* NSBundle+AppLanguageSwitch.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -661,7 +681,7 @@
 				2E2E702C1FF5DE60002D1C1D /* PlacesViewController.xib */,
 				2E2E70271FF5DE60002D1C1D /* PlaceDetailsViewController.h */,
 				2E2E70281FF5DE60002D1C1D /* PlaceDetailsViewController.m */,
-				2E2E70291FF5DE60002D1C1D /* PlaceDetailsViewController.xib */,
+				2E1C83A020CFD782009BCC6D /* PlaceDetailsViewController.xib */,
 				0D73C7101B68E0980029B488 /* CSRCheckbox.h */,
 				0D73C7111B68E0980029B488 /* CSRCheckbox.m */,
 			);
@@ -675,7 +695,7 @@
 				2E2E703F1FF5DE60002D1C1D /* RemoteViewController.m */,
 				2E3EA7C220479F8900AFD4B8 /* RemoteSettingViewController.h */,
 				2E3EA7C320479F8900AFD4B8 /* RemoteSettingViewController.m */,
-				2E3EA7C420479F8900AFD4B8 /* RemoteSettingViewController.xib */,
+				2E6BD80620D0AD6D00036CA2 /* RemoteSettingViewController.xib */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -690,7 +710,7 @@
 				2EC38939204921C2004D822D /* TimerTableViewCell.xib */,
 				2EC3893C204939CE004D822D /* TimerDetailViewController.h */,
 				2EC3893D204939CE004D822D /* TimerDetailViewController.m */,
-				2EC3893E204939CE004D822D /* TimerDetailViewController.xib */,
+				2E6BD7FF20D09B3200036CA2 /* TimerDetailViewController.xib */,
 				2E2E70591FF5DE60002D1C1D /* DataModelManager.h */,
 				2E2E705A1FF5DE60002D1C1D /* DataModelManager.m */,
 				2E2E70651FF5DE60002D1C1D /* TimeSchedule.h */,
@@ -759,10 +779,10 @@
 				2EA708C22011C31300782209 /* AddDevcieViewController.m */,
 				2E8623462019DB28004EF0E0 /* DeviceViewController.h */,
 				2E8623472019DB28004EF0E0 /* DeviceViewController.m */,
-				2E8623482019DB28004EF0E0 /* DeviceViewController.xib */,
+				2E37075020CE4C16000AF696 /* DeviceViewController.xib */,
 				2E06A4FC20205B0E007B8BEA /* GroupViewController.h */,
 				2E06A4FD20205B0E007B8BEA /* GroupViewController.m */,
-				2E06A4FE20205B0E007B8BEA /* GroupViewController.xib */,
+				2E37075A20CE8337000AF696 /* GroupViewController.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1097,7 +1117,7 @@
 			knownRegions = (
 				Base,
 				en,
-				es,
+				"zh-Hans",
 			);
 			mainGroup = 0DE95CF91B297FFB006D0397;
 			productRefGroup = 0DE95D031B297FFB006D0397 /* Products */;
@@ -1118,27 +1138,28 @@
 				2E3B9680200F3847000BD086 /* MainViewController.xib in Resources */,
 				2EF332512045030100565374 /* LanguageViewController.xib in Resources */,
 				2E2E708D1FF5DE60002D1C1D /* PlacesViewController.xib in Resources */,
+				2E9622BF20C913530097C617 /* Localizable.strings in Resources */,
 				2EE757D72010B23100FB75C5 /* SceneCollectionViewCell.xib in Resources */,
-				2EC38940204939CE004D822D /* TimerDetailViewController.xib in Resources */,
+				2E37074E20CE4C16000AF696 /* DeviceViewController.xib in Resources */,
+				2E6BD7FD20D09B3200036CA2 /* TimerDetailViewController.xib in Resources */,
 				CE1DE0AF1BFB82840009C1D1 /* ThermostatWIthColor.png in Resources */,
 				2E2E708F1FF5DE60002D1C1D /* PlaceColorCollectionViewCell.xib in Resources */,
-				2E06A50020205B0E007B8BEA /* GroupViewController.xib in Resources */,
+				2E37075820CE8337000AF696 /* GroupViewController.xib in Resources */,
 				2E6C26E720A5845E00BDB95A /* Main.storyboard in Resources */,
 				2E2E70AF1FF5DE60002D1C1D /* DiscoverViewController.xib in Resources */,
 				F45350891CD8B043002D91AB /* SensorActuatorTypes.json in Resources */,
-				2E2E708B1FF5DE60002D1C1D /* PlaceDetailsViewController.xib in Resources */,
-				2E3EA7C620479F8900AFD4B8 /* RemoteSettingViewController.xib in Resources */,
+				2E6BD80420D0AD6D00036CA2 /* RemoteSettingViewController.xib in Resources */,
 				2EF718341FFB2C0600901918 /* GalleryViewController.xib in Resources */,
+				2E9622C720C917EC0097C617 /* InfoPlist.strings in Resources */,
 				2EF332562045031300565374 /* HelpViewController.xib in Resources */,
 				2E2E707C1FF5DE60002D1C1D /* AboutViewController.xib in Resources */,
+				2E1C839E20CFD782009BCC6D /* PlaceDetailsViewController.xib in Resources */,
 				2E2E70B31FF5DE60002D1C1D /* ErrorCodes.strings in Resources */,
-				CE7BADE71C85A8BA0096F4FE /* Localizable.strings in Resources */,
 				2E2E70B71FF5DE60002D1C1D /* UpdateViewController.xib in Resources */,
 				0DE95D161B297FFB006D0397 /* Images.xcassets in Resources */,
 				2ED974471F3AED0F000F20C9 /* LaunchScreen.storyboard in Resources */,
 				2E2E70921FF5DE60002D1C1D /* PlaceIconCollectionViewCell.xib in Resources */,
 				2E2EBFA41FAC2FF400CEA401 /* cskey_db.json in Resources */,
-				2E86234A2019DB28004EF0E0 /* DeviceViewController.xib in Resources */,
 				2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1208,6 +1229,7 @@
 				F43D7A5C1D004225009ADD96 /* CSRGatewayEntity+CoreDataProperties.m in Sources */,
 				2E06A4FF20205B0E007B8BEA /* GroupViewController.m in Sources */,
 				F4F11C131D00408C0080F3BB /* CSRGatewayEntity.m in Sources */,
+				2E37075720CE647A000AF696 /* NSBundle+AppLanguageSwitch.m in Sources */,
 				0D835B951B97603600FF4376 /* CSRmesh.xcdatamodeld in Sources */,
 				0D835B361B9749E600FF4376 /* AppDelegate.m in Sources */,
 				2E3A65F7202BF97300B3E425 /* SingleDeviceModel.m in Sources */,
@@ -1298,21 +1320,81 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		2E1C83A020CFD782009BCC6D /* PlaceDetailsViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E1C839F20CFD782009BCC6D /* Base */,
+				2E1C83A220CFD788009BCC6D /* zh-Hans */,
+				2E1C83A320CFD78B009BCC6D /* en */,
+			);
+			name = PlaceDetailsViewController.xib;
+			sourceTree = "<group>";
+		};
+		2E37075020CE4C16000AF696 /* DeviceViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E37074F20CE4C16000AF696 /* Base */,
+				2E37075220CE4C1B000AF696 /* en */,
+				2E37075420CE4C1E000AF696 /* zh-Hans */,
+			);
+			name = DeviceViewController.xib;
+			sourceTree = "<group>";
+		};
+		2E37075A20CE8337000AF696 /* GroupViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E37075920CE8337000AF696 /* Base */,
+				2E37075C20CE8339000AF696 /* en */,
+				2E37075E20CE833C000AF696 /* zh-Hans */,
+			);
+			name = GroupViewController.xib;
+			sourceTree = "<group>";
+		};
+		2E6BD7FF20D09B3200036CA2 /* TimerDetailViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E6BD7FE20D09B3200036CA2 /* Base */,
+				2E6BD80120D09B3600036CA2 /* en */,
+				2E6BD80320D09B3700036CA2 /* zh-Hans */,
+			);
+			name = TimerDetailViewController.xib;
+			sourceTree = "<group>";
+		};
+		2E6BD80620D0AD6D00036CA2 /* RemoteSettingViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E6BD80520D0AD6D00036CA2 /* Base */,
+				2E6BD80820D0AD6F00036CA2 /* en */,
+				2E6BD80A20D0AD7000036CA2 /* zh-Hans */,
+			);
+			name = RemoteSettingViewController.xib;
+			sourceTree = "<group>";
+		};
+		2E9622C120C913530097C617 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E9622C320C9137E0097C617 /* zh-Hans */,
+				2E9622C420C913C10097C617 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		2E9622C920C917EC0097C617 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E9622C820C917EC0097C617 /* en */,
+				2E9622CA20C917EE0097C617 /* zh-Hans */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		2ED974491F3AED0F000F20C9 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				2ED974481F3AED0F000F20C9 /* Base */,
+				2E9622BB20C90DC40097C617 /* zh-Hans */,
 			);
 			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-		CE7BADE51C85A8BA0096F4FE /* Localizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE7BADE61C85A8BA0096F4FE /* en */,
-				CE7BADE81C85AA990096F4FE /* es */,
-			);
-			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

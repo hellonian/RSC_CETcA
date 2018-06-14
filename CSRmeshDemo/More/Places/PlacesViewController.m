@@ -37,9 +37,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    self.navigationItem.title = @"Places";
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange) name:ZZAppLanguageDidChangeNotification object:nil];
+    self.navigationItem.title = AcTECLocalizedStringFromTable(@"Place", @"Localizable");
     if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
-        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Setting_back"] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
+        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:AcTECLocalizedStringFromTable(@"Setting_back", @"Localizable")] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
         self.navigationItem.leftBarButtonItem = left;
     }
     
@@ -57,19 +58,19 @@
     
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     [alert.view setTintColor:DARKORAGE];
-    UIAlertAction *create = [UIAlertAction actionWithTitle:@"Creat a new place" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *create = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"CreatNewPlace", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         PlaceDetailsViewController *pdvc = [[PlaceDetailsViewController alloc] init];
-        pdvc.navigationItem.title = @"Creat a new place";
+        pdvc.navigationItem.title = AcTECLocalizedStringFromTable(@"CreatNewPlace", @"Localizable");
         [self.navigationController pushViewController:pdvc animated:YES];
         
     }];
-    UIAlertAction *join = [UIAlertAction actionWithTitle:@"Join a place" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *join = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"JoinPlace", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         if (!_hud) {
             _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
             _hud.delegate = self;
-            _hud.label.text = @"Keep the two phones at close range until the end of sharing automatically returns.";
+            _hud.label.text = AcTECLocalizedStringFromTable(@"KeepCloseAlert", @"Localizable");
             _hud.label.numberOfLines = 0;
         }
         
@@ -82,7 +83,7 @@
         [_advertiser start];
         
     }];
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         
     }];
     [alert addAction:create];
@@ -99,12 +100,12 @@
 - (void)backSetting{
     if (_hud) {
         
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"You are requesting to join a place, and the return will terminate the request. Are you sure you want to return?" preferredStyle:UIAlertControllerStyleAlert];
-        NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:@"You are requesting to join a place, and the return will terminate the request. Are you sure you want to return?"];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"" preferredStyle:UIAlertControllerStyleAlert];
+        NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:AcTECLocalizedStringFromTable(@"returnAlert", @"Localizable")];
         [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
         [alertController setValue:attributedMessage forKey:@"attributedMessage"];
         [alertController.view setTintColor:DARKORAGE];
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             [_hud hideAnimated:YES];
             _hud = nil;
             [_advertiser stop];
@@ -116,7 +117,7 @@
             [self.view.window.layer addAnimation:animation forKey:nil];
             [self dismissViewControllerAnimated:NO completion:nil];
         }];
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
             return ;
         }];
         [alertController addAction:okAction];
@@ -215,17 +216,17 @@
 - (void) showAlert:(CSRPlaceEntity *)placeEntuty
 {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@""
-                                                                             message:[NSString stringWithFormat:@"Are you sure you want to switch place to the %@.",placeEntuty.name]
+                                                                             message:@""
                                                                       preferredStyle:UIAlertControllerStyleAlert];
 //    NSMutableAttributedString *attributedTitle = [[NSMutableAttributedString alloc] initWithString:@"Alert!"];
 //    [attributedTitle addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1] range:NSMakeRange(0, [[attributedTitle string] length])];
 //    [alertController setValue:attributedTitle forKey:@"attributedTitle"];
-    NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"Are you sure you want to switch place to the %@.",placeEntuty.name]];
+    NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@ ?",AcTECLocalizedStringFromTable(@"SwitchPlaceAlert", @"Localizable"),placeEntuty.name]];
     [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
     [alertController setValue:attributedMessage forKey:@"attributedMessage"];
     [alertController.view setTintColor:DARKORAGE];
     
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"Yes"
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable")
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction *action) {
                                                          [CSRAppStateManager sharedInstance].selectedPlace = placeEntuty;
@@ -242,7 +243,7 @@
                                                          [[NSNotificationCenter defaultCenter] postNotificationName:@"reGetDataForPlaceChanged" object:nil];
                                                      }];
     
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel"
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable")
                                                      style:UIAlertActionStyleCancel 
                                                    handler:^(UIAlertAction * _Nonnull action) {
         
@@ -351,6 +352,14 @@
 
 - (void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(NSError *)error{
     NSLog(@"didFinishReceivingResourceWithName");
+}
+
+- (void)languageChange {
+    self.navigationItem.title = AcTECLocalizedStringFromTable(@"Place", @"Localizable");
+    if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:AcTECLocalizedStringFromTable(@"Setting_back", @"Localizable")] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
+        self.navigationItem.leftBarButtonItem = left;
+    }
 }
 
 @end

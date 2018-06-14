@@ -53,10 +53,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    self.navigationItem.title = @"Update";
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange) name:ZZAppLanguageDidChangeNotification object:nil];
+    self.navigationItem.title = AcTECLocalizedStringFromTable(@"BTVersion", @"Localizable");
     if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
-        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Setting_back"] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
+        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:AcTECLocalizedStringFromTable(@"Setting_back", @"Localizable")] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
         self.navigationItem.leftBarButtonItem = left;
     }
     _devices = [[NSMutableArray alloc] init];
@@ -358,6 +358,14 @@
 -(void) centralPoweredOn
 {
     [[CSRBluetoothLE sharedInstance] retrieveCachedPeripherals];
+}
+
+- (void)languageChange {
+    self.navigationItem.title = AcTECLocalizedStringFromTable(@"BTVersion", @"Localizable");
+    if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:AcTECLocalizedStringFromTable(@"Setting_back", @"Localizable")] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
+        self.navigationItem.leftBarButtonItem = left;
+    }
 }
 
 

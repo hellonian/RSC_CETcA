@@ -98,29 +98,26 @@
 - (void)prepareNavigationItem {
     _controlImageView.isEditing = _isEditing;
     if (_isEditing) {
-        UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(galleryDetailDoneAction:)];
+//        UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(galleryDetailDoneAction:)];
+        UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(galleryDetailDoneAction:)];
         UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(galleryAddAction:)];
         self.navigationItem.rightBarButtonItem = done;
         self.navigationItem.leftBarButtonItem = add;
         
     }else {
-        UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(galleryDetailEditAction:)];
+//        UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(galleryDetailEditAction:)];
+        UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Edit", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(galleryDetailEditAction:)];
         self.navigationItem.rightBarButtonItem = edit;
         
-        UIButton *letfButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        UIImage *btnImage = [UIImage imageNamed:@"Btn_back"];
-        [letfButton setImage:btnImage forState:UIControlStateNormal];
-        NSString *btnTitle = @" Close";
-        [letfButton setTitle:btnTitle forState:UIControlStateNormal];
-        [letfButton setTitleColor:DARKORAGE forState:UIControlStateNormal];
-        CGSize buttonTitleLabelSize = [btnTitle sizeWithAttributes:@{NSFontAttributeName:letfButton.titleLabel.font}]; //文本尺寸
-        CGSize buttonImageSize = btnImage.size;   //图片尺寸
-        letfButton.frame = CGRectMake(0,0,
-                                      buttonImageSize.width + buttonTitleLabelSize.width,
-                                      buttonImageSize.height);
-        [letfButton addTarget:self action:@selector(galleryDetailCloseAction:) forControlEvents:UIControlEventTouchUpInside];
-        UIBarButtonItem *close = [[UIBarButtonItem alloc] initWithCustomView:letfButton];
-        self.navigationItem.leftBarButtonItem = close;
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.bounds = CGRectMake(0, 0, 80, 40);
+        [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
+        [btn setTitle:AcTECLocalizedStringFromTable(@"Back", @"Localizable") forState:UIControlStateNormal];
+        [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+        btn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        [btn addTarget:self action:@selector(galleryDetailCloseAction:) forControlEvents:UIControlEventTouchUpInside];
+        UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
+        self.navigationItem.leftBarButtonItem = back;
     }
     
     [_controlImageView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -254,15 +251,15 @@
         _isChange = YES;
     }
     
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"Remove light?" preferredStyle:UIAlertControllerStyleAlert];
-    NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:@"Remove light?"];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"" preferredStyle:UIAlertControllerStyleAlert];
+    NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:AcTECLocalizedStringFromTable(@"RemoveLight", @"Localizable")];
     [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
     [alertController setValue:attributedMessage forKey:@"attributedMessage"];
     alertController.view.tintColor = DARKORAGE;
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         
     }];
-    UIAlertAction *removeAction = [UIAlertAction actionWithTitle:@"Remove" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *removeAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Remove", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         GalleryDropView *dropView = (GalleryDropView *)view;
         [_controlImageView deleteDropView:view];
         

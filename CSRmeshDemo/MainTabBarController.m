@@ -21,22 +21,32 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.automaticallyAdjustsScrollViewInsets = NO;
-    self.view.backgroundColor = [UIColor blackColor];
+//    self.automaticallyAdjustsScrollViewInsets = NO;
+//    self.view.backgroundColor = [UIColor blackColor];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeConnectedNotification:) name:@"BridgeConnectedNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeDisconnectedNotification:) name:@"BridgeDisconnectedNotification" object:nil];
     
-    self.tabBarView = [[TabBarView alloc]initWithFrame:CGRectMake(0, HEIGHT-50, WIDTH, 50)];
+    self.tabBarView = [[TabBarView alloc]initWithFrame:CGRectMake(0, HEIGHT-self.tabBar.frame.size.height, WIDTH, self.tabBar.frame.size.height)];
     self.tabBarView.delegate = self;
     [self.view addSubview:self.tabBarView];
-    [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-    [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeRight];
-    [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeBottom];
-    [self.tabBarView autoSetDimension:ALDimensionHeight toSize:50.0f];
     
     [self creatHud];
     
+}
+-(void)viewWillLayoutSubviews{
+    [super viewWillLayoutSubviews];
+    if (self.tabBar.frame.size.height == 83) {
+        [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+        [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+        [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:34.0f];
+        [self.tabBarView autoSetDimension:ALDimensionHeight toSize:49.0f];
+    }else {
+        [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+        [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+        [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeBottom];
+        [self.tabBarView autoSetDimension:ALDimensionHeight toSize:49.0f];
+    }
 }
 -(void)didSelectedAtIndex:(NSInteger)index{
     self.selectedIndex = index;

@@ -24,13 +24,13 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange) name:ZZAppLanguageDidChangeNotification object:nil];
         self.userInteractionEnabled = YES;
-        self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
         UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, WIDTH, 1)];
         lineView.backgroundColor = [UIColor colorWithRed:179/255.0 green:179/255.0 blue:179/255.0 alpha:1];
         [self addSubview:lineView];
         _buttons = [NSMutableArray arrayWithCapacity:3];
-        NSArray *titles = @[@"Main",@"Gallery",@"Setting"];
+        NSArray *titles = @[AcTECLocalizedStringFromTable(@"Main", @"Localizable"),AcTECLocalizedStringFromTable(@"Gallery", @"Localizable"),AcTECLocalizedStringFromTable(@"Setting", @"Localizable")];
         _normalImages = @[@"main_normal",@"gallery_normal",@"setting_normal"];
         _highlightImages = @[@"main_highlighted",@"gallery_highlighted",@"setting_highlighted"];
         for (int i=0; i<titles.count; i++) {
@@ -91,6 +91,15 @@
 {
     [_buttons removeAllObjects];
     _buttons = nil;
+}
+
+- (void)languageChange {
+
+    NSArray *titles = @[AcTECLocalizedStringFromTable(@"Main", @"Localizable"),AcTECLocalizedStringFromTable(@"Gallery", @"Localizable"),AcTECLocalizedStringFromTable(@"Setting", @"Localizable")];
+    
+    [_buttons enumerateObjectsUsingBlock:^(TabBarButton *barButton, NSUInteger idx, BOOL * _Nonnull stop) {
+        [barButton setTitle:titles[idx] forState:UIControlStateNormal];
+    }];
 }
 
 @end

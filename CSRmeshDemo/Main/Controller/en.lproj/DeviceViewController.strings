@@ -1,0 +1,21 @@
+
+/* Class = "UILabel"; text = "Brightness"; ObjectID = "ClO-Me-qxg"; */
+"ClO-Me-qxg.text" = "Brightness";
+
+/* Class = "UILabel"; text = "Reset"; ObjectID = "OV2-JY-QYi"; */
+"OV2-JY-QYi.text" = "Reset";
+
+/* Class = "UILabel"; text = "Color Temperature"; ObjectID = "SZQ-9z-LDa"; */
+"SZQ-9z-LDa.text" = "Color Temperature";
+
+/* Class = "UILabel"; text = "Switch"; ObjectID = "Whw-sT-xn2"; */
+"Whw-sT-xn2.text" = "Switch";
+
+/* Class = "UILabel"; text = "Name"; ObjectID = "g45-W0-rBI"; */
+"g45-W0-rBI.text" = "Name";
+
+/* Class = "UILabel"; text = "Change"; ObjectID = "jzp-Uo-C7S"; */
+"jzp-Uo-C7S.text" = "Change";
+
+/* Class = "UILabel"; text = "100%"; ObjectID = "lRY-vT-dpa"; */
+"lRY-vT-dpa.text" = "100%";
