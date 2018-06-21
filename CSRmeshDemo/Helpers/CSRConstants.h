@@ -40,6 +40,8 @@
 
 #define kColorTemperaturesDevices @[@"D350SB",@"D300IB",@"D350B",@"S350B",@"D350B-B",@"D350B-L",@"D300IB-L"]
 
+#define kLightSensor @[@"SL02B"]
+
 #pragma mark - Notifications
 
 #pragma UI/menu

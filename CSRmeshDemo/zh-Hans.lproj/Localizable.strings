@@ -55,6 +55,7 @@
 "Place" = "场所";
 "Timer" = "定时器";
 "Remote" = "遥控器";
+"LightSensor" = "光感";
 "BTVersion" = "固件";
 "Language" = "语言";
 "Help" = "帮助";

@@ -128,6 +128,17 @@
             _devicesCollectionView.dataArray = areaMutableArray;
         }
         
+    }else if (self.selectMode == DeviceListSelectMode_ForLightSensor) {
+        NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
+        if (mutableArray != nil || [mutableArray count] != 0) {
+            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+            [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+            [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+                if ([deviceEntity.shortName isEqualToString:@"D1-10IB"]) {
+                    [_devicesCollectionView.dataArray addObject:deviceEntity];
+                }
+            }];
+        }
     }else {
         NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
         if (mutableArray != nil || [mutableArray count] != 0) {
@@ -135,7 +146,6 @@
             [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
                 if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName]) {
-                    NSLog(@"~~~~> %@",deviceEntity.deviceId);
                     SingleDeviceModel *singleDevice = [[SingleDeviceModel alloc] init];
                     singleDevice.deviceId = deviceEntity.deviceId;
                     singleDevice.deviceName = deviceEntity.name;

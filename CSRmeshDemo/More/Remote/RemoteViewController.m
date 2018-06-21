@@ -79,6 +79,8 @@
     [self.dataArray removeAllObjects];
     NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
     if (mutableArray != nil || [mutableArray count] != 0) {
+        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
+        [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
         for (CSRDeviceEntity *deviceEntity in mutableArray) {
             if ([CSRUtilities belongToRemote:deviceEntity.shortName]) {
                 [self.dataArray addObject:deviceEntity];

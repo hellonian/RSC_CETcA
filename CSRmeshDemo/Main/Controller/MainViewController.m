@@ -191,15 +191,7 @@
                                                      constant:-WIDTH*3/160.0-49];
     }
     [NSLayoutConstraint  activateConstraints:@[scene_top,scene_left,scene_right,scene_bottom]];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if (@available(iOS 11.0, *)) {
-            NSLog(@"-----> %f",self.view.safeAreaLayoutGuide.layoutFrame.size.height);
-        } else {
-            // Fallback on earlier versions
-        }
-    });
-    
-    
+
     [self getMainDataArray];
     [self getSceneDataArray];
     

@@ -79,6 +79,8 @@
 		2E3B967F200F3847000BD086 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3B967D200F3847000BD086 /* MainViewController.m */; };
 		2E3B9680200F3847000BD086 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E3B967E200F3847000BD086 /* MainViewController.xib */; };
 		2E3EA7C520479F8900AFD4B8 /* RemoteSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3EA7C320479F8900AFD4B8 /* RemoteSettingViewController.m */; };
+		2E48BBE020D239E500401CDD /* LightSensorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E48BBDF20D239E500401CDD /* LightSensorViewController.m */; };
+		2E48BBE420D25C7800401CDD /* LightSensorSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E48BBE220D25C7800401CDD /* LightSensorSettingViewController.m */; };
 		2E500B741FD8D6B9008303CE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D6E44EF1B3C4059000A44DD /* CoreGraphics.framework */; };
 		2E500B761FD8D6F3008303CE /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E500B751FD8D6F0008303CE /* MediaPlayer.framework */; };
 		2E500B781FD8D703008303CE /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E500B771FD8D6FE008303CE /* AVFoundation.framework */; };
@@ -101,6 +103,7 @@
 		2ED3963C204D09A00068B666 /* TimerEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963B204D09A00068B666 /* TimerEntity.m */; };
 		2ED3963F204D09D20068B666 /* TimerDeviceEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */; };
 		2ED974471F3AED0F000F20C9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2ED974491F3AED0F000F20C9 /* LaunchScreen.storyboard */; };
+		2EE50F2D20DA3E3D00B484F7 /* LightSensorSettingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EE50F2F20DA3E3D00B484F7 /* LightSensorSettingViewController.xib */; };
 		2EE757C720102B7B00FB75C5 /* MainCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE757C620102B7B00FB75C5 /* MainCollectionView.m */; };
 		2EE757CA201030CA00FB75C5 /* TopImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE757C9201030CA00FB75C5 /* TopImageView.m */; };
 		2EE757CD2010763C00FB75C5 /* SuperCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE757CC2010763C00FB75C5 /* SuperCollectionViewCell.m */; };
@@ -267,6 +270,10 @@
 		2E3B967E200F3847000BD086 /* MainViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
 		2E3EA7C220479F8900AFD4B8 /* RemoteSettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteSettingViewController.h; sourceTree = "<group>"; };
 		2E3EA7C320479F8900AFD4B8 /* RemoteSettingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteSettingViewController.m; sourceTree = "<group>"; };
+		2E48BBDE20D239E500401CDD /* LightSensorViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LightSensorViewController.h; sourceTree = "<group>"; };
+		2E48BBDF20D239E500401CDD /* LightSensorViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LightSensorViewController.m; sourceTree = "<group>"; };
+		2E48BBE120D25C7800401CDD /* LightSensorSettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LightSensorSettingViewController.h; sourceTree = "<group>"; };
+		2E48BBE220D25C7800401CDD /* LightSensorSettingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LightSensorSettingViewController.m; sourceTree = "<group>"; };
 		2E500B751FD8D6F0008303CE /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		2E500B771FD8D6FE008303CE /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		2E6A020D1F39884500111312 /* TabBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarButton.h; sourceTree = "<group>"; };
@@ -307,6 +314,9 @@
 		2ED3963D204D09D20068B666 /* TimerDeviceEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerDeviceEntity.h; sourceTree = "<group>"; };
 		2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerDeviceEntity.m; sourceTree = "<group>"; };
 		2ED974481F3AED0F000F20C9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		2EE50F2E20DA3E3D00B484F7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LightSensorSettingViewController.xib; sourceTree = "<group>"; };
+		2EE50F3120DA3E3F00B484F7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/LightSensorSettingViewController.strings; sourceTree = "<group>"; };
+		2EE50F3320DA3E4100B484F7 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LightSensorSettingViewController.strings"; sourceTree = "<group>"; };
 		2EE757C520102B7B00FB75C5 /* MainCollectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainCollectionView.h; sourceTree = "<group>"; };
 		2EE757C620102B7B00FB75C5 /* MainCollectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainCollectionView.m; sourceTree = "<group>"; };
 		2EE757C8201030CA00FB75C5 /* TopImageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TopImageView.h; sourceTree = "<group>"; };
@@ -656,6 +666,7 @@
 				2EF3324C204502CA00565374 /* Language */,
 				2EF3324B204502CA00565374 /* Help */,
 				2E2E703A1FF5DE60002D1C1D /* Remote */,
+				2E48BBDD20D239B100401CDD /* LightSensor */,
 				2E2E70551FF5DE60002D1C1D /* Timer */,
 				2E2E70671FF5DE60002D1C1D /* Update */,
 				2E2E70031FF5DE60002D1C1D /* About */,
@@ -829,6 +840,18 @@
 				2E2E70331FF5DE60002D1C1D /* PlaceColorIconPickerView.m */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		2E48BBDD20D239B100401CDD /* LightSensor */ = {
+			isa = PBXGroup;
+			children = (
+				2E48BBDE20D239E500401CDD /* LightSensorViewController.h */,
+				2E48BBDF20D239E500401CDD /* LightSensorViewController.m */,
+				2E48BBE120D25C7800401CDD /* LightSensorSettingViewController.h */,
+				2E48BBE220D25C7800401CDD /* LightSensorSettingViewController.m */,
+				2EE50F2F20DA3E3D00B484F7 /* LightSensorSettingViewController.xib */,
+			);
+			path = LightSensor;
 			sourceTree = "<group>";
 		};
 		2E6A02221F39B02500111312 /* tabBar */ = {
@@ -1158,6 +1181,7 @@
 				2E2E70B71FF5DE60002D1C1D /* UpdateViewController.xib in Resources */,
 				0DE95D161B297FFB006D0397 /* Images.xcassets in Resources */,
 				2ED974471F3AED0F000F20C9 /* LaunchScreen.storyboard in Resources */,
+				2EE50F2D20DA3E3D00B484F7 /* LightSensorSettingViewController.xib in Resources */,
 				2E2E70921FF5DE60002D1C1D /* PlaceIconCollectionViewCell.xib in Resources */,
 				2E2EBFA41FAC2FF400CEA401 /* cskey_db.json in Resources */,
 				2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */,
@@ -1246,11 +1270,13 @@
 				0D835B3C1B9749E600FF4376 /* CSRUtilities.m in Sources */,
 				0D835B3D1B9749E600FF4376 /* CSRmeshManager.m in Sources */,
 				0D835B3F1B9749E600FF4376 /* CSRParseAndLoad.m in Sources */,
+				2E48BBE020D239E500401CDD /* LightSensorViewController.m in Sources */,
 				0D835B411B9749E600FF4376 /* CSRAppStateManager.m in Sources */,
 				0D835B421B9749E600FF4376 /* CSRDevicesManager.m in Sources */,
 				0D835B431B9749E600FF4376 /* CSRmeshDevice.m in Sources */,
 				0D835B441B9749E600FF4376 /* CSRmeshArea.m in Sources */,
 				2EF718331FFB2C0600901918 /* GalleryViewController.m in Sources */,
+				2E48BBE420D25C7800401CDD /* LightSensorSettingViewController.m in Sources */,
 				CE04468D1C47E36F00263F15 /* CSRPeripheral.m in Sources */,
 				2EF718291FFB224800901918 /* GalleryEntity.m in Sources */,
 				2EE757CD2010763C00FB75C5 /* SuperCollectionViewCell.m in Sources */,
@@ -1395,6 +1421,16 @@
 				2E9622BB20C90DC40097C617 /* zh-Hans */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		2EE50F2F20DA3E3D00B484F7 /* LightSensorSettingViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2EE50F2E20DA3E3D00B484F7 /* Base */,
+				2EE50F3120DA3E3F00B484F7 /* en */,
+				2EE50F3320DA3E4100B484F7 /* zh-Hans */,
+			);
+			name = LightSensorSettingViewController.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

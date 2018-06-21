@@ -55,6 +55,7 @@
 "Place" = "Places";
 "Timer" = "Timers";
 "Remote" = "Remotes";
+"LightSensor" = "Light Sensor";
 "BTVersion" = "BT Version";
 "Language" = "Language";
 "Help" = "Help";
@@ -64,7 +65,7 @@
 "SwitchPlaceAlert" = "Are you sure you want to switch place to the";
 "Save" = "Save";
 "SearchRecepient" = "Searching recepient·····";
-"KeepCloseAlert"  = "Keep the two phones at close range until the end of sharing automatically returns.";
+"KeepCloseAlert" = "Keep the two phones at close range until the end of sharing automatically returns.";
 "returnAlert" = "You are requesting to join a place, and the return will terminate the request. Are you sure you want to return?";
 "NamePhraseEmpryAlert" = "Name and Pass Phrase should not be empty, please enter some values.";
 "DeleteCurrentPlaceAlert" = "You can't delete current selected place.";

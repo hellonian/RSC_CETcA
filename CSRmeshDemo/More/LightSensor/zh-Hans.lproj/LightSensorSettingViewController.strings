@@ -1,0 +1,12 @@
+
+/* Class = "UIButton"; normalTitle = "Choose Device"; ObjectID = "E3V-Xs-LfZ"; */
+"E3V-Xs-LfZ.normalTitle" = "选择设备";
+
+/* Class = "UILabel"; text = "ON/OFF"; ObjectID = "R6v-52-bi2"; */
+"R6v-52-bi2.text" = "ON/OFF";
+
+/* Class = "UILabel"; text = "Name"; ObjectID = "bnz-UY-uDy"; */
+"bnz-UY-uDy.text" = "标签";
+
+/* Class = "UIButton"; normalTitle = "Delete"; ObjectID = "dnf-uh-sKU"; */
+"dnf-uh-sKU.normalTitle" = "删除";

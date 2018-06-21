@@ -26,6 +26,22 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
     
     
 //    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+
+    NSString *language = [[NSUserDefaults standardUserDefaults] objectForKey:AppLanguageSwitchKey];
+    if (!language) {
+        NSArray *appLanguages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
+        NSString *languageName = [appLanguages objectAtIndex:0];
+        NSString *currentLanguage;
+        if ([languageName containsString:@"zh-Hans"]) {
+            currentLanguage = @"zh-Hans";
+        }else if ([languageName containsString:@"en"]) {
+            currentLanguage = @"en";
+        }else {
+            currentLanguage = @"en";
+        }
+        [[NSUserDefaults standardUserDefaults] setObject:currentLanguage forKey:AppLanguageSwitchKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
     
     // Set the global cloud host URL
     if ([CSRUtilities getValueFromDefaultsForKey:kCSRGlobalCloudHost]) {

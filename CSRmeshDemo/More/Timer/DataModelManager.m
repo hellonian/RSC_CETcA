@@ -225,6 +225,13 @@ static DataModelManager *manager = nil;
     if ([dataStr hasPrefix:@"aa"]) {
         [self setDeviceTime];
     }
+    
+    if ([dataStr hasPrefix:@"b4"]) {
+        NSString *cntStr = [dataStr substringFromIndex:4];
+        if ([cntStr integerValue]) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"settedLightSensorCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"cntStr":cntStr}];
+        }
+    }
 }
 
 - (void)didReceiveStreamData:(NSNumber *)deviceId streamNumber:(NSNumber *)streamNumber data:(NSData *)data {

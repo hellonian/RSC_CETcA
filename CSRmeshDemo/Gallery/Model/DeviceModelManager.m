@@ -51,7 +51,7 @@
         NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
         if (allDevices != nil && [allDevices count] != 0) {
             for (CSRDeviceEntity *deviceEntity in allDevices) {
-                if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName]) {
+                if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName] || [CSRUtilities belongToLightSensor:deviceEntity.shortName]) {
                     DeviceModel *model = [[DeviceModel alloc] init];
                     model.deviceId = deviceEntity.deviceId;
                     model.shortName = deviceEntity.shortName;
@@ -69,7 +69,7 @@
     NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
     if (allDevices != nil && [allDevices count] != 0) {
         for (CSRDeviceEntity *deviceEntity in allDevices) {
-            if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName]) {
+            if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName] || [CSRUtilities belongToLightSensor:deviceEntity.shortName]) {
 
                 [[LightModelApi sharedInstance] getState:deviceEntity.deviceId success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
 

@@ -33,9 +33,9 @@
 #define SENSOR      @"SENSOR"
 #define ACTUATOR    @"ACTUATOR"
 
-#define AcTECLanguage @"AcTECLanguage"
+#define AppLanguageSwitchKey @"App_Language_Switch_Key"
 
 #define AcTECLocalizedStringFromTable(key, tableName) \
-[[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:[[NSUserDefaults standardUserDefaults] objectForKey:AcTECLanguage] ofType:@"lproj"]] localizedStringForKey:key value:nil table:tableName]
+[[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:[[NSUserDefaults standardUserDefaults] objectForKey:AppLanguageSwitchKey] ofType:@"lproj"]] localizedStringForKey:key value:nil table:tableName]
 
 #endif

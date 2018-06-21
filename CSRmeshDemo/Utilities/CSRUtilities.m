@@ -1113,6 +1113,13 @@
     return NO;
 }
 
++ (BOOL)belongToLightSensor:(NSString *)shortName {
+    if ([kLightSensor containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
 //十六进制字符串转十进制数据
 + (NSInteger)numberWithHexString:(NSString *)hexString {
     
@@ -1123,6 +1130,19 @@
     sscanf(hexChar, "%x", &hexNumber);
     
     return (NSInteger)hexNumber;
+}
+
+//十进制数转十六进制字符串
++ (NSString *)stringWithHexNumber:(NSUInteger)hexNumber {
+    
+    char hexChar[6];
+    sprintf(hexChar, "%x", (int)hexNumber);
+    
+    NSString *hexString = [NSString stringWithCString:hexChar encoding:NSUTF8StringEncoding];
+    if (hexString.length == 1) {
+        hexString = [NSString stringWithFormat:@"0%@",hexString];
+    }
+    return hexString;
 }
 
 @end

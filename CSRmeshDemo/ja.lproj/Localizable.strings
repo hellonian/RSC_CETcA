@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  CSRmeshDemo
+
+  Created by AcTEC on 2018/6/7.
+  Copyright © 2018年 Cambridge Silicon Radio Ltd. All rights reserved.
+*/
+"Main" = "日日";
+"Gallery" = "Gallery";
+"Setting" = "Setting";

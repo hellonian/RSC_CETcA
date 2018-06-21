@@ -12,6 +12,7 @@
 #import "CSRUtilities.h"
 #import "CSRConstants.h"
 #import "DataModelManager.h"
+#import "PureLayout.h"
 
 @interface DeviceViewController ()<UITextFieldDelegate>
 
@@ -24,6 +25,7 @@
 @property (nonatomic,copy) NSString *originalName;
 @property (weak, nonatomic) IBOutlet UILabel *colorTemperatureLabel;
 @property (weak, nonatomic) IBOutlet UIView *colorTemperatureView;
+@property (weak, nonatomic) IBOutlet UIView *topView;
 
 @end
 

@@ -43,7 +43,7 @@
     
     self.languageAry = @[@"English",@"简体中文"];
     self.detailLanguageAry = @[AcTECLocalizedStringFromTable(@"English", @"Localizable"),AcTECLocalizedStringFromTable(@"ChineseS", @"Localizable")];
-    NSString *nowLanguageType = [[NSUserDefaults standardUserDefaults] objectForKey:AcTECLanguage];
+    NSString *nowLanguageType = [[NSUserDefaults standardUserDefaults] objectForKey:AppLanguageSwitchKey];
     if ([nowLanguageType isEqualToString:@"en"]) {
         self.newSelectedRow = 0;
     }else if ([nowLanguageType isEqualToString:@"zh-Hans"]) {
@@ -73,8 +73,8 @@
 }
 
 - (void)doneAction {
-    [[NSUserDefaults standardUserDefaults] setObject:self.selectLanguage forKey:AcTECLanguage];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+//    [[NSUserDefaults standardUserDefaults] setObject:self.selectLanguage forKey:AcTECLanguage];
+//    [[NSUserDefaults standardUserDefaults] synchronize];
     
     [self languageChange];
     
@@ -130,7 +130,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *languageType = [[NSUserDefaults standardUserDefaults] objectForKey:AcTECLanguage];
+    NSString *languageType = [[NSUserDefaults standardUserDefaults] objectForKey:AppLanguageSwitchKey];
     NSString *typeString = self.languageAry[indexPath.row];
     
     if ([typeString isEqualToString:@"English"]) {

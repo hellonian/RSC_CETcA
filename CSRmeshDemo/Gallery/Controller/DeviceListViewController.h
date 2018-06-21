@@ -15,7 +15,8 @@ typedef NS_ENUM(NSInteger,DeviceListSelectMode)
     DeviceListSelectMode_ForDrop,
     DeviceListSelectMode_ForGroup,
     DeviceListSelectMode_SelectGroup,
-    DeviceListSelectMode_SelectScene
+    DeviceListSelectMode_SelectScene,
+    DeviceListSelectMode_ForLightSensor
 };
 
 typedef void(^DeviceListSelectedHandle)(NSArray *devices);

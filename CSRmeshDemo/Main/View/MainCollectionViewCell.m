@@ -188,6 +188,8 @@
             self.iconView.image = [UIImage imageNamed:@"Device_Remote1"];
         }else if ([appearanceShortname containsString:@"RB02"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote2"];
+        }else if ([appearanceShortname isEqualToString:@"SL02B"]){
+            self.iconView.image = [UIImage imageNamed:@"Device_Sensor"];
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;

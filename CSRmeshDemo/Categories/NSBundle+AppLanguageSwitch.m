@@ -29,7 +29,7 @@ static const char kBundleKey = 0;
 @end
 
 
-static NSString *AppLanguageSwitchKey = @"App_Language_Switch_Key";
+//static NSString *AppLanguageSwitchKey = @"App_Language_Switch_Key";
 @implementation NSBundle (AppLanguageSwitch)
 + (void)setCusLanguage:(NSString *)language {
     id value = nil;

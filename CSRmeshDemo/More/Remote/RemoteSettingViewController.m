@@ -739,7 +739,7 @@
 - (NSString *)cmdStringWithSceneRcIndex:(NSInteger)rcIndex swIndex:(NSInteger)swIndex {
     SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:@(rcIndex)];
     NSString *rcIndexStr = [self exchangePositionOfDeviceId:rcIndex];
-    NSString *ligCnt = [sceneEntity.members count]<10? [NSString stringWithFormat:@"0%ld",[sceneEntity.members count]]:[NSString stringWithFormat:@"%ld",[sceneEntity.members count]];
+    NSString *ligCnt = [CSRUtilities stringWithHexNumber:[sceneEntity.members count]];
     NSString *dstAddrLevel = @"";
     for (SceneMemberEntity *sceneMember in sceneEntity.members) {
         NSString *level = [[NSString alloc] initWithFormat:@"%1lx",(long)[sceneMember.level integerValue]];

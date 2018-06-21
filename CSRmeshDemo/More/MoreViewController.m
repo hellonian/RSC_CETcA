@@ -16,6 +16,7 @@
 #import "PlacesViewController.h"
 #import "LanguageViewController.h"
 #import "HelpViewController.h"
+#import "LightSensorViewController.h"
 
 @interface MoreViewController ()<UISplitViewControllerDelegate,masterDelegate>
 
@@ -30,6 +31,7 @@
 @property (nonatomic,strong) UINavigationController *detailViewManger;
 @property (nonatomic,strong) LanguageViewController *languageVC;
 @property (nonatomic,strong) HelpViewController *helpVC;
+@property (nonatomic,strong) LightSensorViewController *LSVC;
 
 @end
 
@@ -60,6 +62,7 @@
     self.masterVC = [[MasterViewController alloc] init];
     self.languageVC = [[LanguageViewController alloc] init];
     self.helpVC = [[HelpViewController alloc] init];
+    self.LSVC = [[LightSensorViewController alloc] init];
     
     self.masterVC.delegate = self;
     
@@ -126,6 +129,9 @@
                     [vcs addObject:self.remoteVC];
                     break;
                 case 2:
+                    [vcs addObject:self.LSVC];
+                    break;
+                case 3:
                     [vcs addObject:self.updateVC];
                     break;
                 default:
@@ -179,6 +185,9 @@
                     [self pushViewConrollerW:self.remoteVC];
                     break;
                 case 2:
+                    [self pushViewConrollerW:self.LSVC];
+                    break;
+                case 3:
                     [self pushViewConrollerW:self.updateVC];
                     break;
                 default:
@@ -220,11 +229,11 @@
 
 #pragma mark - AutoLayout
 
-- (void)updateViewConstraints {
-    [super updateViewConstraints];
-    NSLog(@"updateViewConstraints>>>more");
-    [self.panel.view autoPinEdgesToSuperviewEdges];
-}
+//- (void)updateViewConstraints {
+//    [super updateViewConstraints];
+//    NSLog(@"updateViewConstraints>>>more");
+//    [self.panel.view autoPinEdgesToSuperviewEdges];
+//}
 
 
 
