@@ -64,6 +64,32 @@
         [_bgView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:64];
     }
     
+    if (self.lightSensor.remoteBranch.length > 13) {
+        NSString *luxStr = [self.lightSensor.remoteBranch substringWithRange:NSMakeRange(10, 4)];
+        NSInteger lux = [CSRUtilities numberWithHexString:luxStr];
+        self.luxLabel.text = [NSString stringWithFormat:@"%ld Lux",lux];
+        [self.luxSlider setValue:lux];
+        NSString *minStr = [self.lightSensor.remoteBranch substringWithRange:NSMakeRange(14, 2)];
+        NSInteger min = [CSRUtilities numberWithHexString:minStr];
+        self.minLabel.text = [NSString stringWithFormat:@"%.f%%",min/255.0*100];
+        [self.minSlider setValue:min];
+        NSString *maxStr = [self.lightSensor.remoteBranch substringWithRange:NSMakeRange(16, 2)];
+        NSInteger max = [CSRUtilities numberWithHexString:maxStr];
+        self.maxLabel.text = [NSString stringWithFormat:@"%.f%%",max/255.0*100];
+        [self.maxSlider setValue:max];
+        NSString *cntStr = [self.lightSensor.remoteBranch substringWithRange:NSMakeRange(4, 2)];
+        NSInteger cnt = [CSRUtilities numberWithHexString:cntStr];
+        [self.dataArray removeAllObjects];
+        for (int i = 0; i<cnt; i++) {
+            NSString *deviceIdStr = [self.lightSensor.remoteBranch substringWithRange:NSMakeRange(6+12*i, 4)];
+            NSString *str1 = [deviceIdStr substringToIndex:2];
+            NSString *str2 = [deviceIdStr substringFromIndex:2];
+            NSNumber *deviceId = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[NSString stringWithFormat:@"%@%@",str2,str1]]];
+            [self.dataArray addObject:deviceId];
+        }
+        [self.tableView reloadData];
+    }
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -102,8 +128,11 @@
     NSNumber *deviceId = [self.dataArray objectAtIndex:indexPath.row];
     cell.tag = [deviceId integerValue];
     CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
-    cell.textLabel.text = deviceEntity.name;
-    
+    if (deviceEntity) {
+        cell.textLabel.text = deviceEntity.name;
+    }else {
+        cell.textLabel.text = AcTECLocalizedStringFromTable(@"Notfound", @"Localizable");
+    }
     return cell;
 }
 
@@ -161,7 +190,10 @@
             NSString *deviceIdStr = [weakSelf exchangePositionOfDeviceId:obj.tag];
             blockCmd = [NSString stringWithFormat:@"%@%@%@%@%@",blockCmd,deviceIdStr,targetLux,minLevel,maxLevel];
         }];
-
+        
+        self.lightSensor.remoteBranch = blockCmd;
+        [[CSRDatabaseManager sharedInstance] saveContext];
+        
         [[DataModelApi sharedInstance] sendData:self.lightSensor.deviceId data:[CSRUtilities dataForHexString:blockCmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
             
         } failure:^(NSError * _Nonnull error) {
