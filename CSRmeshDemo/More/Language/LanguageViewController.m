@@ -37,7 +37,7 @@
         self.navigationItem.leftBarButtonItem = left;
     }
     
-    UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneAction)];
+    UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
     self.navigationItem.rightBarButtonItem = right;
     self.navigationItem.rightBarButtonItem.enabled = NO;
     
@@ -76,7 +76,7 @@
 //    [[NSUserDefaults standardUserDefaults] setObject:self.selectLanguage forKey:AcTECLanguage];
 //    [[NSUserDefaults standardUserDefaults] synchronize];
     
-    [self languageChange];
+    
     
 //    AppDelegate *appdelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
 //    if ([appdelegate.window.rootViewController isKindOfClass:[MainTabBarController class]]) {
@@ -99,6 +99,8 @@
 //    }
     
     [NSBundle setCusLanguage:self.selectLanguage];
+    
+    [self languageChange];
     
     self.navigationItem.rightBarButtonItem.enabled = NO;
 }
@@ -156,6 +158,8 @@
         UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:AcTECLocalizedStringFromTable(@"Setting_back", @"Localizable")] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
         self.navigationItem.leftBarButtonItem = left;
     }
+    UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
+    self.navigationItem.rightBarButtonItem = right;
     self.detailLanguageAry = @[AcTECLocalizedStringFromTable(@"English", @"Localizable"),AcTECLocalizedStringFromTable(@"ChineseS", @"Localizable")];
     [self.tableView reloadData];
 }

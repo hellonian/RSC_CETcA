@@ -12,6 +12,7 @@
 #import "DataModelManager.h"
 #import "AFHTTPSessionManager.h"
 #import <MBProgressHUD.h>
+#import "PureLayout.h"
 
 @interface UpdateViewController ()<MBProgressHUDDelegate>
 
@@ -20,6 +21,7 @@
 @property BOOL isAbortButton;
 @property BOOL peripheralConnected;
 @property (nonatomic,strong) MBProgressHUD *hud;
+@property (weak, nonatomic) IBOutlet UILabel *deviceAdress;
 
 
 @end
@@ -29,6 +31,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    if (@available(iOS 11.0,*)) {
+    }else {
+        [_deviceAdress autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:74.0f];
+    }
     UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(popToRootViewController)];
     self.navigationItem.rightBarButtonItem = left;
     

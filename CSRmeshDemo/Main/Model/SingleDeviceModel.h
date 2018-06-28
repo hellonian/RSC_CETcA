@@ -13,5 +13,7 @@
 @property (nonatomic,strong) NSNumber *deviceId;
 @property (nonatomic,strong) NSString *deviceName;
 @property (nonatomic,strong) NSString *deviceShortName;
+@property (nonatomic,assign) BOOL isForList;
+@property (nonatomic,assign) BOOL isSelected;
 
 @end

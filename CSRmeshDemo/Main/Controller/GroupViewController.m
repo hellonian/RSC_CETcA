@@ -23,6 +23,7 @@
 #import "SingleDeviceModel.h"
 #import "CSRUtilities.h"
 #import "NSBundle+AppLanguageSwitch.h"
+#import "TopImageView.h"
 
 @interface GroupViewController ()<UITextFieldDelegate,PlaceColorIconPickerViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,MainCollectionViewDelegate,MBProgressHUDDelegate>
 {
@@ -48,6 +49,8 @@
 @property (nonatomic,strong) UIView *translucentBgView;
 @property (nonatomic,strong) NSMutableArray *groupLostDevices;
 @property (nonatomic,strong) NSMutableArray *groupRemoveDevices;
+@property (weak, nonatomic) IBOutlet UIView *pseudoNavView;
+@property (weak, nonatomic) IBOutlet TopImageView *topBgImageView;
 
 @end
 
@@ -57,6 +60,12 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange:) name:ZZAppLanguageDidChangeNotification object:nil];
+    
+    if (@available(iOS 11.0, *)){
+    }else {
+        [_pseudoNavView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:20];
+    }
+    
     self.groupNameTF.delegate = self;
     if (self.isCreateNewArea) {
         [self.editItem setTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") forState:UIControlStateNormal];
@@ -95,7 +104,7 @@
     flowLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, floor(WIDTH*3/160.0));
     flowLayout.itemSize = CGSizeMake(WIDTH*5/16.0, WIDTH*9/32.0);
     
-    _devicesCollectionView = [[MainCollectionView alloc] initWithFrame:CGRectMake(WIDTH*3/160.0, WIDTH*302/640.0+64, WIDTH*157/160.0, HEIGHT-64-WIDTH*302/640.0) collectionViewLayout:flowLayout cellIdentifier:@"MainCollectionViewCell"];
+    _devicesCollectionView = [[MainCollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout cellIdentifier:@"MainCollectionViewCell"];
     _devicesCollectionView.mainDelegate = self;
     if (!self.isCreateNewArea) {
         [self loadMemberData];
@@ -104,6 +113,12 @@
     }
     
     [self.view addSubview:_devicesCollectionView];
+    
+    [_devicesCollectionView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_topBgImageView withOffset:WIDTH*3/160.0];
+    [_devicesCollectionView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:WIDTH*3/160.0];
+    [_devicesCollectionView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+    [_devicesCollectionView autoPinEdgeToSuperviewEdge:ALEdgeBottom];
+    
     
     if (_isFromEmptyGroup) {
         [self editItemAction:self.editItem];
@@ -114,6 +129,7 @@
         list.originalMembers = mutableArray;
         
         [list getSelectedDevices:^(NSArray *devices) {
+            NSLog(@"><<>> %@",devices);
             self.hasChanged = YES;
             [_devicesCollectionView.dataArray removeAllObjects];
             
@@ -131,7 +147,8 @@
             
         }];
         
-        [self.navigationController pushViewController:list animated:YES];
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
+        [self presentViewController:nav animated:YES completion:nil];
     }
 }
 
@@ -187,7 +204,7 @@
         [alert addAction:okAction];
         [self presentViewController:alert animated:YES completion:nil];
     }else {
-        
+        NSLog(@"分组");
         [self.editItem setTitle:AcTECLocalizedStringFromTable(@"Edit", @"Localizable") forState:UIControlStateNormal];
         self.iconEditBtn.hidden = YES;
         self.groupNameTF.enabled = NO;
@@ -209,9 +226,12 @@
             [self saveArea:areaIdNumber sortId:sortId];
             self.isCreateNewArea = NO;
         }else if (self.hasChanged) {
-            _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            _hud.mode = MBProgressHUDModeIndeterminate;
-            _hud.delegate = self;
+            if (!_hud) {
+                _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+                _hud.mode = MBProgressHUDModeIndeterminate;
+                _hud.delegate = self;
+            }
+            
             areaIdNumber = _areaEntity.areaID;
             NSInteger removeNum = 0;
             
@@ -272,7 +292,6 @@
                                                                     deviceEntity.groups = [CSRUtilities hexStringFromData:(NSData*)myData];
                                                                     [[CSRDatabaseManager sharedInstance] saveContext];
                                                                 }
-                                                                
                                                                 [self.groupRemoveDevices addObject:deviceEntity];
                                                             }
                                                             failure:^(NSError * _Nullable error) {
@@ -298,6 +317,7 @@
                                                                                                                              }
                                                                                                                              if (_hud) {
                                                                                                                                  [_hud hideAnimated:YES];
+                                                                                                                                 _hud = nil;
                                                                                                                              }
                                                                                                                          }];
                                                                     
@@ -317,6 +337,7 @@
                                                                                                                          
                                                                                                                          if (_hud) {
                                                                                                                              [_hud hideAnimated:YES];
+                                                                                                                             _hud = nil;
                                                                                                                          }
                                                                                                                          
                                                                                                                      }];
@@ -344,13 +365,16 @@
                 
                 
             }
-            
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.06 * ([_areaEntity.devices count]) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [self saveArea:areaIdNumber sortId:_areaEntity.sortId];
-                if (_hud && ((removeNum>0 && removeNum == [self.groupRemoveDevices count]) || removeNum==0)) {
+//                NSLog(@">>>> %ld   %ld",removeNum,[self.groupRemoveDevices count]);
+                if (_hud/* && ((removeNum>0 && removeNum == [self.groupRemoveDevices count]) || removeNum==0)*/) {
                     [_hud hideAnimated:YES];
+                    _hud = nil;
                 }
             });
+            
+            
             
         }
         
@@ -528,7 +552,8 @@
             
         }];
         
-        [self.navigationController pushViewController:list animated:YES];
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
+        [self presentViewController:nav animated:YES completion:nil];
     }
 }
 
@@ -570,6 +595,7 @@
 - (void)mainCollectionViewDelegateLongPressAction:(id)cell {
     MainCollectionViewCell *mainCell = (MainCollectionViewCell *)cell;
     if ([mainCell.groupId isEqualToNumber:@2000]) {
+        
         DeviceViewController *dvc = [[DeviceViewController alloc] init];
         dvc.deviceId = mainCell.deviceId;
         __weak GroupViewController *weakSelf = self;
@@ -578,11 +604,12 @@
             [_devicesCollectionView reloadData];
         };
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
-        nav.modalTransitionStyle = UIModalPresentationPopover;
+        nav.modalPresentationStyle = UIModalPresentationPopover;
+        nav.popoverPresentationController.sourceRect = mainCell.bounds;
+        nav.popoverPresentationController.sourceView = mainCell;
+
         [self presentViewController:nav animated:YES completion:nil];
-        UIPopoverPresentationController *popover = nav.popoverPresentationController;
-        popover.sourceRect = mainCell.bounds;
-        popover.sourceView = mainCell;
+
     }
 }
 

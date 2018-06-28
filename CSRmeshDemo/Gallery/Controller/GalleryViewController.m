@@ -20,6 +20,7 @@
 #import "ImproveTouchingExperience.h"
 #import "ControlMaskView.h"
 #import "CSRUtilities.h"
+#import "PureLayout.h"
 
 @interface GalleryViewController ()<UINavigationControllerDelegate,UIImagePickerControllerDelegate,GalleryEditToolViewDelegate,GalleryControlImageViewDelegate,MBProgressHUDDelegate,GalleryDropViewDelegate>
 
@@ -44,7 +45,13 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    self.automaticallyAdjustsScrollViewInsets = NO;
+    if (@available(iOS 11.0, *)) {
+    } else {
+        self.automaticallyAdjustsScrollViewInsets = NO;
+        [_scrollView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset: 64.0];
+        [_scrollView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:50.0];
+    }
+    
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange) name:ZZAppLanguageDidChangeNotification object:nil];
     

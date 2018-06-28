@@ -73,8 +73,8 @@
     self.navigationItem.rightBarButtonItem = edit;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reGetDataForPlaceChanged) name:@"reGetDataForPlaceChanged" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeConnectedNotification:) name:@"BridgeConnectedNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeDisconnectedNotification:) name:@"BridgeDisconnectedNotification" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeConnectedNotification:) name:@"BridgeConnectedNotification" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeDisconnectedNotification:) name:@"BridgeDisconnectedNotification" object:nil];
     
     self.improver = [[ImproveTouchingExperience alloc] init];
     
@@ -197,18 +197,18 @@
     
 }
 
-- (void)bridgeConnectedNotification:(NSNotification *)notification {
-    NSDictionary *dic = notification.userInfo;
-    CBPeripheral *peripheral = dic[@"peripheral"];
-    _connectedBridgeLabel.text = [NSString stringWithFormat:@"%@  %@",peripheral.name,peripheral.uuidString];
-//    _connectedBridgeLabel.text = @"Connected";
-    _connectedBridgeLabel.textColor = [UIColor darkTextColor];
-}
-
-- (void)bridgeDisconnectedNotification:(NSNotification *)notification {
-    _connectedBridgeLabel.text = @"Not Available";
-    _connectedBridgeLabel.textColor = DARKORAGE;
-}
+//- (void)bridgeConnectedNotification:(NSNotification *)notification {
+//    NSDictionary *dic = notification.userInfo;
+//    CBPeripheral *peripheral = dic[@"peripheral"];
+//    _connectedBridgeLabel.text = [NSString stringWithFormat:@"%@  %@",peripheral.name,peripheral.uuidString];
+////    _connectedBridgeLabel.text = @"Connected";
+//    _connectedBridgeLabel.textColor = [UIColor darkTextColor];
+//}
+//
+//- (void)bridgeDisconnectedNotification:(NSNotification *)notification {
+//    _connectedBridgeLabel.text = @"Not Available";
+//    _connectedBridgeLabel.textColor = DARKORAGE;
+//}
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -620,7 +620,10 @@
         
     }];
     
-    [self.navigationController pushViewController:list animated:YES];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
+
+    [self presentViewController:nav animated:YES completion:nil];
+    
 }
 
 //点击场景单元
@@ -703,9 +706,8 @@
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
         nav.modalPresentationStyle = UIModalPresentationPopover;
         [self presentViewController:nav animated:YES completion:nil];
-        UIPopoverPresentationController *popover = nav.popoverPresentationController;
-        popover.sourceRect = mainCell.bounds;
-        popover.sourceView = mainCell;
+        nav.popoverPresentationController.sourceRect = mainCell.bounds;
+        nav.popoverPresentationController.sourceView = mainCell;
     }else if ([mainCell.deviceId isEqualToNumber:@2000]) {
         GroupViewController *gvc = [[GroupViewController alloc] init];
         __weak MainViewController *weakSelf = self;

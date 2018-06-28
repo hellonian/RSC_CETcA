@@ -18,7 +18,6 @@
 #import "CSRAppStateManager.h"
 #import "SceneEntity.h"
 #import "AppDelegate.h"
-#import "ZipArchive.h"
 #import "CSRParseAndLoad.h"
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import <MBProgressHUD.h>
@@ -32,6 +31,7 @@
 @property (nonatomic,strong) MBProgressHUD *hud;
 @property (nonatomic,strong) MBProgressHUD *waitingHud;
 @property (nonatomic,strong) NSString *oldName;
+@property (weak, nonatomic) IBOutlet UILabel *placeName;
 
 @end
 
@@ -40,6 +40,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    
+    if (@available(iOS 11.0,*)) {
+    }else {
+        [_placeName autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:84.0f];
+    }
     _placeNameTF.delegate = self;
     _placeNetworkKeyTF.delegate = self;
     
@@ -49,14 +54,12 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange:) name:ZZAppLanguageDidChangeNotification object:nil];
     
-//    UIBarButtonItem *save = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveAction)];
     UIBarButtonItem *save = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Save", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(saveAction)];
     self.navigationItem.rightBarButtonItem = save;
     self.navigationItem.rightBarButtonItem.enabled = NO;
     
     [_deleteButton setImage:[[CSRmeshStyleKit imageOfTrashcan] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
     _deleteButton.imageView.tintColor = [UIColor whiteColor];
-//    [_deleteButton setTitle:@"Delete" forState:UIControlStateNormal];
     
     if (_placeEntity.name) {
         _placeNameTF.text = _placeEntity.name;

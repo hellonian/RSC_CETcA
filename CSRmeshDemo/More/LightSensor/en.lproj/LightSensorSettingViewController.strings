@@ -1,12 +1,27 @@
 
+/* Class = "UILabel"; text = "1%"; ObjectID = "BQn-4F-mjf"; */
+"BQn-4F-mjf.text" = "1%";
+
+/* Class = "UILabel"; text = "100%"; ObjectID = "D7A-Gt-k49"; */
+"D7A-Gt-k49.text" = "100%";
+
 /* Class = "UIButton"; normalTitle = "Choose Device"; ObjectID = "E3V-Xs-LfZ"; */
 "E3V-Xs-LfZ.normalTitle" = "Choose Device";
 
-/* Class = "UILabel"; text = "ON/OFF"; ObjectID = "R6v-52-bi2"; */
-"R6v-52-bi2.text" = "ON/OFF";
+/* Class = "UILabel"; text = "Lux Target"; ObjectID = "R6v-52-bi2"; */
+"R6v-52-bi2.text" = "Lux Target";
+
+/* Class = "UILabel"; text = "Maximum"; ObjectID = "ZVt-63-HCq"; */
+"ZVt-63-HCq.text" = "Maximum";
 
 /* Class = "UILabel"; text = "Name"; ObjectID = "bnz-UY-uDy"; */
 "bnz-UY-uDy.text" = "Name";
 
 /* Class = "UIButton"; normalTitle = "Delete"; ObjectID = "dnf-uh-sKU"; */
 "dnf-uh-sKU.normalTitle" = "Delete";
+
+/* Class = "UILabel"; text = "32768 Lux"; ObjectID = "hUc-kA-5fo"; */
+"hUc-kA-5fo.text" = "32768 Lux";
+
+/* Class = "UILabel"; text = "Minimum"; ObjectID = "jxr-vh-GQH"; */
+"jxr-vh-GQH.text" = "Minimum";

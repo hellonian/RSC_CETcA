@@ -239,8 +239,8 @@
         }
     }];
     
-    
-    [self.navigationController pushViewController:list animated:YES];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
+    [self presentViewController:nav animated:YES completion:nil];
     
 }
 

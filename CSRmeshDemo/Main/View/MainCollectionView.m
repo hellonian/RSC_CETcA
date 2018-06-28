@@ -142,11 +142,18 @@
     
 }
 
+- (void)superCollectionViewCellDelegateSelectAction:(id)cell {
+    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewDelegateSelectAction:)]) {
+        [self.mainDelegate mainCollectionViewDelegateSelectAction:cell];
+    }
+}
+/*
 - (void)superCollectionViewCellDelegateSelectAction:(NSNumber *)cellDeviceId cellGroupId:(NSNumber *)cellGroupId cellSceneId:(NSNumber *)cellSceneId{
     if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewDelegateSelectAction:cellGroupId:cellSceneId:)]) {
         [self.mainDelegate mainCollectionViewDelegateSelectAction:cellDeviceId cellGroupId:cellGroupId cellSceneId:cellSceneId];
     }
 }
+ */
 
 - (void)superCollectionViewCellDelegateClickEmptyGroupCellAction:(NSIndexPath *)cellIndexPath {
     if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewDelegateClickEmptyGroupCellAction:)]) {

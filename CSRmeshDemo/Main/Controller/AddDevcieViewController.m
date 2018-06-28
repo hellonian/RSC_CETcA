@@ -58,11 +58,52 @@
     flowLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, floor(WIDTH*3/160.0));
     flowLayout.itemSize = CGSizeMake(WIDTH*5/16.0, WIDTH*9/32.0);
     
-    _mainCollectionView = [[MainCollectionView alloc] initWithFrame:CGRectMake(WIDTH*3/160.0, WIDTH*12/640.0+64, WIDTH*157/160.0, HEIGHT-64-WIDTH*3/160.0) collectionViewLayout:flowLayout cellIdentifier:@"MainCollectionViewCell"];
+    _mainCollectionView = [[MainCollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout cellIdentifier:@"MainCollectionViewCell"];
     _mainCollectionView.mainDelegate = self;
     
     [self.view addSubview:_mainCollectionView];
-    
+    [_mainCollectionView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    NSLayoutConstraint * main_top;
+    if (@available(iOS 11.0, *)) {
+        main_top = [NSLayoutConstraint constraintWithItem:_mainCollectionView
+                                                                     attribute:NSLayoutAttributeTop
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.view.safeAreaLayoutGuide
+                                                                     attribute:NSLayoutAttributeTop
+                                                                    multiplier:1.0
+                                                                      constant:WIDTH*3/160.0];
+    } else {
+        main_top = [NSLayoutConstraint constraintWithItem:_mainCollectionView
+                                                                     attribute:NSLayoutAttributeTop
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeTop
+                                                                    multiplier:1.0
+                                                                      constant:WIDTH*3/160.0+64.0];
+    }
+    NSLayoutConstraint * main_left = [NSLayoutConstraint constraintWithItem:_mainCollectionView
+                                                                  attribute:NSLayoutAttributeLeft
+                                                                  relatedBy:NSLayoutRelationEqual
+                                                                     toItem:self.view
+                                                                  attribute:NSLayoutAttributeLeft
+                                                                 multiplier:1.0
+                                                                   constant:WIDTH*3/160.0];
+    NSLayoutConstraint * main_right = [NSLayoutConstraint constraintWithItem:_mainCollectionView
+                                                                   attribute:NSLayoutAttributeRight
+                                                                   relatedBy:NSLayoutRelationEqual
+                                                                      toItem:self.view
+                                                                   attribute:NSLayoutAttributeRight
+                                                                  multiplier:1.0
+                                                                    constant:0];
+    NSLayoutConstraint * main_bottom = [NSLayoutConstraint constraintWithItem:_mainCollectionView
+                                                                    attribute:NSLayoutAttributeBottom
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:self.view
+                                                                    attribute:NSLayoutAttributeBottom
+                                                                   multiplier:1.0
+                                                                     constant:0];
+
+    [NSLayoutConstraint  activateConstraints:@[main_top,main_left,main_bottom,main_right]];
 }
 
 - (void)addVCBackAction {

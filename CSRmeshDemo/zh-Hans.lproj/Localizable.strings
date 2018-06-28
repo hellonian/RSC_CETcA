@@ -99,4 +99,7 @@
 "Setting_back" = "Setting_back_zh";
 "GroupIcons" = "分组图标";
 "EnterSceneName" = "为场景取个新名称";
+"Lamp" = "单个设备";
+"Group" = "分组";
+"Scene" = "场景";
 

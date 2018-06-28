@@ -42,6 +42,7 @@
 @property (nonatomic,strong) NSMutableArray *deleteTimers;
 @property (nonatomic,strong) NSMutableArray *backs;
 @property (nonatomic,strong) MBProgressHUD *hud;
+@property (weak, nonatomic) IBOutlet UIView *bgView;
 
 
 @end
@@ -52,7 +53,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-//    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneAction)];
+    if (@available(iOS 11.0,*)) {
+    }else {
+        [_bgView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:94.0f];
+    }
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
     self.navigationItem.rightBarButtonItem = done;
     
@@ -201,7 +205,8 @@
             self.deviceIds = [NSMutableArray arrayWithArray:devices];
         }
     }];
-    [self.navigationController pushViewController:list animated:YES];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 #pragma mark - UITextFieldDelegate

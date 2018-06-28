@@ -15,7 +15,8 @@
 #import "SingleDeviceModel.h"
 #import "CSRUtilities.h"
 #import <CSRmesh/LightModelApi.h>
-#import "SceneEntity.h"
+#import "SceneListSModel.h"
+#import "GroupListSModel.h"
 
 @interface MainCollectionViewCell ()<UIGestureRecognizerDelegate>
 {
@@ -99,6 +100,58 @@
         return;
     }
     
+    if ([info isKindOfClass:[GroupListSModel class]]) {
+        GroupListSModel *model = (GroupListSModel *)info;
+        self.groupId = model.areaID;
+        self.deviceId = @2000;
+        self.groupMembers = [model.devices allObjects];
+        self.nameLabel.hidden = NO;
+        if ([model.areaName isEqualToString:@"Living room"] || [model.areaName isEqualToString:@"Bed room"] || [model.areaName isEqualToString:@"Dining room"] || [model.areaName isEqualToString:@"Toilet"] || [model.areaName isEqualToString:@"Kitchen"]) {
+            self.nameLabel.text = AcTECLocalizedStringFromTable(model.areaName, @"Localizable");
+        }else {
+            self.nameLabel.text = model.areaName;
+        }
+        self.kindLabel.hidden = NO;
+        NSString *kind;
+        for (CSRDeviceEntity *deviceEntity in self.groupMembers) {
+            NSString *str = [CSRUtilities belongToDimmer:deviceEntity.shortName]? AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable"):AcTECLocalizedStringFromTable(@"Switch", @"Localizable");
+            if (kind.length>0) {
+                kind = [NSString stringWithFormat:@"%@ %@",kind,str];
+            }else {
+                kind = str;
+            }
+        }
+        self.kindLabel.text = kind;
+        if ([kind containsString:AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable")]) {
+            self.levelLabel.hidden = NO;
+        }else {
+            self.levelLabel.hidden = YES;
+        }
+        
+        if ([model.areaIconNum isEqualToNumber:@99]) {
+            self.iconView.image = [UIImage imageWithData:model.areaImage];
+        }else {
+            NSArray *iconArray = kGroupIcons;
+            NSString *imageString = [iconArray objectAtIndex:[model.areaIconNum integerValue]];
+            self.iconView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@room",imageString]];
+        }
+        self.cellIndexPath = indexPath;
+        [self adjustGroupCellBgcolorAndLevelLabel];
+        self.bottomView.hidden = NO;
+        if (model.isForList) {
+            self.seleteButton.hidden = NO;
+            if (model.isSelected) {
+                self.selected = YES;
+                [self.seleteButton setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+            }else {
+                self.selected = NO;
+                [self.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+            }
+        }
+        
+        return;
+    }
+    
     if ([info isKindOfClass:[CSRDeviceEntity class]]) {
         
         CSRDeviceEntity *deviceEntity = (CSRDeviceEntity *)info;
@@ -147,6 +200,17 @@
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
         [self adjustCellBgcolorAndLevelLabelWithDeviceId:device.deviceId];
+        if (device.isForList) {
+            self.seleteButton.hidden = NO;
+            if (device.isSelected) {
+                self.selected = YES;
+                [self.seleteButton setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+            }else {
+                self.selected = NO;
+                [self.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+            }
+        }
+        
         return;
     }
     
@@ -196,20 +260,29 @@
         return;
     }
     
-    if ([info isKindOfClass:[SceneEntity class]]) {
-        SceneEntity *scene = (SceneEntity *)info;
+    if ([info isKindOfClass:[SceneListSModel class]]) {
+        SceneListSModel *model = (SceneListSModel *)info;
         self.nameLabel.hidden = NO;
         self.kindLabel.hidden = YES;
         self.levelLabel.hidden = YES;
         self.deleteBtn.hidden = YES;
         self.moveImageView.hidden = YES;
         self.bottomView.hidden = YES;
-        NSString *iconString = kSceneIcons[[scene.iconID integerValue]];
+        NSString *iconString = kSceneIcons[[model.iconId integerValue]];
         self.iconView.image = [UIImage imageNamed:[NSString stringWithFormat:@"Scene_%@_select",iconString]];
-        self.nameLabel.text = scene.sceneName;
-        self.sceneId = scene.rcIndex;
+        self.nameLabel.text = model.sceneName;
+        self.sceneId = model.rcIndex;
         self.groupId = @2000;
         self.deviceId = @1000;
+        self.seleteButton.hidden = NO;
+        self.seleteButton.hidden = NO;
+        if (model.isSelected) {
+            self.selected = YES;
+            [self.seleteButton setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+        }else {
+            self.selected = NO;
+            [self.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        }
         return;
     }
     
@@ -479,10 +552,22 @@
 }
 
 - (IBAction)selectAction:(UIButton *)sender {
+    
+    self.selected = !self.selected;
+    if (self.selected) {
+        [self.seleteButton setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+    }else {
+        [self.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+    }
+    
+    if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateSelectAction:)]) {
+        [self.superCellDelegate superCollectionViewCellDelegateSelectAction:self];
+    }
+    /*
     if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateSelectAction:cellGroupId:cellSceneId:)]) {
         [self.superCellDelegate superCollectionViewCellDelegateSelectAction:self.deviceId cellGroupId:self.groupId cellSceneId:self.sceneId];
     }
-    
+    */
 }
 
 @end

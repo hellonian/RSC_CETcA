@@ -36,7 +36,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Qem-4H-tDf">
-                    <rect key="frame" x="0.0" y="94" width="375" height="44"/>
+                    <rect key="frame" x="0.0" y="50" width="375" height="44"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nSM-4Q-rKX">
                             <rect key="frame" x="20" y="12" width="46" height="20"/>
@@ -81,7 +81,7 @@
                     </connections>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HoU-ol-7SE">
-                    <rect key="frame" x="255" y="138" width="100" height="30"/>
+                    <rect key="frame" x="255" y="94" width="100" height="30"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="eBb-Ft-IcP"/>
                         <constraint firstAttribute="width" constant="100" id="fWh-Zf-QK7"/>
@@ -97,9 +97,9 @@
                 <constraint firstItem="HoU-ol-7SE" firstAttribute="top" secondItem="Qem-4H-tDf" secondAttribute="bottom" id="N2K-AG-hNW"/>
                 <constraint firstItem="dWc-Zh-M0f" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="OEj-OB-jtR"/>
                 <constraint firstItem="Qem-4H-tDf" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="cnV-do-P7C"/>
-                <constraint firstItem="Qem-4H-tDf" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="94" id="fod-jn-GaJ"/>
                 <constraint firstItem="Qem-4H-tDf" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="gyC-hz-wf1"/>
                 <constraint firstItem="dWc-Zh-M0f" firstAttribute="bottom" secondItem="Q5M-cg-NOt" secondAttribute="bottom" id="k4G-yH-kCd"/>
+                <constraint firstItem="Qem-4H-tDf" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" priority="750" constant="30" id="u0B-mv-LEk"/>
                 <constraint firstItem="dWc-Zh-M0f" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="ycF-dc-gFh"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>

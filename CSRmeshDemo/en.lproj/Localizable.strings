@@ -99,4 +99,6 @@
 "Setting_back" = "Setting_back_en";
 "GroupIcons" = "Group Icons";
 "EnterSceneName" = "Enter a name for the scene.";
-
+"Lamp" = "lamp";
+"Group" = "group";
+"Scene" = "scene";
