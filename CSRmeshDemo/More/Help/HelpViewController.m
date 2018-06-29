@@ -7,6 +7,7 @@
 //
 
 #import "HelpViewController.h"
+#import "PureLayout.h"
 
 @interface HelpViewController ()
 
@@ -23,6 +24,12 @@
         UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:AcTECLocalizedStringFromTable(@"Setting_back", @"Localizable")] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
         self.navigationItem.leftBarButtonItem = left;
     }
+    UIWebView *webView=[[UIWebView alloc]initWithFrame:CGRectZero];
+    NSURL *url = [NSURL URLWithString:@"http://39.108.152.134/help.html"];
+    NSURLRequest *request=[NSURLRequest requestWithURL:url];
+    [webView loadRequest:request];
+    [self.view addSubview:webView];
+    [webView autoPinEdgesToSuperviewEdges];
 }
 
 - (void)backSetting{
