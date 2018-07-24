@@ -3,7 +3,7 @@
 //  BluetoothAcTEC
 //
 //  Created by hua on 11/17/16.
-//  Copyright © 2016 hua. All rights reserved.
+//  Copyright © 2017年 AcTEC(Fuzhou) Electronics Co., Ltd. All rights reserved.
 //
 
 #import "ImproveTouchingExperience.h"

@@ -3,7 +3,7 @@
 //  CSRmeshDemo
 //
 //  Created by AcTEC on 2018/1/16.
-//  Copyright © 2018年 Cambridge Silicon Radio Ltd. All rights reserved.
+//  Copyright © 2017年 AcTEC(Fuzhou) Electronics Co., Ltd. All rights reserved.
 //
 
 #import "DeviceModelManager.h"
@@ -12,6 +12,7 @@
 
 #import <CSRmesh/PowerModelApi.h>
 #import <CSRmesh/LightModelApi.h>
+//#import <CSRmesh/MeshServiceApi.h>
 
 #import "DataModelManager.h"
 
@@ -65,7 +66,14 @@
 }
 
 - (void)getAllDevicesState {
-
+    [[MeshServiceApi sharedInstance] setRetryCount:@0];
+    [[LightModelApi sharedInstance] getState:@(0) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+        
+    } failure:^(NSError * _Nullable error) {
+        
+    }];
+    [[MeshServiceApi sharedInstance] setRetryCount:@6];
+    /*
     NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
     if (allDevices != nil && [allDevices count] != 0) {
         for (CSRDeviceEntity *deviceEntity in allDevices) {
@@ -83,15 +91,16 @@
             }
         }
     }
+     */
 }
 
 #pragma mark - LightModelApiDelegate
 
 - (void)didGetLightState:(NSNumber *)deviceId red:(NSNumber *)red green:(NSNumber *)green blue:(NSNumber *)blue level:(NSNumber *)level powerState:(NSNumber *)powerState colorTemperature:(NSNumber *)colorTemperature supports:(NSNumber *)supports meshRequestId:(NSNumber *)meshRequestId {
+    NSLog(@"调光回调 deviceId--> %@ powerState--> %@ --> %@ ",deviceId,powerState,level);
     __block BOOL exist=NO ;
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
-            NSLog(@"调光回调 deviceId--> %@ powerState--> %@ --> %@ ",deviceId,powerState,level);
             model.powerState = powerState;
             model.level = level;
             model.isleave = NO;
@@ -112,17 +121,16 @@
         model.level = level;
         model.isleave = NO;
         [_allDevices addObject:model];
-        [[DataModelManager shareInstance] setDeviceTime];
     }
 }
 
 #pragma mark - PowerModelApiDelegate
 
 - (void)didGetPowerState:(NSNumber *)deviceId state:(NSNumber *)state meshRequestId:(NSNumber *)meshRequestId {
+    NSLog(@"开关回调 deviceId --> %@ powerState--> %@",deviceId,state);
     __block BOOL exist;
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
-            NSLog(@"开关回调 deviceId --> %@ powerState--> %@",deviceId,state);
             model.powerState = state;
             model.isleave = NO;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId}];
@@ -140,7 +148,6 @@
         model.powerState = state;
         model.isleave = NO;
         [_allDevices addObject:model];
-        [[DataModelManager shareInstance] setDeviceTime];
     }
 }
 

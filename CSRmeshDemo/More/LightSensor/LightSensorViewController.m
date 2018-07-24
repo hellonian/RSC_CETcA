@@ -3,7 +3,7 @@
 //  CSRmeshDemo
 //
 //  Created by AcTEC on 2018/6/14.
-//  Copyright © 2018年 Cambridge Silicon Radio Ltd. All rights reserved.
+//  Copyright © 2017年 AcTEC(Fuzhou) Electronics Co., Ltd. All rights reserved.
 //
 
 #import "LightSensorViewController.h"

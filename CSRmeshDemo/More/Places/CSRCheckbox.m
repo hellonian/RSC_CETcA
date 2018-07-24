@@ -1,5 +1,5 @@
 //
-// Copyright 2015 Qualcomm Technologies International, Ltd.
+// Copyright © 2017年 AcTEC(Fuzhou) Electronics Co., Ltd. All rights reserved.
 //
 
 #import "CSRCheckbox.h"

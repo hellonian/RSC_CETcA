@@ -14,6 +14,7 @@
 #import "CSRmeshDevice.h"
 #import "CSRUtilities.h"
 #import "CSRMeshUtilities.h"
+#import "DataModelManager.h"
 
 @implementation CSRmeshManager
 
@@ -111,7 +112,6 @@
 {
     
     CSRmeshDevice *meshDevice = [[CSRDevicesManager sharedInstance] didAssociateDevice:deviceId deviceHash:deviceHash];
-    
     // Create hash from exisitng gateway
     __block BOOL isDeviceGateway = [CSRDevicesManager sharedInstance].isDeviceTypeGateway;
     
@@ -123,8 +123,7 @@
         [[CSRAppStateManager sharedInstance].selectedPlace.devices enumerateObjectsUsingBlock:^(id  _Nonnull obj, BOOL * _Nonnull stop) {
             
             CSRDeviceEntity *device = (CSRDeviceEntity *)obj;
-            
-            if ([device.deviceId isEqualToNumber:deviceId]) {
+            if ([device.deviceId isEqualToNumber:deviceId] || [device.uuid isEqualToString:meshDevice.uuid.UUIDString]) {
                 
                 deviceEntity = device;
                 *stop = YES;
@@ -145,13 +144,14 @@
             deviceEntity.isAssociated = @(YES);
             deviceEntity.deviceHash = deviceHash;
             deviceEntity.dhmKey = dhmKey;
+            deviceEntity.remoteBranch = @"";
             if (meshDevice.appearanceValue) {
                 deviceEntity.appearance = meshDevice.appearanceValue;
             }
             if (meshDevice.appearanceShortname) {
                 NSString *shortName = [CSRUtilities stringFromData:meshDevice.appearanceShortname];
                 deviceEntity.shortName = shortName;
-                meshDevice.name = [NSString stringWithFormat:@"%@ %d", shortName, (int)([deviceId intValue]&0x7fff)];
+                meshDevice.name = [NSString stringWithFormat:@"%@ %@", shortName, [CSRUtilities stringWithHexNumber:[deviceId integerValue]]];
                 deviceEntity.name = meshDevice.name;
             }
             if (meshDevice.uuid) {
@@ -213,6 +213,7 @@
         
         [[CSRDevicesManager sharedInstance] createDeviceFromProperties:deviceDictionary];
         
+        [[DataModelManager shareInstance] setDeviceTime];
         [[LightModelApi sharedInstance] getState:deviceId success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
             
         } failure:^(NSError * _Nullable error) {

@@ -171,9 +171,17 @@
     if (connectedBridges.count<1 && connectingBridges.count<1) {
         
         BOOL found=NO;
-        NSString *nowUuidString = [peripheral.uuidString substringToIndex:12];
+        NSString *nowUuidString;
+        if (peripheral.uuidString.length > 12){
+            nowUuidString = [peripheral.uuidString substringToIndex:12];
+        }
+        
         for (CBPeripheral *bridge in connectedBridges) {
-            NSString *bridgeUuidString = [bridge.uuidString substringToIndex:12];
+            
+            NSString *bridgeUuidString;
+            if (bridge.uuidString.length > 12) {
+                bridgeUuidString = [bridge.uuidString substringToIndex:12];
+            }
             if ([bridgeUuidString isEqualToString:nowUuidString])
                 found=YES;
         }
@@ -208,10 +216,16 @@
     _num = 0;
 //    [connectedBridges removeAllObjects];
 //    [connectedBridges addObject:peripheral];
-    NSString *nowUuidString = [peripheral.uuidString substringToIndex:12];
+    NSString *nowUuidString;
+    if (peripheral.uuidString.length > 12) {
+        nowUuidString = [peripheral.uuidString substringToIndex:12];
+    }
     __block BOOL exist = 0;
     [connectedBridges enumerateObjectsUsingBlock:^(CBPeripheral *connectedPeripheral, BOOL * _Nonnull stop) {
-        NSString *connectedUuidString = [connectedPeripheral.uuidString substringToIndex:12];
+        NSString *connectedUuidString;
+        if (connectedPeripheral.uuidString.length > 12) {
+            connectedUuidString = [connectedPeripheral.uuidString substringToIndex:12];
+        }
         if ([connectedUuidString isEqualToString:nowUuidString]) {
             exist = YES;
             *stop = YES;

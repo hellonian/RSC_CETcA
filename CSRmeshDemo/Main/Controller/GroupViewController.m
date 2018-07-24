@@ -3,7 +3,7 @@
 //  CSRmeshDemo
 //
 //  Created by AcTEC on 2018/1/30.
-//  Copyright © 2018年 Cambridge Silicon Radio Ltd. All rights reserved.
+//  Copyright © 2017年 AcTEC(Fuzhou) Electronics Co., Ltd. All rights reserved.
 //
 
 #import "GroupViewController.h"
@@ -40,7 +40,6 @@
 @property (weak, nonatomic) IBOutlet UIImageView *groupIconImageView;
 @property (weak, nonatomic) IBOutlet UILabel *groupNameLabel;
 @property (nonatomic,strong) MBProgressHUD *hud;
-@property (nonatomic,strong) MBProgressHUD *failHud;
 @property (nonatomic,assign) BOOL hasChanged;
 @property (nonatomic,copy) NSString *oldName;
 @property (nonatomic,strong) NSNumber *originalLevel;
@@ -234,7 +233,7 @@
             
             areaIdNumber = _areaEntity.areaID;
             NSInteger removeNum = 0;
-            
+            [self.groupRemoveDevices removeAllObjects];
             for (CSRDeviceEntity *deviceEntity in _areaEntity.devices) {
                 __block BOOL exist=0;
                 [_devicesCollectionView.dataArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -275,7 +274,7 @@
                                                                     NSNumber *areaValue = [desiredGroups objectAtIndex:[groupIndex integerValue]];
                                                                     
                                                                     CSRAreaEntity *areaEntity = [[[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"CSRAreaEntity" withPredicate:@"areaID == %@", areaValue] firstObject];
-                                                                    
+                                                                    NSLog(@">>>> nianbao >>> %@ | %@ | %@ | %@ | %@ } %@",deviceId,modelNo,groupIndex,instance,groupId,areaEntity);
                                                                     if (areaEntity) {
                                                                         
                                                                         [_areaEntity removeDevicesObject:deviceEntity];
@@ -300,11 +299,11 @@
                                                                 if (!alertController) {
                                                                     [self.groupLostDevices removeAllObjects];
                                                                     [self.groupLostDevices addObject:deviceEntity];
-                                                                    alertController = [UIAlertController alertControllerWithTitle:@"Remove Group Member"
-                                                                                                                          message:[NSString stringWithFormat:@"Device wasn't found. Do you want to remove %@ anyway?", deviceEntity.name]
+                                                                    alertController = [UIAlertController alertControllerWithTitle:AcTECLocalizedStringFromTable(@"RemoveGroupMember", @"Localizable")
+                                                                                                                          message:[NSString stringWithFormat:@"%@ : %@?", AcTECLocalizedStringFromTable(@"RemoveDeviceOffLine", @"Localizable"),deviceEntity.name]
                                                                                                                    preferredStyle:UIAlertControllerStyleAlert];
                                                                     [alertController.view setTintColor:DARKORAGE];
-                                                                    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"NO"
+                                                                    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable")
                                                                                                                            style:UIAlertActionStyleCancel
                                                                                                                          handler:^(UIAlertAction *action) {
                                                                                                                              for (CSRDeviceEntity *deviceEntity in self.groupLostDevices) {
@@ -321,7 +320,7 @@
                                                                                                                              }
                                                                                                                          }];
                                                                     
-                                                                    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"YES"
+                                                                    UIAlertAction *okAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable")
                                                                                                                        style:UIAlertActionStyleDefault
                                                                                                                      handler:^(UIAlertAction *action) {
                                                                                                                          
@@ -356,7 +355,7 @@
                                                                         }
                                                                         
                                                                     }
-                                                                    alertController.message = [NSString stringWithFormat:@"Device wasn't found. Do you want to remove %@ anyway?", string];
+                                                                    alertController.message = [NSString stringWithFormat:@"%@ : %@?", AcTECLocalizedStringFromTable(@"RemoveDeviceOffLine", @"Localizable"), string];
                                                                 }
                                                             }];
                     [NSThread sleepForTimeInterval:0.3];
@@ -365,13 +364,19 @@
                 
                 
             }
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.06 * ([_areaEntity.devices count]) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * ([_areaEntity.devices count]) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [self saveArea:areaIdNumber sortId:_areaEntity.sortId];
-//                NSLog(@">>>> %ld   %ld",removeNum,[self.groupRemoveDevices count]);
-                if (_hud/* && ((removeNum>0 && removeNum == [self.groupRemoveDevices count]) || removeNum==0)*/) {
+                NSLog(@">>>>nian %ld   %ld",removeNum,[self.groupRemoveDevices count]);
+                if (_hud && ((removeNum>0 && removeNum == [self.groupRemoveDevices count]) || removeNum==0)) {
                     [_hud hideAnimated:YES];
                     _hud = nil;
                 }
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    if (_hud) {
+                        [_hud hideAnimated:YES];
+                        _hud = nil;
+                    }
+                });
             });
             
             

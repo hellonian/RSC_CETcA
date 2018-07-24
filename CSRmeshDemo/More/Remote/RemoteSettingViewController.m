@@ -3,7 +3,7 @@
 //  CSRmeshDemo
 //
 //  Created by AcTEC on 2018/3/1.
-//  Copyright © 2018年 Cambridge Silicon Radio Ltd. All rights reserved.
+//  Copyright © 2017年 AcTEC(Fuzhou) Electronics Co., Ltd. All rights reserved.
 //
 
 #import "RemoteSettingViewController.h"
@@ -22,6 +22,8 @@
 @interface RemoteSettingViewController ()<UITextFieldDelegate,MBProgressHUDDelegate>
 {
     dispatch_semaphore_t semaphore;
+    NSInteger timerSeconde;
+    NSTimer *timer;
 }
 
 @property (weak, nonatomic) IBOutlet UITextField *nameTF;
@@ -751,7 +753,7 @@
         level = level.length > 1 ? level:[NSString stringWithFormat:@"0%@",level];
         dstAddrLevel = [NSString stringWithFormat:@"%@%@%@",dstAddrLevel,[self exchangePositionOfDeviceId:[sceneMember.deviceID integerValue]],level];
     }
-    NSString *nLength = (dstAddrLevel.length/2+5)<10? [NSString stringWithFormat:@"0%ld",(dstAddrLevel.length/2+5)]:[NSString stringWithFormat:@"%ld",(dstAddrLevel.length/2+5)];
+    NSString *nLength = [CSRUtilities stringWithHexNumber:dstAddrLevel.length/2+5];
     if ((dstAddrLevel.length/2+5)<250) {
         NSString *cmdStr = [NSString stringWithFormat:@"73%@010%ld%@%@%@",nLength,swIndex,rcIndexStr,ligCnt,dstAddrLevel];
         return cmdStr;
@@ -760,6 +762,8 @@
 }
 
 - (void)doneAction {
+    _setSuccess = NO;
+    timerSeconde = 10;
     [self showHudTogether];
     
     if ([_remoteEntity.shortName isEqualToString:@"RB01"]) {
@@ -823,6 +827,7 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdStr1] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
                         dispatch_semaphore_signal(semaphore);
+                        timerSeconde = 10;
                     } failure:^(NSError * _Nonnull error) {
                         
                     }];
@@ -841,6 +846,7 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdStr2] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
                         dispatch_semaphore_signal(semaphore);
+                        timerSeconde = 10;
                     } failure:^(NSError * _Nonnull error) {
                         
                     }];
@@ -859,6 +865,7 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdStr3] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
                         dispatch_semaphore_signal(semaphore);
+                        timerSeconde = 10;
                     } failure:^(NSError * _Nonnull error) {
                         
                     }];
@@ -887,6 +894,8 @@
                         _setSuccess = YES;
                         [_hub hideAnimated:YES];
                         [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+                        [timer invalidate];
+                        timer = nil;
                     } failure:^(NSError * _Nonnull error) {
                         
                     }];
@@ -917,6 +926,8 @@
             _setSuccess = YES;
             [_hub hideAnimated:YES];
             [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+            [timer invalidate];
+            timer = nil;
         } failure:^(NSError * _Nonnull error) {
             
         }];
@@ -1007,29 +1018,25 @@
 
 - (void)showHudTogether {
     _hub = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    _hub.mode = MBProgressHUDModeDeterminateHorizontalBar;
+    _hub.mode = MBProgressHUDModeIndeterminate;
     _hub.delegate = self;
     _hub.label.text = AcTECLocalizedStringFromTable(@"RemoteOpenAlert", @"Localizable");
     _hub.label.font = [UIFont systemFontOfSize:13];
     _hub.label.numberOfLines = 0;
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
-        float progress = 0.0f;
-        while (progress < 1.0f) {
-            progress +=0.01f;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [MBProgressHUD HUDForView:self.view].progress = progress;
-            });
-            usleep(100000);
-        }
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
+    timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerOutWaiting) userInfo:nil repeats:YES];
+}
+
+- (void)timerOutWaiting {
+    NSLog(@"%d  %ld",_setSuccess,timerSeconde);
+    if (!_setSuccess) {
+        timerSeconde--;
+        if (timerSeconde == 0) {
             [_hub hideAnimated:YES];
-            if (_setSuccess == NO) {
-                [self showTextHud:AcTECLocalizedStringFromTable(@"TimeOut", @"Localizable")];
-            }
-        });
-        
-    });
+            [self showTextHud:AcTECLocalizedStringFromTable(@"TimeOut", @"Localizable")];
+            [timer invalidate];
+            timer = nil;
+        }
+    }
 }
 
 /*
@@ -1242,7 +1249,7 @@
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:AcTECLocalizedStringFromTable(@"DeleteDevice", @"Localizable")
                                                                              message:[NSString stringWithFormat:@"%@ %@ ？",AcTECLocalizedStringFromTable(@"DeleteDeviceOffLine", @"Localizable"), _deleteDevice.name]
                                                                       preferredStyle:UIAlertControllerStyleAlert];
-    [alertController.view setTintColor:[CSRUtilities colorFromHex:kColorBlueCSR]];
+    [alertController.view setTintColor:DARKORAGE];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable")
                                                            style:UIAlertActionStyleCancel
                                                          handler:^(UIAlertAction *action) {

@@ -2,8 +2,8 @@
 //  JQProgressView.m
 //  Bluetooth
 //
-//  Created by Evan on 2016/12/7.
-//  Copyright © 2016年 Evan. All rights reserved.
+//  Created by AcTEC on 2016/12/7.
+//  Copyright © 2017年 AcTEC(Fuzhou) Electronics Co., Ltd. All rights reserved.
 //
 
 #import "JQProgressView.h"

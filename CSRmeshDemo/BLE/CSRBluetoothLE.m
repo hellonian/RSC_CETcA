@@ -315,7 +315,7 @@
             [self discoveryDidRefresh];
         }
         [self didDiscoverPeripheral:peripheral];
-    }else if ([RSSI integerValue]>-80){
+    }else if ([RSSI integerValue]>-80 /*&&[test isEqualToString:@"00025B0101AD"]*/){
         
         NSMutableDictionary *enhancedAdvertismentData = [NSMutableDictionary dictionaryWithDictionary:advertisementData];
         enhancedAdvertismentData [CSR_PERIPHERAL] = peripheral;
@@ -536,7 +536,7 @@
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
     
     if (!_isUpdateFW) {
-        if (error == nil) {
+        if (error == nil && [service.UUID.UUIDString isEqualToString:@"FEF1"]) {
             [[MeshServiceApi sharedInstance] connectBridge:peripheral enableBridgeNotification:@([[CSRmeshSettings sharedInstance] getBleListenMode])];
             // Inform BridgeRoaming that a peripheral has disconnected
             
@@ -557,8 +557,11 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"BridgeConnectedNotification" object:nil userInfo:@{@"peripheral":peripheral}];
             }
             
-            [[DataModelManager shareInstance] setDeviceTime];
-            [[DeviceModelManager sharedInstance] getAllDevicesState];
+//            if ([service.UUID.UUIDString isEqualToString:@"FEF1"]) {
+                [[DataModelManager shareInstance] setDeviceTime];
+                [[DeviceModelManager sharedInstance] getAllDevicesState];
+//            }
+            
         }
 
     }else {

@@ -3,7 +3,7 @@
 //  CSRmeshDemo
 //
 //  Created by AcTEC on 2017/9/6.
-//  Copyright © 2017年 Cambridge Silicon Radio Ltd. All rights reserved.
+//  Copyright © 2017年 AcTEC(Fuzhou) Electronics Co., Ltd. All rights reserved.
 //
 
 #import "DataModelManager.h"
@@ -367,7 +367,7 @@ static DataModelManager *manager = nil;
 
 - (NSString *)hmsStringForDate:(NSDate *)date {
     NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
-    formatter.dateFormat = @"hh:mm:ss";
+    formatter.dateFormat = @"HH:mm:ss";
     NSString *dateStr = [formatter stringFromDate:date];
     NSArray *hmsAry = [dateStr componentsSeparatedByString:@":"];
     

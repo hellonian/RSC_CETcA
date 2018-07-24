@@ -3,7 +3,7 @@
 //  CSRmeshDemo
 //
 //  Created by AcTEC on 2018/1/25.
-//  Copyright © 2018年 Cambridge Silicon Radio Ltd. All rights reserved.
+//  Copyright © 2017年 AcTEC(Fuzhou) Electronics Co., Ltd. All rights reserved.
 //
 
 #import "DeviceViewController.h"
@@ -36,6 +36,11 @@
     // Do any additional setup after loading the view from its nib.
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange:) name:ZZAppLanguageDidChangeNotification object:nil];
+    
+    if (@available(iOS 11.0,*)) {
+    }else {
+        [self.topView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:64.0f];
+    }
     
     if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
         UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(closeAction)];

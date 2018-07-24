@@ -102,4 +102,5 @@
 "Lamp" = "单个设备";
 "Group" = "分组";
 "Scene" = "场景";
-
+"RemoveGroupMember" = "移除分组设备";
+"RemoveDeviceOffLine" = "未发现设备,是否强制删除设备";

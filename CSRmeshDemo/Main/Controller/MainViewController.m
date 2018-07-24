@@ -3,7 +3,7 @@
 //  CSRmeshDemo
 //
 //  Created by AcTEC on 2018/1/17.
-//  Copyright © 2018年 Cambridge Silicon Radio Ltd. All rights reserved.
+//  Copyright © 2017年 AcTEC(Fuzhou) Electronics Co., Ltd. All rights reserved.
 //
 
 #import "MainViewController.h"
@@ -73,8 +73,8 @@
     self.navigationItem.rightBarButtonItem = edit;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reGetDataForPlaceChanged) name:@"reGetDataForPlaceChanged" object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeConnectedNotification:) name:@"BridgeConnectedNotification" object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeDisconnectedNotification:) name:@"BridgeDisconnectedNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeConnectedNotification:) name:@"BridgeConnectedNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeDisconnectedNotification:) name:@"BridgeDisconnectedNotification" object:nil];
     
     self.improver = [[ImproveTouchingExperience alloc] init];
     
@@ -197,18 +197,18 @@
     
 }
 
-//- (void)bridgeConnectedNotification:(NSNotification *)notification {
-//    NSDictionary *dic = notification.userInfo;
-//    CBPeripheral *peripheral = dic[@"peripheral"];
-//    _connectedBridgeLabel.text = [NSString stringWithFormat:@"%@  %@",peripheral.name,peripheral.uuidString];
-////    _connectedBridgeLabel.text = @"Connected";
-//    _connectedBridgeLabel.textColor = [UIColor darkTextColor];
-//}
-//
-//- (void)bridgeDisconnectedNotification:(NSNotification *)notification {
-//    _connectedBridgeLabel.text = @"Not Available";
-//    _connectedBridgeLabel.textColor = DARKORAGE;
-//}
+- (void)bridgeConnectedNotification:(NSNotification *)notification {
+    NSDictionary *dic = notification.userInfo;
+    CBPeripheral *peripheral = dic[@"peripheral"];
+    _connectedBridgeLabel.text = [NSString stringWithFormat:@"%@  %@",peripheral.name,peripheral.uuidString];
+//    _connectedBridgeLabel.text = @"Connected";
+    _connectedBridgeLabel.textColor = [UIColor darkTextColor];
+}
+
+- (void)bridgeDisconnectedNotification:(NSNotification *)notification {
+    _connectedBridgeLabel.text = @"Not Available";
+    _connectedBridgeLabel.textColor = DARKORAGE;
+}
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -316,6 +316,7 @@
 }
 
 - (void)editMainView {
+    
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneItemAction)];
     self.navigationItem.rightBarButtonItem = done;
     _mainCVEditting = YES;
@@ -636,36 +637,12 @@
                 [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:sceneMember.powerState];
             }else if ([CSRUtilities belongToDimmer:sceneMember.kindString]) {
                 [[LightModelApi sharedInstance] setLevel:sceneMember.deviceID level:sceneMember.level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-                    __block BOOL exist;
-                    [[DeviceModelManager sharedInstance].allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
-                        if ([model.deviceId isEqualToNumber:deviceId]) {
-                            
-                            model.powerState = powerState;
-                            model.level = sceneMember.level;
-                            
-                            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
-                            
-                            exist = YES;
-                            *stop = YES;
-                        }
-                        
-                    }];
-                    if (!exist) {
-                        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
-                        DeviceModel *model = [[DeviceModel alloc] init];
-                        model.deviceId = deviceEntity.deviceId;
-                        model.shortName = deviceEntity.shortName;
-                        model.name = deviceEntity.name;
-                        model.powerState = powerState;
-                        model.level = sceneMember.level;
-                        [[DeviceModelManager sharedInstance].allDevices addObject:model];
-                        [[DataModelManager shareInstance] setDeviceTime];
-                    }
+
                 } failure:^(NSError * _Nullable error) {
 
                 }];
             }
-            
+            [NSThread sleepForTimeInterval:0.03];
         }];
     }else {
         if ([self determineDeviceHasBeenAdded]) {
