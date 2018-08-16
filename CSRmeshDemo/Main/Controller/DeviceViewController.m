@@ -223,7 +223,6 @@
         [self adjustInterface];
         
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-        NSLog(@"%@",deviceEntity.uuid);
         NSString *macAddr = [deviceEntity.uuid substringFromIndex:24];
         NSString *doneTitle = @"";
         int count = 0;

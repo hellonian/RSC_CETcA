@@ -350,7 +350,7 @@
 
 - (void)adjustCellBgcolorAndLevelLabelWithDeviceId:(NSNumber *)deviceId {
     DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
-    NSLog(@"~~~> %@ ; %@ ; %@",model.shortName,model.powerState,model.level);
+//    NSLog(@"~~~> %@ ; %@ ; %@",model.shortName,model.powerState,model.level);
     if (!model.isleave) {
         if (![model.powerState boolValue]) {
             if ([_groupId isEqualToNumber:@1000]) {
@@ -460,7 +460,7 @@
 
 - (void)mainCellTapGestureAction:(UITapGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateEnded) {
-        NSLog(@"maincell00 groupId:%@ deviceId:%@",_groupId,_deviceId);
+//        NSLog(@"maincell00 groupId:%@ deviceId:%@",_groupId,_deviceId);
         if (self.kindLabel.text.length > 0) {
             if ([self.deviceId isEqualToNumber:@1000] || [self.deviceId isEqualToNumber:@3000] || [self.deviceId isEqualToNumber:@4000]) {
                 if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateAddDeviceAction:cellIndexPath:)]) {

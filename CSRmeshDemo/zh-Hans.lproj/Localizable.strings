@@ -110,3 +110,5 @@
 "Exit" = "退出程序";
 "AllSceneEmpty" = "所有场景都为空。\n请先编辑场景。";
 "Controller" = "控制器";
+"LightSensorIntroduce" = "光感可以让根据环境亮度自动调节灯具亮度。在这里可以对光感进行设置。";
+"AddLightSensor" = "添加光感";

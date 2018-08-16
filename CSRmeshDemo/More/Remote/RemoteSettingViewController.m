@@ -46,6 +46,7 @@
 @property (nonatomic,strong) MBProgressHUD *hub;
 @property (nonatomic,assign) BOOL setSuccess;
 @property (weak, nonatomic) IBOutlet UILabel *batteryLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *practicalityImageView;
 
 @end
 
@@ -57,7 +58,7 @@
     
     if (@available(iOS 11.0,*)) {
     }else {
-        [_nameBgView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:94.0f];
+        [_practicalityImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:94.0f];
     }
     self.navigationItem.title = self.remoteEntity.name;
     self.nameTF.delegate = self;
@@ -65,6 +66,7 @@
     self.originalName = self.remoteEntity.name;
     
     if ([self.remoteEntity.shortName isEqualToString:@"RB01"]) {
+        _practicalityImageView.image = [UIImage imageNamed:@"rb01"];
         [self.view addSubview:self.fiveRemoteView];
         [self.fiveRemoteView autoSetDimension:ALDimensionHeight toSize:179.0f];
         [self.fiveRemoteView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
@@ -254,9 +256,15 @@
                 }
                 
             }
+        }else {
+            _fConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _fConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _fConrolThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _fConrolFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
         }
         
     }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]) {
+        _practicalityImageView.image = [UIImage imageNamed:@"rb02"];
         [self.view addSubview:self.singleRemoteView];
         [self.singleRemoteView autoSetDimension:ALDimensionHeight toSize:44.0f];
         [self.singleRemoteView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
@@ -300,6 +308,10 @@
                     _sSelectOneLabel.text = AcTECLocalizedStringFromTable(@"Notfound", @"Localizable");
                 }
             }
+        }
+        
+        else {
+            _sConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
         }
         
         /*

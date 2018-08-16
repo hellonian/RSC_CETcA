@@ -21,6 +21,7 @@
 
 @property (nonatomic,strong) NSMutableArray *dataArray;
 @property (nonatomic,strong) UITableView *tableView;
+@property (nonatomic,strong) UIView *noneDataView;
 
 @end
 
@@ -44,59 +45,7 @@
     self.navigationItem.rightBarButtonItem = add;
     
     [self getLightSensorData];
-    [self.view addSubview:self.tableView];
-    [self.tableView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    NSLayoutConstraint *top;
-    if (@available(iOS 11.0, *)) {
-        top = [NSLayoutConstraint constraintWithItem:self.tableView
-                                           attribute:NSLayoutAttributeTop
-                                           relatedBy:NSLayoutRelationEqual
-                                              toItem:self.view.safeAreaLayoutGuide
-                                           attribute:NSLayoutAttributeTop
-                                          multiplier:1.0
-                                            constant:0];
-    } else {
-        top = [NSLayoutConstraint constraintWithItem:self.tableView
-                                           attribute:NSLayoutAttributeTop
-                                           relatedBy:NSLayoutRelationEqual
-                                              toItem:self.view
-                                           attribute:NSLayoutAttributeTop
-                                          multiplier:1.0
-                                            constant:0];
-    }
-    NSLayoutConstraint *left = [NSLayoutConstraint constraintWithItem:self.tableView
-                                                                  attribute:NSLayoutAttributeLeft
-                                                                  relatedBy:NSLayoutRelationEqual
-                                                                     toItem:self.view
-                                                                  attribute:NSLayoutAttributeLeft
-                                                                 multiplier:1.0
-                                                                   constant:0];
-    NSLayoutConstraint *right = [NSLayoutConstraint constraintWithItem:self.tableView
-                                                                   attribute:NSLayoutAttributeRight
-                                                                   relatedBy:NSLayoutRelationEqual
-                                                                      toItem:self.view
-                                                                   attribute:NSLayoutAttributeRight
-                                                                  multiplier:1.0
-                                                                    constant:0];
-    NSLayoutConstraint *bottom;
-    if (@available(iOS 11.0, *)) {
-        bottom = [NSLayoutConstraint constraintWithItem:self.tableView
-                                                    attribute:NSLayoutAttributeBottom
-                                                    relatedBy:NSLayoutRelationEqual
-                                                       toItem:self.view.safeAreaLayoutGuide
-                                                    attribute:NSLayoutAttributeBottom
-                                                   multiplier:1.0
-                                                     constant:0];
-    } else {
-        bottom = [NSLayoutConstraint constraintWithItem:self.tableView
-                                                    attribute:NSLayoutAttributeBottom
-                                                    relatedBy:NSLayoutRelationEqual
-                                                       toItem:self.view
-                                                    attribute:NSLayoutAttributeBottom
-                                                   multiplier:1.0
-                                                     constant:0];
-    }
-    [NSLayoutConstraint  activateConstraints:@[top,left,right,bottom]];
+    [self layoutViews];
 }
 
 - (void)addClick {
@@ -104,7 +53,7 @@
     __weak LightSensorViewController *weakSelf = self;
     addVC.handle = ^{
         [weakSelf getLightSensorData];
-        [self.tableView reloadData];
+        [weakSelf layoutViews];
     };
     CATransition *animation = [CATransition animation];
     [animation setDuration:0.3];
@@ -135,6 +84,79 @@
                 [self.dataArray addObject:deviceEntity];
             }
         }
+    }
+}
+
+- (void)layoutViews {
+    if ([self.dataArray count] == 0) {
+        [self.view addSubview:self.noneDataView];
+        [_noneDataView autoSetDimension:ALDimensionWidth toSize:190.0];
+        [_noneDataView autoSetDimension:ALDimensionHeight toSize:300.0];
+        [_noneDataView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+        [_noneDataView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:119.0];
+        if (self.tableView) {
+            [self.tableView removeFromSuperview];
+        }
+        
+    }else {
+        [self.view addSubview:self.tableView];
+        [self.tableView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        NSLayoutConstraint *top;
+        if (@available(iOS 11.0, *)) {
+            top = [NSLayoutConstraint constraintWithItem:self.tableView
+                                               attribute:NSLayoutAttributeTop
+                                               relatedBy:NSLayoutRelationEqual
+                                                  toItem:self.view.safeAreaLayoutGuide
+                                               attribute:NSLayoutAttributeTop
+                                              multiplier:1.0
+                                                constant:0];
+        } else {
+            top = [NSLayoutConstraint constraintWithItem:self.tableView
+                                               attribute:NSLayoutAttributeTop
+                                               relatedBy:NSLayoutRelationEqual
+                                                  toItem:self.view
+                                               attribute:NSLayoutAttributeTop
+                                              multiplier:1.0
+                                                constant:0];
+        }
+        NSLayoutConstraint *left = [NSLayoutConstraint constraintWithItem:self.tableView
+                                                                attribute:NSLayoutAttributeLeft
+                                                                relatedBy:NSLayoutRelationEqual
+                                                                   toItem:self.view
+                                                                attribute:NSLayoutAttributeLeft
+                                                               multiplier:1.0
+                                                                 constant:0];
+        NSLayoutConstraint *right = [NSLayoutConstraint constraintWithItem:self.tableView
+                                                                 attribute:NSLayoutAttributeRight
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.view
+                                                                 attribute:NSLayoutAttributeRight
+                                                                multiplier:1.0
+                                                                  constant:0];
+        NSLayoutConstraint *bottom;
+        if (@available(iOS 11.0, *)) {
+            bottom = [NSLayoutConstraint constraintWithItem:self.tableView
+                                                  attribute:NSLayoutAttributeBottom
+                                                  relatedBy:NSLayoutRelationEqual
+                                                     toItem:self.view.safeAreaLayoutGuide
+                                                  attribute:NSLayoutAttributeBottom
+                                                 multiplier:1.0
+                                                   constant:0];
+        } else {
+            bottom = [NSLayoutConstraint constraintWithItem:self.tableView
+                                                  attribute:NSLayoutAttributeBottom
+                                                  relatedBy:NSLayoutRelationEqual
+                                                     toItem:self.view
+                                                  attribute:NSLayoutAttributeBottom
+                                                 multiplier:1.0
+                                                   constant:0];
+        }
+        [NSLayoutConstraint  activateConstraints:@[top,left,right,bottom]];
+        if (self.noneDataView) {
+            [self.noneDataView removeFromSuperview];
+        }
+        
+        [self.tableView reloadData];
     }
 }
 
@@ -177,7 +199,7 @@
     __weak LightSensorViewController *weakSelf = self;
     lssvc.reloadDataHandle = ^{
         [weakSelf getLightSensorData];
-        [weakSelf.tableView reloadData];
+        [weakSelf layoutViews];
     };
     
     [self.navigationController pushViewController:lssvc animated:YES];
@@ -206,7 +228,7 @@
 
 - (void)reGetDataForPlaceChanged {
     [self getLightSensorData];
-    [self.tableView reloadData];
+    [self layoutViews];
 }
 
 - (void)languageChange {
@@ -214,6 +236,17 @@
     if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
         UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:AcTECLocalizedStringFromTable(@"Setting_back", @"Localizable")] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
         self.navigationItem.leftBarButtonItem = left;
+    }
+    if (_noneDataView) {
+        [_noneDataView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([obj isKindOfClass:[UILabel class]]) {
+                UILabel *label = (UILabel *)obj;
+                label.text = AcTECLocalizedStringFromTable(@"LightSensorIntroduce", @"Localizable");
+            }else if ([obj isKindOfClass:[UIButton class]]) {
+                UIButton *btn = (UIButton *)obj;
+                [btn setTitle:AcTECLocalizedStringFromTable(@"AddLightSensor", @"Localizable") forState:UIControlStateNormal];
+            }
+        }];
     }
 }
 
@@ -224,6 +257,43 @@
     } failure:^(NSError * _Nullable error) {
 
     }];
+}
+
+- (UIView *)noneDataView {
+    if (!_noneDataView) {
+        _noneDataView = [[UIView alloc] init];
+        UIImageView *imageView = [[UIImageView alloc] init];
+        imageView.image = [UIImage imageNamed:@"LightSensor_bg"];
+        [_noneDataView addSubview:imageView];
+        
+        UILabel *label = [[UILabel alloc] init];
+        label.text = AcTECLocalizedStringFromTable(@"LightSensorIntroduce", @"Localizable");
+        label.font = [UIFont systemFontOfSize:11];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+        label.numberOfLines = 0;
+        [_noneDataView addSubview:label];
+        
+        UIButton *btn = [[UIButton alloc] init];
+        [btn setTitle:AcTECLocalizedStringFromTable(@"AddLightSensor", @"Localizable") forState:UIControlStateNormal];
+        [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(addClick) forControlEvents:UIControlEventTouchUpInside];
+        [_noneDataView addSubview:btn];
+        
+        [imageView autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:_noneDataView];
+        [imageView autoSetDimension:ALDimensionHeight toSize:168.0];
+        [imageView autoSetDimension:ALDimensionWidth toSize:200.0];
+        [imageView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+        [label autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:imageView withOffset:20.0];
+        [label autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+        [label autoPinEdgeToSuperviewEdge:ALEdgeRight];
+        [label autoSetDimension:ALDimensionHeight toSize:80];
+        [btn autoPinEdgeToSuperviewEdge:ALEdgeBottom];
+        [btn autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+        [btn autoPinEdgeToSuperviewEdge:ALEdgeRight];
+        [btn autoSetDimension:ALDimensionHeight toSize:15];
+    }
+    return _noneDataView;
 }
 
 @end

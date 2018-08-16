@@ -110,3 +110,5 @@
 "Exit" = "Exit";
 "AllSceneEmpty" = "All the scenes are empty. \nPlease edit the scenes first.";
 "Controller" = "Controller";
+"LightSensorIntroduce" = "Light sensors allow lighting to operate autonomously without manual user interaction.Setting them up in order to make them into use.";
+"AddLightSensor" = "Add a Light Sensor";

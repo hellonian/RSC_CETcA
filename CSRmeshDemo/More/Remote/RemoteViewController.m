@@ -96,7 +96,10 @@
         [_noneDataView autoSetDimension:ALDimensionHeight toSize:262.0];
         [_noneDataView autoAlignAxisToSuperviewAxis:ALAxisVertical];
         [_noneDataView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:119.0];
-        [self.tableView removeFromSuperview];
+        if (self.tableView) {
+            [self.tableView removeFromSuperview];
+        }
+        
     }else {
         [self.view addSubview:self.tableView];
         if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
@@ -104,7 +107,10 @@
         }else {
             [_tableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 0, 50, 0)];
         }
-        [self.noneDataView removeFromSuperview];
+        if (self.noneDataView) {
+            [self.noneDataView removeFromSuperview];
+        }
+        
         [self.tableView reloadData];
     }
 }
