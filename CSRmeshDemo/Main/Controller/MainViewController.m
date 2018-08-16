@@ -242,7 +242,8 @@
     NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
     if (mutableArray != nil || [mutableArray count] != 0) {
         [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName]) {
+            NSLog(@"<>>>> %@",deviceEntity.shortName);
+            if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName] || [deviceEntity.shortName isEqualToString:@"RGBCW"]) {
                 if (![deviceIdWasInAreaArray containsObject:deviceEntity.deviceId]) {
                     deviceEntity.isEditting = @(_mainCVEditting);
                     [_mainCollectionView.dataArray addObject:deviceEntity];

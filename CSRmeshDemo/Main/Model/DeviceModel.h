@@ -15,9 +15,14 @@
 @property (nonatomic, strong) NSString *shortName;
 @property (nonatomic, strong) NSNumber *level;
 @property (nonatomic, strong) NSNumber *powerState;
+@property (nonatomic, strong) NSNumber *colorTemperature;
+@property (nonatomic, strong) NSNumber *supports;
 @property (nonatomic, assign) BOOL isForGroup;
 @property (nonatomic, assign) BOOL isShowDeleteBtn;
 @property (nonatomic, assign) BOOL isleave;
+@property (nonatomic, strong) NSNumber *red;
+@property (nonatomic, strong) NSNumber *green;
+@property (nonatomic, strong) NSNumber *blue;
 
 @end
 

@@ -15,5 +15,10 @@
 @dynamic level;
 @dynamic kindString;
 @dynamic sceneID;
+@dynamic colorRed;
+@dynamic colorGreen;
+@dynamic colorBlue;
+@dynamic colorTemperature;
+@dynamic eveType;
 
 @end

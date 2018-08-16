@@ -9,6 +9,7 @@
 #import "MainTabBarController.h"
 #import "PureLayout.h"
 #import <MBProgressHUD.h>
+#import "AppDelegate.h"
 
 @interface MainTabBarController ()<TabBarDelegate,MBProgressHUDDelegate>
 
@@ -79,7 +80,44 @@
         _hud.backgroundView.alpha = 0.6;
         _hud.activityIndicatorColor = [UIColor whiteColor];
         _hud.delegate = self;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            if (_hud) {
+                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+                NSMutableAttributedString *hogan = [[NSMutableAttributedString alloc] initWithString:AcTECLocalizedStringFromTable(@"NoAvailableDevices", @"Localizable")];
+                [hogan addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1] range:NSMakeRange(0, [[hogan string] length])];
+                [alertController setValue:hogan forKey:@"attributedTitle"];
+                NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:AcTECLocalizedStringFromTable(@"AllDevicesHaveBeenOccupied", @"Localizable")];
+                [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
+                [attributedMessage addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:12] range:NSMakeRange(0, [[attributedMessage string] length])];
+                [alertController setValue:attributedMessage forKey:@"attributedMessage"];
+                [alertController.view setTintColor:DARKORAGE];
+                UIAlertAction *rescan = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Rescan", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    [_hud hideAnimated:YES];
+                    [_hud removeFromSuperview];
+                    _hud = nil;
+                    [self creatHud];
+                }];
+                UIAlertAction *exit = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Exit", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    [self exitApplication];
+                }];
+                [alertController addAction:rescan];
+                [alertController addAction:exit];
+                [self presentViewController:alertController animated:YES completion:nil];
+            }
+        });
     }
+}
+
+- (void)exitApplication {
+    AppDelegate *app =  (AppDelegate*)[UIApplication sharedApplication].delegate;
+    UIWindow *window = app.window;
+    
+    [UIView animateWithDuration:1.0f animations:^{
+        window.alpha = 0;
+        window.frame = CGRectMake(0, window.bounds.size.width, 0, 0);
+    } completion:^(BOOL finished) {
+        exit(0);
+    }];
 }
 
 @end

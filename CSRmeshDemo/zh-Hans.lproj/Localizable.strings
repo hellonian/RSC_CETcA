@@ -42,7 +42,7 @@
 "Select" = "选择:";
 "SelectDefaultIcon" = "选择默认图标";
 "Camera" = "相机";
-"ChooseFromAlbum" = "从相册中获取";
+"ChooseFromAlbum" = "从系统相册中获取";
 "DeleteGroup" = "删除分组";
 "DeleteGroupAlert" = "确定要删除分组";
 "EnerGroupName" = "请给分组命名。";
@@ -104,3 +104,9 @@
 "Scene" = "场景";
 "RemoveGroupMember" = "移除分组设备";
 "RemoveDeviceOffLine" = "未发现设备,是否强制删除设备";
+"NoAvailableDevices" = "未发现有效蓝牙设备";
+"AllDevicesHaveBeenOccupied" = "或者所有蓝牙设备均已被其他移动端连接。";
+"Rescan" = "重新扫描";
+"Exit" = "退出程序";
+"AllSceneEmpty" = "所有场景都为空。\n请先编辑场景。";
+"Controller" = "控制器";

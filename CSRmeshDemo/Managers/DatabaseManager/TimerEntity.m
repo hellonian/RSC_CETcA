@@ -18,5 +18,6 @@
 @dynamic fireDate;
 @dynamic repeat;
 @dynamic timerDevices;
+@dynamic sceneID;
 
 @end

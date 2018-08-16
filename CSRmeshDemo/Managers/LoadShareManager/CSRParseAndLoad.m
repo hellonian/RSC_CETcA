@@ -204,6 +204,7 @@
             deviceEntity.favourite = deviceDict[@"isFavourite"];
             deviceEntity.sortId = deviceDict[@"sortId"];
             deviceEntity.remoteBranch = deviceDict[@"remoteBranch"];
+            deviceEntity.uuid = deviceDict[@"uuid"];
             
             if (self.sharePlace) {
                 [self.sharePlace addDevicesObject:deviceEntity];
@@ -422,7 +423,8 @@
                                           @"isFavourite":(device.favourite) ? (device.favourite) : @0,
                                           @"dhmKey" : dhmKey ? dhmKey : @"",
                                           @"sortId": (device.sortId) ? (device.sortId):@0,
-                                          @"remoteBranch":(device.remoteBranch)? (device.remoteBranch):@""
+                                          @"remoteBranch":(device.remoteBranch)? (device.remoteBranch):@"",
+                                          @"uuid":(device.uuid)?(device.uuid):@""
                                           }];
             }
         }

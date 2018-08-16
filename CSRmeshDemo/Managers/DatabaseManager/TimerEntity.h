@@ -20,6 +20,7 @@
 @property (nonatomic,retain) NSDate *fireTime;
 @property (nonatomic,retain) NSDate *fireDate;
 @property (nonatomic,retain) NSString *repeat;
+@property (nonatomic,retain) NSNumber *sceneID;
 
 @end
 

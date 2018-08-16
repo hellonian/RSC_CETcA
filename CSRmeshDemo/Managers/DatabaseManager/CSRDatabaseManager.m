@@ -1088,7 +1088,7 @@
 
 #pragma mark - timer
 
-- (TimerEntity *)saveNewTimer:(NSNumber *)timerID timerName:(NSString *)name enabled:(NSNumber *)enabled fireTime:(NSDate *)time fireDate:(NSDate *)date repeatStr:(NSString *)repeatStr {
+- (TimerEntity *)saveNewTimer:(NSNumber *)timerID timerName:(NSString *)name enabled:(NSNumber *)enabled fireTime:(NSDate *)time fireDate:(NSDate *)date repeatStr:(NSString *)repeatStr sceneID:(NSNumber *)sceneID {
     __block TimerEntity *newTimerEntity;
     [[CSRAppStateManager sharedInstance].selectedPlace.timers enumerateObjectsUsingBlock:^(TimerEntity * _Nonnull obj, BOOL * _Nonnull stop) {
         if ([obj.timerID isEqualToNumber:timerID]) {
@@ -1106,6 +1106,7 @@
     newTimerEntity.fireTime = time;
     newTimerEntity.fireDate = date;
     newTimerEntity.repeat = repeatStr;
+    newTimerEntity.sceneID = sceneID;
     
     [[CSRAppStateManager sharedInstance].selectedPlace addTimersObject:newTimerEntity];
     [self saveContext];

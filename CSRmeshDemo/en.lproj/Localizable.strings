@@ -104,3 +104,9 @@
 "Scene" = "scene";
 "RemoveGroupMember" = "Remove Group Member";
 "RemoveDeviceOffLine" = "Device wasn't found,Do you want to remove anyway";
+"NoAvailableDevices" = "No Available Devices";
+"AllDevicesHaveBeenOccupied" = "Or all devices have been occupied by other users.";
+"Rescan" = "Rescan";
+"Exit" = "Exit";
+"AllSceneEmpty" = "All the scenes are empty. \nPlease edit the scenes first.";
+"Controller" = "Controller";

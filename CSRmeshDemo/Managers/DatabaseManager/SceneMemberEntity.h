@@ -16,5 +16,10 @@
 @property (nonatomic, retain) NSNumber *level;
 @property (nonatomic, retain) NSString *kindString;
 @property (nonatomic, retain) NSNumber *sceneID;
+@property (nonatomic, retain) NSNumber *colorRed;
+@property (nonatomic, retain) NSNumber *colorGreen;
+@property (nonatomic, retain) NSNumber *colorBlue;
+@property (nonatomic, retain) NSNumber *colorTemperature;
+@property (nonatomic, retain) NSNumber *eveType;
 
 @end

@@ -152,7 +152,7 @@
                 NSString *shortName = [CSRUtilities stringFromData:meshDevice.appearanceShortname];
                 deviceEntity.shortName = shortName;
                 meshDevice.name = [NSString stringWithFormat:@"%@ %@", shortName, [CSRUtilities stringWithHexNumber:[deviceId integerValue]]];
-                deviceEntity.name = meshDevice.name;
+                deviceEntity.name = shortName;
             }
             if (meshDevice.uuid) {
                 deviceEntity.uuid = meshDevice.uuid.UUIDString;

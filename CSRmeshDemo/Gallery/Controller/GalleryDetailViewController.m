@@ -98,14 +98,12 @@
 - (void)prepareNavigationItem {
     _controlImageView.isEditing = _isEditing;
     if (_isEditing) {
-//        UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(galleryDetailDoneAction:)];
         UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(galleryDetailDoneAction:)];
         UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(galleryAddAction:)];
         self.navigationItem.rightBarButtonItem = done;
         self.navigationItem.leftBarButtonItem = add;
         
     }else {
-//        UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(galleryDetailEditAction:)];
         UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Edit", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(galleryDetailEditAction:)];
         self.navigationItem.rightBarButtonItem = edit;
         

@@ -65,8 +65,13 @@ static DataModelManager *manager = nil;
 - (void)addAlarmForDevice:(NSNumber *)deviceId alarmIndex:(NSInteger)index enabled:(BOOL)enabled fireDate:(NSDate *)fireDate fireTime:(NSDate *)fireTime repeat:(NSString *)repeat eveType:(NSString *)alarnActionType level:(NSInteger)level {
     
     NSString *indexStr = [self stringWithHexNumber:index];
+    NSString *YMdString;
+    if (fireDate) {
+        YMdString = [self YMdStringForDate:fireDate];
+    }else{
+        YMdString = @"000000";
+    }
     
-    NSString *YMdString = [self YMdStringForDate:fireDate];
     NSString *hmsString = [self hmsStringForDate:fireTime];
     
     NSString *levelString = [self stringWithHexNumber:level];
@@ -81,7 +86,7 @@ static DataModelManager *manager = nil;
     
     if (deviceId) {
         [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-            
+            NSLog(@"data >> %@",data);
         } failure:^(NSError * _Nonnull error) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"addAlarmCall" object:nil userInfo:@{@"addAlarmCall":@"00",@"deviceId":deviceId}];
         }];

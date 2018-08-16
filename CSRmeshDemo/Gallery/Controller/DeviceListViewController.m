@@ -141,9 +141,6 @@
                 
                 [_devicesCollectionView.dataArray addObject:model];
             }
-            
-            
-            
         }
         
     }else if (self.selectMode == DeviceListSelectMode_SelectScene) {
@@ -313,7 +310,7 @@
 
 - (void)mainCollectionViewDelegateSelectAction:(id)cell {
     
-    if (self.selectMode == DeviceListSelectMode_Single) {
+    if (self.selectMode == DeviceListSelectMode_Single || self.selectMode == DeviceListSelectMode_ForDrop) {
         
         if ([cell isKindOfClass:[MainCollectionViewCell class]]) {
             MainCollectionViewCell *mainCell = (MainCollectionViewCell *)cell;

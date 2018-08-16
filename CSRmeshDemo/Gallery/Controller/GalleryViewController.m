@@ -27,7 +27,7 @@
 @property (nonatomic,strong) NSMutableArray *galleryEntitys;
 @property (nonatomic,strong) NSMutableArray *controlImageViewArray;
 @property (nonatomic,strong) NSMutableArray *toolViewArray;
-@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+//@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (nonatomic,assign) BOOL isEditing;
 @property (nonatomic,assign) NSInteger adjustRow;
 @property (nonatomic,assign) float adjustHeight;
@@ -36,6 +36,8 @@
 @property (nonatomic,strong) NSNumber *originalLevel;
 @property (nonatomic,strong) ImproveTouchingExperience *improver;
 @property (nonatomic,strong) ControlMaskView *maskLayer;
+@property (strong, nonatomic) IBOutlet UIView *noneView;
+@property (nonatomic,strong) UIScrollView *scrollView;
 
 
 @end
@@ -46,12 +48,12 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    if (@available(iOS 11.0, *)) {
-    } else {
-        self.automaticallyAdjustsScrollViewInsets = NO;
-        [_scrollView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset: 64.0];
-        [_scrollView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:50.0];
-    }
+//    if (@available(iOS 11.0, *)) {
+//    } else {
+//        self.automaticallyAdjustsScrollViewInsets = NO;
+//        [_scrollView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:64.0];
+//        [_scrollView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:50.0];
+//    }
     
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange) name:ZZAppLanguageDidChangeNotification object:nil];
@@ -62,7 +64,8 @@
     self.navigationItem.leftBarButtonItem = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getData) name:@"reGetDataForPlaceChanged" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteDeviceEntity) name:@"deleteDeviceEntity" object:nil];
-
+    
+    _scrollView = [[UIScrollView alloc] init];
     self.improver = [[ImproveTouchingExperience alloc] init];
     _isEditing = NO;
     _adjustRow = -1;
@@ -352,8 +355,115 @@
         self.galleryEntitys = galleryMutableArray;
         
     }
+    if ([self.galleryEntitys count] != 0) {
+        [_noneView removeFromSuperview];
+        [self.view addSubview:self.scrollView];
+        [_scrollView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        NSLayoutConstraint *top;
+        NSLayoutConstraint *bottom;
+        NSLayoutConstraint *left = [NSLayoutConstraint constraintWithItem:_scrollView
+                                                                attribute:NSLayoutAttributeLeft
+                                                                relatedBy:NSLayoutRelationEqual
+                                                                   toItem:self.view
+                                                                attribute:NSLayoutAttributeLeft
+                                                               multiplier:1.0
+                                                                 constant:0];
+        NSLayoutConstraint *right = [NSLayoutConstraint constraintWithItem:_scrollView
+                                                                 attribute:NSLayoutAttributeRight
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.view
+                                                                 attribute:NSLayoutAttributeRight
+                                                                multiplier:1.0
+                                                                  constant:0];
+        if (@available(iOS 11.0, *)) {
+            top = [NSLayoutConstraint constraintWithItem:_scrollView
+                                               attribute:NSLayoutAttributeTop
+                                               relatedBy:NSLayoutRelationEqual
+                                                  toItem:self.view.safeAreaLayoutGuide
+                                               attribute:NSLayoutAttributeTop
+                                              multiplier:1.0
+                                                constant:0];
+            bottom = [NSLayoutConstraint constraintWithItem:_scrollView
+                                                  attribute:NSLayoutAttributeBottom
+                                                  relatedBy:NSLayoutRelationEqual
+                                                     toItem:self.view.safeAreaLayoutGuide
+                                                  attribute:NSLayoutAttributeBottom
+                                                 multiplier:1.0
+                                                   constant:0];
+        } else {
+            self.automaticallyAdjustsScrollViewInsets = NO;
+            top = [NSLayoutConstraint constraintWithItem:_scrollView
+                                               attribute:NSLayoutAttributeTop
+                                               relatedBy:NSLayoutRelationEqual
+                                                  toItem:self.view
+                                               attribute:NSLayoutAttributeTop
+                                              multiplier:1.0
+                                                constant:0];
+            bottom = [NSLayoutConstraint constraintWithItem:_scrollView
+                                                  attribute:NSLayoutAttributeBottom
+                                                  relatedBy:NSLayoutRelationEqual
+                                                     toItem:self.view
+                                                  attribute:NSLayoutAttributeBottom
+                                                 multiplier:1.0
+                                                   constant:0];
+        }
+        [NSLayoutConstraint activateConstraints:@[top,left,bottom,right]];
+        [self firstLayoutView];
+    }else {
+        [_scrollView removeFromSuperview];
+        [self.view addSubview:_noneView];
+        [_noneView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        NSLayoutConstraint *top;
+        NSLayoutConstraint *bottom;
+        NSLayoutConstraint *left = [NSLayoutConstraint constraintWithItem:_noneView
+                                                                attribute:NSLayoutAttributeLeft
+                                                                relatedBy:NSLayoutRelationEqual
+                                                                   toItem:self.view
+                                                                attribute:NSLayoutAttributeLeft
+                                                               multiplier:1.0
+                                                                 constant:0];
+        NSLayoutConstraint *right = [NSLayoutConstraint constraintWithItem:_noneView
+                                                                 attribute:NSLayoutAttributeRight
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.view
+                                                                 attribute:NSLayoutAttributeRight
+                                                                multiplier:1.0
+                                                                  constant:0];
+        if (@available(iOS 11.0, *)) {
+            top = [NSLayoutConstraint constraintWithItem:_noneView
+                                               attribute:NSLayoutAttributeTop
+                                               relatedBy:NSLayoutRelationEqual
+                                                  toItem:self.view.safeAreaLayoutGuide
+                                               attribute:NSLayoutAttributeTop
+                                              multiplier:1.0
+                                                constant:0];
+            bottom = [NSLayoutConstraint constraintWithItem:_noneView
+                                                  attribute:NSLayoutAttributeBottom
+                                                  relatedBy:NSLayoutRelationEqual
+                                                     toItem:self.view.safeAreaLayoutGuide
+                                                  attribute:NSLayoutAttributeBottom
+                                                 multiplier:1.0
+                                                   constant:0];
+        } else {
+            self.automaticallyAdjustsScrollViewInsets = NO;
+            top = [NSLayoutConstraint constraintWithItem:_noneView
+                                               attribute:NSLayoutAttributeTop
+                                               relatedBy:NSLayoutRelationEqual
+                                                  toItem:self.view
+                                               attribute:NSLayoutAttributeTop
+                                              multiplier:1.0
+                                                constant:0];
+            bottom = [NSLayoutConstraint constraintWithItem:_noneView
+                                                  attribute:NSLayoutAttributeBottom
+                                                  relatedBy:NSLayoutRelationEqual
+                                                     toItem:self.view
+                                                  attribute:NSLayoutAttributeBottom
+                                                 multiplier:1.0
+                                                   constant:0];
+        }
+        [NSLayoutConstraint activateConstraints:@[top,left,bottom,right]];
+    }
     
-    [self firstLayoutView];
     
 }
 
@@ -383,8 +493,12 @@
                 rowHeight = controlImageView.bounds.size.height/WIDTH;
             }
             
-            if (rowHeight > (1-8/320.0)/4.0*3.0) {
-                rowHeight = (1-8/320.0)/4.0*3.0;
+//            if (rowHeight > (1-8/320.0)/4.0*3.0) {
+//                rowHeight = (1-8/320.0)/4.0*3.0;
+//                [self limitToolViewWithRowIdx:rowIdx withHeight:allHeight + rowHeight + verticalInterVal];
+//            }
+            if (rowHeight > (1-8/320.0)/controlImageView.bounds.size.width * controlImageView.bounds.size.height) {
+                rowHeight = (1-8/320.0)/controlImageView.bounds.size.width * controlImageView.bounds.size.height;
                 [self limitToolViewWithRowIdx:rowIdx withHeight:allHeight + rowHeight + verticalInterVal];
             }
             if (rowHeight < (1-4*4/320.0)/3.0/4.0*3.0) {
@@ -403,8 +517,8 @@
                 float oldRowHeight = rowHeight;
                 rowHeight = _adjustHeight - allHeight - rowHeight - 2*verticalInterVal;
                 
-                if (rowHeight > (1-8/320.0)/4.0*3.0) {
-                    rowHeight = (1-8/320.0)/4.0*3.0;
+                if (rowHeight > (1-8/320.0)/controlImageView.bounds.size.width * controlImageView.bounds.size.height) {
+                    rowHeight = (1-8/320.0)/controlImageView.bounds.size.width * controlImageView.bounds.size.height;
                     [self limitToolViewWithRowIdx:rowIdx withHeight:allHeight + oldRowHeight + 2*verticalInterVal + rowHeight];
                 }
                 if (rowHeight < (1-4*4/320.0)/3.0/4.0*3.0) {

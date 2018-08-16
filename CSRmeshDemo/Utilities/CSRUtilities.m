@@ -1106,8 +1106,8 @@
     return NO;
 }
 
-+ (BOOL)belongToColorTemperatureDevice:(NSString *)shortName {
-    if ([kColorTemperaturesDevices containsObject:shortName]) {
++ (BOOL)belongToThreeSpeedColorTemperatureDevice:(NSString *)shortName {
+    if ([kThreeSpeedColorTemperaturesDevices containsObject:shortName]) {
         return YES;
     }
     return NO;

@@ -6,13 +6,14 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="GalleryViewController">
             <connections>
-                <outlet property="scrollView" destination="HJl-i1-Tf0" id="ORZ-EP-7px"/>
+                <outlet property="noneView" destination="bHg-9Q-BuY" id="w6R-wa-UCh"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -20,20 +21,67 @@
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-            <subviews>
-                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HJl-i1-Tf0">
-                    <rect key="frame" x="0.0" y="20" width="375" height="647"/>
-                </scrollView>
-            </subviews>
             <color key="backgroundColor" red="0.76470588240000004" green="0.76470588240000004" blue="0.76470588240000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-            <constraints>
-                <constraint firstItem="HJl-i1-Tf0" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" priority="750" id="3Sg-hW-qWt"/>
-                <constraint firstItem="HJl-i1-Tf0" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="9fr-sM-hpH"/>
-                <constraint firstItem="Q5M-cg-NOt" firstAttribute="bottom" secondItem="HJl-i1-Tf0" secondAttribute="bottom" priority="750" id="gFg-GX-Eyy"/>
-                <constraint firstItem="HJl-i1-Tf0" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="gdX-OO-bgg"/>
-            </constraints>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
-            <point key="canvasLocation" x="25.5" y="52.5"/>
+            <point key="canvasLocation" x="177" y="27"/>
+        </view>
+        <view contentMode="scaleToFill" id="bHg-9Q-BuY">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1. Insert a photo of the luminaires in the room." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9bI-uX-EjH">
+                    <rect key="frame" x="50" y="150" width="276" height="60"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="60" id="QA3-yw-aa0"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <color key="textColor" red="0.30196078430000001" green="0.30196078430000001" blue="0.30196078430000001" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3. Use luminaires to control the lighting." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gqn-ah-Mb8">
+                    <rect key="frame" x="50" y="270" width="275" height="60"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="60" id="USZ-oV-WS6"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <color key="textColor" red="0.30196078430000001" green="0.30196078430000001" blue="0.30196078430000001" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="noneGallery" translatesAutoresizingMaskIntoConstraints="NO" id="WOx-ZA-Zzy">
+                    <rect key="frame" x="50" y="330" width="275" height="142"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="WOx-ZA-Zzy" secondAttribute="height" multiplier="680:351" id="An1-S8-Dng"/>
+                    </constraints>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2.Position the circular controls over the luminaires." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eXZ-Sc-k4r">
+                    <rect key="frame" x="50" y="210" width="275" height="60"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="60" id="caE-cb-7ya"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <color key="textColor" red="0.30196078430000001" green="0.30196078430000001" blue="0.30196078430000001" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <constraints>
+                <constraint firstItem="9bI-uX-EjH" firstAttribute="centerX" secondItem="bHg-9Q-BuY" secondAttribute="centerX" id="4ic-3h-BXZ"/>
+                <constraint firstItem="WOx-ZA-Zzy" firstAttribute="top" secondItem="gqn-ah-Mb8" secondAttribute="bottom" id="68L-Nb-cGh"/>
+                <constraint firstItem="eXZ-Sc-k4r" firstAttribute="centerX" secondItem="bHg-9Q-BuY" secondAttribute="centerX" id="IHs-OI-XgN"/>
+                <constraint firstItem="WOx-ZA-Zzy" firstAttribute="centerX" secondItem="bHg-9Q-BuY" secondAttribute="centerX" id="Kxh-xU-J0u"/>
+                <constraint firstItem="gqn-ah-Mb8" firstAttribute="leading" secondItem="xbT-2x-iyh" secondAttribute="leading" constant="50" id="T9r-Kx-10K"/>
+                <constraint firstItem="WOx-ZA-Zzy" firstAttribute="leading" secondItem="xbT-2x-iyh" secondAttribute="leading" constant="50" id="UOH-cF-waR"/>
+                <constraint firstItem="gqn-ah-Mb8" firstAttribute="top" secondItem="eXZ-Sc-k4r" secondAttribute="bottom" id="Wr8-7j-y9B"/>
+                <constraint firstItem="eXZ-Sc-k4r" firstAttribute="top" secondItem="9bI-uX-EjH" secondAttribute="bottom" id="ZAw-1H-QVi"/>
+                <constraint firstItem="eXZ-Sc-k4r" firstAttribute="leading" secondItem="xbT-2x-iyh" secondAttribute="leading" constant="50" id="d7P-hi-h72"/>
+                <constraint firstItem="9bI-uX-EjH" firstAttribute="top" secondItem="xbT-2x-iyh" secondAttribute="top" constant="130" id="fnp-Lf-Pb9"/>
+                <constraint firstItem="gqn-ah-Mb8" firstAttribute="centerX" secondItem="bHg-9Q-BuY" secondAttribute="centerX" id="olD-JZ-w0h"/>
+                <constraint firstItem="9bI-uX-EjH" firstAttribute="leading" secondItem="xbT-2x-iyh" secondAttribute="leading" constant="50" id="pi4-g7-0DV"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="xbT-2x-iyh"/>
+            <point key="canvasLocation" x="-313.5" y="630.5"/>
         </view>
     </objects>
+    <resources>
+        <image name="noneGallery" width="227" height="117"/>
+    </resources>
 </document>

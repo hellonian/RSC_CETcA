@@ -67,6 +67,28 @@
 }
 
 - (void)addClick {
+    NSSet *scenes = [CSRAppStateManager sharedInstance].selectedPlace.scenes;
+    __block BOOL exit = NO;
+    [scenes enumerateObjectsUsingBlock:^(SceneEntity  *scene, BOOL * _Nonnull stop) {
+        if ([scene.members count] != 0) {
+            exit = YES;
+            *stop = YES;
+        }
+    }];
+    if (!exit) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"" preferredStyle:UIAlertControllerStyleAlert];
+        NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc] initWithString:AcTECLocalizedStringFromTable(@"AllSceneEmpty", @"Localizable")];
+        [attributedMessage addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedMessage string] length])];
+        [alertController setValue:attributedMessage forKey:@"attributedMessage"];
+        [alertController.view setTintColor:DARKORAGE];
+        UIAlertAction *yesAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        [alertController addAction:yesAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+        return;
+    }
+    
     TimerDetailViewController *tdvc = [[TimerDetailViewController alloc] init];
     tdvc.newadd = YES;
     __weak TimerViewController *weakSelf = self;

@@ -27,13 +27,13 @@
     NSDate *time;
     NSDate *date;
     NSString *repeatStr;
+    NSLayoutConstraint *top_chooseTitle;
 }
 
 @property (weak, nonatomic) IBOutlet UIDatePicker *timerPicker;
 @property (strong, nonatomic) IBOutlet UIDatePicker *datePicker;
 @property (strong, nonatomic) IBOutlet UIView *weekView;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *repeatChooseSegment;
-@property (weak, nonatomic) IBOutlet UILabel *devicesListLabel;
 @property (weak, nonatomic) IBOutlet UITextField *nameTF;
 @property (weak, nonatomic) IBOutlet UISwitch *enabledSwitch;
 @property (nonatomic,strong) NSMutableArray *deviceIds;
@@ -43,7 +43,14 @@
 @property (nonatomic,strong) NSMutableArray *backs;
 @property (nonatomic,strong) MBProgressHUD *hud;
 @property (weak, nonatomic) IBOutlet UIView *bgView;
+@property (weak, nonatomic) IBOutlet UILabel *chooseTitle;
 
+@property (nonatomic,strong) UIScrollView *scrollView;
+@property (nonatomic,strong) SceneEntity *selectedScene;
+@property (nonatomic,strong) NSMutableArray *sceneMutableArray;
+@property (nonatomic,strong) UIView *selectedView;
+@property (nonatomic,strong) UIView *sceneView;
+//@property (nonatomic,strong) UIView *topBgView;
 
 @end
 
@@ -53,10 +60,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    if (@available(iOS 11.0,*)) {
-    }else {
-        [_bgView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:94.0f];
-    }
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
     self.navigationItem.rightBarButtonItem = done;
     
@@ -64,46 +67,144 @@
     [self setDatePickerTextColor:self.datePicker];
     self.nameTF.delegate = self;
     
+    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectZero];
+    [self.view addSubview:_scrollView];
+    [_scrollView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    NSLayoutConstraint *top;
+    if (@available(iOS 11.0,*)) {
+        top = [NSLayoutConstraint constraintWithItem:_scrollView
+                                           attribute:NSLayoutAttributeTop
+                                           relatedBy:NSLayoutRelationEqual
+                                              toItem:self.view.safeAreaLayoutGuide
+                                           attribute:NSLayoutAttributeTop
+                                          multiplier:1.0
+                                            constant:0];
+    }else {
+        self.automaticallyAdjustsScrollViewInsets = NO;
+        top = [NSLayoutConstraint constraintWithItem:_scrollView
+                                           attribute:NSLayoutAttributeTop
+                                           relatedBy:NSLayoutRelationEqual
+                                              toItem:self.view
+                                           attribute:NSLayoutAttributeTop
+                                          multiplier:1.0
+                                            constant:64];
+    }
+    NSLayoutConstraint *left = [NSLayoutConstraint constraintWithItem:_scrollView
+                                                            attribute:NSLayoutAttributeLeft
+                                                            relatedBy:NSLayoutRelationEqual
+                                                               toItem:self.view
+                                                            attribute:NSLayoutAttributeLeft
+                                                           multiplier:1.0
+                                                             constant:0];
+    NSLayoutConstraint *right = [NSLayoutConstraint constraintWithItem:_scrollView
+                                                             attribute:NSLayoutAttributeRight
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.view
+                                                             attribute:NSLayoutAttributeRight
+                                                            multiplier:1.0
+                                                              constant:0];
+    NSLayoutConstraint *bottom;
     if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPad) {
-        [self.deleteButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:50.0];
+        bottom = [NSLayoutConstraint constraintWithItem:_scrollView
+                                              attribute:NSLayoutAttributeBottom
+                                              relatedBy:NSLayoutRelationEqual
+                                                 toItem:self.view
+                                              attribute:NSLayoutAttributeBottom
+                                             multiplier:1.0
+                                               constant:50.0];
+    }else {
+        bottom = [NSLayoutConstraint constraintWithItem:_scrollView
+                                              attribute:NSLayoutAttributeBottom
+                                              relatedBy:NSLayoutRelationEqual
+                                                 toItem:self.view
+                                              attribute:NSLayoutAttributeBottom
+                                             multiplier:1.0
+                                               constant:0];
+        
+    }
+    
+    [NSLayoutConstraint activateConstraints:@[top,left,bottom,right]];
+    
+    [_scrollView addSubview:_bgView];
+    [_bgView autoPinEdgeToSuperviewEdge:ALEdgeTop];
+    [_bgView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+    [_bgView autoSetDimension:ALDimensionHeight toSize:89];
+    [_bgView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    
+    _sceneMutableArray = [[NSMutableArray alloc] init];
+    NSMutableArray *areaMutableArray =  [[[CSRAppStateManager sharedInstance].selectedPlace.scenes allObjects] mutableCopy];
+    if (areaMutableArray != nil || [areaMutableArray count] != 0) {
+        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sceneID" ascending:YES];
+        [areaMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+        for (SceneEntity *sceneEntity in areaMutableArray) {
+            if ([sceneEntity.members count]>0) {
+                [_sceneMutableArray addObject:sceneEntity];
+            }
+        }
     }
     
     if (!self.newadd && self.timerEntity) {
         self.navigationItem.title = self.timerEntity.name;
         self.nameTF.text = self.timerEntity.name;
         [self.enabledSwitch setOn:[self.timerEntity.enabled boolValue]];
-        NSString *devciesList = @"";
-        for (TimerDeviceEntity *timerDevice in self.timerEntity.timerDevices) {
-            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:timerDevice.deviceID];
-            devciesList = [NSString stringWithFormat:@"%@  %@",devciesList,deviceEntity.name];
-//            NSMutableAttributedString *hintString=[[NSMutableAttributedString alloc]initWithString:devciesList];
-//            if (![timerDevice.alive boolValue]&&deviceEntity.name) {
-//                NSRange range=[[hintString string]rangeOfString:deviceEntity.name];
-//                [hintString addAttribute:NSForegroundColorAttributeName value:DARKORAGE range:range];
-//            }
-//            self.devicesListLabel.attributedText = hintString;
-            self.devicesListLabel.text = devciesList;
-            [self.deviceIds addObject:timerDevice.deviceID];
-        }
+        
+        _selectedScene = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:self.timerEntity.sceneID];
+        _selectedView = [self addSelectedView:_selectedScene];
+        [_scrollView addSubview:_selectedView];
+        [_selectedView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_bgView];
+        [_selectedView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+        [_selectedView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+        [_selectedView autoSetDimension:ALDimensionHeight toSize:45];
+        
+        [_sceneMutableArray removeObject:_selectedScene];
+        
+        [_scrollView addSubview:_chooseTitle];
+        top_chooseTitle = [_chooseTitle autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_bgView withOffset:57];
+        [_chooseTitle autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
+        
+        _sceneView = [self addSceneView:_sceneMutableArray];
+        [_scrollView addSubview:_sceneView];
+        [_sceneView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_chooseTitle withOffset:10];
+        [_sceneView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+        [_sceneView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+        [_sceneView autoSetDimension:ALDimensionHeight toSize:45*[_sceneMutableArray count]-1];
+        
+        [_scrollView addSubview:_timerPicker];
+        [_timerPicker autoAlignAxisToSuperviewAxis:ALAxisVertical];
+        [_timerPicker autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_sceneView withOffset:12];
+        
+        [_scrollView addSubview:_repeatChooseSegment];
+        [_repeatChooseSegment autoAlignAxisToSuperviewAxis:ALAxisVertical];
+        [_repeatChooseSegment autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_timerPicker withOffset:12];
+        [_repeatChooseSegment autoSetDimension:ALDimensionHeight toSize:30];
+        [_repeatChooseSegment autoSetDimension:ALDimensionWidth toSize:140];
         
         [self.timerPicker setDate:self.timerEntity.fireTime];
+        
         if ([self.timerEntity.repeat isEqualToString:@"00000000"]) {
             [self.repeatChooseSegment setSelectedSegmentIndex:1];
-            [self.view addSubview:self.datePicker];
+            [_scrollView addSubview:self.datePicker];
             [self.datePicker autoAlignAxisToSuperviewAxis:ALAxisVertical];
-            [self.datePicker autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.repeatChooseSegment withOffset:8.0];
+            [self.datePicker autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.repeatChooseSegment withOffset:12.0];
             [self.datePicker autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20.0];
-            [self.datePicker autoSetDimension:ALDimensionHeight toSize:100.0];
+            [self.datePicker autoSetDimension:ALDimensionHeight toSize:160.0];
             
             [self.datePicker setDate:self.timerEntity.fireDate];
             
+            [_scrollView addSubview:_deleteButton];
+            [_deleteButton autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_datePicker withOffset:12.0];
+            [_deleteButton autoAlignAxisToSuperviewAxis:ALAxisVertical];
+            [_deleteButton autoSetDimension:ALDimensionWidth toSize:WIDTH];
+            
+            _scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 45*[_sceneMutableArray count]-1+618);
+            
         }else {
             [self.repeatChooseSegment setSelectedSegmentIndex:0];
-            [self.view addSubview:self.weekView];
+            [_scrollView addSubview:self.weekView];
             [self.weekView autoAlignAxisToSuperviewAxis:ALAxisVertical];
-            [self.weekView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.repeatChooseSegment withOffset:43.0];
+            [self.weekView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.repeatChooseSegment withOffset:44.0];
             [self.weekView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-            [self.weekView autoSetDimension:ALDimensionHeight toSize:29.0];
+            [self.weekView autoSetDimension:ALDimensionHeight toSize:60.0];
             
             NSString *repeat = [self.timerEntity.repeat substringFromIndex:1];
             [self.weekView.subviews enumerateObjectsUsingBlock:^(UIButton * btn, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -115,17 +216,178 @@
                     btn.selected = NO;
                     [btn setBackgroundImage:[UIImage imageNamed:@"weekBtnSelect"] forState:UIControlStateNormal];
                 }
-            }]; 
+            }];
+            
+            [_scrollView addSubview:_deleteButton];
+            [_deleteButton autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_weekView withOffset:44.0];
+            [_deleteButton autoAlignAxisToSuperviewAxis:ALAxisVertical];
+            [_deleteButton autoSetDimension:ALDimensionWidth toSize:WIDTH];
+            
+            _scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 45*[_sceneMutableArray count]-1+582);
         }
+        
+        
+        
     }else {
-        [self.view addSubview:self.weekView];
-        [self.weekView autoAlignAxisToSuperviewAxis:ALAxisVertical];
-        [self.weekView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.repeatChooseSegment withOffset:43.0];
-        [self.weekView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-        [self.weekView autoSetDimension:ALDimensionHeight toSize:29.0];
-        [self.deleteButton removeFromSuperview];
+        
+        [_scrollView addSubview:_chooseTitle];
+        top_chooseTitle = [_chooseTitle autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_bgView withOffset:12];
+        [_chooseTitle autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
+        
+        _sceneView = [self addSceneView:_sceneMutableArray];
+        [_scrollView addSubview:_sceneView];
+        [_sceneView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_chooseTitle withOffset:10];
+        [_sceneView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+        [_sceneView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+        [_sceneView autoSetDimension:ALDimensionHeight toSize:45*[_sceneMutableArray count]-1];
+        
+        [_scrollView addSubview:_timerPicker];
+        [_timerPicker autoAlignAxisToSuperviewAxis:ALAxisVertical];
+        [_timerPicker autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_sceneView withOffset:12];
+        
+        [_scrollView addSubview:_repeatChooseSegment];
+        [_repeatChooseSegment autoAlignAxisToSuperviewAxis:ALAxisVertical];
+        [_repeatChooseSegment autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_timerPicker withOffset:12];
+        [_repeatChooseSegment autoSetDimension:ALDimensionHeight toSize:30];
+        [_repeatChooseSegment autoSetDimension:ALDimensionWidth toSize:140];
+        
+        [_scrollView addSubview:_weekView];
+        [_weekView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+        [_weekView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_repeatChooseSegment withOffset:44];
+        [_weekView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+        [_weekView autoSetDimension:ALDimensionHeight toSize:60.0];
+        
+        if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPad) {
+            _scrollView.contentSize = CGSizeMake(WIDTH-321, 45*[_sceneMutableArray count]-1+493);
+        }else {
+            _scrollView.contentSize = CGSizeMake(WIDTH, 45*[_sceneMutableArray count]-1+493);
+        }
+        
     }
     
+}
+
+- (UIView *)addSceneView:(NSMutableArray *)scenes {
+    UIView *bgView = [[UIView alloc] init];
+    bgView.backgroundColor = [UIColor whiteColor];
+    [scenes enumerateObjectsUsingBlock:^(SceneEntity *sceneEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.tag = [sceneEntity.sceneID integerValue] + 100;
+        [btn addTarget:self action:@selector(sceneSelectAction:) forControlEvents:UIControlEventTouchUpInside];
+        UILabel *titleLabel = [[UILabel alloc] init];
+        titleLabel.frame = CGRectMake(20, 12, 150, 20);
+        titleLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+        titleLabel.font = [UIFont systemFontOfSize:14];
+        titleLabel.text = sceneEntity.sceneName;
+        [btn addSubview:titleLabel];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"To_select"]];
+        [btn addSubview:imageView];
+        
+        [imageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:11];
+        [imageView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:16];
+        [imageView autoSetDimension:ALDimensionHeight toSize:22];
+        [imageView autoSetDimension:ALDimensionWidth toSize:22];
+        
+        [bgView addSubview:btn];
+        
+        [btn autoSetDimension:ALDimensionHeight toSize:44.0];
+        [btn autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+        [btn autoPinEdgeToSuperviewEdge:ALEdgeRight];
+        [btn autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:idx*45];
+        
+        if (idx !=0) {
+            UIView *line = [[UIView alloc] init];
+            line.backgroundColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1];
+            [bgView addSubview:line];
+            [line autoSetDimension:ALDimensionHeight toSize:1];
+            [line autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
+            [line autoPinEdgeToSuperviewEdge:ALEdgeRight];
+            [line autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:44+(idx-1)*45];
+        }
+    }];
+    return bgView;
+}
+
+- (void)sceneSelectAction:(UIButton *)button {
+    SceneEntity *scene = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:[NSNumber numberWithInteger:button.tag - 100]];
+    if (_selectedScene) {
+        [_sceneMutableArray addObject:_selectedScene];
+        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sceneID" ascending:YES];
+        [_sceneMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+        [_selectedView removeFromSuperview];
+    }
+    _selectedView = [self addSelectedView:scene];
+    [_scrollView addSubview:_selectedView];
+    [_selectedView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_bgView];
+    [_selectedView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [_selectedView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+    [_selectedView autoSetDimension:ALDimensionHeight toSize:45];
+    
+    _selectedScene = scene;
+    [_sceneMutableArray removeObject:scene];
+    
+    top_chooseTitle.constant = 57;
+    
+    [_sceneView removeFromSuperview];
+    _sceneView = [self addSceneView:_sceneMutableArray];
+    [_scrollView addSubview:_sceneView];
+    [_sceneView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_chooseTitle withOffset:10];
+    [_sceneView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+    [_sceneView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    if (_sceneMutableArray && [_sceneMutableArray count]>0) {
+        [_sceneView autoSetDimension:ALDimensionHeight toSize:45*[_sceneMutableArray count]-1];
+    }else {
+        _sceneView.backgroundColor = [UIColor clearColor];
+        [_sceneView autoSetDimension:ALDimensionHeight toSize:1];
+    }
+    
+    [_timerPicker autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_sceneView withOffset:12];
+
+    [_repeatChooseSegment autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_timerPicker withOffset:12];
+    
+    if (_repeatChooseSegment.selectedSegmentIndex == 0) {
+        [_weekView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_repeatChooseSegment withOffset:44];
+        if (_newadd) {
+            _scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 45*[_sceneMutableArray count]-1+538);
+        }else {
+            [_deleteButton autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_weekView withOffset:44.0];
+            _scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 45*[_sceneMutableArray count]-1+582);
+        }
+    }else {
+        [_datePicker autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_repeatChooseSegment withOffset:12.0];
+        if (_newadd) {
+            _scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 45*[_sceneMutableArray count]-1+574);
+        }else {
+            _scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 45*[_sceneMutableArray count]-1+618);
+        }
+    }
+    
+    
+}
+
+- (UIView *)addSelectedView:(SceneEntity *)scene {
+    UIView *selectedBgView = [[UIView alloc] init];
+    selectedBgView.backgroundColor = [UIColor whiteColor];
+    UIView *line = [[UIView alloc] initWithFrame:CGRectZero];
+    line.backgroundColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1];
+    [selectedBgView addSubview:line];
+    [line autoPinEdgeToSuperviewEdge:ALEdgeTop];
+    [line autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
+    [line autoPinEdgeToSuperviewEdge:ALEdgeRight];
+    [line autoSetDimension:ALDimensionHeight toSize:1];
+    UILabel *selectedTitleLabel = [[UILabel alloc] init];
+    selectedTitleLabel.frame = CGRectMake(20, 12, 150, 20);
+    selectedTitleLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+    selectedTitleLabel.font = [UIFont systemFontOfSize:14];
+    selectedTitleLabel.text = scene.sceneName;
+    [selectedBgView addSubview:selectedTitleLabel];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Be_selected"]];
+    [selectedBgView addSubview:imageView];
+    [imageView autoSetDimension:ALDimensionWidth toSize:22];
+    [imageView autoSetDimension:ALDimensionHeight toSize:22];
+    [imageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:11];
+    [imageView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:16];
+    return selectedBgView;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -156,8 +418,6 @@
         {
             [picker setValue:DARKORAGE forKey:@"textColor"];
         }
-        
-        
     }
     //通过NSSelectorFromString获取setHighlightsToday方法
     SEL selector = NSSelectorFromString(@"setHighlightsToday:");
@@ -174,23 +434,51 @@
 - (IBAction)repeatClick:(UISegmentedControl *)sender {
     if (sender.selectedSegmentIndex == 0) {
         [self.datePicker removeFromSuperview];
-        [self.view addSubview:self.weekView];
+        [_scrollView addSubview:self.weekView];
         [self.weekView autoAlignAxisToSuperviewAxis:ALAxisVertical];
-        [self.weekView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.repeatChooseSegment withOffset:43.0];
+        [self.weekView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.repeatChooseSegment withOffset:44.0];
         [self.weekView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-        [self.weekView autoSetDimension:ALDimensionHeight toSize:29.0];
+        [self.weekView autoSetDimension:ALDimensionHeight toSize:60.0];
+        if (_newadd) {
+            if (_selectedScene) {
+                _scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 45*[_sceneMutableArray count]-1+538);
+            }else {
+                _scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 45*[_sceneMutableArray count]-1+493);
+            }
+        }else {
+            [_deleteButton autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_weekView withOffset:44.0];
+            if (_selectedScene) {
+                _scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 45*[_sceneMutableArray count]-1+582);
+            }else {
+                _scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 45*[_sceneMutableArray count]-1+537);
+            }
+        }
+        
         
     }else {
         [self.weekView removeFromSuperview];
-        [self.view addSubview:self.datePicker];
+        [_scrollView addSubview:self.datePicker];
         [self.datePicker autoAlignAxisToSuperviewAxis:ALAxisVertical];
-        [self.datePicker autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.repeatChooseSegment withOffset:8.0];
+        [self.datePicker autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.repeatChooseSegment withOffset:12.0];
         [self.datePicker autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20.0];
-        [self.datePicker autoSetDimension:ALDimensionHeight toSize:100.0];
-        
+        [self.datePicker autoSetDimension:ALDimensionHeight toSize:160.0];
+        if (_newadd) {
+            if (_selectedScene) {
+                _scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 45*[_sceneMutableArray count]-1+574);
+            }else {
+                _scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 45*[_sceneMutableArray count]-1+529);
+            }
+        }else {
+            [_deleteButton autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_datePicker withOffset:12.0];
+            if (_selectedScene) {
+                _scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 45*[_sceneMutableArray count]-1+618);
+            }else {
+                _scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 45*[_sceneMutableArray count]-1+573);
+            }
+        }
     }
 }
-
+/*
 - (IBAction)chooseDevice:(UIButton *)sender {
     DeviceListViewController *list = [[DeviceListViewController alloc] init];
     list.selectMode = DeviceListSelectMode_Multiple;
@@ -208,7 +496,7 @@
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
     [self presentViewController:nav animated:YES completion:nil];
 }
-
+*/
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
@@ -225,22 +513,36 @@
 #pragma mark - weekButton
 
 - (IBAction)weekButtonClick:(UIButton *)sender {
-    sender.selected = !sender.selected;
-    UIImage *bgImage = sender.selected? [UIImage imageNamed:@"weekBtnSelected"]:[UIImage imageNamed:@"weekBtnSelect"];
-    [sender setBackgroundImage:bgImage forState:UIControlStateNormal];
+    __block BOOL exist = 0;
+    [_weekView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj isKindOfClass:[UIButton class]]) {
+            UIButton *btn = (UIButton *)obj;
+            if (btn.tag!=sender.tag && btn.selected) {
+                exist = YES;
+                *stop = YES;
+            }
+        }
+    }];
+    if (exist) {
+        sender.selected = !sender.selected;
+        UIImage *bgImage = sender.selected? [UIImage imageNamed:@"weekBtnSelected"]:[UIImage imageNamed:@"weekBtnSelect"];
+        [sender setBackgroundImage:bgImage forState:UIControlStateNormal];
+    }
+    
 }
 
 - (void)doneAction {
-    if ([self.deviceIds count]==0) {
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"MustChoose", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
-        [alertController.view setTintColor:DARKORAGE];
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-            
-        }];
-        [alertController addAction:cancelAction];
-        [self presentViewController:alertController animated:YES completion:nil];
-        return;
-    }
+    
+//    if ([self.deviceIds count]==0) {
+//        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"MustChoose", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+//        [alertController.view setTintColor:DARKORAGE];
+//        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+//            
+//        }];
+//        [alertController addAction:cancelAction];
+//        [self presentViewController:alertController animated:YES completion:nil];
+//        return;
+//    }
     _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     _hud.mode = MBProgressHUDModeIndeterminate;
     _hud.delegate = self;
@@ -271,13 +573,10 @@
     
     enabled = @(_enabledSwitch.on);
     
-    NSDateFormatter *dateFormate = [[NSDateFormatter alloc] init];
-    [dateFormate setDateFormat:@"yyyyMMddHHmmss"];
-    NSString *dateStr = [dateFormate stringFromDate:_timerPicker.date];
-    NSString *newStr = [dateStr stringByReplacingCharactersInRange:NSMakeRange(12, 2) withString:@"00"];
-    newStr = [newStr stringByReplacingCharactersInRange:NSMakeRange(0, 8) withString:@"20180101"];
-    time = [dateFormate dateFromString:newStr];
-    NSLog(@"timer >>> %@ \n newStr >>> %@",time,newStr);
+    NSDateFormatter *dateFormate_time = [[NSDateFormatter alloc] init];
+    [dateFormate_time setDateFormat:@"HHmm"];
+    NSString *timeStr = [dateFormate_time stringFromDate:_timerPicker.date];
+    time = [dateFormate_time dateFromString:timeStr];
 //    NSDate *date;
     
     repeatStr = @"";
@@ -286,17 +585,32 @@
             repeatStr = [NSString stringWithFormat:@"%d%@",btn.selected,repeatStr];
         }
         repeatStr = [NSString stringWithFormat:@"0%@",repeatStr];
-        
-        date = [dateFormate dateFromString:@"20180101000000"];
+        date = nil;
     }else {
         repeatStr = @"00000000";
-        
-        NSString *dateString = [dateFormate stringFromDate:_datePicker.date];
-        NSString *newString = [dateString stringByReplacingCharactersInRange:NSMakeRange(8, 6) withString:@"000000"];
-        date = [dateFormate dateFromString:newString];
-        
+        NSDateFormatter *dateFormate_date = [[NSDateFormatter alloc] init];
+        [dateFormate_date setDateFormat:@"yyyyMMdd"];
+        NSString *dateStr = [dateFormate_date stringFromDate:_datePicker.date];
+        date = [dateFormate_date dateFromString:dateStr];
     }
     
+    for (SceneMemberEntity *sceneMember in _selectedScene.members) {
+        NSNumber *timerIndex = [[CSRDatabaseManager sharedInstance] getNextFreeTimerIDOfDeivice:sceneMember.deviceID];
+        [self.deviceIdsAndIndexs setObject:timerIndex forKey:[NSString stringWithFormat:@"%@",sceneMember.deviceID]];
+        NSString *eveType;
+        if ([sceneMember.powerState boolValue]) {
+            if ([CSRUtilities belongToSwitch:sceneMember.kindString]) {
+                eveType = @"10";
+            }else if ([CSRUtilities belongToDimmer:sceneMember.kindString]) {
+                eveType = @"12";
+            }
+        }else {
+            eveType = @"11";
+        }
+        [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:eveType level:[sceneMember.level integerValue]];
+    }
+    
+    /*
     if (!_newadd) {
         [_timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timerDevice, BOOL * _Nonnull stop) {
             
@@ -332,6 +646,10 @@
         [[DataModelManager shareInstance] addAlarmForDevice:deviceId alarmIndex:[timerIndex integerValue] enabled:[enabled boolValue] fireDate:date fireTime:time repeat:repeatStr eveType:eveType level:[model.level integerValue]];
         
     }
+    
+    */
+    
+    
 }
 
 - (void)addTimerToDeviceCall:(NSNotification *)result {
@@ -341,7 +659,7 @@
     NSLog(@"---->> %@ ::: %@",deviceId,resultStr);
     
     if ([resultStr boolValue]) {
-        _timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:enabled fireTime:time fireDate:date repeatStr:repeatStr];
+        _timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:enabled fireTime:time fireDate:date repeatStr:repeatStr sceneID:_selectedScene.sceneID];
         NSNumber *index = [self.deviceIdsAndIndexs objectForKey:[NSString stringWithFormat:@"%@",deviceId]];
         __block TimerDeviceEntity *newTimerDeviceEntity;
         [_timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timerDevice, BOOL * _Nonnull stop) {
@@ -360,7 +678,7 @@
         [[CSRDatabaseManager sharedInstance] saveContext];
 
         [self.backs addObject:deviceId];
-        if ([self.backs count] == [self.deviceIds count]) {
+        if ([self.backs count] == [_selectedScene.members count]) {
             if (self.handle) {
                 self.handle();
             }
@@ -369,6 +687,9 @@
             [self.navigationController popViewControllerAnimated:YES];
         }
     }else {
+        if (self.handle) {
+            self.handle();
+        }
         [_hud hideAnimated:YES];
         _hud = nil;
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];

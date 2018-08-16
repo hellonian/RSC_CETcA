@@ -81,7 +81,6 @@
         NSLog(@"%@",error);
     }];
     
-    
 
 }
 
@@ -274,38 +273,38 @@
         if ([deviceId isEqualToNumber:model.deviceId]) {
             model.firwareVersion = firmwareVersion;
             if ([model.kind isEqualToString:@"S350BT"]) {
-                if (firmwareVersion == SLatestV) {
-                    model.isLatest = YES;
-                }else{
+                if (firmwareVersion < SLatestV) {
                     model.isLatest = NO;
+                }else{
+                    model.isLatest = YES;
                 }
             }
             if ([model.kind isEqualToString:@"D350BT"]) {
-                if (firmwareVersion == DLatestV) {
-                    model.isLatest = YES;
-                }else{
+                if (firmwareVersion < DLatestV) {
                     model.isLatest = NO;
+                }else{
+                    model.isLatest = YES;
                 }
             }
             if ([model.kind isEqualToString:@"RB01"]) {
-                if (firmwareVersion == RfLatestV) {
-                    model.isLatest = YES;
-                }else{
+                if (firmwareVersion < RfLatestV) {
                     model.isLatest = NO;
+                }else{
+                    model.isLatest = YES;
                 }
             }
             if ([model.kind isEqualToString:@"RB02"]) {
-                if (firmwareVersion == RoLatestV) {
-                    model.isLatest = YES;
-                }else{
+                if (firmwareVersion < RoLatestV) {
                     model.isLatest = NO;
+                }else{
+                    model.isLatest = YES;
                 }
             }
             if ([model.kind isEqualToString:@"D350B-H"]) {
-                if (firmwareVersion == DHLatestV) {
-                    model.isLatest = YES;
-                }else{
+                if (firmwareVersion < DHLatestV) {
                     model.isLatest = NO;
+                }else{
+                    model.isLatest = YES;
                 }
             }
             *stop = YES;

@@ -25,14 +25,14 @@
 @property (nonatomic,strong) UIActivityIndicatorView *spinner;
 @property (weak, nonatomic) IBOutlet UITextField *nameTF;
 @property (nonatomic,copy) NSString *originalName;
-@property (weak, nonatomic) IBOutlet UILabel *luxLabel;
-@property (weak, nonatomic) IBOutlet UISlider *luxSlider;
+@property (weak, nonatomic) IBOutlet UITextField *luxTF;
 @property (weak, nonatomic) IBOutlet UILabel *minLabel;
 @property (weak, nonatomic) IBOutlet UISlider *minSlider;
 @property (weak, nonatomic) IBOutlet UILabel *maxLabel;
 @property (weak, nonatomic) IBOutlet UISlider *maxSlider;
 @property (weak, nonatomic) IBOutlet UIView *bgView;
 @property (nonatomic,strong) MBProgressHUD *hud;
+@property (weak, nonatomic) IBOutlet UILabel *macAddressLabel;
 
 @end
 
@@ -49,6 +49,18 @@
     self.nameTF.delegate = self;
     self.nameTF.text = self.lightSensor.name;
     self.originalName = self.lightSensor.name;
+    NSString *macAddr = [self.lightSensor.uuid substringFromIndex:24];
+    NSString *doneTitle = @"";
+    int count = 0;
+    for (int i = 0; i<macAddr.length; i++) {
+        count ++;
+        doneTitle = [doneTitle stringByAppendingString:[macAddr substringWithRange:NSMakeRange(i, 1)]];
+        if (count == 2 && i<macAddr.length-1) {
+            doneTitle = [NSString stringWithFormat:@"%@:", doneTitle];
+            count = 0;
+        }
+    }
+    self.macAddressLabel.text = doneTitle;
     
     _tableView.delegate = self;
     _tableView.dataSource = self;
@@ -67,8 +79,7 @@
     if (self.lightSensor.remoteBranch.length > 13) {
         NSString *luxStr = [self.lightSensor.remoteBranch substringWithRange:NSMakeRange(10, 4)];
         NSInteger lux = [CSRUtilities numberWithHexString:luxStr];
-        self.luxLabel.text = [NSString stringWithFormat:@"%ld Lux",lux];
-        [self.luxSlider setValue:lux];
+        self.luxTF.text = [NSString stringWithFormat:@"%ld",lux];
         NSString *minStr = [self.lightSensor.remoteBranch substringWithRange:NSMakeRange(14, 2)];
         NSInteger min = [CSRUtilities numberWithHexString:minStr];
         self.minLabel.text = [NSString stringWithFormat:@"%.f%%",min/255.0*100];
@@ -181,7 +192,7 @@
         NSInteger num = 6*cnt+1;
         NSString *cmdHead = [NSString stringWithFormat:@"74%@%@",[CSRUtilities stringWithHexNumber:num],[CSRUtilities stringWithHexNumber:cnt]];
         
-        NSString *targetLux = [self exchangePositionOfDeviceId:_luxSlider.value];
+        NSString *targetLux = [self exchangePositionOfDeviceId:[_luxTF.text integerValue]];
         NSString *minLevel = [CSRUtilities stringWithHexNumber:_minSlider.value];
         NSString *maxLevel = [CSRUtilities stringWithHexNumber:_maxSlider.value];
         
@@ -354,10 +365,6 @@
             self.reloadDataHandle();
         }
     }
-}
-
-- (IBAction)luxValue:(UISlider *)sender {
-    self.luxLabel.text = [NSString stringWithFormat:@"%.f Lux",sender.value];
 }
 
 - (IBAction)minValue:(UISlider *)sender {

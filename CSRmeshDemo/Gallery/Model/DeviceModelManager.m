@@ -25,6 +25,14 @@
     NSNumber *currentLevel;
     UIGestureRecognizerState currentState;
     PanGestureMoveDirection moveDirection;
+    
+    NSTimer *CTTimer;
+    NSNumber *CTCurrentCT;
+    UIGestureRecognizerState CTCurrentState;
+    
+    NSTimer *colorTimer;
+    UIColor *currentColor;
+    UIGestureRecognizerState colorCurrentState;
 }
 
 @end
@@ -52,7 +60,7 @@
         NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
         if (allDevices != nil && [allDevices count] != 0) {
             for (CSRDeviceEntity *deviceEntity in allDevices) {
-                if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName] || [CSRUtilities belongToLightSensor:deviceEntity.shortName]) {
+                if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName] || [CSRUtilities belongToLightSensor:deviceEntity.shortName] || [deviceEntity.shortName isEqualToString:@"RGBCW"]) {
                     DeviceModel *model = [[DeviceModel alloc] init];
                     model.deviceId = deviceEntity.deviceId;
                     model.shortName = deviceEntity.shortName;
@@ -97,13 +105,18 @@
 #pragma mark - LightModelApiDelegate
 
 - (void)didGetLightState:(NSNumber *)deviceId red:(NSNumber *)red green:(NSNumber *)green blue:(NSNumber *)blue level:(NSNumber *)level powerState:(NSNumber *)powerState colorTemperature:(NSNumber *)colorTemperature supports:(NSNumber *)supports meshRequestId:(NSNumber *)meshRequestId {
-    NSLog(@"调光回调 deviceId--> %@ powerState--> %@ --> %@ ",deviceId,powerState,level);
+    NSLog(@"调光回调 deviceId--> %@ powerState--> %@ level--> %@ colorTemperature--> %@ supports--> %@ \n red -> %@ -> green -> %@ blue -> %@ ",deviceId,powerState,level,colorTemperature,supports,red,green,blue);
     __block BOOL exist=NO ;
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
             model.powerState = powerState;
             model.level = level;
             model.isleave = NO;
+            model.colorTemperature = colorTemperature;
+            model.supports = supports;
+            model.red = red;
+            model.green = green;
+            model.blue = blue;
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
             
@@ -120,6 +133,11 @@
         model.powerState = powerState;
         model.level = level;
         model.isleave = NO;
+        model.colorTemperature = colorTemperature;
+        model.supports = supports;
+        model.red = red;
+        model.green = green;
+        model.blue = blue;
         [_allDevices addObject:model];
     }
 }
@@ -205,6 +223,64 @@
             NSLog(@"定时器结束！！🔔🔔🔔🔔🔔🔔🔔🔔🔔🔔🔔");
             [timer invalidate];
             timer = nil;
+        }
+    }
+}
+
+-(void)setColorTemperatureWithDeviceId:(NSNumber *)deviceId withColorTemperature:(NSNumber *)colorTemperature withState:(UIGestureRecognizerState)state {
+    CTCurrentState = state;
+    CTCurrentCT = colorTemperature;
+    if (state == UIGestureRecognizerStateBegan && !CTTimer) {
+        CTTimer = [NSTimer timerWithTimeInterval:0.5 target:self selector:@selector(CTTimerMethod:) userInfo:deviceId repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:CTTimer forMode:NSRunLoopCommonModes];
+    }
+}
+
+- (void)CTTimerMethod:(NSTimer *)infotimer {
+    @synchronized (self) {
+        NSNumber *deviceId = infotimer.userInfo;
+        [[LightModelApi sharedInstance] setColorTemperature:deviceId temperature:CTCurrentCT duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+            
+        } failure:^(NSError * _Nullable error) {
+            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+            model.isleave = YES;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
+        }];
+        
+        if (CTCurrentState == UIGestureRecognizerStateEnded) {
+            NSLog(@"~~~~~~~~~~~~~~~~色温定时器结束！！😇😇😇😇😇");
+            [CTTimer invalidate];
+            CTTimer = nil;
+        }
+    }
+}
+
+-(void)setColorWithDeviceId:(NSNumber *)deviceId withColor:(UIColor *)color withState:(UIGestureRecognizerState)state {
+    
+    colorCurrentState = state;
+    currentColor = color;
+    if (state == UIGestureRecognizerStateBegan && !colorTimer) {
+        colorTimer = [NSTimer timerWithTimeInterval:0.5 target:self selector:@selector(colorTimerMethod:) userInfo:deviceId repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:colorTimer forMode:NSRunLoopCommonModes];
+    }
+    
+}
+
+- (void)colorTimerMethod:(NSTimer *)infoTimer {
+    @synchronized (self) {
+        NSNumber *deviceId = infoTimer.userInfo;
+        [[LightModelApi sharedInstance] setColor:deviceId color:currentColor duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+            
+        } failure:^(NSError * _Nullable error) {
+            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+            model.isleave = YES;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
+        }];
+        
+        if (colorCurrentState == UIGestureRecognizerStateEnded) {
+            NSLog(@"################ 颜色定时器结束 👀👀👀👀👀👀👀👀👀👀👀👀");
+            [colorTimer invalidate];
+            colorTimer = nil;
         }
     }
 }

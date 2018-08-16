@@ -128,7 +128,6 @@
         list.originalMembers = mutableArray;
         
         [list getSelectedDevices:^(NSArray *devices) {
-            NSLog(@"><<>> %@",devices);
             self.hasChanged = YES;
             [_devicesCollectionView.dataArray removeAllObjects];
             
@@ -274,7 +273,6 @@
                                                                     NSNumber *areaValue = [desiredGroups objectAtIndex:[groupIndex integerValue]];
                                                                     
                                                                     CSRAreaEntity *areaEntity = [[[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"CSRAreaEntity" withPredicate:@"areaID == %@", areaValue] firstObject];
-                                                                    NSLog(@">>>> nianbao >>> %@ | %@ | %@ | %@ | %@ } %@",deviceId,modelNo,groupIndex,instance,groupId,areaEntity);
                                                                     if (areaEntity) {
                                                                         
                                                                         [_areaEntity removeDevicesObject:deviceEntity];
@@ -366,7 +364,6 @@
             }
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * ([_areaEntity.devices count]) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [self saveArea:areaIdNumber sortId:_areaEntity.sortId];
-                NSLog(@">>>>nian %ld   %ld",removeNum,[self.groupRemoveDevices count]);
                 if (_hud && ((removeNum>0 && removeNum == [self.groupRemoveDevices count]) || removeNum==0)) {
                     [_hud hideAnimated:YES];
                     _hud = nil;

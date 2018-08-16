@@ -90,6 +90,7 @@
 		2E6BD7FD20D09B3200036CA2 /* TimerDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E6BD7FF20D09B3200036CA2 /* TimerDetailViewController.xib */; };
 		2E6BD80420D0AD6D00036CA2 /* RemoteSettingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E6BD80620D0AD6D00036CA2 /* RemoteSettingViewController.xib */; };
 		2E6C26E720A5845E00BDB95A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E6C26E620A5845E00BDB95A /* Main.storyboard */; };
+		2E6D543B211AB6C6003D02DB /* ColorSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6D543A211AB6C6003D02DB /* ColorSlider.m */; };
 		2E6FBD9620E1D43F0045DDAC /* GroupListSModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6FBD9520E1D43F0045DDAC /* GroupListSModel.m */; };
 		2E8623492019DB28004EF0E0 /* DeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8623472019DB28004EF0E0 /* DeviceViewController.m */; };
 		2E9622BF20C913530097C617 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E9622C120C913530097C617 /* Localizable.strings */; };
@@ -102,6 +103,7 @@
 		2EC3893A204921C2004D822D /* TimerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC38938204921C2004D822D /* TimerTableViewCell.m */; };
 		2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EC38939204921C2004D822D /* TimerTableViewCell.xib */; };
 		2EC3893F204939CE004D822D /* TimerDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC3893D204939CE004D822D /* TimerDetailViewController.m */; };
+		2EC73CF62124197700850882 /* ColorSquare.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC73CF52124197700850882 /* ColorSquare.m */; };
 		2ED3963C204D09A00068B666 /* TimerEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963B204D09A00068B666 /* TimerEntity.m */; };
 		2ED3963F204D09D20068B666 /* TimerDeviceEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */; };
 		2ED974471F3AED0F000F20C9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2ED974491F3AED0F000F20C9 /* LaunchScreen.storyboard */; };
@@ -291,6 +293,8 @@
 		2E6BD80820D0AD6F00036CA2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
 		2E6BD80A20D0AD7000036CA2 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/RemoteSettingViewController.strings"; sourceTree = "<group>"; };
 		2E6C26E620A5845E00BDB95A /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		2E6D5439211AB6C6003D02DB /* ColorSlider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColorSlider.h; sourceTree = "<group>"; };
+		2E6D543A211AB6C6003D02DB /* ColorSlider.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColorSlider.m; sourceTree = "<group>"; };
 		2E6FBD9420E1D43F0045DDAC /* GroupListSModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GroupListSModel.h; sourceTree = "<group>"; };
 		2E6FBD9520E1D43F0045DDAC /* GroupListSModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GroupListSModel.m; sourceTree = "<group>"; };
 		2E6FBD9820E1D77D0045DDAC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/LightSensorSettingViewController.strings; sourceTree = "<group>"; };
@@ -317,6 +321,8 @@
 		2EC38939204921C2004D822D /* TimerTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TimerTableViewCell.xib; sourceTree = "<group>"; };
 		2EC3893C204939CE004D822D /* TimerDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerDetailViewController.h; sourceTree = "<group>"; };
 		2EC3893D204939CE004D822D /* TimerDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerDetailViewController.m; sourceTree = "<group>"; };
+		2EC73CF42124197600850882 /* ColorSquare.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColorSquare.h; sourceTree = "<group>"; };
+		2EC73CF52124197700850882 /* ColorSquare.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColorSquare.m; sourceTree = "<group>"; };
 		2ED3963A204D09A00068B666 /* TimerEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerEntity.h; sourceTree = "<group>"; };
 		2ED3963B204D09A00068B666 /* TimerEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerEntity.m; sourceTree = "<group>"; };
 		2ED3963D204D09D20068B666 /* TimerDeviceEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerDeviceEntity.h; sourceTree = "<group>"; };
@@ -848,6 +854,10 @@
 				2E2E70361FF5DE60002D1C1D /* PlaceIconCollectionViewCell.xib */,
 				2E2E70321FF5DE60002D1C1D /* PlaceColorIconPickerView.h */,
 				2E2E70331FF5DE60002D1C1D /* PlaceColorIconPickerView.m */,
+				2E6D5439211AB6C6003D02DB /* ColorSlider.h */,
+				2E6D543A211AB6C6003D02DB /* ColorSlider.m */,
+				2EC73CF42124197600850882 /* ColorSquare.h */,
+				2EC73CF52124197700850882 /* ColorSquare.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1284,6 +1294,7 @@
 				2E48BBE020D239E500401CDD /* LightSensorViewController.m in Sources */,
 				0D835B411B9749E600FF4376 /* CSRAppStateManager.m in Sources */,
 				0D835B421B9749E600FF4376 /* CSRDevicesManager.m in Sources */,
+				2EC73CF62124197700850882 /* ColorSquare.m in Sources */,
 				0D835B431B9749E600FF4376 /* CSRmeshDevice.m in Sources */,
 				0D835B441B9749E600FF4376 /* CSRmeshArea.m in Sources */,
 				2EF718331FFB2C0600901918 /* GalleryViewController.m in Sources */,
@@ -1347,6 +1358,7 @@
 				0D835B7E1B9749E700FF4376 /* CSRmeshSettings.m in Sources */,
 				2E2E707D1FF5DE60002D1C1D /* MasterViewController.m in Sources */,
 				2E6A02131F39884500111312 /* TabBarButton.m in Sources */,
+				2E6D543B211AB6C6003D02DB /* ColorSlider.m in Sources */,
 				F4658A221C99747A00C284F4 /* CSREventEntity.m in Sources */,
 				2E2E70901FF5DE60002D1C1D /* PlaceColorIconPickerView.m in Sources */,
 				2E2E70911FF5DE60002D1C1D /* PlaceIconCollectionViewCell.m in Sources */,
