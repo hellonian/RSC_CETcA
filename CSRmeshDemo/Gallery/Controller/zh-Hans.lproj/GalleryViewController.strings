@@ -1,0 +1,9 @@
+
+/* Class = "UILabel"; text = "1. Insert a photo of the luminaires in the room."; ObjectID = "9bI-uX-EjH"; */
+"9bI-uX-EjH.text" = "1. 首先添加一张带有灯具的环境照片。";
+
+/* Class = "UILabel"; text = "2.Position the circular controls over the luminaires."; ObjectID = "eXZ-Sc-k4r"; */
+"eXZ-Sc-k4r.text" = "2. 然后在照片中的灯具位置添加控制圆盘。";
+
+/* Class = "UILabel"; text = "3. Use luminaires to control the lighting."; ObjectID = "gqn-ah-Mb8"; */
+"gqn-ah-Mb8.text" = "3. 通过操作照片中的圆盘就可以控制相应的灯具.";

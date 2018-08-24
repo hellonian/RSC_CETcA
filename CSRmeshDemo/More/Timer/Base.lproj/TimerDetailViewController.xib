@@ -32,7 +32,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <color key="backgroundColor" red="0.86274509799999999" green="0.86274509799999999" blue="0.86274509799999999" alpha="1" colorSpace="calibratedRGB"/>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
-            <point key="canvasLocation" x="188.5" y="63.5"/>
+            <point key="canvasLocation" x="150" y="-84"/>
         </view>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="Akz-NI-7zN">
             <rect key="frame" x="0.0" y="0.0" width="479" height="136"/>
@@ -179,7 +179,7 @@
             <point key="canvasLocation" x="-511.5" y="-153.5"/>
         </segmentedControl>
         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FDN-St-Kl2">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="102"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wUm-A4-Zcg">
                     <rect key="frame" x="20" y="44" width="355" height="1"/>
@@ -189,7 +189,7 @@
                     </constraints>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KDo-Pu-2dB">
-                    <rect key="frame" x="20" y="32" width="38" height="20"/>
+                    <rect key="frame" x="20" y="12" width="38" height="20"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="20" id="wen-aK-Dqo"/>
                     </constraints>
@@ -198,7 +198,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="e1Z-CZ-CIf">
-                    <rect key="frame" x="78" y="25" width="281" height="34"/>
+                    <rect key="frame" x="78" y="5" width="281" height="34"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="34" id="xMI-5f-YaY"/>
                     </constraints>
@@ -239,8 +239,9 @@
                 <constraint firstItem="e1Z-CZ-CIf" firstAttribute="top" secondItem="pKX-Sl-eds" secondAttribute="top" constant="5" id="mdh-1F-sBH"/>
                 <constraint firstItem="JNO-b5-kfu" firstAttribute="centerY" secondItem="kZO-nE-ufr" secondAttribute="centerY" id="qHk-CT-QTH"/>
             </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="pKX-Sl-eds"/>
-            <point key="canvasLocation" x="645" y="-222"/>
+            <point key="canvasLocation" x="577" y="-197"/>
         </view>
         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Choose Scene" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lri-ZC-8Tx">
             <rect key="frame" x="0.0" y="0.0" width="93.5" height="20"/>
@@ -250,7 +251,7 @@
             <fontDescription key="fontDescription" type="system" pointSize="14"/>
             <color key="textColor" red="0.58823529409999997" green="0.58823529409999997" blue="0.58823529409999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
             <nil key="highlightedColor"/>
-            <point key="canvasLocation" x="504" y="207"/>
+            <point key="canvasLocation" x="446" y="-76"/>
         </label>
         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d4f-vi-gnE">
             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -264,7 +265,7 @@
             <connections>
                 <action selector="deleteTimerAction:" destination="-1" eventType="touchUpInside" id="69D-d6-eco"/>
             </connections>
-            <point key="canvasLocation" x="612" y="350"/>
+            <point key="canvasLocation" x="577" y="329"/>
         </button>
     </objects>
     <resources>

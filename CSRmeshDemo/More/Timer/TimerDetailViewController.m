@@ -167,7 +167,12 @@
         [_sceneView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_chooseTitle withOffset:10];
         [_sceneView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
         [_sceneView autoAlignAxisToSuperviewAxis:ALAxisVertical];
-        [_sceneView autoSetDimension:ALDimensionHeight toSize:45*[_sceneMutableArray count]-1];
+        if (_sceneMutableArray && [_sceneMutableArray count]>0) {
+            [_sceneView autoSetDimension:ALDimensionHeight toSize:45*[_sceneMutableArray count]-1];
+        }else {
+            _sceneView.backgroundColor = [UIColor clearColor];
+            [_sceneView autoSetDimension:ALDimensionHeight toSize:1];
+        }
         
         [_scrollView addSubview:_timerPicker];
         [_timerPicker autoAlignAxisToSuperviewAxis:ALAxisVertical];
@@ -196,7 +201,11 @@
             [_deleteButton autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [_deleteButton autoSetDimension:ALDimensionWidth toSize:WIDTH];
             
-            _scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 45*[_sceneMutableArray count]-1+618);
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPad) {
+                _scrollView.contentSize = CGSizeMake(WIDTH-321, 45*[_sceneMutableArray count]-1+618);
+            }else {
+                _scrollView.contentSize = CGSizeMake(WIDTH, 45*[_sceneMutableArray count]-1+618);
+            }
             
         }else {
             [self.repeatChooseSegment setSelectedSegmentIndex:0];
@@ -223,10 +232,12 @@
             [_deleteButton autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [_deleteButton autoSetDimension:ALDimensionWidth toSize:WIDTH];
             
-            _scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, 45*[_sceneMutableArray count]-1+582);
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPad) {
+                _scrollView.contentSize = CGSizeMake(WIDTH-321, 45*[_sceneMutableArray count]-1+582);
+            }else {
+                _scrollView.contentSize = CGSizeMake(WIDTH, 45*[_sceneMutableArray count]-1+582);
+            }
         }
-        
-        
         
     }else {
         
@@ -362,7 +373,6 @@
         }
     }
     
-    
 }
 
 - (UIView *)addSelectedView:(SceneEntity *)scene {
@@ -396,6 +406,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteTimerCall:) name:@"deleteAlarmCall" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeAlarmEnabledCall:) name:@"changeAlarmEnabledCall" object:nil];
 }
+
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
@@ -549,7 +560,7 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(15.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [_hud hideAnimated:YES];
         _hud = nil;
-        [self showTextHud:@"ERROR"];
+        [self showTextHud:[NSString stringWithFormat:@"%@",AcTECLocalizedStringFromTable(@"Error", @"Localizable")]];
     });
     [self.backs removeAllObjects];
     
@@ -693,7 +704,7 @@
         [_hud hideAnimated:YES];
         _hud = nil;
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
-        [self showTextHud:[NSString stringWithFormat:@"ERROR:%@ set timer fail.",deviceEntity.name]];
+        [self showTextHud:[NSString stringWithFormat:@"%@:%@ set timer fail.",AcTECLocalizedStringFromTable(@"Error", @"Localizable"),deviceEntity.name]];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self.navigationController popViewControllerAnimated:YES];
         });
@@ -723,7 +734,7 @@
         }
         [_hud hideAnimated:YES];
         _hud = nil;
-        [self showTextHud:@"ERROR: not found device!"];
+        [self showTextHud:[NSString stringWithFormat:@"%@:%@!",AcTECLocalizedStringFromTable(@"Error", @"Localizable"),AcTECLocalizedStringFromTable(@"NotFoundDevice", @"Localizable")]];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self.navigationController popViewControllerAnimated:YES];
         });
@@ -736,12 +747,12 @@
     NSString *state = [resultDic objectForKey:@"changeAlarmEnabledCall"];
 //    NSNumber *deviceId = [resultDic objectForKey:@"deviceId"];
     if ([state boolValue]) {
-        [self showTextHud:@"SUCCESS"];
+        [self showTextHud:[NSString stringWithFormat:@"%@",AcTECLocalizedStringFromTable(@"Success", @"Localizable")]];
         if (self.handle) {
             self.handle();
         }
     }else {
-        [self showTextHud:@"ERROR"];
+        [self showTextHud:[NSString stringWithFormat:@"%@",AcTECLocalizedStringFromTable(@"Error", @"Localizable")]];
     }
 }
 

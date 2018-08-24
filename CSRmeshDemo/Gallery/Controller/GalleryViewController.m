@@ -786,14 +786,17 @@
 }
 
 - (void)languageChange {
-    self.navigationItem.title = AcTECLocalizedStringFromTable(@"Gallery", @"Localizable");
-    UIBarButtonItem *right;
-    if (_isEditing) {
-        right = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(galleryDoneAction: )];
-    }else {
-        right = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Edit", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(galleryEditAction:)];
+//    self.navigationItem.title = AcTECLocalizedStringFromTable(@"Gallery", @"Localizable");
+//    UIBarButtonItem *right;
+//    if (_isEditing) {
+//        right = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(galleryDoneAction: )];
+//    }else {
+//        right = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Edit", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(galleryEditAction:)];
+//    }
+//    self.navigationItem.rightBarButtonItem = right;
+    if (self.isViewLoaded && !self.view.window) {
+        self.view = nil;
     }
-    self.navigationItem.rightBarButtonItem = right;
 }
 
 @end

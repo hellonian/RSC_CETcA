@@ -1,0 +1,39 @@
+
+/* Class = "UIButton"; normalTitle = "Sun"; ObjectID = "2gL-3g-yqk"; */
+"2gL-3g-yqk.normalTitle" = "Sun";
+
+/* Class = "UIButton"; normalTitle = "Fri"; ObjectID = "9Ou-VB-VN6"; */
+"9Ou-VB-VN6.normalTitle" = "Fri";
+
+/* Class = "UIButton"; normalTitle = "Mon"; ObjectID = "HqK-4Z-cN3"; */
+"HqK-4Z-cN3.normalTitle" = "Mon";
+
+/* Class = "UILabel"; text = "Name"; ObjectID = "KDo-Pu-2dB"; */
+"KDo-Pu-2dB.text" = "Name";
+
+/* Class = "UIButton"; normalTitle = "Sat"; ObjectID = "OE9-ZL-AsL"; */
+"OE9-ZL-AsL.normalTitle" = "Sat";
+
+/* Class = "UIButton"; normalTitle = "Thu"; ObjectID = "XXG-aT-8P7"; */
+"XXG-aT-8P7.normalTitle" = "Thu";
+
+/* Class = "UIButton"; normalTitle = "Delete"; ObjectID = "d4f-vi-gnE"; */
+"d4f-vi-gnE.normalTitle" = "Delete";
+
+/* Class = "UILabel"; text = "Enabled"; ObjectID = "kZO-nE-ufr"; */
+"kZO-nE-ufr.text" = "Enabled";
+
+/* Class = "UILabel"; text = "Choose Scene"; ObjectID = "lri-ZC-8Tx"; */
+"lri-ZC-8Tx.text" = "Choose Scene";
+
+/* Class = "UIButton"; normalTitle = "Tue"; ObjectID = "oWO-Ir-HD0"; */
+"oWO-Ir-HD0.normalTitle" = "Tue";
+
+/* Class = "UISegmentedControl"; wdX-Ff-gEZ.segmentTitles[0] = "Week"; ObjectID = "wdX-Ff-gEZ"; */
+"wdX-Ff-gEZ.segmentTitles[0]" = "Week";
+
+/* Class = "UISegmentedControl"; wdX-Ff-gEZ.segmentTitles[1] = "Day"; ObjectID = "wdX-Ff-gEZ"; */
+"wdX-Ff-gEZ.segmentTitles[1]" = "Day";
+
+/* Class = "UIButton"; normalTitle = "Wed"; ObjectID = "ykC-99-o8w"; */
+"ykC-99-o8w.normalTitle" = "Wed";

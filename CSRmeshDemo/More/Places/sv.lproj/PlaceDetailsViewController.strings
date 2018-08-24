@@ -1,0 +1,21 @@
+
+/* Class = "UITextField"; placeholder = "Place name"; ObjectID = "Jd1-eJ-EqW"; */
+"Jd1-eJ-EqW.placeholder" = "Plats namn";
+
+/* Class = "UILabel"; text = "Network key"; ObjectID = "bs7-mY-b11"; */
+"bs7-mY-b11.text" = "Nätverksnyckel";
+
+/* Class = "UILabel"; text = "Place name"; ObjectID = "hYf-3F-9HS"; */
+"hYf-3F-9HS.text" = "Plats namn";
+
+/* Class = "UIButton"; normalTitle = "Delete"; ObjectID = "lRG-Nx-Y7O"; */
+"lRG-Nx-Y7O.normalTitle" = "Radera";
+
+/* Class = "UILabel"; text = "Show password"; ObjectID = "rQO-oA-8kS"; */
+"rQO-oA-8kS.text" = "Visa Lösenord";
+
+/* Class = "UIButton"; normalTitle = "Export Place File"; ObjectID = "uhH-7k-Gq3"; */
+"uhH-7k-Gq3.normalTitle" = "Exportera platsfil";
+
+/* Class = "UITextField"; placeholder = "Network key"; ObjectID = "zjv-Gy-2n3"; */
+"zjv-Gy-2n3.placeholder" = "Nätverksnyckel";

@@ -1120,6 +1120,13 @@
     return NO;
 }
 
++ (BOOL)belongToMainVCDevice: (NSString *)shortName {
+    if ([kDimmers containsObject:shortName] || [kSwitchs containsObject:shortName] || [kCWDevices containsObject:shortName] || [kRGBDevices containsObject:shortName] || [kRGBCWDevices containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
 //十六进制字符串转十进制数据
 + (NSInteger)numberWithHexString:(NSString *)hexString {
     

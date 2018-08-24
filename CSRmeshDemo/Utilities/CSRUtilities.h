@@ -105,5 +105,6 @@
 + (BOOL)belongToThreeSpeedColorTemperatureDevice:(NSString *)shortName;
 + (BOOL)belongToLightSensor:(NSString *)shortName;
 + (NSString *)stringWithHexNumber:(NSUInteger)hexNumber;
++ (BOOL)belongToMainVCDevice: (NSString *)shortName;
 
 @end

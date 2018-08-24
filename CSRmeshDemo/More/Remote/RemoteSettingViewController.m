@@ -784,7 +784,7 @@
 
 - (void)doneAction {
     _setSuccess = NO;
-    timerSeconde = 10;
+    timerSeconde = 20;
     [self showHudTogether];
     
     if ([_remoteEntity.shortName isEqualToString:@"RB01"]) {
@@ -848,7 +848,7 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdStr1] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
                         dispatch_semaphore_signal(semaphore);
-                        timerSeconde = 10;
+                        timerSeconde = 20;
                     } failure:^(NSError * _Nonnull error) {
                         
                     }];
@@ -867,7 +867,7 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdStr2] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
                         dispatch_semaphore_signal(semaphore);
-                        timerSeconde = 10;
+                        timerSeconde = 20;
                     } failure:^(NSError * _Nonnull error) {
                         
                     }];
@@ -886,7 +886,7 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdStr3] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
                         dispatch_semaphore_signal(semaphore);
-                        timerSeconde = 10;
+                        timerSeconde = 20;
                     } failure:^(NSError * _Nonnull error) {
                         
                     }];

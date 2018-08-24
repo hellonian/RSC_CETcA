@@ -69,7 +69,11 @@ static DataModelManager *manager = nil;
     if (fireDate) {
         YMdString = [self YMdStringForDate:fireDate];
     }else{
-        YMdString = @"000000";
+        NSDateFormatter *dateFormate = [[NSDateFormatter alloc] init];
+        [dateFormate setDateFormat:@"yyyyMMdd"];
+        NSString *dateStr = [dateFormate stringFromDate:[NSDate date]];
+        NSDate *date = [dateFormate dateFromString:dateStr];
+        YMdString = [self YMdStringForDate:date];
     }
     
     NSString *hmsString = [self hmsStringForDate:fireTime];

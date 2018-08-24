@@ -53,10 +53,13 @@
 }
 
 - (void)languageChange:(id)sender {
-    self.navigationItem.title = AcTECLocalizedStringFromTable(@"About", @"Localizable");
-    if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
-        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:AcTECLocalizedStringFromTable(@"Setting_back", @"Localizable")] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
-        self.navigationItem.leftBarButtonItem = left;
+//    self.navigationItem.title = AcTECLocalizedStringFromTable(@"About", @"Localizable");
+//    if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+//        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:AcTECLocalizedStringFromTable(@"Setting_back", @"Localizable")] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
+//        self.navigationItem.leftBarButtonItem = left;
+//    }
+    if (self.isViewLoaded && !self.view.window) {
+        self.view = nil;
     }
 }
 

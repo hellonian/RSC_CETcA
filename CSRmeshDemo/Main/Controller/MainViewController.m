@@ -242,8 +242,7 @@
     NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
     if (mutableArray != nil || [mutableArray count] != 0) {
         [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSLog(@"<>>>> %@",deviceEntity.shortName);
-            if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName] || [deviceEntity.shortName isEqualToString:@"RGBCW"]) {
+            if ([CSRUtilities belongToMainVCDevice: deviceEntity.shortName]) {
                 if (![deviceIdWasInAreaArray containsObject:deviceEntity.deviceId]) {
                     deviceEntity.isEditting = @(_mainCVEditting);
                     [_mainCollectionView.dataArray addObject:deviceEntity];
@@ -881,7 +880,7 @@
     NSArray *devices = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
     __block BOOL exist=0;
     [devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([CSRUtilities belongToDimmer:deviceEntity.shortName]||[CSRUtilities belongToSwitch:deviceEntity.shortName]) {
+        if ([CSRUtilities belongToMainVCDevice:deviceEntity.shortName]) {
             exist = YES;
             *stop = YES;
         }

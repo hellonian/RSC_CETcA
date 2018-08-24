@@ -30,7 +30,7 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1. Insert a photo of the luminaires in the room." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9bI-uX-EjH">
-                    <rect key="frame" x="50" y="150" width="276" height="60"/>
+                    <rect key="frame" x="50" y="64" width="276" height="60"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="60" id="QA3-yw-aa0"/>
                     </constraints>
@@ -39,7 +39,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3. Use luminaires to control the lighting." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gqn-ah-Mb8">
-                    <rect key="frame" x="50" y="270" width="275" height="60"/>
+                    <rect key="frame" x="50" y="184" width="275" height="60"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="60" id="USZ-oV-WS6"/>
                     </constraints>
@@ -48,13 +48,13 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="noneGallery" translatesAutoresizingMaskIntoConstraints="NO" id="WOx-ZA-Zzy">
-                    <rect key="frame" x="50" y="330" width="275" height="169.5"/>
+                    <rect key="frame" x="50" y="244" width="275" height="169.5"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="WOx-ZA-Zzy" secondAttribute="height" multiplier="240:148" id="An1-S8-Dng"/>
                     </constraints>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2.Position the circular controls over the luminaires." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eXZ-Sc-k4r">
-                    <rect key="frame" x="50" y="210" width="275" height="60"/>
+                    <rect key="frame" x="50" y="124" width="275" height="60"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="60" id="caE-cb-7ya"/>
                     </constraints>
@@ -73,9 +73,9 @@
                 <constraint firstItem="gqn-ah-Mb8" firstAttribute="top" secondItem="eXZ-Sc-k4r" secondAttribute="bottom" id="Wr8-7j-y9B"/>
                 <constraint firstItem="eXZ-Sc-k4r" firstAttribute="top" secondItem="9bI-uX-EjH" secondAttribute="bottom" id="ZAw-1H-QVi"/>
                 <constraint firstItem="eXZ-Sc-k4r" firstAttribute="leading" secondItem="xbT-2x-iyh" secondAttribute="leading" constant="50" id="d7P-hi-h72"/>
-                <constraint firstItem="9bI-uX-EjH" firstAttribute="top" secondItem="xbT-2x-iyh" secondAttribute="top" constant="130" id="fnp-Lf-Pb9"/>
                 <constraint firstItem="gqn-ah-Mb8" firstAttribute="centerX" secondItem="bHg-9Q-BuY" secondAttribute="centerX" id="olD-JZ-w0h"/>
                 <constraint firstItem="9bI-uX-EjH" firstAttribute="leading" secondItem="xbT-2x-iyh" secondAttribute="leading" constant="50" id="pi4-g7-0DV"/>
+                <constraint firstItem="9bI-uX-EjH" firstAttribute="top" secondItem="bHg-9Q-BuY" secondAttribute="top" constant="64" id="yGf-RD-ZRg"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="xbT-2x-iyh"/>
             <point key="canvasLocation" x="-313.5" y="630.5"/>

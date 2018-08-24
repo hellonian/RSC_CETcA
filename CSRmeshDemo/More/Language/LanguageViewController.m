@@ -41,13 +41,55 @@
     self.navigationItem.rightBarButtonItem = right;
     self.navigationItem.rightBarButtonItem.enabled = NO;
     
-    self.languageAry = @[@"English",@"简体中文"];
-    self.detailLanguageAry = @[AcTECLocalizedStringFromTable(@"English", @"Localizable"),AcTECLocalizedStringFromTable(@"ChineseS", @"Localizable")];
+    self.languageAry = @[@"English",
+                         @"简体中文",
+                         @"Norsk bokmål",
+                         @"Svenska",
+                         @"Deutsch",
+                         @"Polski",
+                         @"Русский",
+                         @"Português(Portugal)",
+                         @"Español",
+                         @"română",
+                         @"Čeština",
+                         @"Lietuviškai"];
+    self.detailLanguageAry = @[AcTECLocalizedStringFromTable(@"English", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"ChineseS", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Norwegian", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Swedish", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"German", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Polish", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Russian", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Portuguese", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Spanish", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Romanian", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Czech", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Lithuanian", @"Localizable")];
     NSString *nowLanguageType = [[NSUserDefaults standardUserDefaults] objectForKey:AppLanguageSwitchKey];
     if ([nowLanguageType isEqualToString:@"en"]) {
         self.newSelectedRow = 0;
     }else if ([nowLanguageType isEqualToString:@"zh-Hans"]) {
         self.newSelectedRow = 1;
+    }else if ([nowLanguageType isEqualToString:@"nb"]) {
+        self.newSelectedRow = 2;
+    }else if ([nowLanguageType isEqualToString:@"sv"]) {
+        self.newSelectedRow = 3;
+    }else if ([nowLanguageType isEqualToString:@"de"]) {
+        self.newSelectedRow = 4;
+    }else if ([nowLanguageType isEqualToString:@"pl"]) {
+        self.newSelectedRow = 5;
+    }else if ([nowLanguageType isEqualToString:@"ru"]) {
+        self.newSelectedRow = 6;
+    }else if ([nowLanguageType isEqualToString:@"pt-PT"]) {
+        self.newSelectedRow = 7;
+    }else if ([nowLanguageType isEqualToString:@"es"]) {
+        self.newSelectedRow = 8;
+    }else if ([nowLanguageType isEqualToString:@"ro"]) {
+        self.newSelectedRow = 9;
+    }else if ([nowLanguageType isEqualToString:@"cs"]) {
+        self.newSelectedRow = 10;
+    }else if ([nowLanguageType isEqualToString:@"lt"]) {
+        self.newSelectedRow = 11;
     }
     
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
@@ -139,6 +181,26 @@
         self.selectLanguage = @"en";
     }else if ([typeString isEqualToString:@"简体中文"]) {
         self.selectLanguage = @"zh-Hans";
+    }else if ([typeString isEqualToString:@"Norsk bokmål"]) {
+        self.selectLanguage = @"nb";
+    }else if ([typeString isEqualToString:@"Svenska"]) {
+        self.selectLanguage = @"sv";
+    }else if ([typeString isEqualToString:@"Deutsch"]) {
+        self.selectLanguage = @"de";
+    }else if ([typeString isEqualToString:@"Polski"]) {
+        self.selectLanguage = @"pl";
+    }else if ([typeString isEqualToString:@"Русский"]) {
+        self.selectLanguage = @"ru";
+    }else if ([typeString isEqualToString:@"Português(Portugal)"]) {
+        self.selectLanguage = @"pt-PT";
+    }else if ([typeString isEqualToString:@"Español"]) {
+        self.selectLanguage = @"es";
+    }else if ([typeString isEqualToString:@"română"]) {
+        self.selectLanguage = @"ro";
+    }else if ([typeString isEqualToString:@"Čeština"]) {
+        self.selectLanguage = @"cs";
+    }else if ([typeString isEqualToString:@"Lietuviškai"]) {
+        self.selectLanguage = @"lt";
     }
     if ([self.selectLanguage isEqualToString:languageType]) {
         self.navigationItem.rightBarButtonItem.enabled = NO;
@@ -160,7 +222,18 @@
     }
     UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
     self.navigationItem.rightBarButtonItem = right;
-    self.detailLanguageAry = @[AcTECLocalizedStringFromTable(@"English", @"Localizable"),AcTECLocalizedStringFromTable(@"ChineseS", @"Localizable")];
+    self.detailLanguageAry = @[AcTECLocalizedStringFromTable(@"English", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"ChineseS", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Norwegian", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Swedish", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"German", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Polish", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Russian", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Portuguese", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Spanish", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Romanian", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Czech", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Lithuanian", @"Localizable")];
     [self.tableView reloadData];
 }
 
