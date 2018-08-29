@@ -31,7 +31,7 @@ extern NSString * const kTimerProfile;
 - (void)readAlarmMessageByDeviceId:(NSNumber *)deviceId;
 - (void)setDeviceTime;
 - (void)readDeviceTime:(NSNumber *)deviceId;
-- (void)addAlarmForDevice:(NSNumber *)deviceId alarmIndex:(NSInteger)index enabled:(BOOL)enabled fireDate:(NSDate *)fireDate fireTime:(NSDate *)fireTime repeat:(NSString *)repeat eveType:(NSString *)alarnActionType level:(NSInteger)level;
+- (void)addAlarmForDevice:(NSNumber *)deviceId alarmIndex:(NSInteger)index enabled:(BOOL)enabled fireDate:(NSDate *)fireDate fireTime:(NSDate *)fireTime repeat:(NSString *)repeat eveType:(NSNumber *)alarnActionType level:(NSInteger)level eveD1:(NSString *)eveD1 eveD2:(NSString *)eveD2 eveD3:(NSString *)eveD3;
 - (void)enAlarmForDevice:(NSNumber *)deviceId stata:(BOOL)state index:(NSInteger)index;
 - (void)deleteAlarmForDevice:(NSNumber *)deviceId index:(NSInteger)index;
 

@@ -21,5 +21,6 @@
 @property (nonatomic, retain) NSNumber *colorBlue;
 @property (nonatomic, retain) NSNumber *colorTemperature;
 @property (nonatomic, retain) NSNumber *eveType;
+@property (nonatomic, retain) NSNumber *sortID;
 
 @end

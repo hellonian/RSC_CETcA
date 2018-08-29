@@ -56,8 +56,13 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange) name:ZZAppLanguageDidChangeNotification object:nil];
     self.navigationItem.title = AcTECLocalizedStringFromTable(@"BTVersion", @"Localizable");
     if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
-        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:AcTECLocalizedStringFromTable(@"Setting_back", @"Localizable")] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
-        self.navigationItem.leftBarButtonItem = left;
+        UIButton *btn = [[UIButton alloc] init];
+        [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
+        [btn setTitle:AcTECLocalizedStringFromTable(@"Setting", @"Localizable") forState:UIControlStateNormal];
+        [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(backSetting) forControlEvents:UIControlEventTouchUpInside];
+        UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
+        self.navigationItem.leftBarButtonItem = back;
     }
     _devices = [[NSMutableArray alloc] init];
     

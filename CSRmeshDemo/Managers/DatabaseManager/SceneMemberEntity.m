@@ -20,5 +20,6 @@
 @dynamic colorBlue;
 @dynamic colorTemperature;
 @dynamic eveType;
+@dynamic sortID;
 
 @end

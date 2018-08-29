@@ -123,8 +123,13 @@
     [_topView autoAlignAxisToSuperviewAxis:ALAxisVertical];
     
     if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
-        UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(closeAction)];
-        self.navigationItem.rightBarButtonItem = done;
+        UIButton *btn = [[UIButton alloc] init];
+        [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
+        [btn setTitle:AcTECLocalizedStringFromTable(@"Back", @"Localizable") forState:UIControlStateNormal];
+        [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(closeAction) forControlEvents:UIControlEventTouchUpInside];
+        UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
+        self.navigationItem.leftBarButtonItem = back;
     }
     
     self.nameTF.delegate = self;

@@ -20,6 +20,7 @@
 #import "SceneEntity.h"
 #import "SceneListSModel.h"
 #import "GroupListSModel.h"
+#import "DeviceViewController.h"
 
 @interface DeviceListViewController ()<MainCollectionViewDelegate>
 
@@ -186,6 +187,7 @@
             [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
                 if ([CSRUtilities belongToMainVCDevice:deviceEntity.shortName]) {
+                    NSLog(@">>>>>>> %@",deviceEntity.sortId);
                     SingleDeviceModel *singleDevice = [[SingleDeviceModel alloc] init];
                     singleDevice.deviceId = deviceEntity.deviceId;
                     singleDevice.deviceName = deviceEntity.name;
@@ -572,6 +574,20 @@
             [self hideControlMaskLayer];
         }
         return;
+    }
+}
+
+- (void)mainCollectionViewDelegateLongPressAction:(id)cell {
+    MainCollectionViewCell *mainCell = (MainCollectionViewCell *)cell;
+    if ([mainCell.groupId isEqualToNumber:@2000]) {
+        DeviceViewController *dvc = [[DeviceViewController alloc] init];
+        dvc.deviceId = mainCell.deviceId;
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
+        nav.modalPresentationStyle = UIModalPresentationPopover;
+        nav.popoverPresentationController.sourceRect = mainCell.bounds;
+        nav.popoverPresentationController.sourceView = mainCell;
+        
+        [self presentViewController:nav animated:YES completion:nil];
     }
 }
 

@@ -608,12 +608,46 @@
         }];
         [devices enumerateObjectsUsingBlock:^(NSNumber *deviceId, NSUInteger idx, BOOL * _Nonnull stop) {
             DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
             SceneMemberEntity *sceneMember = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
             sceneMember.sceneID = sceneEntity.sceneID;
             sceneMember.deviceID = deviceId;
             sceneMember.kindString = deviceModel.shortName;
             sceneMember.powerState = deviceModel.powerState;
             sceneMember.level = [deviceModel.powerState boolValue]? deviceModel.level:@0;
+            sceneMember.sortID = deviceEntity.sortId;
+            sceneMember.colorTemperature = deviceModel.colorTemperature;
+            sceneMember.colorRed = deviceModel.red;
+            sceneMember.colorGreen = deviceModel.green;
+            sceneMember.colorBlue = deviceModel.blue;
+            if (![deviceModel.powerState boolValue]) {
+                sceneMember.eveType = @(11);
+            }else if ([CSRUtilities belongToSwitch:deviceModel.shortName]) {
+                sceneMember.eveType = @(10);
+            }else if ([CSRUtilities belongToDimmer:deviceModel.shortName]) {
+                sceneMember.eveType = @(12);
+            }else if ([CSRUtilities belongToCWDevice:deviceModel.shortName]) {
+                sceneMember.eveType = @(19);
+            }else if ([CSRUtilities belongToRGBDevice:deviceModel.shortName]) {
+                sceneMember.eveType = @(14);
+            }else if ([CSRUtilities belongToRGBCWDevice:deviceModel.shortName]) {
+                if ([deviceModel.supports integerValue] == 0) {
+                    sceneMember.eveType = @(14);
+                }else if ([deviceModel.supports integerValue] == 1) {
+                    sceneMember.eveType = @(19);
+                }
+            }else if ([CSRUtilities belongToCWNoLevelDevice:deviceModel.shortName]) {
+                sceneMember.eveType = @(18);
+            }else if ([CSRUtilities belongToRGBNoLevelDevice:deviceModel.shortName]) {
+                sceneMember.eveType = @(13);
+            }else if ([CSRUtilities belongToRGBCWNoLevelDevice:deviceModel.shortName]) {
+                if ([deviceModel.supports integerValue] ==0) {
+                    sceneMember.eveType = @(13);
+                }else if ([deviceModel.supports integerValue] ==1) {
+                    sceneMember.eveType = @(18);
+                }
+            }
+            
             [sceneEntity addMembersObject:sceneMember];
             [[CSRDatabaseManager sharedInstance] saveContext];
         }];
@@ -630,18 +664,75 @@
 //点击场景单元
 - (void)mainCollectionViewCellDelegateSceneCellTapAction:(NSNumber *)sceneId {
     SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:sceneId];
-    NSArray *members = [sceneEntity.members allObjects];
-    if ([members count]>0) {
+    NSMutableArray *members = [[sceneEntity.members allObjects] mutableCopy];
+    if (members != nil || [members count] != 0) {
+        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortID" ascending:YES];
+        [members sortUsingDescriptors:[NSArray arrayWithObject:sort]];
         [members enumerateObjectsUsingBlock:^(SceneMemberEntity *sceneMember, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([CSRUtilities belongToSwitch:sceneMember.kindString]) {
-                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:sceneMember.powerState];
-            }else if ([CSRUtilities belongToDimmer:sceneMember.kindString]) {
+            
+            if ([sceneMember.eveType isEqualToNumber:@(11)]) {
+                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:@(0)];
+            }else if ([sceneMember.eveType isEqualToNumber:@(10)]) {
+                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:@(1)];
+            }else if ([sceneMember.eveType isEqualToNumber:@(12)]) {
                 [[LightModelApi sharedInstance] setLevel:sceneMember.deviceID level:sceneMember.level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-
+                    
                 } failure:^(NSError * _Nullable error) {
-
+                    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sceneMember.deviceID];
+                    model.isleave = YES;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":sceneMember.deviceID}];
+                }];
+            }else if ([sceneMember.eveType isEqualToNumber:@(19)]) {
+                [[LightModelApi sharedInstance] setLevel:sceneMember.deviceID level:sceneMember.level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                    
+                } failure:^(NSError * _Nullable error) {
+                    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sceneMember.deviceID];
+                    model.isleave = YES;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":sceneMember.deviceID}];
+                }];
+                [[LightModelApi sharedInstance] setColorTemperature:sceneMember.deviceID temperature:sceneMember.colorTemperature duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                    
+                } failure:^(NSError * _Nullable error) {
+                    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sceneMember.deviceID];
+                    model.isleave = YES;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":sceneMember.deviceID}];
+                }];
+            }else if ([sceneMember.eveType isEqualToNumber:@(14)]) {
+                [[LightModelApi sharedInstance] setLevel:sceneMember.deviceID level:sceneMember.level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                    
+                } failure:^(NSError * _Nullable error) {
+                    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sceneMember.deviceID];
+                    model.isleave = YES;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":sceneMember.deviceID}];
+                }];
+                UIColor *color = [UIColor colorWithRed:[sceneMember.colorRed integerValue]/255.0 green:[sceneMember.colorGreen integerValue]/255.0 blue:[sceneMember.colorBlue integerValue]/255.0 alpha:1.0];
+                [[LightModelApi sharedInstance] setColor:sceneMember.deviceID color:color duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                    
+                } failure:^(NSError * _Nullable error) {
+                    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sceneMember.deviceID];
+                    model.isleave = YES;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":sceneMember.deviceID}];
+                }];
+                
+            }else if ([sceneMember.eveType isEqualToNumber:@(18)]) {
+                [[LightModelApi sharedInstance] setColorTemperature:sceneMember.deviceID temperature:sceneMember.colorTemperature duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                    
+                } failure:^(NSError * _Nullable error) {
+                    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sceneMember.deviceID];
+                    model.isleave = YES;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":sceneMember.deviceID}];
+                }];
+            }else if ([sceneMember.eveType isEqualToNumber:@(13)]) {
+                UIColor *color = [UIColor colorWithRed:[sceneMember.colorRed integerValue]/255.0 green:[sceneMember.colorGreen integerValue]/255.0 blue:[sceneMember.colorBlue integerValue]/255.0 alpha:1.0];
+                [[LightModelApi sharedInstance] setColor:sceneMember.deviceID color:color duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                    
+                } failure:^(NSError * _Nullable error) {
+                    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sceneMember.deviceID];
+                    model.isleave = YES;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":sceneMember.deviceID}];
                 }];
             }
+            
             [NSThread sleepForTimeInterval:0.03];
         }];
     }else {

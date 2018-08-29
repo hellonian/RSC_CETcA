@@ -267,6 +267,10 @@
                         sceneMemberObj.powerState = sceneMemberDict[@"powerState"];
                         sceneMemberObj.level = sceneMemberDict[@"level"];
                         sceneMemberObj.kindString = sceneMemberDict[@"kindString"];
+                        sceneMemberObj.sortID = sceneMemberDict[@"sortID"];
+                        sceneMemberObj.colorRed = sceneMemberDict[@"colorRed"];
+                        sceneMemberObj.colorGreen = sceneMemberDict[@"colorGreen"];
+                        sceneMemberObj.colorBlue = sceneMemberDict[@"colorBlue"];
                         [members addObject:sceneMemberObj];
                     }
                 }
@@ -496,7 +500,11 @@
                                            @"deviceID":(sceneMember.deviceID)?(sceneMember.deviceID):@0,
                                            @"powerState":(sceneMember.powerState)?(sceneMember.powerState):@0,
                                            @"level":(sceneMember.level)?(sceneMember.level):@0,
-                                           @"kindString":sceneMember.kindString?sceneMember.kindString:@""
+                                           @"kindString":sceneMember.kindString?sceneMember.kindString:@"",
+                                           @"sortID":sceneMember.sortID?(sceneMember.sortID):@0,
+                                           @"colorRed":sceneMember.colorRed?(sceneMember.colorRed):@0,
+                                           @"colorGreen":sceneMember.colorGreen?(sceneMember.colorGreen):@0,
+                                           @"colorBlue":sceneMember.colorBlue?(sceneMember.colorBlue):@0
                                            }];
         }
         

@@ -133,6 +133,7 @@
             
             [devices enumerateObjectsUsingBlock:^(NSNumber *deviceId, NSUInteger idx, BOOL * _Nonnull stop) {
                 CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+                
                 SingleDeviceModel *deviceModel = [[SingleDeviceModel alloc] init];
                 deviceModel.deviceId = deviceId;
                 deviceModel.deviceName = deviceEntity.name;
@@ -287,6 +288,7 @@
                                                                         *(groups + groupIndexInt) = desiredValue;
                                                                     }
                                                                     deviceEntity.groups = [CSRUtilities hexStringFromData:(NSData*)myData];
+                                                                    
                                                                     [[CSRDatabaseManager sharedInstance] saveContext];
                                                                 }
                                                                 [self.groupRemoveDevices addObject:deviceEntity];
@@ -418,7 +420,7 @@
                                                                     uint16_t *groups = (uint16_t *) myData.mutableBytes;
                                                                     *(groups + groupIndexInt) = desiredValue;
                                                                 }
-                                                                
+                                                                deviceEntity.sortId = _areaEntity.sortId;
                                                                 deviceEntity.groups = [CSRUtilities hexStringFromData:(NSData*)myData];
                                                                 CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId: groupId];
                                                                 

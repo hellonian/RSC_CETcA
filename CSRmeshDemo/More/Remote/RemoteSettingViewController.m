@@ -762,18 +762,24 @@
     NSString *startLigIdx = @"00";
     NSString *endLigIdx = [CSRUtilities stringWithHexNumber:[sceneEntity.members count]-1];
     NSString *dstAddrLevel = @"";
-    for (SceneMemberEntity *sceneMember in sceneEntity.members) {
-        NSString *eveType = @"";
-        if ([sceneMember.powerState boolValue]) {
-            eveType = @"12";
-        }else {
-            eveType = @"11";
+    NSMutableArray *mutableMemebers = [[sceneEntity.members allObjects] mutableCopy];
+    if (mutableMemebers != nil || [mutableMemebers count] != 0) {
+        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortID" ascending:YES];
+        [mutableMemebers sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+        for (SceneMemberEntity *sceneMember in mutableMemebers) {
+            NSString *eveType = @"";
+            if ([sceneMember.powerState boolValue]) {
+                eveType = @"12";
+            }else {
+                eveType = @"11";
+            }
+            NSString *level = [[NSString alloc] initWithFormat:@"%1lx",(long)[sceneMember.level integerValue]];
+            level = level.length > 1 ? level:[NSString stringWithFormat:@"0%@",level];
+            //        dstAddrLevel = [NSString stringWithFormat:@"%@%@%@",dstAddrLevel,[self exchangePositionOfDeviceId:[sceneMember.deviceID integerValue]],level];
+            dstAddrLevel = [NSString stringWithFormat:@"%@%@%@%@000000",dstAddrLevel,[self exchangePositionOfDeviceId:[sceneMember.deviceID integerValue]],eveType,level];
         }
-        NSString *level = [[NSString alloc] initWithFormat:@"%1lx",(long)[sceneMember.level integerValue]];
-        level = level.length > 1 ? level:[NSString stringWithFormat:@"0%@",level];
-//        dstAddrLevel = [NSString stringWithFormat:@"%@%@%@",dstAddrLevel,[self exchangePositionOfDeviceId:[sceneMember.deviceID integerValue]],level];
-        dstAddrLevel = [NSString stringWithFormat:@"%@%@%@%@000000",dstAddrLevel,[self exchangePositionOfDeviceId:[sceneMember.deviceID integerValue]],eveType,level];
     }
+    
     NSString *nLength = [CSRUtilities stringWithHexNumber:dstAddrLevel.length/2+7];
     if ((dstAddrLevel.length/2+7)<250) {
         NSString *cmdStr = [NSString stringWithFormat:@"73%@010%ld%@%@%@%@%@",nLength,swIndex,rcIndexStr,ligCnt,startLigIdx,endLigIdx,dstAddrLevel];

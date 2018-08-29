@@ -33,14 +33,20 @@
     }
     
     if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
-        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:AcTECLocalizedStringFromTable(@"Setting_back", @"Localizable")] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
-        self.navigationItem.leftBarButtonItem = left;
+        UIButton *btn = [[UIButton alloc] init];
+        [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
+        [btn setTitle:AcTECLocalizedStringFromTable(@"Setting", @"Localizable") forState:UIControlStateNormal];
+        [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(backSetting) forControlEvents:UIControlEventTouchUpInside];
+        UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
+        self.navigationItem.leftBarButtonItem = back;
     }
     
     UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
     self.navigationItem.rightBarButtonItem = right;
     self.navigationItem.rightBarButtonItem.enabled = NO;
     
+    /*
     self.languageAry = @[@"English",
                          @"简体中文",
                          @"Norsk bokmål",
@@ -65,12 +71,20 @@
                                AcTECLocalizedStringFromTable(@"Romanian", @"Localizable"),
                                AcTECLocalizedStringFromTable(@"Czech", @"Localizable"),
                                AcTECLocalizedStringFromTable(@"Lithuanian", @"Localizable")];
+     */
+    self.languageAry = @[@"English",
+                         @"简体中文"];
+    self.detailLanguageAry = @[AcTECLocalizedStringFromTable(@"English", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"ChineseS", @"Localizable")];
+    
     NSString *nowLanguageType = [[NSUserDefaults standardUserDefaults] objectForKey:AppLanguageSwitchKey];
     if ([nowLanguageType isEqualToString:@"en"]) {
         self.newSelectedRow = 0;
     }else if ([nowLanguageType isEqualToString:@"zh-Hans"]) {
         self.newSelectedRow = 1;
-    }else if ([nowLanguageType isEqualToString:@"nb"]) {
+    }
+    /*
+    else if ([nowLanguageType isEqualToString:@"nb"]) {
         self.newSelectedRow = 2;
     }else if ([nowLanguageType isEqualToString:@"sv"]) {
         self.newSelectedRow = 3;
@@ -91,6 +105,7 @@
     }else if ([nowLanguageType isEqualToString:@"lt"]) {
         self.newSelectedRow = 11;
     }
+     */
     
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     self.tableView.delegate = self;
@@ -181,7 +196,9 @@
         self.selectLanguage = @"en";
     }else if ([typeString isEqualToString:@"简体中文"]) {
         self.selectLanguage = @"zh-Hans";
-    }else if ([typeString isEqualToString:@"Norsk bokmål"]) {
+    }
+    /*
+    else if ([typeString isEqualToString:@"Norsk bokmål"]) {
         self.selectLanguage = @"nb";
     }else if ([typeString isEqualToString:@"Svenska"]) {
         self.selectLanguage = @"sv";
@@ -202,6 +219,7 @@
     }else if ([typeString isEqualToString:@"Lietuviškai"]) {
         self.selectLanguage = @"lt";
     }
+     */
     if ([self.selectLanguage isEqualToString:languageType]) {
         self.navigationItem.rightBarButtonItem.enabled = NO;
     }else {
@@ -217,11 +235,18 @@
 - (void)languageChange {
     self.navigationItem.title = AcTECLocalizedStringFromTable(@"Language", @"Localizable");
     if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
-        UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:AcTECLocalizedStringFromTable(@"Setting_back", @"Localizable")] style:UIBarButtonItemStylePlain target:self action:@selector(backSetting)];
-        self.navigationItem.leftBarButtonItem = left;
+        UIButton *btn = [[UIButton alloc] init];
+        [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
+        [btn setTitle:AcTECLocalizedStringFromTable(@"Setting", @"Localizable") forState:UIControlStateNormal];
+        [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(backSetting) forControlEvents:UIControlEventTouchUpInside];
+        UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
+        self.navigationItem.leftBarButtonItem = back;
     }
     UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
     self.navigationItem.rightBarButtonItem = right;
+    
+    /*
     self.detailLanguageAry = @[AcTECLocalizedStringFromTable(@"English", @"Localizable"),
                                AcTECLocalizedStringFromTable(@"ChineseS", @"Localizable"),
                                AcTECLocalizedStringFromTable(@"Norwegian", @"Localizable"),
@@ -234,6 +259,10 @@
                                AcTECLocalizedStringFromTable(@"Romanian", @"Localizable"),
                                AcTECLocalizedStringFromTable(@"Czech", @"Localizable"),
                                AcTECLocalizedStringFromTable(@"Lithuanian", @"Localizable")];
+     */
+    self.detailLanguageAry = @[AcTECLocalizedStringFromTable(@"English", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"ChineseS", @"Localizable")];
+    
     [self.tableView reloadData];
 }
 

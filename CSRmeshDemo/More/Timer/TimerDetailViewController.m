@@ -608,17 +608,21 @@
     for (SceneMemberEntity *sceneMember in _selectedScene.members) {
         NSNumber *timerIndex = [[CSRDatabaseManager sharedInstance] getNextFreeTimerIDOfDeivice:sceneMember.deviceID];
         [self.deviceIdsAndIndexs setObject:timerIndex forKey:[NSString stringWithFormat:@"%@",sceneMember.deviceID]];
-        NSString *eveType;
-        if ([sceneMember.powerState boolValue]) {
-            if ([CSRUtilities belongToSwitch:sceneMember.kindString]) {
-                eveType = @"10";
-            }else if ([CSRUtilities belongToDimmer:sceneMember.kindString]) {
-                eveType = @"12";
-            }
-        }else {
-            eveType = @"11";
+        
+        NSString *eveD1 = @"00";
+        NSString *eveD2 = @"00";
+        NSString *eveD3 = @"00";
+        if ([sceneMember.eveType isEqualToNumber:@(13)] || [sceneMember.eveType isEqualToNumber:@(14)]) {
+            eveD1 = [NSString stringWithFormat:@"%@",sceneMember.colorRed];
+            eveD2 = [NSString stringWithFormat:@"%@",sceneMember.colorGreen];
+            eveD3 = [NSString stringWithFormat:@"%@",sceneMember.colorBlue];
+        }else if ([sceneMember.eveType isEqualToNumber:@(18)] || [sceneMember.eveType isEqualToNumber:@(19)]) {
+            NSString *colorTemperatureStr = [CSRUtilities stringWithHexNumber:[sceneMember.colorTemperature integerValue]];
+            eveD1 = [colorTemperatureStr substringToIndex:2];
+            eveD2 = [colorTemperatureStr substringFromIndex:2];
         }
-        [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:eveType level:[sceneMember.level integerValue]];
+        
+        [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.eveType level:[sceneMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3];
     }
     
     /*

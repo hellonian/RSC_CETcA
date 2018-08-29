@@ -62,7 +62,7 @@ static DataModelManager *manager = nil;
 }
 
 //添加闹钟
-- (void)addAlarmForDevice:(NSNumber *)deviceId alarmIndex:(NSInteger)index enabled:(BOOL)enabled fireDate:(NSDate *)fireDate fireTime:(NSDate *)fireTime repeat:(NSString *)repeat eveType:(NSString *)alarnActionType level:(NSInteger)level {
+- (void)addAlarmForDevice:(NSNumber *)deviceId alarmIndex:(NSInteger)index enabled:(BOOL)enabled fireDate:(NSDate *)fireDate fireTime:(NSDate *)fireTime repeat:(NSString *)repeat eveType:(NSNumber *)alarnActionType level:(NSInteger)level eveD1:(NSString *)eveD1 eveD2:(NSString *)eveD2 eveD3:(NSString *)eveD3 {
     
     NSString *indexStr = [self stringWithHexNumber:index];
     NSString *YMdString;
@@ -84,7 +84,7 @@ static DataModelManager *manager = nil;
     
     NSString *repeatString = [self stringWithHexNumber:[repeatNumberStr integerValue]];
     
-    NSString *cmd = [NSString stringWithFormat:@"8310%@0%d%@%@%@%@%@0000000000",indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString];
+    NSString *cmd = [NSString stringWithFormat:@"8315%@0%d%@%@%@%@%@%@%@%@00000000000000",indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString,eveD1,eveD2,eveD3];
     NSLog(@">> --> %@",cmd);
     _schedule = [self analyzeTimeScheduleData:[NSString stringWithFormat:@"%@0%d%@%@%@%@%@0000000000",indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString] forLight:deviceId];
     

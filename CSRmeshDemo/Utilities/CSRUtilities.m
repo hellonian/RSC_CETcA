@@ -1127,6 +1127,48 @@
     return NO;
 }
 
++ (BOOL)belongToCWDevice:(NSString *)shortName {
+    if ([kCWDevices containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToRGBDevice:(NSString *)shortName {
+    if ([kRGBDevices containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToRGBCWDevice:(NSString *)shortName {
+    if ([kRGBCWDevices containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToCWNoLevelDevice:(NSString *)shortName {
+    if ([kCWNoLevelDevice containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToRGBNoLevelDevice:(NSString *)shortName {
+    if ([kRGBNoLevelDevices containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToRGBCWNoLevelDevice:(NSString *)shortName {
+    if ([kRGBCWNoLevelDevices containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
 //十六进制字符串转十进制数据
 + (NSInteger)numberWithHexString:(NSString *)hexString {
     
