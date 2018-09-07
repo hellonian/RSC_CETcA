@@ -113,7 +113,8 @@
                                                                  toItem:self.view
                                                               attribute:NSLayoutAttributeBottom
                                                              multiplier:1.0
-                                                               constant:0];
+                                                               constant:0];;
+    
     [NSLayoutConstraint activateConstraints:@[top,left,bottom,right]];
     
     [_scrollView addSubview:_topView];
@@ -136,7 +137,6 @@
     
     if (_deviceId) {
         _device = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-        
         if ([CSRUtilities belongToSwitch:_device.shortName]) {
             if ([CSRUtilities belongToThreeSpeedColorTemperatureDevice:_device.shortName]) {
                 
@@ -181,13 +181,13 @@
             }
         }
         
-        else if ([_device.shortName isEqualToString:@"CW"]) {
+        else if ([CSRUtilities belongToCWDevice:_device.shortName]) {
             [self addSubviewBrightnessView];
             [self addSubViewColorTemperatuteView];
             _scrollView.contentSize = CGSizeMake(1, 282+20);
         }
         
-        else if ([_device.shortName isEqualToString:@"RGB"]) {
+        else if ([CSRUtilities belongToRGBDevice:_device.shortName]) {
             [self addSubviewBrightnessView];
             [_scrollView addSubview:_colorTitle];
             [_colorTitle autoSetDimension:ALDimensionHeight toSize:20];
@@ -200,7 +200,7 @@
             _scrollView.contentSize = CGSizeMake(1, 616);
         }
         
-        else if ([_device.shortName isEqualToString:@"RGBCW"]) {
+        else if ([CSRUtilities belongToRGBCWDevice:_device.shortName]) {
             [self addSubviewBrightnessView];
             
             [self addSubViewColorTemperatuteView];
@@ -212,7 +212,6 @@
             [_colorTitle autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
             
             [self addSubViewColorView];
-            [self.view layoutIfNeeded];
             _scrollView.contentSize = CGSizeMake(1, 650);
         }
         
@@ -225,7 +224,6 @@
         self.colorSliderIsMoving = NO;
         self.colorSaturationSliderIsMoving = NO;
         self.colorSquareIsMoving = NO;
-        [self adjustInterface];
         
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
         NSString *macAddr = [deviceEntity.uuid substringFromIndex:24];
@@ -242,7 +240,12 @@
         self.macAddressLabel.text = doneTitle;
 
     }
-    
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    [self.view layoutIfNeeded];
+    [self adjustInterface];
 }
 
 - (void)addSubviewBrightnessView {
@@ -355,7 +358,7 @@
         return;
     }
     
-    if ([_device.shortName isEqualToString:@"CW"]) {
+    if ([CSRUtilities belongToCWDevice:_device.shortName]) {
         if ([_device.powerState boolValue]) {
             [self.powerStateSwitch setOn:YES];
             if (!_sliderIsMoving) {
@@ -374,7 +377,7 @@
         return;
     }
     
-    if ([_device.shortName isEqualToString:@"RGB"]) {
+    if ([CSRUtilities belongToRGBDevice:_device.shortName]) {
         if ([_device.powerState boolValue]) {
             [self.powerStateSwitch setOn:YES];
             if (!_sliderIsMoving) {
@@ -404,7 +407,7 @@
         return;
     }
     
-    if ([_device.shortName isEqualToString:@"RGBCW"]) {
+    if ([CSRUtilities belongToRGBCWDevice:_device.shortName]) {
         if ([_device.powerState boolValue]) {
             [self.powerStateSwitch setOn:YES];
             if (!_sliderIsMoving) {
@@ -579,7 +582,6 @@
 
 //设置颜色，颜色图的代理方法
 - (void)tapColorChangeWithHue:(CGFloat)hue colorSaturation:(CGFloat)colorSatutation {
-    NSLog(@"%f;%f",hue,colorSatutation);
     UIColor *color = [UIColor colorWithHue:hue saturation:colorSatutation brightness:1.0 alpha:1.0];
     [[LightModelApi sharedInstance] setColor:_deviceId color:color duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
         
@@ -591,7 +593,6 @@
 }
 
 - (void)panColorChangeWithHue:(CGFloat)hue colorSaturation:(CGFloat)colorSatutation state:(UIGestureRecognizerState)state {
-    NSLog(@"%f;%f/%ld",hue,colorSatutation,state);
     if (state == UIGestureRecognizerStateBegan) {
         _colorSquareIsMoving = YES;
     }else if (state == UIGestureRecognizerStateEnded) {

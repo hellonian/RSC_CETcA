@@ -15,6 +15,7 @@
 #import "CSRUtilities.h"
 #import "CSRMeshUtilities.h"
 #import "DataModelManager.h"
+#import "RGBSceneEntity.h"
 
 @implementation CSRmeshManager
 
@@ -159,6 +160,37 @@
             }
             NSNumber *sortId = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"SortId"];
             deviceEntity.sortId = sortId;
+            
+            if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBNoLevelDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBCWNoLevelDevice:deviceEntity.shortName]) {
+                NSArray *names = kRGBSceneDefaultName;
+                NSArray *levels = kRGBSceneDefaultLevel;
+                NSArray *hues = kRGBSceneDefaultHue;
+                NSArray *sats = kRGBSceneDefaultColorSat;
+                for (int i = 0; i<8; i++) {
+                    RGBSceneEntity *rgbScenetity = [NSEntityDescription insertNewObjectForEntityForName:@"RGBSceneEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+                    rgbScenetity.deviceID = deviceId;
+                    rgbScenetity.name = names[i];
+                    rgbScenetity.isDefaultImg = @1;
+                    rgbScenetity.rgbSceneID = @(i);
+                    rgbScenetity.sortID = @(i);
+                    rgbScenetity.level = levels[i];
+                    rgbScenetity.colorSat = sats[i];
+                    if (i<7) {
+                        rgbScenetity.eventType = @(0);
+                        rgbScenetity.hueA = hues[i];
+                    }else {
+                        rgbScenetity.eventType = @(1);
+                        rgbScenetity.changeSpeed = @(1);
+                        rgbScenetity.hueA = @(0);
+                        rgbScenetity.hueB = @(0.08);
+                        rgbScenetity.hueC = @(0.17);
+                        rgbScenetity.hueD = @(0.33);
+                        rgbScenetity.hueE = @(0.67);
+                        rgbScenetity.hueF = @(0.83);
+                    }
+                    [deviceEntity addRgbScenesObject:rgbScenetity];
+                }
+            }
  
             [[CSRAppStateManager sharedInstance].selectedPlace addDevicesObject:deviceEntity];
             [[CSRDatabaseManager sharedInstance] saveContext];

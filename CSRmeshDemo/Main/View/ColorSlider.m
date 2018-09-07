@@ -55,7 +55,6 @@
     [UIView animateWithDuration:0.2 animations:^{
         _thumbButton.center = CGPointMake(x, self.bounds.size.height/2);
     }];
-    
 }
 
 

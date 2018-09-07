@@ -5,7 +5,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class CSRAreaEntity,DropEntity;
+@class CSRAreaEntity,DropEntity,RGBSceneEntity;
 
 @interface CSRDeviceEntity : NSManagedObject
 
@@ -28,6 +28,7 @@
 @property (nonatomic, retain) NSNumber * sortId;
 @property (nonatomic, retain) NSNumber *isEditting;
 @property (nonatomic, retain) NSString * remoteBranch;
+@property (nonatomic, retain) NSSet *rgbScenes;
 
 @end
 
@@ -42,5 +43,10 @@
 - (void)removeDropsObject:(DropEntity *)value;
 - (void)addDrops:(NSSet *)values;
 - (void)removeDrops:(NSSet *)values;
+
+- (void)addRgbScenesObject:(RGBSceneEntity *)value;
+- (void)removeRgbScenesObject:(RGBSceneEntity *)value;
+- (void)addRgbScenes:(NSSet *)values;
+- (void)removeRGBScenes:(NSSet *)values;
 
 @end

@@ -43,6 +43,9 @@
 		2E1C839E20CFD782009BCC6D /* PlaceDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E1C83A020CFD782009BCC6D /* PlaceDetailsViewController.xib */; };
 		2E2000A920182260000AD8C3 /* SceneEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2000A820182260000AD8C3 /* SceneEntity.m */; };
 		2E2000AC2018227E000AD8C3 /* SceneMemberEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2000AB2018227E000AD8C3 /* SceneMemberEntity.m */; };
+		2E216EE62138EDAE00E545B9 /* RGBSceneEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E216EE52138EDAE00E545B9 /* RGBSceneEntity.m */; };
+		2E216EEA2138F28200E545B9 /* RGBSceneCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E216EE82138F28200E545B9 /* RGBSceneCollectionViewCell.m */; };
+		2E216EEB2138F28200E545B9 /* RGBSceneCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E216EE92138F28200E545B9 /* RGBSceneCollectionViewCell.xib */; };
 		2E2533EE20219850002A6EC3 /* DeviceListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2533ED20219850002A6EC3 /* DeviceListViewController.m */; };
 		2E2E707B1FF5DE60002D1C1D /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70051FF5DE60002D1C1D /* AboutViewController.m */; };
 		2E2E707D1FF5DE60002D1C1D /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70081FF5DE60002D1C1D /* MasterViewController.m */; };
@@ -84,6 +87,12 @@
 		2E500B741FD8D6B9008303CE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D6E44EF1B3C4059000A44DD /* CoreGraphics.framework */; };
 		2E500B761FD8D6F3008303CE /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E500B751FD8D6F0008303CE /* MediaPlayer.framework */; };
 		2E500B781FD8D703008303CE /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E500B771FD8D6FE008303CE /* AVFoundation.framework */; };
+		2E5A5873213788F900E416F9 /* FavoriteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E5A5871213788F900E416F9 /* FavoriteViewController.m */; };
+		2E5A5874213788F900E416F9 /* FavoriteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E5A5872213788F900E416F9 /* FavoriteViewController.xib */; };
+		2E5A58782137896500E416F9 /* RGBDeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E5A58762137896500E416F9 /* RGBDeviceViewController.m */; };
+		2E5A58792137896500E416F9 /* RGBDeviceViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E5A58772137896500E416F9 /* RGBDeviceViewController.xib */; };
+		2E5A587D21378B6800E416F9 /* MusicViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E5A587B21378B6800E416F9 /* MusicViewController.m */; };
+		2E5A587E21378B6800E416F9 /* MusicViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E5A587C21378B6800E416F9 /* MusicViewController.xib */; };
 		2E6A02131F39884500111312 /* TabBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A020E1F39884500111312 /* TabBarButton.m */; };
 		2E6A02141F39884500111312 /* TabBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A02101F39884500111312 /* TabBarView.m */; };
 		2E6A021A1F39893400111312 /* MainTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A02171F39893400111312 /* MainTabBarController.m */; };
@@ -108,6 +117,10 @@
 		2ED3963C204D09A00068B666 /* TimerEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963B204D09A00068B666 /* TimerEntity.m */; };
 		2ED3963F204D09D20068B666 /* TimerDeviceEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */; };
 		2ED974471F3AED0F000F20C9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2ED974491F3AED0F000F20C9 /* LaunchScreen.storyboard */; };
+		2EDF04DB213D14CA00B9E92F /* SRGBSceneDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF04D9213D14CA00B9E92F /* SRGBSceneDetailViewController.m */; };
+		2EDF04DC213D14CA00B9E92F /* SRGBSceneDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EDF04DA213D14CA00B9E92F /* SRGBSceneDetailViewController.xib */; };
+		2EDF04E0213D151300B9E92F /* MRGBSceneDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF04DE213D151300B9E92F /* MRGBSceneDetailViewController.m */; };
+		2EDF04E1213D151300B9E92F /* MRGBSceneDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EDF04DF213D151300B9E92F /* MRGBSceneDetailViewController.xib */; };
 		2EE50F2D20DA3E3D00B484F7 /* LightSensorSettingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EE50F2F20DA3E3D00B484F7 /* LightSensorSettingViewController.xib */; };
 		2EE757C720102B7B00FB75C5 /* MainCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE757C620102B7B00FB75C5 /* MainCollectionView.m */; };
 		2EE757CA201030CA00FB75C5 /* TopImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE757C9201030CA00FB75C5 /* TopImageView.m */; };
@@ -245,6 +258,11 @@
 		2E2000A820182260000AD8C3 /* SceneEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneEntity.m; sourceTree = "<group>"; };
 		2E2000AA2018227E000AD8C3 /* SceneMemberEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneMemberEntity.h; sourceTree = "<group>"; };
 		2E2000AB2018227E000AD8C3 /* SceneMemberEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneMemberEntity.m; sourceTree = "<group>"; };
+		2E216EE42138EDAE00E545B9 /* RGBSceneEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGBSceneEntity.h; sourceTree = "<group>"; };
+		2E216EE52138EDAE00E545B9 /* RGBSceneEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RGBSceneEntity.m; sourceTree = "<group>"; };
+		2E216EE72138F28200E545B9 /* RGBSceneCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGBSceneCollectionViewCell.h; sourceTree = "<group>"; };
+		2E216EE82138F28200E545B9 /* RGBSceneCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RGBSceneCollectionViewCell.m; sourceTree = "<group>"; };
+		2E216EE92138F28200E545B9 /* RGBSceneCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RGBSceneCollectionViewCell.xib; sourceTree = "<group>"; };
 		2E2533EC20219850002A6EC3 /* DeviceListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceListViewController.h; sourceTree = "<group>"; };
 		2E2533ED20219850002A6EC3 /* DeviceListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeviceListViewController.m; sourceTree = "<group>"; };
 		2E2E70041FF5DE60002D1C1D /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
@@ -315,6 +333,15 @@
 		2E48BBE220D25C7800401CDD /* LightSensorSettingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LightSensorSettingViewController.m; sourceTree = "<group>"; };
 		2E500B751FD8D6F0008303CE /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		2E500B771FD8D6FE008303CE /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		2E5A5870213788F900E416F9 /* FavoriteViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FavoriteViewController.h; sourceTree = "<group>"; };
+		2E5A5871213788F900E416F9 /* FavoriteViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FavoriteViewController.m; sourceTree = "<group>"; };
+		2E5A5872213788F900E416F9 /* FavoriteViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FavoriteViewController.xib; sourceTree = "<group>"; };
+		2E5A58752137896500E416F9 /* RGBDeviceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGBDeviceViewController.h; sourceTree = "<group>"; };
+		2E5A58762137896500E416F9 /* RGBDeviceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RGBDeviceViewController.m; sourceTree = "<group>"; };
+		2E5A58772137896500E416F9 /* RGBDeviceViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RGBDeviceViewController.xib; sourceTree = "<group>"; };
+		2E5A587A21378B6800E416F9 /* MusicViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MusicViewController.h; sourceTree = "<group>"; };
+		2E5A587B21378B6800E416F9 /* MusicViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicViewController.m; sourceTree = "<group>"; };
+		2E5A587C21378B6800E416F9 /* MusicViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MusicViewController.xib; sourceTree = "<group>"; };
 		2E6A020D1F39884500111312 /* TabBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarButton.h; sourceTree = "<group>"; };
 		2E6A020E1F39884500111312 /* TabBarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarButton.m; sourceTree = "<group>"; };
 		2E6A020F1F39884500111312 /* TabBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarView.h; sourceTree = "<group>"; };
@@ -444,6 +471,12 @@
 		2ED3963D204D09D20068B666 /* TimerDeviceEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerDeviceEntity.h; sourceTree = "<group>"; };
 		2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerDeviceEntity.m; sourceTree = "<group>"; };
 		2ED974481F3AED0F000F20C9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		2EDF04D8213D14CA00B9E92F /* SRGBSceneDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SRGBSceneDetailViewController.h; sourceTree = "<group>"; };
+		2EDF04D9213D14CA00B9E92F /* SRGBSceneDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SRGBSceneDetailViewController.m; sourceTree = "<group>"; };
+		2EDF04DA213D14CA00B9E92F /* SRGBSceneDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SRGBSceneDetailViewController.xib; sourceTree = "<group>"; };
+		2EDF04DD213D151300B9E92F /* MRGBSceneDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MRGBSceneDetailViewController.h; sourceTree = "<group>"; };
+		2EDF04DE213D151300B9E92F /* MRGBSceneDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MRGBSceneDetailViewController.m; sourceTree = "<group>"; };
+		2EDF04DF213D151300B9E92F /* MRGBSceneDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MRGBSceneDetailViewController.xib; sourceTree = "<group>"; };
 		2EE50F2E20DA3E3D00B484F7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LightSensorSettingViewController.xib; sourceTree = "<group>"; };
 		2EE757C520102B7B00FB75C5 /* MainCollectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainCollectionView.h; sourceTree = "<group>"; };
 		2EE757C620102B7B00FB75C5 /* MainCollectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainCollectionView.m; sourceTree = "<group>"; };
@@ -925,6 +958,21 @@
 				2E06A4FC20205B0E007B8BEA /* GroupViewController.h */,
 				2E06A4FD20205B0E007B8BEA /* GroupViewController.m */,
 				2E37075A20CE8337000AF696 /* GroupViewController.xib */,
+				2E5A58752137896500E416F9 /* RGBDeviceViewController.h */,
+				2E5A58762137896500E416F9 /* RGBDeviceViewController.m */,
+				2E5A58772137896500E416F9 /* RGBDeviceViewController.xib */,
+				2E5A5870213788F900E416F9 /* FavoriteViewController.h */,
+				2E5A5871213788F900E416F9 /* FavoriteViewController.m */,
+				2E5A5872213788F900E416F9 /* FavoriteViewController.xib */,
+				2E5A587A21378B6800E416F9 /* MusicViewController.h */,
+				2E5A587B21378B6800E416F9 /* MusicViewController.m */,
+				2E5A587C21378B6800E416F9 /* MusicViewController.xib */,
+				2EDF04D8213D14CA00B9E92F /* SRGBSceneDetailViewController.h */,
+				2EDF04D9213D14CA00B9E92F /* SRGBSceneDetailViewController.m */,
+				2EDF04DA213D14CA00B9E92F /* SRGBSceneDetailViewController.xib */,
+				2EDF04DD213D151300B9E92F /* MRGBSceneDetailViewController.h */,
+				2EDF04DE213D151300B9E92F /* MRGBSceneDetailViewController.m */,
+				2EDF04DF213D151300B9E92F /* MRGBSceneDetailViewController.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -973,6 +1021,9 @@
 				2E6D543A211AB6C6003D02DB /* ColorSlider.m */,
 				2EC73CF42124197600850882 /* ColorSquare.h */,
 				2EC73CF52124197700850882 /* ColorSquare.m */,
+				2E216EE72138F28200E545B9 /* RGBSceneCollectionViewCell.h */,
+				2E216EE82138F28200E545B9 /* RGBSceneCollectionViewCell.m */,
+				2E216EE92138F28200E545B9 /* RGBSceneCollectionViewCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1205,6 +1256,8 @@
 				2ED3963B204D09A00068B666 /* TimerEntity.m */,
 				2ED3963D204D09D20068B666 /* TimerDeviceEntity.h */,
 				2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */,
+				2E216EE42138EDAE00E545B9 /* RGBSceneEntity.h */,
+				2E216EE52138EDAE00E545B9 /* RGBSceneEntity.m */,
 			);
 			name = "Model Classes";
 			sourceTree = "<group>";
@@ -1303,15 +1356,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				2EE757D2201078A000FB75C5 /* MainCollectionViewCell.xib in Resources */,
+				2E5A5874213788F900E416F9 /* FavoriteViewController.xib in Resources */,
+				2E5A58792137896500E416F9 /* RGBDeviceViewController.xib in Resources */,
 				2E3B9680200F3847000BD086 /* MainViewController.xib in Resources */,
 				2EF332512045030100565374 /* LanguageViewController.xib in Resources */,
 				2E2E708D1FF5DE60002D1C1D /* PlacesViewController.xib in Resources */,
 				2E9622BF20C913530097C617 /* Localizable.strings in Resources */,
 				2EE757D72010B23100FB75C5 /* SceneCollectionViewCell.xib in Resources */,
+				2EDF04E1213D151300B9E92F /* MRGBSceneDetailViewController.xib in Resources */,
 				2E37074E20CE4C16000AF696 /* DeviceViewController.xib in Resources */,
 				2E6BD7FD20D09B3200036CA2 /* TimerDetailViewController.xib in Resources */,
+				2EDF04DC213D14CA00B9E92F /* SRGBSceneDetailViewController.xib in Resources */,
 				CE1DE0AF1BFB82840009C1D1 /* ThermostatWIthColor.png in Resources */,
 				2E2E708F1FF5DE60002D1C1D /* PlaceColorCollectionViewCell.xib in Resources */,
+				2E5A587E21378B6800E416F9 /* MusicViewController.xib in Resources */,
 				2E37075820CE8337000AF696 /* GroupViewController.xib in Resources */,
 				2E6C26E720A5845E00BDB95A /* Main.storyboard in Resources */,
 				2E2E70AF1FF5DE60002D1C1D /* DiscoverViewController.xib in Resources */,
@@ -1330,6 +1388,7 @@
 				2E2E70921FF5DE60002D1C1D /* PlaceIconCollectionViewCell.xib in Resources */,
 				2E2EBFA41FAC2FF400CEA401 /* cskey_db.json in Resources */,
 				2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */,
+				2E216EEB2138F28200E545B9 /* RGBSceneCollectionViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1396,6 +1455,7 @@
 			files = (
 				2E2E70AC1FF5DE60002D1C1D /* TimerViewController.m in Sources */,
 				F43D7A5C1D004225009ADD96 /* CSRGatewayEntity+CoreDataProperties.m in Sources */,
+				2E5A587D21378B6800E416F9 /* MusicViewController.m in Sources */,
 				2E06A4FF20205B0E007B8BEA /* GroupViewController.m in Sources */,
 				F4F11C131D00408C0080F3BB /* CSRGatewayEntity.m in Sources */,
 				2E37075720CE647A000AF696 /* NSBundle+AppLanguageSwitch.m in Sources */,
@@ -1412,6 +1472,8 @@
 				2E2000A920182260000AD8C3 /* SceneEntity.m in Sources */,
 				0D835B3B1B9749E600FF4376 /* CSRMeshUtilities.m in Sources */,
 				0D835B941B975E8800FF4376 /* CSRAreaEntity.m in Sources */,
+				2E216EEA2138F28200E545B9 /* RGBSceneCollectionViewCell.m in Sources */,
+				2E5A5873213788F900E416F9 /* FavoriteViewController.m in Sources */,
 				0D835B3C1B9749E600FF4376 /* CSRUtilities.m in Sources */,
 				0D835B3D1B9749E600FF4376 /* CSRmeshManager.m in Sources */,
 				0D835B3F1B9749E600FF4376 /* CSRParseAndLoad.m in Sources */,
@@ -1423,6 +1485,7 @@
 				0D835B431B9749E600FF4376 /* CSRmeshDevice.m in Sources */,
 				0D835B441B9749E600FF4376 /* CSRmeshArea.m in Sources */,
 				2EF718331FFB2C0600901918 /* GalleryViewController.m in Sources */,
+				2E216EE62138EDAE00E545B9 /* RGBSceneEntity.m in Sources */,
 				2E48BBE420D25C7800401CDD /* LightSensorSettingViewController.m in Sources */,
 				CE04468D1C47E36F00263F15 /* CSRPeripheral.m in Sources */,
 				2EF718291FFB224800901918 /* GalleryEntity.m in Sources */,
@@ -1468,10 +1531,12 @@
 				2EF5F07C1F445AC30069C594 /* ImproveTouchingExperience.m in Sources */,
 				F4C85EA81CB3EE0E003E1FF3 /* CSRControllerEntity.m in Sources */,
 				2E3B9661200F2553000BD086 /* DeviceModel.m in Sources */,
+				2EDF04E0213D151300B9E92F /* MRGBSceneDetailViewController.m in Sources */,
 				2EE757D1201078A000FB75C5 /* MainCollectionViewCell.m in Sources */,
 				2E2E70B41FF5DE60002D1C1D /* OTAU.m in Sources */,
 				2E2E70B21FF5DE60002D1C1D /* PCM.m in Sources */,
 				2EAD4EA82004A4BB003733CA /* GalleryEditToolView.m in Sources */,
+				2E5A58782137896500E416F9 /* RGBDeviceViewController.m in Sources */,
 				2E2E707B1FF5DE60002D1C1D /* AboutViewController.m in Sources */,
 				2EF332502045030100565374 /* LanguageViewController.m in Sources */,
 				2EA101B720E0BBE500D2C88F /* SceneListSModel.m in Sources */,
@@ -1481,6 +1546,7 @@
 				0D835B7C1B9749E700FF4376 /* CSRBridgeRoaming.m in Sources */,
 				0D835B7D1B9749E700FF4376 /* CSRBluetoothLE.m in Sources */,
 				0D835B7E1B9749E700FF4376 /* CSRmeshSettings.m in Sources */,
+				2EDF04DB213D14CA00B9E92F /* SRGBSceneDetailViewController.m in Sources */,
 				2E2E707D1FF5DE60002D1C1D /* MasterViewController.m in Sources */,
 				2E6A02131F39884500111312 /* TabBarButton.m in Sources */,
 				2E6D543B211AB6C6003D02DB /* ColorSlider.m in Sources */,

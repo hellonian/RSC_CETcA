@@ -98,6 +98,7 @@
 + (NSData*)dataForHexString:(NSString*)hexString;
 + (NSInteger)numberWithHexString:(NSString *)hexString;
 + (UIImage *)fixOrientation:(UIImage *)aImage;
++ (UIImage *)getSquareImage:(UIImage *)image;
 
 + (BOOL)belongToDimmer:(NSString *)shortName;
 + (BOOL)belongToSwitch:(NSString *)shortName;

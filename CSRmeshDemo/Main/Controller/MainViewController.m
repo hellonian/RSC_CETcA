@@ -35,6 +35,7 @@
 #import <MBProgressHUD.h>
 #import "CBPeripheral+Info.h"
 #import "TopImageView.h"
+#import "RGBDeviceViewController.h"
 
 #define KIsiPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
 
@@ -765,17 +766,30 @@
     NSLog(@"longpress");
     MainCollectionViewCell *mainCell = (MainCollectionViewCell *)cell;
     if ([mainCell.groupId isEqualToNumber:@1000]) {
-        DeviceViewController *dvc = [[DeviceViewController alloc] init];
-        dvc.deviceId = mainCell.deviceId;
-        __weak MainViewController *weakSelf = self;
-        dvc.reloadDataHandle = ^{
-            [weakSelf getMainDataArray];
-        };
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
-        nav.modalPresentationStyle = UIModalPresentationPopover;
-        [self presentViewController:nav animated:YES completion:nil];
-        nav.popoverPresentationController.sourceRect = mainCell.bounds;
-        nav.popoverPresentationController.sourceView = mainCell;
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
+        if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBNoLevelDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBCWNoLevelDevice:deviceEntity.shortName]) {
+            
+            RGBDeviceViewController *RGBDVC = [[RGBDeviceViewController alloc] init];
+            RGBDVC.deviceId = mainCell.deviceId;
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:RGBDVC];
+            nav.modalPresentationStyle = UIModalPresentationPopover;
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
+            
+        }else{
+            DeviceViewController *dvc = [[DeviceViewController alloc] init];
+            dvc.deviceId = mainCell.deviceId;
+            __weak MainViewController *weakSelf = self;
+            dvc.reloadDataHandle = ^{
+                [weakSelf getMainDataArray];
+            };
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
+            nav.modalPresentationStyle = UIModalPresentationPopover;
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
+        }
     }else if ([mainCell.deviceId isEqualToNumber:@2000]) {
         GroupViewController *gvc = [[GroupViewController alloc] init];
         __weak MainViewController *weakSelf = self;

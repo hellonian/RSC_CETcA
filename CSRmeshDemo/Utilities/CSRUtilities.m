@@ -1085,6 +1085,23 @@
     return img;
 }
 
++ (UIImage *)getSquareImage:(UIImage *)image {
+    float imageWidth = image.size.width;
+    float imageHeight = image.size.height;
+    float squareWidth = imageWidth>imageHeight? imageHeight:imageWidth;
+    CGRect rect = CGRectMake((imageWidth - squareWidth)/2, (imageHeight - squareWidth)/2, squareWidth, squareWidth);
+    CGImageRef subImageRef = CGImageCreateWithImageInRect(image.CGImage, rect);
+    CGRect squareBounds = CGRectMake(0, 0, CGImageGetWidth(subImageRef), CGImageGetHeight(subImageRef));
+    
+    UIGraphicsBeginImageContext(squareBounds.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextDrawImage(context, squareBounds, subImageRef);
+    UIImage *squareImage = [UIImage imageWithCGImage:subImageRef];
+    UIGraphicsGetCurrentContext();
+    
+    return squareImage;
+}
+
 + (BOOL)belongToDimmer:(NSString *)shortName {
     if ([kDimmers containsObject:shortName]) {
         return YES;

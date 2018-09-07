@@ -7,9 +7,9 @@
 */
 "Main" = "Hovedmeny";
 "Gallery" = "Galleri";
-"Setting" = "Instillinger";
-"English" = "engesk";
-"ChineseS" = "kinesisk(forenlet)";
+"Setting" = "Innstillinger";
+"English" = "engelsk";
+"ChineseS" = "kinesisk(forenklet)";
 "Norwegian" = "norsk bokmål";
 "Swedish" = "svensk";
 "German" = "tysk";

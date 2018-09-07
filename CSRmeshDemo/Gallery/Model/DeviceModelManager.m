@@ -33,6 +33,11 @@
     NSTimer *colorTimer;
     UIColor *currentColor;
     UIGestureRecognizerState colorCurrentState;
+    
+    NSTimer *colorfulTimer;
+    NSArray *hues;
+    NSInteger colorfulNum;
+    CGFloat colorSaturation;
 }
 
 @end
@@ -60,7 +65,7 @@
         NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
         if (allDevices != nil && [allDevices count] != 0) {
             for (CSRDeviceEntity *deviceEntity in allDevices) {
-                if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToSwitch:deviceEntity.shortName] || [CSRUtilities belongToLightSensor:deviceEntity.shortName] || [deviceEntity.shortName isEqualToString:@"RGBCW"]) {
+                if ([CSRUtilities belongToMainVCDevice:deviceEntity.shortName] || [CSRUtilities belongToLightSensor:deviceEntity.shortName]) {
                     DeviceModel *model = [[DeviceModel alloc] init];
                     model.deviceId = deviceEntity.deviceId;
                     model.shortName = deviceEntity.shortName;
@@ -74,13 +79,18 @@
 }
 
 - (void)getAllDevicesState {
+    __block BOOL success = NO;
     [[MeshServiceApi sharedInstance] setRetryCount:@0];
     [[LightModelApi sharedInstance] getState:@(0) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-        
+        success = YES;
     } failure:^(NSError * _Nullable error) {
-        
     }];
     [[MeshServiceApi sharedInstance] setRetryCount:@6];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (!success) {
+            [self getAllDevicesState];
+        }
+    });
     /*
     NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
     if (allDevices != nil && [allDevices count] != 0) {
@@ -308,5 +318,59 @@
     }];
     
 }
+
+- (void)colorfulAction:(NSNumber *)deviceId timeInterval:(NSTimeInterval)timeInterval hues:(NSArray *)huesAry colorSaturation:(NSNumber *)colorSat {
+    if (!colorfulTimer) {
+        colorfulTimer = [NSTimer timerWithTimeInterval:timeInterval target:self selector:@selector(colorfulTimerMethod:) userInfo:deviceId repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:colorfulTimer forMode:NSRunLoopCommonModes];
+        hues = huesAry;
+        colorfulNum = 0;
+        colorSaturation = [colorSat floatValue];
+    }else {
+        [self invalidateColofulTimer];
+    }
+}
+
+- (void)colorfulTimerMethod:(NSTimer *)infoTimer {
+    @synchronized (self) {
+       
+        NSNumber *deviceId = infoTimer.userInfo;
+        UIColor *color = [UIColor colorWithHue:[[hues objectAtIndex:colorfulNum] floatValue] saturation:colorSaturation brightness:1.0 alpha:1.0];
+        [[LightModelApi sharedInstance] setColor:deviceId color:color duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+            
+        } failure:^(NSError * _Nullable error) {
+            
+        }];
+        colorfulNum ++;
+        if (colorfulNum==6) {
+            colorfulNum = 0;
+        }
+    }
+}
+
+- (void)invalidateColofulTimer {
+    if (colorfulTimer) {
+        [colorfulTimer invalidate];
+        colorfulTimer = nil;
+    }
+}
+
+- (void)regetHues:(NSArray *)huesAry {
+    hues = huesAry;
+}
+
+- (void)regetColorSaturation:(float)sat {
+    colorSaturation = sat;
+}
+
+- (void)regetColofulTimerInterval:(NSTimeInterval)interval deviceId:(NSNumber *)deviceId {
+    if (colorfulTimer) {
+        [colorfulTimer invalidate];
+        colorfulTimer = nil;
+        colorfulTimer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(colorfulTimerMethod:) userInfo:deviceId repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:colorfulTimer forMode:NSRunLoopCommonModes];
+    }
+}
+
 
 @end

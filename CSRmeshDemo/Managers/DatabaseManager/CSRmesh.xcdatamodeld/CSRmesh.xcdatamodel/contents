@@ -43,6 +43,7 @@
         <relationship name="areas" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CSRAreaEntity" inverseName="devices" inverseEntity="CSRAreaEntity" syncable="YES"/>
         <relationship name="events" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CSREventEntity" inverseName="devices" inverseEntity="CSREventEntity" syncable="YES"/>
         <relationship name="place" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CSRPlaceEntity" inverseName="devices" inverseEntity="CSRPlaceEntity" syncable="YES"/>
+        <relationship name="rgbScenes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RGBSceneEntity" inverseName="device" inverseEntity="RGBSceneEntity" syncable="YES"/>
     </entity>
     <entity name="CSRDeviceEventsEntity" representedClassName="CSRDeviceEventsEntity" syncable="YES">
         <attribute name="actionID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
@@ -132,6 +133,25 @@
         <relationship name="drops" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DropEntity" inverseName="gallery" inverseEntity="DropEntity" syncable="YES"/>
         <relationship name="place" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CSRPlaceEntity" inverseName="gallerys" inverseEntity="CSRPlaceEntity" syncable="YES"/>
     </entity>
+    <entity name="RGBSceneEntity" representedClassName="RGBSceneEntity" syncable="YES">
+        <attribute name="changeSpeed" optional="YES" attributeType="Float" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="colorSat" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="deviceID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="eventType" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="hueA" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="hueB" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="hueC" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="hueD" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="hueE" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="hueF" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="isDefaultImg" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="level" optional="YES" attributeType="Integer 32" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="rgbSceneID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="rgbSceneImage" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="sortID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="device" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CSRDeviceEntity" inverseName="rgbScenes" inverseEntity="CSRDeviceEntity" syncable="YES"/>
+    </entity>
     <entity name="SceneEntity" representedClassName="SceneEntity" syncable="YES">
         <attribute name="iconID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="rcIndex" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
@@ -175,7 +195,7 @@
     <elements>
         <element name="CSRAreaEntity" positionX="81" positionY="-207" width="128" height="180"/>
         <element name="CSRControllerEntity" positionX="-495" positionY="18" width="128" height="180"/>
-        <element name="CSRDeviceEntity" positionX="61" positionY="200" width="128" height="345"/>
+        <element name="CSRDeviceEntity" positionX="61" positionY="200" width="128" height="360"/>
         <element name="CSRDeviceEventsEntity" positionX="-621" positionY="305" width="128" height="133"/>
         <element name="CSREventEntity" positionX="-434" positionY="288" width="128" height="180"/>
         <element name="CSRGatewayEntity" positionX="-191" positionY="269" width="128" height="178"/>
@@ -184,6 +204,7 @@
         <element name="CSRUserEntity" positionX="-308" positionY="-279" width="128" height="120"/>
         <element name="DropEntity" positionX="-414" positionY="-126" width="128" height="165"/>
         <element name="GalleryEntity" positionX="-423" positionY="-135" width="128" height="150"/>
+        <element name="RGBSceneEntity" positionX="-423" positionY="-135" width="128" height="300"/>
         <element name="SceneEntity" positionX="-423" positionY="-135" width="128" height="135"/>
         <element name="SceneMemberEntity" positionX="-414" positionY="-126" width="128" height="225"/>
         <element name="TimerDeviceEntity" positionX="-414" positionY="-126" width="128" height="120"/>

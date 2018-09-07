@@ -5,6 +5,7 @@
 #import "CSRDeviceEntity.h"
 #import "CSRAreaEntity.h"
 #import "DropEntity.h"
+#import "RGBSceneEntity.h"
 
 @implementation CSRDeviceEntity
 
@@ -27,5 +28,6 @@
 @dynamic sortId;
 @dynamic isEditting;
 @dynamic remoteBranch;
+@dynamic rgbScenes;
 
 @end

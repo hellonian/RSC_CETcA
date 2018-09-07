@@ -34,6 +34,11 @@
 
 #define kGroupIcons @[@"living",@"bed",@"dinning",@"wash",@"pan",@"study",@"kettle",@"attic",@"stair",@"fitness",@"plant",@"terrace",@"bookcase",@"stool",@"talking",@"warehouse",@"corridor"]
 
+#define kRGBSceneDefaultName @[@"Reading",@"Dining",@"Meeting",@"Good night",@"Pink memory",@"Mediterranean",@"Eyeshield",@"Colorfulness"]
+#define kRGBSceneDefaultLevel @[@(178),@(104),@(255),@(25),@(255),@(60),@(205),@(255)];
+#define kRGBSceneDefaultHue @[@(0.17),@(0.17),@(0),@(0.17),@(0.9),@(0.6),@(0.3)]
+#define kRGBSceneDefaultColorSat @[@(0.27),@(0.4),@(0),@(0.4),@(0.85),@(1),@(0.15),@(1)]
+
 #define kDimmers @[@"D350BT",@"D350B-H",@"D350SB",@"D350B",@"D300IB",@"D300SB-T3",@"D350SB-T1",@"D300IB-H",@"D300IB-T2",@"D350B-B",@"D350B-L",@"D300IB-L",@"D0-10IB"]
 #define kSwitchs @[@"S350BT",@"S350B",@"S2400IB",@"S350B-H",@"S2400IB-H",@"S2400IB-T4"]
 #define kRemotes @[@"RB01",@"RB02"]
