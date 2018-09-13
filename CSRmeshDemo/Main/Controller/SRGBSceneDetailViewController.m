@@ -103,13 +103,11 @@
     [_colorSaturationView autoPinEdgeToSuperviewEdge:ALEdgeRight];
     [_colorSaturationView autoSetDimension:ALDimensionHeight toSize:44.0];
     
-    if ([_rgbSceneEntity.rgbSceneID integerValue]<8) {
-        [self.view addSubview:_restoreBtn];
-        [_restoreBtn autoAlignAxisToSuperviewAxis:ALAxisVertical];
-        [_restoreBtn autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_colorSaturationView withOffset:30.0];
-        [_restoreBtn autoSetDimension:ALDimensionHeight toSize:30.0];
-        [_restoreBtn autoSetDimension:ALDimensionWidth toSize:200.0];
-    }
+    [self.view addSubview:_restoreBtn];
+    [_restoreBtn autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [_restoreBtn autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_colorSaturationView withOffset:30.0];
+    [_restoreBtn autoSetDimension:ALDimensionHeight toSize:30.0];
+    [_restoreBtn autoSetDimension:ALDimensionWidth toSize:200.0];
     
     [_levelSlider setValue:[_rgbSceneEntity.level floatValue]];
     _levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_rgbSceneEntity.level floatValue]/255.0*100];

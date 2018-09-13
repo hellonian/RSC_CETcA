@@ -50,9 +50,11 @@
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>AcTEC BLE need  use bluetooth.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Set the images of groups' icons and gallery control mode need to use your Camera.</string>
+	<string>Set the images of groups&apos; icons and gallery control mode need to use your Camera.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Set the images of groups' icons and gallery control mode need to use your Photo Library.</string>
+	<string>Set the images of groups&apos; icons and gallery control mode need to use your Photo Library.</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>AcTEC BLE need  use Media Library.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>bluetooth-central</string>

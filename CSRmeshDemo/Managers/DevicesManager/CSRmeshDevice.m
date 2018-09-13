@@ -165,7 +165,7 @@
         return (NO);
     else {
         [CSRDevicesManager sharedInstance].isDeviceTypeGateway = NO;
-        [[CSRDevicesManager sharedInstance] associateDeviceFromCSRDeviceManager:_deviceHash authorisationCode:_authCode];
+        [[CSRDevicesManager sharedInstance] associateDeviceFromCSRDeviceManager:_deviceHash authorisationCode:_authCode uuidString:_uuid.UUIDString];
         isAssociating = YES;
         _associationStepsCompleted = @(0);
         _associationStepsTotal = @(7);

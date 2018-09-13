@@ -12,6 +12,7 @@
 #import <CSRmesh/ActuatorModelApi.h>
 #import "CSRConstants.h"
 #import <CSRmeshRestClient/CSRRestMeshConfigApi.h>
+#import "RGBSceneEntity.h"
 
 @interface CSRDevicesManager()<PowerModelApiDelegate>
 
@@ -668,7 +669,7 @@
 #pragma mark ------
 #pragma mark API Calls
 
-- (void)associateDeviceFromCSRDeviceManager:(NSData *)deviceHash authorisationCode:(NSData *)authCode
+- (void)associateDeviceFromCSRDeviceManager:(NSData *)deviceHash authorisationCode:(NSData *)authCode uuidString:(NSString *)uuidString
 {
     
     // get the next free device ID
@@ -679,8 +680,35 @@
         deviceId = [[CSRDatabaseManager sharedInstance] getNextFreeGatewayDeviceId];
         
     } else {
+        __block NSNumber *blockDeviceId;
+        [[CSRAppStateManager sharedInstance].selectedPlace.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity * _Nonnull deviceEntity, BOOL * _Nonnull stop) {
+            if ([deviceEntity.uuid isEqualToString:uuidString]) {
+                blockDeviceId = deviceEntity.deviceId;
+                
+                if (deviceEntity.rgbScenes && [deviceEntity.rgbScenes count]>0) {
+                    for (RGBSceneEntity *deleteRgbSceneEntity in deviceEntity.rgbScenes) {
+                        [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:deleteRgbSceneEntity];
+                    }
+                }
+                [[CSRAppStateManager sharedInstance].selectedPlace removeDevicesObject:deviceEntity];
+                [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:deviceEntity];
+                
+                [[CSRDatabaseManager sharedInstance] dropEntityDeleteWhenDeleteDeviceEntity:deviceEntity.deviceId];
+                [[CSRDatabaseManager sharedInstance] sceneMemberEntityDeleteWhenDeleteDeviceEntity:deviceEntity.deviceId];
+                [[CSRDatabaseManager sharedInstance] timerDeviceEntityDeleteWhenDeleteDeviceEntity:deviceEntity.deviceId];
+                
+                [[CSRDatabaseManager sharedInstance] saveContext];
+                
+                *stop = YES;
+            }
+        }];
         
-        deviceId = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRDeviceEntity"];
+        if (blockDeviceId) {
+            deviceId = blockDeviceId; 
+        }else {
+            deviceId = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRDeviceEntity"];
+        }
+        
         
     }
     

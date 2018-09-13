@@ -36,6 +36,7 @@
 #import "CBPeripheral+Info.h"
 #import "TopImageView.h"
 #import "RGBDeviceViewController.h"
+#import "RGBSceneEntity.h"
 
 #define KIsiPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
 
@@ -604,6 +605,7 @@
     [list getSelectedDevices:^(NSArray *devices) {
         
         [members enumerateObjectsUsingBlock:^(SceneMemberEntity *sceneMember, NSUInteger idx, BOOL * _Nonnull stop) {
+            [sceneEntity removeMembers:sceneEntity.members];
             [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:sceneMember];
             [[CSRDatabaseManager sharedInstance] saveContext];
         }];
@@ -666,7 +668,7 @@
 - (void)mainCollectionViewCellDelegateSceneCellTapAction:(NSNumber *)sceneId {
     SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:sceneId];
     NSMutableArray *members = [[sceneEntity.members allObjects] mutableCopy];
-    if (members != nil || [members count] != 0) {
+    if ([members count] != 0) {
         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortID" ascending:YES];
         [members sortUsingDescriptors:[NSArray arrayWithObject:sort]];
         [members enumerateObjectsUsingBlock:^(SceneMemberEntity *sceneMember, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -1019,6 +1021,11 @@
         [self showForceAlert];
     } else {
         if(deleteDeviceEntity) {
+            if (deleteDeviceEntity.rgbScenes && [deleteDeviceEntity.rgbScenes count]>0) {
+                for (RGBSceneEntity *deleteRgbSceneEntity in deleteDeviceEntity.rgbScenes) {
+                    [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:deleteRgbSceneEntity];
+                }
+            }
             [[CSRAppStateManager sharedInstance].selectedPlace removeDevicesObject:deleteDeviceEntity];
             [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:deleteDeviceEntity];
             
@@ -1065,6 +1072,11 @@
                                                      handler:^(UIAlertAction *action) {
                                                          
                                                          if(deleteDeviceEntity) {
+                                                             if (deleteDeviceEntity.rgbScenes && [deleteDeviceEntity.rgbScenes count]>0) {
+                                                                 for (RGBSceneEntity *deleteRgbSceneEntity in deleteDeviceEntity.rgbScenes) {
+                                                                     [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:deleteRgbSceneEntity];
+                                                                 }
+                                                             }
                                                              [[CSRAppStateManager sharedInstance].selectedPlace removeDevicesObject:deleteDeviceEntity];
                                                              [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:deleteDeviceEntity];
                                                              

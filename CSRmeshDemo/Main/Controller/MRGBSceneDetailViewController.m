@@ -125,18 +125,11 @@
     [_changeSpeedView autoPinEdgeToSuperviewEdge:ALEdgeRight];
     [_changeSpeedView autoSetDimension:ALDimensionHeight toSize:44.0];
     
-    if ([_rgbSceneEntity.rgbSceneID integerValue]==7) {
-        [self.view addSubview:_restoreBtn];
-        [_restoreBtn autoAlignAxisToSuperviewAxis:ALAxisVertical];
-        [_restoreBtn autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_changeSpeedView withOffset:10.0];
-        [_restoreBtn autoSetDimension:ALDimensionHeight toSize:30.0];
-        [_restoreBtn autoSetDimension:ALDimensionWidth toSize:200.0];
-    }
-}
-
-- (void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
-    
+    [self.view addSubview:_restoreBtn];
+    [_restoreBtn autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [_restoreBtn autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_changeSpeedView withOffset:10.0];
+    [_restoreBtn autoSetDimension:ALDimensionHeight toSize:30.0];
+    [_restoreBtn autoSetDimension:ALDimensionWidth toSize:200.0];
 }
 
 #pragma mark - 修改颜色
@@ -284,44 +277,47 @@
     NSArray *names = kRGBSceneDefaultName;
     NSArray *levels = kRGBSceneDefaultLevel;
     NSArray *sats = kRGBSceneDefaultColorSat;
-    _rgbSceneEntity.name = names[7];
-    _rgbSceneNameTF.text = names[7];
+    NSArray *hues = kRGBSceneDefaultHue;
+    NSInteger i = [_rgbSceneEntity.rgbSceneID integerValue];
+    _rgbSceneEntity.name = names[i];
+    _rgbSceneNameTF.text = names[i];
     _rgbSceneEntity.isDefaultImg = @1;
-    [_rgbSceneImageBtn setBackgroundImage:[UIImage imageNamed:names[7]] forState:UIControlStateNormal];
+    [_rgbSceneImageBtn setBackgroundImage:[UIImage imageNamed:names[i]] forState:UIControlStateNormal];
     _rgbSceneEntity.rgbSceneImage = nil;
-    _rgbSceneEntity.level = levels[7];
-    _levelLabel.text = [NSString stringWithFormat:@"%.f%%",[levels[7] floatValue]/255.0*100];
-    [_levelSlider setValue:[levels[7] floatValue]];
-    _rgbSceneEntity.colorSat = sats[7];
-    _colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",[sats[7] floatValue]*100];
-    [_colorSaturationSlider setValue:[sats[7] floatValue]];
+    _rgbSceneEntity.level = levels[i];
+    _levelLabel.text = [NSString stringWithFormat:@"%.f%%",[levels[i] floatValue]/255.0*100];
+    [_levelSlider setValue:[levels[i] floatValue]];
+    _rgbSceneEntity.colorSat = sats[i];
+    _colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",[sats[i] floatValue]*100];
+    [_colorSaturationSlider setValue:[sats[i] floatValue]];
     _rgbSceneEntity.changeSpeed = @(1.0);
     _changSpeedLabel.text = [NSString stringWithFormat:@"%.f%%",(1.0-0.5)/3.5*100];
     [_changeSpeedSlider setValue:1.0];
-    _rgbSceneEntity.hueA = @(0);
-    _rgbSceneEntity.hueB = @(0.08);
-    _rgbSceneEntity.hueC = @(0.17);
-    _rgbSceneEntity.hueD = @(0.33);
-    _rgbSceneEntity.hueE = @(0.67);
-    _rgbSceneEntity.hueF = @(0.83);
-    float colorSaturation = [sats[7] floatValue];
-    UIColor *colorA = [UIColor colorWithHue:0 saturation:colorSaturation brightness:1.0 alpha:1.0];
+    NSArray *colorfulHues = hues[i];
+    _rgbSceneEntity.hueA = colorfulHues[0];
+    _rgbSceneEntity.hueB = colorfulHues[1];
+    _rgbSceneEntity.hueC = colorfulHues[2];
+    _rgbSceneEntity.hueD = colorfulHues[3];
+    _rgbSceneEntity.hueE = colorfulHues[4];
+    _rgbSceneEntity.hueF = colorfulHues[5];
+    float colorSaturation = [sats[i] floatValue];
+    UIColor *colorA = [UIColor colorWithHue:[colorfulHues[0] floatValue] saturation:colorSaturation brightness:1.0 alpha:1.0];
     _hueABtn.backgroundColor = colorA;
-    UIColor *colorB = [UIColor colorWithHue:0.08 saturation:colorSaturation brightness:1.0 alpha:1.0];
+    UIColor *colorB = [UIColor colorWithHue:[colorfulHues[1] floatValue] saturation:colorSaturation brightness:1.0 alpha:1.0];
     _hueBBtn.backgroundColor = colorB;
-    UIColor *colorC = [UIColor colorWithHue:0.17 saturation:colorSaturation brightness:1.0 alpha:1.0];
+    UIColor *colorC = [UIColor colorWithHue:[colorfulHues[2] floatValue] saturation:colorSaturation brightness:1.0 alpha:1.0];
     _hueCBtn.backgroundColor = colorC;
-    UIColor *colorD = [UIColor colorWithHue:0.33 saturation:colorSaturation brightness:1.0 alpha:1.0];
+    UIColor *colorD = [UIColor colorWithHue:[colorfulHues[3] floatValue] saturation:colorSaturation brightness:1.0 alpha:1.0];
     _hueDBtn.backgroundColor = colorD;
-    UIColor *colorE = [UIColor colorWithHue:0.67 saturation:colorSaturation brightness:1.0 alpha:1.0];
+    UIColor *colorE = [UIColor colorWithHue:[colorfulHues[4] floatValue] saturation:colorSaturation brightness:1.0 alpha:1.0];
     _hueEBtn.backgroundColor = colorE;
-    UIColor *colorF = [UIColor colorWithHue:0.83 saturation:colorSaturation brightness:1.0 alpha:1.0];
+    UIColor *colorF = [UIColor colorWithHue:[colorfulHues[5] floatValue] saturation:colorSaturation brightness:1.0 alpha:1.0];
     _hueFBtn.backgroundColor = colorF;
     
     [[DeviceModelManager sharedInstance] invalidateColofulTimer];
     CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
     if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
-        [[LightModelApi sharedInstance] setLevel:_deviceId level:levels[7] success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+        [[LightModelApi sharedInstance] setLevel:_deviceId level:levels[i] success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
             
         } failure:^(NSError * _Nullable error) {
             DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
@@ -329,7 +325,7 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":_deviceId}];
         }];
     }
-    [[DeviceModelManager sharedInstance] colorfulAction:_deviceId timeInterval:1.0 hues:@[@(0),@(0.08),@(0.17),@(0.33),@(0.67),@(0.83)] colorSaturation:sats[7]];
+    [[DeviceModelManager sharedInstance] colorfulAction:_deviceId timeInterval:1.0 hues:@[colorfulHues[0],colorfulHues[1],colorfulHues[2],colorfulHues[3],colorfulHues[4],colorfulHues[5]] colorSaturation:sats[i] rgbSceneId:_rgbSceneEntity.rgbSceneID];
 }
 
 #pragma mark - 修改图片

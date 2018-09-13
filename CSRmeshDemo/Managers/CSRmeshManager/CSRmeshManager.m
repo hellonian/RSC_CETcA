@@ -166,27 +166,31 @@
                 NSArray *levels = kRGBSceneDefaultLevel;
                 NSArray *hues = kRGBSceneDefaultHue;
                 NSArray *sats = kRGBSceneDefaultColorSat;
-                for (int i = 0; i<8; i++) {
+                for (int i = 0; i<12; i++) {
                     RGBSceneEntity *rgbScenetity = [NSEntityDescription insertNewObjectForEntityForName:@"RGBSceneEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
                     rgbScenetity.deviceID = deviceId;
                     rgbScenetity.name = names[i];
                     rgbScenetity.isDefaultImg = @1;
                     rgbScenetity.rgbSceneID = @(i);
                     rgbScenetity.sortID = @(i);
-                    rgbScenetity.level = levels[i];
-                    rgbScenetity.colorSat = sats[i];
-                    if (i<7) {
+                    
+                    if (i<9) {
                         rgbScenetity.eventType = @(0);
                         rgbScenetity.hueA = hues[i];
+                        rgbScenetity.level = levels[i];
+                        rgbScenetity.colorSat = sats[i];
                     }else {
                         rgbScenetity.eventType = @(1);
                         rgbScenetity.changeSpeed = @(1);
-                        rgbScenetity.hueA = @(0);
-                        rgbScenetity.hueB = @(0.08);
-                        rgbScenetity.hueC = @(0.17);
-                        rgbScenetity.hueD = @(0.33);
-                        rgbScenetity.hueE = @(0.67);
-                        rgbScenetity.hueF = @(0.83);
+                        NSArray *colorfulHues = hues[i];
+                        rgbScenetity.hueA = colorfulHues[0];
+                        rgbScenetity.hueB = colorfulHues[1];
+                        rgbScenetity.hueC = colorfulHues[2];
+                        rgbScenetity.hueD = colorfulHues[3];
+                        rgbScenetity.hueE = colorfulHues[4];
+                        rgbScenetity.hueF = colorfulHues[5];
+                        rgbScenetity.level = @(255);
+                        rgbScenetity.colorSat = @(1);
                     }
                     [deviceEntity addRgbScenesObject:rgbScenetity];
                 }

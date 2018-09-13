@@ -24,6 +24,6 @@
 @property (nonatomic,assign) NSInteger index;
 @property (nonatomic,weak) id<RGBSceneCellDelegate> cellDelegate;
 
-- (void)configureCellWithInfo:(id)info index:(NSInteger)index;
+- (void)configureCellWithInfo:(RGBSceneEntity *)rgbSceneEntity index:(NSInteger)index;
 
 @end

@@ -38,6 +38,7 @@
     NSArray *hues;
     NSInteger colorfulNum;
     CGFloat colorSaturation;
+    NSNumber *colorfulSceneId;
 }
 
 @end
@@ -319,15 +320,25 @@
     
 }
 
-- (void)colorfulAction:(NSNumber *)deviceId timeInterval:(NSTimeInterval)timeInterval hues:(NSArray *)huesAry colorSaturation:(NSNumber *)colorSat {
+- (void)colorfulAction:(NSNumber *)deviceId timeInterval:(NSTimeInterval)timeInterval hues:(NSArray *)huesAry colorSaturation:(NSNumber *)colorSat rgbSceneId:(NSNumber *)rgbSceneId{
     if (!colorfulTimer) {
         colorfulTimer = [NSTimer timerWithTimeInterval:timeInterval target:self selector:@selector(colorfulTimerMethod:) userInfo:deviceId repeats:YES];
         [[NSRunLoop mainRunLoop] addTimer:colorfulTimer forMode:NSRunLoopCommonModes];
         hues = huesAry;
         colorfulNum = 0;
         colorSaturation = [colorSat floatValue];
+        colorfulSceneId = rgbSceneId;
     }else {
         [self invalidateColofulTimer];
+        NSLog(@"%@  %@",rgbSceneId,colorfulSceneId);
+        if (![rgbSceneId isEqualToNumber:colorfulSceneId]) {
+            colorfulTimer = [NSTimer timerWithTimeInterval:timeInterval target:self selector:@selector(colorfulTimerMethod:) userInfo:deviceId repeats:YES];
+            [[NSRunLoop mainRunLoop] addTimer:colorfulTimer forMode:NSRunLoopCommonModes];
+            hues = huesAry;
+            colorfulNum = 0;
+            colorSaturation = [colorSat floatValue];
+            colorfulSceneId = rgbSceneId;
+        }
     }
 }
 
@@ -336,11 +347,7 @@
        
         NSNumber *deviceId = infoTimer.userInfo;
         UIColor *color = [UIColor colorWithHue:[[hues objectAtIndex:colorfulNum] floatValue] saturation:colorSaturation brightness:1.0 alpha:1.0];
-        [[LightModelApi sharedInstance] setColor:deviceId color:color duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-            
-        } failure:^(NSError * _Nullable error) {
-            
-        }];
+        [[LightModelApi sharedInstance] setColor:deviceId color:color duration:@0 success:nil failure:nil];
         colorfulNum ++;
         if (colorfulNum==6) {
             colorfulNum = 0;

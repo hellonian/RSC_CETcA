@@ -93,7 +93,7 @@
 -(void) setDesiredTemperatureForArea :(CSRmeshArea *) meshArea;
 
 #pragma mark Library calls
-- (void)associateDeviceFromCSRDeviceManager:(NSData *)deviceHash authorisationCode:(NSData *)authCode;
+- (void)associateDeviceFromCSRDeviceManager:(NSData *)deviceHash authorisationCode:(NSData *)authCode uuidString:(NSString *)uuidString;
 - (void)getModelsAndGroupsCall:(NSNumber *)deviceId infoType:(NSNumber *)infoType;
 - (void)setDeviceDiscoveryFilterEnabled:(BOOL)enabled;
 - (void)setAttention:(NSData *)deviceHash attentionState:(NSNumber *)attentionState withDuration:(NSNumber *) duration;

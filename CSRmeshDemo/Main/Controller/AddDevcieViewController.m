@@ -323,7 +323,8 @@
 - (void)associateDevice {
     [[CSRDevicesManager sharedInstance].unassociatedMeshDevices removeAllObjects];
     if (_selectedDevice.appearanceShortname) {
-        [[CSRDevicesManager sharedInstance] associateDeviceFromCSRDeviceManager:_selectedDevice.deviceHash authorisationCode:nil];
+        
+        [[CSRDevicesManager sharedInstance] associateDeviceFromCSRDeviceManager:_selectedDevice.deviceHash authorisationCode:nil uuidString:_selectedDevice.uuid.UUIDString];
         
         _associateHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         _associateHud.mode = MBProgressHUDModeDeterminateHorizontalBar;

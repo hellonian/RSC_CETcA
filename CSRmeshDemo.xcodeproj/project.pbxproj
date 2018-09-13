@@ -47,6 +47,8 @@
 		2E216EEA2138F28200E545B9 /* RGBSceneCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E216EE82138F28200E545B9 /* RGBSceneCollectionViewCell.m */; };
 		2E216EEB2138F28200E545B9 /* RGBSceneCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E216EE92138F28200E545B9 /* RGBSceneCollectionViewCell.xib */; };
 		2E2533EE20219850002A6EC3 /* DeviceListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2533ED20219850002A6EC3 /* DeviceListViewController.m */; };
+		2E2A016521425D7600B2EFAF /* MusicListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2A016421425D7600B2EFAF /* MusicListTableViewController.m */; };
+		2E2A016821425F7F00B2EFAF /* GetDataTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2A016721425F7F00B2EFAF /* GetDataTools.m */; };
 		2E2E707B1FF5DE60002D1C1D /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70051FF5DE60002D1C1D /* AboutViewController.m */; };
 		2E2E707D1FF5DE60002D1C1D /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70081FF5DE60002D1C1D /* MasterViewController.m */; };
 		2E2E707E1FF5DE60002D1C1D /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E700A1FF5DE60002D1C1D /* MoreViewController.m */; };
@@ -114,6 +116,8 @@
 		2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EC38939204921C2004D822D /* TimerTableViewCell.xib */; };
 		2EC3893F204939CE004D822D /* TimerDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC3893D204939CE004D822D /* TimerDetailViewController.m */; };
 		2EC73CF62124197700850882 /* ColorSquare.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC73CF52124197700850882 /* ColorSquare.m */; };
+		2EC8BB3421460F0E002ED85F /* MusicPlayTools.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2EC8BB3221460F0D002ED85F /* MusicPlayTools.mm */; };
+		2EC8BB37214653AF002ED85F /* MeterTable.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2EC8BB35214653AF002ED85F /* MeterTable.mm */; };
 		2ED3963C204D09A00068B666 /* TimerEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963B204D09A00068B666 /* TimerEntity.m */; };
 		2ED3963F204D09D20068B666 /* TimerDeviceEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */; };
 		2ED974471F3AED0F000F20C9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2ED974491F3AED0F000F20C9 /* LaunchScreen.storyboard */; };
@@ -265,6 +269,10 @@
 		2E216EE92138F28200E545B9 /* RGBSceneCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RGBSceneCollectionViewCell.xib; sourceTree = "<group>"; };
 		2E2533EC20219850002A6EC3 /* DeviceListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceListViewController.h; sourceTree = "<group>"; };
 		2E2533ED20219850002A6EC3 /* DeviceListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeviceListViewController.m; sourceTree = "<group>"; };
+		2E2A016321425D7600B2EFAF /* MusicListTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MusicListTableViewController.h; sourceTree = "<group>"; };
+		2E2A016421425D7600B2EFAF /* MusicListTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicListTableViewController.m; sourceTree = "<group>"; };
+		2E2A016621425F7F00B2EFAF /* GetDataTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetDataTools.h; sourceTree = "<group>"; };
+		2E2A016721425F7F00B2EFAF /* GetDataTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetDataTools.m; sourceTree = "<group>"; };
 		2E2E70041FF5DE60002D1C1D /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
 		2E2E70051FF5DE60002D1C1D /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
 		2E2E70071FF5DE60002D1C1D /* MasterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
@@ -466,6 +474,10 @@
 		2EC3893D204939CE004D822D /* TimerDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerDetailViewController.m; sourceTree = "<group>"; };
 		2EC73CF42124197600850882 /* ColorSquare.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColorSquare.h; sourceTree = "<group>"; };
 		2EC73CF52124197700850882 /* ColorSquare.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColorSquare.m; sourceTree = "<group>"; };
+		2EC8BB3221460F0D002ED85F /* MusicPlayTools.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MusicPlayTools.mm; sourceTree = "<group>"; };
+		2EC8BB3321460F0E002ED85F /* MusicPlayTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicPlayTools.h; sourceTree = "<group>"; };
+		2EC8BB35214653AF002ED85F /* MeterTable.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MeterTable.mm; sourceTree = "<group>"; };
+		2EC8BB36214653AF002ED85F /* MeterTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeterTable.h; sourceTree = "<group>"; };
 		2ED3963A204D09A00068B666 /* TimerEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerEntity.h; sourceTree = "<group>"; };
 		2ED3963B204D09A00068B666 /* TimerEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerEntity.m; sourceTree = "<group>"; };
 		2ED3963D204D09D20068B666 /* TimerDeviceEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerDeviceEntity.h; sourceTree = "<group>"; };
@@ -964,15 +976,17 @@
 				2E5A5870213788F900E416F9 /* FavoriteViewController.h */,
 				2E5A5871213788F900E416F9 /* FavoriteViewController.m */,
 				2E5A5872213788F900E416F9 /* FavoriteViewController.xib */,
-				2E5A587A21378B6800E416F9 /* MusicViewController.h */,
-				2E5A587B21378B6800E416F9 /* MusicViewController.m */,
-				2E5A587C21378B6800E416F9 /* MusicViewController.xib */,
 				2EDF04D8213D14CA00B9E92F /* SRGBSceneDetailViewController.h */,
 				2EDF04D9213D14CA00B9E92F /* SRGBSceneDetailViewController.m */,
 				2EDF04DA213D14CA00B9E92F /* SRGBSceneDetailViewController.xib */,
 				2EDF04DD213D151300B9E92F /* MRGBSceneDetailViewController.h */,
 				2EDF04DE213D151300B9E92F /* MRGBSceneDetailViewController.m */,
 				2EDF04DF213D151300B9E92F /* MRGBSceneDetailViewController.xib */,
+				2E5A587A21378B6800E416F9 /* MusicViewController.h */,
+				2E5A587B21378B6800E416F9 /* MusicViewController.m */,
+				2E5A587C21378B6800E416F9 /* MusicViewController.xib */,
+				2E2A016321425D7600B2EFAF /* MusicListTableViewController.h */,
+				2E2A016421425D7600B2EFAF /* MusicListTableViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -986,6 +1000,12 @@
 				2E3B9658200F2553000BD086 /* DeviceModel.m */,
 				2E3A65F5202BF97300B3E425 /* SingleDeviceModel.h */,
 				2E3A65F6202BF97300B3E425 /* SingleDeviceModel.m */,
+				2E2A016621425F7F00B2EFAF /* GetDataTools.h */,
+				2E2A016721425F7F00B2EFAF /* GetDataTools.m */,
+				2EC8BB3321460F0E002ED85F /* MusicPlayTools.h */,
+				2EC8BB3221460F0D002ED85F /* MusicPlayTools.mm */,
+				2EC8BB36214653AF002ED85F /* MeterTable.h */,
+				2EC8BB35214653AF002ED85F /* MeterTable.mm */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1457,9 +1477,11 @@
 				F43D7A5C1D004225009ADD96 /* CSRGatewayEntity+CoreDataProperties.m in Sources */,
 				2E5A587D21378B6800E416F9 /* MusicViewController.m in Sources */,
 				2E06A4FF20205B0E007B8BEA /* GroupViewController.m in Sources */,
+				2E2A016821425F7F00B2EFAF /* GetDataTools.m in Sources */,
 				F4F11C131D00408C0080F3BB /* CSRGatewayEntity.m in Sources */,
 				2E37075720CE647A000AF696 /* NSBundle+AppLanguageSwitch.m in Sources */,
 				0D835B951B97603600FF4376 /* CSRmesh.xcdatamodeld in Sources */,
+				2EC8BB37214653AF002ED85F /* MeterTable.mm in Sources */,
 				0D835B361B9749E600FF4376 /* AppDelegate.m in Sources */,
 				2E3A65F7202BF97300B3E425 /* SingleDeviceModel.m in Sources */,
 				2EC3893F204939CE004D822D /* TimerDetailViewController.m in Sources */,
@@ -1490,6 +1512,7 @@
 				CE04468D1C47E36F00263F15 /* CSRPeripheral.m in Sources */,
 				2EF718291FFB224800901918 /* GalleryEntity.m in Sources */,
 				2EE757CD2010763C00FB75C5 /* SuperCollectionViewCell.m in Sources */,
+				2E2A016521425D7600B2EFAF /* MusicListTableViewController.m in Sources */,
 				2EF718751FFB6C4D00901918 /* GalleryDetailViewController.m in Sources */,
 				2E2E70B01FF5DE60002D1C1D /* ApplicationImage.m in Sources */,
 				0D835B461B9749E600FF4376 /* CSRDatabaseManager.m in Sources */,
@@ -1549,6 +1572,7 @@
 				2EDF04DB213D14CA00B9E92F /* SRGBSceneDetailViewController.m in Sources */,
 				2E2E707D1FF5DE60002D1C1D /* MasterViewController.m in Sources */,
 				2E6A02131F39884500111312 /* TabBarButton.m in Sources */,
+				2EC8BB3421460F0E002ED85F /* MusicPlayTools.mm in Sources */,
 				2E6D543B211AB6C6003D02DB /* ColorSlider.m in Sources */,
 				F4658A221C99747A00C284F4 /* CSREventEntity.m in Sources */,
 				2E2E70901FF5DE60002D1C1D /* PlaceColorIconPickerView.m in Sources */,

@@ -167,7 +167,6 @@
 -(NSDictionary *) didDiscoverBridgeDevice:(CBCentralManager *)central peripheral:(CBPeripheral *)peripheral advertisment:(NSDictionary *)advertisment RSSI:(NSNumber *)RSSI {
     
     NSMutableDictionary *returnValue = [NSMutableDictionary dictionary];
-
     if (connectedBridges.count<1 && connectingBridges.count<1) {
         
         BOOL found=NO;

@@ -20,29 +20,20 @@
     [self addGestureRecognizer:longPressGesture];
 }
 
-- (void)configureCellWithInfo:(id)info index:(NSInteger)index {
+- (void)configureCellWithInfo:(RGBSceneEntity *)rgbSceneEntity index:(NSInteger)index {
     _index = index;
-    if ([info isKindOfClass:[RGBSceneEntity class]]) {
-        RGBSceneEntity *rgbSceneEntity = (RGBSceneEntity *)info;
-        _RGBSceneNameLabel.text = rgbSceneEntity.name;
-        if ([rgbSceneEntity.isDefaultImg boolValue]) {
-            NSArray *names = kRGBSceneDefaultName;
-            NSInteger num = [rgbSceneEntity.rgbSceneID integerValue];
-            _RGBSceneImageView.image = [UIImage imageNamed:names[num]];
-        }else {
-            _RGBSceneImageView.image = [UIImage imageWithData:rgbSceneEntity.rgbSceneImage];
-        }
-        if ([rgbSceneEntity.eventType boolValue]) {
-            _colorfulRingImageView.image = [UIImage imageNamed:@"colorfulRing"];
-        }else {
-            _colorfulRingImageView.image = nil;
-        }
-        return;
+    _RGBSceneNameLabel.text = rgbSceneEntity.name;
+    if ([rgbSceneEntity.isDefaultImg boolValue]) {
+        NSArray *names = kRGBSceneDefaultName;
+        NSInteger num = [rgbSceneEntity.rgbSceneID integerValue];
+        _RGBSceneImageView.image = [UIImage imageNamed:names[num]];
+    }else {
+        _RGBSceneImageView.image = [UIImage imageWithData:rgbSceneEntity.rgbSceneImage];
     }
-    if ([info isKindOfClass:[NSNumber class]]) {
-        _RGBSceneNameLabel.text = @"Custom colors";
-        _RGBSceneImageView.image = [UIImage imageNamed:@"addRing"];
-        return;
+    if ([rgbSceneEntity.eventType boolValue]) {
+        _colorfulRingImageView.image = [UIImage imageNamed:@"colorfulRing"];
+    }else {
+        _colorfulRingImageView.image = nil;
     }
     
 }

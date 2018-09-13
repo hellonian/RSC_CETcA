@@ -34,7 +34,7 @@
     flowLayout.minimumLineSpacing = 12;
     flowLayout.minimumInteritemSpacing = 12;
     flowLayout.itemSize = CGSizeMake(90, 114);
-    flowLayout.sectionInset = UIEdgeInsetsMake(24, 12, 0, 12);
+    flowLayout.sectionInset = UIEdgeInsetsMake(24, 12, 34, 12);
     
     _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout];
     _collectionView.delegate = self;
@@ -54,7 +54,6 @@
     if ([_dataMutableArray count]>0) {
         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortID" ascending:YES];
         [_dataMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
-        [_dataMutableArray addObject:@0];
     }
 }
 
@@ -67,8 +66,8 @@
     RGBSceneCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"RGBSceneCell" forIndexPath:indexPath];
     if (cell) {
         cell.cellDelegate = self;
-        id info = _dataMutableArray[indexPath.row];
-        [cell configureCellWithInfo:info index:indexPath.row];
+        RGBSceneEntity *rgbSceneTntity = _dataMutableArray[indexPath.row];
+        [cell configureCellWithInfo:rgbSceneTntity index:indexPath.row];
     }
     return cell;
 }
@@ -119,7 +118,7 @@
         
         if ([rgbSceneEntity.eventType boolValue]) {
            
-            [[DeviceModelManager sharedInstance] colorfulAction:_deviceId timeInterval:[rgbSceneEntity.changeSpeed floatValue] hues:@[rgbSceneEntity.hueA,rgbSceneEntity.hueA,rgbSceneEntity.hueB,rgbSceneEntity.hueC,rgbSceneEntity.hueD,rgbSceneEntity.hueE,rgbSceneEntity.hueF] colorSaturation:rgbSceneEntity.colorSat];
+            [[DeviceModelManager sharedInstance] colorfulAction:_deviceId timeInterval:[rgbSceneEntity.changeSpeed floatValue] hues:@[rgbSceneEntity.hueA,rgbSceneEntity.hueA,rgbSceneEntity.hueB,rgbSceneEntity.hueC,rgbSceneEntity.hueD,rgbSceneEntity.hueE,rgbSceneEntity.hueF] colorSaturation:rgbSceneEntity.colorSat rgbSceneId:rgbSceneEntity.rgbSceneID];
             
             
         }else {
@@ -136,14 +135,8 @@
             }];
             
         }
-        
-        return;
     }
-    if ([info isKindOfClass:[NSNumber class]]) {
-        
-        
-        return;
-    }
+    
 }
 
 @end

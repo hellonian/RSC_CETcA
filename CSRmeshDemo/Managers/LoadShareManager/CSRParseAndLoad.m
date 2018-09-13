@@ -14,6 +14,7 @@
 #import "GalleryEntity.h"
 #import "SceneEntity.h"
 #import "SceneMemberEntity.h"
+#import "RGBSceneEntity.h"
 
 @interface CSRParseAndLoad()
 {
@@ -47,7 +48,6 @@
     NSSet *gallerys = placeEntity.gallerys;
     [placeEntity removeGallerys:gallerys];
     for (GalleryEntity *gallery in gallerys) {
-        [gallery removeDrops:gallery.drops];
         for (DropEntity *drop in gallery.drops) {
             [managedObjectContext deleteObject:drop];
         }
@@ -57,7 +57,6 @@
     NSSet *scenes = placeEntity.scenes;
     [placeEntity removeScenes:scenes];
     for (SceneEntity *scene in scenes) {
-        [scene removeMembers:scene.members];
         for (SceneMemberEntity *member in scene.members) {
             [managedObjectContext deleteObject:member];
         }
@@ -67,14 +66,20 @@
     NSSet *timers = placeEntity.timers;
     [placeEntity removeTimers:timers];
     for (TimerEntity *timer in timers) {
-        [timer removeTimerDevices:timer.timerDevices];
         for (TimerDeviceEntity *timerDevice in timer.timerDevices) {
             [managedObjectContext deleteObject:timerDevice];
         }
         [managedObjectContext deleteObject:timer];
     }
     
+    NSSet *devices = placeEntity.devices;
     [placeEntity removeDevices:placeEntity.devices];
+    for (CSRDeviceEntity *device in devices) {
+        for (RGBSceneEntity *rgbScene in device.rgbScenes) {
+            [managedObjectContext deleteObject:rgbScene];
+        }
+        [managedObjectContext deleteObject:device];
+    }
     [placeEntity removeGateways:placeEntity.gateways];
 //    placeEntity.settings.cloudTenancyID = nil;
 //    placeEntity.settings.cloudMeshID = nil;
@@ -111,7 +116,7 @@
 {
     if (parsingDictionary[@"place"]) {
         NSDictionary *placeDict = parsingDictionary[@"place"];
-        NSArray *placesArray = [[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"CSRPlaceEntity" withPredicate:@"name == %@",placeDict[@"placeName"],@"passPhrase == %@",placeDict[@"placePassword"]];
+        NSArray *placesArray = [[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"CSRPlaceEntity" withPredicate:@"passPhrase == %@",placeDict[@"placePassword"]];
         if (placesArray && placesArray.count>0) {
             
             self.sharePlace = [placesArray firstObject];
@@ -206,6 +211,33 @@
             deviceEntity.remoteBranch = deviceDict[@"remoteBranch"];
             deviceEntity.uuid = deviceDict[@"uuid"];
             
+            NSMutableArray *rgbScenes = [NSMutableArray new];
+            if (parsingDictionary[@"rgbScene_list"]) {
+                for (NSDictionary *rgbSceneDict in parsingDictionary[@"rgbScene_list"]) {
+                    if ([rgbSceneDict[@"deviceId"] isEqualToNumber:deviceDict[@"deviceID"]]) {
+                        RGBSceneEntity *rgbSceneObj = [NSEntityDescription insertNewObjectForEntityForName:@"RGBSceneEntity" inManagedObjectContext:managedObjectContext];
+                        rgbSceneObj.deviceID = rgbSceneDict[@"deviceId"];
+                        rgbSceneObj.name = rgbSceneDict[@"name"];
+                        rgbSceneObj.isDefaultImg = rgbSceneDict[@"deviceId"];
+                        NSData *rgbSceneImage = [CSRUtilities dataForHexString:rgbSceneDict[@"rgbSceneImage"]];
+                        rgbSceneObj.rgbSceneImage = rgbSceneImage;
+                        rgbSceneObj.rgbSceneID = rgbSceneDict[@"rgbSceneID"];
+                        rgbSceneObj.level = rgbSceneDict[@"level"];
+                        rgbSceneObj.colorSat = rgbSceneDict[@"colorSat"];
+                        rgbSceneObj.eventType = rgbSceneDict[@"eventType"];
+                        rgbSceneObj.hueA = rgbSceneDict[@"hueA"];
+                        rgbSceneObj.hueB = rgbSceneDict[@"hueB"];
+                        rgbSceneObj.hueC = rgbSceneDict[@"hueC"];
+                        rgbSceneObj.hueD = rgbSceneDict[@"hueD"];
+                        rgbSceneObj.hueE = rgbSceneDict[@"hueE"];
+                        rgbSceneObj.hueF = rgbSceneDict[@"hueF"];
+                        rgbSceneObj.changeSpeed = rgbSceneDict[@"changeSpeed"];
+                        rgbSceneObj.sortID = rgbSceneDict[@"sortID"];
+                        [rgbScenes addObject:rgbSceneObj];
+                    }
+                }
+            }
+            [deviceEntity addRgbScenes:[NSSet setWithArray:rgbScenes]];
             if (self.sharePlace) {
                 [self.sharePlace addDevicesObject:deviceEntity];
             }
@@ -375,6 +407,7 @@
     NSMutableArray *timerDevicesArray = [NSMutableArray new];
     NSMutableArray *gatewayArray = [NSMutableArray new];
     NSMutableArray *restArray = [NSMutableArray new];
+    NSMutableArray *rgbSceneArray = [NSMutableArray new];
     
     ///////////////////PlaceNamePassword//////////////////////////////////////
     CSRPlaceEntity *place = [CSRAppStateManager sharedInstance].selectedPlace;
@@ -430,7 +463,34 @@
                                           @"remoteBranch":(device.remoteBranch)? (device.remoteBranch):@"",
                                           @"uuid":(device.uuid)?(device.uuid):@""
                                           }];
+                
+                if (device.rgbScenes && [device.rgbScenes count]>0) {
+                    for (RGBSceneEntity *rgbScene in device.rgbScenes) {
+                        NSString *rgbsceneImage = [CSRUtilities hexStringFromData:rgbScene.rgbSceneImage];
+                        [rgbSceneArray addObject:@{@"deviceId":(device.deviceId)? (device.deviceId):@0,
+                                                   @"name":(rgbScene.name)? (rgbScene.name):@"",
+                                                   @"isDefaultImg":(rgbScene.isDefaultImg)? (rgbScene.isDefaultImg):@0,
+                                                   @"rgbSceneImage":(rgbsceneImage)? rgbsceneImage:@"",
+                                                   @"rgbSceneID":(rgbScene.rgbSceneID)? (rgbScene.rgbSceneID):@0,
+                                                   @"level":(rgbScene.level)? (rgbScene.level):@0,
+                                                   @"colorSat":(rgbScene.colorSat)? (rgbScene.colorSat):@0,
+                                                   @"eventType":(rgbScene.eventType)? (rgbScene.eventType):@0,
+                                                   @"hueA":(rgbScene.hueA)? (rgbScene.hueA):@0,
+                                                   @"hueB":(rgbScene.hueB)? (rgbScene.hueB):@0,
+                                                   @"hueC":(rgbScene.hueC)? (rgbScene.hueC):@0,
+                                                   @"hueD":(rgbScene.hueD)? (rgbScene.hueD):@0,
+                                                   @"hueE":(rgbScene.hueE)? (rgbScene.hueE):@0,
+                                                   @"hueF":(rgbScene.hueF)? (rgbScene.hueF):@0,
+                                                   @"changeSpeed":(rgbScene.changeSpeed)? (rgbScene.changeSpeed):@0,
+                                                   @"sortID":(rgbScene.sortID)? (rgbScene.sortID):@0,
+                                                   }];
+                    }
+                }
+                
             }
+        }
+        if (rgbSceneArray) {
+            [jsonDictionary setObject:rgbSceneArray forKey:@"rgbScene_list"];
         }
         if (devicesArray) {
             [jsonDictionary setObject:devicesArray forKey:@"devices_list"];
