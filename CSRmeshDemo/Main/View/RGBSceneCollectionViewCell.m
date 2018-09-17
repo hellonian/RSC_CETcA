@@ -22,9 +22,14 @@
 
 - (void)configureCellWithInfo:(RGBSceneEntity *)rgbSceneEntity index:(NSInteger)index {
     _index = index;
-    _RGBSceneNameLabel.text = rgbSceneEntity.name;
+    NSArray *names = kRGBSceneDefaultName;
+    if ([names containsObject:rgbSceneEntity.name]) {
+        _RGBSceneNameLabel.text = AcTECLocalizedStringFromTable(rgbSceneEntity.name, @"Localizable");
+    }else {
+        _RGBSceneNameLabel.text = rgbSceneEntity.name;
+    }
+    
     if ([rgbSceneEntity.isDefaultImg boolValue]) {
-        NSArray *names = kRGBSceneDefaultName;
         NSInteger num = [rgbSceneEntity.rgbSceneID integerValue];
         _RGBSceneImageView.image = [UIImage imageNamed:names[num]];
     }else {

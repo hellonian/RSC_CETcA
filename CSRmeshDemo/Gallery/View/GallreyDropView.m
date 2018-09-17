@@ -46,7 +46,7 @@
     
     switch (sender.state) {
         case UIGestureRecognizerStateBegan:
-            if (!_isEditing && [CSRUtilities belongToDimmer:self.kindName] && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
+            if (!_isEditing && ([CSRUtilities belongToDimmer:self.kindName] || [CSRUtilities belongToCWDevice:self.kindName] || [CSRUtilities belongToRGBDevice:self.kindName] || [CSRUtilities belongToRGBCWDevice:self.kindName]) && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
                 [self.delegate galleryDropViewPanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId withPanState:sender.state];
             }
             
@@ -70,7 +70,7 @@
                 self.center = touchPoint;
             }
             
-            if (!_isEditing && [CSRUtilities belongToDimmer:self.kindName] && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
+            if (!_isEditing && ([CSRUtilities belongToDimmer:self.kindName] || [CSRUtilities belongToCWDevice:self.kindName] || [CSRUtilities belongToRGBDevice:self.kindName] || [CSRUtilities belongToRGBCWDevice:self.kindName]) && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
                 [self.delegate galleryDropViewPanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId withPanState:sender.state];
             }
             
@@ -79,7 +79,7 @@
             if (_isEditing && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanLocationAction:)]) {
                 [self.delegate galleryDropViewPanLocationAction:@(YES)];
             }
-            if (!_isEditing && [CSRUtilities belongToDimmer:self.kindName] && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
+            if (!_isEditing && ([CSRUtilities belongToDimmer:self.kindName] || [CSRUtilities belongToCWDevice:self.kindName] || [CSRUtilities belongToRGBDevice:self.kindName] || [CSRUtilities belongToRGBCWDevice:self.kindName]) && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
                 [self.delegate galleryDropViewPanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId withPanState:sender.state];
             }
             
@@ -115,7 +115,7 @@
     }else if ([CSRUtilities belongToSwitch:self.kindName]) {
         self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.9];
         self.layer.borderColor = DARKORAGE.CGColor;
-    }else if ([CSRUtilities belongToDimmer:self.kindName]){
+    }else if ([CSRUtilities belongToDimmer:self.kindName] || [CSRUtilities belongToCWDevice:self.kindName] || [CSRUtilities belongToRGBDevice:self.kindName] || [CSRUtilities belongToRGBCWDevice:self.kindName] || [CSRUtilities belongToCWNoLevelDevice:self.kindName] || [CSRUtilities belongToRGBNoLevelDevice:self.kindName] || [CSRUtilities belongToRGBCWNoLevelDevice:self.kindName]){
         self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:[model.level floatValue]/255.0*0.9];
         self.layer.borderColor = DARKORAGE.CGColor;
     }

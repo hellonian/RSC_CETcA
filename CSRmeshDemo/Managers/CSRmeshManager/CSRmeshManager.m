@@ -124,7 +124,7 @@
         [[CSRAppStateManager sharedInstance].selectedPlace.devices enumerateObjectsUsingBlock:^(id  _Nonnull obj, BOOL * _Nonnull stop) {
             
             CSRDeviceEntity *device = (CSRDeviceEntity *)obj;
-            if ([device.deviceId isEqualToNumber:deviceId] || [device.uuid isEqualToString:meshDevice.uuid.UUIDString]) {
+            if ([device.deviceId isEqualToNumber:deviceId]) {
                 
                 deviceEntity = device;
                 *stop = YES;

@@ -41,15 +41,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    
+    NSArray *names = kRGBSceneDefaultName;
     if ([_rgbSceneEntity.isDefaultImg boolValue]) {
-        NSArray *names = kRGBSceneDefaultName;
         NSInteger num = [_rgbSceneEntity.rgbSceneID integerValue];
         [_rgbSceneImageBtn setBackgroundImage:[UIImage imageNamed:names[num]] forState:UIControlStateNormal];
     }else {
         [_rgbSceneImageBtn setBackgroundImage:[UIImage imageWithData:_rgbSceneEntity.rgbSceneImage] forState:UIControlStateNormal];
     }
-    _rgbSceneNameTF.text = _rgbSceneEntity.name;
+    if ([names containsObject:_rgbSceneEntity.name]) {
+        _rgbSceneNameTF.text = AcTECLocalizedStringFromTable(_rgbSceneEntity.name, @"Localizable");
+    }else {
+        _rgbSceneNameTF.text = _rgbSceneEntity.name;
+    }
     _rgbSceneNameTF.delegate = self;
     
     [self.view addSubview:_colorTilteLabel];

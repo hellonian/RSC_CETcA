@@ -116,3 +116,16 @@
 "AddLightSensor" = "Add a Light Sensor";
 "Error" = "ERROR";
 "NotFoundDevice" = "not found device";
+"outLargeScene" = "There are too many devices in the selected scene.";
+"Reading" = "Reading";
+"Dining" = "Dining";
+"Meeting" = "Meeting";
+"Good night" = "Good night";
+"Pink memory" = "Pink memory";
+"Mediterranean" = "Mediterranean";
+"Eyeshield" = "Eyeshield";
+"Frozen" = "Frozen";
+"Sunset glow" = "Sunset glow";
+"Magical aurora" = "Magical aurora";
+"Colorfulness" = "Colorfulness";
+"Rainbow" = "Rainbow";

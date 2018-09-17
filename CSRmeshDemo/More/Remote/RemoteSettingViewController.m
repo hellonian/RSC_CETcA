@@ -105,7 +105,7 @@
                         _fSelectOneLabel.text = @"";
                     }else if ([rcIndex isEqualToString:@"0100"]) {
                         _fConrolOneLabel.text = AcTECLocalizedStringFromTable(@"ControlLamp", @"Localizable");
-                        NSInteger deviceId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(8, 4)]];
+                        NSInteger deviceId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(12, 4)]];
                         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:[NSNumber numberWithInteger:deviceId]];
                         if (deviceEntity) {
                             _fSelectOneLabel.text = deviceEntity.name;
@@ -113,9 +113,9 @@
                         }else {
                             _fSelectOneLabel.text = AcTECLocalizedStringFromTable(@"Notfound", @"Localizable");
                         }
-                    }else if ([rcIndex isEqualToString:@"0200"]) {
+                    }else if ([rcIndex isEqualToString:@"2000"]) {
                         _fConrolOneLabel.text = AcTECLocalizedStringFromTable(@"ControlGroup", @"Localizable");
-                        NSInteger areaId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(8, 4)]];
+                        NSInteger areaId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(12, 4)]];
                         CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:[NSNumber numberWithInteger:areaId]];
                         if (areaEntity) {
                             _fSelectOneLabel.text = areaEntity.areaName;
@@ -143,7 +143,7 @@
                         _fSelectTwoLabel.text = @"";
                     }else if ([rcIndex isEqualToString:@"0100"]) {
                         _fConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"ControlLamp", @"Localizable");
-                        NSInteger deviceId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(8, 4)]];
+                        NSInteger deviceId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(12, 4)]];
                         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:[NSNumber numberWithInteger:deviceId]];
                         if (deviceEntity) {
                             _fSelectTwoLabel.text = deviceEntity.name;
@@ -152,9 +152,9 @@
                             _fSelectTwoLabel.text = AcTECLocalizedStringFromTable(@"Notfound", @"Localizable");
                         }
 
-                    }else if ([rcIndex isEqualToString:@"0200"]) {
+                    }else if ([rcIndex isEqualToString:@"2000"]) {
                         _fConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"ControlGroup", @"Localizable");
-                        NSInteger areaId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(8, 4)]];
+                        NSInteger areaId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(12, 4)]];
                         CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:[NSNumber numberWithInteger:areaId]];
                         if (areaEntity) {
                             _fSelectTwoLabel.text = areaEntity.areaName;
@@ -182,7 +182,7 @@
                         _fSelectThreeLabel.text = @"";
                     }else if ([rcIndex isEqualToString:@"0100"]) {
                         _fConrolThreeLabel.text = AcTECLocalizedStringFromTable(@"ControlLamp", @"Localizable");
-                        NSInteger deviceId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(8, 4)]];
+                        NSInteger deviceId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(12, 4)]];
                         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:[NSNumber numberWithInteger:deviceId]];
                         if (deviceEntity) {
                             _fSelectThreeLabel.text = deviceEntity.name;
@@ -191,9 +191,9 @@
                             _fSelectThreeLabel.text = AcTECLocalizedStringFromTable(@"Notfound", @"Localizable");
                         }
                         
-                    }else if ([rcIndex isEqualToString:@"0200"]) {
+                    }else if ([rcIndex isEqualToString:@"2000"]) {
                         _fConrolThreeLabel.text = AcTECLocalizedStringFromTable(@"ControlGroup", @"Localizable");
-                        NSInteger areaId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(8, 4)]];
+                        NSInteger areaId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(12, 4)]];
                         CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:[NSNumber numberWithInteger:areaId]];
                         if (areaEntity) {
                             _fSelectThreeLabel.text = areaEntity.areaName;
@@ -221,7 +221,7 @@
                         _fSelectFourLabel.text = @"";
                     }else if ([rcIndex isEqualToString:@"0100"]) {
                         _fConrolFourLabel.text = AcTECLocalizedStringFromTable(@"ControlLamp", @"Localizable");
-                        NSInteger deviceId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(8, 4)]];
+                        NSInteger deviceId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(12, 4)]];
                         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:[NSNumber numberWithInteger:deviceId]];
                         if (deviceEntity) {
                             _fSelectFourLabel.text = deviceEntity.name;
@@ -230,9 +230,9 @@
                             _fSelectFourLabel.text = AcTECLocalizedStringFromTable(@"Notfound", @"Localizable");
                         }
                         
-                    }else if ([rcIndex isEqualToString:@"0200"]) {
+                    }else if ([rcIndex isEqualToString:@"2000"]) {
                         _fConrolFourLabel.text = AcTECLocalizedStringFromTable(@"ControlGroup", @"Localizable");
-                        NSInteger areaId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(8, 4)]];
+                        NSInteger areaId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(12, 4)]];
                         CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:[NSNumber numberWithInteger:areaId]];
                         if (areaEntity) {
                             _fSelectFourLabel.text = areaEntity.areaName;
@@ -272,13 +272,14 @@
         [self.singleRemoteView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameBgView withOffset:30];
         
         if (self.remoteEntity.remoteBranch && self.remoteEntity.remoteBranch.length > 0) {
+            
             NSString *rcIndex = [self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(2, 4)];
             if ([rcIndex isEqualToString:@"0000"]) {
                 _sConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
                 _sSelectOneLabel.text = @"";
             }else if ([rcIndex isEqualToString:@"0100"]) {
                 _sConrolOneLabel.text = AcTECLocalizedStringFromTable(@"ControlLamp", @"Localizable");
-                NSInteger deviceId = [self exchangePositionOfDeviceIdString:[self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(8, 4)]];
+                NSInteger deviceId = [self exchangePositionOfDeviceIdString:[self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(12, 4)]];
                 CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:[NSNumber numberWithInteger:deviceId]];
                 if (deviceEntity) {
                     _sSelectOneLabel.text = deviceEntity.name;
@@ -286,9 +287,9 @@
                 }else {
                     _sSelectOneLabel.text = AcTECLocalizedStringFromTable(@"Notfound", @"Localizable");
                 }
-            }else if ([rcIndex isEqualToString:@"0200"]) {
+            }else if ([rcIndex isEqualToString:@"2000"]) {
                 _sConrolOneLabel.text = AcTECLocalizedStringFromTable(@"ControlGroup", @"Localizable");
-                NSInteger areaId = [self exchangePositionOfDeviceIdString:[self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(8, 4)]];
+                NSInteger areaId = [self exchangePositionOfDeviceIdString:[self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(12, 4)]];
                 CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:[NSNumber numberWithInteger:areaId]];
                 if (areaEntity) {
                     _sSelectOneLabel.text = areaEntity.areaName;
@@ -763,20 +764,27 @@
     NSString *endLigIdx = [CSRUtilities stringWithHexNumber:[sceneEntity.members count]-1];
     NSString *dstAddrLevel = @"";
     NSMutableArray *mutableMemebers = [[sceneEntity.members allObjects] mutableCopy];
-    if (mutableMemebers != nil || [mutableMemebers count] != 0) {
+    if ([mutableMemebers count] != 0) {
         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortID" ascending:YES];
         [mutableMemebers sortUsingDescriptors:[NSArray arrayWithObject:sort]];
         for (SceneMemberEntity *sceneMember in mutableMemebers) {
-            NSString *eveType = @"";
-            if ([sceneMember.powerState boolValue]) {
-                eveType = @"12";
+            NSString *eveType = [NSString stringWithFormat:@"%@",sceneMember.eveType];
+            NSString *level = [CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]];
+            NSString *red;
+            NSString *green;
+            NSString *blue;
+            if ([sceneMember.eveType integerValue] == 18 || [sceneMember.eveType integerValue] == 19) {
+                NSString *temperature = [self exchangePositionOfDeviceId:[sceneMember.colorTemperature integerValue]];
+                red = [temperature substringToIndex:2];
+                green = [temperature substringFromIndex:2];
+                blue = @"00";
             }else {
-                eveType = @"11";
+                red = [CSRUtilities stringWithHexNumber:[sceneMember.colorRed integerValue]];
+                green = [CSRUtilities stringWithHexNumber:[sceneMember.colorGreen integerValue]];
+                blue = [CSRUtilities stringWithHexNumber:[sceneMember.colorBlue integerValue]];
             }
-            NSString *level = [[NSString alloc] initWithFormat:@"%1lx",(long)[sceneMember.level integerValue]];
-            level = level.length > 1 ? level:[NSString stringWithFormat:@"0%@",level];
-            //        dstAddrLevel = [NSString stringWithFormat:@"%@%@%@",dstAddrLevel,[self exchangePositionOfDeviceId:[sceneMember.deviceID integerValue]],level];
-            dstAddrLevel = [NSString stringWithFormat:@"%@%@%@%@000000",dstAddrLevel,[self exchangePositionOfDeviceId:[sceneMember.deviceID integerValue]],eveType,level];
+            
+            dstAddrLevel = [NSString stringWithFormat:@"%@%@%@%@%@%@%@",dstAddrLevel,[self exchangePositionOfDeviceId:[sceneMember.deviceID integerValue]],eveType,level,red,green,blue];
         }
     }
     
@@ -862,6 +870,8 @@
                 
                 NSLog(@"信号量-1 第一个按键  %@",cmdStr1);
                 
+            }else {
+                [self showTextHud:[NSString stringWithFormat:@"%@",AcTECLocalizedStringFromTable(@"outLargeScene", @"Localizable")]];
             }
             
         });
@@ -881,6 +891,8 @@
                 
                 NSLog(@"信号量-1 第二个按键  %@",cmdStr2);
                 
+            }else {
+                [self showTextHud:[NSString stringWithFormat:@"%@",AcTECLocalizedStringFromTable(@"outLargeScene", @"Localizable")]];
             }
             
         });
@@ -900,6 +912,8 @@
                 
                 NSLog(@"信号量-1 第三个按键  %@",cmdStr3);
                 
+            }else {
+                [self showTextHud:[NSString stringWithFormat:@"%@",AcTECLocalizedStringFromTable(@"outLargeScene", @"Localizable")]];
             }
             
         });
@@ -930,6 +944,8 @@
                 
                 NSLog(@"信号量-1 第四个按键  %@",cmdStr4);
                 
+            }else {
+                [self showTextHud:[NSString stringWithFormat:@"%@",AcTECLocalizedStringFromTable(@"outLargeScene", @"Localizable")]];
             }
             
         });
@@ -946,18 +962,24 @@
         }else{
             cmdStr1 = @"730701010000000000";
         }
-        [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdStr1] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-            NSString *remoteBranch = [NSString stringWithFormat:@"%@",[cmdStr1 substringFromIndex:6]];
-            _remoteEntity.remoteBranch = remoteBranch;
-            [[CSRDatabaseManager sharedInstance] saveContext];
-            _setSuccess = YES;
-            [_hub hideAnimated:YES];
-            [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
-            [timer invalidate];
-            timer = nil;
-        } failure:^(NSError * _Nonnull error) {
-            
-        }];
+        
+        if (cmdStr1.length>0) {
+            [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdStr1] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                
+                NSString *remoteBranch = [NSString stringWithFormat:@"%@",[cmdStr1 substringFromIndex:6]];
+                _remoteEntity.remoteBranch = remoteBranch;
+                [[CSRDatabaseManager sharedInstance] saveContext];
+                _setSuccess = YES;
+                [_hub hideAnimated:YES];
+                [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+                [timer invalidate];
+                timer = nil;
+            } failure:^(NSError * _Nonnull error) {
+                
+            }];
+        }else {
+            [self showTextHud:[NSString stringWithFormat:@"%@",AcTECLocalizedStringFromTable(@"outLargeScene", @"Localizable")]];
+        }
     }
     
     
@@ -1054,7 +1076,7 @@
 }
 
 - (void)timerOutWaiting {
-    NSLog(@"%d  %ld",_setSuccess,timerSeconde);
+    
     if (!_setSuccess) {
         timerSeconde--;
         if (timerSeconde == 0) {

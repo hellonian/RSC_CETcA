@@ -116,3 +116,16 @@
 "AddLightSensor" = "添加光感";
 "Error" = "错误";
 "NotFoundDevice" = "未发现设备";
+"outLargeScene" = "已选择的场景中设备数量太多。";
+"Reading" = "阅读";
+"Dining" = "用餐";
+"Meeting" = "会议";
+"Good night" = "晚安";
+"Pink memory" = "粉红记忆";
+"Mediterranean" = "地中海";
+"Eyeshield" = "护眼绿";
+"Frozen" = "冰雪奇缘";
+"Sunset glow" = "草原日落";
+"Magical aurora" = "神奇极光";
+"Colorfulness" = "缤纷多彩";
+"Rainbow" = "气贯长虹";

@@ -126,7 +126,7 @@
     }else if (self.selectMode == DeviceListSelectMode_SelectGroup) {
         
         NSMutableArray *areaMutableArray =  [[[CSRAppStateManager sharedInstance].selectedPlace.areas allObjects] mutableCopy];
-        if (areaMutableArray != nil || [areaMutableArray count] != 0) {
+        if (areaMutableArray && [areaMutableArray count] != 0) {
             NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
             [areaMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             
@@ -147,23 +147,25 @@
     }else if (self.selectMode == DeviceListSelectMode_SelectScene) {
         
         NSMutableArray *areaMutableArray =  [[[CSRAppStateManager sharedInstance].selectedPlace.scenes allObjects] mutableCopy];
-        if (areaMutableArray != nil || [areaMutableArray count] != 0) {
+        if (areaMutableArray && [areaMutableArray count] != 0) {
             NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sceneID" ascending:YES];
             [areaMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             for (SceneEntity *sceneEntity in areaMutableArray) {
-                SceneListSModel *model = [[SceneListSModel alloc] init];
-                model.sceneId = sceneEntity.sceneID;
-                model.iconId = sceneEntity.iconID;
-                model.sceneName = sceneEntity.sceneName;
-                model.memnbers = sceneEntity.members;
-                model.rcIndex = sceneEntity.rcIndex;
-                [_devicesCollectionView.dataArray addObject:model];
+                if (sceneEntity.members && [sceneEntity.members count]!=0) {
+                    SceneListSModel *model = [[SceneListSModel alloc] init];
+                    model.sceneId = sceneEntity.sceneID;
+                    model.iconId = sceneEntity.iconID;
+                    model.sceneName = sceneEntity.sceneName;
+                    model.memnbers = sceneEntity.members;
+                    model.rcIndex = sceneEntity.rcIndex;
+                    [_devicesCollectionView.dataArray addObject:model];
+                }
             }
         }
         
     }else if (self.selectMode == DeviceListSelectMode_ForLightSensor) {
         NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
-        if (mutableArray != nil || [mutableArray count] != 0) {
+        if (mutableArray && [mutableArray count] != 0) {
             NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
             [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
