@@ -307,18 +307,17 @@
         [peripheral setUuidString:adString];
     }
     
-//    NSString *test = [adString substringToIndex:12];
-    
     if (self.isUpdateFW ) {
         if (![_foundPeripherals containsObject:peripheral]) {
             [_foundPeripherals addObject:peripheral];
             [self discoveryDidRefresh];
         }
         [self didDiscoverPeripheral:peripheral];
-    }else if ([RSSI integerValue]>-80 /*&&[test isEqualToString:@"00025B0101AD"]*/){
+    }else if ([RSSI integerValue]>-80 && peripheral.name != nil){
         
         NSMutableDictionary *enhancedAdvertismentData = [NSMutableDictionary dictionaryWithDictionary:advertisementData];
         enhancedAdvertismentData [CSR_PERIPHERAL] = peripheral;
+        
         NSNumber *messageStatus = [[MeshServiceApi sharedInstance] processMeshAdvert:enhancedAdvertismentData RSSI:RSSI];
         if ([messageStatus integerValue] == IS_BRIDGE_DISCOVERED_SERVICE) {
             [peripheral setIsBridgeService:@(YES)];
@@ -420,7 +419,6 @@
 #ifdef BRIDGE_ROAMING_ENABLE
         [[CSRBridgeRoaming sharedInstance] connectedPeripheral:peripheral];
         NSLog (@"BRIDGE CONNECTED %@  %@",peripheral.name,peripheral.uuidString);
-        [self stopScan];
         
 //        if (_connectedPeripherals.count>0) {
 //            [[NSNotificationCenter defaultCenter] postNotificationName:@"BridgeConnectedNotification" object:nil userInfo:@{@"peripheral":peripheral}];
@@ -534,7 +532,6 @@
 #define MESH_MTL_CHAR_ADVERT        @"C4EDC000-9DAF-11E3-800A-00025B000B00"
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
-    
     if (!_isUpdateFW) {
         if (error == nil && [service.UUID.UUIDString isEqualToString:@"FEF1"]) {
             [[MeshServiceApi sharedInstance] connectBridge:peripheral enableBridgeNotification:@([[CSRmeshSettings sharedInstance] getBleListenMode])];
@@ -643,14 +640,14 @@
 
     
     NSMutableDictionary *advertisementData = [NSMutableDictionary dictionary];
-    
+
     [advertisementData setObject:@(NO) forKey:CBAdvertisementDataIsConnectable];
-    
+
     advertisementData [CBAdvertisementDataIsConnectable] = @(NO);
     [advertisementData setObject:characteristic.value forKey:CSR_NotifiedValueForCharacteristic];
     [advertisementData setObject:characteristic forKey:CSR_didUpdateValueForCharacteristic];
     [advertisementData setObject:peripheral forKey:CSR_PERIPHERAL];
-    
+
     [[MeshServiceApi sharedInstance] processMeshAdvert:advertisementData RSSI:nil];
 }
 

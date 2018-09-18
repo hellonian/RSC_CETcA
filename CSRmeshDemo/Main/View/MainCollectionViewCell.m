@@ -77,11 +77,9 @@
         for (CSRDeviceEntity *deviceEntity in self.groupMembers) {
             if ([CSRUtilities belongToDimmer:deviceEntity.shortName]) {
                 dimmerNum ++;
-            }
-            if ([CSRUtilities belongToSwitch:deviceEntity.shortName]) {
+            }else if ([CSRUtilities belongToSwitch:deviceEntity.shortName]) {
                 switchNum ++;
-            }
-            if ([deviceEntity.shortName isEqualToString:[NSString stringWithFormat:@"%@",AcTECLocalizedStringFromTable(@"Controller", @"Localizable")]]) {
+            }else {
                 controllerNum ++;
             }
         }
@@ -143,11 +141,9 @@
         for (CSRDeviceEntity *deviceEntity in self.groupMembers) {
             if ([CSRUtilities belongToDimmer:deviceEntity.shortName]) {
                 dimmerNum ++;
-            }
-            if ([CSRUtilities belongToSwitch:deviceEntity.shortName]) {
+            }else if ([CSRUtilities belongToSwitch:deviceEntity.shortName]) {
                 switchNum ++;
-            }
-            if ([deviceEntity.shortName isEqualToString:[NSString stringWithFormat:@"%@",AcTECLocalizedStringFromTable(@"Controller", @"Localizable")]]) {
+            }else {
                 controllerNum ++;
             }
         }

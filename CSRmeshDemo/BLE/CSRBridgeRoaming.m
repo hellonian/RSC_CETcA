@@ -81,6 +81,7 @@
     static BOOL active=NO;
     if (active==NO) {
         active=YES;
+//        NSLog(@"%d  %ld  %ld  %ld",_connectting,_num,connectedBridges.count,connectingBridges.count);
         if (_connectting) {
             _num++;
             if (_num == 10) {
@@ -190,6 +191,7 @@
             _connectting = YES;
             _num = 0;
             [connectingBridges addObject:peripheral];
+           
 //            [[NSNotificationCenter defaultCenter] postNotificationName:@"kCSRBridgeDiscoveryViewControllerWillRefreshUINotification" object:nil];
         }
     }

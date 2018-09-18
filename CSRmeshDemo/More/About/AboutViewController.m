@@ -47,38 +47,6 @@
     [self.wwwLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20.0];
     [self.wwwLabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.copyrightLabel];
 }
-- (IBAction)TEST:(id)sender {
-    UIColor *color = [UIColor redColor];
-    CGFloat hue,saturation,brightness,alpha;
-    if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
-        NSLog(@" %f \\ %f \\ %f \\ %f ",hue,saturation,brightness,alpha);
-    }
-    UIColor *color1 = [UIColor orangeColor];
-    CGFloat hue1,saturation1,brightness1,alpha1;
-    if ([color1 getHue:&hue1 saturation:&saturation1 brightness:&brightness1 alpha:&alpha1]) {
-        NSLog(@"1| %f \\ %f \\ %f \\ %f ",hue1,saturation1,brightness1,alpha1);
-    }
-    UIColor *color2 = [UIColor yellowColor];
-    CGFloat hue2,saturation2,brightness2,alpha2;
-    if ([color2 getHue:&hue2 saturation:&saturation2 brightness:&brightness2 alpha:&alpha2]) {
-        NSLog(@"2| %f \\ %f \\ %f \\ %f ",hue2,saturation2,brightness2,alpha2);
-    }
-    UIColor *color3 = [UIColor greenColor];
-    CGFloat hue3,saturation3,brightness3,alpha3;
-    if ([color3 getHue:&hue3 saturation:&saturation3 brightness:&brightness3 alpha:&alpha3]) {
-        NSLog(@"3| %f \\ %f \\ %f \\ %f ",hue3,saturation3,brightness3,alpha3);
-    }
-    UIColor *color4 = [UIColor blueColor];
-    CGFloat hue4,saturation4,brightness4,alpha4;
-    if ([color4 getHue:&hue4 saturation:&saturation4 brightness:&brightness4 alpha:&alpha4]) {
-        NSLog(@"4| %f \\ %f \\ %f \\ %f ",hue4,saturation4,brightness4,alpha4);
-    }
-    UIColor *color5 = [UIColor purpleColor];
-    CGFloat hue5,saturation5,brightness5,alpha5;
-    if ([color5 getHue:&hue5 saturation:&saturation5 brightness:&brightness5 alpha:&alpha5]) {
-        NSLog(@"5| %f \\ %f \\ %f \\ %f ",hue5,saturation5,brightness5,alpha5);
-    }
-}
 
 - (void)backSetting{
     CATransition *animation = [CATransition animation];
