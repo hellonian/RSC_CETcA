@@ -773,6 +773,10 @@
             
             RGBDeviceViewController *RGBDVC = [[RGBDeviceViewController alloc] init];
             RGBDVC.deviceId = mainCell.deviceId;
+            __weak MainViewController *weakSelf = self;
+            RGBDVC.RGBDVCReloadDataHandle = ^{
+                [weakSelf getMainDataArray];
+            };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:RGBDVC];
             nav.modalPresentationStyle = UIModalPresentationPopover;
             [self presentViewController:nav animated:YES completion:nil];

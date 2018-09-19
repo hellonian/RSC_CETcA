@@ -134,6 +134,7 @@
 		2EE757D62010B23100FB75C5 /* SceneCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE757D42010B23100FB75C5 /* SceneCollectionViewCell.m */; };
 		2EE757D72010B23100FB75C5 /* SceneCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EE757D52010B23100FB75C5 /* SceneCollectionViewCell.xib */; };
 		2EE95A831FAB0F9700E1F945 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE95A821FAB0F9700E1F945 /* ViewController.m */; };
+		2EEA427B2151FFF70050B729 /* CustomizeProgressHud.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EEA427A2151FFF70050B729 /* CustomizeProgressHud.m */; };
 		2EEA6E361F453B1300895CE2 /* ControlMaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EEA6E341F453B1300895CE2 /* ControlMaskView.m */; };
 		2EF2DB5A200DA6CF00A1B236 /* DeviceModelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF2DB59200DA6CF00A1B236 /* DeviceModelManager.m */; };
 		2EF332502045030100565374 /* LanguageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF3324E2045030100565374 /* LanguageViewController.m */; };
@@ -512,6 +513,8 @@
 		2EE757D52010B23100FB75C5 /* SceneCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SceneCollectionViewCell.xib; sourceTree = "<group>"; };
 		2EE95A811FAB0F9700E1F945 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		2EE95A821FAB0F9700E1F945 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		2EEA42792151FFF70050B729 /* CustomizeProgressHud.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CustomizeProgressHud.h; sourceTree = "<group>"; };
+		2EEA427A2151FFF70050B729 /* CustomizeProgressHud.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomizeProgressHud.m; sourceTree = "<group>"; };
 		2EEA6E331F453B1300895CE2 /* ControlMaskView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControlMaskView.h; sourceTree = "<group>"; };
 		2EEA6E341F453B1300895CE2 /* ControlMaskView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControlMaskView.m; sourceTree = "<group>"; };
 		2EF2DB58200DA6CF00A1B236 /* DeviceModelManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceModelManager.h; sourceTree = "<group>"; };
@@ -1052,6 +1055,8 @@
 				2E216EE72138F28200E545B9 /* RGBSceneCollectionViewCell.h */,
 				2E216EE82138F28200E545B9 /* RGBSceneCollectionViewCell.m */,
 				2E216EE92138F28200E545B9 /* RGBSceneCollectionViewCell.xib */,
+				2EEA42792151FFF70050B729 /* CustomizeProgressHud.h */,
+				2EEA427A2151FFF70050B729 /* CustomizeProgressHud.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1558,6 +1563,7 @@
 				F4658A211C99747A00C284F4 /* CSREventEntity+CoreDataProperties.m in Sources */,
 				2ED3963C204D09A00068B666 /* TimerEntity.m in Sources */,
 				F4C85EB01CB3EF92003E1FF3 /* CSRPlaceEntity+CoreDataProperties.m in Sources */,
+				2EEA427B2151FFF70050B729 /* CustomizeProgressHud.m in Sources */,
 				2EE757D62010B23100FB75C5 /* SceneCollectionViewCell.m in Sources */,
 				2EF5F07C1F445AC30069C594 /* ImproveTouchingExperience.m in Sources */,
 				F4C85EA81CB3EE0E003E1FF3 /* CSRControllerEntity.m in Sources */,

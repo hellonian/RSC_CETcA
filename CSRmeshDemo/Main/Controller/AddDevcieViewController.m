@@ -12,6 +12,8 @@
 #import "CSRBluetoothLE.h"
 #import "CSRDevicesManager.h"
 #import "CSRConstants.h"
+#import "CustomizeProgressHud.h"
+#import "PureLayout.h"
 
 @interface AddDevcieViewController ()<MBProgressHUDDelegate,MainCollectionViewDelegate>
 {
@@ -21,9 +23,11 @@
 
 @property (nonatomic,strong) MainCollectionView *mainCollectionView;
 @property (nonatomic,strong) MBProgressHUD *searchHud;
-@property (nonatomic,strong) MBProgressHUD *associateHud;
+//@property (nonatomic,strong) MBProgressHUD *associateHud;
 @property (nonatomic,strong) MBProgressHUD *noneNewHud;
 @property (nonatomic,strong) CSRmeshDevice *selectedDevice;
+@property (nonatomic,strong) CustomizeProgressHud *customizeHud;
+@property (nonatomic,strong) UIView *translucentBgView;
 
 @end
 
@@ -262,21 +266,28 @@
 
     if ([completedSteps floatValue] <= [totalSteps floatValue] && [completedSteps floatValue] > 0) {
         CGFloat completed = [completedSteps floatValue]/[totalSteps floatValue];
-        NSString *associating = AcTECLocalizedStringFromTable(@"Associating", @"Localizable");
-        _associateHud.label.text = [NSString stringWithFormat:@"%@: %.0f%%", associating,(completed * 100)];
-        _associateHud.progress = completed;
-        if (completed >= 1) {
+        
+        [_customizeHud updateProgress:completed];
+        if (completed>=1) {
             if ([_mainCollectionView.dataArray count] == 0) {
                 
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [_associateHud hideAnimated:YES];
+                    [_customizeHud removeFromSuperview];
+                    _customizeHud = nil;
+                    [self.translucentBgView removeFromSuperview];
+                    self.translucentBgView = nil;
                     [self addVCBackAction];
                 });
                 
             }else {
-                [_associateHud hideAnimated:YES];
+                [_customizeHud removeFromSuperview];
+                _customizeHud = nil;
+                [self.translucentBgView removeFromSuperview];
+                self.translucentBgView = nil;
+                _customizeHud = nil;
             }
         }
+        
         [_mainCollectionView.dataArray removeObject:_selectedDevice];
         [_mainCollectionView reloadData];
     } else {
@@ -286,7 +297,13 @@
 
 - (void)deviceAssociationFailed:(NSNotification *)notification
 {
-    _associateHud.label.text = [NSString stringWithFormat:@"Association error: %@", notification.userInfo[@"error"]];
+    _customizeHud.text = [NSString stringWithFormat:@"Association error: %@", notification.userInfo[@"error"]];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [_customizeHud removeFromSuperview];
+        _customizeHud = nil;
+        [self.translucentBgView removeFromSuperview];
+        self.translucentBgView = nil;
+    });
 }
 
 #pragma mark - MainCollectionViewDelegate
@@ -326,12 +343,14 @@
         
         [[CSRDevicesManager sharedInstance] associateDeviceFromCSRDeviceManager:_selectedDevice.deviceHash authorisationCode:nil uuidString:_selectedDevice.uuid.UUIDString];
         
-        _associateHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        _associateHud.mode = MBProgressHUDModeDeterminateHorizontalBar;
-        _associateHud.delegate = self;
-        _associateHud.label.font = [UIFont systemFontOfSize:13];
-        _associateHud.label.numberOfLines = 0;
-        _associateHud.label.text = [NSString stringWithFormat:@"%@: 0%%",AcTECLocalizedStringFromTable(@"Associating", @"Localizable")];
+        _customizeHud = [[CustomizeProgressHud alloc] initWithFrame:CGRectZero];
+        [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+        [[UIApplication sharedApplication].keyWindow addSubview:_customizeHud];
+        [_customizeHud autoCenterInSuperview];
+        [_customizeHud autoSetDimensionsToSize:CGSizeMake(270, 130)];
+        _customizeHud.text = @"The device is being connected.";
+        [_customizeHud updateProgress:0];
+        
     }
 }
 
@@ -342,6 +361,15 @@
 - (void)hudWasHidden:(MBProgressHUD *)hud {
     [hud removeFromSuperview];
     hud = nil;
+}
+
+- (UIView *)translucentBgView {
+    if (!_translucentBgView) {
+        _translucentBgView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        _translucentBgView.backgroundColor = [UIColor blackColor];
+        _translucentBgView.alpha = 0.4;
+    }
+    return _translucentBgView;
 }
 
 @end

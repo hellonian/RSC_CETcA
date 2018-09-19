@@ -49,6 +49,13 @@
     
     DeviceViewController *dvc = [[DeviceViewController alloc] init];
     dvc.deviceId = _deviceId;
+    dvc.reloadDataHandle = ^{
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:self.deviceId];
+        self.navigationItem.title = deviceEntity.name;
+        if (self.RGBDVCReloadDataHandle) {
+            self.RGBDVCReloadDataHandle();
+        }
+    };
     [self addChildViewController:dvc];
     [_threeView addSubview:dvc.view];
     [dvc.view autoPinEdgesToSuperviewEdges];

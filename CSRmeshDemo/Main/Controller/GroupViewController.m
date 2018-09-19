@@ -24,6 +24,7 @@
 #import "CSRUtilities.h"
 #import "NSBundle+AppLanguageSwitch.h"
 #import "TopImageView.h"
+#import "RGBDeviceViewController.h"
 
 @interface GroupViewController ()<UITextFieldDelegate,PlaceColorIconPickerViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,MainCollectionViewDelegate,MBProgressHUDDelegate>
 {
@@ -600,19 +601,39 @@
     MainCollectionViewCell *mainCell = (MainCollectionViewCell *)cell;
     if ([mainCell.groupId isEqualToNumber:@2000]) {
         
-        DeviceViewController *dvc = [[DeviceViewController alloc] init];
-        dvc.deviceId = mainCell.deviceId;
-        __weak GroupViewController *weakSelf = self;
-        dvc.reloadDataHandle = ^{
-            [weakSelf loadMemberData];
-            [_devicesCollectionView reloadData];
-        };
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
-        nav.modalPresentationStyle = UIModalPresentationPopover;
-        nav.popoverPresentationController.sourceRect = mainCell.bounds;
-        nav.popoverPresentationController.sourceView = mainCell;
-
-        [self presentViewController:nav animated:YES completion:nil];
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
+        if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBNoLevelDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBCWNoLevelDevice:deviceEntity.shortName]) {
+            
+            RGBDeviceViewController *RGBDVC = [[RGBDeviceViewController alloc] init];
+            RGBDVC.deviceId = mainCell.deviceId;
+            __weak GroupViewController *weakSelf = self;
+            RGBDVC.RGBDVCReloadDataHandle = ^{
+                [weakSelf loadMemberData];
+                [_devicesCollectionView reloadData];
+            };
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:RGBDVC];
+            nav.modalPresentationStyle = UIModalPresentationPopover;
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
+            
+        }else{
+            
+            DeviceViewController *dvc = [[DeviceViewController alloc] init];
+            dvc.deviceId = mainCell.deviceId;
+            __weak GroupViewController *weakSelf = self;
+            dvc.reloadDataHandle = ^{
+                [weakSelf loadMemberData];
+                [_devicesCollectionView reloadData];
+            };
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
+            nav.modalPresentationStyle = UIModalPresentationPopover;
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
+            
+            [self presentViewController:nav animated:YES completion:nil];
+            
+        }
 
     }
 }

@@ -11,5 +11,6 @@
 @interface RGBDeviceViewController : UIViewController
 
 @property (nonatomic,strong) NSNumber *deviceId;
+@property (nonatomic,copy) void (^RGBDVCReloadDataHandle)(void);
 
 @end
