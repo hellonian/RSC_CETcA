@@ -14,7 +14,7 @@
 
 @interface MusicListTableViewController ()<MusicPlayToolsDelegate>
 
-@property (nonatomic,strong) NSArray * dataArray;
+@property (nonatomic,strong) NSMutableArray * dataArray;
 @property (nonatomic,assign) NSInteger selectedRow;
 
 @end
@@ -34,8 +34,11 @@
     
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     
+    self.dataArray = [[NSMutableArray alloc] init];
+    
     [[GetDataTools shareGetData] getDataAndPassValue:^(NSArray *array) {
-        self.dataArray = array;
+        self.dataArray = [NSMutableArray arrayWithArray:array];
+        [self.dataArray insertObject:@0 atIndex:0];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
         });
@@ -47,11 +50,14 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    if ([MusicPlayTools shareMusicPlay].mediaItem) {
+    
+    if ([MusicPlayTools shareMusicPlay].audioRecorder.recording) {
+        _selectedRow = 0;
+    }else if ([MusicPlayTools shareMusicPlay].mediaItem) {
         __block NSInteger blockSelectedIndex = -1;
         [[GetDataTools shareGetData].dataArray enumerateObjectsUsingBlock:^(MPMediaItem *item, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([[MusicPlayTools shareMusicPlay].mediaItem isEqual:item]) {
-                blockSelectedIndex = idx;
+                blockSelectedIndex = idx+1;
                 *stop = YES;
             }
         }];
@@ -86,20 +92,51 @@
         cell.textLabel.textColor = [UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1];
     }
     
-    MPMediaItem *item = self.dataArray[indexPath.row];
-    cell.textLabel.text = [NSString stringWithFormat:@"%ld   %@",indexPath.row+1,[item valueForProperty:MPMediaItemPropertyTitle]];
+    if (indexPath.row == 0) {
+        cell.imageView.image = [UIImage imageNamed:@"micIcon"];
+        cell.textLabel.text = @"Use microphone to record";
+    }else {
+        cell.imageView.image = nil;
+        MPMediaItem *item = self.dataArray[indexPath.row];
+        cell.textLabel.text = [NSString stringWithFormat:@"%ld   %@",indexPath.row,[item valueForProperty:MPMediaItemPropertyTitle]];
+    }
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
-    [self play:indexPath.row];
+    if (indexPath.row == 0) {
+        
+        if ([MusicPlayTools shareMusicPlay].audioRecorder.recording) {
+            [[MusicPlayTools shareMusicPlay] recordStop];
+            
+            if ([MusicPlayTools shareMusicPlay].mediaItem) {
+                __block NSInteger blockSelectedIndex = -1;
+                [[GetDataTools shareGetData].dataArray enumerateObjectsUsingBlock:^(MPMediaItem *item, NSUInteger idx, BOOL * _Nonnull stop) {
+                    if ([[MusicPlayTools shareMusicPlay].mediaItem isEqual:item]) {
+                        blockSelectedIndex = idx+1;
+                        *stop = YES;
+                    }
+                }];
+                _selectedRow = blockSelectedIndex;
+            }else {
+                _selectedRow = -1;
+            }
+            
+        }else {
+            [MusicPlayTools shareMusicPlay].deviceId = _deviceId;
+            [[MusicPlayTools shareMusicPlay] startRecording];
+            _selectedRow = 0;
+        }
+        [self.tableView reloadData];
+    }else {
+        [self play:indexPath.row];
+    }
 }
 
 - (void)play:(NSInteger)index {
-    if ([[MusicPlayTools shareMusicPlay].mediaItem isEqual:[[GetDataTools shareGetData] getModelWithIndex:index]]) {
+    if ([[MusicPlayTools shareMusicPlay].mediaItem isEqual:[[GetDataTools shareGetData] getModelWithIndex:index-1]]) {
         if ([MusicPlayTools shareMusicPlay].audioPlayer.playing) {
             [[MusicPlayTools shareMusicPlay] musicPause];
         }else {
@@ -114,7 +151,7 @@
     
     [[MusicPlayTools shareMusicPlay] musicPause];
     
-    MPMediaItem *mediaItem = [[GetDataTools shareGetData] getModelWithIndex:index];
+    MPMediaItem *mediaItem = [[GetDataTools shareGetData] getModelWithIndex:index-1];
     [MusicPlayTools shareMusicPlay].mediaItem = mediaItem;
     [MusicPlayTools shareMusicPlay].deviceId = _deviceId;
     [[MusicPlayTools shareMusicPlay] preparePlay];
@@ -122,7 +159,7 @@
 
 - (void)endOfPlayAction {
     if (_selectedRow == [GetDataTools shareGetData].dataArray.count - 1) {
-        [self play:0];
+        [self play:1];
     }else {
         [self play:_selectedRow+1];
     }

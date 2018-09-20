@@ -55,6 +55,8 @@
 	<string>Set the images of groups&apos; icons and gallery control mode need to use your Photo Library.</string>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>AcTEC BLE need  use Media Library.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>AcTEC BLE need  use Microphone.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>bluetooth-central</string>

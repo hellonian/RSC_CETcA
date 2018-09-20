@@ -80,14 +80,19 @@
 }
 
 - (IBAction)switchThreeView:(UIButton *)sender {
-    _selecteBtn.backgroundColor = [UIColor colorWithRed:200/255.0 green:200/255.0 blue:200  /255.0 alpha:1];
+    _selecteBtn.backgroundColor = [UIColor colorWithRed:200/255.0 green:200/255.0 blue:200/255.0 alpha:1];
     _selecteBtn = sender;
     _selecteBtn.backgroundColor = DARKORAGE;
     
     [_threeView bringSubviewToFront:_allViews[sender.tag]];
     
-    if (sender.tag != 2 && [MusicPlayTools shareMusicPlay].audioPlayer.playing) {
-        [[MusicPlayTools shareMusicPlay] musicStop];
+    if (sender.tag != 2) {
+        if ([MusicPlayTools shareMusicPlay].audioPlayer.playing) {
+            [[MusicPlayTools shareMusicPlay] musicStop];
+        }
+        if ([MusicPlayTools shareMusicPlay].audioRecorder.recording) {
+            [[MusicPlayTools shareMusicPlay] recordStop];
+        }
     }
     if (sender.tag != 1) {
         [[DeviceModelManager sharedInstance] invalidateColofulTimer];
@@ -98,6 +103,9 @@
     [self dismissViewControllerAnimated:YES completion:nil];
     if ([MusicPlayTools shareMusicPlay].audioPlayer.playing) {
         [[MusicPlayTools shareMusicPlay] musicStop];
+    }
+    if ([MusicPlayTools shareMusicPlay].audioRecorder.recording) {
+        [[MusicPlayTools shareMusicPlay] recordStop];
     }
     [[DeviceModelManager sharedInstance] invalidateColofulTimer];
 }

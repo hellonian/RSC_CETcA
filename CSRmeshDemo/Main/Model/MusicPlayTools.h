@@ -31,6 +31,8 @@
 
 @property (nonatomic,strong) NSNumber *deviceId;
 
+@property (nonatomic,strong) AVAudioRecorder *audioRecorder;
+
 // 单例方法
 +(instancetype)shareMusicPlay;
 // 播放音乐
@@ -43,5 +45,9 @@
 -(void)seekToTimeWithValue:(CGFloat)value;
 
 - (void)musicStop;
+//话筒获取声音
+- (void)startRecording;
+
+- (void)recordStop;
 
 @end

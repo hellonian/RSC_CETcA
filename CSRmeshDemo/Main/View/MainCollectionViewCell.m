@@ -215,7 +215,7 @@
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Switch", @"Localizable");
             self.levelLabel.hidden = YES;
         }
-        if ([deviceEntity.shortName isEqualToString:@"RGBCW"]) {
+        if ([CSRUtilities belongToCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWDevice:deviceEntity.shortName] || [CSRUtilities belongToCWNoLevelDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBNoLevelDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWNoLevelDevice:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"controllersingle"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = NO;
@@ -246,7 +246,7 @@
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Switch", @"Localizable");
             self.levelLabel.hidden = YES;
         }
-        if ([device.deviceShortName isEqualToString:@"RGBCW"]) {
+        if ([CSRUtilities belongToCWDevice:device.deviceShortName] || [CSRUtilities belongToRGBDevice:device.deviceShortName] || [CSRUtilities belongToRGBCWDevice:device.deviceShortName] || [CSRUtilities belongToCWNoLevelDevice:device.deviceShortName] || [CSRUtilities belongToRGBNoLevelDevice:device.deviceShortName] || [CSRUtilities belongToRGBCWNoLevelDevice:device.deviceShortName]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Controller"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = NO;
@@ -308,7 +308,7 @@
             self.iconView.image = [UIImage imageNamed:@"Device_Remote2"];
         }else if ([appearanceShortname isEqualToString:@"SL02B"]){
             self.iconView.image = [UIImage imageNamed:@"Device_Sensor"];
-        }else if ([appearanceShortname isEqualToString:@"RGBCW"]) {
+        }else if ([CSRUtilities belongToCWDevice:appearanceShortname] || [CSRUtilities belongToRGBDevice:appearanceShortname] || [CSRUtilities belongToRGBCWDevice:appearanceShortname] || [CSRUtilities belongToCWNoLevelDevice:appearanceShortname] || [CSRUtilities belongToRGBNoLevelDevice:appearanceShortname] || [CSRUtilities belongToRGBCWNoLevelDevice:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Controller"];
         }
         self.cellIndexPath = indexPath;
@@ -356,7 +356,7 @@
                 self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
             }
             
-            if ([CSRUtilities belongToDimmer:model.shortName] || [model.shortName isEqualToString:@"RGBCW"]) {
+            if ([CSRUtilities belongToDimmer:model.shortName] || [CSRUtilities belongToCWDevice:model.shortName] || [CSRUtilities belongToRGBDevice:model.shortName] || [CSRUtilities belongToRGBCWDevice:model.shortName]) {
                 self.levelLabel.text = @"0%";
             }
             
@@ -368,7 +368,7 @@
                 self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
             }
             
-            if ([CSRUtilities belongToDimmer:model.shortName] || [model.shortName isEqualToString:@"RGBCW"]) {
+            if ([CSRUtilities belongToDimmer:model.shortName] || [CSRUtilities belongToCWDevice:model.shortName] || [CSRUtilities belongToRGBDevice:model.shortName] || [CSRUtilities belongToRGBCWDevice:model.shortName]) {
                 if ([model.level floatValue]/255.0*100>0 && [model.level floatValue]/255.0*100 < 1.0) {
                     self.levelLabel.text = @"1%";
                     return;
