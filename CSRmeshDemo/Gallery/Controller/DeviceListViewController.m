@@ -103,6 +103,7 @@
                     singleDevice.deviceId = deviceEntity.deviceId;
                     singleDevice.deviceName = deviceEntity.name;
                     singleDevice.deviceShortName = deviceEntity.shortName;
+                    singleDevice.curtainDirection = deviceEntity.remoteBranch;
                     singleDevice.isForList = YES;
                     singleDevice.isSelected = NO;
                     
@@ -188,7 +189,7 @@
             NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
             [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-                if ([CSRUtilities belongToMainVCDevice:deviceEntity.shortName]) {
+                if ([CSRUtilities belongToMainVCDevice:deviceEntity.shortName] && ![CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
                     SingleDeviceModel *singleDevice = [[SingleDeviceModel alloc] init];
                     singleDevice.deviceId = deviceEntity.deviceId;
                     singleDevice.deviceName = deviceEntity.name;
@@ -600,7 +601,9 @@
 
 - (void)showControlMaskLayerWithAlpha:(CGFloat)percentage text:(NSString*)text {
     if (!_maskLayer.superview) {
-        [[UIApplication sharedApplication].keyWindow addSubview:self.maskLayer];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[UIApplication sharedApplication].keyWindow addSubview:self.maskLayer];
+        });
     }
     [self.maskLayer updateProgress:percentage withText:text];
 }

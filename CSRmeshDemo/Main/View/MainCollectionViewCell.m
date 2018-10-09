@@ -17,6 +17,7 @@
 #import <CSRmesh/LightModelApi.h>
 #import "SceneListSModel.h"
 #import "GroupListSModel.h"
+#import "CSRDatabaseManager.h"
 
 @interface MainCollectionViewCell ()<UIGestureRecognizerDelegate>
 {
@@ -220,6 +221,17 @@
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = NO;
         }
+        if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
+            if ([deviceEntity.remoteBranch isEqualToString:@"ch"]) {
+                self.iconView.image = [UIImage imageNamed:@"curtainHorizontal"];
+            }else if ([deviceEntity.remoteBranch isEqualToString:@"cv"]) {
+                self.iconView.image = [UIImage imageNamed:@"curtainVertical"];
+            }else {
+                self.iconView.image = [UIImage imageNamed:@"curtainsingle"];
+            }
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
+            self.levelLabel.hidden = YES;
+        }
         self.cellIndexPath = indexPath;
         [self adjustGroupCellBgcolorAndLevelLabel];
         [self adjustCellBgcolorAndLevelLabelWithDeviceId:deviceEntity.deviceId];
@@ -250,6 +262,17 @@
             self.iconView.image = [UIImage imageNamed:@"Device_Controller"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = NO;
+        }
+        if ([CSRUtilities belongToCurtainController:device.deviceShortName]) {
+            if ([device.curtainDirection isEqualToString:@"ch"]) {
+                self.iconView.image = [UIImage imageNamed:@"Device_CurtainH"];
+            }else if ([device.curtainDirection isEqualToString:@"cv"]) {
+                self.iconView.image = [UIImage imageNamed:@"Device_CurtainV"];
+            }else {
+                self.iconView.image = [UIImage imageNamed:@"Device_Curtain"];
+            }
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
+            self.levelLabel.hidden = YES;
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
@@ -310,6 +333,8 @@
             self.iconView.image = [UIImage imageNamed:@"Device_Sensor"];
         }else if ([CSRUtilities belongToCWDevice:appearanceShortname] || [CSRUtilities belongToRGBDevice:appearanceShortname] || [CSRUtilities belongToRGBCWDevice:appearanceShortname] || [CSRUtilities belongToCWNoLevelDevice:appearanceShortname] || [CSRUtilities belongToRGBNoLevelDevice:appearanceShortname] || [CSRUtilities belongToRGBCWNoLevelDevice:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Controller"];
+        }else if ([CSRUtilities belongToCurtainController:appearanceShortname]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_Curtain"];
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
@@ -486,8 +511,18 @@
                 
                 
             }else {
-                DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(![model.powerState boolValue])];
+                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
+                    if (!deviceEntity.remoteBranch || deviceEntity.remoteBranch.length == 0) {
+                        if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateCurtainTapAction:)]) {
+                            [self.superCellDelegate superCollectionViewCellDelegateCurtainTapAction:_deviceId];
+                        }
+                        
+                    }
+                }else {
+                    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+                    [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(![model.powerState boolValue])];
+                }
             }
         }else {
             if ([self.deviceId isEqualToNumber:@2000]) {

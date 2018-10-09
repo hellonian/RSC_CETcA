@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -39,7 +38,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Xiamen AcTEC Electronics Co., Ltd" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H0d-dU-mRL">
-                    <rect key="frame" x="20" y="235.5" width="335.5" height="20"/>
+                    <rect key="frame" x="20" y="235.5" width="335" height="20"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="20" id="yVC-9q-dSl"/>
                     </constraints>
@@ -62,7 +61,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Version 2.0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fR3-yP-Qst">
-                    <rect key="frame" x="20" y="267.5" width="336.5" height="20"/>
+                    <rect key="frame" x="20" y="267.5" width="335" height="20"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="20" id="eRR-aK-Tbj"/>
                     </constraints>
@@ -71,7 +70,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="For iOS 9.0 or higher" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dX0-Eh-hFf">
-                    <rect key="frame" x="20" y="287.5" width="335.5" height="21"/>
+                    <rect key="frame" x="20" y="287.5" width="335" height="21"/>
                     <constraints>
                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="21" id="8K1-up-Vze"/>
                         <constraint firstAttribute="height" constant="21" id="xOA-5B-oPn"/>
@@ -98,7 +97,7 @@
                 <constraint firstItem="yBi-Ea-ROH" firstAttribute="centerX" secondItem="fje-Ql-qU2" secondAttribute="centerX" id="nms-Sy-OOP"/>
                 <constraint firstItem="fR3-yP-Qst" firstAttribute="leading" secondItem="fje-Ql-qU2" secondAttribute="leading" constant="20" id="sCP-sE-UHP"/>
             </constraints>
-            <point key="canvasLocation" x="-16.5" y="-94.5"/>
+            <point key="canvasLocation" x="-16.800000000000001" y="-94.902548725637189"/>
         </view>
     </objects>
     <resources>

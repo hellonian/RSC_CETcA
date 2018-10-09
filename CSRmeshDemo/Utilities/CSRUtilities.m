@@ -1138,7 +1138,7 @@
 }
 
 + (BOOL)belongToMainVCDevice: (NSString *)shortName {
-    if ([kDimmers containsObject:shortName] || [kSwitchs containsObject:shortName] || [kCWDevices containsObject:shortName] || [kRGBDevices containsObject:shortName] || [kRGBCWDevices containsObject:shortName]) {
+    if ([kDimmers containsObject:shortName] || [kSwitchs containsObject:shortName] || [kCWDevices containsObject:shortName] || [kRGBDevices containsObject:shortName] || [kRGBCWDevices containsObject:shortName] || [kCurtainController containsObject:shortName]) {
         return YES;
     }
     return NO;
@@ -1185,6 +1185,14 @@
     }
     return NO;
 }
+
++ (BOOL)belongToCurtainController:(NSString *)shortName {
+    if ([kCurtainController containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
 
 //十六进制字符串转十进制数据
 + (NSInteger)numberWithHexString:(NSString *)hexString {

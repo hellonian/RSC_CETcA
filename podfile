@@ -11,6 +11,6 @@ target 'CSRmeshDemo' do
     pod 'ZipArchive'
     pod 'OpenSSL', '~> 1.0'
     pod 'PureLayout'
-    pod 'MBProgressHUD'
     pod 'OHMySQL'
+    pod 'MBProgressHUD'
 end

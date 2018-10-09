@@ -475,10 +475,12 @@
         if (!pickerView) {
             pickerView = [[PlaceColorIconPickerView alloc] initWithFrame:CGRectMake((WIDTH-270)/2, (HEIGHT-190)/2, 277, 190) withMode:CollectionViewPickerMode_GroupIconPicker];
             pickerView.delegate = self;
-            [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
-            [[UIApplication sharedApplication].keyWindow addSubview:pickerView];
-            [pickerView autoCenterInSuperview];
-            [pickerView autoSetDimensionsToSize:CGSizeMake(270, 190)];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+                [[UIApplication sharedApplication].keyWindow addSubview:pickerView];
+                [pickerView autoCenterInSuperview];
+                [pickerView autoSetDimensionsToSize:CGSizeMake(270, 190)];
+            });
         }
         
     }];
@@ -586,7 +588,9 @@
 
 - (void)showControlMaskLayerWithAlpha:(CGFloat)percentage text:(NSString*)text {
     if (!_maskLayer.superview) {
-        [[UIApplication sharedApplication].keyWindow addSubview:self.maskLayer];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[UIApplication sharedApplication].keyWindow addSubview:self.maskLayer];
+        });
     }
     [self.maskLayer updateProgress:percentage withText:text];
 }

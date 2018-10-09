@@ -548,6 +548,7 @@
         [[CSRDatabaseManager sharedInstance] saveContext];
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:self.deviceId];
         model.name = _nameTF.text;
+        _originalName = _nameTF.text;
         if (self.reloadDataHandle) {
             self.reloadDataHandle();
         }

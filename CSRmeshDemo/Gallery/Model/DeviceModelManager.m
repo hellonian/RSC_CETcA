@@ -61,6 +61,7 @@
         [[LightModelApi sharedInstance] addDelegate:self];
         [[PowerModelApi sharedInstance] addDelegate:self];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(physicalButtonActionCall:) name:@"physicalButtonActionCall" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(RGBCWDeviceActionCall:) name:@"RGBCWDeviceActionCall" object:nil];
         [DataModelManager shareInstance];
         
         NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
@@ -318,6 +319,38 @@
         }
     }];
     
+}
+
+- (void)RGBCWDeviceActionCall: (NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    NSString *state = userInfo[@"powerState"];
+    NSString *supports = userInfo[@"supports"];
+    NSNumber *temperature = userInfo[@"temperature"];
+    NSNumber *red = userInfo[@"red"];
+    NSNumber *green = userInfo[@"green"];
+    NSNumber *blue = userInfo[@"blue"];
+    NSNumber *level = userInfo[@"level"];
+    __block NSNumber *passLevel = level;
+    [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([model.deviceId isEqualToNumber:deviceId]) {
+            model.powerState = [NSNumber numberWithBool:[state boolValue]];
+            
+            if ([passLevel integerValue] < 3) {
+                passLevel = @3;
+            }
+            model.isleave = NO;
+            model.level = passLevel;
+            model.supports = [NSNumber numberWithBool:[supports boolValue]];
+            model.colorTemperature = temperature;
+            model.red = red;
+            model.green = green;
+            model.blue = blue;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
+            NSLog(@"物理按钮反馈>>>%@",level);
+            *stop = YES;
+        }
+    }];
 }
 
 - (void)colorfulAction:(NSNumber *)deviceId timeInterval:(NSTimeInterval)timeInterval hues:(NSArray *)huesAry colorSaturation:(NSNumber *)colorSat rgbSceneId:(NSNumber *)rgbSceneId{

@@ -40,7 +40,7 @@
         _hint.layer.masksToBounds = YES;
         _hint.textAlignment = NSTextAlignmentCenter;
         _hint.font = [UIFont systemFontOfSize:32];
-        _hint.textColor = [UIColor colorWithRed:234.0/255.0 green:94.0/255.0 blue:18.0/255.0 alpha:1.0];
+        _hint.textColor = DARKORAGE;
         [self addSubview:self.hint];
         
         [self.hint autoAlignAxisToSuperviewAxis:ALAxisVertical];

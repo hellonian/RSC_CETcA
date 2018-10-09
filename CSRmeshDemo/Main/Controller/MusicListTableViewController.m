@@ -94,7 +94,7 @@
     
     if (indexPath.row == 0) {
         cell.imageView.image = [UIImage imageNamed:@"micIcon"];
-        cell.textLabel.text = @"Use microphone to record";
+        cell.textLabel.text = AcTECLocalizedStringFromTable(@"UseMicrophone", @"Localizable");
     }else {
         cell.imageView.image = nil;
         MPMediaItem *item = self.dataArray[indexPath.row];

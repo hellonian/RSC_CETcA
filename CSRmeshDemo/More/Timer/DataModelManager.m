@@ -50,13 +50,8 @@ static DataModelManager *manager = nil;
 
 - (void)sendCmdData:(NSString *)hexStrCmd  toDeviceId:(NSNumber *)deviceId {
     if (deviceId) {
-//        [_manager sendData:deviceId data:[CSRUtilities dataForHexString:hexStrCmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-//
-//        } failure:^(NSError * _Nonnull error) {
-//
-//        }];
-        NSNumber *num = [_manager sendData:@0 data:[CSRUtilities dataForHexString:hexStrCmd] success:nil failure:nil];
-        NSLog(@">>>>>> %@",num);
+//        NSNumber *num = [_manager sendData:@0 data:[CSRUtilities dataForHexString:hexStrCmd] success:nil failure:nil];
+//        NSLog(@">>>>>> %@",num);
     }
     
 }
@@ -207,6 +202,28 @@ static DataModelManager *manager = nil;
         NSInteger level = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(8, 2)]];
         NSNumber *levelNum = [NSNumber numberWithInteger:level];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"physicalButtonActionCall" object:self userInfo:@{@"powerState":state,@"level":levelNum,@"deviceId":sourceDeviceId}];
+    }
+    
+    if ([dataStr hasPrefix:@"8e"]) {
+        NSInteger seq = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(4, 2)]];
+        if (seq && (seq - primordial) < 0 && (seq - primordial) >-10) {
+            return;
+        }
+        primordial = seq;
+        
+        NSString *stateStr = [self getBinaryByhex:[dataStr substringWithRange:NSMakeRange(6, 2)]];
+        NSString *state = [stateStr substringWithRange:NSMakeRange(7, 1)];
+        NSString *supports = [stateStr substringWithRange:NSMakeRange(6, 1)];
+        
+        NSInteger level = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(8, 2)]];
+        NSInteger red = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(10, 2)]];
+        NSInteger green = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(12, 2)]];
+        NSInteger blue = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(14, 2)]];
+        
+        NSInteger temperature = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(16, 4)]];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"RGBCWDeviceActionCall" object:self userInfo:@{@"powerState":state,@"supports":supports,@"level":[NSNumber numberWithInteger:level],@"temperature":[NSNumber numberWithInteger:temperature],@"red":[NSNumber numberWithInteger:red],@"green":[NSNumber numberWithInteger:green],@"blue":[NSNumber numberWithInteger:blue],@"deviceId":sourceDeviceId}];
+        
     }
     
     //遥控器设置反馈

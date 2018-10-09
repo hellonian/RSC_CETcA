@@ -344,13 +344,14 @@
         [[CSRDevicesManager sharedInstance] associateDeviceFromCSRDeviceManager:_selectedDevice.deviceHash authorisationCode:nil uuidString:_selectedDevice.uuid.UUIDString];
         
         _customizeHud = [[CustomizeProgressHud alloc] initWithFrame:CGRectZero];
-        [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
-        [[UIApplication sharedApplication].keyWindow addSubview:_customizeHud];
-        [_customizeHud autoCenterInSuperview];
-        [_customizeHud autoSetDimensionsToSize:CGSizeMake(270, 130)];
-        _customizeHud.text = @"The device is being connected.";
-        [_customizeHud updateProgress:0];
-        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+            [[UIApplication sharedApplication].keyWindow addSubview:_customizeHud];
+            [_customizeHud autoCenterInSuperview];
+            [_customizeHud autoSetDimensionsToSize:CGSizeMake(270, 130)];
+            _customizeHud.text = @"The device is being connected.";
+            [_customizeHud updateProgress:0];
+        });
     }
 }
 

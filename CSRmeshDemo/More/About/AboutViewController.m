@@ -8,8 +8,7 @@
 
 #import "AboutViewController.h"
 
-#import "DeviceModelManager.h"
-#import <CSRmesh/LightModelApi.h>
+#import "DataModelManager.h"
 #import "PureLayout.h"
 
 @interface AboutViewController ()

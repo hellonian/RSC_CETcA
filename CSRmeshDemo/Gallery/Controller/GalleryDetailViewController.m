@@ -314,7 +314,9 @@
 
 - (void)showControlMaskLayerWithAlpha:(CGFloat)percentage text:(NSString*)text {
     if (!_maskLayer.superview) {
-        [[UIApplication sharedApplication].keyWindow addSubview:self.maskLayer];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[UIApplication sharedApplication].keyWindow addSubview:self.maskLayer];
+        });
     }
     
     [self.maskLayer updateProgress:percentage withText:text];

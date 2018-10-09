@@ -56,7 +56,7 @@
 #define kRGBCWDevices @[@"RGBCW"]
 #define kRGBCWNoLevelDevices @[@"RGBCWNL"]
 
-#define kCurtainController @[@"C1000IB"]
+#define kCurtainController @[@"C300IB"]
 
 #pragma mark - Notifications
 

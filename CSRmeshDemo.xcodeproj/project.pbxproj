@@ -120,6 +120,7 @@
 		2EC73CF62124197700850882 /* ColorSquare.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC73CF52124197700850882 /* ColorSquare.m */; };
 		2EC8BB3421460F0E002ED85F /* MusicPlayTools.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2EC8BB3221460F0D002ED85F /* MusicPlayTools.mm */; };
 		2EC8BB37214653AF002ED85F /* MeterTable.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2EC8BB35214653AF002ED85F /* MeterTable.mm */; };
+		2ED23F6E215DCCCA0040A922 /* CurtainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2ED23F70215DCCCA0040A922 /* CurtainViewController.xib */; };
 		2ED3963C204D09A00068B666 /* TimerEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963B204D09A00068B666 /* TimerEntity.m */; };
 		2ED3963F204D09D20068B666 /* TimerDeviceEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */; };
 		2ED974471F3AED0F000F20C9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2ED974491F3AED0F000F20C9 /* LaunchScreen.storyboard */; };
@@ -136,7 +137,6 @@
 		2EE95A831FAB0F9700E1F945 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE95A821FAB0F9700E1F945 /* ViewController.m */; };
 		2EEA427B2151FFF70050B729 /* CustomizeProgressHud.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EEA427A2151FFF70050B729 /* CustomizeProgressHud.m */; };
 		2EEA427F215247180050B729 /* CurtainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EEA427D215247180050B729 /* CurtainViewController.m */; };
-		2EEA4280215247180050B729 /* CurtainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EEA427E215247180050B729 /* CurtainViewController.xib */; };
 		2EEA6E361F453B1300895CE2 /* ControlMaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EEA6E341F453B1300895CE2 /* ControlMaskView.m */; };
 		2EF2DB5A200DA6CF00A1B236 /* DeviceModelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF2DB59200DA6CF00A1B236 /* DeviceModelManager.m */; };
 		2EF332502045030100565374 /* LanguageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF3324E2045030100565374 /* LanguageViewController.m */; };
@@ -491,6 +491,9 @@
 		2EC8BB3321460F0E002ED85F /* MusicPlayTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicPlayTools.h; sourceTree = "<group>"; };
 		2EC8BB35214653AF002ED85F /* MeterTable.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MeterTable.mm; sourceTree = "<group>"; };
 		2EC8BB36214653AF002ED85F /* MeterTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeterTable.h; sourceTree = "<group>"; };
+		2ED23F6F215DCCCA0040A922 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CurtainViewController.xib; sourceTree = "<group>"; };
+		2ED23F72215DCCCE0040A922 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
+		2ED23F74215DCCD00040A922 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/CurtainViewController.strings"; sourceTree = "<group>"; };
 		2ED3963A204D09A00068B666 /* TimerEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerEntity.h; sourceTree = "<group>"; };
 		2ED3963B204D09A00068B666 /* TimerEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerEntity.m; sourceTree = "<group>"; };
 		2ED3963D204D09D20068B666 /* TimerDeviceEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerDeviceEntity.h; sourceTree = "<group>"; };
@@ -519,7 +522,6 @@
 		2EEA427A2151FFF70050B729 /* CustomizeProgressHud.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomizeProgressHud.m; sourceTree = "<group>"; };
 		2EEA427C215247180050B729 /* CurtainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CurtainViewController.h; sourceTree = "<group>"; };
 		2EEA427D215247180050B729 /* CurtainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CurtainViewController.m; sourceTree = "<group>"; };
-		2EEA427E215247180050B729 /* CurtainViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CurtainViewController.xib; sourceTree = "<group>"; };
 		2EEA6E331F453B1300895CE2 /* ControlMaskView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControlMaskView.h; sourceTree = "<group>"; };
 		2EEA6E341F453B1300895CE2 /* ControlMaskView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControlMaskView.m; sourceTree = "<group>"; };
 		2EF2DB58200DA6CF00A1B236 /* DeviceModelManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceModelManager.h; sourceTree = "<group>"; };
@@ -1005,7 +1007,7 @@
 				2E2A016421425D7600B2EFAF /* MusicListTableViewController.m */,
 				2EEA427C215247180050B729 /* CurtainViewController.h */,
 				2EEA427D215247180050B729 /* CurtainViewController.m */,
-				2EEA427E215247180050B729 /* CurtainViewController.xib */,
+				2ED23F70215DCCCA0040A922 /* CurtainViewController.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1427,7 +1429,7 @@
 				2ED974471F3AED0F000F20C9 /* LaunchScreen.storyboard in Resources */,
 				2EE50F2D20DA3E3D00B484F7 /* LightSensorSettingViewController.xib in Resources */,
 				2E2E70921FF5DE60002D1C1D /* PlaceIconCollectionViewCell.xib in Resources */,
-				2EEA4280215247180050B729 /* CurtainViewController.xib in Resources */,
+				2ED23F6E215DCCCA0040A922 /* CurtainViewController.xib in Resources */,
 				2E2EBFA41FAC2FF400CEA401 /* cskey_db.json in Resources */,
 				2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */,
 				2E216EEB2138F28200E545B9 /* RGBSceneCollectionViewCell.xib in Resources */,
@@ -1825,6 +1827,16 @@
 				2E706D58212AB82D008D0EC4 /* lt */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		2ED23F70215DCCCA0040A922 /* CurtainViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2ED23F6F215DCCCA0040A922 /* Base */,
+				2ED23F72215DCCCE0040A922 /* en */,
+				2ED23F74215DCCD00040A922 /* zh-Hans */,
+			);
+			name = CurtainViewController.xib;
 			sourceTree = "<group>";
 		};
 		2ED974491F3AED0F000F20C9 /* LaunchScreen.storyboard */ = {

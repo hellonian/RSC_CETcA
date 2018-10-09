@@ -113,5 +113,6 @@
 + (BOOL)belongToCWNoLevelDevice:(NSString *)shortName;
 + (BOOL)belongToRGBNoLevelDevice:(NSString *)shortName;
 + (BOOL)belongToRGBCWNoLevelDevice:(NSString *)shortName;
++ (BOOL)belongToCurtainController:(NSString *)shortName;
 
 @end

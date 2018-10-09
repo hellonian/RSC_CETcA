@@ -107,114 +107,68 @@
     
     NSMutableArray *vcs = [NSMutableArray arrayWithArray:self.detailViewManger.childViewControllers];
     [vcs removeAllObjects];
-    switch (indexPath.section) {
+    switch (indexPath.row) {
         case 0:
-        {
-            switch (indexPath.row) {
-                case 0:
-                    [vcs addObject:self.placesVC];
-                    break;
-                default:
-                    break;
-            }
+            [vcs addObject:self.placesVC];
             break;
-        }
         case 1:
-        {
-            switch (indexPath.row) {
-                case 0:
-                    [vcs addObject:self.timerVC];
-                    break;
-                case 1:
-                    [vcs addObject:self.remoteVC];
-                    break;
-                case 2:
-                    [vcs addObject:self.LSVC];
-                    break;
-                case 3:
-                    [vcs addObject:self.updateVC];
-                    break;
-                default:
-                    break;
-            }
+            [vcs addObject:self.timerVC];
             break;
-        }
         case 2:
-        {
-            switch (indexPath.row) {
-                case 0:
-                    [vcs addObject:self.languageVC];
-                    break;
-                case 1:
-                    [vcs addObject:self.helpVC];
-                    break;
-                case 2:
-                    [vcs addObject:self.aboutVC];
-                    break;
-                default:
-                    break;
-            }
+            [vcs addObject:self.remoteVC];
             break;
-        }
+        case 3:
+            [vcs addObject:self.LSVC];
+            break;
+        case 4:
+            [vcs addObject:self.updateVC];
+            break;
+        case 5:
+            [vcs addObject:self.languageVC];
+            break;
+        case 6:
+            [vcs addObject:self.helpVC];
+            break;
+        case 7:
+            [vcs addObject:self.aboutVC];
+            break;
         default:
             break;
     }
+    
     [self.detailViewManger setViewControllers:vcs];
 }
 
 - (void)pushViewConrollerWithRow: (NSIndexPath *)indexPath {
-    switch (indexPath.section) {
+    switch (indexPath.row) {
         case 0:
-        {
-            switch (indexPath.row) {
-                case 0:
-                    [self pushViewConrollerW:self.placesVC];
-                    break;
-                default:
-                    break;
-            }
+            [self pushViewConrollerW:self.placesVC];
             break;
-        }
         case 1:
-        {
-            switch (indexPath.row) {
-                case 0:
-                    [self pushViewConrollerW:self.timerVC];
-                    break;
-                case 1:
-                    [self pushViewConrollerW:self.remoteVC];
-                    break;
-                case 2:
-                    [self pushViewConrollerW:self.LSVC];
-                    break;
-                case 3:
-                    [self pushViewConrollerW:self.updateVC];
-                    break;
-                default:
-                    break;
-            }
+            [self pushViewConrollerW:self.timerVC];
             break;
-        }
         case 2:
-        {
-            switch (indexPath.row) {
-                case 0:
-                    [self pushViewConrollerW:self.languageVC];
-                    break;
-                case 1:
-                    [self pushViewConrollerW:self.helpVC];
-                    break;
-                case 2:
-                    [self pushViewConrollerW:self.aboutVC];
-                    break;
-                default:
-                    break;
-            }
+            [self pushViewConrollerW:self.remoteVC];
             break;
-        }
+        case 3:
+            [self pushViewConrollerW:self.LSVC];
+            break;
+        case 4:
+            [self pushViewConrollerW:self.updateVC];
+            break;
+        case 5:
+            [self pushViewConrollerW:self.languageVC];
+            break;
+        case 6:
+            [self pushViewConrollerW:self.helpVC];
+            break;
+        case 7:
+            [self pushViewConrollerW:self.aboutVC];
+            break;
         default:
             break;
     }
+    
 }
 
 - (void)pushViewConrollerW:(UIViewController *)vc {

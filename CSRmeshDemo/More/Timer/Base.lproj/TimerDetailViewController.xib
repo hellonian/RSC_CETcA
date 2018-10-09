@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -32,7 +30,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <color key="backgroundColor" red="0.86274509799999999" green="0.86274509799999999" blue="0.86274509799999999" alpha="1" colorSpace="calibratedRGB"/>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
-            <point key="canvasLocation" x="150" y="-84"/>
+            <point key="canvasLocation" x="316" y="-125"/>
         </view>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="Akz-NI-7zN">
             <rect key="frame" x="0.0" y="0.0" width="479" height="136"/>
@@ -63,7 +61,7 @@
                     </connections>
                 </button>
                 <button opaque="NO" tag="93" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oWO-Ir-HD0">
-                    <rect key="frame" x="141" y="38" width="60.5" height="60"/>
+                    <rect key="frame" x="141" y="38" width="60" height="60"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="oWO-Ir-HD0" secondAttribute="height" id="psf-xk-E7N"/>
                     </constraints>
@@ -87,7 +85,7 @@
                     </connections>
                 </button>
                 <button opaque="NO" tag="95" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XXG-aT-8P7">
-                    <rect key="frame" x="277.5" y="38" width="60.5" height="60"/>
+                    <rect key="frame" x="278" y="38" width="60" height="60"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="XXG-aT-8P7" secondAttribute="height" id="Z0b-4Z-QR7"/>
                     </constraints>
@@ -98,7 +96,7 @@
                     </connections>
                 </button>
                 <button opaque="NO" tag="96" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Ou-VB-VN6">
-                    <rect key="frame" x="346" y="37.5" width="61" height="61"/>
+                    <rect key="frame" x="346.5" y="38" width="60" height="60"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="9Ou-VB-VN6" secondAttribute="height" id="k5o-fq-ouj"/>
                     </constraints>
@@ -216,7 +214,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JNO-b5-kfu">
-                    <rect key="frame" x="310" y="51" width="51" height="31"/>
+                    <rect key="frame" x="310" y="51.5" width="51" height="31"/>
                     <color key="onTintColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <connections>
                         <action selector="changeEnabled:" destination="-1" eventType="valueChanged" id="U0Y-Nm-3Nh"/>

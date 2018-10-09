@@ -37,8 +37,7 @@
 #import "TopImageView.h"
 #import "RGBDeviceViewController.h"
 #import "RGBSceneEntity.h"
-
-#define KIsiPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
+#import "CurtainViewController.h"
 
 @interface MainViewController ()<MainCollectionViewDelegate,PlaceColorIconPickerViewDelegate,MBProgressHUDDelegate>
 {
@@ -61,6 +60,9 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *connectedBridgeLabel;
 @property (weak, nonatomic) IBOutlet TopImageView *topImageView;
+
+@property (nonatomic,strong) UIView *curtainKindView;
+@property (nonatomic,strong) NSNumber *selectedCurtainDeviceId;
 
 @end
 
@@ -141,14 +143,11 @@
     sceneFlowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
     sceneFlowLayout.minimumLineSpacing = 0;
     sceneFlowLayout.minimumInteritemSpacing = 0;
-
-    if (KIsiPhoneX) {
-        sceneFlowLayout.itemSize = CGSizeMake(WIDTH*3/16.0, (HEIGHT-44-44-34-49-WIDTH*157/320)/4.0);
-    }else {
-        sceneFlowLayout.itemSize = CGSizeMake(WIDTH*3/16.0, (HEIGHT-113-WIDTH*157/320)/4.0);
-    }
+    
+    sceneFlowLayout.itemSize = CGSizeZero;
 
     _sceneCollectionView = [[MainCollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:sceneFlowLayout cellIdentifier:@"SceneCollectionViewCell"];
+    
     _sceneCollectionView.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
     _sceneCollectionView.mainDelegate = self;
     [self.view addSubview:_sceneCollectionView];
@@ -318,7 +317,6 @@
 }
 
 - (void)editMainView {
-    
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneItemAction)];
     self.navigationItem.rightBarButtonItem = done;
     _mainCVEditting = YES;
@@ -540,10 +538,12 @@
         if (!pickerView) {
             pickerView = [[PlaceColorIconPickerView alloc] initWithFrame:CGRectMake((WIDTH-270)/2, (HEIGHT-190)/2, 270, 190) withMode:CollectionViewPickerMode_SceneIconPicker];
             pickerView.delegate = self;
-            [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
-            [[UIApplication sharedApplication].keyWindow addSubview:pickerView];
-            [pickerView autoCenterInSuperview];
-            [pickerView autoSetDimensionsToSize:CGSizeMake(270, 190)];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+                [[UIApplication sharedApplication].keyWindow addSubview:pickerView];
+                [pickerView autoCenterInSuperview];
+                [pickerView autoSetDimensionsToSize:CGSizeMake(270, 190)];
+            });
         }
         return;
     }
@@ -783,6 +783,30 @@
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
             
+        }else if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
+            
+            if (!deviceEntity.remoteBranch || deviceEntity.remoteBranch.length == 0) {
+                _selectedCurtainDeviceId = mainCell.deviceId;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+                    [[UIApplication sharedApplication].keyWindow addSubview:self.curtainKindView];
+                    [self.curtainKindView autoCenterInSuperview];
+                    [self.curtainKindView autoSetDimensionsToSize:CGSizeMake(271, 166)];
+                });
+            }else {
+                CurtainViewController *curtainVC = [[CurtainViewController alloc] init];
+                curtainVC.deviceId = mainCell.deviceId;
+                __weak MainViewController *weakSelf = self;
+                curtainVC.reloadDataHandle = ^{
+                    [weakSelf getMainDataArray];
+                };
+                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:curtainVC];
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+                [self presentViewController:nav animated:YES completion:nil];
+                nav.popoverPresentationController.sourceRect = mainCell.bounds;
+                nav.popoverPresentationController.sourceView = mainCell;
+            }
+            
         }else{
             DeviceViewController *dvc = [[DeviceViewController alloc] init];
             dvc.deviceId = mainCell.deviceId;
@@ -1016,6 +1040,37 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
+- (void)mainCollectionViewCellDelegateCurtainTapAction:(NSNumber *)deviceId {
+
+    _selectedCurtainDeviceId = deviceId;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+        [[UIApplication sharedApplication].keyWindow addSubview:self.curtainKindView];
+        [self.curtainKindView autoCenterInSuperview];
+        [self.curtainKindView autoSetDimensionsToSize:CGSizeMake(271, 166)];
+    });
+}
+
+- (void)selectTypeOfCurtain:(UIButton *)sender {
+    
+    CSRDeviceEntity *curtainEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_selectedCurtainDeviceId];
+    if (sender.tag == 11) {
+        curtainEntity.remoteBranch = @"ch";
+    }else if (sender.tag == 22) {
+        curtainEntity.remoteBranch = @"cv";
+    }
+    [[CSRDatabaseManager sharedInstance] saveContext];
+    
+    [self getMainDataArray];
+    
+    _selectedCurtainDeviceId = nil;
+    
+    [self.curtainKindView removeFromSuperview];
+    self.curtainKindView = nil;
+    [self.translucentBgView removeFromSuperview];
+    self.translucentBgView = nil;
+}
+
 #pragma mark - notification
 
 -(void)deleteStatus:(NSNotification *)notification
@@ -1163,6 +1218,44 @@
     return _translucentBgView;
 }
 
+- (UIView *)curtainKindView {
+    if (!_curtainKindView) {
+        _curtainKindView = [[UIView alloc] initWithFrame:CGRectZero];
+        _curtainKindView.backgroundColor = [UIColor whiteColor];
+        _curtainKindView.alpha = 0.9;
+        _curtainKindView.layer.cornerRadius = 14;
+        _curtainKindView.layer.masksToBounds = YES;
+        
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 271, 30)];
+        titleLabel.text = AcTECLocalizedStringFromTable(@"ChooseTypeOfCurtain", @"Localizable");
+        titleLabel.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+        titleLabel.textAlignment = NSTextAlignmentCenter;
+        [_curtainKindView addSubview:titleLabel];
+        
+        UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 30, 271, 1)];
+        line.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+        [_curtainKindView addSubview:line];
+        
+        UIButton *horizontalBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 31, 135, 135)];
+        horizontalBtn.tag = 11;
+        [horizontalBtn setImage:[UIImage imageNamed:@"curtainHImage"] forState:UIControlStateNormal];
+        [horizontalBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
+        [_curtainKindView addSubview:horizontalBtn];
+        
+        UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(135, 31, 1, 135)];
+        line1.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+        [_curtainKindView addSubview:line1];
+        
+        UIButton *verticalBtn = [[UIButton alloc] initWithFrame:CGRectMake(136, 31, 135, 135)];
+        verticalBtn.tag = 22;
+        [verticalBtn setImage:[UIImage imageNamed:@"curtainVImage"] forState:UIControlStateNormal];
+        [verticalBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
+        [_curtainKindView addSubview:verticalBtn];
+        
+    }
+    return _curtainKindView;
+}
+
 #pragma mark - MBProgressHUDDelegate
 
 - (void)hudWasHidden:(MBProgressHUD *)hud {
@@ -1185,5 +1278,13 @@
     [self.mainCollectionView reloadData];
 }
 
+- (void)viewDidLayoutSubviews {
+    UICollectionViewFlowLayout *sceneFlowLayout = [[UICollectionViewFlowLayout alloc] init];
+    sceneFlowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
+    sceneFlowLayout.minimumLineSpacing = 0;
+    sceneFlowLayout.minimumInteritemSpacing = 0;
+    sceneFlowLayout.itemSize = CGSizeMake(WIDTH*3/16.0, (_mainCollectionView.bounds.size.height)/4.0);
+    _sceneCollectionView.collectionViewLayout = sceneFlowLayout;
+}
 
 @end

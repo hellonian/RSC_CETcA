@@ -165,6 +165,12 @@
     }
 }
 
+- (void)superCollectionViewCellDelegateCurtainTapAction:(NSNumber *)deviceId {
+    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewCellDelegateCurtainTapAction:)]) {
+        [self.mainDelegate mainCollectionViewCellDelegateCurtainTapAction:deviceId];
+    }
+}
+
 #pragma mark - lazy
 
 - (NSMutableArray *)dataArray {
