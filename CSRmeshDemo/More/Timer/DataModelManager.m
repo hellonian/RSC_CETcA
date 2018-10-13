@@ -50,8 +50,12 @@ static DataModelManager *manager = nil;
 
 - (void)sendCmdData:(NSString *)hexStrCmd  toDeviceId:(NSNumber *)deviceId {
     if (deviceId) {
-//        NSNumber *num = [_manager sendData:@0 data:[CSRUtilities dataForHexString:hexStrCmd] success:nil failure:nil];
-//        NSLog(@">>>>>> %@",num);
+//        [_manager sendData:deviceId data:[CSRUtilities dataForHexString:hexStrCmd] success:nil failure:nil];
+        [_manager sendData:deviceId data:[CSRUtilities dataForHexString:hexStrCmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+            
+        } failure:^(NSError * _Nonnull error) {
+            
+        }];
     }
     
 }
@@ -79,13 +83,17 @@ static DataModelManager *manager = nil;
     
     NSString *repeatString = [self stringWithHexNumber:[repeatNumberStr integerValue]];
     
-    NSString *cmd = [NSString stringWithFormat:@"8315%@0%d%@%@%@%@%@%@%@%@00000000000000",indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString,eveD1,eveD2,eveD3];
-    NSLog(@">> --> %@",cmd);
+    NSString *eveD1String = [self stringWithHexNumber:[eveD1 integerValue]];
+    NSString *eveD2String = [self stringWithHexNumber:[eveD2 integerValue]];
+    NSString *eveD3String = [self stringWithHexNumber:[eveD3 integerValue]];
+    
+    NSString *cmd = [NSString stringWithFormat:@"8315%@0%d%@%@%@%@%@%@%@%@00000000000000",indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString,eveD1String,eveD2String,eveD3String];
+    
     _schedule = [self analyzeTimeScheduleData:[NSString stringWithFormat:@"%@0%d%@%@%@%@%@0000000000",indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString] forLight:deviceId];
     
     if (deviceId) {
         [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-            NSLog(@"data >> %@",data);
+            
         } failure:^(NSError * _Nonnull error) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"addAlarmCall" object:nil userInfo:@{@"addAlarmCall":@"00",@"deviceId":deviceId}];
         }];

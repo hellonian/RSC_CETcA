@@ -35,21 +35,51 @@
     
     [self creatHud];
     
-}
--(void)viewWillLayoutSubviews{
-    [super viewWillLayoutSubviews];
-    if (self.tabBar.frame.size.height == 83) {
-        [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-        [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeRight];
-        [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:34.0f];
-        [self.tabBarView autoSetDimension:ALDimensionHeight toSize:49.0f];
+    [self.tabBarView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    NSLayoutConstraint *left = [NSLayoutConstraint constraintWithItem:self.tabBarView
+                                                            attribute:NSLayoutAttributeLeft
+                                                            relatedBy:NSLayoutRelationEqual
+                                                               toItem:self.view
+                                                            attribute:NSLayoutAttributeLeft
+                                                           multiplier:1.0
+                                                             constant:0];
+    NSLayoutConstraint *right = [NSLayoutConstraint constraintWithItem:self.tabBarView
+                                                             attribute:NSLayoutAttributeRight
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.view
+                                                             attribute:NSLayoutAttributeRight
+                                                            multiplier:1.0
+                                                              constant:0];
+    NSLayoutConstraint *height = [NSLayoutConstraint constraintWithItem:self.tabBarView
+                                                              attribute:NSLayoutAttributeHeight
+                                                              relatedBy:NSLayoutRelationLessThanOrEqual
+                                                                 toItem:nil
+                                                              attribute:NSLayoutAttributeNotAnAttribute
+                                                             multiplier:1.0
+                                                               constant:49.0];
+    NSLayoutConstraint *bottom;
+    if (@available(iOS 11.0, *)) {
+        bottom = [NSLayoutConstraint constraintWithItem:self.tabBarView
+                                              attribute:NSLayoutAttributeBottom
+                                              relatedBy:NSLayoutRelationEqual
+                                                 toItem:self.view.safeAreaLayoutGuide
+                                              attribute:NSLayoutAttributeBottom
+                                             multiplier:1.0
+                                               constant:0];
     }else {
-        [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-        [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeRight];
-        [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeBottom];
-        [self.tabBarView autoSetDimension:ALDimensionHeight toSize:49.0f];
+        bottom = [NSLayoutConstraint constraintWithItem:self.tabBarView
+                                              attribute:NSLayoutAttributeBottom
+                                              relatedBy:NSLayoutRelationEqual
+                                                 toItem:self.view
+                                              attribute:NSLayoutAttributeBottom
+                                             multiplier:1.0
+                                               constant:0];
     }
+    
+    [NSLayoutConstraint activateConstraints:@[left,right,height,bottom]];
+    
 }
+
 -(void)didSelectedAtIndex:(NSInteger)index{
     self.selectedIndex = index;
 }
@@ -76,14 +106,17 @@
 
 - (void)creatHud {
     if (!_hud) {
-        _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        _hud.mode = MBProgressHUDModeIndeterminate;
-        _hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
-        _hud.bezelView.backgroundColor = [UIColor clearColor];
-        _hud.backgroundView.backgroundColor = [UIColor blackColor];
-        _hud.backgroundView.alpha = 0.6;
-        _hud.activityIndicatorColor = [UIColor whiteColor];
-        _hud.delegate = self;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            _hud.mode = MBProgressHUDModeIndeterminate;
+            _hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
+            _hud.bezelView.backgroundColor = [UIColor clearColor];
+            _hud.backgroundView.backgroundColor = [UIColor blackColor];
+            _hud.backgroundView.alpha = 0.6;
+            _hud.activityIndicatorColor = [UIColor whiteColor];
+            _hud.delegate = self;
+        });
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             if (_hud) {
                 _alertController = [UIAlertController alertControllerWithTitle:@"" message:@"" preferredStyle:UIAlertControllerStyleAlert];

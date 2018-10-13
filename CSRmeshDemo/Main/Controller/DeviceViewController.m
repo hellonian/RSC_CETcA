@@ -419,13 +419,13 @@
             [self.levelSlider setValue:0 animated:YES];
             self.levelLabel.text = @"0%";
         }
-        if ([_device.supports integerValue]==1) {
+//        if ([_device.supports integerValue]==1) {
             if (!_colorTemperatureSliderIsMoving) {
                 [_colorTemperatureSlider setValue:(CGFloat)[_device.colorTemperature integerValue] animated:YES];
             }
             _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",[_device.colorTemperature integerValue]];
-        }
-        if ([_device.supports integerValue]==0) {
+//        }
+//        if ([_device.supports integerValue]==0) {
             UIColor *color = [UIColor colorWithRed:[_device.red integerValue]/255.0 green:[_device.green integerValue]/255.0 blue:[_device.blue integerValue]/255.0 alpha:1.0];
             CGFloat hue,saturation,brightness,alpha;
             if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
@@ -441,7 +441,7 @@
                     [self.colorSquareView locationPickView:hue colorSaturation:saturation];
                 }
             }
-        }
+//        }
         
         return;
     }

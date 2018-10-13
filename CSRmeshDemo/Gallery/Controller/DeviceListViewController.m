@@ -170,7 +170,7 @@
             NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
             [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-                if ([deviceEntity.shortName isEqualToString:@"D1-10IB"]) {
+                if ([deviceEntity.shortName isEqualToString:@"D1-10IB"]||[deviceEntity.shortName isEqualToString:@"D0/1-10IB"]) {
                     SingleDeviceModel *singleDevice = [[SingleDeviceModel alloc] init];
                     singleDevice.deviceId = deviceEntity.deviceId;
                     singleDevice.deviceName = deviceEntity.name;
@@ -601,9 +601,7 @@
 
 - (void)showControlMaskLayerWithAlpha:(CGFloat)percentage text:(NSString*)text {
     if (!_maskLayer.superview) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[UIApplication sharedApplication].keyWindow addSubview:self.maskLayer];
-        });
+        [[UIApplication sharedApplication].keyWindow addSubview:self.maskLayer];
     }
     [self.maskLayer updateProgress:percentage withText:text];
 }
