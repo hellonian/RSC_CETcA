@@ -76,7 +76,9 @@
     NSURL *storeURL = [[CSRUtilities documentsDirectoryPathURL] URLByAppendingPathComponent:@"CSRmesh.sqlite"];
     NSError *error = nil;
     NSString *failureReason = @"There was an error creating or loading the application's saved data.";
-    if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
+    
+    NSDictionary *optionDictionnary = @{NSMigratePersistentStoresAutomaticallyOption:[NSNumber numberWithBool:YES],NSInferMappingModelAutomaticallyOption:[NSNumber numberWithBool:YES]};
+    if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:optionDictionnary error:&error]) {
         // Report any error we got.
         NSMutableDictionary *dict = [NSMutableDictionary dictionary];
         dict[NSLocalizedDescriptionKey] = @"Failed to initialize the application's saved data";
@@ -599,7 +601,15 @@
         }
         
         //Common Method
-        return [self getFreeIdFromArray:[allIdsArray copy]];
+//        return [self getFreeIdFromArray:[allIdsArray copy]];
+        NSInteger objValue;
+        for (; ; ) {
+            objValue = arc4random()%32758+10;
+            if ([allIdsArray containsObject:[NSNumber numberWithInteger:objValue]]) {
+                continue;
+            }
+            return [NSNumber numberWithInteger:objValue];
+        }
         
     } else if ([typeString isEqualToString:@"GalleryEntity"]) {
         NSMutableArray *allIdsArray = [NSMutableArray new];
@@ -670,6 +680,9 @@
 }
 
 - (NSNumber *)getNextFreeTimerIDOfDeivice:(NSNumber *)deviceId {
+    CSRDeviceEntity *deviceEntity = [self getDeviceEntityWithId:deviceId];
+    NSLog(@">>>>> %@",deviceEntity.cvVersion);
+    NSInteger CVVersion = [deviceEntity.cvVersion integerValue];
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"TimerDeviceEntity"];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"deviceID == %@",deviceId]];
     request.predicate = predicate;
@@ -681,11 +694,40 @@
     NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
     [allTimerIndexs sortUsingDescriptors:[NSArray arrayWithObject:sort]];
     
+    NSInteger objValue;
+    if (CVVersion > 18) {
+        for (; ; ) {
+            objValue = arc4random()%16384+4096;
+            if ([allTimerIndexs containsObject:[NSNumber numberWithInteger:objValue]]) {
+                continue;
+            }
+            return [NSNumber numberWithInteger:objValue];
+        }
+    }else {
+        for (; ; ) {
+            objValue = arc4random()%32+16;
+            if ([allTimerIndexs containsObject:[NSNumber numberWithInteger:objValue]]) {
+                continue;
+            }
+            return [NSNumber numberWithInteger:objValue];
+        }
+    }
+    
+    /*
+    int maxValue = 0x2f;
     __block int previousAddress = 0x0f;
+    if (CVVersion > 18) {
+        previousAddress = 0x0fff;
+        maxValue = 0x4fff;
+    }
     __block BOOL found = NO;
     __block int objValue;
     if (!allTimerIndexs || (allTimerIndexs && [allTimerIndexs count] < 1)) {
-        return @(0x10);
+        if (CVVersion > 18) {
+            return @(0x1000);
+        }else {
+            return @(0x10);
+        }
     } else {
         
         [allTimerIndexs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -708,7 +750,7 @@
         }];
         
         if (!found) {
-            if (objValue != 0x2f) {
+            if (objValue != maxValue) {
                 // free Device Id
                 objValue ++;
                 found = YES;
@@ -721,6 +763,7 @@
         
         return @(objValue);
     }
+     */
     
 }
 

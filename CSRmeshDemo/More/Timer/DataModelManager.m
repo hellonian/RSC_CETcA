@@ -13,6 +13,7 @@
 #import "CSRDevicesManager.h"
 #import "CSRUtilities.h"
 #import "CSRDatabaseManager.h"
+#import "CSRDeviceEntity.h"
 
 @interface DataModelManager ()<DataModelApiDelegate>
 {
@@ -50,18 +51,27 @@ static DataModelManager *manager = nil;
 
 - (void)sendCmdData:(NSString *)hexStrCmd  toDeviceId:(NSNumber *)deviceId {
     if (deviceId) {
-//        [_manager sendData:deviceId data:[CSRUtilities dataForHexString:hexStrCmd] success:nil failure:nil];
-        [_manager sendData:deviceId data:[CSRUtilities dataForHexString:hexStrCmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-            
-        } failure:^(NSError * _Nonnull error) {
-            
-        }];
+        [_manager sendData:deviceId data:[CSRUtilities dataForHexString:hexStrCmd] success:nil failure:nil];
+//        [_manager sendData:deviceId data:[CSRUtilities dataForHexString:hexStrCmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+//
+//        } failure:^(NSError * _Nonnull error) {
+//
+//        }];
     }
     
 }
 
 //添加闹钟
 - (void)addAlarmForDevice:(NSNumber *)deviceId alarmIndex:(NSInteger)index enabled:(BOOL)enabled fireDate:(NSDate *)fireDate fireTime:(NSDate *)fireTime repeat:(NSString *)repeat eveType:(NSNumber *)alarnActionType level:(NSInteger)level eveD1:(NSString *)eveD1 eveD2:(NSString *)eveD2 eveD3:(NSString *)eveD3 {
+    
+    NSString *datalen;
+    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+    NSInteger CVVersion = [deviceEntity.cvVersion integerValue];
+    if (CVVersion > 18) {
+        datalen = @"16";
+    }else {
+        datalen = @"15";
+    }
     
     NSString *indexStr = [self stringWithHexNumber:index];
     NSString *YMdString;
@@ -87,7 +97,7 @@ static DataModelManager *manager = nil;
     NSString *eveD2String = [self stringWithHexNumber:[eveD2 integerValue]];
     NSString *eveD3String = [self stringWithHexNumber:[eveD3 integerValue]];
     
-    NSString *cmd = [NSString stringWithFormat:@"8315%@0%d%@%@%@%@%@%@%@%@00000000000000",indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString,eveD1String,eveD2String,eveD3String];
+    NSString *cmd = [NSString stringWithFormat:@"83%@%@0%d%@%@%@%@%@%@%@%@00000000000000",datalen,indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString,eveD1String,eveD2String,eveD3String];
     
     _schedule = [self analyzeTimeScheduleData:[NSString stringWithFormat:@"%@0%d%@%@%@%@%@0000000000",indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString] forLight:deviceId];
     
@@ -178,7 +188,13 @@ static DataModelManager *manager = nil;
     
     //添加闹钟回调
     if ([dataStr hasPrefix:@"a3"]) {
-        NSString *suffixStr = [dataStr substringWithRange:NSMakeRange(6, 2)];
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sourceDeviceId];
+        NSString *suffixStr;
+        if ([deviceEntity.cvVersion integerValue]>18) {
+            suffixStr = [dataStr substringWithRange:NSMakeRange(8, 2)];
+        }else {
+            suffixStr = [dataStr substringWithRange:NSMakeRange(6, 2)];
+        }
         [[NSNotificationCenter defaultCenter] postNotificationName:@"addAlarmCall" object:nil userInfo:@{@"addAlarmCall":suffixStr,@"deviceId":sourceDeviceId}];
 //        if ([suffixStr boolValue]&&self.delegate&&[self.delegate respondsToSelector:@selector(addAlarmSuccessCall:)]) {
 //            [self.delegate addAlarmSuccessCall:_schedule];
@@ -244,6 +260,16 @@ static DataModelManager *manager = nil;
     if ([dataStr hasPrefix:@"a8"]) {
         NSString *firmwareVersion = [dataStr substringWithRange:NSMakeRange(16, 2)];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"getFirmwareVersion" object:nil userInfo:@{@"getFirmwareVersion":@([CSRUtilities numberWithHexString:firmwareVersion]),@"deviceId":sourceDeviceId}];
+        NSString *CVVersionStr;
+        if ([dataStr length] == 20) {
+            CVVersionStr = [dataStr substringWithRange:NSMakeRange(18, 2)];
+        }else {
+            CVVersionStr = @"12";
+        }
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sourceDeviceId];
+        deviceEntity.firVersion = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:firmwareVersion]];
+        deviceEntity.cvVersion = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:CVVersionStr]];
+        [[CSRDatabaseManager sharedInstance] saveContext];
     }
     
     //获取遥控器电量

@@ -271,6 +271,8 @@
         
     }
     
+    [[DataModelManager shareInstance] sendCmdData:@"880100" toDeviceId:deviceId];
+    
 }
 
 - (void)didGetDeviceInfo:(NSNumber * _Nonnull)deviceId  infoType:(NSNumber * _Nonnull)infoType information:(NSData * _Nonnull)information meshRequestId:(NSNumber * _Nonnull)meshRequestId

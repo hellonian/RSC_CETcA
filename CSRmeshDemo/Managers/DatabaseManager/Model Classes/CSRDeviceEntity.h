@@ -29,6 +29,8 @@
 @property (nonatomic, retain) NSNumber *isEditting;
 @property (nonatomic, retain) NSString * remoteBranch;
 @property (nonatomic, retain) NSSet *rgbScenes;
+@property (nonatomic, retain) NSNumber *cvVersion;
+@property (nonatomic, retain) NSNumber *firVersion;
 
 @end
 

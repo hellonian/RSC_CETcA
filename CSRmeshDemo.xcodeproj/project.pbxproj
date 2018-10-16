@@ -491,6 +491,7 @@
 		2EC8BB3321460F0E002ED85F /* MusicPlayTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicPlayTools.h; sourceTree = "<group>"; };
 		2EC8BB35214653AF002ED85F /* MeterTable.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MeterTable.mm; sourceTree = "<group>"; };
 		2EC8BB36214653AF002ED85F /* MeterTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeterTable.h; sourceTree = "<group>"; };
+		2ED20A5E217467EC000DFFAC /* CSRmesh 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "CSRmesh 2.xcdatamodel"; sourceTree = "<group>"; };
 		2ED23F6F215DCCCA0040A922 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CurtainViewController.xib; sourceTree = "<group>"; };
 		2ED23F72215DCCCE0040A922 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
 		2ED23F74215DCCD00040A922 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/CurtainViewController.strings"; sourceTree = "<group>"; };
@@ -2136,9 +2137,10 @@
 		CEE5E7381B398ABB0039F83C /* CSRmesh.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				2ED20A5E217467EC000DFFAC /* CSRmesh 2.xcdatamodel */,
 				CEE5E7391B398ABB0039F83C /* CSRmesh.xcdatamodel */,
 			);
-			currentVersion = CEE5E7391B398ABB0039F83C /* CSRmesh.xcdatamodel */;
+			currentVersion = 2ED20A5E217467EC000DFFAC /* CSRmesh 2.xcdatamodel */;
 			path = CSRmesh.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

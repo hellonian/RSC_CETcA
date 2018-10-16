@@ -29,5 +29,7 @@
 @dynamic isEditting;
 @dynamic remoteBranch;
 @dynamic rgbScenes;
+@dynamic cvVersion;
+@dynamic firVersion;
 
 @end

@@ -35,49 +35,64 @@
     
     [self creatHud];
     
-    [self.tabBarView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    NSLayoutConstraint *left = [NSLayoutConstraint constraintWithItem:self.tabBarView
-                                                            attribute:NSLayoutAttributeLeft
-                                                            relatedBy:NSLayoutRelationEqual
-                                                               toItem:self.view
-                                                            attribute:NSLayoutAttributeLeft
-                                                           multiplier:1.0
-                                                             constant:0];
-    NSLayoutConstraint *right = [NSLayoutConstraint constraintWithItem:self.tabBarView
-                                                             attribute:NSLayoutAttributeRight
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.view
-                                                             attribute:NSLayoutAttributeRight
-                                                            multiplier:1.0
-                                                              constant:0];
-    NSLayoutConstraint *height = [NSLayoutConstraint constraintWithItem:self.tabBarView
-                                                              attribute:NSLayoutAttributeHeight
-                                                              relatedBy:NSLayoutRelationLessThanOrEqual
-                                                                 toItem:nil
-                                                              attribute:NSLayoutAttributeNotAnAttribute
-                                                             multiplier:1.0
-                                                               constant:49.0];
-    NSLayoutConstraint *bottom;
-    if (@available(iOS 11.0, *)) {
-        bottom = [NSLayoutConstraint constraintWithItem:self.tabBarView
-                                              attribute:NSLayoutAttributeBottom
-                                              relatedBy:NSLayoutRelationEqual
-                                                 toItem:self.view.safeAreaLayoutGuide
-                                              attribute:NSLayoutAttributeBottom
-                                             multiplier:1.0
-                                               constant:0];
+//    [self.tabBarView setTranslatesAutoresizingMaskIntoConstraints:NO];
+//    NSLayoutConstraint *left = [NSLayoutConstraint constraintWithItem:self.tabBarView
+//                                                            attribute:NSLayoutAttributeLeft
+//                                                            relatedBy:NSLayoutRelationEqual
+//                                                               toItem:self.view
+//                                                            attribute:NSLayoutAttributeLeft
+//                                                           multiplier:1.0
+//                                                             constant:0];
+//    NSLayoutConstraint *right = [NSLayoutConstraint constraintWithItem:self.tabBarView
+//                                                             attribute:NSLayoutAttributeRight
+//                                                             relatedBy:NSLayoutRelationEqual
+//                                                                toItem:self.view
+//                                                             attribute:NSLayoutAttributeRight
+//                                                            multiplier:1.0
+//                                                              constant:0];
+//    NSLayoutConstraint *height = [NSLayoutConstraint constraintWithItem:self.tabBarView
+//                                                              attribute:NSLayoutAttributeHeight
+//                                                              relatedBy:NSLayoutRelationLessThanOrEqual
+//                                                                 toItem:nil
+//                                                              attribute:NSLayoutAttributeNotAnAttribute
+//                                                             multiplier:1.0
+//                                                               constant:49.0];
+//    NSLayoutConstraint *bottom;
+//    if (@available(iOS 11.0, *)) {
+//        bottom = [NSLayoutConstraint constraintWithItem:self.tabBarView
+//                                              attribute:NSLayoutAttributeBottom
+//                                              relatedBy:NSLayoutRelationEqual
+//                                                 toItem:self.view.safeAreaLayoutGuide
+//                                              attribute:NSLayoutAttributeBottom
+//                                             multiplier:1.0
+//                                               constant:0];
+//    }else {
+//        bottom = [NSLayoutConstraint constraintWithItem:self.tabBarView
+//                                              attribute:NSLayoutAttributeBottom
+//                                              relatedBy:NSLayoutRelationEqual
+//                                                 toItem:self.view
+//                                              attribute:NSLayoutAttributeBottom
+//                                             multiplier:1.0
+//                                               constant:0];
+//    }
+//
+//    [NSLayoutConstraint activateConstraints:@[left,right,height,bottom]];
+    
+}
+
+-(void)viewWillLayoutSubviews{
+    [super viewWillLayoutSubviews];
+    if (self.tabBar.frame.size.height == 83) {
+        [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+        [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+        [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:34.0f];
+        [self.tabBarView autoSetDimension:ALDimensionHeight toSize:49.0f];
     }else {
-        bottom = [NSLayoutConstraint constraintWithItem:self.tabBarView
-                                              attribute:NSLayoutAttributeBottom
-                                              relatedBy:NSLayoutRelationEqual
-                                                 toItem:self.view
-                                              attribute:NSLayoutAttributeBottom
-                                             multiplier:1.0
-                                               constant:0];
+        [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+        [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+        [self.tabBarView autoPinEdgeToSuperviewEdge:ALEdgeBottom];
+        [self.tabBarView autoSetDimension:ALDimensionHeight toSize:49.0f];
     }
-    
-    [NSLayoutConstraint activateConstraints:@[left,right,height,bottom]];
-    
 }
 
 -(void)didSelectedAtIndex:(NSInteger)index{
