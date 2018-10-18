@@ -525,6 +525,14 @@
 }
 
 - (void)doneAction {
+    
+//    for (SceneMemberEntity *sceneMember in _selectedScene.members) {
+//        if (_newadd) {
+//            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sceneMember.deviceID];
+//            NSLog(@"%@ | %@ | %@ | %@ ",deviceEntity.name,deviceEntity.deviceId,deviceEntity.cvVersion,deviceEntity.firVersion);
+//        }
+//    }
+    
     [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
     _hud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
     _hud.mode = MBProgressHUDModeIndeterminate;
@@ -612,7 +620,7 @@
             eveD1 = [colorTemperatureStr substringToIndex:2];
             eveD2 = [colorTemperatureStr substringFromIndex:2];
         }
-        
+        NSLog(@"%@ -----> %@",sceneMember.deviceID,timerIndex);
         [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.eveType level:[sceneMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3];
         
         [NSThread sleepForTimeInterval:0.03f];

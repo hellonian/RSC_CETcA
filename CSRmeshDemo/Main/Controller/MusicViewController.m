@@ -43,6 +43,7 @@
 
 - (IBAction)playPause:(UIButton *)sender {
     if ([MusicPlayTools shareMusicPlay].mediaItem) {
+        [MusicPlayTools shareMusicPlay].deviceId = _deviceId;
         if ([MusicPlayTools shareMusicPlay].audioPlayer.playing) {
             [[MusicPlayTools shareMusicPlay] musicPause];
         }else {

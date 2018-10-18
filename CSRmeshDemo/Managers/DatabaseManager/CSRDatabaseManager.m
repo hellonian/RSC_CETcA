@@ -681,7 +681,6 @@
 
 - (NSNumber *)getNextFreeTimerIDOfDeivice:(NSNumber *)deviceId {
     CSRDeviceEntity *deviceEntity = [self getDeviceEntityWithId:deviceId];
-    NSLog(@">>>>> %@",deviceEntity.cvVersion);
     NSInteger CVVersion = [deviceEntity.cvVersion integerValue];
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"TimerDeviceEntity"];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"deviceID == %@",deviceId]];

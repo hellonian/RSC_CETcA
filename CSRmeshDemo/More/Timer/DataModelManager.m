@@ -73,7 +73,7 @@ static DataModelManager *manager = nil;
         datalen = @"15";
     }
     
-    NSString *indexStr = [self stringWithHexNumber:index];
+    NSString *indexStr = [CSRUtilities stringWithHexNumber:index];
     NSString *YMdString;
     if (fireDate) {
         YMdString = [self YMdStringForDate:fireDate];
@@ -87,15 +87,15 @@ static DataModelManager *manager = nil;
     
     NSString *hmsString = [self hmsStringForDate:fireTime];
     
-    NSString *levelString = [self stringWithHexNumber:level];
+    NSString *levelString = [CSRUtilities stringWithHexNumber:level];
     
     NSString *repeatNumberStr = [self toDecimalSystemWithBinarySystem:repeat];
     
-    NSString *repeatString = [self stringWithHexNumber:[repeatNumberStr integerValue]];
+    NSString *repeatString = [CSRUtilities stringWithHexNumber:[repeatNumberStr integerValue]];
     
-    NSString *eveD1String = [self stringWithHexNumber:[eveD1 integerValue]];
-    NSString *eveD2String = [self stringWithHexNumber:[eveD2 integerValue]];
-    NSString *eveD3String = [self stringWithHexNumber:[eveD3 integerValue]];
+    NSString *eveD1String = [CSRUtilities stringWithHexNumber:[eveD1 integerValue]];
+    NSString *eveD2String = [CSRUtilities stringWithHexNumber:[eveD2 integerValue]];
+    NSString *eveD3String = [CSRUtilities stringWithHexNumber:[eveD3 integerValue]];
     
     NSString *cmd = [NSString stringWithFormat:@"83%@%@0%d%@%@%@%@%@%@%@%@00000000000000",datalen,indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString,eveD1String,eveD2String,eveD3String];
     
@@ -112,7 +112,19 @@ static DataModelManager *manager = nil;
 
 //读取单灯闹钟列表
 - (void)readAlarmMessageByDeviceId:(NSNumber *)deviceId {
-    [self sendCmdData:@"820100" toDeviceId:deviceId];
+    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+    if (deviceId) {
+        if ([deviceEntity.cvVersion integerValue]>18) {
+            [_manager sendData:deviceId data:[CSRUtilities dataForHexString:@"820100"] success:nil failure:nil];
+        }else {
+            [_manager sendData:deviceId data:[CSRUtilities dataForHexString:@"820100"] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                
+            } failure:^(NSError * _Nonnull error) {
+                
+            }];
+        }
+    }
+//    [self sendCmdData:@"820100" toDeviceId:deviceId];
 }
 
 //同步设备时间
@@ -128,33 +140,61 @@ static DataModelManager *manager = nil;
 
 //读取设备时间
 - (void)readDeviceTime:(NSNumber *)deviceId {
-    [self sendCmdData:@"810100" toDeviceId:deviceId];
+    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+    if (deviceId) {
+        if ([deviceEntity.cvVersion integerValue]>18) {
+            [_manager sendData:deviceId data:[CSRUtilities dataForHexString:@"810100"] success:nil failure:nil];
+        }else {
+            [_manager sendData:deviceId data:[CSRUtilities dataForHexString:@"810100"] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                
+            } failure:^(NSError * _Nonnull error) {
+                
+            }];
+        }
+    }
+//    [self sendCmdData:@"810100" toDeviceId:deviceId];
 }
 
 //关闭和开启闹钟
 - (void)enAlarmForDevice:(NSNumber *)deviceId stata:(BOOL)state index:(NSInteger)index {
+    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+    NSString *indexString = [CSRUtilities stringWithHexNumber:index];
+    if ([deviceEntity.cvVersion integerValue]>18) {
+        indexString = [self exchangeLowHight:indexString];
+    }
     NSString *stataString = [NSString stringWithFormat:@"0%d",state];
-    NSString *indexString = [self stringWithHexNumber:index];
     NSString *cmd = [NSString stringWithFormat:@"8402%@%@",indexString,stataString];
     if (deviceId) {
-        [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-            
-        } failure:^(NSError * _Nonnull error) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"changeAlarmEnabledCall" object:nil userInfo:@{@"deviceId":deviceId,@"changeAlarmEnabledCall":@"00"}];
-        }];
+        if ([deviceEntity.cvVersion integerValue]>18) {
+            [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:nil failure:nil];
+        }else {
+            [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                
+            } failure:^(NSError * _Nonnull error) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"changeAlarmEnabledCall" object:nil userInfo:@{@"deviceId":deviceId,@"changeAlarmEnabledCall":@"00"}];
+            }];
+        }
     }
 }
 
 //删除设备闹钟
 - (void)deleteAlarmForDevice:(NSNumber *)deviceId index:(NSInteger)index {
-    NSString *indexString = [self stringWithHexNumber:index];
+    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+    NSString *indexString = [CSRUtilities stringWithHexNumber:index];
+    if ([deviceEntity.cvVersion integerValue]>18) {
+        indexString = [self exchangeLowHight:indexString];
+    }
     NSString *cmd = [NSString stringWithFormat:@"8501%@",indexString];
     if (deviceId) {
-        [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-            
-        } failure:^(NSError * _Nonnull error) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteAlarmCall" object:nil userInfo:@{@"deviceId":deviceId,@"deleteAlarmCall":@"00"}];
-        }];
+        if ([deviceEntity.cvVersion integerValue]>18) {
+            [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:nil failure:nil];
+        }else {
+            [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                
+            } failure:^(NSError * _Nonnull error) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteAlarmCall" object:nil userInfo:@{@"deviceId":deviceId,@"deleteAlarmCall":@"00"}];
+            }];
+        }
     }
 }
 
@@ -203,13 +243,25 @@ static DataModelManager *manager = nil;
     
     //删除闹钟回调
     if ([dataStr hasPrefix:@"a5"]) {
-        NSString *suffixStr = [dataStr substringWithRange:NSMakeRange(6, 2)];
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sourceDeviceId];
+        NSString *suffixStr;
+        if ([deviceEntity.cvVersion integerValue]>18) {
+            suffixStr = [dataStr substringWithRange:NSMakeRange(8, 2)];
+        }else {
+            suffixStr = [dataStr substringWithRange:NSMakeRange(6, 2)];
+        }
         [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteAlarmCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"deleteAlarmCall":suffixStr}];
     }
     
     //关闭或开启闹钟回调
     if ([dataStr hasPrefix:@"a4"]) {
-        NSString *suffixStr = [dataStr substringWithRange:NSMakeRange(6, 2)];
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sourceDeviceId];
+        NSString *suffixStr;
+        if ([deviceEntity.cvVersion integerValue]>18) {
+            suffixStr = [dataStr substringWithRange:NSMakeRange(8, 2)];
+        }else {
+            suffixStr = [dataStr substringWithRange:NSMakeRange(6, 2)];
+        }
         [[NSNotificationCenter defaultCenter] postNotificationName:@"changeAlarmEnabledCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"changeAlarmEnabledCall":suffixStr}];
     }
     
@@ -418,9 +470,9 @@ static DataModelManager *manager = nil;
     NSString *dateStr = [formatter stringFromDate:date];
     NSArray *YMdAry = [dateStr componentsSeparatedByString:@":"];
     
-    NSString *year = [self stringWithHexNumber:[[YMdAry[0] substringWithRange:NSMakeRange(2, 2)] integerValue]];
-    NSString *month = [self stringWithHexNumber:[YMdAry[1] integerValue]];
-    NSString *day = [self stringWithHexNumber:[YMdAry[2] integerValue]];
+    NSString *year = [CSRUtilities stringWithHexNumber:[[YMdAry[0] substringWithRange:NSMakeRange(2, 2)] integerValue]];
+    NSString *month = [CSRUtilities stringWithHexNumber:[YMdAry[1] integerValue]];
+    NSString *day = [CSRUtilities stringWithHexNumber:[YMdAry[2] integerValue]];
     NSString *YMdString = [NSString stringWithFormat:@"%@%@%@",year,month,day];
     return YMdString;
 }
@@ -431,9 +483,9 @@ static DataModelManager *manager = nil;
     NSString *dateStr = [formatter stringFromDate:date];
     NSArray *hmsAry = [dateStr componentsSeparatedByString:@":"];
     
-    NSString *hour = [self stringWithHexNumber:[hmsAry[0] integerValue]];
-    NSString *minute = [self stringWithHexNumber:[hmsAry[1] integerValue]];
-    NSString *second = [self stringWithHexNumber:[hmsAry[2] integerValue]];
+    NSString *hour = [CSRUtilities stringWithHexNumber:[hmsAry[0] integerValue]];
+    NSString *minute = [CSRUtilities stringWithHexNumber:[hmsAry[1] integerValue]];
+    NSString *second = [CSRUtilities stringWithHexNumber:[hmsAry[2] integerValue]];
     NSString *hmsString = [NSString stringWithFormat:@"%@%@%@",hour,minute,second];
     return hmsString;
 }
@@ -528,19 +580,6 @@ static DataModelManager *manager = nil;
     
     return binaryString;
     
-}
-
-//十进制数转十六进制字符串
-- (NSString *)stringWithHexNumber:(NSUInteger)hexNumber{
-    
-    char hexChar[6];
-    sprintf(hexChar, "%x", (int)hexNumber);
-    
-    NSString *hexString = [NSString stringWithCString:hexChar encoding:NSUTF8StringEncoding];
-    if (hexString.length == 1) {
-        hexString = [NSString stringWithFormat:@"0%@",hexString];
-    }
-    return hexString;
 }
 
 //二进制字符串 转 十进制字符串

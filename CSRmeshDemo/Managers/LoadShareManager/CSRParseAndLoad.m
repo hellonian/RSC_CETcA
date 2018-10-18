@@ -440,7 +440,7 @@
                 for (int i = 0; i<8; i++) {
                     int j = i*2;
                     NSString *str = [device.groups substringWithRange:NSMakeRange(j, 2)];
-                    NSNumber *num = @([str integerValue]);
+                    NSNumber *num = @([CSRUtilities numberWithHexString:str]);
                     [groupsInArray addObject:num];
                 }
                 
