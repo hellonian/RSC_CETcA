@@ -33,17 +33,11 @@
 
 
 @interface DiscoverViewController ()<UITableViewDelegate,UITableViewDataSource,CSRBluetoothLEDelegate>
-{
-    NSInteger SLatestV;
-    NSInteger DLatestV;
-    NSInteger RfLatestV;
-    NSInteger RoLatestV;
-    NSInteger DHLatestV;
-}
 
 @property (strong, nonatomic) NSIndexPath *selectedCell;
 @property (nonatomic,strong) NSMutableArray *devices;
 @property (nonatomic,strong) NSArray *appDevices;
+@property (nonatomic,strong) NSDictionary *latestDic;
 
 @end
 
@@ -76,12 +70,8 @@
     AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
     sessionManager.responseSerializer.acceptableContentTypes = nil;
     [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
-        NSDictionary *dic = (NSDictionary *)responseObject;
-        DHLatestV = [dic[@"D350B-H"] integerValue];
-        SLatestV = [dic[@"S350BT"] integerValue];
-        DLatestV = [dic[@"D350BT"] integerValue];
-        RfLatestV = [dic[@"RB01"] integerValue];
-        RoLatestV = [dic[@"RB02"] integerValue];
+        _latestDic = (NSDictionary *)responseObject;
+        NSLog(@"%@",_latestDic);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"%@",error);
     }];
@@ -142,27 +132,15 @@
 
     UpdateDeviceModel *upModel = [_devices objectAtIndex:indexPath.row];
     cell.textLabel.text = upModel.name;
-    if (upModel.isLatest) {
-        if ([upModel.kind isEqualToString:@"D350BT"]) {
-            cell.detailTextLabel.text = [NSString stringWithFormat:@"Dimmer   Version:%ld   Lastest",(long)upModel.firwareVersion];
-        }else if ([upModel.kind isEqualToString:@"S350BT"]) {
-            cell.detailTextLabel.text = [NSString stringWithFormat:@"Switch   Version:%ld   Lastest",(long)upModel.firwareVersion];
-        }else {
-            cell.detailTextLabel.text = [NSString stringWithFormat:@"%@   Version:%ld   Lastest",upModel.kind,(long)upModel.firwareVersion];
-        }
+    if (!upModel.needUpdate) {
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"%@   Version:%ld   Lastest",upModel.kind,(long)upModel.firwareVersion];
         
         cell.detailTextLabel.textColor = [UIColor darkTextColor];
     }else{
-        if ([upModel.kind isEqualToString:@"D350BT"]) {
-            cell.detailTextLabel.text = [NSString stringWithFormat:@"Dimmer   Version:%ld   Need update",(long)upModel.firwareVersion];
-        }else if ([upModel.kind isEqualToString:@"S350BT"]) {
-            cell.detailTextLabel.text = [NSString stringWithFormat:@"Switch   Version:%ld   Need update",(long)upModel.firwareVersion];
-        }else {
-            cell.detailTextLabel.text = [NSString stringWithFormat:@"%@   Version:%ld   Need update",upModel.kind,(long)upModel.firwareVersion];
-        }
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"%@   Version:%ld   Need update",upModel.kind,(long)upModel.firwareVersion];
+        
         cell.detailTextLabel.textColor = DARKORAGE;
     }
-    
     
 	return cell;
 }
@@ -171,9 +149,10 @@
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     UpdateDeviceModel *model = [_devices objectAtIndex:indexPath.row];
     
-    if (!model.isLatest) {
+    if (model.needUpdate) {
         NSArray *connectedPeripherals = [[CSRBluetoothLE sharedInstance] connectedPeripherals];
         for (CBPeripheral *connectedPeripheral  in connectedPeripherals) {
             if ([connectedPeripheral state] == CBPeripheralStateConnected) {
@@ -274,44 +253,19 @@
     NSDictionary *dic = notification.userInfo;
     NSNumber *deviceId = dic[@"deviceId"];
     NSInteger firmwareVersion = [dic[@"getFirmwareVersion"] integerValue];
+    NSArray *allKeyArray = [_latestDic allKeys];
     [_devices enumerateObjectsUsingBlock:^(UpdateDeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([deviceId isEqualToNumber:model.deviceId]) {
             model.firwareVersion = firmwareVersion;
-            if ([model.kind isEqualToString:@"S350BT"]) {
-                if (firmwareVersion < SLatestV) {
-                    model.isLatest = NO;
-                }else{
-                    model.isLatest = YES;
+            if ([allKeyArray containsObject:model.kind]) {
+                NSInteger latestV = [[_latestDic objectForKey:model.kind] integerValue];
+                if (firmwareVersion < latestV) {
+                    model.needUpdate = YES;
+                }else {
+                    model.needUpdate = NO;
                 }
             }
-            if ([model.kind isEqualToString:@"D350BT"]) {
-                if (firmwareVersion < DLatestV) {
-                    model.isLatest = NO;
-                }else{
-                    model.isLatest = YES;
-                }
-            }
-            if ([model.kind isEqualToString:@"RB01"]) {
-                if (firmwareVersion < RfLatestV) {
-                    model.isLatest = NO;
-                }else{
-                    model.isLatest = YES;
-                }
-            }
-            if ([model.kind isEqualToString:@"RB02"]) {
-                if (firmwareVersion < RoLatestV) {
-                    model.isLatest = NO;
-                }else{
-                    model.isLatest = YES;
-                }
-            }
-            if ([model.kind isEqualToString:@"D350B-H"]) {
-                if (firmwareVersion < DHLatestV) {
-                    model.isLatest = NO;
-                }else{
-                    model.isLatest = YES;
-                }
-            }
+            
             *stop = YES;
         }
     }];

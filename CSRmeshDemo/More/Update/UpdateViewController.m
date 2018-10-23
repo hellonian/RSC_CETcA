@@ -76,26 +76,16 @@
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-}
+//- (void)viewWillAppear:(BOOL)animated {
+//    [super viewWillAppear:animated];
+//}
 -(void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     
-    NSArray *imgAry = @[@"S350BT",@"D350BT",@"RB01",@"RB02",@"D350B-H"];
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    for (NSString *imgStr in imgAry) {
-        NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/%@.img",imgStr]];
-        BOOL result = [fileManager fileExistsAtPath:path];
-        if (result) {
-            [fileManager removeItemAtPath:path error:nil];
-        }
-    }
-    
-    NSString *inboxPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Inbox"];
-    BOOL inboxResult = [fileManager fileExistsAtPath:inboxPath];
-    if (inboxResult) {
-        [fileManager removeItemAtPath:inboxPath error:nil];
+    NSString *DocumentsPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
+    NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtPath:DocumentsPath];
+    for (NSString *fileName in enumerator) {
+        [[NSFileManager defaultManager] removeItemAtPath:[DocumentsPath stringByAppendingPathComponent:fileName] error:nil];
     }
     
 }
@@ -222,7 +212,7 @@
 }
 
 -(void) clearTarget {
-    [_targetName setTitle:@"set target" forState:UIControlStateNormal];
+    [_targetName setTitle:@" " forState:UIControlStateNormal];
     [_targetName setAlpha:1.0];
     _targetModel=nil;
     [self setStartAndAbortButtonLook];
@@ -237,7 +227,7 @@
     }
     else {
         
-        if (![_targetName.titleLabel.text isEqualToString:@"set target"]&&[_firmwareName.titleLabel.text isEqualToString:@"set filename"]) {
+        if (![_targetName.titleLabel.text isEqualToString:@" "]&&[_firmwareName.titleLabel.text isEqualToString:@"Download the firmware"]) {
             [_firmwareName setEnabled:YES];
         }else {
             [_firmwareName setEnabled:NO];

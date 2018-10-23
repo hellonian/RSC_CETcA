@@ -66,14 +66,15 @@ static DataModelManager *manager = nil;
     
     NSString *datalen;
     CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+    NSString *indexStr = [CSRUtilities stringWithHexNumber:index];
     NSInteger CVVersion = [deviceEntity.cvVersion integerValue];
     if (CVVersion > 18) {
         datalen = @"16";
+        indexStr = [self exchangeLowHight:indexStr];
     }else {
         datalen = @"15";
     }
     
-    NSString *indexStr = [CSRUtilities stringWithHexNumber:index];
     NSString *YMdString;
     if (fireDate) {
         YMdString = [self YMdStringForDate:fireDate];
@@ -163,11 +164,13 @@ static DataModelManager *manager = nil;
         indexString = [self exchangeLowHight:indexString];
     }
     NSString *stataString = [NSString stringWithFormat:@"0%d",state];
-    NSString *cmd = [NSString stringWithFormat:@"8402%@%@",indexString,stataString];
+    
     if (deviceId) {
         if ([deviceEntity.cvVersion integerValue]>18) {
+            NSString *cmd = [NSString stringWithFormat:@"8403%@%@",indexString,stataString];
             [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:nil failure:nil];
         }else {
+            NSString *cmd = [NSString stringWithFormat:@"8402%@%@",indexString,stataString];
             [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
                 
             } failure:^(NSError * _Nonnull error) {
@@ -184,11 +187,13 @@ static DataModelManager *manager = nil;
     if ([deviceEntity.cvVersion integerValue]>18) {
         indexString = [self exchangeLowHight:indexString];
     }
-    NSString *cmd = [NSString stringWithFormat:@"8501%@",indexString];
+    
     if (deviceId) {
         if ([deviceEntity.cvVersion integerValue]>18) {
+            NSString *cmd = [NSString stringWithFormat:@"8502%@",indexString];
             [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:nil failure:nil];
         }else {
+            NSString *cmd = [NSString stringWithFormat:@"8501%@",indexString];
             [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
                 
             } failure:^(NSError * _Nonnull error) {

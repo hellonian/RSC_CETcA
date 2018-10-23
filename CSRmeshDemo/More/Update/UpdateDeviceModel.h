@@ -16,6 +16,6 @@
 @property (nonatomic,strong) NSString *kind;
 @property (nonatomic,assign) NSInteger firwareVersion;
 @property (nonatomic,strong) NSNumber *deviceId;
-@property (nonatomic,assign) BOOL isLatest;
+@property (nonatomic,assign) BOOL needUpdate;
 
 @end

@@ -77,8 +77,6 @@
     self.navigationItem.rightBarButtonItem = edit;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reGetDataForPlaceChanged) name:@"reGetDataForPlaceChanged" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeConnectedNotification:) name:@"BridgeConnectedNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeDisconnectedNotification:) name:@"BridgeDisconnectedNotification" object:nil];
     
     self.improver = [[ImproveTouchingExperience alloc] init];
     
@@ -196,19 +194,6 @@
     [self getMainDataArray];
     [self getSceneDataArray];
     
-}
-
-- (void)bridgeConnectedNotification:(NSNotification *)notification {
-    NSDictionary *dic = notification.userInfo;
-    CBPeripheral *peripheral = dic[@"peripheral"];
-    _connectedBridgeLabel.text = [NSString stringWithFormat:@"%@  %@",peripheral.name,peripheral.uuidString];
-//    _connectedBridgeLabel.text = @"Connected";
-    _connectedBridgeLabel.textColor = [UIColor darkTextColor];
-}
-
-- (void)bridgeDisconnectedNotification:(NSNotification *)notification {
-    _connectedBridgeLabel.text = @"Not Available";
-    _connectedBridgeLabel.textColor = DARKORAGE;
 }
 
 - (void)viewWillAppear:(BOOL)animated {

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -114,7 +114,8 @@
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ihm-Of-aM9">
                     <rect key="frame" x="16" y="198" width="343" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <state key="normal" title="set target">
+                    <state key="normal" title=" ">
+                        <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </state>
                 </button>
@@ -139,7 +140,7 @@
                 <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pMm-5U-MDg">
                     <rect key="frame" x="16" y="240" width="343" height="21"/>
                     <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="17"/>
-                    <state key="normal" title="set filename"/>
+                    <state key="normal" title="Download the firmware"/>
                     <connections>
                         <action selector="chooseFirmare:" destination="-1" eventType="touchUpInside" id="5pf-d4-lfO"/>
                     </connections>
@@ -158,7 +159,7 @@
                     <rect key="frame" x="16" y="281" width="343" height="2"/>
                 </progressView>
                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZDs-cq-VNq">
-                    <rect key="frame" x="158" y="291" width="58" height="49"/>
+                    <rect key="frame" x="158.5" y="291" width="58" height="49"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="58" id="0B9-36-iPf"/>
                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="58" id="5rR-IE-Wip"/>
@@ -193,7 +194,7 @@
                     </connections>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Ll-46-2lJ">
-                    <rect key="frame" x="166" y="261" width="42" height="21"/>
+                    <rect key="frame" x="166.5" y="261" width="42" height="21"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="42" id="HSh-UY-bRF"/>
                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="42" id="owt-Xx-WkR"/>
