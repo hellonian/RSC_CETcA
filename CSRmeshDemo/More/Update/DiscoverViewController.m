@@ -133,7 +133,7 @@
     UpdateDeviceModel *upModel = [_devices objectAtIndex:indexPath.row];
     cell.textLabel.text = upModel.name;
     if (!upModel.needUpdate) {
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"%@   Version:%ld   Lastest",upModel.kind,(long)upModel.firwareVersion];
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"%@   Version:%ld   Latest",upModel.kind,(long)upModel.firwareVersion];
         
         cell.detailTextLabel.textColor = [UIColor darkTextColor];
     }else{

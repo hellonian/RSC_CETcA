@@ -35,8 +35,6 @@
     }else {
         [_deviceAdress autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:74.0f];
     }
-    UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(popToRootViewController)];
-    self.navigationItem.rightBarButtonItem = left;
     
     [[OTAU sharedInstance] setOTAUDelegate:self];
     
@@ -69,24 +67,6 @@
     [[CSRBluetoothLE sharedInstance] setBleDelegate:nil];
     [[CSRBluetoothLE sharedInstance] stopScan];
     [self setStartAndAbortButtonLook];
-    
-}
-
--(void)popToRootViewController {
-    [self.navigationController popToRootViewControllerAnimated:YES];
-}
-
-//- (void)viewWillAppear:(BOOL)animated {
-//    [super viewWillAppear:animated];
-//}
--(void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    
-    NSString *DocumentsPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
-    NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtPath:DocumentsPath];
-    for (NSString *fileName in enumerator) {
-        [[NSFileManager defaultManager] removeItemAtPath:[DocumentsPath stringByAppendingPathComponent:fileName] error:nil];
-    }
     
 }
 

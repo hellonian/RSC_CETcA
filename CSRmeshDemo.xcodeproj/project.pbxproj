@@ -97,7 +97,7 @@
 		2E5A5874213788F900E416F9 /* FavoriteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E5A5872213788F900E416F9 /* FavoriteViewController.xib */; };
 		2E5A58782137896500E416F9 /* RGBDeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E5A58762137896500E416F9 /* RGBDeviceViewController.m */; };
 		2E5A587D21378B6800E416F9 /* MusicViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E5A587B21378B6800E416F9 /* MusicViewController.m */; };
-		2E5EA0D3217EABDF00554825 /* acteclogo@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E5EA0D2217EABDF00554825 /* acteclogo@3x.png */; };
+		2E5EA0D7217F123700554825 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E5EA0D6217F123700554825 /* LaunchScreen.storyboard */; };
 		2E6A02131F39884500111312 /* TabBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A020E1F39884500111312 /* TabBarButton.m */; };
 		2E6A02141F39884500111312 /* TabBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A02101F39884500111312 /* TabBarView.m */; };
 		2E6A021A1F39893400111312 /* MainTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A02171F39893400111312 /* MainTabBarController.m */; };
@@ -124,7 +124,6 @@
 		2ED23F6E215DCCCA0040A922 /* CurtainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2ED23F70215DCCCA0040A922 /* CurtainViewController.xib */; };
 		2ED3963C204D09A00068B666 /* TimerEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963B204D09A00068B666 /* TimerEntity.m */; };
 		2ED3963F204D09D20068B666 /* TimerDeviceEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */; };
-		2ED974471F3AED0F000F20C9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2ED974491F3AED0F000F20C9 /* LaunchScreen.storyboard */; };
 		2EDF04DB213D14CA00B9E92F /* SRGBSceneDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF04D9213D14CA00B9E92F /* SRGBSceneDetailViewController.m */; };
 		2EDF04E0213D151300B9E92F /* MRGBSceneDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF04DE213D151300B9E92F /* MRGBSceneDetailViewController.m */; };
 		2EE50F2D20DA3E3D00B484F7 /* LightSensorSettingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EE50F2F20DA3E3D00B484F7 /* LightSensorSettingViewController.xib */; };
@@ -228,7 +227,6 @@
 		2E0AA2202126761900DB45EB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/AboutViewController.xib; sourceTree = "<group>"; };
 		2E0AA2232126762100DB45EB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/AboutViewController.strings; sourceTree = "<group>"; };
 		2E0AA2252126762300DB45EB /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/AboutViewController.strings"; sourceTree = "<group>"; };
-		2E0AA2292126766A00DB45EB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		2E1C839F20CFD782009BCC6D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PlaceDetailsViewController.xib; sourceTree = "<group>"; };
 		2E1C83A220CFD788009BCC6D /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/PlaceDetailsViewController.strings"; sourceTree = "<group>"; };
 		2E1C83A320CFD78B009BCC6D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
@@ -334,7 +332,7 @@
 		2E5A58762137896500E416F9 /* RGBDeviceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RGBDeviceViewController.m; sourceTree = "<group>"; };
 		2E5A587A21378B6800E416F9 /* MusicViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MusicViewController.h; sourceTree = "<group>"; };
 		2E5A587B21378B6800E416F9 /* MusicViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicViewController.m; sourceTree = "<group>"; };
-		2E5EA0D2217EABDF00554825 /* acteclogo@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "acteclogo@3x.png"; sourceTree = "<group>"; };
+		2E5EA0D6217F123700554825 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2E6A020D1F39884500111312 /* TabBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarButton.h; sourceTree = "<group>"; };
 		2E6A020E1F39884500111312 /* TabBarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarButton.m; sourceTree = "<group>"; };
 		2E6A020F1F39884500111312 /* TabBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarView.h; sourceTree = "<group>"; };
@@ -357,7 +355,6 @@
 		2E706D05212A7282008D0EC4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/GalleryViewController.strings"; sourceTree = "<group>"; };
 		2E8623462019DB28004EF0E0 /* DeviceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceViewController.h; sourceTree = "<group>"; };
 		2E8623472019DB28004EF0E0 /* DeviceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeviceViewController.m; sourceTree = "<group>"; };
-		2E9622BB20C90DC40097C617 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		2E9622C320C9137E0097C617 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		2E9622C420C913C10097C617 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2E9622C820C917EC0097C617 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -391,7 +388,6 @@
 		2ED3963B204D09A00068B666 /* TimerEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerEntity.m; sourceTree = "<group>"; };
 		2ED3963D204D09D20068B666 /* TimerDeviceEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerDeviceEntity.h; sourceTree = "<group>"; };
 		2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerDeviceEntity.m; sourceTree = "<group>"; };
-		2ED974481F3AED0F000F20C9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2EDF04D8213D14CA00B9E92F /* SRGBSceneDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SRGBSceneDetailViewController.h; sourceTree = "<group>"; };
 		2EDF04D9213D14CA00B9E92F /* SRGBSceneDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SRGBSceneDetailViewController.m; sourceTree = "<group>"; };
 		2EDF04DD213D151300B9E92F /* MRGBSceneDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MRGBSceneDetailViewController.h; sourceTree = "<group>"; };
@@ -632,7 +628,6 @@
 		0DE95D041B297FFB006D0397 /* CSRmeshDemo */ = {
 			isa = PBXGroup;
 			children = (
-				2E5EA0D2217EABDF00554825 /* acteclogo@3x.png */,
 				2E6A02221F39B02500111312 /* tabBar */,
 				968AF2411D7709910010904A /* Frameworks */,
 				0DFC7A1C1B38645300E1BC46 /* Categories */,
@@ -642,7 +637,7 @@
 				0D432CFA1B4C083A00D27611 /* BLE */,
 				0D432D011B4C083A00D27611 /* Settings */,
 				0DE95D151B297FFB006D0397 /* Images.xcassets */,
-				2ED974491F3AED0F000F20C9 /* LaunchScreen.storyboard */,
+				2E5EA0D6217F123700554825 /* LaunchScreen.storyboard */,
 				2E6C26E620A5845E00BDB95A /* Main.storyboard */,
 				0DFC79F31B3863BD00E1BC46 /* StyleKits */,
 				0DE95D051B297FFB006D0397 /* Supporting Files */,
@@ -1305,14 +1300,13 @@
 				2E706CFF212A7278008D0EC4 /* GalleryViewController.xib in Resources */,
 				2E9622C720C917EC0097C617 /* InfoPlist.strings in Resources */,
 				2EF332562045031300565374 /* HelpViewController.xib in Resources */,
-				2E5EA0D3217EABDF00554825 /* acteclogo@3x.png in Resources */,
 				2E0AA21F2126761900DB45EB /* AboutViewController.xib in Resources */,
 				2E1C839E20CFD782009BCC6D /* PlaceDetailsViewController.xib in Resources */,
 				2E2E70B31FF5DE60002D1C1D /* ErrorCodes.strings in Resources */,
 				2E2E70B71FF5DE60002D1C1D /* UpdateViewController.xib in Resources */,
 				0DE95D161B297FFB006D0397 /* Images.xcassets in Resources */,
-				2ED974471F3AED0F000F20C9 /* LaunchScreen.storyboard in Resources */,
 				2EE50F2D20DA3E3D00B484F7 /* LightSensorSettingViewController.xib in Resources */,
+				2E5EA0D7217F123700554825 /* LaunchScreen.storyboard in Resources */,
 				2E2E70921FF5DE60002D1C1D /* PlaceIconCollectionViewCell.xib in Resources */,
 				2ED23F6E215DCCCA0040A922 /* CurtainViewController.xib in Resources */,
 				2E2EBFA41FAC2FF400CEA401 /* cskey_db.json in Resources */,
@@ -1632,16 +1626,6 @@
 				2ED23F74215DCCD00040A922 /* zh-Hans */,
 			);
 			name = CurtainViewController.xib;
-			sourceTree = "<group>";
-		};
-		2ED974491F3AED0F000F20C9 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2ED974481F3AED0F000F20C9 /* Base */,
-				2E9622BB20C90DC40097C617 /* zh-Hans */,
-				2E0AA2292126766A00DB45EB /* en */,
-			);
-			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 		2EE50F2F20DA3E3D00B484F7 /* LightSensorSettingViewController.xib */ = {

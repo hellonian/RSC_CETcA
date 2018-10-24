@@ -21,7 +21,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="acteclogo@3x.png" translatesAutoresizingMaskIntoConstraints="NO" id="TNq-yX-3vN">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="actec" translatesAutoresizingMaskIntoConstraints="NO" id="TNq-yX-3vN">
                                 <rect key="frame" x="67.5" y="146" width="240" height="120"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="240" id="KNm-N8-O0v"/>
@@ -54,6 +54,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="acteclogo@3x.png" width="16" height="16"/>
+        <image name="actec" width="240" height="120"/>
     </resources>
 </document>
