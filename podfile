@@ -12,4 +12,5 @@ target 'CSRmeshDemo' do
     pod 'PureLayout'
     pod 'OHMySQL'
     pod 'MBProgressHUD'
+    pod 'SDWebImage', '~> 4.0'
 end

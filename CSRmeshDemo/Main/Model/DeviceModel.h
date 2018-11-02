@@ -23,6 +23,7 @@
 @property (nonatomic, strong) NSNumber *red;
 @property (nonatomic, strong) NSNumber *green;
 @property (nonatomic, strong) NSNumber *blue;
+@property (nonatomic, assign) NSInteger primordial;
 
 @end
 

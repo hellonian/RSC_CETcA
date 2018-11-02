@@ -131,3 +131,7 @@
 "Rainbow" = "气贯长虹";
 "ChooseTypeOfCurtain" = "选择窗帘类型";
 "UseMicrophone" = "使用麦克风录音";
+"calibrate" = "校准";
+"bubble_left" = "bubble_left_sim";
+"bubble_right" = "bubble_right_sim";
+"bubble_mid" = "bubble_mid_sim";

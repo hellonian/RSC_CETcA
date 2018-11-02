@@ -12,6 +12,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CurtainViewController">
             <connections>
+                <outlet property="calibrateImageView" destination="4S6-Ro-7nR" id="eJW-R5-BAf"/>
                 <outlet property="closeBtn" destination="BC7-td-67b" id="jnj-OD-Dw7"/>
                 <outlet property="curtainTypeImageView" destination="6uP-lv-0Rm" id="lZC-82-eCY"/>
                 <outlet property="macAddressLabel" destination="DQs-CU-B2z" id="m2U-SE-tEt"/>
@@ -52,6 +53,7 @@
                     <state key="normal" image="curtainHClose"/>
                     <connections>
                         <action selector="crutainClose:" destination="-1" eventType="touchUpInside" id="oEP-go-Wk1"/>
+                        <action selector="curtainCloseTouchDown:" destination="-1" eventType="touchDown" id="xIH-yI-EFw"/>
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lsN-aN-5EW">
@@ -63,6 +65,7 @@
                     <state key="normal" image="curtainHOpen"/>
                     <connections>
                         <action selector="curtainOpenAction:" destination="-1" eventType="touchUpInside" id="2Dd-U6-12a"/>
+                        <action selector="curtainOpenTouchDown:" destination="-1" eventType="touchDown" id="eY9-kF-PhI"/>
                     </connections>
                 </button>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PMS-Yf-4B9">
@@ -136,23 +139,43 @@
                     </constraints>
                     <viewLayoutGuide key="safeArea" id="jaa-7j-Qr9"/>
                 </view>
+                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="255" minValue="0.0" maxValue="255" translatesAutoresizingMaskIntoConstraints="NO" id="huh-A0-6YH">
+                    <rect key="frame" x="73" y="549.5" width="229.5" height="31"/>
+                    <color key="minimumTrackTintColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <connections>
+                        <action selector="sliderTouchUpInside:" destination="-1" eventType="touchUpInside" id="QTs-d8-g91"/>
+                        <action selector="sliderTouchUpOutside:" destination="-1" eventType="touchUpOutside" id="AOB-IQ-2Ow"/>
+                    </connections>
+                </slider>
+                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="4S6-Ro-7nR">
+                    <rect key="frame" x="94" y="356" width="187.5" height="125.5"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="4S6-Ro-7nR" secondAttribute="height" multiplier="659:441" id="EDe-PJ-X7C"/>
+                    </constraints>
+                </imageView>
             </subviews>
             <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.95294117649999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="6uP-lv-0Rm" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="69e-mu-Rcv"/>
                 <constraint firstItem="6uP-lv-0Rm" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="7gB-0b-b8Z"/>
+                <constraint firstItem="huh-A0-6YH" firstAttribute="leading" secondItem="lsN-aN-5EW" secondAttribute="leading" id="E4R-nK-hlI"/>
                 <constraint firstItem="PMS-Yf-4B9" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" id="MNa-tl-euG"/>
+                <constraint firstItem="lsN-aN-5EW" firstAttribute="leading" secondItem="4S6-Ro-7nR" secondAttribute="leading" constant="-19" id="SRS-4e-Hhc"/>
+                <constraint firstItem="huh-A0-6YH" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="T4t-E0-haY"/>
+                <constraint firstItem="irT-NK-eAB" firstAttribute="top" secondItem="4S6-Ro-7nR" secondAttribute="bottom" id="Ua7-Ec-5d4"/>
                 <constraint firstItem="irT-NK-eAB" firstAttribute="top" secondItem="lsN-aN-5EW" secondAttribute="top" id="c3e-zH-x8z"/>
                 <constraint firstItem="PMS-Yf-4B9" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="dcO-85-kvt"/>
                 <constraint firstItem="BC7-td-67b" firstAttribute="top" secondItem="lsN-aN-5EW" secondAttribute="top" id="gIC-hE-3eY"/>
+                <constraint firstItem="BC7-td-67b" firstAttribute="trailing" secondItem="4S6-Ro-7nR" secondAttribute="trailing" constant="19" id="gSF-VW-X9Z"/>
                 <constraint firstItem="lsN-aN-5EW" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" multiplier="0.5" id="iQ6-hZ-5Ql"/>
                 <constraint firstItem="irT-NK-eAB" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="lYP-hC-msf"/>
                 <constraint firstItem="irT-NK-eAB" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" multiplier="3/2" id="rwd-8i-0Co"/>
                 <constraint firstItem="BC7-td-67b" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" multiplier="3/2" id="xWv-em-ZrM"/>
+                <constraint firstItem="huh-A0-6YH" firstAttribute="top" secondItem="irT-NK-eAB" secondAttribute="bottom" constant="30" id="yWx-3m-Lm1"/>
                 <constraint firstItem="PMS-Yf-4B9" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="ylu-s3-vMB"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
-            <point key="canvasLocation" x="23.199999999999999" y="50.824587706146929"/>
+            <point key="canvasLocation" x="-15.199999999999999" y="62.518740629685162"/>
         </view>
     </objects>
     <resources>

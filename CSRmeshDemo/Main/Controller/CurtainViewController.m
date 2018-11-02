@@ -10,6 +10,7 @@
 #import "CSRDatabaseManager.h"
 #import <CSRmesh/DataModelApi.h>
 #import "CSRUtilities.h"
+#import <CSRmesh/LightModelApi.h>
 
 @interface CurtainViewController ()<UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *nameTf;
@@ -18,6 +19,9 @@
 @property (weak, nonatomic) IBOutlet UIButton *openBtn;
 @property (weak, nonatomic) IBOutlet UIButton *closeBtn;
 @property (nonatomic,copy) NSString *originalName;
+@property (nonatomic,assign) BOOL calibrating;
+@property (weak, nonatomic) IBOutlet UIImageView *calibrateImageView;
+@property (nonatomic,assign) BOOL calibrateReady;
 
 @end
 
@@ -35,6 +39,9 @@
         UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
         self.navigationItem.leftBarButtonItem = back;
     }
+    UIBarButtonItem *calibrate = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"calibrate", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(calibrateAction)];
+    self.navigationItem.rightBarButtonItem = calibrate;
+    
     if (_deviceId) {
         CSRDeviceEntity *curtainEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
         self.navigationItem.title = curtainEntity.name;
@@ -67,6 +74,33 @@
 
 - (void)closeAction {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)calibrateAction {
+    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneCalibrateAction)];
+    self.navigationItem.rightBarButtonItem = done;
+    _calibrating = YES;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(calibrateCall:) name:@"calibrateCall" object:nil];
+    
+    _calibrateImageView.hidden = NO;
+    
+    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"79020401"] success:nil failure:nil];
+    
+    
+}
+
+- (void)doneCalibrateAction {
+    UIBarButtonItem *calibrate = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"calibrate", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(calibrateAction)];
+    self.navigationItem.rightBarButtonItem = calibrate;
+    _calibrating = NO;
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"calibrateCall" object:nil];
+    
+    _calibrateImageView.hidden = YES;
+    _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_mid", @"Localizable")];
+    
+    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"79020400"] success:nil failure:nil];
 }
 
 #pragma mark - UITextFieldDelegate
@@ -102,31 +136,80 @@
     
 }
 
+- (void)calibrateCall:(NSNotification *)result {
+    NSDictionary *resultDic = result.userInfo;
+    NSString *correctionStep = resultDic[@"correctionStep"];
+    NSNumber *sourceDeviceId = resultDic[@"deviceId"];
+    if ([sourceDeviceId isEqualToNumber:_deviceId]) {
+        if ([correctionStep isEqualToString:@"01"]) {
+            _calibrateReady = YES;
+            _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_left", @"Localizable")];
+        }else if ([correctionStep isEqualToString:@"02"]) {
+            _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_right", @"Localizable")];
+        }else if ([correctionStep isEqualToString:@"03"]) {
+            _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_left", @"Localizable")];
+        }else if ([correctionStep isEqualToString:@"ff"]) {
+            _calibrateReady = NO;
+            [self doneCalibrateAction];
+        }
+    }
+}
+
+#pragma mark - 校准
+
+- (IBAction)curtainOpenTouchDown:(UIButton *)sender {
+    if (_calibrating && _calibrateReady) {
+        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790303ff00"] success:nil failure:nil];
+    }
+}
+
+- (IBAction)curtainCloseTouchDown:(UIButton *)sender {
+    if (_calibrating && _calibrateReady) {
+        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790303ff00"] success:nil failure:nil];
+    }
+}
+
 #pragma mark - 控制
 
 - (IBAction)curtainOpenAction:(UIButton *)sender {
-    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790102"] success:nil failure:nil];
+    if (!_calibrating) {
+        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790102"] success:nil failure:nil];
+    }else if (_calibrateReady) {
+        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"7903030000"] success:nil failure:nil];
+    }
 }
 - (IBAction)curtainPauseAction:(UIButton *)sender {
-    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790100"] success:nil failure:nil];
+    if (!_calibrating) {
+        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790100"] success:nil failure:nil];
+    }
+    
 }
 - (IBAction)crutainClose:(UIButton *)sender {
-    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790101"] success:nil failure:nil];
+    if (!_calibrating) {
+        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790101"] success:nil failure:nil];
+    }else if (_calibrateReady) {
+        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"7903030000"] success:nil failure:nil];
+    }
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (IBAction)sliderTouchUpInside:(UISlider *)sender {
+    if (!_calibrating) {
+        [[LightModelApi sharedInstance] setLevel:_deviceId level:@(sender.value) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+            
+        } failure:^(NSError * _Nullable error) {
+            
+        }];
+    }
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (IBAction)sliderTouchUpOutside:(UISlider *)sender {
+    if (!_calibrating) {
+        [[LightModelApi sharedInstance] setLevel:_deviceId level:@(sender.value) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+            
+        } failure:^(NSError * _Nullable error) {
+            
+        }];
+    }
 }
-*/
 
 @end

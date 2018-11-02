@@ -131,3 +131,7 @@
 "Rainbow" = "Rainbow";
 "ChooseTypeOfCurtain" = "Choose the type of curtain";
 "UseMicrophone" = "Use microphone to record";
+"calibrate" = "calibrate";
+"bubble_left" = "bubble_left_en";
+"bubble_right" = "bubble_right_en";
+"bubble_mid" = "bubble_mid_en";

@@ -14,6 +14,7 @@
 #import "CSRUtilities.h"
 #import "CSRDatabaseManager.h"
 #import "CSRDeviceEntity.h"
+#import "DeviceModelManager.h"
 
 @interface DataModelManager ()<DataModelApiDelegate>
 {
@@ -274,10 +275,11 @@ static DataModelManager *manager = nil;
     if ([dataStr hasPrefix:@"87"]) {
         
         NSInteger seq = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(4, 2)]];
-        if (seq && (seq - primordial) < 0 && (seq - primordial) >-10) {
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sourceDeviceId];
+        if (seq && (seq - model.primordial) < 0 && (seq - model.primordial) >-10) {
             return;
         }
-        primordial = seq;
+        model.primordial = seq;
         
         NSString *state = [dataStr substringWithRange:NSMakeRange(6, 2)];
         NSInteger level = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(8, 2)]];
@@ -348,6 +350,11 @@ static DataModelManager *manager = nil;
         if ([cntStr integerValue]) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"settedLightSensorCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"cntStr":cntStr}];
         }
+    }
+    
+    if ([dataStr hasPrefix:@"79"] && dataStr.length == 8) {
+        NSString *correctionStep = [dataStr substringFromIndex:6];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"calibrateCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"correctionStep":correctionStep}];
     }
 }
 
