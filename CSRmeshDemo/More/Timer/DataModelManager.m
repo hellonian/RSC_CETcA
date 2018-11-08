@@ -99,7 +99,7 @@ static DataModelManager *manager = nil;
     NSString *eveD2String = [CSRUtilities stringWithHexNumber:[eveD2 integerValue]];
     NSString *eveD3String = [CSRUtilities stringWithHexNumber:[eveD3 integerValue]];
     
-    NSString *cmd = [NSString stringWithFormat:@"83%@%@0%d%@%@%@%@%@%@%@%@00000000000000",datalen,indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString,eveD1String,eveD2String,eveD3String];
+    NSString *cmd = [NSString stringWithFormat:@"83%@%@0%d%@%@%@%@%@%@%@%@00ffffffffffff",datalen,indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString,eveD1String,eveD2String,eveD3String];
     
     _schedule = [self analyzeTimeScheduleData:[NSString stringWithFormat:@"%@0%d%@%@%@%@%@0000000000",indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString] forLight:deviceId];
     
@@ -167,17 +167,17 @@ static DataModelManager *manager = nil;
     NSString *stataString = [NSString stringWithFormat:@"0%d",state];
     
     if (deviceId) {
+        NSString *cmd;
         if ([deviceEntity.cvVersion integerValue]>18) {
-            NSString *cmd = [NSString stringWithFormat:@"8403%@%@",indexString,stataString];
-            [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:nil failure:nil];
+            cmd = [NSString stringWithFormat:@"8403%@%@",indexString,stataString];
         }else {
-            NSString *cmd = [NSString stringWithFormat:@"8402%@%@",indexString,stataString];
-            [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-                
-            } failure:^(NSError * _Nonnull error) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"changeAlarmEnabledCall" object:nil userInfo:@{@"deviceId":deviceId,@"changeAlarmEnabledCall":@"00"}];
-            }];
+            cmd = [NSString stringWithFormat:@"8402%@%@",indexString,stataString];
         }
+        [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+            
+        } failure:^(NSError * _Nonnull error) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"changeAlarmEnabledCall" object:nil userInfo:@{@"deviceId":deviceId,@"changeAlarmEnabledCall":@"00"}];
+        }];
     }
 }
 
@@ -190,17 +190,18 @@ static DataModelManager *manager = nil;
     }
     
     if (deviceId) {
+        NSString *cmd;
         if ([deviceEntity.cvVersion integerValue]>18) {
-            NSString *cmd = [NSString stringWithFormat:@"8502%@",indexString];
-            [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:nil failure:nil];
+            cmd = [NSString stringWithFormat:@"8502%@",indexString];
         }else {
-            NSString *cmd = [NSString stringWithFormat:@"8501%@",indexString];
-            [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-                
-            } failure:^(NSError * _Nonnull error) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteAlarmCall" object:nil userInfo:@{@"deviceId":deviceId,@"deleteAlarmCall":@"00"}];
-            }];
+            cmd = [NSString stringWithFormat:@"8501%@",indexString];
+            
         }
+        [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+            
+        } failure:^(NSError * _Nonnull error) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteAlarmCall" object:nil userInfo:@{@"deviceId":deviceId,@"deleteAlarmCall":@"00"}];
+        }];
     }
 }
 

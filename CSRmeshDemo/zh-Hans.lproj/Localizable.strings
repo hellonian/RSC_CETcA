@@ -135,3 +135,5 @@
 "bubble_left" = "bubble_left_sim";
 "bubble_right" = "bubble_right_sim";
 "bubble_mid" = "bubble_mid_sim";
+"deletetimernow" = "是否强制删除该定时？";
+"notRespond" = "未响应。";

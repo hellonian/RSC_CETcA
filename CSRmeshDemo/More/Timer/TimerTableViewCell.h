@@ -13,7 +13,6 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *fireTimeLabel;
-@property (weak, nonatomic) IBOutlet UISwitch *enabledSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *repeatLabel;
 @property (nonatomic,strong) TimerEntity *timerEntity;
 

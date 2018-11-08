@@ -22,6 +22,8 @@
 @property (nonatomic,assign) BOOL calibrating;
 @property (weak, nonatomic) IBOutlet UIImageView *calibrateImageView;
 @property (nonatomic,assign) BOOL calibrateReady;
+@property (weak, nonatomic) IBOutlet UIButton *PauseBtn;
+@property (weak, nonatomic) IBOutlet UISlider *curtainSlider;
 
 @end
 
@@ -83,6 +85,9 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(calibrateCall:) name:@"calibrateCall" object:nil];
     
+    _curtainTypeImageView.hidden = YES;
+    _PauseBtn.hidden = YES;
+    _curtainSlider.hidden = YES;
     _calibrateImageView.hidden = NO;
     
     [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"79020401"] success:nil failure:nil];
@@ -97,6 +102,9 @@
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"calibrateCall" object:nil];
     
+    _curtainTypeImageView.hidden = NO;
+    _PauseBtn.hidden = NO;
+    _curtainSlider.hidden = NO;
     _calibrateImageView.hidden = YES;
     _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_mid", @"Localizable")];
     

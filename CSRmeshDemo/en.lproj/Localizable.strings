@@ -135,3 +135,5 @@
 "bubble_left" = "bubble_left_en";
 "bubble_right" = "bubble_right_en";
 "bubble_mid" = "bubble_mid_en";
+"deletetimernow" = "Delete this timer now?";
+"notRespond" = "did not respond.";

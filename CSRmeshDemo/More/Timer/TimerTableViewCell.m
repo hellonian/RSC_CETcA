@@ -58,7 +58,6 @@
     }
     
     BOOL enabled = [timerEntity.enabled boolValue]? YES:NO;
-    [self.enabledSwitch setOn:enabled];
     if (enabled) {
         self.nameLabel.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
         self.fireTimeLabel.textColor = [UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1];
@@ -69,25 +68,6 @@
         self.repeatLabel.textColor = [UIColor colorWithRed:180/255.0 green:180/255.0 blue:180/255.0 alpha:1];
     }
     
-}
-
-- (IBAction)changeEnabled:(UISwitch *)sender {
-    if (_timerEntity) {
-        [_timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timerDevice, BOOL * _Nonnull stop) {
-            [[DataModelManager shareInstance] enAlarmForDevice:timerDevice.deviceID stata:sender.on index:[timerDevice.timerIndex integerValue]];
-        }];
-        _timerEntity.enabled = @(sender.on);
-        [[CSRDatabaseManager sharedInstance] saveContext];
-        if (sender.on) {
-            self.nameLabel.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
-            self.fireTimeLabel.textColor = [UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1];
-            self.repeatLabel.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
-        }else {
-            self.nameLabel.textColor = [UIColor colorWithRed:180/255.0 green:180/255.0 blue:180/255.0 alpha:1];
-            self.fireTimeLabel.textColor = [UIColor colorWithRed:140/255.0 green:140/255.0 blue:140/255.0 alpha:1];
-            self.repeatLabel.textColor = [UIColor colorWithRed:180/255.0 green:180/255.0 blue:180/255.0 alpha:1];
-        }
-    }
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

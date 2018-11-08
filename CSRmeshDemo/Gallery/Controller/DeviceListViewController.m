@@ -176,9 +176,10 @@
                     singleDevice.deviceName = deviceEntity.name;
                     singleDevice.deviceShortName = deviceEntity.shortName;
                     singleDevice.isForList = YES;
-                    
-                    
-                    
+                    if ([self.originalMembers containsObject:deviceEntity.deviceId]) {
+                        singleDevice.isSelected = YES;
+                        [self.selectedDevices addObject:deviceEntity.deviceId];
+                    }
                     [_devicesCollectionView.dataArray addObject:singleDevice];
                 }
             }];

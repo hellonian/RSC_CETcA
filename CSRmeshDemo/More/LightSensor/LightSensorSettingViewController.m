@@ -147,19 +147,14 @@
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
 - (IBAction)selectDevices:(id)sender {
     DeviceListViewController *list = [[DeviceListViewController alloc] init];
     list.selectMode = DeviceListSelectMode_ForLightSensor;
-    __block NSMutableArray *singleDevices = [[NSMutableArray alloc] init];
-    [self.dataArray enumerateObjectsUsingBlock:^(NSNumber *deviceId, NSUInteger idx, BOOL * _Nonnull stop) {
-        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
-        SingleDeviceModel *deviceModel = [[SingleDeviceModel alloc] init];
-        deviceModel.deviceId = deviceId;
-        deviceModel.deviceName = deviceEntity.name;
-        deviceModel.deviceShortName = deviceEntity.shortName;
-        [singleDevices addObject:deviceModel];
-    }];
-    list.originalMembers = singleDevices;
+    list.originalMembers = [self.dataArray copy];
     [list getSelectedDevices:^(NSArray *devices) {
         [self.dataArray removeAllObjects];
         [self.dataArray addObjectsFromArray:devices];
@@ -353,7 +348,16 @@
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-    [self saveNickName];
+    if ([textField isEqual:_nameTF]) {
+        [self saveNickName];
+        return;
+    }
+    if ([textField isEqual:_luxTF]) {
+        if ([self.dataArray count]>0) {
+            self.navigationItem.rightBarButtonItem.enabled = YES;
+        }
+        return;
+    }
 }
 
 - (void)saveNickName {
