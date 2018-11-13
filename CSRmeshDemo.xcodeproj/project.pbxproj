@@ -75,6 +75,8 @@
 		2E2E70B61FF5DE60002D1C1D /* UpdateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70791FF5DE60002D1C1D /* UpdateViewController.m */; };
 		2E2E70B71FF5DE60002D1C1D /* UpdateViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E707A1FF5DE60002D1C1D /* UpdateViewController.xib */; };
 		2E2EBFA41FAC2FF400CEA401 /* cskey_db.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E2EBF9F1FAC194400CEA401 /* cskey_db.json */; };
+		2E3630FB2199666F00EF22DD /* FanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3630F92199666F00EF22DD /* FanViewController.m */; };
+		2E3630FC2199666F00EF22DD /* FanViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E3630FA2199666F00EF22DD /* FanViewController.xib */; };
 		2E37074E20CE4C16000AF696 /* DeviceViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E37075020CE4C16000AF696 /* DeviceViewController.xib */; };
 		2E37075720CE647A000AF696 /* NSBundle+AppLanguageSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E37075520CE647A000AF696 /* NSBundle+AppLanguageSwitch.m */; };
 		2E37075820CE8337000AF696 /* GroupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E37075A20CE8337000AF696 /* GroupViewController.xib */; };
@@ -290,6 +292,9 @@
 		2E2E70791FF5DE60002D1C1D /* UpdateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateViewController.m; sourceTree = "<group>"; };
 		2E2E707A1FF5DE60002D1C1D /* UpdateViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UpdateViewController.xib; sourceTree = "<group>"; };
 		2E2EBF9F1FAC194400CEA401 /* cskey_db.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = cskey_db.json; sourceTree = "<group>"; };
+		2E3630F82199666F00EF22DD /* FanViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FanViewController.h; sourceTree = "<group>"; };
+		2E3630F92199666F00EF22DD /* FanViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FanViewController.m; sourceTree = "<group>"; };
+		2E3630FA2199666F00EF22DD /* FanViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FanViewController.xib; sourceTree = "<group>"; };
 		2E37074F20CE4C16000AF696 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/DeviceViewController.xib; sourceTree = "<group>"; };
 		2E37075520CE647A000AF696 /* NSBundle+AppLanguageSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+AppLanguageSwitch.m"; sourceTree = "<group>"; };
 		2E37075620CE647A000AF696 /* NSBundle+AppLanguageSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+AppLanguageSwitch.h"; sourceTree = "<group>"; };
@@ -897,6 +902,9 @@
 				2EEA427C215247180050B729 /* CurtainViewController.h */,
 				2EEA427D215247180050B729 /* CurtainViewController.m */,
 				2ED23F70215DCCCA0040A922 /* CurtainViewController.xib */,
+				2E3630F82199666F00EF22DD /* FanViewController.h */,
+				2E3630F92199666F00EF22DD /* FanViewController.m */,
+				2E3630FA2199666F00EF22DD /* FanViewController.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1311,6 +1319,7 @@
 				2ED23F6E215DCCCA0040A922 /* CurtainViewController.xib in Resources */,
 				2E2EBFA41FAC2FF400CEA401 /* cskey_db.json in Resources */,
 				2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */,
+				2E3630FC2199666F00EF22DD /* FanViewController.xib in Resources */,
 				2E216EEB2138F28200E545B9 /* RGBSceneCollectionViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1392,6 +1401,7 @@
 				2EE757C720102B7B00FB75C5 /* MainCollectionView.m in Sources */,
 				0D835B371B9749E600FF4376 /* CBPeripheral+Info.m in Sources */,
 				2E2E70B11FF5DE60002D1C1D /* NSMutableArray+Queue.m in Sources */,
+				2E3630FB2199666F00EF22DD /* FanViewController.m in Sources */,
 				2E8623492019DB28004EF0E0 /* DeviceViewController.m in Sources */,
 				0D835B851B975E8700FF4376 /* CSRSettingsEntity.m in Sources */,
 				2E2000A920182260000AD8C3 /* SceneEntity.m in Sources */,

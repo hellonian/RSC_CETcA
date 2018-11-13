@@ -488,28 +488,25 @@
                     [self.superCellDelegate superCollectionViewCellDelegateAddDeviceAction:self.deviceId cellIndexPath:self.cellIndexPath];
                 }
             }else if ([self.deviceId isEqualToNumber:@2000]) {
-                __block BOOL isPowerOn = 0;
-                __block NSInteger brightest = 0;
-                [self.groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *entity, NSUInteger idx, BOOL * _Nonnull stop) {
-                    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:entity.deviceId];
-                    if ([model.powerState boolValue] && !model.isleave) {
-                        isPowerOn = YES;
-                    }
-                    if ([model.level integerValue]>brightest) {
-                        brightest = [model.level integerValue];
-                    }
-                }];
-                if (!isPowerOn) {
+                if (_groupPower) {
+                    [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:self.groupId withPowerState:@(0)];
+                }else {
+                    __block NSInteger brightest = 0;
+                    [self.groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *entity, NSUInteger idx, BOOL * _Nonnull stop) {
+                        if (![CSRUtilities belongToSwitch:entity.shortName]) {
+                            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:entity.deviceId];
+                            if ([model.level integerValue]>brightest) {
+                                brightest = [model.level integerValue];
+                            }
+                        }
+                    }];
                     [[LightModelApi sharedInstance] setLevel:self.groupId level:@(brightest) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
                         
                     } failure:^(NSError * _Nullable error) {
-                        
+                        NSLog(@"error : %@",error);
                     }];
-                }else {
-                    [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:self.groupId withPowerState:@(0)];
                 }
-                
-                
+                _groupPower = !_groupPower;
             }else {
                 CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
                 if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {

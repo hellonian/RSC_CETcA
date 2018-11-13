@@ -158,7 +158,7 @@
 }
 
 - (void)endOfPlayAction {
-    if (_selectedRow == [GetDataTools shareGetData].dataArray.count - 1) {
+    if (_selectedRow == [GetDataTools shareGetData].dataArray.count) {
         [self play:1];
     }else {
         [self play:_selectedRow+1];

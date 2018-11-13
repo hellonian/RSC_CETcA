@@ -15,6 +15,7 @@
 @property (nonatomic,strong) NSArray *groupMembers;
 @property (weak, nonatomic) IBOutlet UIButton *seleteButton;
 @property (nonatomic,strong) NSNumber *sceneId;
+@property (nonatomic,assign) BOOL groupPower;
 
 - (void)showDeleteBtnAndMoveImageView:(BOOL)value;
 
