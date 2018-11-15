@@ -114,5 +114,6 @@
 + (BOOL)belongToRGBNoLevelDevice:(NSString *)shortName;
 + (BOOL)belongToRGBCWNoLevelDevice:(NSString *)shortName;
 + (BOOL)belongToCurtainController:(NSString *)shortName;
++ (BOOL)belongToFanController:(NSString *)shortName;
 
 @end

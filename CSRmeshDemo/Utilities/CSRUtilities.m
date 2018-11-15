@@ -1138,7 +1138,7 @@
 }
 
 + (BOOL)belongToMainVCDevice: (NSString *)shortName {
-    if ([kDimmers containsObject:shortName] || [kSwitchs containsObject:shortName] || [kCWDevices containsObject:shortName] || [kRGBDevices containsObject:shortName] || [kRGBCWDevices containsObject:shortName] || [kCurtainController containsObject:shortName]) {
+    if ([kDimmers containsObject:shortName] || [kSwitchs containsObject:shortName] || [kCWDevices containsObject:shortName] || [kRGBDevices containsObject:shortName] || [kRGBCWDevices containsObject:shortName] || [kCurtainController containsObject:shortName] || [kFanController containsObject:shortName]) {
         return YES;
     }
     return NO;
@@ -1188,6 +1188,13 @@
 
 + (BOOL)belongToCurtainController:(NSString *)shortName {
     if ([kCurtainController containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToFanController:(NSString *)shortName {
+    if ([kFanController containsObject:shortName]) {
         return YES;
     }
     return NO;

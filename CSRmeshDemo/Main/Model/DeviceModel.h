@@ -24,6 +24,10 @@
 @property (nonatomic, strong) NSNumber *green;
 @property (nonatomic, strong) NSNumber *blue;
 @property (nonatomic, assign) NSInteger primordial;
+@property (nonatomic, assign) BOOL fanState;
+@property (nonatomic, assign) int fansSpeed;
+@property (nonatomic, assign) BOOL lampState;
+
 
 @end
 

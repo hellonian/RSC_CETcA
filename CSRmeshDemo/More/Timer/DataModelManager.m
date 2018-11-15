@@ -357,6 +357,11 @@ static DataModelManager *manager = nil;
         NSString *correctionStep = [dataStr substringFromIndex:6];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"calibrateCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"correctionStep":correctionStep}];
     }
+    
+    if ([dataStr hasPrefix:@"9d"] ) {
+        NSString *string = [dataStr substringFromIndex:4];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"fanControllerCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"fanControllerCall":string}];
+    }
 }
 
 - (void)didReceiveStreamData:(NSNumber *)deviceId streamNumber:(NSNumber *)streamNumber data:(NSData *)data {

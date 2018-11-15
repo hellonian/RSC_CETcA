@@ -77,7 +77,7 @@
                 <constraint firstItem="9bI-uX-EjH" firstAttribute="top" secondItem="bHg-9Q-BuY" secondAttribute="top" constant="64" id="yGf-RD-ZRg"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="xbT-2x-iyh"/>
-            <point key="canvasLocation" x="-601" y="545"/>
+            <point key="canvasLocation" x="-606" y="506"/>
         </view>
     </objects>
     <resources>

@@ -790,7 +790,7 @@
     
     NSString *nLength = [CSRUtilities stringWithHexNumber:dstAddrLevel.length/2+7];
     if ((dstAddrLevel.length/2+7)<250) {
-        NSString *cmdStr = [NSString stringWithFormat:@"73%@010%ld%@%@%@%@%@",nLength,swIndex,rcIndexStr,ligCnt,startLigIdx,endLigIdx,dstAddrLevel];
+        NSString *cmdStr = [NSString stringWithFormat:@"73%@010%ld%@%@%@%@%@",nLength,(long)swIndex,rcIndexStr,ligCnt,startLigIdx,endLigIdx,dstAddrLevel];
         return cmdStr;
     }
     return nil;
@@ -821,7 +821,7 @@
             cmdStr2 = [NSString stringWithFormat:@"730e01020100010000%@0000000000",deviceIdString];
         }else if ([_fConrolTwoLabel.text containsString:AcTECLocalizedStringFromTable(@"Group", @"Localizable")] && ![_fSelectTwoLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
             NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectTwoLabel.tag];
-            cmdStr2 = [NSString stringWithFormat:@"730e010220ee010000%@0000000000",deviceIdString];
+            cmdStr2 = [NSString stringWithFormat:@"730e01022000010000%@0000000000",deviceIdString];
         }else if ([_fConrolTwoLabel.text containsString:AcTECLocalizedStringFromTable(@"Scene", @"Localizable")] && ![_fSelectTwoLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
             cmdStr2 = [self cmdStringWithSceneRcIndex:_fSelectTwoLabel.tag swIndex:2];
         }else{

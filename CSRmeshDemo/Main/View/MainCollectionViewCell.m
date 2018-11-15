@@ -232,6 +232,12 @@
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = YES;
         }
+        if ([CSRUtilities belongToFanController:deviceEntity.shortName]) {
+            self.iconView.image = [UIImage imageNamed:@"fanSingle"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
+            self.levelLabel.hidden = YES;
+        }
+        
         self.cellIndexPath = indexPath;
         [self adjustGroupCellBgcolorAndLevelLabel];
         [self adjustCellBgcolorAndLevelLabelWithDeviceId:deviceEntity.deviceId];
@@ -271,6 +277,11 @@
             }else {
                 self.iconView.image = [UIImage imageNamed:@"Device_Curtain"];
             }
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
+            self.levelLabel.hidden = YES;
+        }
+        if ([CSRUtilities belongToFanController:device.deviceShortName]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_fan"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = YES;
         }
@@ -335,6 +346,8 @@
             self.iconView.image = [UIImage imageNamed:@"Device_Controller"];
         }else if ([CSRUtilities belongToCurtainController:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Curtain"];
+        }else if ([CSRUtilities belongToFanController:appearanceShortname]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_fan"];
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
@@ -492,19 +505,27 @@
                     [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:self.groupId withPowerState:@(0)];
                 }else {
                     __block NSInteger brightest = 0;
+                    __block BOOL containD;
                     [self.groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *entity, NSUInteger idx, BOOL * _Nonnull stop) {
                         if (![CSRUtilities belongToSwitch:entity.shortName]) {
                             DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:entity.deviceId];
                             if ([model.level integerValue]>brightest) {
                                 brightest = [model.level integerValue];
                             }
+                            containD = YES;
                         }
-                    }];
-                    [[LightModelApi sharedInstance] setLevel:self.groupId level:@(brightest) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
                         
-                    } failure:^(NSError * _Nullable error) {
-                        NSLog(@"error : %@",error);
                     }];
+                    if (containD) {
+                        [[LightModelApi sharedInstance] setLevel:self.groupId level:@(brightest) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                            
+                        } failure:^(NSError * _Nullable error) {
+                            NSLog(@"error : %@",error);
+                        }];
+                    }else {
+                        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:self.groupId withPowerState:@(1)];
+                    }
+                    
                 }
                 _groupPower = !_groupPower;
             }else {

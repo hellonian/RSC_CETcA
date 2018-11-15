@@ -62,6 +62,7 @@
         [[PowerModelApi sharedInstance] addDelegate:self];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(physicalButtonActionCall:) name:@"physicalButtonActionCall" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(RGBCWDeviceActionCall:) name:@"RGBCWDeviceActionCall" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fanControllerCall:) name:@"fanControllerCall" object:nil];
         [DataModelManager shareInstance];
         
         NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
@@ -130,6 +131,19 @@
             model.green = green;
             model.blue = blue;
             
+            if ([CSRUtilities belongToFanController:model.shortName]) {
+                model.fanState = [powerState boolValue];
+                model.lampState = [supports boolValue];
+                NSInteger levelInt = [level integerValue];
+                if (levelInt > 0 && levelInt < 86) {
+                    model.fansSpeed = 0;
+                }else if (levelInt > 85 && levelInt < 171) {
+                    model.fansSpeed = 1;
+                }else if (levelInt > 179 && levelInt < 256) {
+                    model.fansSpeed = 2;
+                }
+            }
+            
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
             
             exist = YES;
@@ -150,6 +164,18 @@
         model.red = red;
         model.green = green;
         model.blue = blue;
+        if ([CSRUtilities belongToFanController:deviceEntity.name]) {
+            model.fanState = [powerState boolValue];
+            model.lampState = [supports boolValue];
+            NSInteger levelInt = [level integerValue];
+            if (levelInt > 0 && levelInt < 86) {
+                model.fansSpeed = 0;
+            }else if (levelInt > 85 && levelInt < 171) {
+                model.fansSpeed = 1;
+            }else if (levelInt > 179 && levelInt < 256) {
+                model.fansSpeed = 2;
+            }
+        }
         [_allDevices addObject:model];
     }
 }
@@ -163,6 +189,10 @@
         if ([model.deviceId isEqualToNumber:deviceId]) {
             model.powerState = state;
             model.isleave = NO;
+            if ([CSRUtilities belongToFanController:model.shortName]) {
+                model.fanState = [state boolValue];
+                model.lampState = [state boolValue];
+            }
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId}];
             
             exist = YES;
@@ -177,6 +207,10 @@
         model.name = deviceEntity.name;
         model.powerState = state;
         model.isleave = NO;
+        if ([CSRUtilities belongToFanController:deviceEntity.shortName]) {
+            model.fanState = [state boolValue];
+            model.lampState = [state boolValue];
+        }
         [_allDevices addObject:model];
     }
 }
@@ -352,6 +386,25 @@
         }
     }];
 }
+
+- (void)fanControllerCall: (NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    NSString *string = userInfo[@"fanControllerCall"];
+    BOOL fanState = [[string substringWithRange:NSMakeRange(0, 2)] boolValue];
+    int fanSpeed = [[string substringWithRange:NSMakeRange(2, 2)] intValue];
+    BOOL lampState = [[string substringWithRange:NSMakeRange(4, 2)] boolValue];
+    [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([model.deviceId isEqualToNumber:deviceId]) {
+            model.fanState = fanState;
+            model.fansSpeed = fanSpeed;
+            model.lampState = lampState;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setFanSuccess" object:self userInfo:@{@"deviceId":deviceId}];
+            *stop = YES;
+        }
+    }];
+}
+
 
 - (void)colorfulAction:(NSNumber *)deviceId timeInterval:(NSTimeInterval)timeInterval hues:(NSArray *)huesAry colorSaturation:(NSNumber *)colorSat rgbSceneId:(NSNumber *)rgbSceneId{
     if (!colorfulTimer) {

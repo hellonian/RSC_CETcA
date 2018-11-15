@@ -34,8 +34,6 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
         NSString *currentLanguage;
         if ([languageName containsString:@"zh-Hans"]) {
             currentLanguage = @"zh-Hans";
-        }else if ([languageName containsString:@"en"]) {
-            currentLanguage = @"en";
         }else {
             currentLanguage = @"en";
         }

@@ -38,6 +38,7 @@
 #import "RGBDeviceViewController.h"
 #import "RGBSceneEntity.h"
 #import "CurtainViewController.h"
+#import "FanViewController.h"
 
 #import <CoreLocation/CoreLocation.h>
 #import "AFHTTPSessionManager.h"
@@ -806,6 +807,19 @@
                 nav.popoverPresentationController.sourceRect = mainCell.bounds;
                 nav.popoverPresentationController.sourceView = mainCell;
             }
+            
+        }else if ([CSRUtilities belongToFanController:deviceEntity.shortName]) {
+            FanViewController *fanVC = [[FanViewController alloc] init];
+            fanVC.deviceId = mainCell.deviceId;
+            __weak MainViewController *weakSelf = self;
+            fanVC.reloadDataHandle = ^{
+                [weakSelf getMainDataArray];
+            };
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:fanVC];
+            nav.modalPresentationStyle = UIModalPresentationPopover;
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
             
         }else{
             DeviceViewController *dvc = [[DeviceViewController alloc] init];
