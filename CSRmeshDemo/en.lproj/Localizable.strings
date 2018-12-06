@@ -75,7 +75,6 @@
 "SwitchPlaceAlert" = "Are you sure you want to switch place to the";
 "Save" = "Save";
 "SearchRecepient" = "Searching recepient·····";
-"KeepCloseAlert" = "Keep the two phones at close range until the end of sharing automatically returns.";
 "returnAlert" = "You are requesting to join a place, and the return will terminate the request. Are you sure you want to return?";
 "NamePhraseEmpryAlert" = "Name and Pass Phrase should not be empty, please enter some values.";
 "DeleteCurrentPlaceAlert" = "You can't delete current selected place.";
@@ -137,3 +136,9 @@
 "bubble_mid" = "bubble_mid_en";
 "deletetimernow" = "Delete this timer now?";
 "notRespond" = "did not respond.";
+"RCCodeWords" = "Scan the RQ code to share place with this phone.\nPlease make sure the two phones are under the same WIFI.";
+"scan" = "SCAN";
+"scanWords" = "Put the QR code into the box, it can be scanned automatically";
+"noSameWIFI" = "Please make sure the two phones are under the same WIFI.";
+"openCamera" = "Please go to -> [Settings - Privacy - Camera - AcTEC BLE] to open the access switch";
+"cameraNotDetected" = "Your camera was not detected.";

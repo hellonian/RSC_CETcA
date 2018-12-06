@@ -75,7 +75,6 @@
 "SwitchPlaceAlert" = "是否确定切换到场所";
 "Save" = "存储";
 "SearchRecepient" = "搜索申请者……";
-"KeepCloseAlert"  = "场所信息传送过程需要将两个设备放在尽可能近的位置。";
 "returnAlert" = "你正在申请一个新场所的信息，返回将中止该申请，是否确定中止并返回？";
 "NamePhraseEmpryAlert" = "名称和密码不能为空，请输入名称和密码。";
 "DeleteCurrentPlaceAlert" = "当前的场所不能删除。";
@@ -137,3 +136,9 @@
 "bubble_mid" = "bubble_mid_sim";
 "deletetimernow" = "是否强制删除该定时？";
 "notRespond" = "未响应。";
+"RCCodeWords" = "扫描二维码分享场合信息给这部手机。\n请确保两部手机连接的是同一个WIFI。";
+"scan" = "扫一扫";
+"scanWords" = "将二维码放入框内, 即可自动扫描";
+"noSameWIFI" = "请确保两部手机连接的是同一个WIFI。";
+"openCamera" = "请去-> [设置 - 隐私 - 相机 - AcTEC BLE] 打开访问开关";
+"cameraNotDetected" = "未检测到您的摄像头。";

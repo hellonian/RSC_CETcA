@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.2.2</string>
+	<string>2.2.3</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -52,13 +52,13 @@
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>AcTEC BLE need  use bluetooth.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Set the images of groups&apos; icons and gallery control mode need to use your Camera.</string>
+	<string>Set the images of groups' icons and gallery control mode need to use your Camera.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>AcTEC BLE need use location information.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>AcTEC BLE need  use Microphone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Set the images of groups&apos; icons and gallery control mode need to use your Photo Library.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>AcTEC BLE need use location information.</string>
+	<string>Set the images of groups' icons and gallery control mode need to use your Photo Library.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>bluetooth-central</string>

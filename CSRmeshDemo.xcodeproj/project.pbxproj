@@ -137,6 +137,7 @@
 		2EE757D62010B23100FB75C5 /* SceneCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE757D42010B23100FB75C5 /* SceneCollectionViewCell.m */; };
 		2EE757D72010B23100FB75C5 /* SceneCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EE757D52010B23100FB75C5 /* SceneCollectionViewCell.xib */; };
 		2EE95A831FAB0F9700E1F945 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE95A821FAB0F9700E1F945 /* ViewController.m */; };
+		2EE98D9721B0DD5000FAC3AF /* ScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE98D9521B0DD5000FAC3AF /* ScanViewController.m */; };
 		2EEA427B2151FFF70050B729 /* CustomizeProgressHud.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EEA427A2151FFF70050B729 /* CustomizeProgressHud.m */; };
 		2EEA427F215247180050B729 /* CurtainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EEA427D215247180050B729 /* CurtainViewController.m */; };
 		2EEA6E361F453B1300895CE2 /* ControlMaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EEA6E341F453B1300895CE2 /* ControlMaskView.m */; };
@@ -358,6 +359,20 @@
 		2E706D00212A7278008D0EC4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/GalleryViewController.xib; sourceTree = "<group>"; };
 		2E706D03212A727E008D0EC4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2E706D05212A7282008D0EC4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/GalleryViewController.strings"; sourceTree = "<group>"; };
+		2E71F94221B61059002EE81B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		2E71F94321B61059002EE81B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		2E71F94521B61059002EE81B /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		2E71F94621B61059002EE81B /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		2E71F94921B61059002EE81B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		2E71F94C21B61059002EE81B /* Test.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Test.xcdatamodel; sourceTree = "<group>"; };
+		2E71F94E21B6105C002EE81B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2E71F95121B6105C002EE81B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		2E71F95321B6105C002EE81B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2E71F95421B6105C002EE81B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		2E71F95E21B6105D002EE81B /* TestTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestTests.m; sourceTree = "<group>"; };
+		2E71F96021B6105D002EE81B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2E71F96921B6105D002EE81B /* TestUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestUITests.m; sourceTree = "<group>"; };
+		2E71F96B21B6105D002EE81B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2E8623462019DB28004EF0E0 /* DeviceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceViewController.h; sourceTree = "<group>"; };
 		2E8623472019DB28004EF0E0 /* DeviceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeviceViewController.m; sourceTree = "<group>"; };
 		2E9622C320C9137E0097C617 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -412,6 +427,9 @@
 		2EE757D52010B23100FB75C5 /* SceneCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SceneCollectionViewCell.xib; sourceTree = "<group>"; };
 		2EE95A811FAB0F9700E1F945 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		2EE95A821FAB0F9700E1F945 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		2EE98D9421B0D4D900FAC3AF /* CSRmeshDemo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CSRmeshDemo.entitlements; sourceTree = "<group>"; };
+		2EE98D9521B0DD5000FAC3AF /* ScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScanViewController.m; sourceTree = "<group>"; };
+		2EE98D9621B0DD5000FAC3AF /* ScanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScanViewController.h; sourceTree = "<group>"; };
 		2EEA42792151FFF70050B729 /* CustomizeProgressHud.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CustomizeProgressHud.h; sourceTree = "<group>"; };
 		2EEA427A2151FFF70050B729 /* CustomizeProgressHud.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomizeProgressHud.m; sourceTree = "<group>"; };
 		2EEA427C215247180050B729 /* CurtainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CurtainViewController.h; sourceTree = "<group>"; };
@@ -615,6 +633,9 @@
 			children = (
 				0DE95D041B297FFB006D0397 /* CSRmeshDemo */,
 				CE31FDA41BAAB2E100CA4772 /* CSRmeshDemoUITests */,
+				2E71F94121B61059002EE81B /* Test */,
+				2E71F95D21B6105D002EE81B /* TestTests */,
+				2E71F96821B6105D002EE81B /* TestUITests */,
 				0DE95D031B297FFB006D0397 /* Products */,
 				0052561DD4191E4895D97D40 /* Frameworks */,
 				CD94058D1D91598F00492624 /* CSRmeshRestClient.framework */,
@@ -633,6 +654,7 @@
 		0DE95D041B297FFB006D0397 /* CSRmeshDemo */ = {
 			isa = PBXGroup;
 			children = (
+				2EE98D9421B0D4D900FAC3AF /* CSRmeshDemo.entitlements */,
 				2E6A02221F39B02500111312 /* tabBar */,
 				968AF2411D7709910010904A /* Frameworks */,
 				0DFC7A1C1B38645300E1BC46 /* Categories */,
@@ -779,6 +801,8 @@
 				2E1C83A020CFD782009BCC6D /* PlaceDetailsViewController.xib */,
 				0D73C7101B68E0980029B488 /* CSRCheckbox.h */,
 				0D73C7111B68E0980029B488 /* CSRCheckbox.m */,
+				2EE98D9621B0DD5000FAC3AF /* ScanViewController.h */,
+				2EE98D9521B0DD5000FAC3AF /* ScanViewController.m */,
 			);
 			path = Places;
 			sourceTree = "<group>";
@@ -998,6 +1022,41 @@
 				2E2E70021FF5DE60002D1C1D /* More */,
 			);
 			name = tabBar;
+			sourceTree = "<group>";
+		};
+		2E71F94121B61059002EE81B /* Test */ = {
+			isa = PBXGroup;
+			children = (
+				2E71F94221B61059002EE81B /* AppDelegate.h */,
+				2E71F94321B61059002EE81B /* AppDelegate.m */,
+				2E71F94521B61059002EE81B /* ViewController.h */,
+				2E71F94621B61059002EE81B /* ViewController.m */,
+				2E71F94821B61059002EE81B /* Main.storyboard */,
+				2E71F94E21B6105C002EE81B /* Assets.xcassets */,
+				2E71F95021B6105C002EE81B /* LaunchScreen.storyboard */,
+				2E71F95321B6105C002EE81B /* Info.plist */,
+				2E71F95421B6105C002EE81B /* main.m */,
+				2E71F94B21B61059002EE81B /* Test.xcdatamodeld */,
+			);
+			path = Test;
+			sourceTree = "<group>";
+		};
+		2E71F95D21B6105D002EE81B /* TestTests */ = {
+			isa = PBXGroup;
+			children = (
+				2E71F95E21B6105D002EE81B /* TestTests.m */,
+				2E71F96021B6105D002EE81B /* Info.plist */,
+			);
+			path = TestTests;
+			sourceTree = "<group>";
+		};
+		2E71F96821B6105D002EE81B /* TestUITests */ = {
+			isa = PBXGroup;
+			children = (
+				2E71F96921B6105D002EE81B /* TestUITests.m */,
+				2E71F96B21B6105D002EE81B /* Info.plist */,
+			);
+			path = TestUITests;
 			sourceTree = "<group>";
 		};
 		2EF3324B204502CA00565374 /* Help */ = {
@@ -1251,6 +1310,9 @@
 						DevelopmentTeam = 5AEE5R2F69;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
+							com.apple.AccessWiFi = {
+								enabled = 1;
+							};
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
 							};
@@ -1334,7 +1396,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-CSRmeshDemo/Pods-CSRmeshDemo-resources.sh",
-				"${PODS_ROOT}/MJRefresh/MJRefresh/MJRefresh.bundle",
+				"${PODS_ROOT}/SGQRCode/SGQRCode/SGQRCode.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -1456,6 +1518,7 @@
 				2EF2DB5A200DA6CF00A1B236 /* DeviceModelManager.m in Sources */,
 				2EEA6E361F453B1300895CE2 /* ControlMaskView.m in Sources */,
 				2EAD47991FFC6DA8007D45E9 /* GalleryControlImageView.m in Sources */,
+				2EE98D9721B0DD5000FAC3AF /* ScanViewController.m in Sources */,
 				2E2E708A1FF5DE60002D1C1D /* PlaceDetailsViewController.m in Sources */,
 				2E2E707E1FF5DE60002D1C1D /* MoreViewController.m in Sources */,
 				2EF332552045031300565374 /* HelpViewController.m in Sources */,
@@ -1608,6 +1671,22 @@
 				2E706D05212A7282008D0EC4 /* zh-Hans */,
 			);
 			name = GalleryViewController.xib;
+			sourceTree = "<group>";
+		};
+		2E71F94821B61059002EE81B /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E71F94921B61059002EE81B /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		2E71F95021B6105C002EE81B /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E71F95121B6105C002EE81B /* Base */,
+			);
+			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 		2E9622C120C913530097C617 /* Localizable.strings */ = {
@@ -1772,11 +1851,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = NO;
+				CODE_SIGN_ENTITLEMENTS = CSRmeshDemo/CSRmeshDemo.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1829,11 +1909,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = NO;
+				CODE_SIGN_ENTITLEMENTS = CSRmeshDemo/CSRmeshDemo.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1902,6 +1983,16 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
+		2E71F94B21B61059002EE81B /* Test.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				2E71F94C21B61059002EE81B /* Test.xcdatamodel */,
+			);
+			currentVersion = 2E71F94C21B61059002EE81B /* Test.xcdatamodel */;
+			path = Test.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
 		CEE5E7381B398ABB0039F83C /* CSRmesh.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (

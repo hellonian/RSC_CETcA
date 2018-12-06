@@ -19,17 +19,12 @@
 #import "SceneEntity.h"
 #import "AppDelegate.h"
 #import "CSRParseAndLoad.h"
-#import <MultipeerConnectivity/MultipeerConnectivity.h>
-#import <MBProgressHUD.h>
 
-@interface PlaceDetailsViewController ()<UITextFieldDelegate,CSRCheckboxDelegate,CSRCheckboxDelegate,MCNearbyServiceBrowserDelegate,MCBrowserViewControllerDelegate,MCSessionDelegate>
+#import "ScanViewController.h"
+#import <AVFoundation/AVFoundation.h>
 
-@property (nonatomic,strong)MCPeerID * peerID;
-@property (nonatomic,strong)MCSession * session;
-@property (nonatomic,strong)MCNearbyServiceBrowser * brower;
-@property (nonatomic,strong)MCBrowserViewController * browserViewController;
-@property (nonatomic,strong) MBProgressHUD *hud;
-@property (nonatomic,strong) MBProgressHUD *waitingHud;
+@interface PlaceDetailsViewController ()<UITextFieldDelegate,CSRCheckboxDelegate,CSRCheckboxDelegate>
+
 @property (nonatomic,strong) NSString *oldName;
 @property (weak, nonatomic) IBOutlet UILabel *placeName;
 
@@ -248,18 +243,58 @@
 
 - (IBAction)exportPlace:(id)sender {
     
-    _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    _hud.label.text = AcTECLocalizedStringFromTable(@"SearchRecepient", @"Localizable");
+    ScanViewController *svc = [[ScanViewController alloc] init];
+    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    if (device) {
+        AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+        switch (status) {
+            case AVAuthorizationStatusNotDetermined: {
+                [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+                    if (granted) {
+                        dispatch_sync(dispatch_get_main_queue(), ^{
+                            [self.navigationController pushViewController:svc animated:YES];
+                        });
+                        NSLog(@"用户第一次同意了访问相机权限 - - %@", [NSThread currentThread]);
+                    } else {
+                        NSLog(@"用户第一次拒绝了访问相机权限 - - %@", [NSThread currentThread]);
+                    }
+                }];
+                break;
+            }
+            case AVAuthorizationStatusAuthorized: {
+                [self.navigationController pushViewController:svc animated:YES];
+                break;
+            }
+            case AVAuthorizationStatusDenied: {
+                UIAlertController *alertC = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"openCamera", @"Localizable") preferredStyle:(UIAlertControllerStyleAlert)];
+                [alertC.view setTintColor:DARKORAGE];
+                UIAlertAction *alertA = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+                    
+                }];
+                
+                [alertC addAction:alertA];
+                [self presentViewController:alertC animated:YES completion:nil];
+                break;
+            }
+            case AVAuthorizationStatusRestricted: {
+                NSLog(@"因为系统原因, 无法访问相册");
+                break;
+            }
+                
+            default:
+                break;
+        }
+        return;
+    }
     
-    NSString *name = [UIDevice currentDevice].name;
-    _peerID = [[MCPeerID alloc]initWithDisplayName:name];
-    _session = [[MCSession alloc]initWithPeer:_peerID];
-    _session.delegate = self;
+    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"cameraNotDetected", @"Localizable") preferredStyle:(UIAlertControllerStyleAlert)];
+    [alertC.view setTintColor:DARKORAGE];
+    UIAlertAction *alertA = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
     
-    _brower = [[MCNearbyServiceBrowser alloc]initWithPeer:_peerID serviceType:@"actec-place"];
-    _brower.delegate = self;
-    [_brower startBrowsingForPeers];
-    
+    [alertC addAction:alertA];
+    [self presentViewController:alertC animated:YES completion:nil];
 }
 
 
@@ -308,75 +343,6 @@
     }else {
         _placeNetworkKeyTF.secureTextEntry = _showPasswordCheckbox.selected;
     }
-}
-
-#pragma MC相关代理方法
-
-- (void)browser:(MCNearbyServiceBrowser *)browser foundPeer:(MCPeerID *)peerID withDiscoveryInfo:(NSDictionary *)info{
-    if (_browserViewController == nil) {
-        _browserViewController = [[MCBrowserViewController alloc]initWithServiceType:@"actec-place" session:_session];
-        _browserViewController.delegate = self;
-        [self presentViewController:_browserViewController animated:YES completion:nil];
-        if (_hud) {
-            [_hud hideAnimated:NO];
-            _hud = nil;
-        }
-    }
-}
-
-- (void)browser:(MCNearbyServiceBrowser *)browser lostPeer:(MCPeerID *)peerID {
-    
-}
-
-#pragma mark - BrowserViewController附近用户列表视图相关代理方法
-
-- (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController{
-
-    _waitingHud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
-    _waitingHud.label.text = AcTECLocalizedStringFromTable(@"TransmitData", @"Localizable");
-    
-    CSRParseAndLoad *parseLoad = [[CSRParseAndLoad alloc] init];
-    NSData *jsonData = [parseLoad composeDatabase];
-    
-    [_session sendData:jsonData toPeers:_session.connectedPeers withMode:MCSessionSendDataUnreliable error:nil];
-    
-}
-
-- (void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController{
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-    _browserViewController = nil;
-    
-}
-
-- (void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID {
-    if ([[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] isEqualToString:@"接收完成"]) {
-        if (_waitingHud) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [_waitingHud hideAnimated:YES];
-                _waitingHud = nil;
-            });
-            
-        }
-        [self dismissViewControllerAnimated:YES completion:nil];
-        _browserViewController = nil;
-    }
-}
-
-- (void)session:(MCSession *)session didReceiveStream:(NSInputStream *)stream withName:(NSString *)streamName fromPeer:(MCPeerID *)peerID{
-    NSLog(@"didReceiveStream");
-}
-
-- (void)session:(MCSession *)session didStartReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID withProgress:(NSProgress *)progress{
-    NSLog(@"didStartReceivingResourceWithName");
-}
-
-- (void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(NSError *)error{
-    NSLog(@"didFinishReceivingResourceWithName");
-}
-
-- (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state {
-    
 }
 
 - (void)languageChange:(id)sender {

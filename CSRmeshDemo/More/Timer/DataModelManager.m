@@ -17,10 +17,6 @@
 #import "DeviceModelManager.h"
 
 @interface DataModelManager ()<DataModelApiDelegate>
-{
-    TimeSchedule *_schedule;
-    NSInteger primordial;
-}
 
 @property (nonatomic,strong) DataModelApi *manager;
 @property (nonatomic,strong) NSMutableDictionary *deviceKeyDic;
@@ -99,9 +95,9 @@ static DataModelManager *manager = nil;
     NSString *eveD2String = [CSRUtilities stringWithHexNumber:[eveD2 integerValue]];
     NSString *eveD3String = [CSRUtilities stringWithHexNumber:[eveD3 integerValue]];
     
-    NSString *cmd = [NSString stringWithFormat:@"83%@%@0%d%@%@%@%@%@%@%@%@00ffffffffffff",datalen,indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString,eveD1String,eveD2String,eveD3String];
-    
-    _schedule = [self analyzeTimeScheduleData:[NSString stringWithFormat:@"%@0%d%@%@%@%@%@0000000000",indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString] forLight:deviceId];
+    NSDate *current = [NSDate date];
+    NSString *currentDateString = [self YMdStringForDate:current];
+    NSString *cmd = [NSString stringWithFormat:@"83%@%@0%d%@%@%@%@%@%@%@%@00%@ffffff",datalen,indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString,eveD1String,eveD2String,eveD3String,currentDateString];
     
     if (deviceId) {
         [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
@@ -290,10 +286,11 @@ static DataModelManager *manager = nil;
     
     if ([dataStr hasPrefix:@"8e"]) {
         NSInteger seq = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(4, 2)]];
-        if (seq && (seq - primordial) < 0 && (seq - primordial) >-10) {
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sourceDeviceId];
+        if (seq && (seq - model.primordial) < 0 && (seq - model.primordial) >-10) {
             return;
         }
-        primordial = seq;
+        model.primordial = seq;
         
         NSString *stateStr = [self getBinaryByhex:[dataStr substringWithRange:NSMakeRange(6, 2)]];
         NSString *state = [stateStr substringWithRange:NSMakeRange(7, 1)];

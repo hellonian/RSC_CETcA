@@ -13,4 +13,6 @@ target 'CSRmeshDemo' do
     pod 'OHMySQL'
     pod 'MBProgressHUD'
     pod 'SDWebImage', '~> 4.0'
+    pod 'CocoaAsyncSocket'
+    pod 'SGQRCode', '~> 3.0.1'
 end

@@ -78,7 +78,9 @@
     
     if (self.lightSensor.remoteBranch.length > 13) {
         NSString *luxStr = [self.lightSensor.remoteBranch substringWithRange:NSMakeRange(10, 4)];
-        NSInteger lux = [CSRUtilities numberWithHexString:luxStr];
+        NSString *str0 = [luxStr substringToIndex:2];
+        NSString *str1 = [luxStr substringFromIndex:2];
+        NSInteger lux = [CSRUtilities numberWithHexString:[NSString stringWithFormat:@"%@%@",str1,str0]];
         self.luxTF.text = [NSString stringWithFormat:@"%ld",lux];
         NSString *minStr = [self.lightSensor.remoteBranch substringWithRange:NSMakeRange(14, 2)];
         NSInteger min = [CSRUtilities numberWithHexString:minStr];

@@ -90,9 +90,7 @@
     _curtainSlider.hidden = YES;
     _calibrateImageView.hidden = NO;
     
-    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"79020401"] success:nil failure:nil];
-    
-    
+    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"79020401"] success:nil failure:nil]; 
 }
 
 - (void)doneCalibrateAction {
