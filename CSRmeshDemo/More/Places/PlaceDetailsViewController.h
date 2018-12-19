@@ -20,6 +20,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *networkKeyLabel;
 @property (weak, nonatomic) IBOutlet UILabel *showPasswordLabel;
 @property (weak, nonatomic) IBOutlet UIView *passwordLineView;
-@property (weak, nonatomic) IBOutlet UIButton *exportButton;
+@property (nonatomic,copy) void (^placeDetailVCHandle)(void);
 
 @end

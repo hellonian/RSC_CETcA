@@ -71,7 +71,7 @@
 "Help" = "帮助";
 "About" = "关于";
 "CreatNewPlace" = "创建新场所";
-"JoinPlace" = "加入新场所";
+"JoinPlace" = "扫码加入新场所";
 "SwitchPlaceAlert" = "是否确定切换到场所";
 "Save" = "存储";
 "SearchRecepient" = "搜索申请者……";

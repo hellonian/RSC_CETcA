@@ -30,7 +30,7 @@
 
 #define kPlaceIcons @[@{@"id":@(0), @"iconImage":@"imageOfIconNewCar"}, @{@"id":@(1), @"iconImage":@"imageOfIconNewBuilding"}, @{@"id":@(2), @"iconImage":@"imageOfIconNewCoffee"}, @{@"id":@(3), @"iconImage":@"imageOfIconNewWorld"}, @{@"id":@(4), @"iconImage":@"imageOfIconNewFactory"}, @{@"id":@(5), @"iconImage":@"imageOfIconNewFoot"}, @{@"id":@(6), @"iconImage":@"imageOfIconNewGame"}, @{@"id":@(7), @"iconImage":@"imageOfIconNewHealth"}, @{@"id":@(8), @"iconImage":@"imageOfIconNewHome"}, @{@"id":@(9), @"iconImage":@"imageOfIconNewMovie"}, @{@"id":@(10), @"iconImage":@"imageOfIconNewSchool"}, @{@"id":@(11), @"iconImage":@"imageOfIconNewStadium"}, @{@"id":@(12), @"iconImage":@"imageOfIconNewSuitcase"}, @{@"id":@(13), @"iconImage":@"imageOfIconNewView"}, @{@"id":@(14), @"iconImage":@"imageOfIconNewIndustry"}]
 
-#define kSceneIcons @[@"home", @"sleep", @"party", @"TV", @"reading", @"away", @"getup", @"dining", @"custom"]
+#define kSceneIcons @[@"home", @"away",@"sleep", @"party", @"TV", @"reading", @"getup", @"dining", @"custom"]
 
 #define kGroupIcons @[@"living",@"bed",@"dinning",@"wash",@"pan",@"study",@"kettle",@"attic",@"stair",@"fitness",@"plant",@"terrace",@"bookcase",@"stool",@"talking",@"warehouse",@"corridor"]
 

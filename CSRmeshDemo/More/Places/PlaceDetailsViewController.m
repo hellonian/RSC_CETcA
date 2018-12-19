@@ -20,13 +20,22 @@
 #import "AppDelegate.h"
 #import "CSRParseAndLoad.h"
 
-#import "ScanViewController.h"
-#import <AVFoundation/AVFoundation.h>
+#import <SystemConfiguration/CaptiveNetwork.h>
+#include <ifaddrs.h>
+#include <arpa/inet.h>
+#import "SGQRCode.h"
+#import "GCDAsyncSocket.h"
+#import <MBProgressHUD.h>
 
-@interface PlaceDetailsViewController ()<UITextFieldDelegate,CSRCheckboxDelegate,CSRCheckboxDelegate>
+@interface PlaceDetailsViewController ()<UITextFieldDelegate,CSRCheckboxDelegate,CSRCheckboxDelegate,GCDAsyncSocketDelegate,MBProgressHUDDelegate>
 
 @property (nonatomic,strong) NSString *oldName;
 @property (weak, nonatomic) IBOutlet UILabel *placeName;
+@property (nonatomic,strong) GCDAsyncSocket *serverSocket;
+@property (nonatomic,strong) NSMutableArray *clientSocketArray;
+@property (nonatomic,strong) MBProgressHUD *hud;
+@property (weak, nonatomic) IBOutlet UIImageView *QRCodeImageView;
+@property (weak, nonatomic) IBOutlet UILabel *QRCodeLabel;
 
 @end
 
@@ -77,11 +86,23 @@
     [super viewWillAppear:animated];
     if (!_placeEntity) {
         _deleteButton.hidden = YES;
-        _exportButton.hidden = YES;
+        _QRCodeImageView.hidden = YES;
+        _QRCodeLabel.hidden = YES;
     }else if (![[_placeEntity objectID] isEqual:[[CSRAppStateManager sharedInstance].selectedPlace objectID]]) {
-        _exportButton.hidden = YES;
+        _QRCodeImageView.hidden = YES;
+        _QRCodeLabel.hidden = YES;
     }else if ([[_placeEntity objectID] isEqual:[[CSRAppStateManager sharedInstance].selectedPlace objectID]]) {
         _deleteButton.hidden = YES;
+        if ([self startListenPort:4321]) {
+            NSDictionary *dic = @{@"WIFIName":[self getWifiName],
+                                  @"IPAddress":[self localIpAddressForCurrentDevice],
+                                  @"PORT":@(4321),
+                                  @"FROM":@"ios"};
+            NSString *jsonString = [CSRUtilities convertToJsonData:dic];
+            if (jsonString) {
+                self.QRCodeImageView.image = [SGQRCodeObtain generateQRCodeWithData:jsonString size:200];
+            }
+        }
     }
     
 }
@@ -166,7 +187,19 @@
                 [[CSRDatabaseManager sharedInstance] saveContext];
             }
             
+            [CSRAppStateManager sharedInstance].selectedPlace = _placeEntity;
+            if (![[CSRUtilities getValueFromDefaultsForKey:@"kCSRLastSelectedPlaceID"] isEqualToString:[[[[CSRAppStateManager sharedInstance].selectedPlace objectID] URIRepresentation] absoluteString]]) {
+                
+                [CSRUtilities saveObject:[[[[CSRAppStateManager sharedInstance].selectedPlace objectID] URIRepresentation] absoluteString] toDefaultsWithKey:@"kCSRLastSelectedPlaceID"];
+                
+            }
+            
             [[CSRAppStateManager sharedInstance] setupPlace];
+            if (self.placeDetailVCHandle) {
+                self.placeDetailVCHandle();
+            }
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reGetDataForPlaceChanged" object:nil];
             
             [self.navigationController popViewControllerAnimated:YES];
             
@@ -241,64 +274,6 @@
     }
 }
 
-- (IBAction)exportPlace:(id)sender {
-    
-    ScanViewController *svc = [[ScanViewController alloc] init];
-    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    if (device) {
-        AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-        switch (status) {
-            case AVAuthorizationStatusNotDetermined: {
-                [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
-                    if (granted) {
-                        dispatch_sync(dispatch_get_main_queue(), ^{
-                            [self.navigationController pushViewController:svc animated:YES];
-                        });
-                        NSLog(@"用户第一次同意了访问相机权限 - - %@", [NSThread currentThread]);
-                    } else {
-                        NSLog(@"用户第一次拒绝了访问相机权限 - - %@", [NSThread currentThread]);
-                    }
-                }];
-                break;
-            }
-            case AVAuthorizationStatusAuthorized: {
-                [self.navigationController pushViewController:svc animated:YES];
-                break;
-            }
-            case AVAuthorizationStatusDenied: {
-                UIAlertController *alertC = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"openCamera", @"Localizable") preferredStyle:(UIAlertControllerStyleAlert)];
-                [alertC.view setTintColor:DARKORAGE];
-                UIAlertAction *alertA = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
-                    
-                }];
-                
-                [alertC addAction:alertA];
-                [self presentViewController:alertC animated:YES completion:nil];
-                break;
-            }
-            case AVAuthorizationStatusRestricted: {
-                NSLog(@"因为系统原因, 无法访问相册");
-                break;
-            }
-                
-            default:
-                break;
-        }
-        return;
-    }
-    
-    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"cameraNotDetected", @"Localizable") preferredStyle:(UIAlertControllerStyleAlert)];
-    [alertC.view setTintColor:DARKORAGE];
-    UIAlertAction *alertA = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
-        
-    }];
-    
-    [alertC addAction:alertA];
-    [self presentViewController:alertC animated:YES completion:nil];
-}
-
-
-
 #pragma mark - UITextFieldDelegate methods
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -349,6 +324,108 @@
     if (self.isViewLoaded && !self.view.window) {
         self.view = nil;
     }
+}
+
+#pragma mark - socket
+
+//获取本机wifi名称
+- (NSString *)getWifiName {
+    NSArray *ifs = (__bridge_transfer NSArray *)CNCopySupportedInterfaces();
+    if (!ifs) {
+        return nil;
+    }
+    NSString *WiFiName = nil;
+    for (NSString *ifnam in ifs) {
+        NSDictionary *info = (__bridge_transfer NSDictionary *)CNCopyCurrentNetworkInfo((__bridge CFStringRef)ifnam);
+        if (info && [info count]) {
+            // 这里其实对应的有三个key:kCNNetworkInfoKeySSID、kCNNetworkInfoKeyBSSID、kCNNetworkInfoKeySSIDData，
+            // 不过它们都是CFStringRef类型的
+            WiFiName = [info objectForKey:(__bridge NSString *)kCNNetworkInfoKeySSID];
+            break;
+        }
+    }
+    return WiFiName;
+}
+
+//获取本机wifi环境下本机ip地址
+- (NSString *)localIpAddressForCurrentDevice
+{
+    NSString *address = nil;
+    struct ifaddrs *interfaces = NULL;
+    struct ifaddrs *temp_addr = NULL;
+    int success = 0;
+    success = getifaddrs(&interfaces);
+    if (success == 0) {
+        temp_addr = interfaces;
+        while(temp_addr != NULL) {
+            if(temp_addr->ifa_addr->sa_family == AF_INET) {
+                if([[NSString stringWithUTF8String:temp_addr->ifa_name] isEqualToString:@"en0"]) {
+                    address = [NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr)];
+                    return address;
+                }
+            }
+            temp_addr = temp_addr->ifa_next;
+        }
+        freeifaddrs(interfaces);
+    }
+    return nil;
+}
+
+- (BOOL)startListenPort:(uint16_t)prot{
+    if (prot <= 0) {
+        NSAssert(prot > 0, @"prot must be more zero");
+    }
+    if (!self.serverSocket) {
+        self.serverSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+    }
+    [self.serverSocket disconnect];
+    NSError *error = nil;
+    BOOL result = [self.serverSocket acceptOnPort:prot error:&error];
+    if (result && !error) {
+        return YES;
+    }else{
+        return NO;
+    }
+}
+
+- (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket {
+    if (!_hud) {
+        _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        _hud.delegate = self;
+    }
+    if (!self.clientSocketArray) {
+        self.clientSocketArray = [NSMutableArray array];
+    }
+    [self.clientSocketArray addObject:newSocket];
+    [newSocket readDataWithTimeout:- 1 tag:0];
+    
+    CSRParseAndLoad *parseLoad = [[CSRParseAndLoad alloc] init];
+    NSData *jsonData = [parseLoad composeDatabase];
+    
+    int value = (int)jsonData.length;
+    Byte byteData[4] = {};
+    byteData[0] =(Byte)((value & 0xFF000000)>>24);
+    byteData[1] =(Byte)((value & 0x00FF0000)>>16);
+    byteData[2] =(Byte)((value & 0x0000FF00)>>8);
+    byteData[3] =(Byte)((value & 0x000000FF));
+    
+    Byte byte[] = {0x20,0x18,byteData[0],byteData[1],byteData[2],byteData[3]};
+    NSData *temphead = [[NSData alloc] initWithBytes:byte length:6];
+    NSMutableData *mutableData = [[NSMutableData alloc] init];
+    [mutableData appendData:temphead];
+    [mutableData appendData:jsonData];
+    
+    [newSocket writeData:mutableData withTimeout:-1 tag:0];
+    
+    if (_hud) {
+        [_hud hideAnimated:YES];
+        _hud = nil;
+    }
+}
+
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+    [hud removeFromSuperview];
+    hud = nil;
 }
 
 @end

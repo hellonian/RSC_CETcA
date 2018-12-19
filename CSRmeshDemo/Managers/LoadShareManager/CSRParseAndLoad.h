@@ -12,5 +12,5 @@
 - (CSRPlaceEntity *) parseIncomingDictionary:(NSDictionary*)parsingDictionary;
 - (NSData *) composeDatabase;
 
-
+- (CSRPlaceEntity *) parseIncomingDictionaryFromAndroid:(NSMutableArray *)files;
 @end

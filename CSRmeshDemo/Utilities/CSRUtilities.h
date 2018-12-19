@@ -116,4 +116,7 @@
 + (BOOL)belongToCurtainController:(NSString *)shortName;
 + (BOOL)belongToFanController:(NSString *)shortName;
 
++(NSString *)convertToJsonData:(NSDictionary *)dict;
++ (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString;
+
 @end

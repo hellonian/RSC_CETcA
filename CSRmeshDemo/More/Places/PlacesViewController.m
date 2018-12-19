@@ -17,31 +17,15 @@
 
 #import <MBProgressHUD.h>
 #import "CSRParseAndLoad.h"
+#import <AVFoundation/AVFoundation.h>
+#import "ScanViewController.h"
 
-#import <SystemConfiguration/CaptiveNetwork.h>
-#include <ifaddrs.h>
-#include <arpa/inet.h>
-#import "SGQRCode.h"
-#import "GCDAsyncSocket.h"
-#import "PureLayout.h"
-
-@interface PlacesViewController ()<UITableViewDelegate,UITableViewDataSource,GCDAsyncSocketDelegate,MBProgressHUDDelegate>
-{
-    NSInteger dataLengthByHead;
-    NSData *headData;
-    NSMutableData *receiveData;
-}
+@interface PlacesViewController ()<UITableViewDelegate,UITableViewDataSource>
 
 @property (nonatomic,strong) NSMutableArray *placesArray;
 @property (nonatomic,assign) NSInteger selectedRow;
 
 @property (nonatomic,strong) MBProgressHUD *hud;
-
-@property (nonatomic,strong) GCDAsyncSocket *serverSocket;
-@property (nonatomic,strong) NSMutableArray *clientSocketArray;
-@property (nonatomic,strong) UIView *translucentBgView;
-@property (nonatomic,strong) UIImageView *QRCodeImageView;
-@property (nonatomic,strong) UILabel *QRCodeWordsLabel;
 
 @end
 
@@ -76,38 +60,76 @@
     
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     [alert.view setTintColor:DARKORAGE];
+    __block PlacesViewController *weakSelf = self;
     UIAlertAction *create = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"CreatNewPlace", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         PlaceDetailsViewController *pdvc = [[PlaceDetailsViewController alloc] init];
         pdvc.navigationItem.title = AcTECLocalizedStringFromTable(@"CreatNewPlace", @"Localizable");
+        
+        pdvc.placeDetailVCHandle = ^{
+            [weakSelf refreshPlaces];
+        };
         [self.navigationController pushViewController:pdvc animated:YES];
         
     }];
     UIAlertAction *join = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"JoinPlace", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
-        if ([self startListenPort:4321]) {
-            NSDictionary *dic = @{@"WIFIName":[self getWifiName],
-                                  @"IPAddress":[self localIpAddressForCurrentDevice],
-                                  @"PORT":@(4321)};
-            NSError *error = nil;
-            NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:&error];
-            NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-            if (jsonString) {
-                [self.view addSubview:self.translucentBgView];
-                [self.view addSubview:self.QRCodeImageView];
-                [self.view addSubview:self.QRCodeWordsLabel];
-                self.QRCodeImageView.image = [SGQRCodeObtain generateQRCodeWithData:jsonString size:200];
-                [self.QRCodeImageView autoCenterInSuperview];
-                [self.QRCodeWordsLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_QRCodeImageView withOffset:20.0];
-                [self.QRCodeWordsLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20.0];
-                [self.QRCodeWordsLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:20.0];
-                [self.QRCodeWordsLabel autoSetDimension:ALDimensionHeight toSize:100];
-                
+        ScanViewController *svc = [[ScanViewController alloc] init];
+        svc.scanVCHandle = ^{
+            [weakSelf refreshPlaces];
+        };
+        AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+        if (device) {
+            AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+            switch (status) {
+                case AVAuthorizationStatusNotDetermined: {
+                    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+                        if (granted) {
+                            dispatch_sync(dispatch_get_main_queue(), ^{
+                                [self.navigationController pushViewController:svc animated:YES];
+                            });
+                            NSLog(@"用户第一次同意了访问相机权限 - - %@", [NSThread currentThread]);
+                        } else {
+                            NSLog(@"用户第一次拒绝了访问相机权限 - - %@", [NSThread currentThread]);
+                        }
+                    }];
+                    break;
+                }
+                case AVAuthorizationStatusAuthorized: {
+                    [self.navigationController pushViewController:svc animated:YES];
+                    break;
+                }
+                case AVAuthorizationStatusDenied: {
+                    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"openCamera", @"Localizable") preferredStyle:(UIAlertControllerStyleAlert)];
+                    [alertC.view setTintColor:DARKORAGE];
+                    UIAlertAction *alertA = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+                        
+                    }];
+                    
+                    [alertC addAction:alertA];
+                    [self presentViewController:alertC animated:YES completion:nil];
+                    break;
+                }
+                case AVAuthorizationStatusRestricted: {
+                    NSLog(@"因为系统原因, 无法访问相册");
+                    break;
+                }
+                    
+                default:
+                    break;
             }
-            Byte byte[] = {0x20,0x18};
-            headData = [[NSData alloc] initWithBytes:byte length:2];
+            return;
         }
         
+        UIAlertController *alertC = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"cameraNotDetected", @"Localizable") preferredStyle:(UIAlertControllerStyleAlert)];
+        [alertC.view setTintColor:DARKORAGE];
+        UIAlertAction *alertA = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        
+        [alertC addAction:alertA];
+        [self presentViewController:alertC animated:YES completion:nil];
+
     }];
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         
@@ -124,21 +146,6 @@
 }
 
 - (void)backSetting{
-    if (_QRCodeImageView) {
-        [_QRCodeImageView removeFromSuperview];
-        _QRCodeImageView = nil;
-    }
-    
-    if (_QRCodeWordsLabel) {
-        [_QRCodeWordsLabel removeFromSuperview];
-        _QRCodeWordsLabel = nil;
-    }
-    
-    if (_translucentBgView) {
-        [_translucentBgView removeFromSuperview];
-        _translucentBgView = nil;
-    }
-    
     CATransition *animation = [CATransition animation];
     [animation setDuration:0.3];
     [animation setType:kCATransitionMoveIn];
@@ -291,179 +298,6 @@
         UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
         self.navigationItem.leftBarButtonItem = back;
     }
-}
-
-#pragma mark - socket
-
-//获取本机wifi名称
-- (NSString *)getWifiName {
-    NSArray *ifs = (__bridge_transfer NSArray *)CNCopySupportedInterfaces();
-    if (!ifs) {
-        return nil;
-    }
-    NSString *WiFiName = nil;
-    for (NSString *ifnam in ifs) {
-        NSDictionary *info = (__bridge_transfer NSDictionary *)CNCopyCurrentNetworkInfo((__bridge CFStringRef)ifnam);
-        if (info && [info count]) {
-            // 这里其实对应的有三个key:kCNNetworkInfoKeySSID、kCNNetworkInfoKeyBSSID、kCNNetworkInfoKeySSIDData，
-            // 不过它们都是CFStringRef类型的
-            WiFiName = [info objectForKey:(__bridge NSString *)kCNNetworkInfoKeySSID];
-            break;
-        }
-    }
-    return WiFiName;
-}
-
-//获取本机wifi环境下本机ip地址
-- (NSString *)localIpAddressForCurrentDevice
-{
-    NSString *address = nil;
-    struct ifaddrs *interfaces = NULL;
-    struct ifaddrs *temp_addr = NULL;
-    int success = 0;
-    success = getifaddrs(&interfaces);
-    if (success == 0) {
-        temp_addr = interfaces;
-        while(temp_addr != NULL) {
-            if(temp_addr->ifa_addr->sa_family == AF_INET) {
-                if([[NSString stringWithUTF8String:temp_addr->ifa_name] isEqualToString:@"en0"]) {
-                    address = [NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr)];
-                    return address;
-                }
-            }
-            temp_addr = temp_addr->ifa_next;
-        }
-        freeifaddrs(interfaces);
-    }
-    return nil;
-}
-
-- (BOOL)startListenPort:(uint16_t)prot{
-    if (prot <= 0) {
-        NSAssert(prot > 0, @"prot must be more zero");
-    }
-    if (!self.serverSocket) {
-        self.serverSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-    }
-    [self.serverSocket disconnect];
-    NSError *error = nil;
-    BOOL result = [self.serverSocket acceptOnPort:prot error:&error];
-    if (result && !error) {
-        return YES;
-    }else{
-        return NO;
-    }
-}
-
-- (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket {
-    if (!_hud) {
-        _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        _hud.delegate = self;
-    }
-    if (!self.clientSocketArray) {
-        self.clientSocketArray = [NSMutableArray array];
-    }
-    [self.clientSocketArray addObject:newSocket];
-    [newSocket readDataWithTimeout:- 1 tag:0];
-    
-    if (_QRCodeImageView) {
-        [_QRCodeImageView removeFromSuperview];
-        _QRCodeImageView = nil;
-    }
-    
-    if (_QRCodeWordsLabel) {
-        [_QRCodeWordsLabel removeFromSuperview];
-        _QRCodeWordsLabel = nil;
-    }
-    
-    if (_translucentBgView) {
-        [_translucentBgView removeFromSuperview];
-        _translucentBgView = nil;
-    }
-}
-
-- (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
-    
-    NSData *head = [data subdataWithRange:NSMakeRange(0, 2)];
-    
-    if ([head isEqualToData:headData]) {
-        NSData *dataLengthData = [data subdataWithRange:NSMakeRange(2, 4)];
-        dataLengthByHead = [CSRUtilities numberWithHexString:[CSRUtilities hexStringForData:dataLengthData]];
-        receiveData = nil;
-        receiveData = [[NSMutableData alloc] init];
-        [receiveData appendData:[data subdataWithRange:NSMakeRange(6, data.length-6)]];
-    }else {
-        [receiveData appendData:data];
-    }
-    
-    if (receiveData.length == dataLengthByHead) {
-        NSError *error = nil;
-        NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:receiveData options:NSJSONReadingMutableLeaves error:&error];
-        CSRParseAndLoad *parseLoad = [[CSRParseAndLoad alloc] init];
-        if (jsonDictionary[@"place"]) {
-            NSDictionary *placeDict = jsonDictionary[@"place"];
-            NSString *passPhrase = placeDict[@"placePassword"];
-            [self.placesArray enumerateObjectsUsingBlock:^(CSRPlaceEntity  *placeEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-                if ([placeEntity.passPhrase isEqualToString:passPhrase]) {
-                    [parseLoad deleteEntitiesInSelectedPlace:placeEntity];
-                    *stop = YES;
-                }
-            }];
-        }
-        CSRPlaceEntity *sharePlace = [parseLoad parseIncomingDictionary:jsonDictionary];
-        [CSRAppStateManager sharedInstance].selectedPlace = sharePlace;
-        if (![[CSRUtilities getValueFromDefaultsForKey:@"kCSRLastSelectedPlaceID"] isEqualToString:[[[[CSRAppStateManager sharedInstance].selectedPlace objectID] URIRepresentation] absoluteString]]) {
-            
-            [CSRUtilities saveObject:[[[[CSRAppStateManager sharedInstance].selectedPlace objectID] URIRepresentation] absoluteString] toDefaultsWithKey:@"kCSRLastSelectedPlaceID"];
-            
-        }
-        
-        [[CSRAppStateManager sharedInstance] setupPlace];
-        
-        [self refreshPlaces];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"reGetDataForPlaceChanged" object:nil];
-        
-        for (GCDAsyncSocket *clientSocket in self.clientSocketArray) {
-            NSData *backData = [@"AcTEC" dataUsingEncoding:NSUTF8StringEncoding];
-            [clientSocket writeData:backData withTimeout:-1 tag:1];
-        }
-        
-        if (_hud) {
-            [_hud hideAnimated:YES];
-            _hud = nil;
-        }
-    }
-    
-    [sock readDataWithTimeout:-1 tag:0];
-}
-
-
-- (UIView *)translucentBgView {
-    if (!_translucentBgView) {
-        _translucentBgView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        _translucentBgView.backgroundColor = [UIColor blackColor];
-        _translucentBgView.alpha = 0.4;
-    }
-    return _translucentBgView;
-}
-
-- (UIImageView *)QRCodeImageView {
-    if (!_QRCodeImageView) {
-        _QRCodeImageView = [[UIImageView alloc] init];
-        _QRCodeImageView.bounds = CGRectMake(0, 0, 200, 200);
-    }
-    return _QRCodeImageView;
-}
-
-- (UILabel *)QRCodeWordsLabel {
-    if (!_QRCodeWordsLabel) {
-        _QRCodeWordsLabel = [[UILabel alloc] init];
-        _QRCodeWordsLabel.text = AcTECLocalizedStringFromTable(@"RCCodeWords", @"Localizable");
-        _QRCodeWordsLabel.numberOfLines = 0;
-        _QRCodeWordsLabel.textColor = [UIColor whiteColor];
-        _QRCodeWordsLabel.textAlignment = NSTextAlignmentCenter;
-    }
-    return _QRCodeWordsLabel;
 }
 
 @end

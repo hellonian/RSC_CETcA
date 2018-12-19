@@ -2,6 +2,9 @@
 /* Class = "UITextField"; placeholder = "Place name"; ObjectID = "Jd1-eJ-EqW"; */
 "Jd1-eJ-EqW.placeholder" = "Place name";
 
+/* Class = "UILabel"; text = "Scan the RQ code to share place with this phone. Please make sure the two phones are under the same WIFI."; ObjectID = "WAl-Hv-Wp5"; */
+"WAl-Hv-Wp5.text" = "Scan the RQ code to share place with this phone.\nPlease make sure the two phones are under the same WIFI.";
+
 /* Class = "UILabel"; text = "Network key"; ObjectID = "bs7-mY-b11"; */
 "bs7-mY-b11.text" = "Network key";
 
@@ -13,9 +16,6 @@
 
 /* Class = "UILabel"; text = "Show password"; ObjectID = "rQO-oA-8kS"; */
 "rQO-oA-8kS.text" = "Show password";
-
-/* Class = "UIButton"; normalTitle = "Export Place File"; ObjectID = "uhH-7k-Gq3"; */
-"uhH-7k-Gq3.normalTitle" = "Export Place File";
 
 /* Class = "UITextField"; placeholder = "Network key"; ObjectID = "zjv-Gy-2n3"; */
 "zjv-Gy-2n3.placeholder" = "Network key";

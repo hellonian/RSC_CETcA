@@ -70,6 +70,7 @@
     AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
     sessionManager.responseSerializer.acceptableContentTypes = nil;
     [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+        _latestDic = nil;
         _latestDic = (NSDictionary *)responseObject;
         NSLog(@"%@",_latestDic);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {

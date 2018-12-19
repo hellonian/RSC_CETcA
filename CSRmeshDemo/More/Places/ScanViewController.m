@@ -14,11 +14,20 @@
 #import "CSRParseAndLoad.h"
 #import <MBProgressHUD.h>
 #import <SystemConfiguration/CaptiveNetwork.h>
+#import "CSRUtilities.h"
+#import "CSRAppStateManager.h"
+#import "CSRDatabaseManager.h"
+#import "CSRUtilities.h"
 
 @interface ScanViewController ()<GCDAsyncSocketDelegate,NSStreamDelegate,MBProgressHUDDelegate>
 {
     SGQRCodeObtain *obtain;
-    uint16_t streamNum;
+    NSData *headData;
+    NSMutableData *receiveData;
+    NSInteger dataLengthByHead;
+    
+    NSInteger fileCount;
+    BOOL firstFile;
 }
 @property (nonatomic, strong) SGQRCodeScanView *scanView;
 @property (nonatomic, strong) UILabel *promptLabel;
@@ -26,6 +35,8 @@
 
 @property (nonatomic,strong) GCDAsyncSocket *tcpSocketManager;
 @property (nonatomic,strong) MBProgressHUD *hud;
+@property (nonatomic,strong) NSString *from;
+@property (nonatomic,strong) NSMutableArray *files;
 
 @end
 
@@ -36,7 +47,8 @@
     // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor blackColor];
     obtain = [SGQRCodeObtain QRCodeObtain];
-    
+    receiveData = [[NSMutableData alloc] init];
+    firstFile = YES;
     [self setupQRCodeScan];
     [self setupNavigationBar];
     [self.view addSubview:self.scanView];
@@ -88,7 +100,7 @@
             weakSelf.stop = YES;
             [obtain playSoundName:@"SGQRCode.bundle/sound.caf"];
             
-            NSDictionary *dic = [weakSelf dictionaryWithJsonString:result];
+            NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:result];
             if (dic && dic[@"PORT"] && dic[@"IPAddress"]) {
                 [weakSelf afterScan:dic];
             }
@@ -114,25 +126,17 @@
         return;
     }
     
+    _from = dic[@"FROM"];
+    if ([_from isEqualToString:@"ios"]) {
+        Byte byte[] = {0x20,0x18};
+        headData = [[NSData alloc] initWithBytes:byte length:2];
+    }else if ([_from isEqualToString:@"Android"]) {
+        Byte byte[] = {0x00,0x00};
+        headData = [[NSData alloc] initWithBytes:byte length:2];
+    }
+    
     [self connentHost:dic[@"IPAddress"] prot:[dic[@"PORT"] intValue]];
     
-    CSRParseAndLoad *parseLoad = [[CSRParseAndLoad alloc] init];
-    NSData *jsonData = [parseLoad composeDatabase];
-    
-    int value = (int)jsonData.length;
-    Byte byteData[4] = {};
-    byteData[0] =(Byte)((value & 0xFF000000)>>24);
-    byteData[1] =(Byte)((value & 0x00FF0000)>>16);
-    byteData[2] =(Byte)((value & 0x0000FF00)>>8);
-    byteData[3] =(Byte)((value & 0x000000FF));
-    
-    Byte byte[] = {0x20,0x18,byteData[0],byteData[1],byteData[2],byteData[3]};
-    NSData *temphead = [[NSData alloc] initWithBytes:byte length:6];
-    NSMutableData *mutableData = [[NSMutableData alloc] init];
-    [mutableData appendData:temphead];
-    [mutableData appendData:jsonData];
-    
-    [self.tcpSocketManager writeData:mutableData withTimeout:-1 tag:0];
 }
 
 - (void)setupNavigationBar {
@@ -140,12 +144,98 @@
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
-    NSLog(@"saomiaodata -> %@\n%ld\n%@",data,tag,[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-    NSString *backString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    if ([backString isEqualToString:@"AcTEC"]) {
-        [self.navigationController popViewControllerAnimated:YES];
+    if ([_from isEqualToString:@"ios"]) {
+        NSData *head = [data subdataWithRange:NSMakeRange(0, 2)];
+        if ([head isEqualToData:headData]) {
+            NSData *dataLengthData = [data subdataWithRange:NSMakeRange(2, 4)];
+            dataLengthByHead = [CSRUtilities numberWithHexString:[CSRUtilities hexStringForData:dataLengthData]];
+            [receiveData appendData:[data subdataWithRange:NSMakeRange(6, data.length-6)]];
+        }else {
+            [receiveData appendData:data];
+        }
+        if (receiveData.length == dataLengthByHead) {
+            NSString *jsonString = [[NSString alloc] initWithData:receiveData encoding:NSUTF8StringEncoding];
+            NSLog(@"jsonString>> %@",jsonString);
+            NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:jsonString];
+            CSRParseAndLoad *parseLoad = [[CSRParseAndLoad alloc] init];
+            CSRPlaceEntity *sharePlace = [parseLoad parseIncomingDictionary:jsonDictionary];
+            [CSRAppStateManager sharedInstance].selectedPlace = sharePlace;
+            if (![[CSRUtilities getValueFromDefaultsForKey:@"kCSRLastSelectedPlaceID"] isEqualToString:[[[[CSRAppStateManager sharedInstance].selectedPlace objectID] URIRepresentation] absoluteString]]) {
+                
+                [CSRUtilities saveObject:[[[[CSRAppStateManager sharedInstance].selectedPlace objectID] URIRepresentation] absoluteString] toDefaultsWithKey:@"kCSRLastSelectedPlaceID"];
+                
+            }
+            
+            [[CSRAppStateManager sharedInstance] setupPlace];
+            
+            if (self.scanVCHandle) {
+                self.scanVCHandle();
+            }
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reGetDataForPlaceChanged" object:nil];
+            
+            [self.navigationController popViewControllerAnimated:YES];
+        }
     }
-    [sock readDataWithTimeout:-1 tag:1];
+    else if ([_from isEqualToString:@"Android"]) {
+        BOOL first = NO;
+        if ([receiveData length]<13) {
+            first = YES;
+        }
+        [receiveData appendData:data];
+        
+        if (first) {
+            if ([receiveData length]>12) {
+                NSData *fileCountData = [receiveData subdataWithRange:NSMakeRange(0, 4)];
+                fileCount = [CSRUtilities numberWithHexString:[CSRUtilities hexStringForData:fileCountData]];
+                NSInteger length = [receiveData length];
+                receiveData = [NSMutableData dataWithData:[receiveData subdataWithRange:NSMakeRange(4, length-4)]];
+            }
+        }else {
+            if ([receiveData length]>8) {
+                NSData *fileLengthData = [receiveData subdataWithRange:NSMakeRange(0, 8)];
+                NSInteger fileLength = [CSRUtilities numberWithHexString:[CSRUtilities hexStringForData:fileLengthData]];
+                if ([receiveData length] >= fileLength + 8) {
+                    NSData *fileData = [NSMutableData dataWithData:[receiveData subdataWithRange:NSMakeRange(8, fileLength)]];
+                    if (firstFile) {
+                        NSString *jsonString = [[NSString alloc] initWithData:fileData encoding:NSUTF8StringEncoding];
+                        NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:jsonString];
+                        [self.files addObject:jsonDictionary];
+                        
+                        firstFile = NO;
+                    }else {
+                        [self.files addObject:fileData];
+                    }
+                    if ([self.files count] == fileCount) {
+                        CSRParseAndLoad *parseLoad = [[CSRParseAndLoad alloc] init];
+                        
+                        CSRPlaceEntity *sharePlace = [parseLoad parseIncomingDictionaryFromAndroid:self.files];
+                        [CSRAppStateManager sharedInstance].selectedPlace = sharePlace;
+                        if (![[CSRUtilities getValueFromDefaultsForKey:@"kCSRLastSelectedPlaceID"] isEqualToString:[[[[CSRAppStateManager sharedInstance].selectedPlace objectID] URIRepresentation] absoluteString]]) {
+                            
+                            [CSRUtilities saveObject:[[[[CSRAppStateManager sharedInstance].selectedPlace objectID] URIRepresentation] absoluteString] toDefaultsWithKey:@"kCSRLastSelectedPlaceID"];
+                            
+                        }
+                        
+                        [[CSRAppStateManager sharedInstance] setupPlace];
+                        
+                        if (self.scanVCHandle) {
+                            self.scanVCHandle();
+                        }
+                        
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"reGetDataForPlaceChanged" object:nil];
+                        
+                        [self.navigationController popViewControllerAnimated:YES];
+                    }
+                    
+                    NSInteger length = [receiveData length];
+                    receiveData = [NSMutableData dataWithData:[receiveData subdataWithRange:NSMakeRange(fileLength+8, length-fileLength-8)]];
+                }
+            }
+        }
+    }
+    
+    [sock readDataWithTimeout:-1 tag:0];
 }
 
 - (SGQRCodeScanView *)scanView {
@@ -185,25 +275,6 @@
     return _promptLabel;
 }
 
-- (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString
-{
-    if (jsonString == nil) {
-        return nil;
-    }
-
-    NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-    NSError *err;
-    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData
-                                                        options:NSJSONReadingMutableContainers
-                                                          error:&err];
-    if(err)
-    {
-        NSLog(@"json解析失败：%@",err);
-        return nil;
-    }
-    return dic;
-}
-
 - (void)connentHost:(NSString *)host prot:(uint16_t)port{
     if (host==nil || host.length <= 0) {
         NSAssert(host != nil, @"host must be not nil");
@@ -221,7 +292,7 @@
             NSLog(@"Connect Error: %@", connectError);
         }else {
             NSLog(@"Connect success!");
-            [self.tcpSocketManager readDataWithTimeout:-1 tag:1];
+            [self.tcpSocketManager readDataWithTimeout:-1 tag:0];
         }
     }
 
@@ -251,6 +322,13 @@
 - (void)hudWasHidden:(MBProgressHUD *)hud {
     [hud removeFromSuperview];
     hud = nil;
+}
+
+- (NSMutableArray *)files {
+    if (!_files) {
+        _files = [[NSMutableArray alloc] init];
+    }
+    return _files;
 }
 
 

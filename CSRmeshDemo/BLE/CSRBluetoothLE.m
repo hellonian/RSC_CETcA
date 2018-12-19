@@ -307,7 +307,7 @@
         [peripheral setUuidString:adString];
     }
     
-    if (self.isUpdateFW ) {
+    if (self.isUpdateFW && peripheral.name != nil) {
         if (![_foundPeripherals containsObject:peripheral]) {
             [_foundPeripherals addObject:peripheral];
             [self discoveryDidRefresh];
