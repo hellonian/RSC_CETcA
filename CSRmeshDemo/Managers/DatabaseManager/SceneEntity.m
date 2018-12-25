@@ -16,5 +16,6 @@
 @dynamic sceneName;
 @dynamic members;
 @dynamic rcIndex;
+@dynamic enumMethod;
 
 @end

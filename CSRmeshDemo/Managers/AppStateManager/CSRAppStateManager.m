@@ -239,7 +239,7 @@
         
         defaultPlace.name = @"iOSHouse";
         defaultPlace.passPhrase = @"actec";
-        defaultPlace.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
+//        defaultPlace.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
         defaultPlace.iconID = @(8);
         defaultPlace.owner = @"My place";
         
@@ -255,7 +255,7 @@
                 defaultScene.sceneName = @"Home";
             }
             if (i==1) {
-                defaultScene.iconID = @5;
+                defaultScene.iconID = @1;
                 defaultScene.sceneName = @"Away";
             }
             if (i==2) {

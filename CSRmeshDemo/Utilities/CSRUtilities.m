@@ -1285,4 +1285,22 @@
     return dic;
 }
 
+//高低位交换
++ (NSString *)exchangePositionOfDeviceId:(NSInteger)deviceId {
+    NSString *hexString = [NSString stringWithFormat:@"%@",[[NSString alloc] initWithFormat:@"%1lx",(long)deviceId]];
+    if (hexString.length == 1) {
+        hexString = [NSString stringWithFormat:@"000%@",hexString];
+    }
+    if (hexString.length == 2) {
+        hexString = [NSString stringWithFormat:@"00%@",hexString];
+    }
+    if (hexString.length == 3) {
+        hexString = [NSString stringWithFormat:@"0%@",hexString];
+    }
+    NSString *str11 = [hexString substringToIndex:2];
+    NSString *str22 = [hexString substringFromIndex:2];
+    NSString *deviceIdStr = [NSString stringWithFormat:@"%@%@",str22,str11];
+    return deviceIdStr;
+}
+
 @end

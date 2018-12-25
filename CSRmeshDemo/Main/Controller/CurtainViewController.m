@@ -24,6 +24,7 @@
 @property (nonatomic,assign) BOOL calibrateReady;
 @property (weak, nonatomic) IBOutlet UIButton *PauseBtn;
 @property (weak, nonatomic) IBOutlet UISlider *curtainSlider;
+@property (weak, nonatomic) IBOutlet UILabel *bubbleLabel;
 
 @end
 
@@ -85,10 +86,11 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(calibrateCall:) name:@"calibrateCall" object:nil];
     
-    _curtainTypeImageView.hidden = YES;
-    _PauseBtn.hidden = YES;
+//    _curtainTypeImageView.hidden = YES;
+//    _PauseBtn.hidden = YES;
     _curtainSlider.hidden = YES;
     _calibrateImageView.hidden = NO;
+    _bubbleLabel.hidden = NO;
     
     [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"79020401"] success:nil failure:nil]; 
 }
@@ -100,11 +102,14 @@
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"calibrateCall" object:nil];
     
-    _curtainTypeImageView.hidden = NO;
-    _PauseBtn.hidden = NO;
+//    _curtainTypeImageView.hidden = NO;
+//    _PauseBtn.hidden = NO;
     _curtainSlider.hidden = NO;
     _calibrateImageView.hidden = YES;
-    _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_mid", @"Localizable")];
+    _bubbleLabel.hidden = YES;
+//    _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_mid", @"Localizable")];
+    _calibrateImageView.image = [UIImage imageNamed:@"bubble_mid"];
+    _bubbleLabel.text = AcTECLocalizedStringFromTable(@"bubble_mid_words", @"Localizable");
     
     [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"79020400"] success:nil failure:nil];
 }
@@ -149,11 +154,17 @@
     if ([sourceDeviceId isEqualToNumber:_deviceId]) {
         if ([correctionStep isEqualToString:@"01"]) {
             _calibrateReady = YES;
-            _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_left", @"Localizable")];
+//            _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_left", @"Localizable")];
+            _calibrateImageView.image = [UIImage imageNamed:@"bubble_left"];
+            _bubbleLabel.text = AcTECLocalizedStringFromTable(@"bubble_left_words", @"Localizable");
         }else if ([correctionStep isEqualToString:@"02"]) {
-            _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_right", @"Localizable")];
+//            _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_right", @"Localizable")];
+            _calibrateImageView.image = [UIImage imageNamed:@"bubble_right"];
+            _bubbleLabel.text = AcTECLocalizedStringFromTable(@"bubble_right_words", @"Localizable");
         }else if ([correctionStep isEqualToString:@"03"]) {
-            _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_left", @"Localizable")];
+//            _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_left", @"Localizable")];
+            _calibrateImageView.image = [UIImage imageNamed:@"bubble_left"];
+            _bubbleLabel.text = AcTECLocalizedStringFromTable(@"bubble_left_words", @"Localizable");
         }else if ([correctionStep isEqualToString:@"ff"]) {
             _calibrateReady = NO;
             [self doneCalibrateAction];

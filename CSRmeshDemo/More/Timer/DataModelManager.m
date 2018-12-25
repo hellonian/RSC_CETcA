@@ -321,7 +321,7 @@ static DataModelManager *manager = nil;
         if ([dataStr length] == 20) {
             CVVersionStr = [dataStr substringWithRange:NSMakeRange(18, 2)];
         }else {
-            CVVersionStr = @"12";
+            CVVersionStr = @"11";
         }
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sourceDeviceId];
         deviceEntity.firVersion = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:firmwareVersion]];

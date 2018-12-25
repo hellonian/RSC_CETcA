@@ -31,6 +31,7 @@
 @property (nonatomic, retain) NSSet *rgbScenes;
 @property (nonatomic, retain) NSNumber *cvVersion;
 @property (nonatomic, retain) NSNumber *firVersion;
+@property (nonatomic, retain) NSNumber *androidId;
 
 @end
 

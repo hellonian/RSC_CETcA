@@ -31,5 +31,6 @@
 @dynamic rgbScenes;
 @dynamic cvVersion;
 @dynamic firVersion;
+@dynamic androidId;
 
 @end

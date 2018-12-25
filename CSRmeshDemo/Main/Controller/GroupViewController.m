@@ -222,6 +222,7 @@
         if (self.isCreateNewArea) {
             
             areaIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRAreaEntity"];
+            NSLog(@"areaIdNumber>> %@",areaIdNumber);
             NSNumber *sortId = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"SortId"];
             [self saveArea:areaIdNumber sortId:sortId];
             self.isCreateNewArea = NO;

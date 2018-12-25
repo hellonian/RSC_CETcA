@@ -118,5 +118,6 @@
 
 +(NSString *)convertToJsonData:(NSDictionary *)dict;
 + (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString;
++ (NSString *)exchangePositionOfDeviceId:(NSInteger)deviceId;
 
 @end

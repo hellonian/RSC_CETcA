@@ -18,6 +18,7 @@
 @property (nonatomic,retain) NSString *sceneName;
 @property (nonatomic,retain) NSSet *members;
 @property (nonatomic,retain) NSNumber *rcIndex;
+@property (nonatomic,retain) NSNumber *enumMethod;
 
 @end
 

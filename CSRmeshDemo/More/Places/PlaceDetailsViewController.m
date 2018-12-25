@@ -140,7 +140,7 @@
             
             _placeEntity.name = _placeNameTF.text;
             _placeEntity.passPhrase = _placeNetworkKeyTF.text;
-            _placeEntity.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
+//            _placeEntity.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
             _placeEntity.iconID = @(8);
             _placeEntity.owner = @"My place";
             _placeEntity.networkKey = nil;
@@ -158,7 +158,7 @@
                     defaultScene.sceneName = @"Home";
                 }
                 if (i==1) {
-                    defaultScene.iconID = @5;
+                    defaultScene.iconID = @1;
                     defaultScene.sceneName = @"Away";
                 }
                 if (i==2) {

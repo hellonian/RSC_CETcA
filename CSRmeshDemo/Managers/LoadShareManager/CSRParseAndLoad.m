@@ -176,8 +176,7 @@
             [groupsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
                 
                 uint16_t desiredValue = [obj unsignedShortValue];
-                [groups appendBytes:&desiredValue length:1];
-
+                [groups appendBytes:&desiredValue length:2];
                 __block CSRAreaEntity *foundAreaEntity = nil;
                 [self.sharePlace.areas enumerateObjectsUsingBlock:^(id  _Nonnull obj, BOOL * _Nonnull stop) {
                     CSRAreaEntity *areaEntity = (CSRAreaEntity *)obj;
@@ -440,9 +439,11 @@
 //                }
                 NSMutableArray *groupsInArray = [[NSMutableArray alloc] init];
                 for (int i = 0; i<8; i++) {
-                    int j = i*2;
-                    NSString *str = [device.groups substringWithRange:NSMakeRange(j, 2)];
-                    NSNumber *num = @([CSRUtilities numberWithHexString:str]);
+                    int j = i*4;
+                    NSString *str = [device.groups substringWithRange:NSMakeRange(j, 4)];
+                    NSString *str1 = [str substringWithRange:NSMakeRange(0, 2)];
+                    NSString *str2 = [str substringWithRange:NSMakeRange(2, 2)];
+                    NSNumber *num = @([CSRUtilities numberWithHexString:[NSString stringWithFormat:@"%@%@",str2,str1]]);
                     [groupsInArray addObject:num];
                 }
                 
@@ -638,6 +639,7 @@
 //                                                       options:0
 //                                                         error:&error];
     NSString *jsonString = [CSRUtilities convertToJsonData:jsonDictionary];
+//    NSLog(@"%@",jsonString);
     NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     return jsonData;
     
@@ -676,33 +678,12 @@
         if (parsingDictionary[@"KEY_DEVICES_LIST"]) {
             for (NSDictionary * deviceDict in parsingDictionary[@"KEY_DEVICES_LIST"]) {
                 NSNumber *type = (NSNumber *)deviceDict[@"`c_type`"];
-                if (![type isEqualToNumber:@(0)]) {
-                    CSRDeviceEntity *deviceEntity = [NSEntityDescription insertNewObjectForEntityForName:@"CSRDeviceEntity" inManagedObjectContext:managedObjectContext];
-                    
-                    deviceEntity.deviceId = (NSNumber *)deviceDict[@"`c_csr_deviceId`"];
-                    deviceEntity.deviceHash = [CSRUtilities IntToNSData:[deviceDict[@"`c_uuidHash`"] unsignedLongLongValue]];
-                    deviceEntity.shortName = deviceDict[@"`c_shortName`"];
-                    deviceEntity.name = deviceDict[@"`c_subName`"];
-                    deviceEntity.uuid = deviceDict[@"`c_uuid`"];
-                    deviceEntity.dhmKey = [CSRUtilities dataForHexString:deviceDict[@"`c_dmkey`"]];
-                    deviceEntity.sortId = deviceDict[@"`_id`"];
-                    
-                    if (self.sharePlace) {
-                        [self.sharePlace addDevicesObject:deviceEntity];
-                    }
-                }
-            }
-            [[CSRDatabaseManager sharedInstance] loadDatabase];
-        }
-        
-        if (parsingDictionary[@"KEY_DEVICES_LIST"]) {
-            for (NSDictionary * deviceDict in parsingDictionary[@"KEY_DEVICES_LIST"]) {
-                NSNumber *type = (NSNumber *)deviceDict[@"`c_type`"];
                 if ([type isEqualToNumber:@(0)]) {
                     CSRAreaEntity *groupObj = [NSEntityDescription insertNewObjectForEntityForName:@"CSRAreaEntity" inManagedObjectContext:managedObjectContext];
                     groupObj.areaName = deviceDict[@"`c_name`"];
                     groupObj.areaID = deviceDict[@"`c_csr_deviceId`"];
-                    groupObj.sortId = deviceDict[@"`_id`"];
+                    groupObj.sortId = deviceDict[@"`c_orderIndex`"];
+                    groupObj.androidId = deviceDict[@"`_id`"];
                     NSString *imageStr = deviceDict[@"`c_bgImage`"];
                     if ([imageStr length]>0) {
                         groupObj.areaIconNum = @(99);
@@ -712,21 +693,6 @@
                         groupObj.areaIconNum = deviceDict[@"`c_resIndex`"];
                     }
                     
-                    if (parsingDictionary[@"KEY_PARENTDEVICE_LIST"]) {
-                        for (NSDictionary *parentDict in parsingDictionary[@"KEY_PARENTDEVICE_LIST"]) {
-                            NSNumber *parentType = (NSNumber *)parentDict[@"`c_parent_type`"];
-                            NSNumber *parentId = (NSNumber *)parentDict[@"`c_parent_id`"];
-                            if ([parentType isEqualToNumber:@(2)] && [parentId isEqualToNumber:(NSNumber *)deviceDict[@"`_id`"]]) {
-                                [self.sharePlace.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity * deviceEntity, BOOL * _Nonnull stop) {
-                                    if ([deviceEntity.sortId isEqualToNumber:(NSNumber *)parentDict[@"`c_device_id`"]]) {
-                                        [groupObj addDevicesObject:deviceEntity];
-                                        *stop = YES;
-                                    }
-                                }];
-                            }
-                        }
-                    }
-                    
                     if (self.sharePlace) {
                         [self.sharePlace addAreasObject:groupObj];
                     }
@@ -734,6 +700,59 @@
             }
         }
         
+        if (parsingDictionary[@"KEY_DEVICES_LIST"]) {
+            for (NSDictionary * deviceDict in parsingDictionary[@"KEY_DEVICES_LIST"]) {
+                NSNumber *type = (NSNumber *)deviceDict[@"`c_type`"];
+                if (![type isEqualToNumber:@(0)]) {
+                    CSRDeviceEntity *deviceEntity = [NSEntityDescription insertNewObjectForEntityForName:@"CSRDeviceEntity" inManagedObjectContext:managedObjectContext];
+                    
+                    deviceEntity.deviceId = (NSNumber *)deviceDict[@"`c_csr_deviceId`"];
+                    deviceEntity.deviceHash = [CSRUtilities IntToNSData:[deviceDict[@"`c_uuidHash`"] unsignedLongLongValue]];
+                    deviceEntity.shortName = deviceDict[@"`c_shortName`"];
+                    deviceEntity.name = deviceDict[@"`c_subName`"];
+                    deviceEntity.uuid = deviceDict[@"`c_uuid`"];
+                    deviceEntity.dhmKey = [CSRUtilities dataForHexString:deviceDict[@"`c_dmkey`"]];
+                    deviceEntity.sortId = deviceDict[@"`c_orderIndex`"];
+                    deviceEntity.androidId = deviceDict[@"`_id`"];
+                    deviceEntity.cvVersion = @(17);
+                    
+                    __block NSMutableData *groups = [NSMutableData data];
+                    if (parsingDictionary[@"KEY_PARENTDEVICE_LIST"]) {
+                        for (NSDictionary *parentDict in parsingDictionary[@"KEY_PARENTDEVICE_LIST"]) {
+                            NSNumber *parentType = (NSNumber *)parentDict[@"`c_parent_type`"];
+                            
+                            NSNumber *childId = (NSNumber *)parentDict[@"`c_device_id`"];
+                            if ([parentType isEqualToNumber:@(2)] && [childId isEqualToNumber:deviceDict[@"`_id`"]]) {
+                                NSNumber *parentId = (NSNumber *)parentDict[@"`c_parent_id`"];
+                                [self.sharePlace.areas enumerateObjectsUsingBlock:^(CSRAreaEntity * _Nonnull obj, BOOL * _Nonnull stop) {
+                                    if ([obj.androidId isEqualToNumber:parentId]) {
+                                        uint16_t desiredValue = [obj.areaID unsignedShortValue];
+                                        [groups appendBytes:&desiredValue length:2];
+                                        [deviceEntity addAreasObject:obj];
+                                        *stop = YES;
+                                    }
+                                }];
+                            }
+                        }
+                    }
+                    
+                    Byte byte[] = {0x00};
+                    for (; ; ) {
+                        if ([groups length]>=16) {
+                            break;
+                        }else {
+                            [groups appendBytes:&byte length:1];
+                        }
+                    }
+                    deviceEntity.groups = [CSRUtilities hexStringFromData:groups];
+                    
+                    if (self.sharePlace) {
+                        [self.sharePlace addDevicesObject:deviceEntity];
+                    }
+                }
+            }
+            [[CSRDatabaseManager sharedInstance] loadDatabase];
+        }
         if (parsingDictionary[@"KEY_SCENE_LIST"]) {
             for (NSDictionary * sceneDict in parsingDictionary[@"KEY_SCENE_LIST"]) {
                 SceneEntity *sceneObj = [NSEntityDescription insertNewObjectForEntityForName:@"SceneEntity" inManagedObjectContext:managedObjectContext];
@@ -789,6 +808,7 @@
                 galleryObj.galleryID = galleryDict[@"`_id`"];
                 galleryObj.boundWidth = galleryDict[@"`c_widthrate`"];
                 galleryObj.boundHeight = galleryDict[@"`c_heightrate`"];
+                galleryObj.sortId = galleryDict[@"`c_orderIndex`"];
                 NSString *imageStr = galleryDict[@"`c_imagePath`"];
                 if ([imageStr length]>0) {
                     galleryObj.galleryImage = [files objectAtIndex:1];;

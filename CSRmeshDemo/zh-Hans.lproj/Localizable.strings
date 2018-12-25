@@ -131,9 +131,6 @@
 "ChooseTypeOfCurtain" = "选择窗帘类型";
 "UseMicrophone" = "使用麦克风录音";
 "calibrate" = "校准";
-"bubble_left" = "bubble_left_sim";
-"bubble_right" = "bubble_right_sim";
-"bubble_mid" = "bubble_mid_sim";
 "deletetimernow" = "是否强制删除该定时？";
 "notRespond" = "未响应。";
 "RCCodeWords" = "扫描二维码分享场合信息给这部手机。\n请确保两部手机连接的是同一个WIFI。";
@@ -142,3 +139,6 @@
 "noSameWIFI" = "请确保两部手机连接的是同一个WIFI。";
 "openCamera" = "请去-> [设置 - 隐私 - 相机 - AcTEC BLE] 打开访问开关";
 "cameraNotDetected" = "未检测到您的摄像头。";
+"bubble_left_words" = "长按开机按钮，待窗帘完全打开时松开。";
+"bubble_right_words" = "长按关闭按钮，待窗帘完全关闭时松开。";
+"bubble_mid_words" = "正在进入校准模式";

@@ -16,5 +16,6 @@
 @dynamic sortId;
 @dynamic devices;
 @dynamic isEditting;
+@dynamic androidId;
 
 @end

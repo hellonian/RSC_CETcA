@@ -17,6 +17,7 @@
 @property (nonatomic, retain) NSNumber * sortId;
 @property (nonatomic, retain) NSSet *devices;
 @property (nonatomic, retain) NSNumber *isEditting;
+@property (nonatomic, retain) NSNumber *androidId;
 
 @end
 

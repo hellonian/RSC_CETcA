@@ -130,9 +130,6 @@
     if ([_from isEqualToString:@"ios"]) {
         Byte byte[] = {0x20,0x18};
         headData = [[NSData alloc] initWithBytes:byte length:2];
-    }else if ([_from isEqualToString:@"Android"]) {
-        Byte byte[] = {0x00,0x00};
-        headData = [[NSData alloc] initWithBytes:byte length:2];
     }
     
     [self connentHost:dic[@"IPAddress"] prot:[dic[@"PORT"] intValue]];
@@ -155,7 +152,7 @@
         }
         if (receiveData.length == dataLengthByHead) {
             NSString *jsonString = [[NSString alloc] initWithData:receiveData encoding:NSUTF8StringEncoding];
-            NSLog(@"jsonString>> %@",jsonString);
+            
             NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:jsonString];
             CSRParseAndLoad *parseLoad = [[CSRParseAndLoad alloc] init];
             CSRPlaceEntity *sharePlace = [parseLoad parseIncomingDictionary:jsonDictionary];
@@ -199,6 +196,7 @@
                     NSData *fileData = [NSMutableData dataWithData:[receiveData subdataWithRange:NSMakeRange(8, fileLength)]];
                     if (firstFile) {
                         NSString *jsonString = [[NSString alloc] initWithData:fileData encoding:NSUTF8StringEncoding];
+                        NSLog(@"jsonString>> %@",jsonString);
                         NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:jsonString];
                         [self.files addObject:jsonDictionary];
                         
