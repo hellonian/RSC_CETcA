@@ -11,6 +11,7 @@
 
 //#import "CSRBridgeRoaming.h"
 //#import "CSRBluetoothLE.h"
+#import <MBProgressHUD.h>
 
 @interface AppDelegate ()
 
@@ -88,6 +89,9 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
     NSArray *vcs = @[mainNav,galleryNav,moreVC];
     self.mainTabBarController.viewControllers = vcs;
     self.window.rootViewController = self.mainTabBarController;
+    
+    //全局修改菊花颜色
+    [UIActivityIndicatorView appearanceWhenContainedInInstancesOfClasses:@[[MBProgressHUD class]]].color = [UIColor whiteColor];
     
     return YES;
 }

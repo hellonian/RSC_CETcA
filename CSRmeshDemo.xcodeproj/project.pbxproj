@@ -76,7 +76,6 @@
 		2E2E70B71FF5DE60002D1C1D /* UpdateViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E707A1FF5DE60002D1C1D /* UpdateViewController.xib */; };
 		2E2EBFA41FAC2FF400CEA401 /* cskey_db.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E2EBF9F1FAC194400CEA401 /* cskey_db.json */; };
 		2E3630FB2199666F00EF22DD /* FanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3630F92199666F00EF22DD /* FanViewController.m */; };
-		2E3630FC2199666F00EF22DD /* FanViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E3630FA2199666F00EF22DD /* FanViewController.xib */; };
 		2E37074E20CE4C16000AF696 /* DeviceViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E37075020CE4C16000AF696 /* DeviceViewController.xib */; };
 		2E37075720CE647A000AF696 /* NSBundle+AppLanguageSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E37075520CE647A000AF696 /* NSBundle+AppLanguageSwitch.m */; };
 		2E37075820CE8337000AF696 /* GroupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E37075A20CE8337000AF696 /* GroupViewController.xib */; };
@@ -89,9 +88,15 @@
 		2E3B9677200F263A000BD086 /* JQProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3B9674200F263A000BD086 /* JQProgressView.m */; };
 		2E3B967F200F3847000BD086 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3B967D200F3847000BD086 /* MainViewController.m */; };
 		2E3B9680200F3847000BD086 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E3B967E200F3847000BD086 /* MainViewController.xib */; };
+		2E3BED3921DF329100E7078C /* PowerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3BED3721DF329100E7078C /* PowerViewController.m */; };
+		2E3BED3A21DF329100E7078C /* PowerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E3BED3821DF329100E7078C /* PowerViewController.xib */; };
 		2E3EA7C520479F8900AFD4B8 /* RemoteSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3EA7C320479F8900AFD4B8 /* RemoteSettingViewController.m */; };
 		2E48BBE020D239E500401CDD /* LightSensorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E48BBDF20D239E500401CDD /* LightSensorViewController.m */; };
 		2E48BBE420D25C7800401CDD /* LightSensorSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E48BBE220D25C7800401CDD /* LightSensorSettingViewController.m */; };
+		2E4DDCEB21F9680900B2ACF3 /* FanViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E4DDCED21F9680900B2ACF3 /* FanViewController.xib */; };
+		2E4DDCF221F968FF00B2ACF3 /* SocketViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E4DDCF421F968FF00B2ACF3 /* SocketViewController.xib */; };
+		2E4DDCF921F969B900B2ACF3 /* SocketForSceneVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E4DDCFB21F969B900B2ACF3 /* SocketForSceneVC.xib */; };
+		2E4DDD0021F969F200B2ACF3 /* TwoChannelDimmerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E4DDD0221F969F200B2ACF3 /* TwoChannelDimmerVC.xib */; };
 		2E500B741FD8D6B9008303CE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D6E44EF1B3C4059000A44DD /* CoreGraphics.framework */; };
 		2E500B761FD8D6F3008303CE /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E500B751FD8D6F0008303CE /* MediaPlayer.framework */; };
 		2E500B781FD8D703008303CE /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E500B771FD8D6FE008303CE /* AVFoundation.framework */; };
@@ -100,6 +105,8 @@
 		2E5A58782137896500E416F9 /* RGBDeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E5A58762137896500E416F9 /* RGBDeviceViewController.m */; };
 		2E5A587D21378B6800E416F9 /* MusicViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E5A587B21378B6800E416F9 /* MusicViewController.m */; };
 		2E5EA0D7217F123700554825 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E5EA0D6217F123700554825 /* LaunchScreen.storyboard */; };
+		2E63A54321E328B800FCE49D /* SocketPowerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E63A54121E328B800FCE49D /* SocketPowerCell.m */; };
+		2E63A54421E328B800FCE49D /* SocketPowerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E63A54221E328B800FCE49D /* SocketPowerCell.xib */; };
 		2E6A02131F39884500111312 /* TabBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A020E1F39884500111312 /* TabBarButton.m */; };
 		2E6A02141F39884500111312 /* TabBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A02101F39884500111312 /* TabBarView.m */; };
 		2E6A021A1F39893400111312 /* MainTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A02171F39893400111312 /* MainTabBarController.m */; };
@@ -109,18 +116,22 @@
 		2E6D543B211AB6C6003D02DB /* ColorSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6D543A211AB6C6003D02DB /* ColorSlider.m */; };
 		2E6FBD9620E1D43F0045DDAC /* GroupListSModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6FBD9520E1D43F0045DDAC /* GroupListSModel.m */; };
 		2E706CFF212A7278008D0EC4 /* GalleryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E706D01212A7278008D0EC4 /* GalleryViewController.xib */; };
+		2E80C46D21DC62CE0024584C /* SocketForSceneVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E80C46B21DC62CE0024584C /* SocketForSceneVC.m */; };
 		2E8623492019DB28004EF0E0 /* DeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8623472019DB28004EF0E0 /* DeviceViewController.m */; };
 		2E9622BF20C913530097C617 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E9622C120C913530097C617 /* Localizable.strings */; };
 		2E9622C720C917EC0097C617 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E9622C920C917EC0097C617 /* InfoPlist.strings */; };
 		2EA101B720E0BBE500D2C88F /* SceneListSModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EA101B620E0BBE500D2C88F /* SceneListSModel.m */; };
+		2EA18F0821E5EFD200E4D35B /* TwoChannelDimmerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EA18F0621E5EFD200E4D35B /* TwoChannelDimmerVC.m */; };
 		2EA708C32011C31300782209 /* AddDevcieViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EA708C22011C31300782209 /* AddDevcieViewController.m */; };
 		2EAD47991FFC6DA8007D45E9 /* GalleryControlImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAD47981FFC6DA8007D45E9 /* GalleryControlImageView.m */; };
 		2EAD479C1FFC76F3007D45E9 /* GallreyDropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAD479B1FFC76F3007D45E9 /* GallreyDropView.m */; };
 		2EAD4EA82004A4BB003733CA /* GalleryEditToolView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAD4EA72004A4BB003733CA /* GalleryEditToolView.m */; };
+		2EBBA91D21D7442E00D2E7DA /* SocketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EBBA91B21D7442E00D2E7DA /* SocketViewController.m */; };
 		2EC3893A204921C2004D822D /* TimerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC38938204921C2004D822D /* TimerTableViewCell.m */; };
 		2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EC38939204921C2004D822D /* TimerTableViewCell.xib */; };
 		2EC3893F204939CE004D822D /* TimerDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC3893D204939CE004D822D /* TimerDetailViewController.m */; };
 		2EC73CF62124197700850882 /* ColorSquare.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC73CF52124197700850882 /* ColorSquare.m */; };
+		2EC7D0DE21E6F549007F44C1 /* PowerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC7D0DD21E6F549007F44C1 /* PowerModel.m */; };
 		2EC8BB3421460F0E002ED85F /* MusicPlayTools.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2EC8BB3221460F0D002ED85F /* MusicPlayTools.mm */; };
 		2EC8BB37214653AF002ED85F /* MeterTable.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2EC8BB35214653AF002ED85F /* MeterTable.mm */; };
 		2ED23F6E215DCCCA0040A922 /* CurtainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2ED23F70215DCCCA0040A922 /* CurtainViewController.xib */; };
@@ -295,7 +306,6 @@
 		2E2EBF9F1FAC194400CEA401 /* cskey_db.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = cskey_db.json; sourceTree = "<group>"; };
 		2E3630F82199666F00EF22DD /* FanViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FanViewController.h; sourceTree = "<group>"; };
 		2E3630F92199666F00EF22DD /* FanViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FanViewController.m; sourceTree = "<group>"; };
-		2E3630FA2199666F00EF22DD /* FanViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FanViewController.xib; sourceTree = "<group>"; };
 		2E37074F20CE4C16000AF696 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/DeviceViewController.xib; sourceTree = "<group>"; };
 		2E37075520CE647A000AF696 /* NSBundle+AppLanguageSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+AppLanguageSwitch.m"; sourceTree = "<group>"; };
 		2E37075620CE647A000AF696 /* NSBundle+AppLanguageSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+AppLanguageSwitch.h"; sourceTree = "<group>"; };
@@ -323,12 +333,27 @@
 		2E3B967C200F3847000BD086 /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		2E3B967D200F3847000BD086 /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		2E3B967E200F3847000BD086 /* MainViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
+		2E3BED3621DF329100E7078C /* PowerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PowerViewController.h; sourceTree = "<group>"; };
+		2E3BED3721DF329100E7078C /* PowerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PowerViewController.m; sourceTree = "<group>"; };
+		2E3BED3821DF329100E7078C /* PowerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PowerViewController.xib; sourceTree = "<group>"; };
 		2E3EA7C220479F8900AFD4B8 /* RemoteSettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteSettingViewController.h; sourceTree = "<group>"; };
 		2E3EA7C320479F8900AFD4B8 /* RemoteSettingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteSettingViewController.m; sourceTree = "<group>"; };
 		2E48BBDE20D239E500401CDD /* LightSensorViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LightSensorViewController.h; sourceTree = "<group>"; };
 		2E48BBDF20D239E500401CDD /* LightSensorViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LightSensorViewController.m; sourceTree = "<group>"; };
 		2E48BBE120D25C7800401CDD /* LightSensorSettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LightSensorSettingViewController.h; sourceTree = "<group>"; };
 		2E48BBE220D25C7800401CDD /* LightSensorSettingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LightSensorSettingViewController.m; sourceTree = "<group>"; };
+		2E4DDCEC21F9680900B2ACF3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/FanViewController.xib; sourceTree = "<group>"; };
+		2E4DDCEF21F9680E00B2ACF3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/FanViewController.strings; sourceTree = "<group>"; };
+		2E4DDCF121F9681000B2ACF3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/FanViewController.strings"; sourceTree = "<group>"; };
+		2E4DDCF321F968FF00B2ACF3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/SocketViewController.xib; sourceTree = "<group>"; };
+		2E4DDCF621F9690500B2ACF3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SocketViewController.strings; sourceTree = "<group>"; };
+		2E4DDCF821F9690800B2ACF3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SocketViewController.strings"; sourceTree = "<group>"; };
+		2E4DDCFA21F969B900B2ACF3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/SocketForSceneVC.xib; sourceTree = "<group>"; };
+		2E4DDCFD21F969BE00B2ACF3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SocketForSceneVC.strings; sourceTree = "<group>"; };
+		2E4DDCFF21F969BF00B2ACF3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SocketForSceneVC.strings"; sourceTree = "<group>"; };
+		2E4DDD0121F969F200B2ACF3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/TwoChannelDimmerVC.xib; sourceTree = "<group>"; };
+		2E4DDD0421F969F700B2ACF3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
+		2E4DDD0621F969F800B2ACF3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/TwoChannelDimmerVC.strings"; sourceTree = "<group>"; };
 		2E500B751FD8D6F0008303CE /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		2E500B771FD8D6FE008303CE /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		2E5A5870213788F900E416F9 /* FavoriteViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FavoriteViewController.h; sourceTree = "<group>"; };
@@ -339,6 +364,9 @@
 		2E5A587A21378B6800E416F9 /* MusicViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MusicViewController.h; sourceTree = "<group>"; };
 		2E5A587B21378B6800E416F9 /* MusicViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicViewController.m; sourceTree = "<group>"; };
 		2E5EA0D6217F123700554825 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		2E63A54021E328B800FCE49D /* SocketPowerCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SocketPowerCell.h; sourceTree = "<group>"; };
+		2E63A54121E328B800FCE49D /* SocketPowerCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SocketPowerCell.m; sourceTree = "<group>"; };
+		2E63A54221E328B800FCE49D /* SocketPowerCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SocketPowerCell.xib; sourceTree = "<group>"; };
 		2E6A020D1F39884500111312 /* TabBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarButton.h; sourceTree = "<group>"; };
 		2E6A020E1F39884500111312 /* TabBarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarButton.m; sourceTree = "<group>"; };
 		2E6A020F1F39884500111312 /* TabBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarView.h; sourceTree = "<group>"; };
@@ -359,6 +387,8 @@
 		2E706D00212A7278008D0EC4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/GalleryViewController.xib; sourceTree = "<group>"; };
 		2E706D03212A727E008D0EC4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2E706D05212A7282008D0EC4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/GalleryViewController.strings"; sourceTree = "<group>"; };
+		2E80C46A21DC62CE0024584C /* SocketForSceneVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SocketForSceneVC.h; sourceTree = "<group>"; };
+		2E80C46B21DC62CE0024584C /* SocketForSceneVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SocketForSceneVC.m; sourceTree = "<group>"; };
 		2E8623462019DB28004EF0E0 /* DeviceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceViewController.h; sourceTree = "<group>"; };
 		2E8623472019DB28004EF0E0 /* DeviceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeviceViewController.m; sourceTree = "<group>"; };
 		2E9622C320C9137E0097C617 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -367,6 +397,8 @@
 		2E9622CA20C917EE0097C617 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		2EA101B520E0BBE400D2C88F /* SceneListSModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneListSModel.h; sourceTree = "<group>"; };
 		2EA101B620E0BBE500D2C88F /* SceneListSModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SceneListSModel.m; sourceTree = "<group>"; };
+		2EA18F0521E5EFD200E4D35B /* TwoChannelDimmerVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TwoChannelDimmerVC.h; sourceTree = "<group>"; };
+		2EA18F0621E5EFD200E4D35B /* TwoChannelDimmerVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TwoChannelDimmerVC.m; sourceTree = "<group>"; };
 		2EA708C12011C31300782209 /* AddDevcieViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddDevcieViewController.h; sourceTree = "<group>"; };
 		2EA708C22011C31300782209 /* AddDevcieViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddDevcieViewController.m; sourceTree = "<group>"; };
 		2EAD47971FFC6DA8007D45E9 /* GalleryControlImageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GalleryControlImageView.h; sourceTree = "<group>"; };
@@ -375,6 +407,8 @@
 		2EAD479B1FFC76F3007D45E9 /* GallreyDropView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GallreyDropView.m; sourceTree = "<group>"; };
 		2EAD4EA62004A4BB003733CA /* GalleryEditToolView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GalleryEditToolView.h; sourceTree = "<group>"; };
 		2EAD4EA72004A4BB003733CA /* GalleryEditToolView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GalleryEditToolView.m; sourceTree = "<group>"; };
+		2EBBA91A21D7442E00D2E7DA /* SocketViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SocketViewController.h; sourceTree = "<group>"; };
+		2EBBA91B21D7442E00D2E7DA /* SocketViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SocketViewController.m; sourceTree = "<group>"; };
 		2EC38937204921C2004D822D /* TimerTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerTableViewCell.h; sourceTree = "<group>"; };
 		2EC38938204921C2004D822D /* TimerTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerTableViewCell.m; sourceTree = "<group>"; };
 		2EC38939204921C2004D822D /* TimerTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TimerTableViewCell.xib; sourceTree = "<group>"; };
@@ -382,6 +416,8 @@
 		2EC3893D204939CE004D822D /* TimerDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerDetailViewController.m; sourceTree = "<group>"; };
 		2EC73CF42124197600850882 /* ColorSquare.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColorSquare.h; sourceTree = "<group>"; };
 		2EC73CF52124197700850882 /* ColorSquare.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColorSquare.m; sourceTree = "<group>"; };
+		2EC7D0DC21E6F549007F44C1 /* PowerModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PowerModel.h; sourceTree = "<group>"; };
+		2EC7D0DD21E6F549007F44C1 /* PowerModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PowerModel.m; sourceTree = "<group>"; };
 		2EC8BB3221460F0D002ED85F /* MusicPlayTools.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MusicPlayTools.mm; sourceTree = "<group>"; };
 		2EC8BB3321460F0E002ED85F /* MusicPlayTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicPlayTools.h; sourceTree = "<group>"; };
 		2EC8BB35214653AF002ED85F /* MeterTable.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MeterTable.mm; sourceTree = "<group>"; };
@@ -911,7 +947,19 @@
 				2ED23F70215DCCCA0040A922 /* CurtainViewController.xib */,
 				2E3630F82199666F00EF22DD /* FanViewController.h */,
 				2E3630F92199666F00EF22DD /* FanViewController.m */,
-				2E3630FA2199666F00EF22DD /* FanViewController.xib */,
+				2E4DDCED21F9680900B2ACF3 /* FanViewController.xib */,
+				2EBBA91A21D7442E00D2E7DA /* SocketViewController.h */,
+				2EBBA91B21D7442E00D2E7DA /* SocketViewController.m */,
+				2E4DDCF421F968FF00B2ACF3 /* SocketViewController.xib */,
+				2E3BED3621DF329100E7078C /* PowerViewController.h */,
+				2E3BED3721DF329100E7078C /* PowerViewController.m */,
+				2E3BED3821DF329100E7078C /* PowerViewController.xib */,
+				2E80C46A21DC62CE0024584C /* SocketForSceneVC.h */,
+				2E80C46B21DC62CE0024584C /* SocketForSceneVC.m */,
+				2E4DDCFB21F969B900B2ACF3 /* SocketForSceneVC.xib */,
+				2EA18F0521E5EFD200E4D35B /* TwoChannelDimmerVC.h */,
+				2EA18F0621E5EFD200E4D35B /* TwoChannelDimmerVC.m */,
+				2E4DDD0221F969F200B2ACF3 /* TwoChannelDimmerVC.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -931,6 +979,8 @@
 				2EC8BB3221460F0D002ED85F /* MusicPlayTools.mm */,
 				2EC8BB36214653AF002ED85F /* MeterTable.h */,
 				2EC8BB35214653AF002ED85F /* MeterTable.mm */,
+				2EC7D0DC21E6F549007F44C1 /* PowerModel.h */,
+				2EC7D0DD21E6F549007F44C1 /* PowerModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -971,6 +1021,9 @@
 				2E216EE92138F28200E545B9 /* RGBSceneCollectionViewCell.xib */,
 				2EEA42792151FFF70050B729 /* CustomizeProgressHud.h */,
 				2EEA427A2151FFF70050B729 /* CustomizeProgressHud.m */,
+				2E63A54021E328B800FCE49D /* SocketPowerCell.h */,
+				2E63A54121E328B800FCE49D /* SocketPowerCell.m */,
+				2E63A54221E328B800FCE49D /* SocketPowerCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1301,12 +1354,16 @@
 				2E3B9680200F3847000BD086 /* MainViewController.xib in Resources */,
 				2EF332512045030100565374 /* LanguageViewController.xib in Resources */,
 				2E2E708D1FF5DE60002D1C1D /* PlacesViewController.xib in Resources */,
+				2E4DDCF921F969B900B2ACF3 /* SocketForSceneVC.xib in Resources */,
 				2E9622BF20C913530097C617 /* Localizable.strings in Resources */,
+				2E3BED3A21DF329100E7078C /* PowerViewController.xib in Resources */,
 				2EE757D72010B23100FB75C5 /* SceneCollectionViewCell.xib in Resources */,
+				2E63A54421E328B800FCE49D /* SocketPowerCell.xib in Resources */,
 				2E388A7D214BAB2100CBF73C /* MRGBSceneDetailViewController.xib in Resources */,
 				2E37074E20CE4C16000AF696 /* DeviceViewController.xib in Resources */,
 				2E6BD7FD20D09B3200036CA2 /* TimerDetailViewController.xib in Resources */,
 				2E388A74214BA91C00CBF73C /* SRGBSceneDetailViewController.xib in Resources */,
+				2E4DDCF221F968FF00B2ACF3 /* SocketViewController.xib in Resources */,
 				CE1DE0AF1BFB82840009C1D1 /* ThermostatWIthColor.png in Resources */,
 				2E2E708F1FF5DE60002D1C1D /* PlaceColorCollectionViewCell.xib in Resources */,
 				2E388A6D214BA8B900CBF73C /* MusicViewController.xib in Resources */,
@@ -1319,6 +1376,7 @@
 				2E9622C720C917EC0097C617 /* InfoPlist.strings in Resources */,
 				2EF332562045031300565374 /* HelpViewController.xib in Resources */,
 				2E0AA21F2126761900DB45EB /* AboutViewController.xib in Resources */,
+				2E4DDD0021F969F200B2ACF3 /* TwoChannelDimmerVC.xib in Resources */,
 				2E1C839E20CFD782009BCC6D /* PlaceDetailsViewController.xib in Resources */,
 				2E2E70B31FF5DE60002D1C1D /* ErrorCodes.strings in Resources */,
 				2E2E70B71FF5DE60002D1C1D /* UpdateViewController.xib in Resources */,
@@ -1329,7 +1387,7 @@
 				2ED23F6E215DCCCA0040A922 /* CurtainViewController.xib in Resources */,
 				2E2EBFA41FAC2FF400CEA401 /* cskey_db.json in Resources */,
 				2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */,
-				2E3630FC2199666F00EF22DD /* FanViewController.xib in Resources */,
+				2E4DDCEB21F9680900B2ACF3 /* FanViewController.xib in Resources */,
 				2E216EEB2138F28200E545B9 /* RGBSceneCollectionViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1405,6 +1463,7 @@
 				0D835B951B97603600FF4376 /* CSRmesh.xcdatamodeld in Sources */,
 				2EC8BB37214653AF002ED85F /* MeterTable.mm in Sources */,
 				0D835B361B9749E600FF4376 /* AppDelegate.m in Sources */,
+				2EA18F0821E5EFD200E4D35B /* TwoChannelDimmerVC.m in Sources */,
 				2E3A65F7202BF97300B3E425 /* SingleDeviceModel.m in Sources */,
 				2EC3893F204939CE004D822D /* TimerDetailViewController.m in Sources */,
 				2EE757CA201030CA00FB75C5 /* TopImageView.m in Sources */,
@@ -1452,15 +1511,18 @@
 				0D835B561B9749E600FF4376 /* CSRCheckbox.m in Sources */,
 				2ED3963F204D09D20068B666 /* TimerDeviceEntity.m in Sources */,
 				2E2E708C1FF5DE60002D1C1D /* PlacesViewController.m in Sources */,
+				2EBBA91D21D7442E00D2E7DA /* SocketViewController.m in Sources */,
 				2EF7182C1FFB265A00901918 /* DropEntity.m in Sources */,
 				F4658A201C99747A00C284F4 /* CSRDeviceEventsEntity.m in Sources */,
 				2E2E70AD1FF5DE60002D1C1D /* TimeSchedule.m in Sources */,
+				2E3BED3921DF329100E7078C /* PowerViewController.m in Sources */,
 				2E2E70AE1FF5DE60002D1C1D /* DiscoverViewController.m in Sources */,
 				2E2533EE20219850002A6EC3 /* DeviceListViewController.m in Sources */,
 				2EA708C32011C31300782209 /* AddDevcieViewController.m in Sources */,
 				2E2E70A61FF5DE60002D1C1D /* DataModelManager.m in Sources */,
 				F4C85EA71CB3EE0E003E1FF3 /* CSRControllerEntity+CoreDataProperties.m in Sources */,
 				2EAD479C1FFC76F3007D45E9 /* GallreyDropView.m in Sources */,
+				2EC7D0DE21E6F549007F44C1 /* PowerModel.m in Sources */,
 				2E2E70971FF5DE60002D1C1D /* RemoteViewController.m in Sources */,
 				2E2E708E1FF5DE60002D1C1D /* PlaceColorCollectionViewCell.m in Sources */,
 				2EF2DB5A200DA6CF00A1B236 /* DeviceModelManager.m in Sources */,
@@ -1471,6 +1533,7 @@
 				2E2E707E1FF5DE60002D1C1D /* MoreViewController.m in Sources */,
 				2EF332552045031300565374 /* HelpViewController.m in Sources */,
 				2E3B967F200F3847000BD086 /* MainViewController.m in Sources */,
+				2E63A54321E328B800FCE49D /* SocketPowerCell.m in Sources */,
 				F4658A211C99747A00C284F4 /* CSREventEntity+CoreDataProperties.m in Sources */,
 				2ED3963C204D09A00068B666 /* TimerEntity.m in Sources */,
 				F4C85EB01CB3EF92003E1FF3 /* CSRPlaceEntity+CoreDataProperties.m in Sources */,
@@ -1494,6 +1557,7 @@
 				CED2FE4E1BF25CF4004957C8 /* CSRmeshStyleKit.m in Sources */,
 				0D835B7C1B9749E700FF4376 /* CSRBridgeRoaming.m in Sources */,
 				0D835B7D1B9749E700FF4376 /* CSRBluetoothLE.m in Sources */,
+				2E80C46D21DC62CE0024584C /* SocketForSceneVC.m in Sources */,
 				0D835B7E1B9749E700FF4376 /* CSRmeshSettings.m in Sources */,
 				2EDF04DB213D14CA00B9E92F /* SRGBSceneDetailViewController.m in Sources */,
 				2E2E707D1FF5DE60002D1C1D /* MasterViewController.m in Sources */,
@@ -1589,6 +1653,46 @@
 				2E388A83214BAB2700CBF73C /* zh-Hans */,
 			);
 			name = MRGBSceneDetailViewController.xib;
+			sourceTree = "<group>";
+		};
+		2E4DDCED21F9680900B2ACF3 /* FanViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E4DDCEC21F9680900B2ACF3 /* Base */,
+				2E4DDCEF21F9680E00B2ACF3 /* en */,
+				2E4DDCF121F9681000B2ACF3 /* zh-Hans */,
+			);
+			name = FanViewController.xib;
+			sourceTree = "<group>";
+		};
+		2E4DDCF421F968FF00B2ACF3 /* SocketViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E4DDCF321F968FF00B2ACF3 /* Base */,
+				2E4DDCF621F9690500B2ACF3 /* en */,
+				2E4DDCF821F9690800B2ACF3 /* zh-Hans */,
+			);
+			name = SocketViewController.xib;
+			sourceTree = "<group>";
+		};
+		2E4DDCFB21F969B900B2ACF3 /* SocketForSceneVC.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E4DDCFA21F969B900B2ACF3 /* Base */,
+				2E4DDCFD21F969BE00B2ACF3 /* en */,
+				2E4DDCFF21F969BF00B2ACF3 /* zh-Hans */,
+			);
+			name = SocketForSceneVC.xib;
+			sourceTree = "<group>";
+		};
+		2E4DDD0221F969F200B2ACF3 /* TwoChannelDimmerVC.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E4DDD0121F969F200B2ACF3 /* Base */,
+				2E4DDD0421F969F700B2ACF3 /* en */,
+				2E4DDD0621F969F800B2ACF3 /* zh-Hans */,
+			);
+			name = TwoChannelDimmerVC.xib;
 			sourceTree = "<group>";
 		};
 		2E6BD7FF20D09B3200036CA2 /* TimerDetailViewController.xib */ = {
@@ -1788,7 +1892,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 5AEE5R2F69;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1846,7 +1950,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 5AEE5R2F69;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

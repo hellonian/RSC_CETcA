@@ -142,6 +142,8 @@
     
     _searchHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     _searchHud.mode = MBProgressHUDModeIndeterminate;
+    _searchHud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
+    _searchHud.bezelView.backgroundColor = [UIColor clearColor];
     _searchHud.delegate = self;
     timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerMethd:) userInfo:nil repeats:YES];
     num = 0;

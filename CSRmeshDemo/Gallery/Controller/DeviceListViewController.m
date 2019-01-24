@@ -22,6 +22,14 @@
 #import "GroupListSModel.h"
 #import "DeviceViewController.h"
 
+#import "CSRDatabaseManager.h"
+#import "PureLayout.h"
+#import "CurtainViewController.h"
+#import "FanViewController.h"
+#import "SocketForSceneVC.h"
+#import "TwoChannelDimmerVC.h"
+
+
 @interface DeviceListViewController ()<MainCollectionViewDelegate>
 
 @property (nonatomic,strong) MainCollectionView *devicesCollectionView;
@@ -30,6 +38,10 @@
 @property (nonatomic,strong) NSNumber *originalLevel;
 @property (nonatomic,strong) ImproveTouchingExperience *improver;
 @property (nonatomic,strong) ControlMaskView *maskLayer;
+
+@property (nonatomic,strong) UIView *curtainKindView;
+@property (nonatomic,strong) NSNumber *selectedCurtainDeviceId;
+@property (nonatomic,strong) UIView *translucentBgView;
 
 @end
 
@@ -583,14 +595,73 @@
 - (void)mainCollectionViewDelegateLongPressAction:(id)cell {
     MainCollectionViewCell *mainCell = (MainCollectionViewCell *)cell;
     if ([mainCell.groupId isEqualToNumber:@2000]) {
-        DeviceViewController *dvc = [[DeviceViewController alloc] init];
-        dvc.deviceId = mainCell.deviceId;
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
-        nav.modalPresentationStyle = UIModalPresentationPopover;
-        nav.popoverPresentationController.sourceRect = mainCell.bounds;
-        nav.popoverPresentationController.sourceView = mainCell;
         
-        [self presentViewController:nav animated:YES completion:nil];
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
+        if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBNoLevelDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBCWNoLevelDevice:deviceEntity.shortName]) {
+                DeviceViewController *dvc = [[DeviceViewController alloc] init];
+                dvc.deviceId = mainCell.deviceId;
+                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+                nav.popoverPresentationController.sourceRect = mainCell.bounds;
+                nav.popoverPresentationController.sourceView = mainCell;
+            
+                [self presentViewController:nav animated:YES completion:nil];
+        }else if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
+            
+            if (!deviceEntity.remoteBranch || deviceEntity.remoteBranch.length == 0) {
+                _selectedCurtainDeviceId = mainCell.deviceId;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+                    [[UIApplication sharedApplication].keyWindow addSubview:self.curtainKindView];
+                    [self.curtainKindView autoCenterInSuperview];
+                    [self.curtainKindView autoSetDimensionsToSize:CGSizeMake(271, 166)];
+                });
+            }else {
+                CurtainViewController *curtainVC = [[CurtainViewController alloc] init];
+                curtainVC.deviceId = mainCell.deviceId;
+                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:curtainVC];
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+                [self presentViewController:nav animated:YES completion:nil];
+                nav.popoverPresentationController.sourceRect = mainCell.bounds;
+                nav.popoverPresentationController.sourceView = mainCell;
+            }
+            
+        }else if ([CSRUtilities belongToFanController:deviceEntity.shortName]) {
+            FanViewController *fanVC = [[FanViewController alloc] init];
+            fanVC.deviceId = mainCell.deviceId;
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:fanVC];
+            nav.modalPresentationStyle = UIModalPresentationPopover;
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
+            
+        }else if ([CSRUtilities belongToSocket:deviceEntity.shortName]) {
+            SocketForSceneVC *socketVC = [[SocketForSceneVC alloc] init];
+            socketVC.deviceId = mainCell.deviceId;
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:socketVC];
+            nav.modalPresentationStyle = UIModalPresentationPopover;
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
+        }else if ([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName]) {
+            TwoChannelDimmerVC *TDVC = [[TwoChannelDimmerVC alloc] init];
+            TDVC.deviceId = mainCell.deviceId;
+            TDVC.forSelected = YES;
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:TDVC];
+            nav.modalPresentationStyle = UIModalPresentationPopover;
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
+        }else{
+            DeviceViewController *dvc = [[DeviceViewController alloc] init];
+            dvc.deviceId = mainCell.deviceId;
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
+            nav.modalPresentationStyle = UIModalPresentationPopover;
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
+        }
+        
     }
 }
 

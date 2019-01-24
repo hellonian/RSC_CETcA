@@ -33,6 +33,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *deleteBtn;
 @property (weak, nonatomic) IBOutlet UIImageView *moveImageView;
 @property (weak, nonatomic) IBOutlet UIView *bottomView;
+@property (weak, nonatomic) IBOutlet UILabel *level2Label;
 
 @end
 
@@ -65,6 +66,7 @@
         self.deviceId = @2000;
         self.groupMembers = [areaEntity.devices allObjects];
         self.nameLabel.hidden = NO;
+        self.level2Label.hidden = YES;
         if ([areaEntity.areaName isEqualToString:@"Living room"] || [areaEntity.areaName isEqualToString:@"Bed room"] || [areaEntity.areaName isEqualToString:@"Dining room"] || [areaEntity.areaName isEqualToString:@"Toilet"] || [areaEntity.areaName isEqualToString:@"Kitchen"]) {
             self.nameLabel.text = AcTECLocalizedStringFromTable(areaEntity.areaName, @"Localizable");
         }else {
@@ -77,6 +79,8 @@
         NSInteger controllerNum = 0;
         for (CSRDeviceEntity *deviceEntity in self.groupMembers) {
             if ([CSRUtilities belongToDimmer:deviceEntity.shortName]) {
+                dimmerNum ++;
+            }else if ([CSRUtilities belongToCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
                 dimmerNum ++;
             }else if ([CSRUtilities belongToSwitch:deviceEntity.shortName]) {
                 switchNum ++;
@@ -103,7 +107,7 @@
             }
         }
         self.kindLabel.text = kind;
-        if ([kind containsString:AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable")] || [kind containsString:AcTECLocalizedStringFromTable(@"Controller", @"Localizable")]) {
+        if ([kind containsString:AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable")]) {
             self.levelLabel.hidden = NO;
         }else {
             self.levelLabel.hidden = YES;
@@ -129,6 +133,7 @@
         self.deviceId = @2000;
         self.groupMembers = [model.devices allObjects];
         self.nameLabel.hidden = NO;
+        self.level2Label.hidden = YES;
         if ([model.areaName isEqualToString:@"Living room"] || [model.areaName isEqualToString:@"Bed room"] || [model.areaName isEqualToString:@"Dining room"] || [model.areaName isEqualToString:@"Toilet"] || [model.areaName isEqualToString:@"Kitchen"]) {
             self.nameLabel.text = AcTECLocalizedStringFromTable(model.areaName, @"Localizable");
         }else {
@@ -141,6 +146,8 @@
         NSInteger controllerNum = 0;
         for (CSRDeviceEntity *deviceEntity in self.groupMembers) {
             if ([CSRUtilities belongToDimmer:deviceEntity.shortName]) {
+                dimmerNum ++;
+            }else if ([CSRUtilities belongToCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
                 dimmerNum ++;
             }else if ([CSRUtilities belongToSwitch:deviceEntity.shortName]) {
                 switchNum ++;
@@ -210,16 +217,19 @@
             self.iconView.image = [UIImage imageNamed:@"dimmersingle"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable");
             self.levelLabel.hidden = NO;
+            self.level2Label.hidden = YES;
         }
         if ([CSRUtilities belongToSwitch:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"switchsingle"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Switch", @"Localizable");
             self.levelLabel.hidden = YES;
+            self.level2Label.hidden = YES;
         }
-        if ([CSRUtilities belongToCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWDevice:deviceEntity.shortName] || [CSRUtilities belongToCWNoLevelDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBNoLevelDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWNoLevelDevice:deviceEntity.shortName]) {
+        if ([CSRUtilities belongToCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"controllersingle"];
-            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable");
             self.levelLabel.hidden = NO;
+            self.level2Label.hidden = YES;
         }
         if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
             if ([deviceEntity.remoteBranch isEqualToString:@"ch"]) {
@@ -231,11 +241,25 @@
             }
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = YES;
+            self.level2Label.hidden = YES;
         }
         if ([CSRUtilities belongToFanController:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"fanSingle"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = YES;
+            self.level2Label.hidden = YES;
+        }
+        if ([CSRUtilities belongToSocket:deviceEntity.shortName]) {
+            self.iconView.image = [UIImage imageNamed:@"socketsingle2"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
+            self.levelLabel.hidden = NO;
+            self.level2Label.hidden = NO;
+        }
+        if ([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName]) {
+            self.iconView.image = [UIImage imageNamed:@"dimmersingle2"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable");
+            self.levelLabel.hidden = NO;
+            self.level2Label.hidden = NO;
         }
         
         self.cellIndexPath = indexPath;
@@ -264,7 +288,7 @@
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Switch", @"Localizable");
             self.levelLabel.hidden = YES;
         }
-        if ([CSRUtilities belongToCWDevice:device.deviceShortName] || [CSRUtilities belongToRGBDevice:device.deviceShortName] || [CSRUtilities belongToRGBCWDevice:device.deviceShortName] || [CSRUtilities belongToCWNoLevelDevice:device.deviceShortName] || [CSRUtilities belongToRGBNoLevelDevice:device.deviceShortName] || [CSRUtilities belongToRGBCWNoLevelDevice:device.deviceShortName]) {
+        if ([CSRUtilities belongToCWDevice:device.deviceShortName] || [CSRUtilities belongToRGBDevice:device.deviceShortName] || [CSRUtilities belongToRGBCWDevice:device.deviceShortName]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Controller"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = NO;
@@ -284,6 +308,18 @@
             self.iconView.image = [UIImage imageNamed:@"Device_fan"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = YES;
+        }
+        if ([CSRUtilities belongToSocket:device.deviceShortName]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_socket2"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
+            self.levelLabel.hidden = NO;
+            self.level2Label.hidden = NO;
+        }
+        if ([CSRUtilities belongToTwoChannelDimmer:device.deviceShortName]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_dimmer2"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable");
+            self.levelLabel.hidden = NO;
+            self.level2Label.hidden = NO;
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
@@ -319,12 +355,14 @@
         self.deleteBtn.hidden = YES;
         self.moveImageView.hidden = YES;
         self.bottomView.hidden = YES;
+        self.level2Label.hidden = YES;
         return;
     }
     
     if ([info isKindOfClass:[CSRmeshDevice class]]) {
         CSRmeshDevice *device = (CSRmeshDevice *)info;
         self.levelLabel.hidden = YES;
+        self.level2Label.hidden = YES;
         self.groupId = @4000;
         self.deviceId = @3000;
         NSString *appearanceShortname = [[NSString alloc] initWithData:device.appearanceShortname encoding:NSUTF8StringEncoding];
@@ -340,7 +378,7 @@
             self.iconView.image = [UIImage imageNamed:@"Device_Remote1"];
         }else if ([appearanceShortname containsString:@"RB02"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote2"];
-        }else if ([appearanceShortname isEqualToString:@"SL02B"]){
+        }else if ([CSRUtilities belongToLightSensor:appearanceShortname]){
             self.iconView.image = [UIImage imageNamed:@"Device_Sensor"];
         }else if ([CSRUtilities belongToCWDevice:appearanceShortname] || [CSRUtilities belongToRGBDevice:appearanceShortname] || [CSRUtilities belongToRGBCWDevice:appearanceShortname] || [CSRUtilities belongToCWNoLevelDevice:appearanceShortname] || [CSRUtilities belongToRGBNoLevelDevice:appearanceShortname] || [CSRUtilities belongToRGBCWNoLevelDevice:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Controller"];
@@ -348,6 +386,10 @@
             self.iconView.image = [UIImage imageNamed:@"Device_Curtain"];
         }else if ([CSRUtilities belongToFanController:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_fan"];
+        }else if ([CSRUtilities belongToSocket:appearanceShortname]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_socket2"];
+        }else if ([CSRUtilities belongToTwoChannelDimmer:appearanceShortname]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_dimmer2"];
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
@@ -359,6 +401,7 @@
         self.nameLabel.hidden = NO;
         self.kindLabel.hidden = YES;
         self.levelLabel.hidden = YES;
+        self.level2Label.hidden = YES;
         self.deleteBtn.hidden = YES;
         self.moveImageView.hidden = YES;
         self.bottomView.hidden = YES;
@@ -386,35 +429,84 @@
     DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
 //    NSLog(@"~~~> %@ ; %@ ; %@",model.shortName,model.powerState,model.level);
     if (!model.isleave) {
-        if (![model.powerState boolValue]) {
-            if ([_groupId isEqualToNumber:@1000]) {
-                self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
-                self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
-            }else {
-                self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
-            }
-            
-            if ([CSRUtilities belongToDimmer:model.shortName] || [CSRUtilities belongToCWDevice:model.shortName] || [CSRUtilities belongToRGBDevice:model.shortName] || [CSRUtilities belongToRGBCWDevice:model.shortName]) {
-                self.levelLabel.text = @"0%";
-            }
-            
-        }else {
-            if ([_groupId isEqualToNumber:@1000]) {
+        if ([CSRUtilities belongToSocket:model.shortName]) {
+            if ([model.powerState boolValue]) {
                 self.nameLabel.textColor = DARKORAGE;
+            }else {
+                self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+            }
+            if (model.channel1PowerState) {
+                self.levelLabel.text = @"ON";
                 self.levelLabel.textColor = DARKORAGE;
             }else {
-                self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
+                self.levelLabel.text = @"OFF";
+                self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
             }
-            
-            if ([CSRUtilities belongToDimmer:model.shortName] || [CSRUtilities belongToCWDevice:model.shortName] || [CSRUtilities belongToRGBDevice:model.shortName] || [CSRUtilities belongToRGBCWDevice:model.shortName]) {
-                if ([model.level floatValue]/255.0*100>0 && [model.level floatValue]/255.0*100 < 1.0) {
+            if (model.channel2PowerState) {
+                self.level2Label.text = @"ON";
+                self.level2Label.textColor = DARKORAGE;
+            }else {
+                self.level2Label.text = @"OFF";
+                self.level2Label.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+            }
+        }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName]) {
+            if (model.channel1PowerState) {
+                self.levelLabel.textColor = DARKORAGE;
+                if (model.channel1Level/255.0*100>0 && model.channel1Level/255.0*100 < 1.0) {
                     self.levelLabel.text = @"1%";
-                    return;
+                }else {
+                    self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",model.channel1Level/255.0*100];
                 }
-                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level floatValue]/255.0*100];
+            }else {
+                self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+                self.levelLabel.text = @"0%";
+            }
+            if (model.channel2PowerState) {
+                self.level2Label.textColor = DARKORAGE;
+                if (model.channel2Level/255.0*100>0 && model.channel2Level/255.0*100 < 1.0) {
+                    self.level2Label.text = @"1%";
+                }else {
+                    self.level2Label.text = [NSString stringWithFormat:@"%.f%%",model.channel2Level/255.0*100];
+                }
+            }else {
+                self.level2Label.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+                self.level2Label.text = @"0%";
+            }
+            if (model.channel1PowerState || model.channel2PowerState) {
+                self.nameLabel.textColor = DARKORAGE;
+            }else {
+                self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+            }
+        }else {
+            if (![model.powerState boolValue]) {
+                if ([_groupId isEqualToNumber:@1000]) {
+                    self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+                    self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+                }else {
+                    self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
+                }
+                
+                if ([CSRUtilities belongToDimmer:model.shortName] || [CSRUtilities belongToCWDevice:model.shortName] || [CSRUtilities belongToRGBDevice:model.shortName] || [CSRUtilities belongToRGBCWDevice:model.shortName]) {
+                    self.levelLabel.text = @"0%";
+                }
+                
+            }else {
+                if ([_groupId isEqualToNumber:@1000]) {
+                    self.nameLabel.textColor = DARKORAGE;
+                    self.levelLabel.textColor = DARKORAGE;
+                }else {
+                    self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
+                }
+                
+                if ([CSRUtilities belongToDimmer:model.shortName] || [CSRUtilities belongToCWDevice:model.shortName] || [CSRUtilities belongToRGBDevice:model.shortName] || [CSRUtilities belongToRGBCWDevice:model.shortName]) {
+                    if ([model.level floatValue]/255.0*100>0 && [model.level floatValue]/255.0*100 < 1.0) {
+                        self.levelLabel.text = @"1%";
+                        return;
+                    }
+                    self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level floatValue]/255.0*100];
+                }
             }
         }
-        
     }else {
         self.nameLabel.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];;
         self.levelLabel.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];;
@@ -555,7 +647,7 @@
 }
 
 - (void)mainCellPanGestureAction:(UIPanGestureRecognizer *)sender {
-    if (![self.groupId isEqualToNumber:@4000] && ([self.kindLabel.text containsString:AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable")] || [self.kindLabel.text containsString:AcTECLocalizedStringFromTable(@"Controller", @"Localizable")])) {
+    if (![self.groupId isEqualToNumber:@4000] && ([self.kindLabel.text containsString:AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable")])) {
         CGPoint translation = [sender translationInView:self];
         CGPoint touchPoint = [sender locationInView:self.superview];
         

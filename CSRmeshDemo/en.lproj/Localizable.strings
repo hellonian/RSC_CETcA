@@ -142,3 +142,7 @@
 "bubble_left_words" = "Long press the open button until the curtain is fully open.";
 "bubble_right_words" = "Long press the close button until the curtain is fully closed.";
 "bubble_mid_words" = "Entering calibration mode.";
+"noWifiAlert" = "Connect WIFI and share place data to other devcies.";
+"today" = "Today";
+"thisWeek" = "This Week";
+"thisMonth" = "This Month";

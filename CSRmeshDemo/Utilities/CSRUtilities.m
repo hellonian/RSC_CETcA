@@ -1138,7 +1138,7 @@
 }
 
 + (BOOL)belongToMainVCDevice: (NSString *)shortName {
-    if ([kDimmers containsObject:shortName] || [kSwitchs containsObject:shortName] || [kCWDevices containsObject:shortName] || [kRGBDevices containsObject:shortName] || [kRGBCWDevices containsObject:shortName] || [kCurtainController containsObject:shortName] || [kFanController containsObject:shortName]) {
+    if ([kDimmers containsObject:shortName] || [kSwitchs containsObject:shortName] || [kCWDevices containsObject:shortName] || [kRGBDevices containsObject:shortName] || [kRGBCWDevices containsObject:shortName] || [kCurtainController containsObject:shortName] || [kFanController containsObject:shortName] || [kSockets containsObject:shortName] || [kTwoChannelDimmers containsObject:shortName]) {
         return YES;
     }
     return NO;
@@ -1195,6 +1195,27 @@
 
 + (BOOL)belongToFanController:(NSString *)shortName {
     if ([kFanController containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToSocket:(NSString *)shortName {
+    if ([kSockets containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToMCUDevice:(NSString *)shortName {
+    if ([kMCUDevices containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToTwoChannelDimmer:(NSString *)shortName{
+    if ([kTwoChannelDimmers containsObject:shortName]) {
         return YES;
     }
     return NO;
@@ -1301,6 +1322,65 @@
     NSString *str22 = [hexString substringFromIndex:2];
     NSString *deviceIdStr = [NSString stringWithFormat:@"%@%@",str22,str11];
     return deviceIdStr;
+}
+
+//十六进制字符串转二进制字符串
++ (NSString *)getBinaryByhex:(NSString *)hex
+{
+    NSMutableDictionary  *hexDic = [[NSMutableDictionary alloc] init];
+    
+    hexDic = [[NSMutableDictionary alloc] initWithCapacity:16];
+    
+    [hexDic setObject:@"0000" forKey:@"0"];
+    
+    [hexDic setObject:@"0001" forKey:@"1"];
+    
+    [hexDic setObject:@"0010" forKey:@"2"];
+    
+    [hexDic setObject:@"0011" forKey:@"3"];
+    
+    [hexDic setObject:@"0100" forKey:@"4"];
+    
+    [hexDic setObject:@"0101" forKey:@"5"];
+    
+    [hexDic setObject:@"0110" forKey:@"6"];
+    
+    [hexDic setObject:@"0111" forKey:@"7"];
+    
+    [hexDic setObject:@"1000" forKey:@"8"];
+    
+    [hexDic setObject:@"1001" forKey:@"9"];
+    
+    [hexDic setObject:@"1010" forKey:@"a"];
+    
+    [hexDic setObject:@"1011" forKey:@"b"];
+    
+    [hexDic setObject:@"1100" forKey:@"c"];
+    
+    [hexDic setObject:@"1101" forKey:@"d"];
+    
+    [hexDic setObject:@"1110" forKey:@"e"];
+    
+    [hexDic setObject:@"1111" forKey:@"f"];
+    
+    NSString *binaryString=[[NSString alloc] init];
+    
+    for (int i=0; i<[hex length]; i++) {
+        
+        NSRange rage;
+        
+        rage.length = 1;
+        
+        rage.location = i;
+        
+        NSString *key = [hex substringWithRange:rage];
+        
+        binaryString = [NSString stringWithFormat:@"%@%@",binaryString,[NSString stringWithFormat:@"%@",[hexDic objectForKey:key]]];
+        
+    }
+    
+    return binaryString;
+    
 }
 
 @end

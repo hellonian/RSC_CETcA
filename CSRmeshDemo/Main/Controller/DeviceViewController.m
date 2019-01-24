@@ -16,8 +16,22 @@
 #import "ColorSlider.h"
 #import "ColorSquare.h"
 #import <CSRmesh/LightModelApi.h>
+#import "AFHTTPSessionManager.h"
+#import <MBProgressHUD.h>
 
-@interface DeviceViewController ()<UITextFieldDelegate,ColorSliderDelegate,ColorSquareDelegate>
+@interface DeviceViewController ()<UITextFieldDelegate,ColorSliderDelegate,ColorSquareDelegate,MBProgressHUDDelegate>
+{
+    NSInteger nowBinPage;
+    dispatch_semaphore_t semaphore;
+    NSMutableDictionary *updateEveDataDic;
+    NSMutableDictionary *updateSuccessDic;
+    BOOL isLastPage;
+    NSInteger resendQueryNumber;
+    NSInteger pageNum;
+    
+    NSString *downloadAddress;
+    NSInteger latestMCUSVersion;
+}
 
 @property (weak, nonatomic) IBOutlet UITextField *nameTF;
 @property (weak, nonatomic) IBOutlet UISwitch *powerStateSwitch;
@@ -50,6 +64,8 @@
 @property (weak, nonatomic) IBOutlet UISlider *colorSaturationSlider;
 @property (weak, nonatomic) IBOutlet UILabel *colorLabel;
 @property (weak, nonatomic) IBOutlet UILabel *colorSaturationLabel;
+
+@property (nonatomic,strong) MBProgressHUD *updatingHud;
 
 @end
 
@@ -238,8 +254,191 @@
             }
         }
         self.macAddressLabel.text = doneTitle;
-
+        
+        if ([CSRUtilities belongToMCUDevice:_device.shortName]) {
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MCUUpdateDataCall:) name:@"MCUUpdateDataCall" object:nil];
+            NSMutableString *mutStr = [NSMutableString stringWithString:_device.shortName];
+            NSRange range = {0,_device.shortName.length};
+            [mutStr replaceOccurrencesOfString:@"/" withString:@"" options:NSLiteralSearch range:range];
+            NSString *urlString = [NSString stringWithFormat:@"http://39.108.152.134/MCU/%@/%@.php",mutStr,mutStr];
+            NSLog(@"urlString>> %@",urlString);
+            AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
+            sessionManager.responseSerializer.acceptableContentTypes = nil;
+            [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+                NSDictionary *dic = (NSDictionary *)responseObject;
+                NSLog(@"%@",dic);
+                latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
+                downloadAddress = dic[@"Download_address"];
+                NSLog(@">> %@  %ld  %ld",downloadAddress,[deviceEntity.mcuSVersion integerValue],latestMCUSVersion);
+                if ([deviceEntity.mcuSVersion integerValue]<latestMCUSVersion) {
+                    UIButton *updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
+                    [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
+                    [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
+                    [updateMCUBtn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+                    [updateMCUBtn addTarget:self action:@selector(askUpdateMCU) forControlEvents:UIControlEventTouchUpInside];
+                    [self.view addSubview:updateMCUBtn];
+                    [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+                    [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeRight];
+                    [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom];
+                    [updateMCUBtn autoSetDimension:ALDimensionHeight toSize:44.0];
+                }
+            } failure:^(NSURLSessionDataTask *task, NSError *error) {
+                NSLog(@"%@",error);
+            }];
+        }
     }
+}
+
+- (void)askUpdateMCU {
+    [[DataModelManager shareInstance] sendCmdData:@"ea30" toDeviceId:_deviceId];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[DataModelManager shareInstance] sendCmdData:@"ea30" toDeviceId:_deviceId];
+    });
+}
+
+- (void)MCUUpdateDataCall:(NSNotification *)notification {
+    NSDictionary *dic = notification.userInfo;
+    NSNumber *mucDeviceId = dic[@"deviceId"];
+    NSString *mcuString = dic[@"MCUUpdateDataCall"];
+    if ([mucDeviceId isEqualToNumber:_deviceId]) {
+        if ([mcuString hasPrefix:@"30"]) {
+            if ([[mcuString substringWithRange:NSMakeRange(2, 2)] boolValue]) {
+                if (!_updatingHud) {
+                    _updatingHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+                    _updatingHud.mode = MBProgressHUDModeAnnularDeterminate;
+                    _updatingHud.delegate = self;
+                    [self downloadPin];
+                }
+            }
+        }else if ([mcuString hasPrefix:@"33"]) {
+            NSInteger backBinPage = [CSRUtilities numberWithHexString:[mcuString substringWithRange:NSMakeRange(2, 2)]];
+            if (backBinPage == nowBinPage) {
+                NSInteger count = [[updateEveDataDic objectForKey:@(backBinPage)] count];
+                NSString *countBinString = @"";
+                for (int i=0; i<count; i++) {
+                    countBinString = [NSString stringWithFormat:@"%@1",countBinString];
+                }
+                
+                NSString *str0 = [mcuString substringWithRange:NSMakeRange(4, 2)];
+                NSString *str1 = [mcuString substringWithRange:NSMakeRange(6, 2)];
+                NSString *str2 = [mcuString substringWithRange:NSMakeRange(8, 2)];
+                NSString *resultHexStr = [NSString stringWithFormat:@"%@%@%@",str2,str1,str0];
+                NSString *resultBinStr = [[CSRUtilities getBinaryByhex:resultHexStr] substringWithRange:NSMakeRange(24-count, count)];
+                
+                NSLog(@"%@  %@  %@",mcuString,resultHexStr,resultBinStr);
+                if ([countBinString isEqualToString:resultBinStr]) {
+                    dispatch_semaphore_signal(semaphore);
+                    [updateSuccessDic setObject:@(![[updateSuccessDic objectForKey:@(backBinPage)] boolValue]) forKey:@(backBinPage)];
+                    if (isLastPage) {
+                        NSLog(@"最后一页成功");
+                        [[DataModelManager shareInstance] sendCmdData:@"ea32" toDeviceId:_deviceId];
+                    }
+                    _updatingHud.progress = (backBinPage+1)/(CGFloat)pageNum;
+                }else {
+                    
+                    for (NSInteger i=0; i<[resultBinStr length]; i++) {
+                        NSString *resultStr = [resultBinStr substringWithRange:NSMakeRange([resultBinStr length]-1-i, 1)];
+                        NSLog(@"%@",resultStr);
+                        if (![resultStr boolValue]) {
+                            NSString *binResendString = [[updateEveDataDic objectForKey:@(backBinPage)] objectAtIndex:i];
+                            [[DataModelManager shareInstance] sendCmdData:binResendString toDeviceId:_deviceId];
+                            [NSThread sleepForTimeInterval:0.1];
+                        }
+                    }
+                    
+                    resendQueryNumber = 0;
+                    [self resendData:backBinPage];
+                    
+                }
+            }
+        }else if ([mcuString hasPrefix:@"32"]) {
+            if (_updatingHud) {
+                [_updatingHud hideAnimated:YES];
+            }
+            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+            deviceEntity.mcuSVersion = [NSNumber numberWithInteger:latestMCUSVersion];
+            [[CSRDatabaseManager sharedInstance] saveContext];
+        }
+    }
+}
+
+- (void)downloadPin {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:downloadAddress]];
+    NSString *fileName = [downloadAddress lastPathComponent];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSProgress *progress = nil;
+    __block DeviceViewController *weakSelf = self;
+    NSURLSessionDownloadTask *task = [manager downloadTaskWithRequest:request progress:&progress destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+        
+        NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/%@",fileName]];
+        
+        return [NSURL fileURLWithPath:path];
+        
+    } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+        
+        [weakSelf startMCUUpdate:filePath];
+        
+    }];
+    [task resume];
+}
+
+- (void)startMCUUpdate:(NSURL *)path {
+    //    NSString *path = [[NSBundle mainBundle] pathForResource:@"S10IB_Update_1.1" ofType:@"bin"];
+    //    NSData *data = [[NSData alloc] initWithContentsOfFile:path];
+    
+    NSData *data = [[NSData alloc] initWithContentsOfURL:path];
+    semaphore = dispatch_semaphore_create(1);
+    updateEveDataDic = [[NSMutableDictionary alloc] init];
+    updateSuccessDic = [[NSMutableDictionary alloc] init];
+    isLastPage = NO;
+    if (data) {
+        pageNum = [data length]/128+1;
+        dispatch_queue_t queue = dispatch_queue_create("串行", NULL);
+        for (NSInteger binPage=0; binPage<([data length]/128+1); binPage++) {
+            dispatch_async(queue, ^{
+                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [updateSuccessDic setObject:@(0) forKey:@(binPage)];
+                    NSLog(@"xunfan %ld",binPage);
+                    nowBinPage = binPage;
+                    NSInteger binPageLength = 128;
+                    if (binPage == [data length]/128) {
+                        binPageLength = [data length]%128;
+                        isLastPage = YES;
+                    }
+                    NSData *binPageData = [data subdataWithRange:NSMakeRange(binPage*128, binPageLength)];
+                    NSMutableArray *eveDataArray = [[NSMutableArray alloc] init];
+                    for (NSInteger binRow=0; binRow<([binPageData length]/6+1); binRow++) {
+                        NSInteger binRowLenth = 6;
+                        if (binRow == [binPageData length]/6) {
+                            binRowLenth = [binPageData length]%6;
+                        }
+                        NSData *binRowData = [binPageData subdataWithRange:NSMakeRange(binRow*6, binRowLenth)];
+                        NSString *binSendString = [NSString stringWithFormat:@"ea31%@%@%@",[CSRUtilities stringWithHexNumber:binPage],[CSRUtilities stringWithHexNumber:binRow],[CSRUtilities hexStringForData:binRowData]];
+                        [eveDataArray insertObject:binSendString atIndex:binRow];
+                        [[DataModelManager shareInstance] sendCmdData:binSendString toDeviceId:_deviceId];
+                        [NSThread sleepForTimeInterval:0.1];
+                    }
+                    [updateEveDataDic setObject:eveDataArray forKey:@(binPage)];
+                    
+                    resendQueryNumber = 0;
+                    [self resendData:binPage];
+                });
+            });
+        }
+        NSLog(@"循环结束");
+    }
+}
+
+- (void)resendData:(NSInteger)binPage {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSLog(@"首次延时~~ %ld | %d",binPage,[[updateSuccessDic objectForKey:@(binPage)] boolValue]);
+        if (![[updateSuccessDic objectForKey:@(binPage)] boolValue] && resendQueryNumber<6) {
+            resendQueryNumber++;
+            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea33%@",[CSRUtilities stringWithHexNumber:binPage]] toDeviceId:_deviceId];
+            [self resendData:binPage];
+        }
+    });
 }
 
 - (void)viewDidLayoutSubviews {
@@ -423,7 +622,7 @@
             if (!_colorTemperatureSliderIsMoving) {
                 [_colorTemperatureSlider setValue:(CGFloat)[_device.colorTemperature integerValue] animated:YES];
             }
-            _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",[_device.colorTemperature integerValue]];
+        _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[_device.colorTemperature integerValue]];
 //        }
 //        if ([_device.supports integerValue]==0) {
             UIColor *color = [UIColor colorWithRed:[_device.red integerValue]/255.0 green:[_device.green integerValue]/255.0 blue:[_device.blue integerValue]/255.0 alpha:1.0];
@@ -607,6 +806,11 @@
     if (self.isViewLoaded && !self.view.window) {
         self.view = nil;
     }
+}
+
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+    [hud removeFromSuperview];
+    hud = nil;
 }
 
 @end

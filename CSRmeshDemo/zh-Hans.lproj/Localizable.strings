@@ -133,7 +133,7 @@
 "calibrate" = "校准";
 "deletetimernow" = "是否强制删除该定时？";
 "notRespond" = "未响应。";
-"RCCodeWords" = "扫描二维码分享场合信息给这部手机。\n请确保两部手机连接的是同一个WIFI。";
+"RCCodeWords" = "扫描二维码分享场合信息。\n请确保两部手机连接的是同一个WIFI。";
 "scan" = "扫一扫";
 "scanWords" = "将二维码放入框内, 即可自动扫描";
 "noSameWIFI" = "请确保两部手机连接的是同一个WIFI。";
@@ -142,3 +142,7 @@
 "bubble_left_words" = "长按开机按钮，待窗帘完全打开时松开。";
 "bubble_right_words" = "长按关闭按钮，待窗帘完全关闭时松开。";
 "bubble_mid_words" = "正在进入校准模式";
+"noWifiAlert" = "可连接WIFI将场所数据分享给其他设备。";
+"today" = "今天";
+"thisWeek" = "当前周";
+"thisMonth" = "当前月";

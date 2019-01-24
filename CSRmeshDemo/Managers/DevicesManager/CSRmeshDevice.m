@@ -336,7 +336,7 @@
                                                             deviceEntity.nGroups = numberOfModelGroupIds;
                                                             
                                                             deviceEntity.groups = [CSRUtilities hexStringFromData:groupInstancesData];
-                                                            //                                                        NSLog(@"numberOfModelGroupIds :%@ and groupInstancesData :%@", numberOfModelGroupIds, groupInstancesData);
+                                                                                                                    NSLog(@"numberOfModelGroupIds :%@ and groupInstancesData :%@", numberOfModelGroupIds, groupInstancesData);
                                                         }
                                                         
                                                         

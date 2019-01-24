@@ -115,9 +115,14 @@
 + (BOOL)belongToRGBCWNoLevelDevice:(NSString *)shortName;
 + (BOOL)belongToCurtainController:(NSString *)shortName;
 + (BOOL)belongToFanController:(NSString *)shortName;
++ (BOOL)belongToSocket:(NSString *)shortName;
++ (BOOL)belongToTwoChannelDimmer:(NSString *)shortName;
++ (BOOL)belongToMCUDevice:(NSString *)shortName;
 
 +(NSString *)convertToJsonData:(NSDictionary *)dict;
 + (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString;
 + (NSString *)exchangePositionOfDeviceId:(NSInteger)deviceId;
+
++ (NSString *)getBinaryByhex:(NSString *)hex;
 
 @end

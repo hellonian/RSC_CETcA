@@ -256,6 +256,10 @@
             
         }];
         
+        if ([CSRUtilities belongToMCUDevice:deviceEntity.shortName]) {
+            [[DataModelManager shareInstance] sendCmdData:@"ea35" toDeviceId:deviceId];
+        }
+        
     } else {
         
         NSMutableDictionary *objects = [NSMutableDictionary dictionary];
@@ -270,8 +274,9 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:kCSRmeshManagerDidAssociateDeviceNotification object:self userInfo:objects];
         
     }
-    
-    [[DataModelManager shareInstance] sendCmdData:@"880100" toDeviceId:deviceId];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[DataModelManager shareInstance] sendCmdData:@"880100" toDeviceId:deviceId];
+    });
     
 }
 
@@ -388,19 +393,19 @@
     }
 }
 
--(void) didTimeoutMessage:(NSNumber *)meshRequestId
-{
-    // Notify all listeners
-    NSMutableDictionary *objects = [NSMutableDictionary dictionary];
-    
-    if (meshRequestId) {
-        
-        [objects setObject:meshRequestId forKey:kMeshRequestIdString];
-        
-    }
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:kCSRmeshManagerDidTimeoutMessageNotification object:self userInfo:objects];
-}
+//-(void) didTimeoutMessage:(NSNumber *)meshRequestId
+//{
+//    // Notify all listeners
+//    NSMutableDictionary *objects = [NSMutableDictionary dictionary];
+//    
+//    if (meshRequestId) {
+//        
+//        [objects setObject:meshRequestId forKey:kMeshRequestIdString];
+//        
+//    }
+//    
+//    [[NSNotificationCenter defaultCenter] postNotificationName:kCSRmeshManagerDidTimeoutMessageNotification object:self userInfo:objects];
+//}
 
 #pragma mark models and groups notifications
 

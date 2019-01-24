@@ -209,6 +209,11 @@
             deviceEntity.remoteBranch = deviceDict[@"remoteBranch"];
             deviceEntity.uuid = deviceDict[@"uuid"];
             deviceEntity.dhmKey = [CSRUtilities dataForHexString:deviceDict[@"dhmKey"]];
+            deviceEntity.cvVersion = deviceDict[@"cvVersion"];
+            deviceEntity.firVersion = deviceDict[@"firVersion"];
+            deviceEntity.mcuBootVersion = deviceDict[@"mcuBootVersion"];
+            deviceEntity.mcuHVersion = deviceDict[@"mcuHVersion"];
+            deviceEntity.mcuSVersion = deviceDict[@"mcuSVersion"];
             
             NSMutableArray *rgbScenes = [NSMutableArray new];
             if (parsingDictionary[@"rgbScene_list"]) {
@@ -287,6 +292,7 @@
             sceneObj.iconID = sceneDict[@"iconID"];
             sceneObj.sceneName = sceneDict[@"sceneName"];
             sceneObj.rcIndex = sceneDict[@"rcIndex"];
+            sceneObj.enumMethod = sceneDict[@"enumMethod"];
 
             NSMutableArray *members = [NSMutableArray new];
             if (parsingDictionary[@"sceneMembers_list"]) {
@@ -438,14 +444,17 @@
 //                    [groupsInArray addObject:group];
 //                }
                 NSMutableArray *groupsInArray = [[NSMutableArray alloc] init];
-                for (int i = 0; i<8; i++) {
-                    int j = i*4;
-                    NSString *str = [device.groups substringWithRange:NSMakeRange(j, 4)];
-                    NSString *str1 = [str substringWithRange:NSMakeRange(0, 2)];
-                    NSString *str2 = [str substringWithRange:NSMakeRange(2, 2)];
-                    NSNumber *num = @([CSRUtilities numberWithHexString:[NSString stringWithFormat:@"%@%@",str2,str1]]);
-                    [groupsInArray addObject:num];
+                if ([device.groups length]>=32) {
+                    for (int i = 0; i<8; i++) {
+                        int j = i*4;
+                        NSString *str = [device.groups substringWithRange:NSMakeRange(j, 4)];
+                        NSString *str1 = [str substringWithRange:NSMakeRange(0, 2)];
+                        NSString *str2 = [str substringWithRange:NSMakeRange(2, 2)];
+                        NSNumber *num = @([CSRUtilities numberWithHexString:[NSString stringWithFormat:@"%@%@",str2,str1]]);
+                        [groupsInArray addObject:num];
+                    }
                 }
+                
                 
                 uint16_t authCode = [CSRUtilities NSDataToInt:device.authCode];
                 
@@ -464,7 +473,12 @@
                                           @"dhmKey" : dhmKey ? dhmKey : @"",
                                           @"sortId": (device.sortId) ? (device.sortId):@0,
                                           @"remoteBranch":(device.remoteBranch)? (device.remoteBranch):@"",
-                                          @"uuid":(device.uuid)?(device.uuid):@""
+                                          @"uuid":(device.uuid)?(device.uuid):@"",
+                                          @"cvVersion":(device.cvVersion)?(device.cvVersion):@0,
+                                          @"firVersion":(device.firVersion)?(device.firVersion):@0,
+                                          @"mcuBootVersion":(device.mcuBootVersion)?(device.mcuBootVersion):@0,
+                                          @"mcuHVersion":(device.mcuHVersion)?(device.mcuHVersion):@0,
+                                          @"mcuSVersion":(device.mcuSVersion)?(device.mcuSVersion):@0
                                           }];
                 
                 if (device.rgbScenes && [device.rgbScenes count]>0) {
@@ -485,7 +499,7 @@
                                                    @"hueE":(rgbScene.hueE)? (rgbScene.hueE):@0,
                                                    @"hueF":(rgbScene.hueF)? (rgbScene.hueF):@0,
                                                    @"changeSpeed":(rgbScene.changeSpeed)? (rgbScene.changeSpeed):@0,
-                                                   @"sortID":(rgbScene.sortID)? (rgbScene.sortID):@0,
+                                                   @"sortID":(rgbScene.sortID)? (rgbScene.sortID):@0
                                                    }];
                     }
                 }
@@ -555,7 +569,8 @@
         [scenesArray addObject:@{@"sceneID":(scene.sceneID)?(scene.sceneID):@0,
                                  @"iconID":(scene.iconID)?(scene.iconID):@0,
                                  @"sceneName":scene.sceneName?scene.sceneName:@"",
-                                 @"rcIndex":(scene.rcIndex)?(scene.rcIndex):@0
+                                 @"rcIndex":(scene.rcIndex)?(scene.rcIndex):@0,
+                                 @"enumMethod":(scene.enumMethod)?(scene.enumMethod):@0
                                  }];
         
         for (SceneMemberEntity *sceneMember in scene.members) {
@@ -760,6 +775,7 @@
                 sceneObj.iconID = sceneDict[@"`c_resIndex`"];
                 sceneObj.sceneName = sceneDict[@"`c_name`"];
                 sceneObj.rcIndex = @(arc4random()%65471+64);
+                sceneObj.enumMethod = @(YES);
                 
                 NSMutableArray *members = [NSMutableArray new];
                 if (parsingDictionary[@"KEY_PARENTDEVICE_LIST"]) {

@@ -17,11 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.2.3</string>
+	<string>2.4</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>1</string>
 	<key>LSApplicationCategoryType</key>
 	<dict/>
 	<key>LSApplicationQueriesSchemes</key>
@@ -48,15 +48,15 @@
 		<true/>
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>AcTEC BLE need  use Media Library.</string>
+	<string>Use Media Library to enable RGB devices to change color with music rhythm.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>AcTEC BLE need  use bluetooth.</string>
+	<string>AcTEC BLE  is designed to control Bluetooth smart devices.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Set the images of groups' icons and gallery control mode need to use your Camera.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>AcTEC BLE need use location information.</string>
+	<string>Agree to get your location and show you the weather information for your location.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>AcTEC BLE need  use Microphone.</string>
+	<string>Singing to the phone, the RGB device changes color with your singing voice.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Set the images of groups' icons and gallery control mode need to use your Photo Library.</string>
 	<key>UIBackgroundModes</key>

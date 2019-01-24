@@ -108,6 +108,55 @@ static DataModelManager *manager = nil;
     }
 }
 
+- (void)addAlarmForDevice:(NSNumber *)deviceId alarmIndex:(NSInteger)index enabled:(BOOL)enabled fireDate:(NSDate *)fireDate fireTime:(NSDate *)fireTime repeat:(NSString *)repeat eveType:(NSNumber *)alarnActionType level:(NSInteger)level eveD1:(NSString *)eveD1 eveD2:(NSString *)eveD2 eveD3:(NSString *)eveD3 channel:(NSString *)chanel {
+    
+    NSString *datalen;
+    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+    NSString *indexStr = [CSRUtilities stringWithHexNumber:index];
+    NSInteger CVVersion = [deviceEntity.cvVersion integerValue];
+    if (CVVersion > 18) {
+        datalen = @"16";
+        indexStr = [self exchangeLowHight:indexStr];
+    }else {
+        datalen = @"15";
+    }
+    
+    NSString *YMdString;
+    if (fireDate) {
+        YMdString = [self YMdStringForDate:fireDate];
+    }else{
+        NSDateFormatter *dateFormate = [[NSDateFormatter alloc] init];
+        [dateFormate setDateFormat:@"yyyyMMdd"];
+        NSString *dateStr = [dateFormate stringFromDate:[NSDate date]];
+        NSDate *date = [dateFormate dateFromString:dateStr];
+        YMdString = [self YMdStringForDate:date];
+    }
+    
+    NSString *hmsString = [self hmsStringForDate:fireTime];
+    
+    NSString *levelString = [CSRUtilities stringWithHexNumber:level];
+    
+    NSString *repeatNumberStr = [self toDecimalSystemWithBinarySystem:repeat];
+    
+    NSString *repeatString = [CSRUtilities stringWithHexNumber:[repeatNumberStr integerValue]];
+    
+    NSString *eveD1String = [CSRUtilities stringWithHexNumber:[eveD1 integerValue]];
+    NSString *eveD2String = [CSRUtilities stringWithHexNumber:[eveD2 integerValue]];
+    NSString *eveD3String = [CSRUtilities stringWithHexNumber:[eveD3 integerValue]];
+    
+    NSDate *current = [NSDate date];
+    NSString *currentDateString = [self YMdStringForDate:current];
+    NSString *cmd = [NSString stringWithFormat:@"501801%@%@0%d%@%@%@%@%@%@%@%@00%@ffffff",chanel,indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString,eveD1String,eveD2String,eveD3String,currentDateString];
+    
+    if (deviceId) {
+        [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+            
+        } failure:^(NSError * _Nonnull error) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"addAlarmCall" object:nil userInfo:@{@"addAlarmCall":@"00",@"deviceId":deviceId}];
+        }];
+    }
+}
+
 //读取单灯闹钟列表
 - (void)readAlarmMessageByDeviceId:(NSNumber *)deviceId {
     CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
@@ -244,6 +293,13 @@ static DataModelManager *manager = nil;
 //        }
     }
     
+    if ([dataStr hasPrefix:@"50"]) {
+        if ([dataStr length]>=14) {
+            NSString *suffixStr = [dataStr substringWithRange:NSMakeRange(12, 2)];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"addAlarmCall" object:nil userInfo:@{@"addAlarmCall":suffixStr,@"deviceId":sourceDeviceId}];
+        }
+    }
+    
     //删除闹钟回调
     if ([dataStr hasPrefix:@"a5"]) {
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sourceDeviceId];
@@ -292,7 +348,7 @@ static DataModelManager *manager = nil;
         }
         model.primordial = seq;
         
-        NSString *stateStr = [self getBinaryByhex:[dataStr substringWithRange:NSMakeRange(6, 2)]];
+        NSString *stateStr = [CSRUtilities getBinaryByhex:[dataStr substringWithRange:NSMakeRange(6, 2)]];
         NSString *state = [stateStr substringWithRange:NSMakeRange(7, 1)];
         NSString *supports = [stateStr substringWithRange:NSMakeRange(6, 1)];
         
@@ -358,6 +414,86 @@ static DataModelManager *manager = nil;
     if ([dataStr hasPrefix:@"9d"] ) {
         NSString *string = [dataStr substringFromIndex:4];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"fanControllerCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"fanControllerCall":string}];
+    }
+    
+    if ([dataStr hasPrefix:@"52"] ) {
+        NSString *string = [dataStr substringFromIndex:4];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"multichannelActionCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"multichannelActionCall":string}];
+    }
+    
+    if ([dataStr hasPrefix:@"5a"]) {
+        if ([dataStr length]>=12) {
+            NSNumber *state = [NSNumber numberWithBool:[[dataStr substringWithRange:NSMakeRange(10, 2)] boolValue]];
+            NSNumber *channel = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(4, 2)]]];
+            NSString *str1 = [dataStr substringWithRange:NSMakeRange(6, 2)];
+            NSString *str2 = [dataStr substringWithRange:NSMakeRange(8, 2)];
+            NSNumber *index = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[NSString stringWithFormat:@"%@%@",str2,str1]]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"multichannelSceneAddedSuccessCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"state":state,@"channel":channel,@"index":index}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"5c"]) {
+        if ([dataStr length]>4) {
+            NSString *string = [dataStr substringFromIndex:2];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"multichannelGetSceneCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"multichannelGetSceneCall":string}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"5e"]) {
+        if ([dataStr length]>=12) {
+            NSNumber *state = [NSNumber numberWithBool:[[dataStr substringWithRange:NSMakeRange(10, 2)] boolValue]];
+            NSNumber *channel = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(4, 2)]]];
+            NSString *str1 = [dataStr substringWithRange:NSMakeRange(6, 2)];
+            NSString *str2 = [dataStr substringWithRange:NSMakeRange(8, 2)];
+            NSNumber *index = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[NSString stringWithFormat:@"%@%@",str2,str1]]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"multichannelDeleteSceneCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"state":state,@"channel":channel,@"index":index}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"eb42"]) {
+        if ([dataStr length]>=6) {
+            NSNumber *state = [NSNumber numberWithBool:[[dataStr substringWithRange:NSMakeRange(4, 2)] boolValue]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"childrenModelState" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"childrenModelState":state}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"eb44"]) {
+        if ([dataStr length]>=10) {
+            NSNumber *channel = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(4, 2)]]];
+            NSInteger power = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 4)]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"socketPowerCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"power":[NSNumber numberWithFloat:power/10.0],@"channel":channel}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"eb43"]) {
+        if ([dataStr length]>=20) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"socketPowerStatisticsCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"socketPowerStatisticsCall":[dataStr substringFromIndex:4]}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"eb35"]) {
+        NSInteger mcuBootVersion = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(4, 2)]];
+        NSInteger mcuHVersion = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 2)]];
+        NSInteger mcuSVersion = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(8, 2)]];
+        CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sourceDeviceId];
+        if (device) {
+            device.mcuBootVersion = [NSNumber numberWithInteger:mcuBootVersion];
+            device.mcuHVersion = [NSNumber numberWithInteger:mcuHVersion];
+            device.mcuSVersion = [NSNumber numberWithInteger:mcuSVersion];
+            [[CSRDatabaseManager sharedInstance] saveContext];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"eb34"]) {
+        CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sourceDeviceId];
+        if (device) {
+            device.mcuSVersion = @0;
+            [[CSRDatabaseManager sharedInstance] saveContext];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"eb30"]||[dataStr hasPrefix:@"eb32"]||[dataStr hasPrefix:@"eb33"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"MCUUpdateDataCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"MCUUpdateDataCall":[dataStr substringFromIndex:2]}];
     }
 }
 
@@ -443,7 +579,7 @@ static DataModelManager *manager = nil;
     
     NSInteger index = [CSRUtilities numberWithHexString:[dataString substringWithRange:NSMakeRange(0, 2)]];
     BOOL state = [[dataString substringWithRange:NSMakeRange(2, 2)] boolValue];
-    NSString *repeat = [self getBinaryByhex:[dataString substringWithRange:NSMakeRange(16, 2)]];
+    NSString *repeat = [CSRUtilities getBinaryByhex:[dataString substringWithRange:NSMakeRange(16, 2)]];
     NSString *eveType = [dataString substringWithRange:NSMakeRange(18, 2)];
     NSInteger level = [CSRUtilities numberWithHexString:[dataString substringWithRange:NSMakeRange(20, 2)]];
     
@@ -536,65 +672,6 @@ static DataModelManager *manager = nil;
     }];
     
     return string;
-}
-
-//十六进制字符串转二进制字符串
--(NSString *)getBinaryByhex:(NSString *)hex
-{
-    NSMutableDictionary  *hexDic = [[NSMutableDictionary alloc] init];
-    
-    hexDic = [[NSMutableDictionary alloc] initWithCapacity:16];
-    
-    [hexDic setObject:@"0000" forKey:@"0"];
-    
-    [hexDic setObject:@"0001" forKey:@"1"];
-    
-    [hexDic setObject:@"0010" forKey:@"2"];
-    
-    [hexDic setObject:@"0011" forKey:@"3"];
-    
-    [hexDic setObject:@"0100" forKey:@"4"];
-    
-    [hexDic setObject:@"0101" forKey:@"5"];
-    
-    [hexDic setObject:@"0110" forKey:@"6"];
-    
-    [hexDic setObject:@"0111" forKey:@"7"];
-    
-    [hexDic setObject:@"1000" forKey:@"8"];
-    
-    [hexDic setObject:@"1001" forKey:@"9"];
-    
-    [hexDic setObject:@"1010" forKey:@"a"];
-    
-    [hexDic setObject:@"1011" forKey:@"b"];
-    
-    [hexDic setObject:@"1100" forKey:@"c"];
-    
-    [hexDic setObject:@"1101" forKey:@"d"];
-    
-    [hexDic setObject:@"1110" forKey:@"e"];
-    
-    [hexDic setObject:@"1111" forKey:@"f"];
-    
-    NSString *binaryString=[[NSString alloc] init];
-    
-    for (int i=0; i<[hex length]; i++) {
-        
-        NSRange rage;
-        
-        rage.length = 1;
-        
-        rage.location = i;
-        
-        NSString *key = [hex substringWithRange:rage];
-        
-        binaryString = [NSString stringWithFormat:@"%@%@",binaryString,[NSString stringWithFormat:@"%@",[hexDic objectForKey:key]]];
-        
-    }
-    
-    return binaryString;
-    
 }
 
 //二进制字符串 转 十进制字符串

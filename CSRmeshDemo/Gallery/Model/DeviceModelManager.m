@@ -63,6 +63,12 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(physicalButtonActionCall:) name:@"physicalButtonActionCall" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(RGBCWDeviceActionCall:) name:@"RGBCWDeviceActionCall" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fanControllerCall:) name:@"fanControllerCall" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(multichannelActionCall:) name:@"multichannelActionCall" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(multichannelGetSceneCall:) name:@"multichannelGetSceneCall" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(childrenModelState:)
+                                                     name:@"childrenModelState"
+                                                   object:nil];
         [DataModelManager shareInstance];
         
         NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
@@ -400,6 +406,70 @@
             model.fansSpeed = fanSpeed;
             model.lampState = lampState;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setFanSuccess" object:self userInfo:@{@"deviceId":deviceId}];
+            *stop = YES;
+        }
+    }];
+}
+
+- (void)multichannelActionCall: (NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    NSString *string = userInfo[@"multichannelActionCall"];
+    NSInteger channel = [CSRUtilities numberWithHexString:[string substringWithRange:NSMakeRange(0, 2)]];
+    BOOL channelPowerState = [[string substringWithRange:NSMakeRange(5, 1)] boolValue];
+    NSInteger level = [CSRUtilities numberWithHexString:[string substringWithRange:NSMakeRange(6, 2)]];
+    [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([model.deviceId isEqualToNumber:deviceId]) {
+            if (channel == 1) {
+                model.channel1PowerState = channelPowerState;
+                model.channel1Level = level;
+            }else if (channel == 2) {
+                model.channel2PowerState = channelPowerState;
+                model.channel2Level = level;
+            }
+            if (model.channel1PowerState || model.channel2PowerState) {
+                model.powerState = @(1);
+            }else {
+                model.powerState = @(0);
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
+            *stop = YES;
+        }
+    }];
+}
+
+- (void)multichannelGetSceneCall: (NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    NSString *string = userInfo[@"multichannelGetSceneCall"];
+    [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([model.deviceId isEqualToNumber:deviceId]) {
+            if ([string hasPrefix:@"03"]) {
+                model.channel1Selected = NO;
+                model.channel2Selected = NO;
+            }else if ([string hasPrefix:@"08"]) {
+                NSInteger channel = [CSRUtilities numberWithHexString:[string substringWithRange:NSMakeRange(2, 2)]];
+                if (channel == 1) {
+                    model.channel1Selected = YES;
+                }
+                if (channel == 2) {
+                    model.channel2Selected = YES;
+                }
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
+            *stop = YES;
+        }
+    }];
+}
+
+- (void)childrenModelState: (NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    NSNumber *state = userInfo[@"childrenModelState"];
+    [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([model.deviceId isEqualToNumber:deviceId]) {
+            model.childrenState = [state boolValue];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
             *stop = YES;
         }
     }];

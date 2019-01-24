@@ -32,5 +32,8 @@
 @dynamic cvVersion;
 @dynamic firVersion;
 @dynamic androidId;
+@dynamic mcuBootVersion;
+@dynamic mcuHVersion;
+@dynamic mcuSVersion;
 
 @end

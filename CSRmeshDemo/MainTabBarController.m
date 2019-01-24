@@ -129,7 +129,7 @@
             _hud.bezelView.backgroundColor = [UIColor clearColor];
             _hud.backgroundView.backgroundColor = [UIColor blackColor];
             _hud.backgroundView.alpha = 0.6;
-            _hud.activityIndicatorColor = [UIColor whiteColor];
+//            _hud.activityIndicatorColor = [UIColor whiteColor];
             _hud.delegate = self;
         });
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

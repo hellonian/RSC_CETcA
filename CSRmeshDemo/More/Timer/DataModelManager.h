@@ -39,4 +39,6 @@ extern NSString * const kTimerProfile;
 - (void)changeColorTemperature:(NSNumber *)deviceId;
 - (void)resetColorTemperature:(NSNumber *)deviceId;
 
+- (void)addAlarmForDevice:(NSNumber *)deviceId alarmIndex:(NSInteger)index enabled:(BOOL)enabled fireDate:(NSDate *)fireDate fireTime:(NSDate *)fireTime repeat:(NSString *)repeat eveType:(NSNumber *)alarnActionType level:(NSInteger)level eveD1:(NSString *)eveD1 eveD2:(NSString *)eveD2 eveD3:(NSString *)eveD3 channel:(NSString *)chanel;
+
 @end

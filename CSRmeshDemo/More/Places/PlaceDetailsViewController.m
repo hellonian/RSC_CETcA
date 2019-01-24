@@ -94,13 +94,18 @@
     }else if ([[_placeEntity objectID] isEqual:[[CSRAppStateManager sharedInstance].selectedPlace objectID]]) {
         _deleteButton.hidden = YES;
         if ([self startListenPort:4321]) {
-            NSDictionary *dic = @{@"WIFIName":[self getWifiName],
-                                  @"IPAddress":[self localIpAddressForCurrentDevice],
-                                  @"PORT":@(4321),
-                                  @"FROM":@"ios"};
-            NSString *jsonString = [CSRUtilities convertToJsonData:dic];
-            if (jsonString) {
-                self.QRCodeImageView.image = [SGQRCodeObtain generateQRCodeWithData:jsonString size:200];
+            NSString *wifiName = [self getWifiName];
+            if (wifiName) {
+                NSDictionary *dic = @{@"WIFIName":wifiName,
+                                      @"IPAddress":[self localIpAddressForCurrentDevice],
+                                      @"PORT":@(4321),
+                                      @"FROM":@"ios"};
+                NSString *jsonString = [CSRUtilities convertToJsonData:dic];
+                if (jsonString) {
+                    self.QRCodeImageView.image = [SGQRCodeObtain generateQRCodeWithData:jsonString size:200];
+                }
+            }else {
+                _QRCodeLabel.text = AcTECLocalizedStringFromTable(@"noWifiAlert", @"Localizable");
             }
         }
     }

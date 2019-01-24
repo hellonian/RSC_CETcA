@@ -27,7 +27,13 @@
 @property (nonatomic, assign) BOOL fanState;
 @property (nonatomic, assign) int fansSpeed;
 @property (nonatomic, assign) BOOL lampState;
-
+@property (nonatomic, assign) BOOL channel1PowerState;
+@property (nonatomic, assign) BOOL channel2PowerState;
+@property (nonatomic, assign) BOOL channel1Selected;
+@property (nonatomic, assign) BOOL channel2Selected;
+@property (nonatomic, assign) BOOL childrenState;
+@property (nonatomic, assign) NSInteger channel1Level;
+@property (nonatomic, assign) NSInteger channel2Level;
 
 @end
 

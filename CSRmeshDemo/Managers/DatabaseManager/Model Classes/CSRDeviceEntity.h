@@ -32,6 +32,9 @@
 @property (nonatomic, retain) NSNumber *cvVersion;
 @property (nonatomic, retain) NSNumber *firVersion;
 @property (nonatomic, retain) NSNumber *androidId;
+@property (nonatomic, retain) NSNumber * mcuBootVersion;
+@property (nonatomic, retain) NSNumber * mcuHVersion;
+@property (nonatomic, retain) NSNumber * mcuSVersion;
 
 @end
 

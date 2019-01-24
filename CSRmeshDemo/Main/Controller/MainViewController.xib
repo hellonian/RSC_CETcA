@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MainViewController">
             <connections>
-                <outlet property="dayLabel" destination="QLT-ma-7Rn" id="Ywo-lV-MlR"/>
-                <outlet property="tempLabel" destination="OQB-hW-lVt" id="KLt-20-PXd"/>
-                <outlet property="tempRangeLabel" destination="1QM-uJ-WA6" id="RPa-af-Ojk"/>
-                <outlet property="tempUnit" destination="0a2-cY-kJj" id="dlC-ca-p8q"/>
                 <outlet property="topImageView" destination="K7E-gQ-cG5" id="gVa-V4-36S"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
-                <outlet property="weatherImageView" destination="CpJ-tl-0ld" id="ExO-XT-5u4"/>
-                <outlet property="weekLabel" destination="Mz5-tH-uvl" id="h0z-c2-Yl7"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -39,10 +33,6 @@
                         <constraint firstAttribute="width" constant="30" id="Df3-Pp-8IO"/>
                         <constraint firstAttribute="height" constant="30" id="rJz-Ww-p91"/>
                     </constraints>
-                    <state key="normal" image="fresh"/>
-                    <connections>
-                        <action selector="refreshWeatherUI:" destination="-1" eventType="touchUpInside" id="p6D-IU-foL"/>
-                    </connections>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OQB-hW-lVt">
                     <rect key="frame" x="20" y="60" width="50" height="46"/>
@@ -124,11 +114,10 @@
                 <constraint firstItem="1QM-uJ-WA6" firstAttribute="top" secondItem="OQB-hW-lVt" secondAttribute="bottom" id="wf0-2R-Yhj"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
-            <point key="canvasLocation" x="-57" y="-65"/>
+            <point key="canvasLocation" x="-41" y="-81"/>
         </view>
     </objects>
     <resources>
-        <image name="fresh" width="30" height="30"/>
-        <image name="topbg" width="427" height="193"/>
+        <image name="topbg" width="427" height="193.5"/>
     </resources>
 </document>

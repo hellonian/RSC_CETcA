@@ -114,8 +114,8 @@
         _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         _hud.delegate = self;
     }
-    
-    if (![dic[@"WIFIName"] isEqualToString:[self getWifiName]]) {
+    NSString *wifiname = [self getWifiName];
+    if (wifiname && ![dic[@"WIFIName"] isEqualToString:[self getWifiName]]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"noSameWIFI", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
         [alert.view setTintColor:DARKORAGE];
         UIAlertAction *action = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
@@ -152,7 +152,7 @@
         }
         if (receiveData.length == dataLengthByHead) {
             NSString *jsonString = [[NSString alloc] initWithData:receiveData encoding:NSUTF8StringEncoding];
-            
+            NSLog(@"jsonString>> %@",jsonString);
             NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:jsonString];
             CSRParseAndLoad *parseLoad = [[CSRParseAndLoad alloc] init];
             CSRPlaceEntity *sharePlace = [parseLoad parseIncomingDictionary:jsonDictionary];
@@ -196,7 +196,7 @@
                     NSData *fileData = [NSMutableData dataWithData:[receiveData subdataWithRange:NSMakeRange(8, fileLength)]];
                     if (firstFile) {
                         NSString *jsonString = [[NSString alloc] initWithData:fileData encoding:NSUTF8StringEncoding];
-                        NSLog(@"jsonString>> %@",jsonString);
+//                        NSLog(@"jsonString>> %@",jsonString);
                         NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:jsonString];
                         [self.files addObject:jsonDictionary];
                         
