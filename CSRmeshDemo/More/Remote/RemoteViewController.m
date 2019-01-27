@@ -66,11 +66,11 @@
 
 - (void)addClick {
     AddDevcieViewController *addVC = [[AddDevcieViewController alloc] init];
-    __weak RemoteViewController *weakSelf = self;
-    addVC.handle = ^{
-        [weakSelf getRemotesData];
-        [weakSelf layoutViews];
-    };
+//    __weak RemoteViewController *weakSelf = self;
+//    addVC.handle = ^{
+//        [weakSelf getRemotesData];
+//        [weakSelf layoutViews];
+//    };
     CATransition *animation = [CATransition animation];
     [animation setDuration:0.3];
     [animation setType:kCATransitionMoveIn];

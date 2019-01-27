@@ -148,6 +148,11 @@
                 }else if (levelInt > 179 && levelInt < 256) {
                     model.fansSpeed = 2;
                 }
+            }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName]) {
+                model.channel1PowerState = [powerState boolValue];
+                model.channel1Level = [level integerValue];
+                model.channel2PowerState = [red boolValue];
+                model.channel2Level = [green integerValue];
             }
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
@@ -181,6 +186,11 @@
             }else if (levelInt > 179 && levelInt < 256) {
                 model.fansSpeed = 2;
             }
+        }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName]) {
+            model.channel1PowerState = [powerState boolValue];
+            model.channel1Level = [level integerValue];
+            model.channel2PowerState = [red boolValue];
+            model.channel2Level = [green integerValue];
         }
         [_allDevices addObject:model];
     }
@@ -198,6 +208,9 @@
             if ([CSRUtilities belongToFanController:model.shortName]) {
                 model.fanState = [state boolValue];
                 model.lampState = [state boolValue];
+            }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName]) {
+                model.channel1PowerState = [state boolValue];
+                model.channel2PowerState = [state boolValue];
             }
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId}];
             
@@ -216,6 +229,9 @@
         if ([CSRUtilities belongToFanController:deviceEntity.shortName]) {
             model.fanState = [state boolValue];
             model.lampState = [state boolValue];
+        }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName]) {
+            model.channel1PowerState = [state boolValue];
+            model.channel2PowerState = [state boolValue];
         }
         [_allDevices addObject:model];
     }

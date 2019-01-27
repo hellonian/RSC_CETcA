@@ -15,5 +15,6 @@
 @property (nonatomic,retain) NSNumber *deviceID;
 @property (nonatomic,retain) NSNumber *timerIndex;
 @property (nonatomic,retain) NSNumber *alive;
+@property (nonatomic,retain) NSNumber *channel;
 
 @end

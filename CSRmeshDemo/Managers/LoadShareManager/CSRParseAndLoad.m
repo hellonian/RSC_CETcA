@@ -444,17 +444,23 @@
 //                    [groupsInArray addObject:group];
 //                }
                 NSMutableArray *groupsInArray = [[NSMutableArray alloc] init];
-                if ([device.groups length]>=32) {
-                    for (int i = 0; i<8; i++) {
-                        int j = i*4;
-                        NSString *str = [device.groups substringWithRange:NSMakeRange(j, 4)];
-                        NSString *str1 = [str substringWithRange:NSMakeRange(0, 2)];
-                        NSString *str2 = [str substringWithRange:NSMakeRange(2, 2)];
-                        NSNumber *num = @([CSRUtilities numberWithHexString:[NSString stringWithFormat:@"%@%@",str2,str1]]);
-                        [groupsInArray addObject:num];
+                NSString *groupsString = device.groups;
+                if ([groupsString length]<32) {
+                    for (; ; ) {
+                        groupsString = [NSString stringWithFormat:@"%@%@",groupsString,@"0"];
+                        if ([groupsString length]>=32) {
+                            break;
+                        }
                     }
                 }
-                
+                for (int i = 0; i<8; i++) {
+                    int j = i*4;
+                    NSString *str = [groupsString substringWithRange:NSMakeRange(j, 4)];
+                    NSString *str1 = [str substringWithRange:NSMakeRange(0, 2)];
+                    NSString *str2 = [str substringWithRange:NSMakeRange(2, 2)];
+                    NSNumber *num = @([CSRUtilities numberWithHexString:[NSString stringWithFormat:@"%@%@",str2,str1]]);
+                    [groupsInArray addObject:num];
+                }
                 
                 uint16_t authCode = [CSRUtilities NSDataToInt:device.authCode];
                 

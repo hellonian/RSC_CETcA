@@ -470,10 +470,10 @@
 
 - (void)presentToAddViewController {
     AddDevcieViewController *addVC = [[AddDevcieViewController alloc] init];
-    __weak MainViewController *weakSelf = self;
-    addVC.handle = ^{
-        [weakSelf getMainDataArray];
-    };
+//    __weak MainViewController *weakSelf = self;
+//    addVC.handle = ^{
+//        [weakSelf getMainDataArray];
+//    };
     CATransition *animation = [CATransition animation];
     [animation setDuration:0.3];
     [animation setType:kCATransitionMoveIn];

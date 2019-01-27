@@ -14,5 +14,6 @@
 @dynamic deviceID;
 @dynamic timerIndex;
 @dynamic alive;
+@dynamic channel;
 
 @end

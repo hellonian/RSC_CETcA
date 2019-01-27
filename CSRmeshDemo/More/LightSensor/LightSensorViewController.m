@@ -55,11 +55,11 @@
 
 - (void)addClick {
     AddDevcieViewController *addVC = [[AddDevcieViewController alloc] init];
-    __weak LightSensorViewController *weakSelf = self;
-    addVC.handle = ^{
-        [weakSelf getLightSensorData];
-        [weakSelf layoutViews];
-    };
+//    __weak LightSensorViewController *weakSelf = self;
+//    addVC.handle = ^{
+//        [weakSelf getLightSensorData];
+//        [weakSelf layoutViews];
+//    };
     CATransition *animation = [CATransition animation];
     [animation setDuration:0.3];
     [animation setType:kCATransitionMoveIn];

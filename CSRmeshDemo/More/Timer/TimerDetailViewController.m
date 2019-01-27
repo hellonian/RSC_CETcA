@@ -30,6 +30,10 @@
     NSLayoutConstraint *top_chooseTitle;
     dispatch_semaphore_t semaphore;
     NSInteger memeberCount;
+    
+    NSNumber *channeling;
+    NSNumber *indexing;
+    SceneMemberEntity *sceneMembering;
 }
 
 @property (weak, nonatomic) IBOutlet UIDatePicker *timerPicker;
@@ -405,6 +409,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addTimerToDeviceCall:) name:@"addAlarmCall" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(multichannelAddAlarmCall:) name:@"multichannelAddAlarmCall" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteTimerCall:) name:@"deleteAlarmCall" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeAlarmEnabledCall:) name:@"changeAlarmEnabledCall" object:nil];
     [[MeshServiceApi sharedInstance] setRetryCount:@2];
@@ -414,6 +419,7 @@
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"addAlarmCall" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"multichannelAddAlarmCall" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"deleteAlarmCall" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeAlarmEnabledCall" object:nil];
     [[MeshServiceApi sharedInstance] setRetryCount:@6];
@@ -544,7 +550,7 @@
     _hud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
     _hud.mode = MBProgressHUDModeIndeterminate;
     _hud.delegate = self;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(4*[_selectedScene.members count] * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10*[_selectedScene.members count] * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if (_hud) {
             [_hud hideAnimated:YES];
             _hud = nil;
@@ -555,6 +561,7 @@
         }
         
         if ([self.backs count]<[_selectedScene.members count]) {
+            NSLog(@"-->>>>> %ld %ld",[self.backs count],[_selectedScene.members count]);
             NSString *addFailNames = @"";
             for (SceneMemberEntity *sceneMember in _selectedScene.members) {
                 if (![self.backs containsObject:sceneMember.deviceID]) {
@@ -621,6 +628,7 @@
     dispatch_queue_t queue = dispatch_queue_create("串行", NULL);
     
     for (SceneMemberEntity *sceneMember in _selectedScene.members) {
+        sceneMembering = sceneMember;
         NSNumber *timerIndex;
         if (_newadd) {
             timerIndex = [[CSRDatabaseManager sharedInstance] getNextFreeTimerIDOfDeivice:sceneMember.deviceID];
@@ -638,7 +646,7 @@
                 timerIndex = [[CSRDatabaseManager sharedInstance] getNextFreeTimerIDOfDeivice:sceneMember.deviceID];
             }
         }
-        
+        indexing = timerIndex;
         [self.deviceIdsAndIndexs setObject:timerIndex forKey:[NSString stringWithFormat:@"%@",sceneMember.deviceID]];
         
         NSString *eveD1 = @"00";
@@ -692,6 +700,7 @@
                 dispatch_async(queue, ^{
                     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
                     dispatch_async(dispatch_get_main_queue(), ^{
+                        channeling = @(1);
                         [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.eveType level:[sceneMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"01"];
                     });
                 });
@@ -699,6 +708,7 @@
                 dispatch_async(queue, ^{
                     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
                     dispatch_async(dispatch_get_main_queue(), ^{
+                        channeling = @(2);
                         [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.colorTemperature level:[sceneMember.colorGreen integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"02"];
                     });
                 });
@@ -707,6 +717,7 @@
                     dispatch_async(queue, ^{
                         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
                         dispatch_async(dispatch_get_main_queue(), ^{
+                            channeling = @(1);
                             [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.eveType level:[sceneMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"01"];
                         });
                     });
@@ -715,6 +726,7 @@
                     dispatch_async(queue, ^{
                         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
                         dispatch_async(dispatch_get_main_queue(), ^{
+                            channeling = @(2);
                             [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.colorTemperature level:[sceneMember.colorGreen integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"02"];
                         });
                     });
@@ -728,9 +740,7 @@
                 });
             });
         }
-
     }
-    
 }
 
 - (void)addTimerToDeviceCall:(NSNotification *)result {
@@ -756,6 +766,7 @@
         newTimerDeviceEntity.timerID = _timerEntity.timerID;
         newTimerDeviceEntity.deviceID = deviceId;
         newTimerDeviceEntity.timerIndex = index;
+        newTimerDeviceEntity.channel = @(10);
         [_timerEntity addTimerDevicesObject:newTimerDeviceEntity];
         [[CSRDatabaseManager sharedInstance] saveContext];
 
@@ -779,6 +790,59 @@
         [self.navigationController popViewControllerAnimated:YES];
     }
     
+}
+
+- (void)multichannelAddAlarmCall:(NSNotification *)result {
+    NSDictionary *resultDic = result.userInfo;
+    NSNumber *deviceId = resultDic[@"deviceId"];
+    NSNumber *channel = resultDic[@"channel"];
+    NSNumber *index = resultDic[@"index"];
+    NSNumber *state = resultDic[@"state"];
+    dispatch_semaphore_signal(semaphore);
+    if ([state boolValue] && [deviceId isEqualToNumber:sceneMembering.deviceID] && [channel isEqualToNumber:channeling] && [index isEqualToNumber:indexing]) {
+        _timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:enabled fireTime:time fireDate:date repeatStr:repeatStr sceneID:_selectedScene.sceneID];
+        NSNumber *index = [self.deviceIdsAndIndexs objectForKey:[NSString stringWithFormat:@"%@",deviceId]];
+        __block TimerDeviceEntity *newTimerDeviceEntity;
+        [_timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timerDevice, BOOL * _Nonnull stop) {
+            if ([timerDevice.deviceID isEqualToNumber:deviceId] && [timerDevice.timerIndex isEqualToNumber:index] && [timerDevice.channel isEqualToNumber:channel]) {
+                newTimerDeviceEntity = timerDevice;
+                *stop = YES;
+            }
+        }];
+        if (!newTimerDeviceEntity) {
+            newTimerDeviceEntity = [NSEntityDescription insertNewObjectForEntityForName:@"TimerDeviceEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+        }
+        newTimerDeviceEntity.timerID = _timerEntity.timerID;
+        newTimerDeviceEntity.deviceID = deviceId;
+        newTimerDeviceEntity.timerIndex = index;
+        newTimerDeviceEntity.channel = channel;
+        [_timerEntity addTimerDevicesObject:newTimerDeviceEntity];
+        [[CSRDatabaseManager sharedInstance] saveContext];
+    }
+    if ([sceneMembering.colorTemperature isEqualToNumber:@(10)]||[sceneMembering.colorTemperature isEqualToNumber:@(11)]||[sceneMembering.colorTemperature isEqualToNumber:@(12)]) {
+        if ([channel isEqualToNumber:@(2)]) {
+            [self.backs addObject:deviceId];
+        }
+    }else {
+        if ([channel isEqualToNumber:@(1)]) {
+            [self.backs addObject:deviceId];
+        }
+    }
+    NSLog(@"++>>>>> %ld %ld %@",[self.backs count],[_selectedScene.members count],sceneMembering.colorTemperature);
+    if ([self.backs count] == [_selectedScene.members count]) {
+        if (self.handle) {
+            self.handle();
+        }
+        if (_hud) {
+            [_hud hideAnimated:YES];
+            _hud = nil;
+        }
+        if (_translucentBgView) {
+            [_translucentBgView removeFromSuperview];
+            _translucentBgView = nil;
+        }
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 - (void)deleteTimerCall:(NSNotification *)result {
@@ -819,7 +883,6 @@
         }
         [self.navigationController popViewControllerAnimated:YES];
     }
-    
 }
 
 - (void)changeAlarmEnabledCall:(NSNotification *)result {
@@ -912,7 +975,11 @@
             dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSLog(@"删除定时器：%@",timeDevice.deviceID);
-                [[DataModelManager shareInstance] deleteAlarmForDevice:timeDevice.deviceID index:[timeDevice.timerIndex integerValue]];
+                if ([timeDevice.channel isEqualToNumber:@(10)]) {
+                    [[DataModelManager shareInstance] deleteAlarmForDevice:timeDevice.deviceID index:[timeDevice.timerIndex integerValue]];
+                }else {
+                    [[DataModelManager shareInstance] deleteAlarmForDevice:timeDevice.deviceID channel:[timeDevice.channel integerValue] index:[timeDevice.timerIndex integerValue]];
+                }
             });
         });
     }
@@ -969,7 +1036,11 @@
                 dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSLog(@"使能定时器：%@",timerDevice.deviceID);
-                    [[DataModelManager shareInstance] enAlarmForDevice:timerDevice.deviceID stata:sender.on index:[timerDevice.timerIndex integerValue]];
+                    if ([timerDevice.channel isEqualToNumber:@(10)]) {
+                        [[DataModelManager shareInstance] enAlarmForDevice:timerDevice.deviceID stata:sender.on index:[timerDevice.timerIndex integerValue]];
+                    }else {
+                        [[DataModelManager shareInstance] enAlarmForDevice:timerDevice.deviceID stata:sender.on index:[timerDevice.timerIndex integerValue] channel:[timerDevice.channel integerValue]];
+                    }
                 });
             });
         }

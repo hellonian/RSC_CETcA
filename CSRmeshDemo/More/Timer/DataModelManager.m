@@ -226,6 +226,11 @@ static DataModelManager *manager = nil;
     }
 }
 
+- (void)enAlarmForDevice:(NSNumber *)deviceId stata:(BOOL)state index:(NSInteger)index channel:(NSInteger)channel {
+    NSString *cmdString = [NSString stringWithFormat:@"500505%@%@0%d",[CSRUtilities stringWithHexNumber:channel],[self exchangeLowHight:[CSRUtilities stringWithHexNumber:index]],state];
+    [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+}
+
 //删除设备闹钟
 - (void)deleteAlarmForDevice:(NSNumber *)deviceId index:(NSInteger)index {
     CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
@@ -248,6 +253,11 @@ static DataModelManager *manager = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteAlarmCall" object:nil userInfo:@{@"deviceId":deviceId,@"deleteAlarmCall":@"00"}];
         }];
     }
+}
+
+- (void)deleteAlarmForDevice:(NSNumber *)deviceId channel:(NSInteger)channel index:(NSInteger)index {
+    NSString *cmdString = [NSString stringWithFormat:@"500407%@%@",[CSRUtilities stringWithHexNumber:channel],[self exchangeLowHight:[CSRUtilities stringWithHexNumber:index]]];
+    [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
 }
 
 - (void)changeColorTemperature:(NSNumber *)deviceId {
@@ -293,10 +303,27 @@ static DataModelManager *manager = nil;
 //        }
     }
     
-    if ([dataStr hasPrefix:@"50"]) {
+    if ([dataStr hasPrefix:@"500502"]) {
+        if ([dataStr length]>=14) {
+            NSNumber *channel = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 2)]]];
+            NSString *indexStr = [NSString stringWithFormat:@"%@%@",[dataStr substringWithRange:NSMakeRange(10, 2)],[dataStr substringWithRange:NSMakeRange(8, 2)]];
+            NSNumber *index = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:indexStr]];
+            NSNumber *state = [NSNumber numberWithBool:[[dataStr substringWithRange:NSMakeRange(12, 2)] boolValue]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"multichannelAddAlarmCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"channel":channel,@"index":index,@"state":state}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"500508"]) {
         if ([dataStr length]>=14) {
             NSString *suffixStr = [dataStr substringWithRange:NSMakeRange(12, 2)];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"addAlarmCall" object:nil userInfo:@{@"addAlarmCall":suffixStr,@"deviceId":sourceDeviceId}];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteAlarmCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"deleteAlarmCall":suffixStr}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"500506"]) {
+        if ([dataStr length]>=14) {
+            NSString *suffixStr = [dataStr substringWithRange:NSMakeRange(12, 2)];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"changeAlarmEnabledCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"changeAlarmEnabledCall":suffixStr}];
         }
     }
     
