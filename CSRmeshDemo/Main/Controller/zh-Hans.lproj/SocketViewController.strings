@@ -2,9 +2,6 @@
 /* Class = "UILabel"; text = "State of the socket 1"; ObjectID = "1En-wd-fdm"; */
 "1En-wd-fdm.text" = "1 路";
 
-/* Class = "UILabel"; text = "Children Mode"; ObjectID = "1j5-fe-cG0"; */
-"1j5-fe-cG0.text" = "儿童模式";
-
 /* Class = "UILabel"; text = "Name"; ObjectID = "3S5-Q7-Z6k"; */
 "3S5-Q7-Z6k.text" = "标签";
 
@@ -12,7 +9,7 @@
 "4c3-6s-6gE.text" = "用电量";
 
 /* Class = "UILabel"; text = "Current Power"; ObjectID = "4rh-3W-sjx"; */
-"4rh-3W-sjx.text" = "实时功率";
+"4rh-3W-sjx.text" = "当前功率";
 
 /* Class = "UILabel"; text = "MAC"; ObjectID = "57l-V3-kwC"; */
 "57l-V3-kwC.text" = "MAC";
@@ -20,8 +17,11 @@
 /* Class = "UILabel"; text = "Power"; ObjectID = "CpX-Kf-YfP"; */
 "CpX-Kf-YfP.text" = "用电量";
 
+/* Class = "UILabel"; text = "Children Mode"; ObjectID = "DJe-d5-h9A"; */
+"DJe-d5-h9A.text" = "儿童模式";
+
 /* Class = "UILabel"; text = "Current Power"; ObjectID = "Fru-Tb-Fq9"; */
-"Fru-Tb-Fq9.text" = "实时功率";
+"Fru-Tb-Fq9.text" = "当前功率";
 
 /* Class = "UILabel"; text = "ON/OFF"; ObjectID = "OMD-FY-xDh"; */
 "OMD-FY-xDh.text" = "开/关";
@@ -31,3 +31,6 @@
 
 /* Class = "UILabel"; text = "ON/OFF"; ObjectID = "h8r-fJ-boy"; */
 "h8r-fJ-boy.text" = "开/关";
+
+/* Class = "UILabel"; text = "Children Mode"; ObjectID = "wZW-eM-HnY"; */
+"wZW-eM-HnY.text" = "儿童模式";

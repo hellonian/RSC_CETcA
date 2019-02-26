@@ -31,7 +31,8 @@
 @property (nonatomic, assign) BOOL channel2PowerState;
 @property (nonatomic, assign) BOOL channel1Selected;
 @property (nonatomic, assign) BOOL channel2Selected;
-@property (nonatomic, assign) BOOL childrenState;
+@property (nonatomic, assign) BOOL childrenState1;
+@property (nonatomic, assign) BOOL childrenState2;
 @property (nonatomic, assign) NSInteger channel1Level;
 @property (nonatomic, assign) NSInteger channel2Level;
 

@@ -173,6 +173,10 @@
 - (IBAction)touchDown:(UISlider *)sender {
     currenState = 1;
     currentLevel=sender.value;
+    if (timer) {
+        [timer invalidate];
+        timer = nil;
+    }
     timer = [NSTimer timerWithTimeInterval:0.5 target:self selector:@selector(timerMethod:) userInfo:@(sender.tag) repeats:YES];
     [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
 }
@@ -213,6 +217,14 @@
             break;
         default:
             break;
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    if (timer) {
+        [timer invalidate];
+        timer = nil;
     }
 }
 

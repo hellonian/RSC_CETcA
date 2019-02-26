@@ -78,8 +78,8 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
     
     self.mainTabBarController = [[MainTabBarController alloc] init];
     
-    MainViewController *mainVC = [[MainViewController alloc] init];
-    UINavigationController *mainNav = [[UINavigationController alloc] initWithRootViewController:mainVC];
+    _mainVC = [[MainViewController alloc] init];
+    UINavigationController *mainNav = [[UINavigationController alloc] initWithRootViewController:_mainVC];
     
     GalleryViewController *galleryVC = [[GalleryViewController alloc] init];
     UINavigationController *galleryNav = [[UINavigationController alloc] initWithRootViewController:galleryVC];
@@ -120,6 +120,9 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
     
 //    [[CSRDatabaseManager sharedInstance] saveContext];
     [[CSRAppStateManager sharedInstance] connectivityCheck];
+    if (_mainVC.maskLayer && _mainVC.maskLayer.superview) {
+        [_mainVC.maskLayer removeFromSuperview];
+    }
 }
 
 

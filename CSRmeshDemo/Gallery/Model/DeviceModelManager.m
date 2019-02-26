@@ -148,7 +148,7 @@
                 }else if (levelInt > 179 && levelInt < 256) {
                     model.fansSpeed = 2;
                 }
-            }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName]) {
+            }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToSocket:model.shortName]) {
                 model.channel1PowerState = [powerState boolValue];
                 model.channel1Level = [level integerValue];
                 model.channel2PowerState = [red boolValue];
@@ -186,7 +186,7 @@
             }else if (levelInt > 179 && levelInt < 256) {
                 model.fansSpeed = 2;
             }
-        }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName]) {
+        }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToSocket:model.shortName]) {
             model.channel1PowerState = [powerState boolValue];
             model.channel1Level = [level integerValue];
             model.channel2PowerState = [red boolValue];
@@ -208,7 +208,7 @@
             if ([CSRUtilities belongToFanController:model.shortName]) {
                 model.fanState = [state boolValue];
                 model.lampState = [state boolValue];
-            }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName]) {
+            }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToSocket:model.shortName]) {
                 model.channel1PowerState = [state boolValue];
                 model.channel2PowerState = [state boolValue];
             }
@@ -229,7 +229,7 @@
         if ([CSRUtilities belongToFanController:deviceEntity.shortName]) {
             model.fanState = [state boolValue];
             model.lampState = [state boolValue];
-        }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName]) {
+        }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToSocket:model.shortName]) {
             model.channel1PowerState = [state boolValue];
             model.channel2PowerState = [state boolValue];
         }
@@ -267,7 +267,11 @@
     currentState = state;
     currentLevel = level;
     moveDirection = direction;
-    if (state == UIGestureRecognizerStateBegan && !timer) {
+    if (state == UIGestureRecognizerStateBegan) {
+        if (timer) {
+            [timer invalidate];
+            timer = nil;
+        }
         timer = [NSTimer timerWithTimeInterval:0.5 target:self selector:@selector(timerMethod:) userInfo:deviceId repeats:YES];
         [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
     }
@@ -298,7 +302,11 @@
 -(void)setColorTemperatureWithDeviceId:(NSNumber *)deviceId withColorTemperature:(NSNumber *)colorTemperature withState:(UIGestureRecognizerState)state {
     CTCurrentState = state;
     CTCurrentCT = colorTemperature;
-    if (state == UIGestureRecognizerStateBegan && !CTTimer) {
+    if (state == UIGestureRecognizerStateBegan) {
+        if (CTTimer) {
+            [CTTimer invalidate];
+            CTTimer = nil;
+        }
         CTTimer = [NSTimer timerWithTimeInterval:0.5 target:self selector:@selector(CTTimerMethod:) userInfo:deviceId repeats:YES];
         [[NSRunLoop mainRunLoop] addTimer:CTTimer forMode:NSRunLoopCommonModes];
     }
@@ -327,7 +335,11 @@
     
     colorCurrentState = state;
     currentColor = color;
-    if (state == UIGestureRecognizerStateBegan && !colorTimer) {
+    if (state == UIGestureRecognizerStateBegan) {
+        if (colorTimer) {
+            [colorTimer invalidate];
+            colorTimer = nil;
+        }
         colorTimer = [NSTimer timerWithTimeInterval:0.5 target:self selector:@selector(colorTimerMethod:) userInfo:deviceId repeats:YES];
         [[NSRunLoop mainRunLoop] addTimer:colorTimer forMode:NSRunLoopCommonModes];
     }
@@ -438,10 +450,18 @@
         if ([model.deviceId isEqualToNumber:deviceId]) {
             if (channel == 1) {
                 model.channel1PowerState = channelPowerState;
-                model.channel1Level = level;
+                if (level<3) {
+                    model.channel1Level = 3;
+                }else {
+                    model.channel1Level = level;
+                }
             }else if (channel == 2) {
                 model.channel2PowerState = channelPowerState;
-                model.channel2Level = level;
+                if (level < 3) {
+                    model.channel2Level = 3;
+                }else {
+                    model.channel2Level = level;
+                }
             }
             if (model.channel1PowerState || model.channel2PowerState) {
                 model.powerState = @(1);
@@ -481,10 +501,12 @@
 - (void)childrenModelState: (NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
-    NSNumber *state = userInfo[@"childrenModelState"];
+    NSNumber *state1 = userInfo[@"state1"];
+    NSNumber *state2 = userInfo[@"state2"];
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
-            model.childrenState = [state boolValue];
+            model.childrenState1 = [state1 boolValue];
+            model.childrenState2 = [state2 boolValue];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
             *stop = YES;
         }
@@ -542,7 +564,7 @@
     colorSaturation = sat;
 }
 
-- (void)regetColofulTimerInterval:(NSTimeInterval)interval deviceId:(NSNumber *)deviceId {
+- (void)regetColofulTimevrInterval:(NSTimeInterval)interval deviceId:(NSNumber *)deviceId {
     if (colorfulTimer) {
         [colorfulTimer invalidate];
         colorfulTimer = nil;

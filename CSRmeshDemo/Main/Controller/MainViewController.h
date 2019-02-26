@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ControlMaskView.h"
 
 @interface MainViewController : UIViewController
+
+@property (nonatomic,strong) ControlMaskView *maskLayer;
 
 @end

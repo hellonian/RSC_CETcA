@@ -259,6 +259,8 @@
 		2E2A016421425D7600B2EFAF /* MusicListTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicListTableViewController.m; sourceTree = "<group>"; };
 		2E2A016621425F7F00B2EFAF /* GetDataTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetDataTools.h; sourceTree = "<group>"; };
 		2E2A016721425F7F00B2EFAF /* GetDataTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetDataTools.m; sourceTree = "<group>"; };
+		2E2B55B52216CC6E008864A1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SocketViewController.strings; sourceTree = "<group>"; };
+		2E2B55B72216CC8C008864A1 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SocketViewController.strings"; sourceTree = "<group>"; };
 		2E2E70041FF5DE60002D1C1D /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
 		2E2E70051FF5DE60002D1C1D /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
 		2E2E70071FF5DE60002D1C1D /* MasterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
@@ -338,6 +340,25 @@
 		2E3BED3821DF329100E7078C /* PowerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PowerViewController.xib; sourceTree = "<group>"; };
 		2E3EA7C220479F8900AFD4B8 /* RemoteSettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteSettingViewController.h; sourceTree = "<group>"; };
 		2E3EA7C320479F8900AFD4B8 /* RemoteSettingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteSettingViewController.m; sourceTree = "<group>"; };
+		2E48A7F6221BAEBD0052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
+		2E48A7F7221BAEBE0052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/GroupViewController.strings; sourceTree = "<group>"; };
+		2E48A7F8221BAEBE0052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/RGBDeviceViewController.strings; sourceTree = "<group>"; };
+		2E48A7F9221BAEBF0052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/SRGBSceneDetailViewController.strings; sourceTree = "<group>"; };
+		2E48A7FA221BAEBF0052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/MRGBSceneDetailViewController.strings; sourceTree = "<group>"; };
+		2E48A7FB221BAEBF0052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/MusicViewController.strings; sourceTree = "<group>"; };
+		2E48A7FC221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
+		2E48A7FD221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/FanViewController.strings; sourceTree = "<group>"; };
+		2E48A7FE221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/SocketViewController.strings; sourceTree = "<group>"; };
+		2E48A7FF221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/SocketForSceneVC.strings; sourceTree = "<group>"; };
+		2E48A800221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
+		2E48A801221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
+		2E48A802221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
+		2E48A803221BAEC10052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
+		2E48A804221BAEC10052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/LightSensorSettingViewController.strings; sourceTree = "<group>"; };
+		2E48A805221BAEC10052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/TimerDetailViewController.strings; sourceTree = "<group>"; };
+		2E48A806221BAEC10052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/AboutViewController.strings; sourceTree = "<group>"; };
+		2E48A807221BAEC10052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2E48A808221BAEC10052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2E48BBDE20D239E500401CDD /* LightSensorViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LightSensorViewController.h; sourceTree = "<group>"; };
 		2E48BBDF20D239E500401CDD /* LightSensorViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LightSensorViewController.m; sourceTree = "<group>"; };
 		2E48BBE120D25C7800401CDD /* LightSensorSettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LightSensorSettingViewController.h; sourceTree = "<group>"; };
@@ -346,8 +367,6 @@
 		2E4DDCEF21F9680E00B2ACF3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2E4DDCF121F9681000B2ACF3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/FanViewController.strings"; sourceTree = "<group>"; };
 		2E4DDCF321F968FF00B2ACF3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/SocketViewController.xib; sourceTree = "<group>"; };
-		2E4DDCF621F9690500B2ACF3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SocketViewController.strings; sourceTree = "<group>"; };
-		2E4DDCF821F9690800B2ACF3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SocketViewController.strings"; sourceTree = "<group>"; };
 		2E4DDCFA21F969B900B2ACF3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/SocketForSceneVC.xib; sourceTree = "<group>"; };
 		2E4DDCFD21F969BE00B2ACF3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SocketForSceneVC.strings; sourceTree = "<group>"; };
 		2E4DDCFF21F969BF00B2ACF3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SocketForSceneVC.strings"; sourceTree = "<group>"; };
@@ -387,6 +406,44 @@
 		2E706D00212A7278008D0EC4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/GalleryViewController.xib; sourceTree = "<group>"; };
 		2E706D03212A727E008D0EC4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2E706D05212A7282008D0EC4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/GalleryViewController.strings"; sourceTree = "<group>"; };
+		2E747FCF221CE2A100FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
+		2E747FD0221CE2A600FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/GroupViewController.strings; sourceTree = "<group>"; };
+		2E747FD1221CE2A700FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/RGBDeviceViewController.strings; sourceTree = "<group>"; };
+		2E747FD2221CE2A800FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/SRGBSceneDetailViewController.strings; sourceTree = "<group>"; };
+		2E747FD3221CE2A900FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/MRGBSceneDetailViewController.strings; sourceTree = "<group>"; };
+		2E747FD4221CE2A900FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/MusicViewController.strings; sourceTree = "<group>"; };
+		2E747FD5221CE2AA00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
+		2E747FD6221CE2AA00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/FanViewController.strings; sourceTree = "<group>"; };
+		2E747FD7221CE2AA00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/SocketViewController.strings; sourceTree = "<group>"; };
+		2E747FD8221CE2AA00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/SocketForSceneVC.strings; sourceTree = "<group>"; };
+		2E747FD9221CE2AB00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
+		2E747FDA221CE2AB00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
+		2E747FDB221CE2AB00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
+		2E747FDC221CE2AB00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
+		2E747FDD221CE2AB00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/LightSensorSettingViewController.strings; sourceTree = "<group>"; };
+		2E747FDE221CE2AB00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/TimerDetailViewController.strings; sourceTree = "<group>"; };
+		2E747FDF221CE2AC00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/AboutViewController.strings; sourceTree = "<group>"; };
+		2E747FE0221CE2AC00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2E747FE1221CE2AC00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2E747FE2221CF68B00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
+		2E747FE3221CF68C00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/GroupViewController.strings; sourceTree = "<group>"; };
+		2E747FE4221CF68C00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/RGBDeviceViewController.strings; sourceTree = "<group>"; };
+		2E747FE5221CF68C00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/SRGBSceneDetailViewController.strings; sourceTree = "<group>"; };
+		2E747FE6221CF68C00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/MRGBSceneDetailViewController.strings; sourceTree = "<group>"; };
+		2E747FE7221CF68D00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/MusicViewController.strings; sourceTree = "<group>"; };
+		2E747FE8221CF68D00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
+		2E747FE9221CF68D00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/FanViewController.strings; sourceTree = "<group>"; };
+		2E747FEA221CF68E00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/SocketViewController.strings; sourceTree = "<group>"; };
+		2E747FEB221CF68E00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/SocketForSceneVC.strings; sourceTree = "<group>"; };
+		2E747FEC221CF68E00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
+		2E747FED221CF68E00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
+		2E747FEE221CF68F00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
+		2E747FEF221CF68F00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
+		2E747FF0221CF69000FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/LightSensorSettingViewController.strings; sourceTree = "<group>"; };
+		2E747FF1221CF69000FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/TimerDetailViewController.strings; sourceTree = "<group>"; };
+		2E747FF2221CF69000FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/AboutViewController.strings; sourceTree = "<group>"; };
+		2E747FF3221CF69000FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; wrapsLines = 0; };
+		2E747FF4221CF69100FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2E80C46A21DC62CE0024584C /* SocketForSceneVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SocketForSceneVC.h; sourceTree = "<group>"; };
 		2E80C46B21DC62CE0024584C /* SocketForSceneVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SocketForSceneVC.m; sourceTree = "<group>"; };
 		2E8623462019DB28004EF0E0 /* DeviceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceViewController.h; sourceTree = "<group>"; };
@@ -409,11 +466,144 @@
 		2EAD4EA72004A4BB003733CA /* GalleryEditToolView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GalleryEditToolView.m; sourceTree = "<group>"; };
 		2EBBA91A21D7442E00D2E7DA /* SocketViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SocketViewController.h; sourceTree = "<group>"; };
 		2EBBA91B21D7442E00D2E7DA /* SocketViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SocketViewController.m; sourceTree = "<group>"; };
+		2EC18BC4221D225F008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
+		2EC18BC5221D225F008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/GroupViewController.strings; sourceTree = "<group>"; };
+		2EC18BC6221D225F008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/RGBDeviceViewController.strings; sourceTree = "<group>"; };
+		2EC18BC7221D2260008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/SRGBSceneDetailViewController.strings; sourceTree = "<group>"; };
+		2EC18BC8221D2260008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/MRGBSceneDetailViewController.strings; sourceTree = "<group>"; };
+		2EC18BC9221D2260008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/MusicViewController.strings; sourceTree = "<group>"; };
+		2EC18BCA221D2260008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
+		2EC18BCB221D2260008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/FanViewController.strings; sourceTree = "<group>"; };
+		2EC18BCC221D2261008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/SocketViewController.strings; sourceTree = "<group>"; };
+		2EC18BCD221D2261008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/SocketForSceneVC.strings; sourceTree = "<group>"; };
+		2EC18BCE221D2261008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
+		2EC18BCF221D2261008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
+		2EC18BD0221D2261008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
+		2EC18BD1221D2262008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
+		2EC18BD2221D2262008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/LightSensorSettingViewController.strings; sourceTree = "<group>"; };
+		2EC18BD3221D2262008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/TimerDetailViewController.strings; sourceTree = "<group>"; };
+		2EC18BD4221D2263008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/AboutViewController.strings; sourceTree = "<group>"; };
+		2EC18BD5221D2264008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2EC18BD6221D2264008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2EC18BD7221D2276008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
+		2EC18BD8221D2277008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/GroupViewController.strings; sourceTree = "<group>"; };
+		2EC18BD9221D2277008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/RGBDeviceViewController.strings; sourceTree = "<group>"; };
+		2EC18BDA221D2277008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/SRGBSceneDetailViewController.strings; sourceTree = "<group>"; };
+		2EC18BDB221D2277008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/MRGBSceneDetailViewController.strings; sourceTree = "<group>"; };
+		2EC18BDC221D2277008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/MusicViewController.strings; sourceTree = "<group>"; };
+		2EC18BDD221D2278008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
+		2EC18BDE221D2278008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/FanViewController.strings; sourceTree = "<group>"; };
+		2EC18BDF221D2278008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/SocketViewController.strings; sourceTree = "<group>"; };
+		2EC18BE0221D2278008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/SocketForSceneVC.strings; sourceTree = "<group>"; };
+		2EC18BE1221D2279008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
+		2EC18BE2221D2279008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
+		2EC18BE3221D2279008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
+		2EC18BE4221D2279008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
+		2EC18BE5221D2279008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/LightSensorSettingViewController.strings; sourceTree = "<group>"; };
+		2EC18BE6221D2279008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/TimerDetailViewController.strings; sourceTree = "<group>"; };
+		2EC18BE7221D227A008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/AboutViewController.strings; sourceTree = "<group>"; };
+		2EC18BE8221D227A008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2EC18BE9221D227A008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2EC18BEA221D2288008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
+		2EC18BEB221D2288008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/GroupViewController.strings; sourceTree = "<group>"; };
+		2EC18BEC221D2288008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/RGBDeviceViewController.strings; sourceTree = "<group>"; };
+		2EC18BED221D2288008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/SRGBSceneDetailViewController.strings; sourceTree = "<group>"; };
+		2EC18BEE221D2288008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/MRGBSceneDetailViewController.strings; sourceTree = "<group>"; };
+		2EC18BEF221D2289008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/MusicViewController.strings; sourceTree = "<group>"; };
+		2EC18BF0221D2289008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
+		2EC18BF1221D2289008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/FanViewController.strings; sourceTree = "<group>"; };
+		2EC18BF2221D2289008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/SocketViewController.strings; sourceTree = "<group>"; };
+		2EC18BF3221D2289008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/SocketForSceneVC.strings; sourceTree = "<group>"; };
+		2EC18BF4221D228A008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
+		2EC18BF5221D228A008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
+		2EC18BF6221D228A008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
+		2EC18BF7221D228A008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
+		2EC18BF8221D228A008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/LightSensorSettingViewController.strings; sourceTree = "<group>"; };
+		2EC18BF9221D228B008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/TimerDetailViewController.strings; sourceTree = "<group>"; };
+		2EC18BFA221D228B008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/AboutViewController.strings; sourceTree = "<group>"; };
+		2EC18BFB221D228B008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2EC18BFC221D228B008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2EC18BFD221D229E008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
+		2EC18BFE221D229F008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/GroupViewController.strings; sourceTree = "<group>"; };
+		2EC18BFF221D229F008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/RGBDeviceViewController.strings; sourceTree = "<group>"; };
+		2EC18C00221D229F008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/SRGBSceneDetailViewController.strings; sourceTree = "<group>"; };
+		2EC18C01221D22A0008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/MRGBSceneDetailViewController.strings; sourceTree = "<group>"; };
+		2EC18C02221D22A0008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/MusicViewController.strings; sourceTree = "<group>"; };
+		2EC18C03221D22A0008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
+		2EC18C04221D22A0008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/FanViewController.strings; sourceTree = "<group>"; };
+		2EC18C05221D22A0008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/SocketViewController.strings; sourceTree = "<group>"; };
+		2EC18C06221D22A1008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/SocketForSceneVC.strings; sourceTree = "<group>"; };
+		2EC18C07221D22A1008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
+		2EC18C08221D22A1008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
+		2EC18C09221D22A1008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
+		2EC18C0A221D22A2008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
+		2EC18C0B221D22A2008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/LightSensorSettingViewController.strings; sourceTree = "<group>"; };
+		2EC18C0C221D22A2008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/TimerDetailViewController.strings; sourceTree = "<group>"; };
+		2EC18C0D221D22A2008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/AboutViewController.strings; sourceTree = "<group>"; };
+		2EC18C0E221D22A2008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2EC18C0F221D22A3008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2EC18C10221D22B6008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/DeviceViewController.strings"; sourceTree = "<group>"; };
+		2EC18C11221D22B6008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/GroupViewController.strings"; sourceTree = "<group>"; };
+		2EC18C12221D22B7008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/RGBDeviceViewController.strings"; sourceTree = "<group>"; };
+		2EC18C13221D22B7008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/SRGBSceneDetailViewController.strings"; sourceTree = "<group>"; };
+		2EC18C14221D22B7008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/MRGBSceneDetailViewController.strings"; sourceTree = "<group>"; };
+		2EC18C15221D22B7008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/MusicViewController.strings"; sourceTree = "<group>"; };
+		2EC18C16221D22B8008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/CurtainViewController.strings"; sourceTree = "<group>"; };
+		2EC18C17221D22B8008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/FanViewController.strings"; sourceTree = "<group>"; };
+		2EC18C18221D22B8008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/SocketViewController.strings"; sourceTree = "<group>"; };
+		2EC18C19221D22B8008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/SocketForSceneVC.strings"; sourceTree = "<group>"; };
+		2EC18C1A221D22B9008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/TwoChannelDimmerVC.strings"; sourceTree = "<group>"; };
+		2EC18C1B221D22B9008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/GalleryViewController.strings"; sourceTree = "<group>"; };
+		2EC18C1C221D22B9008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/PlaceDetailsViewController.strings"; sourceTree = "<group>"; };
+		2EC18C1D221D22B9008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/RemoteSettingViewController.strings"; sourceTree = "<group>"; };
+		2EC18C1E221D22B9008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/LightSensorSettingViewController.strings"; sourceTree = "<group>"; };
+		2EC18C1F221D22BA008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/TimerDetailViewController.strings"; sourceTree = "<group>"; };
+		2EC18C20221D22BA008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/AboutViewController.strings"; sourceTree = "<group>"; };
+		2EC18C21221D22BA008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		2EC18C22221D22BA008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		2EC18C23221D22E7008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/DeviceViewController.strings"; sourceTree = "<group>"; };
+		2EC18C24221D22E7008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/GroupViewController.strings"; sourceTree = "<group>"; };
+		2EC18C25221D22E8008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/RGBDeviceViewController.strings"; sourceTree = "<group>"; };
+		2EC18C26221D22E8008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/SRGBSceneDetailViewController.strings"; sourceTree = "<group>"; };
+		2EC18C27221D22E8008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/MRGBSceneDetailViewController.strings"; sourceTree = "<group>"; };
+		2EC18C28221D22E8008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/MusicViewController.strings"; sourceTree = "<group>"; };
+		2EC18C29221D22E8008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/CurtainViewController.strings"; sourceTree = "<group>"; };
+		2EC18C2A221D22E9008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/FanViewController.strings"; sourceTree = "<group>"; };
+		2EC18C2B221D22E9008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/SocketViewController.strings"; sourceTree = "<group>"; };
+		2EC18C2C221D22E9008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/SocketForSceneVC.strings"; sourceTree = "<group>"; };
+		2EC18C2D221D22E9008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/TwoChannelDimmerVC.strings"; sourceTree = "<group>"; };
+		2EC18C2E221D22EA008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/GalleryViewController.strings"; sourceTree = "<group>"; };
+		2EC18C2F221D22EA008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/PlaceDetailsViewController.strings"; sourceTree = "<group>"; };
+		2EC18C30221D22EA008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/RemoteSettingViewController.strings"; sourceTree = "<group>"; };
+		2EC18C31221D22EA008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/LightSensorSettingViewController.strings"; sourceTree = "<group>"; };
+		2EC18C32221D22EB008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/TimerDetailViewController.strings"; sourceTree = "<group>"; };
+		2EC18C33221D22EB008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/AboutViewController.strings"; sourceTree = "<group>"; };
+		2EC18C34221D22EB008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		2EC18C35221D22EB008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		2EC38937204921C2004D822D /* TimerTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerTableViewCell.h; sourceTree = "<group>"; };
 		2EC38938204921C2004D822D /* TimerTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerTableViewCell.m; sourceTree = "<group>"; };
 		2EC38939204921C2004D822D /* TimerTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TimerTableViewCell.xib; sourceTree = "<group>"; };
 		2EC3893C204939CE004D822D /* TimerDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerDetailViewController.h; sourceTree = "<group>"; };
 		2EC3893D204939CE004D822D /* TimerDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerDetailViewController.m; sourceTree = "<group>"; };
+		2EC4205122179F2800E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
+		2EC4205222179F2800E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/GroupViewController.strings; sourceTree = "<group>"; };
+		2EC4205322179F2A00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/RGBDeviceViewController.strings; sourceTree = "<group>"; };
+		2EC4205422179F2A00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/SRGBSceneDetailViewController.strings; sourceTree = "<group>"; };
+		2EC4205522179F2A00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MRGBSceneDetailViewController.strings; sourceTree = "<group>"; };
+		2EC4205622179F2B00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MusicViewController.strings; sourceTree = "<group>"; };
+		2EC4205722179F2B00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
+		2EC4205822179F2B00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/FanViewController.strings; sourceTree = "<group>"; };
+		2EC4205922179F2B00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/SocketViewController.strings; sourceTree = "<group>"; };
+		2EC4205A22179F2B00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/SocketForSceneVC.strings; sourceTree = "<group>"; };
+		2EC4205B22179F2C00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
+		2EC4205C22179F2C00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
+		2EC4205D22179F2C00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
+		2EC4205E22179F2C00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
+		2EC4205F22179F2C00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LightSensorSettingViewController.strings; sourceTree = "<group>"; };
+		2EC4206022179F2D00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/TimerDetailViewController.strings; sourceTree = "<group>"; };
+		2EC4206122179F2D00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/AboutViewController.strings; sourceTree = "<group>"; };
+		2EC4206222179F2D00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2EC4206322179F2D00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2EC73CF42124197600850882 /* ColorSquare.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColorSquare.h; sourceTree = "<group>"; };
 		2EC73CF52124197700850882 /* ColorSquare.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColorSquare.m; sourceTree = "<group>"; };
 		2EC7D0DC21E6F549007F44C1 /* PowerModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PowerModel.h; sourceTree = "<group>"; };
@@ -1332,6 +1522,16 @@
 				Base,
 				en,
 				"zh-Hans",
+				de,
+				sv,
+				nb,
+				es,
+				da,
+				it,
+				nl,
+				fr,
+				"pt-PT",
+				"fi-FI",
 			);
 			mainGroup = 0DE95CF91B297FFB006D0397;
 			productRefGroup = 0DE95D031B297FFB006D0397 /* Products */;
@@ -1581,6 +1781,16 @@
 				2E0AA2202126761900DB45EB /* Base */,
 				2E0AA2232126762100DB45EB /* en */,
 				2E0AA2252126762300DB45EB /* zh-Hans */,
+				2EC4206122179F2D00E1717F /* de */,
+				2E48A806221BAEC10052A617 /* sv */,
+				2E747FDF221CE2AC00FBEB14 /* nb */,
+				2E747FF2221CF69000FBEB14 /* es */,
+				2EC18BD4221D2263008B33DC /* da */,
+				2EC18BE7221D227A008B33DC /* it */,
+				2EC18BFA221D228B008B33DC /* nl */,
+				2EC18C0D221D22A2008B33DC /* fr */,
+				2EC18C20221D22BA008B33DC /* pt-PT */,
+				2EC18C33221D22EB008B33DC /* fi-FI */,
 			);
 			name = AboutViewController.xib;
 			sourceTree = "<group>";
@@ -1591,6 +1801,16 @@
 				2E1C839F20CFD782009BCC6D /* Base */,
 				2E1F6FC321C9F61C00915FFF /* en */,
 				2E1F6FC521C9F64E00915FFF /* zh-Hans */,
+				2EC4205D22179F2C00E1717F /* de */,
+				2E48A802221BAEC00052A617 /* sv */,
+				2E747FDB221CE2AB00FBEB14 /* nb */,
+				2E747FEE221CF68F00FBEB14 /* es */,
+				2EC18BD0221D2261008B33DC /* da */,
+				2EC18BE3221D2279008B33DC /* it */,
+				2EC18BF6221D228A008B33DC /* nl */,
+				2EC18C09221D22A1008B33DC /* fr */,
+				2EC18C1C221D22B9008B33DC /* pt-PT */,
+				2EC18C2F221D22EA008B33DC /* fi-FI */,
 			);
 			name = PlaceDetailsViewController.xib;
 			sourceTree = "<group>";
@@ -1601,6 +1821,16 @@
 				2E37074F20CE4C16000AF696 /* Base */,
 				2E0AA21321266EF500DB45EB /* en */,
 				2E0AA21521266F2000DB45EB /* zh-Hans */,
+				2EC4205122179F2800E1717F /* de */,
+				2E48A7F6221BAEBD0052A617 /* sv */,
+				2E747FCF221CE2A100FBEB14 /* nb */,
+				2E747FE2221CF68B00FBEB14 /* es */,
+				2EC18BC4221D225F008B33DC /* da */,
+				2EC18BD7221D2276008B33DC /* it */,
+				2EC18BEA221D2288008B33DC /* nl */,
+				2EC18BFD221D229E008B33DC /* fr */,
+				2EC18C10221D22B6008B33DC /* pt-PT */,
+				2EC18C23221D22E7008B33DC /* fi-FI */,
 			);
 			name = DeviceViewController.xib;
 			sourceTree = "<group>";
@@ -1611,6 +1841,16 @@
 				2E37075920CE8337000AF696 /* Base */,
 				2E37075C20CE8339000AF696 /* en */,
 				2E37075E20CE833C000AF696 /* zh-Hans */,
+				2EC4205222179F2800E1717F /* de */,
+				2E48A7F7221BAEBE0052A617 /* sv */,
+				2E747FD0221CE2A600FBEB14 /* nb */,
+				2E747FE3221CF68C00FBEB14 /* es */,
+				2EC18BC5221D225F008B33DC /* da */,
+				2EC18BD8221D2277008B33DC /* it */,
+				2EC18BEB221D2288008B33DC /* nl */,
+				2EC18BFE221D229F008B33DC /* fr */,
+				2EC18C11221D22B6008B33DC /* pt-PT */,
+				2EC18C24221D22E7008B33DC /* fi-FI */,
 			);
 			name = GroupViewController.xib;
 			sourceTree = "<group>";
@@ -1621,6 +1861,16 @@
 				2E388A69214B9F1000CBF73C /* Base */,
 				2E388A6B214B9F2A00CBF73C /* en */,
 				2E388A6C214B9F2C00CBF73C /* zh-Hans */,
+				2EC4205322179F2A00E1717F /* de */,
+				2E48A7F8221BAEBE0052A617 /* sv */,
+				2E747FD1221CE2A700FBEB14 /* nb */,
+				2E747FE4221CF68C00FBEB14 /* es */,
+				2EC18BC6221D225F008B33DC /* da */,
+				2EC18BD9221D2277008B33DC /* it */,
+				2EC18BEC221D2288008B33DC /* nl */,
+				2EC18BFF221D229F008B33DC /* fr */,
+				2EC18C12221D22B7008B33DC /* pt-PT */,
+				2EC18C25221D22E8008B33DC /* fi-FI */,
 			);
 			name = RGBDeviceViewController.xib;
 			sourceTree = "<group>";
@@ -1631,6 +1881,16 @@
 				2E388A6E214BA8B900CBF73C /* Base */,
 				2E388A71214BA8BB00CBF73C /* en */,
 				2E388A73214BA8BD00CBF73C /* zh-Hans */,
+				2EC4205622179F2B00E1717F /* de */,
+				2E48A7FB221BAEBF0052A617 /* sv */,
+				2E747FD4221CE2A900FBEB14 /* nb */,
+				2E747FE7221CF68D00FBEB14 /* es */,
+				2EC18BC9221D2260008B33DC /* da */,
+				2EC18BDC221D2277008B33DC /* it */,
+				2EC18BEF221D2289008B33DC /* nl */,
+				2EC18C02221D22A0008B33DC /* fr */,
+				2EC18C15221D22B7008B33DC /* pt-PT */,
+				2EC18C28221D22E8008B33DC /* fi-FI */,
 			);
 			name = MusicViewController.xib;
 			sourceTree = "<group>";
@@ -1641,6 +1901,16 @@
 				2E388A75214BA91C00CBF73C /* Base */,
 				2E388A78214BA92200CBF73C /* en */,
 				2E388A7A214BA92400CBF73C /* zh-Hans */,
+				2EC4205422179F2A00E1717F /* de */,
+				2E48A7F9221BAEBF0052A617 /* sv */,
+				2E747FD2221CE2A800FBEB14 /* nb */,
+				2E747FE5221CF68C00FBEB14 /* es */,
+				2EC18BC7221D2260008B33DC /* da */,
+				2EC18BDA221D2277008B33DC /* it */,
+				2EC18BED221D2288008B33DC /* nl */,
+				2EC18C00221D229F008B33DC /* fr */,
+				2EC18C13221D22B7008B33DC /* pt-PT */,
+				2EC18C26221D22E8008B33DC /* fi-FI */,
 			);
 			name = SRGBSceneDetailViewController.xib;
 			sourceTree = "<group>";
@@ -1651,6 +1921,16 @@
 				2E388A7E214BAB2100CBF73C /* Base */,
 				2E388A81214BAB2300CBF73C /* en */,
 				2E388A83214BAB2700CBF73C /* zh-Hans */,
+				2EC4205522179F2A00E1717F /* de */,
+				2E48A7FA221BAEBF0052A617 /* sv */,
+				2E747FD3221CE2A900FBEB14 /* nb */,
+				2E747FE6221CF68C00FBEB14 /* es */,
+				2EC18BC8221D2260008B33DC /* da */,
+				2EC18BDB221D2277008B33DC /* it */,
+				2EC18BEE221D2288008B33DC /* nl */,
+				2EC18C01221D22A0008B33DC /* fr */,
+				2EC18C14221D22B7008B33DC /* pt-PT */,
+				2EC18C27221D22E8008B33DC /* fi-FI */,
 			);
 			name = MRGBSceneDetailViewController.xib;
 			sourceTree = "<group>";
@@ -1661,6 +1941,16 @@
 				2E4DDCEC21F9680900B2ACF3 /* Base */,
 				2E4DDCEF21F9680E00B2ACF3 /* en */,
 				2E4DDCF121F9681000B2ACF3 /* zh-Hans */,
+				2EC4205822179F2B00E1717F /* de */,
+				2E48A7FD221BAEC00052A617 /* sv */,
+				2E747FD6221CE2AA00FBEB14 /* nb */,
+				2E747FE9221CF68D00FBEB14 /* es */,
+				2EC18BCB221D2260008B33DC /* da */,
+				2EC18BDE221D2278008B33DC /* it */,
+				2EC18BF1221D2289008B33DC /* nl */,
+				2EC18C04221D22A0008B33DC /* fr */,
+				2EC18C17221D22B8008B33DC /* pt-PT */,
+				2EC18C2A221D22E9008B33DC /* fi-FI */,
 			);
 			name = FanViewController.xib;
 			sourceTree = "<group>";
@@ -1669,8 +1959,18 @@
 			isa = PBXVariantGroup;
 			children = (
 				2E4DDCF321F968FF00B2ACF3 /* Base */,
-				2E4DDCF621F9690500B2ACF3 /* en */,
-				2E4DDCF821F9690800B2ACF3 /* zh-Hans */,
+				2E2B55B52216CC6E008864A1 /* en */,
+				2E2B55B72216CC8C008864A1 /* zh-Hans */,
+				2EC4205922179F2B00E1717F /* de */,
+				2E48A7FE221BAEC00052A617 /* sv */,
+				2E747FD7221CE2AA00FBEB14 /* nb */,
+				2E747FEA221CF68E00FBEB14 /* es */,
+				2EC18BCC221D2261008B33DC /* da */,
+				2EC18BDF221D2278008B33DC /* it */,
+				2EC18BF2221D2289008B33DC /* nl */,
+				2EC18C05221D22A0008B33DC /* fr */,
+				2EC18C18221D22B8008B33DC /* pt-PT */,
+				2EC18C2B221D22E9008B33DC /* fi-FI */,
 			);
 			name = SocketViewController.xib;
 			sourceTree = "<group>";
@@ -1681,6 +1981,16 @@
 				2E4DDCFA21F969B900B2ACF3 /* Base */,
 				2E4DDCFD21F969BE00B2ACF3 /* en */,
 				2E4DDCFF21F969BF00B2ACF3 /* zh-Hans */,
+				2EC4205A22179F2B00E1717F /* de */,
+				2E48A7FF221BAEC00052A617 /* sv */,
+				2E747FD8221CE2AA00FBEB14 /* nb */,
+				2E747FEB221CF68E00FBEB14 /* es */,
+				2EC18BCD221D2261008B33DC /* da */,
+				2EC18BE0221D2278008B33DC /* it */,
+				2EC18BF3221D2289008B33DC /* nl */,
+				2EC18C06221D22A1008B33DC /* fr */,
+				2EC18C19221D22B8008B33DC /* pt-PT */,
+				2EC18C2C221D22E9008B33DC /* fi-FI */,
 			);
 			name = SocketForSceneVC.xib;
 			sourceTree = "<group>";
@@ -1691,6 +2001,16 @@
 				2E4DDD0121F969F200B2ACF3 /* Base */,
 				2E4DDD0421F969F700B2ACF3 /* en */,
 				2E4DDD0621F969F800B2ACF3 /* zh-Hans */,
+				2EC4205B22179F2C00E1717F /* de */,
+				2E48A800221BAEC00052A617 /* sv */,
+				2E747FD9221CE2AB00FBEB14 /* nb */,
+				2E747FEC221CF68E00FBEB14 /* es */,
+				2EC18BCE221D2261008B33DC /* da */,
+				2EC18BE1221D2279008B33DC /* it */,
+				2EC18BF4221D228A008B33DC /* nl */,
+				2EC18C07221D22A1008B33DC /* fr */,
+				2EC18C1A221D22B9008B33DC /* pt-PT */,
+				2EC18C2D221D22E9008B33DC /* fi-FI */,
 			);
 			name = TwoChannelDimmerVC.xib;
 			sourceTree = "<group>";
@@ -1701,6 +2021,16 @@
 				2E6BD7FE20D09B3200036CA2 /* Base */,
 				2E6BD80120D09B3600036CA2 /* en */,
 				2E6BD80320D09B3700036CA2 /* zh-Hans */,
+				2EC4206022179F2D00E1717F /* de */,
+				2E48A805221BAEC10052A617 /* sv */,
+				2E747FDE221CE2AB00FBEB14 /* nb */,
+				2E747FF1221CF69000FBEB14 /* es */,
+				2EC18BD3221D2262008B33DC /* da */,
+				2EC18BE6221D2279008B33DC /* it */,
+				2EC18BF9221D228B008B33DC /* nl */,
+				2EC18C0C221D22A2008B33DC /* fr */,
+				2EC18C1F221D22BA008B33DC /* pt-PT */,
+				2EC18C32221D22EB008B33DC /* fi-FI */,
 			);
 			name = TimerDetailViewController.xib;
 			sourceTree = "<group>";
@@ -1711,6 +2041,16 @@
 				2E6BD80520D0AD6D00036CA2 /* Base */,
 				2E0AA21A2126758300DB45EB /* en */,
 				2E0AA21C2126758F00DB45EB /* zh-Hans */,
+				2EC4205E22179F2C00E1717F /* de */,
+				2E48A803221BAEC10052A617 /* sv */,
+				2E747FDC221CE2AB00FBEB14 /* nb */,
+				2E747FEF221CF68F00FBEB14 /* es */,
+				2EC18BD1221D2262008B33DC /* da */,
+				2EC18BE4221D2279008B33DC /* it */,
+				2EC18BF7221D228A008B33DC /* nl */,
+				2EC18C0A221D22A2008B33DC /* fr */,
+				2EC18C1D221D22B9008B33DC /* pt-PT */,
+				2EC18C30221D22EA008B33DC /* fi-FI */,
 			);
 			name = RemoteSettingViewController.xib;
 			sourceTree = "<group>";
@@ -1721,6 +2061,16 @@
 				2E706D00212A7278008D0EC4 /* Base */,
 				2E706D03212A727E008D0EC4 /* en */,
 				2E706D05212A7282008D0EC4 /* zh-Hans */,
+				2EC4205C22179F2C00E1717F /* de */,
+				2E48A801221BAEC00052A617 /* sv */,
+				2E747FDA221CE2AB00FBEB14 /* nb */,
+				2E747FED221CF68E00FBEB14 /* es */,
+				2EC18BCF221D2261008B33DC /* da */,
+				2EC18BE2221D2279008B33DC /* it */,
+				2EC18BF5221D228A008B33DC /* nl */,
+				2EC18C08221D22A1008B33DC /* fr */,
+				2EC18C1B221D22B9008B33DC /* pt-PT */,
+				2EC18C2E221D22EA008B33DC /* fi-FI */,
 			);
 			name = GalleryViewController.xib;
 			sourceTree = "<group>";
@@ -1730,6 +2080,16 @@
 			children = (
 				2E9622C320C9137E0097C617 /* zh-Hans */,
 				2E9622C420C913C10097C617 /* en */,
+				2EC4206222179F2D00E1717F /* de */,
+				2E48A807221BAEC10052A617 /* sv */,
+				2E747FE0221CE2AC00FBEB14 /* nb */,
+				2E747FF3221CF69000FBEB14 /* es */,
+				2EC18BD5221D2264008B33DC /* da */,
+				2EC18BE8221D227A008B33DC /* it */,
+				2EC18BFB221D228B008B33DC /* nl */,
+				2EC18C0E221D22A2008B33DC /* fr */,
+				2EC18C21221D22BA008B33DC /* pt-PT */,
+				2EC18C34221D22EB008B33DC /* fi-FI */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -1739,6 +2099,16 @@
 			children = (
 				2E9622C820C917EC0097C617 /* en */,
 				2E9622CA20C917EE0097C617 /* zh-Hans */,
+				2EC4206322179F2D00E1717F /* de */,
+				2E48A808221BAEC10052A617 /* sv */,
+				2E747FE1221CE2AC00FBEB14 /* nb */,
+				2E747FF4221CF69100FBEB14 /* es */,
+				2EC18BD6221D2264008B33DC /* da */,
+				2EC18BE9221D227A008B33DC /* it */,
+				2EC18BFC221D228B008B33DC /* nl */,
+				2EC18C0F221D22A3008B33DC /* fr */,
+				2EC18C22221D22BA008B33DC /* pt-PT */,
+				2EC18C35221D22EB008B33DC /* fi-FI */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -1749,6 +2119,16 @@
 				2ED23F6F215DCCCA0040A922 /* Base */,
 				2ED23F72215DCCCE0040A922 /* en */,
 				2ED23F74215DCCD00040A922 /* zh-Hans */,
+				2EC4205722179F2B00E1717F /* de */,
+				2E48A7FC221BAEC00052A617 /* sv */,
+				2E747FD5221CE2AA00FBEB14 /* nb */,
+				2E747FE8221CF68D00FBEB14 /* es */,
+				2EC18BCA221D2260008B33DC /* da */,
+				2EC18BDD221D2278008B33DC /* it */,
+				2EC18BF0221D2289008B33DC /* nl */,
+				2EC18C03221D22A0008B33DC /* fr */,
+				2EC18C16221D22B8008B33DC /* pt-PT */,
+				2EC18C29221D22E8008B33DC /* fi-FI */,
 			);
 			name = CurtainViewController.xib;
 			sourceTree = "<group>";
@@ -1759,6 +2139,16 @@
 				2EE50F2E20DA3E3D00B484F7 /* Base */,
 				2E6FBD9820E1D77D0045DDAC /* en */,
 				2E6FBD9A20E1D7830045DDAC /* zh-Hans */,
+				2EC4205F22179F2C00E1717F /* de */,
+				2E48A804221BAEC10052A617 /* sv */,
+				2E747FDD221CE2AB00FBEB14 /* nb */,
+				2E747FF0221CF69000FBEB14 /* es */,
+				2EC18BD2221D2262008B33DC /* da */,
+				2EC18BE5221D2279008B33DC /* it */,
+				2EC18BF8221D228A008B33DC /* nl */,
+				2EC18C0B221D22A2008B33DC /* fr */,
+				2EC18C1E221D22B9008B33DC /* pt-PT */,
+				2EC18C31221D22EA008B33DC /* fi-FI */,
 			);
 			name = LightSensorSettingViewController.xib;
 			sourceTree = "<group>";

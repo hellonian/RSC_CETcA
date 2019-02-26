@@ -1,0 +1,24 @@
+
+/* Class = "UILabel"; text = "100%"; ObjectID = "Nwa-bp-pKL"; */
+"Nwa-bp-pKL.text" = "100%";
+
+/* Class = "UILabel"; text = "MAC"; ObjectID = "PQe-sJ-2a3"; */
+"PQe-sJ-2a3.text" = "MAC";
+
+/* Class = "UILabel"; text = "Name"; ObjectID = "Rr9-qd-MJ7"; */
+"Rr9-qd-MJ7.text" = "Nome";
+
+/* Class = "UILabel"; text = "Dimmer 2"; ObjectID = "gvC-xO-kyA"; */
+"gvC-xO-kyA.text" = "Regulador 2";
+
+/* Class = "UILabel"; text = "ON/OFF"; ObjectID = "ijf-Nf-hrA"; */
+"ijf-Nf-hrA.text" = "ON/OFF";
+
+/* Class = "UILabel"; text = "ON/OFF"; ObjectID = "sJY-4B-57n"; */
+"sJY-4B-57n.text" = "ON/OFF";
+
+/* Class = "UILabel"; text = "100%"; ObjectID = "tcA-VF-Z1i"; */
+"tcA-VF-Z1i.text" = "100%";
+
+/* Class = "UILabel"; text = "Dimmer 1"; ObjectID = "ti6-R3-TUX"; */
+"ti6-R3-TUX.text" = "Regulador 1";

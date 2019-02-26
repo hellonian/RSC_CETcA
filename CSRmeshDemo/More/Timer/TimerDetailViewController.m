@@ -661,41 +661,7 @@
             eveD1 = [colorTemperatureStr substringToIndex:2];
             eveD2 = [colorTemperatureStr substringFromIndex:2];
         }
-        
-        if ([CSRUtilities belongToSocket:sceneMember.kindString]) {
-            if (sceneMember.eveType && sceneMember.colorTemperature) {
-                dispatch_async(queue, ^{
-                    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.eveType level:[sceneMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"01"];
-                    });
-                });
-                
-                dispatch_async(queue, ^{
-                    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.colorTemperature level:[sceneMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"02"];
-                    });
-                });
-            }else {
-                if (sceneMember.eveType) {
-                    dispatch_async(queue, ^{
-                        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.eveType level:[sceneMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"01"];
-                        });
-                    });
-                }
-                if (sceneMember.colorTemperature) {
-                    dispatch_async(queue, ^{
-                        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.colorTemperature level:[sceneMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"02"];
-                        });
-                    });
-                }
-            }
-        }if ([CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString]) {
+        if ([CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString] || [CSRUtilities belongToSocket:sceneMember.kindString]) {
             if (sceneMember.eveType && sceneMember.colorTemperature) {
                 dispatch_async(queue, ^{
                     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
@@ -799,6 +765,7 @@
     NSNumber *index = resultDic[@"index"];
     NSNumber *state = resultDic[@"state"];
     dispatch_semaphore_signal(semaphore);
+    NSLog(@"%@,%@,%@,%@,%@,%@,%@",deviceId,channel,index,state,sceneMembering.deviceID,channeling,indexing);
     if ([state boolValue] && [deviceId isEqualToNumber:sceneMembering.deviceID] && [channel isEqualToNumber:channeling] && [index isEqualToNumber:indexing]) {
         _timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:enabled fireTime:time fireDate:date repeatStr:repeatStr sceneID:_selectedScene.sceneID];
         NSNumber *index = [self.deviceIdsAndIndexs objectForKey:[NSString stringWithFormat:@"%@",deviceId]];

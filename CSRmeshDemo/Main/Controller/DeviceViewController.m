@@ -290,6 +290,7 @@
 }
 
 - (void)askUpdateMCU {
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
     [[DataModelManager shareInstance] sendCmdData:@"ea30" toDeviceId:_deviceId];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [[DataModelManager shareInstance] sendCmdData:@"ea30" toDeviceId:_deviceId];
@@ -354,6 +355,7 @@
         }else if ([mcuString hasPrefix:@"32"]) {
             if (_updatingHud) {
                 [_updatingHud hideAnimated:YES];
+                [UIApplication sharedApplication].idleTimerDisabled = NO;
             }
             CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
             deviceEntity.mcuSVersion = [NSNumber numberWithInteger:latestMCUSVersion];
@@ -399,7 +401,7 @@
                 dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [updateSuccessDic setObject:@(0) forKey:@(binPage)];
-                    NSLog(@"xunfan %ld",binPage);
+                    NSLog(@"xunfan %ld",(long)binPage);
                     nowBinPage = binPage;
                     NSInteger binPageLength = 128;
                     if (binPage == [data length]/128) {
@@ -527,6 +529,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:@"setPowerStateSuccess"
                                                   object:nil];
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
 }
 
 - (void)closeAction {

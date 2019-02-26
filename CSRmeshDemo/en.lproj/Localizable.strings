@@ -10,13 +10,18 @@
 "Setting" = "Setting";
 "English" = "English";
 "ChineseS" = "Chinese,Simplified";
+"German" = "German";
 "Norwegian" = "Norwegian Bokmål";
 "Swedish" = "Swedish";
-"German" = "German";
+"Spanish" = "Spanish";
+"Danish" = "Danish";
+"Italian" = "Italian";
+"Dutch" = "Dutch";
+"French" = "French";
+"Portuguese" = "Portuguese(Portugal)";
+"Finnish" = "Finnish";
 "Polish" = "Polish";
 "Russian" = "Russian";
-"Portuguese" = "Portuguese(Portugal)";
-"Spanish" = "Spanish";
 "Romanian" = "Romanian";
 "Czech" = "Czech";
 "Lithuanian" = "Lithuanian";
@@ -146,3 +151,5 @@
 "today" = "Today";
 "thisWeek" = "This Week";
 "thisMonth" = "This Month";
+"closeChildrenModeAlert" = "Please turn off children mode first.";
+"closeSocketStateAlert" = "Please close the current socket first.";

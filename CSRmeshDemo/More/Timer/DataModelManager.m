@@ -478,17 +478,22 @@ static DataModelManager *manager = nil;
     }
     
     if ([dataStr hasPrefix:@"eb42"]) {
-        if ([dataStr length]>=6) {
-            NSNumber *state = [NSNumber numberWithBool:[[dataStr substringWithRange:NSMakeRange(4, 2)] boolValue]];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"childrenModelState" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"childrenModelState":state}];
+        if ([dataStr length]>=8) {
+            NSNumber *state1 = [NSNumber numberWithBool:[[dataStr substringWithRange:NSMakeRange(4, 2)] boolValue]];
+            NSNumber *state2 = [NSNumber numberWithBool:[[dataStr substringWithRange:NSMakeRange(6, 2)] boolValue]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"childrenModelState" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"state1":state1,@"state2":state2}];
         }
     }
     
     if ([dataStr hasPrefix:@"eb44"]) {
-        if ([dataStr length]>=10) {
+        if ([dataStr length]>=14) {
             NSNumber *channel = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(4, 2)]]];
-            NSInteger power = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 4)]];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"socketPowerCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"power":[NSNumber numberWithFloat:power/10.0],@"channel":channel}];
+            if ([channel integerValue] == 3) {
+                NSInteger power1 = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 4)]];
+                NSInteger power2 = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(10, 4)]];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"socketPowerCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"power1":[NSNumber numberWithFloat:power1/10.0],@"power2":[NSNumber numberWithFloat:power2/10.0],@"channel":channel}];
+            }
+            
         }
     }
     

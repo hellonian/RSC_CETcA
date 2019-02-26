@@ -1,0 +1,12 @@
+
+/* Class = "UILabel"; text = "Socket 1"; ObjectID = "8Fv-jS-0az"; */
+"8Fv-jS-0az.text" = "Steckdose 1";
+
+/* Class = "UILabel"; text = "Socket 2"; ObjectID = "CFa-C5-TFB"; */
+"CFa-C5-TFB.text" = "Steckdose 2";
+
+/* Class = "UILabel"; text = "Name"; ObjectID = "HOx-tE-Jq6"; */
+"HOx-tE-Jq6.text" = "Name";
+
+/* Class = "UILabel"; text = "MAC"; ObjectID = "wyR-QP-IN9"; */
+"wyR-QP-IN9.text" = "MAC";

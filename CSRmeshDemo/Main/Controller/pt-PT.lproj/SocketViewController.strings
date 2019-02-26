@@ -1,0 +1,36 @@
+
+/* Class = "UILabel"; text = "State of the socket 1"; ObjectID = "1En-wd-fdm"; */
+"1En-wd-fdm.text" = "Status do soquete 1";
+
+/* Class = "UILabel"; text = "Name"; ObjectID = "3S5-Q7-Z6k"; */
+"3S5-Q7-Z6k.text" = "Nome";
+
+/* Class = "UILabel"; text = "Power"; ObjectID = "4c3-6s-6gE"; */
+"4c3-6s-6gE.text" = "Energia";
+
+/* Class = "UILabel"; text = "Current Power"; ObjectID = "4rh-3W-sjx"; */
+"4rh-3W-sjx.text" = "Corrente de energia";
+
+/* Class = "UILabel"; text = "MAC"; ObjectID = "57l-V3-kwC"; */
+"57l-V3-kwC.text" = "MAC";
+
+/* Class = "UILabel"; text = "Power"; ObjectID = "CpX-Kf-YfP"; */
+"CpX-Kf-YfP.text" = "Energia";
+
+/* Class = "UILabel"; text = "Children Mode"; ObjectID = "DJe-d5-h9A"; */
+"DJe-d5-h9A.text" = "Modo crianças";
+
+/* Class = "UILabel"; text = "Current Power"; ObjectID = "Fru-Tb-Fq9"; */
+"Fru-Tb-Fq9.text" = "Corrente de energia";
+
+/* Class = "UILabel"; text = "ON/OFF"; ObjectID = "OMD-FY-xDh"; */
+"OMD-FY-xDh.text" = "ON/OFF";
+
+/* Class = "UILabel"; text = "State of the socket 2"; ObjectID = "dml-Mx-OhS"; */
+"dml-Mx-OhS.text" = "Status do soquete 2";
+
+/* Class = "UILabel"; text = "ON/OFF"; ObjectID = "h8r-fJ-boy"; */
+"h8r-fJ-boy.text" = "ON/OFF";
+
+/* Class = "UILabel"; text = "Children Mode"; ObjectID = "wZW-eM-HnY"; */
+"wZW-eM-HnY.text" = "Modo crianças";

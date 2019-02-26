@@ -37,11 +37,17 @@
 @property (nonatomic,copy) NSString *originalName;
 @property (weak, nonatomic) IBOutlet UISwitch *channel1Switch;
 @property (weak, nonatomic) IBOutlet UISwitch *channel2Switch;
-@property (weak, nonatomic) IBOutlet UISwitch *childSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *childSwitch1;
+@property (weak, nonatomic) IBOutlet UISwitch *childSwitch2;
 @property (weak, nonatomic) IBOutlet UILabel *currentPower1Label;
 @property (weak, nonatomic) IBOutlet UILabel *currentPower2Label;
 @property (nonatomic,strong) MBProgressHUD *updatingHud;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *constantH;
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (weak, nonatomic) IBOutlet UIButton *socket1Btn;
+@property (weak, nonatomic) IBOutlet UIButton *child1Btn;
+@property (weak, nonatomic) IBOutlet UIButton *socket2Btn;
+@property (weak, nonatomic) IBOutlet UIButton *child2Btn;
 
 @end
 
@@ -119,6 +125,7 @@
 }
 
 - (void)askUpdateMCU {
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
     [[DataModelManager shareInstance] sendCmdData:@"ea30" toDeviceId:_deviceId];
 //    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //        [[DataModelManager shareInstance] sendCmdData:@"ea30" toDeviceId:_deviceId];
@@ -126,8 +133,8 @@
 }
 -(void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    if ((477 - self.view.bounds.size.height + 44)>0) {
-        self.constantH.constant = (477 - self.view.bounds.size.height + 44);
+    if ((522 - self.scrollView.bounds.size.height + 44)/2>0) {
+        self.constantH.constant = (522 - self.scrollView.bounds.size.height + 44)/2;
     }
 }
 
@@ -190,6 +197,7 @@
         }else if ([mcuString hasPrefix:@"32"]) {
             if (_updatingHud) {
                 [_updatingHud hideAnimated:YES];
+                [UIApplication sharedApplication].idleTimerDisabled = NO;
             }
             CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
             deviceEntity.mcuSVersion = [NSNumber numberWithInteger:latestMCUSVersion];
@@ -208,6 +216,10 @@
 
         NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/%@",fileName]];
         NSLog(@"downloadTaskWithRequest>> %@",path);
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if ([fileManager fileExistsAtPath:path]) {
+            [fileManager removeItemAtPath:path error:nil];
+        }
         return [NSURL fileURLWithPath:path];
 
     } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
@@ -223,7 +235,7 @@
 //        NSData *data = [[NSData alloc] initWithContentsOfFile:path1];
     
     NSData *data = [[NSData alloc] initWithContentsOfURL:path];
-//    NSLog(@"data length>> %ld",[data length]);
+    NSLog(@"data length>> %ld",[data length]);
     semaphore = dispatch_semaphore_create(1);
     updateEveDataDic = [[NSMutableDictionary alloc] init];
     updateSuccessDic = [[NSMutableDictionary alloc] init];
@@ -284,7 +296,7 @@
                                              selector:@selector(socketPowerCall:)
                                                  name:@"socketPowerCall"
                                                object:nil];
-    timer = [NSTimer scheduledTimerWithTimeInterval:30.0f target:self selector:@selector(timerMethod:) userInfo:nil repeats:YES];
+    timer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(timerMethod:) userInfo:nil repeats:YES];
     [timer fire];
 }
 
@@ -293,6 +305,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"socketPowerCall" object:nil];
     [timer invalidate];
     timer = nil;
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
 }
 
 - (void)timerMethod:(NSTimer *)timer {
@@ -362,13 +375,62 @@
     DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:deviceId];
     if (deviceModel) {
         [_channel1Switch setOn:deviceModel.channel1PowerState];
+        if (deviceModel.channel1PowerState && !deviceModel.childrenState1) {
+            [_childSwitch1 setEnabled:NO];
+            _child1Btn.hidden = NO;
+        }else {
+            [_childSwitch1 setEnabled:YES];
+            _child1Btn.hidden = YES;
+        }
+        
         [_channel2Switch setOn:deviceModel.channel2PowerState];
-        [_childSwitch setOn:deviceModel.childrenState];
+        if (deviceModel.channel2PowerState && !deviceModel.childrenState2) {
+            [_childSwitch2 setEnabled:NO];
+            _child2Btn.hidden = NO;
+        }else {
+            [_childSwitch2 setEnabled:YES];
+            _child2Btn.hidden = YES;
+        }
+        
+        [_childSwitch1 setOn:deviceModel.childrenState1];
+        if (deviceModel.childrenState1) {
+            [_channel1Switch setEnabled:NO];
+            _socket1Btn.hidden = NO;
+        }else {
+            [_channel1Switch setEnabled:YES];
+            _socket1Btn.hidden = YES;
+        }
+        
+        [_childSwitch2 setOn:deviceModel.childrenState2];
+        if (deviceModel.childrenState2) {
+            [_channel2Switch setEnabled:NO];
+            _socket2Btn.hidden = NO;
+        }else {
+            [_channel2Switch setEnabled:YES];
+            _socket2Btn.hidden = YES;
+        }
+
     }
+}
+- (IBAction)closeChildrenModeAlert:(UIButton *)sender {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:AcTECLocalizedStringFromTable(@"closeChildrenModeAlert", @"Localizable") message:nil preferredStyle:UIAlertControllerStyleAlert];
+    [alert.view setTintColor:DARKORAGE];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    }];
+    [alert addAction:okAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+- (IBAction)closeSocketStateAlert:(UIButton *)sender {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:AcTECLocalizedStringFromTable(@"closeSocketStateAlert", @"Localizable") message:nil preferredStyle:UIAlertControllerStyleAlert];
+    [alert.view setTintColor:DARKORAGE];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    }];
+    [alert addAction:okAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (IBAction)childrenMode:(UISwitch *)sender {
-    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea410%d",sender.on]] success:nil failure:nil];
+    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea410%ld0%d",sender.tag,sender.on]] success:nil failure:nil];
     __block SocketViewController *weakself = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [weakself changeUI:_deviceId];
@@ -380,16 +442,11 @@
     NSNumber *deviceId = dic[@"deviceId"];
     if ([deviceId isEqualToNumber:_deviceId]) {
         NSNumber *channel = dic[@"channel"];
-        NSNumber *power = dic[@"power"];
-        switch ([channel integerValue]) {
-            case 1:
-                _currentPower1Label.text = [NSString stringWithFormat:@"%.1fW",[power floatValue]];
-                break;
-            case 2:
-                _currentPower2Label.text = [NSString stringWithFormat:@"%.1fW",[power floatValue]];
-                break;
-            default:
-                break;
+        NSNumber *power1 = dic[@"power1"];
+        NSNumber *power2 = dic[@"power2"];
+        if ([channel integerValue]==3) {
+            _currentPower1Label.text = [NSString stringWithFormat:@"%.1fW",[power1 floatValue]];
+            _currentPower2Label.text = [NSString stringWithFormat:@"%.1fW",[power2 floatValue]];
         }
     }
 }

@@ -1,0 +1,39 @@
+
+/* Class = "UILabel"; text = "00:00:00:00:00:00"; ObjectID = "3ny-Dd-dJ0"; */
+"3ny-Dd-dJ0.text" = "00:00:00:00:00:00";
+
+/* Class = "UILabel"; text = "1%"; ObjectID = "BQn-4F-mjf"; */
+"BQn-4F-mjf.text" = "1%";
+
+/* Class = "UILabel"; text = "100%"; ObjectID = "D7A-Gt-k49"; */
+"D7A-Gt-k49.text" = "100%";
+
+/* Class = "UIButton"; normalTitle = "Choose Device"; ObjectID = "E3V-Xs-LfZ"; */
+"E3V-Xs-LfZ.normalTitle" = "Kies Apparaat";
+
+/* Class = "UILabel"; text = "Maximum Dimming Level"; ObjectID = "PEO-e6-3Sf"; */
+"PEO-e6-3Sf.text" = "Maximum";
+
+/* Class = "UILabel"; text = "Minimum Dimming Level"; ObjectID = "PX5-wx-bMH"; */
+"PX5-wx-bMH.text" = "Minimum";
+
+/* Class = "UILabel"; text = "Lux Target"; ObjectID = "R6v-52-bi2"; */
+"R6v-52-bi2.text" = "Lux doel";
+
+/* Class = "UILabel"; text = "Lux"; ObjectID = "XzW-6Y-J4n"; */
+"XzW-6Y-J4n.text" = "Lux";
+
+/* Class = "UILabel"; text = "Name"; ObjectID = "bnz-UY-uDy"; */
+"bnz-UY-uDy.text" = "Naam";
+
+/* Class = "UIButton"; normalTitle = "Delete"; ObjectID = "dnf-uh-sKU"; */
+"dnf-uh-sKU.normalTitle" = "Verwijderen";
+
+/* Class = "UILabel"; text = "MAC"; ObjectID = "fhw-wS-xEK"; */
+"fhw-wS-xEK.text" = "MAC";
+
+/* Class = "UILabel"; text = "1~65535 Lux"; ObjectID = "ihk-v9-64o"; */
+"ihk-v9-64o.text" = "1~65535 Lux";
+
+/* Class = "UITextField"; text = "400"; ObjectID = "lMv-LL-OVK"; */
+"lMv-LL-OVK.text" = "400";

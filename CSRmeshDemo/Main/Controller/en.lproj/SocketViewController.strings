@@ -2,9 +2,6 @@
 /* Class = "UILabel"; text = "State of the socket 1"; ObjectID = "1En-wd-fdm"; */
 "1En-wd-fdm.text" = "State of the socket 1";
 
-/* Class = "UILabel"; text = "Children Mode"; ObjectID = "1j5-fe-cG0"; */
-"1j5-fe-cG0.text" = "Children Mode";
-
 /* Class = "UILabel"; text = "Name"; ObjectID = "3S5-Q7-Z6k"; */
 "3S5-Q7-Z6k.text" = "Name";
 
@@ -20,6 +17,9 @@
 /* Class = "UILabel"; text = "Power"; ObjectID = "CpX-Kf-YfP"; */
 "CpX-Kf-YfP.text" = "Power";
 
+/* Class = "UILabel"; text = "Children Mode"; ObjectID = "DJe-d5-h9A"; */
+"DJe-d5-h9A.text" = "Children Mode";
+
 /* Class = "UILabel"; text = "Current Power"; ObjectID = "Fru-Tb-Fq9"; */
 "Fru-Tb-Fq9.text" = "Current Power";
 
@@ -31,3 +31,6 @@
 
 /* Class = "UILabel"; text = "ON/OFF"; ObjectID = "h8r-fJ-boy"; */
 "h8r-fJ-boy.text" = "ON/OFF";
+
+/* Class = "UILabel"; text = "Children Mode"; ObjectID = "wZW-eM-HnY"; */
+"wZW-eM-HnY.text" = "Children Mode";

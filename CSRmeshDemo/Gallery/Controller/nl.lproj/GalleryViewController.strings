@@ -1,0 +1,9 @@
+
+/* Class = "UILabel"; text = "1. Insert a photo of the luminaires in the room."; ObjectID = "9bI-uX-EjH"; */
+"9bI-uX-EjH.text" = "1. Een foto invoegen van de armaturen in de kamer.";
+
+/* Class = "UILabel"; text = "2. Position the circular controls over the luminaires."; ObjectID = "eXZ-Sc-k4r"; */
+"eXZ-Sc-k4r.text" = "2. Plaats een controle punt op de foto of de armaturen.";
+
+/* Class = "UILabel"; text = "3. Use luminaires to control the lighting."; ObjectID = "gqn-ah-Mb8"; */
+"gqn-ah-Mb8.text" = "3. De foto van de armaturen wordt dan een controle voor de belichting.";

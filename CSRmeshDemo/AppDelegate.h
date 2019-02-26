@@ -23,6 +23,7 @@
 @property (strong, nonatomic) CBService *targetService;
 @property (strong, nonatomic) CBService *devInfoService;
 @property (strong, atomic) NSNumber *discoveredChars;
+@property (strong,nonatomic) MainViewController *mainVC;
 @end
 
 

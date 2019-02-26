@@ -10,13 +10,18 @@
 "Setting" = "设置";
 "English" = "英文";
 "ChineseS" = "简体中文";
+"German" = "德文";
 "Norwegian" = "挪威博克马尔文";
 "Swedish" = "瑞典文";
-"German" = "德文";
+"Spanish" = "西班牙文";
+"Danish" = "丹麦文";
+"Italian" = "意大利文";
+"Dutch" = "荷兰文";
+"French" = "法文";
+"Portuguese" = "葡萄牙文（葡萄牙）";
+"Finnish" = "芬兰文";
 "Polish" = "波兰文";
 "Russian" = "俄文";
-"Portuguese" = "葡萄牙文（葡萄牙）";
-"Spanish" = "西班牙文";
 "Romanian" = "罗马尼亚文";
 "Czech" = "捷克文";
 "Lithuanian" = "立陶宛文";
@@ -146,3 +151,5 @@
 "today" = "今天";
 "thisWeek" = "当前周";
 "thisMonth" = "当前月";
+"closeChildrenModeAlert" = "请先关闭儿童模式。";
+"closeSocketStateAlert" = "请先关闭当前插座。";

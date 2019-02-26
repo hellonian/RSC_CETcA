@@ -73,15 +73,55 @@
                                AcTECLocalizedStringFromTable(@"Lithuanian", @"Localizable")];
      */
     self.languageAry = @[@"English",
-                         @"简体中文"];
+                         @"简体中文",
+                         @"Deutsch",
+                         @"Norsk bokmål",
+                         @"Svenska",
+                         @"Español",
+                         @"Dansk",
+                         @"Italiano",
+                         @"Nederlands",
+                         @"Français",
+                         @"Português (Portugal)",
+                         @"Suomi"];
     self.detailLanguageAry = @[AcTECLocalizedStringFromTable(@"English", @"Localizable"),
-                               AcTECLocalizedStringFromTable(@"ChineseS", @"Localizable")];
+                               AcTECLocalizedStringFromTable(@"ChineseS", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"German", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Norwegian", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Swedish", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Spanish", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Danish", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Italian", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Dutch", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"French", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Portuguese", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Finnish", @"Localizable")];
     
     NSString *nowLanguageType = [[NSUserDefaults standardUserDefaults] objectForKey:AppLanguageSwitchKey];
     if ([nowLanguageType isEqualToString:@"en"]) {
         self.newSelectedRow = 0;
     }else if ([nowLanguageType isEqualToString:@"zh-Hans"]) {
         self.newSelectedRow = 1;
+    }else if ([nowLanguageType isEqualToString:@"de"]) {
+        self.newSelectedRow = 2;
+    }else if ([nowLanguageType isEqualToString:@"nb"]) {
+        self.newSelectedRow = 3;
+    }else if ([nowLanguageType isEqualToString:@"sv"]) {
+        self.newSelectedRow = 4;
+    }else if ([nowLanguageType isEqualToString:@"es"]) {
+        self.newSelectedRow = 5;
+    }else if ([nowLanguageType isEqualToString:@"da"]) {
+        self.newSelectedRow = 6;
+    }else if ([nowLanguageType isEqualToString:@"it"]) {
+        self.newSelectedRow = 7;
+    }else if ([nowLanguageType isEqualToString:@"nl"]) {
+        self.newSelectedRow = 8;
+    }else if ([nowLanguageType isEqualToString:@"fr"]) {
+        self.newSelectedRow = 9;
+    }else if ([nowLanguageType isEqualToString:@"pt-PT"]) {
+        self.newSelectedRow = 10;
+    }else if ([nowLanguageType isEqualToString:@"fi-FI"]) {
+        self.newSelectedRow = 11;
     }
     /*
     else if ([nowLanguageType isEqualToString:@"nb"]) {
@@ -196,6 +236,26 @@
         self.selectLanguage = @"en";
     }else if ([typeString isEqualToString:@"简体中文"]) {
         self.selectLanguage = @"zh-Hans";
+    }else if ([typeString isEqualToString:@"Deutsch"]) {
+        self.selectLanguage = @"de";
+    }else if ([typeString isEqualToString:@"Norsk bokmål"]) {
+        self.selectLanguage = @"nb";
+    }else if ([typeString isEqualToString:@"Svenska"]) {
+        self.selectLanguage = @"sv";
+    }else if ([typeString isEqualToString:@"Español"]) {
+        self.selectLanguage = @"es";
+    }else if ([typeString isEqualToString:@"Dansk"]) {
+        self.selectLanguage = @"da";
+    }else if ([typeString isEqualToString:@"Italiano"]) {
+        self.selectLanguage = @"it";
+    }else if ([typeString isEqualToString:@"Nederlands"]) {
+        self.selectLanguage = @"nl";
+    }else if ([typeString isEqualToString:@"Français"]) {
+        self.selectLanguage = @"fr";
+    }else if ([typeString isEqualToString:@"Português (Portugal)"]) {
+        self.selectLanguage = @"pt-PT";
+    }else if ([typeString isEqualToString:@"Suomi"]) {
+        self.selectLanguage = @"fi-FI";
     }
     /*
     else if ([typeString isEqualToString:@"Norsk bokmål"]) {
@@ -261,7 +321,17 @@
                                AcTECLocalizedStringFromTable(@"Lithuanian", @"Localizable")];
      */
     self.detailLanguageAry = @[AcTECLocalizedStringFromTable(@"English", @"Localizable"),
-                               AcTECLocalizedStringFromTable(@"ChineseS", @"Localizable")];
+                               AcTECLocalizedStringFromTable(@"ChineseS", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"German", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Norwegian", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Swedish", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Spanish", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Danish", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Italian", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Dutch", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"French", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Portuguese", @"Localizable"),
+                               AcTECLocalizedStringFromTable(@"Finnish", @"Localizable")];
     
     [self.tableView reloadData];
 }

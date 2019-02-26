@@ -14,7 +14,6 @@
 #import "AddDevcieViewController.h"
 #import "DeviceModelManager.h"
 #import "ImproveTouchingExperience.h"
-#import "ControlMaskView.h"
 #import "SceneEntity.h"
 #import "PlaceColorIconPickerView.h"
 #import "PureLayout.h"
@@ -66,7 +65,6 @@
 @property (nonatomic,strong) MainCollectionView *sceneCollectionView;
 @property (nonatomic,strong) NSNumber *originalLevel;
 @property (nonatomic,strong) ImproveTouchingExperience *improver;
-@property (nonatomic,strong) ControlMaskView *maskLayer;
 @property (nonatomic,assign) BOOL mainCVEditting;
 @property (nonatomic,strong) CSRAreaEntity *areaEntity;
 @property (nonatomic,strong) UIView *translucentBgView;
@@ -777,16 +775,16 @@
                 }else if ([CSRUtilities belongToSocket:deviceModel.shortName]) {
                     if (deviceModel.channel1Selected) {
                         if (deviceModel.channel1PowerState) {
-                            sceneMember.eveType = @(11);
-                        }else {
                             sceneMember.eveType = @(10);
+                        }else {
+                            sceneMember.eveType = @(11);
                         }
                     }
                     if (deviceModel.channel2Selected) {
                         if (deviceModel.channel2PowerState) {
-                            sceneMember.colorTemperature = @(11);
-                        }else {
                             sceneMember.colorTemperature = @(10);
+                        }else {
+                            sceneMember.colorTemperature = @(11);
                         }
                     }
                 }else if ([CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
@@ -1282,7 +1280,7 @@
         GroupViewController *gvc = [[GroupViewController alloc] init];
         __weak MainViewController *weakSelf = self;
         gvc.handle = ^{
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [weakSelf getMainDataArray];
             });
         };
