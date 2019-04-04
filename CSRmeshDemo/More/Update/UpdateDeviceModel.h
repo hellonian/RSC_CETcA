@@ -11,11 +11,12 @@
 @interface UpdateDeviceModel : NSObject
 
 @property (nonatomic,strong) CBPeripheral *peripheral;
-@property (nonatomic,strong) NSString *uuidStr;
+//@property (nonatomic,strong) NSString *uuidStr;
 @property (nonatomic,strong) NSString *name;
 @property (nonatomic,strong) NSString *kind;
-@property (nonatomic,assign) NSInteger firwareVersion;
+//@property (nonatomic,assign) NSInteger firwareVersion;
 @property (nonatomic,strong) NSNumber *deviceId;
 @property (nonatomic,assign) BOOL needUpdate;
+@property (nonatomic,assign) BOOL connected;
 
 @end

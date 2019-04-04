@@ -99,6 +99,7 @@
             NSLog(@"urlString>> %@",urlString);
             AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
             sessionManager.responseSerializer.acceptableContentTypes = nil;
+            sessionManager.requestSerializer.cachePolicy = NSURLRequestReloadIgnoringCacheData;
             [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
                 NSDictionary *dic = (NSDictionary *)responseObject;
                 NSLog(@"%@",dic);

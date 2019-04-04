@@ -153,3 +153,9 @@
 "thisMonth" = "Denne måned";
 "closeChildrenModeAlert" = "Sluk venligst børnens tilstand først.";
 "closeSocketStateAlert" = "Luk den nuværende stikkontakt først.";
+"colorTemp" = "Farvetemperatur";
+"change" = "Udskift";
+"reset" = "Nulstil";
+"color" = "Farve";
+"colorSat" = "Farvemætning";
+"musicFlow" = "Musikstrømning";

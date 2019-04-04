@@ -6,7 +6,7 @@
 //  Copyright © 2019 Cambridge Silicon Radio Ltd. All rights reserved.
 //
 
-#import "PowerModel.h"
+#import "powerModel.h"
 
 @implementation PowerModel
 

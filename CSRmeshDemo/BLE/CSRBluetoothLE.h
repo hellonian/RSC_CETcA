@@ -13,23 +13,11 @@
 /****************************************************************************/
 @protocol CSRBluetoothLEDelegate <NSObject>
 @optional
-- (void) CBPowerIsOff;
-- (void) CBPoweredOn;
-//- (void) discoveredBridge;
-- (void) didConnectBridge :(CBPeripheral *) bridge;
-- (void) didDiscoverBridgeService :(CBPeripheral *) bridge;
-- (void) updateItemClusterDeviceId:(NSNumber *)deviceId level:(NSNumber *)level powerState:(NSNumber *)powerState;
-- (void) statusMessage:(NSString *)message;
 
 /////////////////////////////////////////////////////////////////////////
-- (void) didDiscoverPeripheral:(CBPeripheral *) peripheral;
 - (void) didConnectPeripheral:(CBPeripheral *) peripheral;
-- (void) didDisconnect:(CBPeripheral *)peripheral error:(NSError *)error;
-- (void) didChangeMode;
-- (void) discoveryDidRefresh;
-- (void) discoveryStatePoweredOff;
-- (void) otauPeripheralTest:(CBPeripheral *) peripheral :(BOOL) isOtau;
-- (void) didDiscoverServices:(CBPeripheral *) peripheral;
+- (void) didDisconnectPeripheral:(CBPeripheral *)peripheral withError:(NSError *)error;
+- (void) discoveryDidRefresh:(CBPeripheral *) peripheral;
 
 @end
 
@@ -68,5 +56,10 @@
 @property (nonatomic,assign) BOOL isUpdateFW;
 @property (nonatomic,strong) NSMutableArray *foundPeripherals;
 @property (nonatomic,strong) NSMutableArray *connectedPeripherals;
+@property (nonatomic, strong) NSNumber *discoveredChars;
+@property (nonatomic, strong) NSNumber *peripheralInBoot;
+@property (nonatomic, strong) CBService *targetService;
+@property (nonatomic, strong) CBPeripheral *targetPeripheral;
+@property (nonatomic,assign) BOOL secondConnectBool;
 
 @end

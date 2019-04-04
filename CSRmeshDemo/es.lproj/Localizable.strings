@@ -153,3 +153,9 @@
 "thisMonth" = "Este mes";
 "closeChildrenModeAlert" = "Por favor, apaga el modo niños primero.";
 "closeSocketStateAlert" = "Por favor, cierre la toma de corriente primero.";
+"colorTemp" = "Temperatura del color";
+"change" = "Cambiar";
+"reset" = "Restablecer";
+"color" = "Color";
+"colorSat" = "Saturación";
+"musicFlow" = "Flujo musical";

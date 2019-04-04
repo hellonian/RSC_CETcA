@@ -153,3 +153,9 @@
 "thisMonth" = "Deze maand";
 "closeChildrenModeAlert" = "Schakel eerst de kindermodus uit.";
 "closeSocketStateAlert" = "Sluit eerst de huidige socket.";
+"colorTemp" = "Kleur Temperatuur";
+"change" = "Veranderen";
+"reset" = "Resetten";
+"color" = "Kleur";
+"colorSat" = "Kleurverzadiging";
+"musicFlow" = "Muziek flow";

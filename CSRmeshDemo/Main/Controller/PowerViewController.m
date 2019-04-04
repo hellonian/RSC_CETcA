@@ -24,6 +24,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *dayBtn;
 @property (weak, nonatomic) IBOutlet UIButton *weekBtn;
 @property (weak, nonatomic) IBOutlet UIButton *monthBtn;
+@property (weak, nonatomic) IBOutlet UIButton *hourBtn;
 @property (nonatomic, assign) NSInteger selectedTag;
 //@property (weak, nonatomic) IBOutlet UICollectionView *powerList;
 @property (nonatomic, strong) UICollectionView *powerList;
@@ -35,6 +36,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *powerStateLabel;
 @property (weak, nonatomic) IBOutlet UIView *bgView;
 @property (weak, nonatomic) IBOutlet UIView *line;
+@property (nonatomic,strong) UIView *translucentBgView;
+@property (nonatomic,strong) UIActivityIndicatorView *indicatorView;
 
 
 @end
@@ -81,7 +84,7 @@
     [_powerList autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:_line];
     [self changePowerStateLabel:_deviceId];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self dayWeekMonthTouch:_dayBtn];
+        [self dayWeekMonthTouch:_hourBtn];
     });
     
 }
@@ -132,6 +135,11 @@
 }
 
 - (IBAction)dayWeekMonthTouch:(UIButton *)sender {
+    [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+    [[UIApplication sharedApplication].keyWindow addSubview:self.indicatorView];
+    [self.indicatorView autoCenterInSuperview];
+    
+    [self.indicatorView startAnimating];
     [_dataMutableArray removeAllObjects];
     [_offsets removeAllObjects];
     switch (sender.tag) {
@@ -139,6 +147,8 @@
         {
             [sender setImage:[UIImage imageNamed:@"btn_day_highlight"] forState:UIControlStateNormal];
             [sender setTitleColor:DARKORAGE forState:UIControlStateNormal];
+            [_hourBtn setImage:[UIImage imageNamed:@"btn_hour"] forState:UIControlStateNormal];
+            [_hourBtn setTitleColor:[UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1] forState:UIControlStateNormal];
             [_weekBtn setImage:[UIImage imageNamed:@"btn_week"] forState:UIControlStateNormal];
             [_weekBtn setTitleColor:[UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1] forState:UIControlStateNormal];
             [_monthBtn setImage:[UIImage imageNamed:@"btn_month"] forState:UIControlStateNormal];
@@ -160,6 +170,8 @@
         {
             [sender setImage:[UIImage imageNamed:@"btn_week_highlight"] forState:UIControlStateNormal];
             [sender setTitleColor:DARKORAGE forState:UIControlStateNormal];
+            [_hourBtn setImage:[UIImage imageNamed:@"btn_hour"] forState:UIControlStateNormal];
+            [_hourBtn setTitleColor:[UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1] forState:UIControlStateNormal];
             [_dayBtn setImage:[UIImage imageNamed:@"btn_day"] forState:UIControlStateNormal];
             [_dayBtn setTitleColor:[UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1] forState:UIControlStateNormal];
             [_monthBtn setImage:[UIImage imageNamed:@"btn_month"] forState:UIControlStateNormal];
@@ -179,6 +191,8 @@
         {
             [sender setImage:[UIImage imageNamed:@"btn_month_highlight"] forState:UIControlStateNormal];
             [sender setTitleColor:DARKORAGE forState:UIControlStateNormal];
+            [_hourBtn setImage:[UIImage imageNamed:@"btn_hour"] forState:UIControlStateNormal];
+            [_hourBtn setTitleColor:[UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1] forState:UIControlStateNormal];
             [_dayBtn setImage:[UIImage imageNamed:@"btn_day"] forState:UIControlStateNormal];
             [_dayBtn setTitleColor:[UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1] forState:UIControlStateNormal];
             [_weekBtn setImage:[UIImage imageNamed:@"btn_week"] forState:UIControlStateNormal];
@@ -192,6 +206,28 @@
                     [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea432%ld09",_channel]] success:nil failure:nil];
                 }
             });
+        }
+            break;
+        case 4:
+        {
+            [sender setImage:[UIImage imageNamed:@"btn_hour_highlight"] forState:UIControlStateNormal];
+            [sender setTitleColor:DARKORAGE forState:UIControlStateNormal];
+            [_dayBtn setImage:[UIImage imageNamed:@"btn_day"] forState:UIControlStateNormal];
+            [_dayBtn setTitleColor:[UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1] forState:UIControlStateNormal];
+            [_weekBtn setImage:[UIImage imageNamed:@"btn_week"] forState:UIControlStateNormal];
+            [_weekBtn setTitleColor:[UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1] forState:UIControlStateNormal];
+            [_monthBtn setImage:[UIImage imageNamed:@"btn_month"] forState:UIControlStateNormal];
+            [_monthBtn setTitleColor:[UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1] forState:UIControlStateNormal];
+            screenRowNum = 9;
+            _fulOffsets = @[@(0),@(6),@(12),@(18)];
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea435%ldff0017",_channel]] success:nil failure:nil];
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                if (![_offsets containsObject:@(18)]) {
+                    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea435%ld12",_channel]] success:nil failure:nil];
+                }
+            });
+            
         }
             break;
         default:
@@ -281,6 +317,9 @@
                             [formatter setDateFormat:@"dd/MM"];
                             _topDateLabel.text = [NSString stringWithFormat:@"%@-%@",[formatter stringFromDate:startP.powerDate],[formatter stringFromDate:endP.powerDate]];
                             _middleLabel.text = [NSString stringWithFormat:@"%.1f",endP.power];
+                            
+                            [self.indicatorView stopAnimating];
+                            [self.translucentBgView removeFromSuperview];
                         }
                     }
                     break;
@@ -341,6 +380,9 @@
                             [formatter setDateFormat:@"dd/MM"];
                             _topDateLabel.text = [NSString stringWithFormat:@"%@-%@",[formatter stringFromDate:startDate],[formatter stringFromDate:endP.powerDate]];
                             _middleLabel.text = [NSString stringWithFormat:@"%.1f",endP.power];
+                            
+                            [self.indicatorView stopAnimating];
+                            [self.translucentBgView removeFromSuperview];
                         }
                     }
                     break;
@@ -392,6 +434,63 @@
                             PowerModel *endP = [_dataMutableArray objectAtIndex:13];
                             _topDateLabel.text = [NSString stringWithFormat:@"%@-%@",[monthFormatter stringFromDate:startP.powerDate],[monthFormatter stringFromDate:endP.powerDate]];
                             _middleLabel.text = [NSString stringWithFormat:@"%.1f",endP.power];
+                            
+                            [self.indicatorView stopAnimating];
+                            [self.translucentBgView removeFromSuperview];
+                        }
+                    }
+                    break;
+                case 5:
+                    if (screenRowNum==9) {
+                        for (int i=0; i<6; i++) {
+                            PowerModel *powerModel = [[PowerModel alloc] init];
+                            powerModel.kindInt = 5;
+                            if (offset==0&&i==0) {
+                                powerModel.selected = YES;
+                            }else {
+                                powerModel.selected = NO;
+                            }
+                            NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+                            NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+                            [dateComponents setHour:-offset-i];
+                            powerModel.powerDate = [calendar dateByAddingComponents:dateComponents toDate:[NSDate date] options:0];
+                            powerModel.power = [CSRUtilities numberWithHexString:[userInfoStr substringWithRange:NSMakeRange(2*i+4, 2)]]/10.0;
+                            NSLog(@"5~~> %@  %f",powerModel.powerDate,powerModel.power);
+                            [_dataMutableArray addObject:powerModel];
+                        }
+                        if (offset == 18) {
+                            if ([_dataMutableArray count]<24) {
+                                for (NSNumber *offset in _fulOffsets) {
+                                    if (![_offsets containsObject:offset]) {
+                                        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea435%ld%@",_channel,[CSRUtilities stringWithHexNumber:[offset integerValue]]]] success:nil failure:nil];
+                                    }
+                                }
+                            }
+                        }
+                        if ([_dataMutableArray count]==24) {
+                            NSSortDescriptor *sort1 = [NSSortDescriptor sortDescriptorWithKey:@"power" ascending:YES];
+                            [_dataMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort1]];
+                            PowerModel *p = [_dataMutableArray lastObject];
+                            maxPowerValue = p.power;
+                            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"powerDate" ascending:YES];
+                            [_dataMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+                            for (int i=0; i<4; i++) {
+                                [_dataMutableArray insertObject:@(0) atIndex:0];
+                                [_dataMutableArray addObject:@(0)];
+                            }
+                            NSLog(@"%@",_dataMutableArray);
+                            [_powerList reloadData];
+                            
+                            [_powerList scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:31 inSection:0] atScrollPosition:UICollectionViewScrollPositionRight animated:NO];
+                            NSDateFormatter *hourFormatter = [[NSDateFormatter alloc] init];
+                            [hourFormatter setDateFormat:@"HH"];
+                            PowerModel *startP = [_dataMutableArray objectAtIndex:23];
+                            PowerModel *endP = [_dataMutableArray objectAtIndex:27];
+                            _topDateLabel.text = [NSString stringWithFormat:@"%@-%@",[hourFormatter stringFromDate:startP.powerDate],[hourFormatter stringFromDate:endP.powerDate]];
+                            _middleLabel.text = [NSString stringWithFormat:@"%.1f",endP.power];
+                            
+                            [self.indicatorView stopAnimating];
+                            [self.translucentBgView removeFromSuperview];
                         }
                     }
                     break;
@@ -503,6 +602,15 @@
                 index=indexPath.row;
             }
             break;
+        case 9:
+            if (indexPath.row<4) {
+                index=4;
+            }else if (indexPath.row>28) {
+                index=28;
+            }else {
+                index=indexPath.row;
+            }
+            break;
         default:
             index=0;
             break;
@@ -591,6 +699,25 @@
                             _topDateLabel.text = [NSString stringWithFormat:@"%@-%@",[monthFormatter stringFromDate:startP.powerDate],[monthFormatter stringFromDate:endP.powerDate]];
                         }
                             break;
+                        case 5:
+                        {
+                            NSDateFormatter *hourFormatter = [[NSDateFormatter alloc] init];
+                            [hourFormatter setDateFormat:@"HH"];
+                            PowerModel *startP;
+                            PowerModel *endP;
+                            if (idx<9) {
+                                startP = [_dataMutableArray objectAtIndex:4];
+                                endP = [_dataMutableArray objectAtIndex:idx+4];
+                            }else if (idx>22) {
+                                startP = [_dataMutableArray objectAtIndex:idx-4];
+                                endP = [_dataMutableArray objectAtIndex:27];
+                            }else {
+                                startP = [_dataMutableArray objectAtIndex:idx-4];
+                                endP = [_dataMutableArray objectAtIndex:idx+4];
+                            }
+                            _topDateLabel.text = [NSString stringWithFormat:@"%@-%@",[hourFormatter stringFromDate:startP.powerDate],[hourFormatter stringFromDate:endP.powerDate]];
+                        }
+                            break;
                         default:
                             break;
                     }
@@ -603,6 +730,23 @@
         }
     }];
     [_powerList reloadData];
+}
+
+- (UIView *)translucentBgView {
+    if (!_translucentBgView) {
+        _translucentBgView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        _translucentBgView.backgroundColor = [UIColor blackColor];
+        _translucentBgView.alpha = 0.4;
+    }
+    return _translucentBgView;
+}
+
+- (UIActivityIndicatorView *)indicatorView {
+    if (!_indicatorView) {
+        _indicatorView = [[UIActivityIndicatorView alloc] init];
+        _indicatorView.hidesWhenStopped = YES;
+    }
+    return _indicatorView;
 }
 
 @end

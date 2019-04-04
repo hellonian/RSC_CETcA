@@ -10,10 +10,8 @@
 #import "CSRGatewayEntity.h"
 #import "CSRDatabaseManager.h"
 #import "CSRAppStateManager.h"
-#import "CSRMeshUtilities.h"
 #import "CSRmeshDevice.h"
 #import "CSRUtilities.h"
-#import "CSRMeshUtilities.h"
 #import "DataModelManager.h"
 #import "RGBSceneEntity.h"
 
@@ -274,10 +272,21 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:kCSRmeshManagerDidAssociateDeviceNotification object:self userInfo:objects];
         
     }
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [[DataModelManager shareInstance] sendCmdData:@"880100" toDeviceId:deviceId];
-    });
     
+    [NSThread sleepForTimeInterval:1.0];
+    [self getVersion:deviceId];
+    
+}
+
+- (void)getVersion: (NSNumber *)deviceId {
+    [[DataModelManager shareInstance] sendCmdData:@"880100" toDeviceId:deviceId];
+    __weak CSRmeshManager *weakself = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+        if (!deviceEntity.firVersion && !deviceEntity.cvVersion) {
+            [weakself getVersion:deviceId];
+        }
+    });
 }
 
 - (void)didGetDeviceInfo:(NSNumber * _Nonnull)deviceId  infoType:(NSNumber * _Nonnull)infoType information:(NSData * _Nonnull)information meshRequestId:(NSNumber * _Nonnull)meshRequestId

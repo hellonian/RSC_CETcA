@@ -22,8 +22,8 @@ typedef NS_ENUM (NSInteger,CSRBridgeDiscoveryState) {
 @property   (strong, nonatomic) NSNumber *isBridgeService;
 
 @property (strong, atomic)   NSMutableArray  *queue;
--(void) saveCallback :(id) pcm;
--(id) getCallback;
+-(void) saveCallBack :(id) pcm;
+-(id) getCallBack;
 -(void) deleteQueue;
 
 @end

@@ -450,17 +450,21 @@
         if ([model.deviceId isEqualToNumber:deviceId]) {
             if (channel == 1) {
                 model.channel1PowerState = channelPowerState;
-                if (level<3) {
-                    model.channel1Level = 3;
-                }else {
-                    model.channel1Level = level;
+                if (channelPowerState) {
+                    if (level<3) {
+                        model.channel1Level = 3;
+                    }else {
+                        model.channel1Level = level;
+                    }
                 }
             }else if (channel == 2) {
                 model.channel2PowerState = channelPowerState;
-                if (level < 3) {
-                    model.channel2Level = 3;
-                }else {
-                    model.channel2Level = level;
+                if (channelPowerState) {
+                    if (level < 3) {
+                        model.channel2Level = 3;
+                    }else {
+                        model.channel2Level = level;
+                    }
                 }
             }
             if (model.channel1PowerState || model.channel2PowerState) {
@@ -468,6 +472,12 @@
             }else {
                 model.powerState = @(0);
             }
+            if (model.channel1Level>model.channel2Level) {
+                model.level = [NSNumber numberWithInteger:model.channel1Level];
+            }else {
+                model.level = [NSNumber numberWithInteger:model.channel2Level];
+            }
+            
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
             *stop = YES;
         }
@@ -564,7 +574,7 @@
     colorSaturation = sat;
 }
 
-- (void)regetColofulTimevrInterval:(NSTimeInterval)interval deviceId:(NSNumber *)deviceId {
+- (void)regetColofulTimerInterval:(NSTimeInterval)interval deviceId:(NSNumber *)deviceId {
     if (colorfulTimer) {
         [colorfulTimer invalidate];
         colorfulTimer = nil;

@@ -153,3 +153,9 @@
 "thisMonth" = "当前月";
 "closeChildrenModeAlert" = "请先关闭儿童模式。";
 "closeSocketStateAlert" = "请先关闭当前插座。";
+"colorTemp" = "色温";
+"change" = "改变色温";
+"reset" = "重置色温";
+"color" = "色彩";
+"colorSat" = "饱和度";
+"musicFlow" = "音乐律动";

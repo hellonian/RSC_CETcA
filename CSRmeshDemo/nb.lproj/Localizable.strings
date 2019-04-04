@@ -153,3 +153,9 @@
 "thisMonth" = "Denne måneden";
 "closeChildrenModeAlert" = "Vennligst slå av barnemodus først.";
 "closeSocketStateAlert" = "Vennligst lukk den nåværende kontakten først.";
+"colorTemp" = "Fargetemperatur";
+"change" = "Endre";
+"reset" = "Nullstill";
+"color" = "Farge";
+"colorSat" = "Fargemetning";
+"musicFlow" = "Musikkstrømming";

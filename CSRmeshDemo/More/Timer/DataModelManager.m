@@ -410,6 +410,7 @@ static DataModelManager *manager = nil;
         deviceEntity.firVersion = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:firmwareVersion]];
         deviceEntity.cvVersion = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:CVVersionStr]];
         [[CSRDatabaseManager sharedInstance] saveContext];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"reGetDataForPlaceChanged" object:nil];
     }
     
     //获取遥控器电量

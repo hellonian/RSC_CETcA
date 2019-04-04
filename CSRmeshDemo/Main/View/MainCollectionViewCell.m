@@ -47,10 +47,13 @@
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(mainCellPanGestureAction:)];
     panGesture.delegate = self;
     UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(mainCellLongPressGestureAction:)];
+    UITapGestureRecognizer *twoFingersTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mainCellTwoFingersTapGestureAction:)];
+    twoFingersTapGesture.numberOfTouchesRequired = 2;
 
     [self addGestureRecognizer:tapGesture];
     [self addGestureRecognizer:panGesture];
     [self addGestureRecognizer:longPressGesture];
+    [self addGestureRecognizer:twoFingersTapGesture];
     
     UIPanGestureRecognizer *movePanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(mainCellMovePanGestureAction:)];
     [self.moveImageView addGestureRecognizer:movePanGesture];
@@ -78,7 +81,7 @@
         NSInteger switchNum = 0;
         NSInteger controllerNum = 0;
         for (CSRDeviceEntity *deviceEntity in self.groupMembers) {
-            if ([CSRUtilities belongToDimmer:deviceEntity.shortName]) {
+            if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName]) {
                 dimmerNum ++;
             }else if ([CSRUtilities belongToCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
                 dimmerNum ++;
@@ -89,21 +92,21 @@
             }
         }
         if (dimmerNum > 0) {
-            kind = [NSString stringWithFormat:@"%@ ×%ld",AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable"),dimmerNum];
+            kind = [NSString stringWithFormat:@"%@ ×%ld",AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable"),(long)dimmerNum];
         }
         if (switchNum > 0) {
             if (kind.length>0) {
-                kind = [NSString stringWithFormat:@"%@  %@ ×%ld",kind,AcTECLocalizedStringFromTable(@"Switch", @"Localizable"),switchNum];
+                kind = [NSString stringWithFormat:@"%@  %@ ×%ld",kind,AcTECLocalizedStringFromTable(@"Switch", @"Localizable"),(long)switchNum];
             }else {
-                kind = [NSString stringWithFormat:@"%@ ×%ld",AcTECLocalizedStringFromTable(@"Switch", @"Localizable"),switchNum];
+                kind = [NSString stringWithFormat:@"%@ ×%ld",AcTECLocalizedStringFromTable(@"Switch", @"Localizable"),(long)switchNum];
             }
             
         }
         if (controllerNum > 0) {
             if (kind.length > 0) {
-                kind = [NSString stringWithFormat:@"%@  %@ ×%ld",kind,AcTECLocalizedStringFromTable(@"Controller", @"Localizable"),controllerNum];
+                kind = [NSString stringWithFormat:@"%@  %@ ×%ld",kind,AcTECLocalizedStringFromTable(@"Controller", @"Localizable"),(long)controllerNum];
             }else {
-                kind = [NSString stringWithFormat:@"%@ ×%ld",AcTECLocalizedStringFromTable(@"Controller", @"Localizable"),controllerNum];
+                kind = [NSString stringWithFormat:@"%@ ×%ld",AcTECLocalizedStringFromTable(@"Controller", @"Localizable"),(long)controllerNum];
             }
         }
         self.kindLabel.text = kind;
@@ -145,7 +148,7 @@
         NSInteger switchNum = 0;
         NSInteger controllerNum = 0;
         for (CSRDeviceEntity *deviceEntity in self.groupMembers) {
-            if ([CSRUtilities belongToDimmer:deviceEntity.shortName]) {
+            if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName]) {
                 dimmerNum ++;
             }else if ([CSRUtilities belongToCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
                 dimmerNum ++;
@@ -156,21 +159,21 @@
             }
         }
         if (dimmerNum > 0) {
-            kind = [NSString stringWithFormat:@"%@ ×%ld",AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable"),dimmerNum];
+            kind = [NSString stringWithFormat:@"%@ ×%ld",AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable"),(long)dimmerNum];
         }
         if (switchNum > 0) {
             if (kind.length>0) {
-                kind = [NSString stringWithFormat:@"%@  %@ ×%ld",kind,AcTECLocalizedStringFromTable(@"Switch", @"Localizable"),switchNum];
+                kind = [NSString stringWithFormat:@"%@  %@ ×%ld",kind,AcTECLocalizedStringFromTable(@"Switch", @"Localizable"),(long)switchNum];
             }else {
-                kind = [NSString stringWithFormat:@"%@ ×%ld",AcTECLocalizedStringFromTable(@"Switch", @"Localizable"),switchNum];
+                kind = [NSString stringWithFormat:@"%@ ×%ld",AcTECLocalizedStringFromTable(@"Switch", @"Localizable"),(long)switchNum];
             }
             
         }
         if (controllerNum > 0) {
             if (kind.length > 0) {
-                kind = [NSString stringWithFormat:@"%@  %@ ×%ld",kind,AcTECLocalizedStringFromTable(@"Controller", @"Localizable"),controllerNum];
+                kind = [NSString stringWithFormat:@"%@  %@ ×%ld",kind,AcTECLocalizedStringFromTable(@"Controller", @"Localizable"),(long)controllerNum];
             }else {
-                kind = [NSString stringWithFormat:@"%@ ×%ld",AcTECLocalizedStringFromTable(@"Controller", @"Localizable"),controllerNum];
+                kind = [NSString stringWithFormat:@"%@ ×%ld",AcTECLocalizedStringFromTable(@"Controller", @"Localizable"),(long)controllerNum];
             }
         }
         self.kindLabel.text = kind;
@@ -491,7 +494,7 @@
                     self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
                 }
                 
-                if ([CSRUtilities belongToDimmer:model.shortName] || [CSRUtilities belongToCWDevice:model.shortName] || [CSRUtilities belongToRGBDevice:model.shortName] || [CSRUtilities belongToRGBCWDevice:model.shortName]) {
+                if ([CSRUtilities belongToDimmer:model.shortName] || [CSRUtilities belongToCWDevice:model.shortName] || [CSRUtilities belongToRGBDevice:model.shortName] || [CSRUtilities belongToRGBCWDevice:model.shortName] || [CSRUtilities belongToTwoChannelDimmer:model.shortName]) {
                     self.levelLabel.text = @"0%";
                 }
                 
@@ -503,7 +506,7 @@
                     self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
                 }
                 
-                if ([CSRUtilities belongToDimmer:model.shortName] || [CSRUtilities belongToCWDevice:model.shortName] || [CSRUtilities belongToRGBDevice:model.shortName] || [CSRUtilities belongToRGBCWDevice:model.shortName]) {
+                if ([CSRUtilities belongToDimmer:model.shortName] || [CSRUtilities belongToCWDevice:model.shortName] || [CSRUtilities belongToRGBDevice:model.shortName] || [CSRUtilities belongToRGBCWDevice:model.shortName] || [CSRUtilities belongToTwoChannelDimmer:model.shortName]) {
                     if ([model.level floatValue]/255.0*100>0 && [model.level floatValue]/255.0*100 < 1.0) {
                         self.levelLabel.text = @"1%";
                         return;
@@ -591,7 +594,6 @@
 
 - (void)mainCellTapGestureAction:(UITapGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateEnded) {
-//        NSLog(@"maincell00 groupId:%@ deviceId:%@",_groupId,_deviceId);
         if (self.kindLabel.text.length > 0) {
             if ([self.deviceId isEqualToNumber:@1000] || [self.deviceId isEqualToNumber:@3000] || [self.deviceId isEqualToNumber:@4000]) {
                 if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateAddDeviceAction:cellIndexPath:)]) {
@@ -614,6 +616,9 @@
                         
                     }];
                     if (containD) {
+                        if (brightest==0) {
+                            brightest = 3;
+                        }
                         [[LightModelApi sharedInstance] setLevel:self.groupId level:@(brightest) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
                             
                         } failure:^(NSError * _Nullable error) {
@@ -688,6 +693,16 @@
             }
             default:
                 break;
+        }
+    }
+}
+
+- (void)mainCellTwoFingersTapGestureAction:(UITapGestureRecognizer *)sender {
+    if (sender.state == UIGestureRecognizerStateEnded) {
+        if (self.kindLabel.text.length > 0 && [self.deviceId isEqualToNumber:@2000]) {
+            if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateTwoFingersTapAction:)]) {
+                [self.superCellDelegate superCollectionViewCellDelegateTwoFingersTapAction:self.groupId];
+            }
         }
     }
 }

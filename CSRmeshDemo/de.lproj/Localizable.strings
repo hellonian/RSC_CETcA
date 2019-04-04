@@ -153,3 +153,9 @@
 "thisMonth" = "Diesen Monat";
 "closeChildrenModeAlert" = "Bitte schalten Sie zuerst den Kindermodus aus.";
 "closeSocketStateAlert" = "Bitte schließen Sie zuerst die Steckdose.";
+"colorTemp" = "Farbtemperatur";
+"change" = "Ändern";
+"reset" = "Zurücksetzen";
+"color" = "Farbe";
+"colorSat" = "Farbsättigung";
+"musicFlow" = "Music-Vorgabe";

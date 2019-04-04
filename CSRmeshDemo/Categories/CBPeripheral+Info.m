@@ -84,7 +84,7 @@ NSString const *isBridgeServicePropertyKey = @"isBridgeService";
 
 //=========================================================================
 // Save the callback object, PCM, in the Queue for this peripheral
--(void) saveCallback :(id) pcm {
+-(void) saveCallBack :(id) pcm {
     @synchronized(self) {
         if (self.queue==nil) {
             self.queue = [[NSMutableArray alloc]init];
@@ -94,7 +94,7 @@ NSString const *isBridgeServicePropertyKey = @"isBridgeService";
     }
 }
 
--(id) getCallback {
+-(id) getCallBack {
     @synchronized(self) {
         id pcm = [self.queue dequeue];
         return (pcm);

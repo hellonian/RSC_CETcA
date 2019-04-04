@@ -33,7 +33,6 @@
 
 @interface CSRBluetoothLE () <CBCentralManagerDelegate, CBPeripheralDelegate,LightModelApiDelegate> {
 	CBCentralManager    *centralManager;
-    BOOL                pendingInit;
     NSInteger beforeRssi;
     NSInteger lastRssi;
 }
@@ -81,7 +80,6 @@
     
     if (self) {
         
-        pendingInit = YES;
         _connectedPeripherals = [NSMutableArray array];
         [self powerOnCentralManager];
         discoveredBridges = [NSMutableArray array];
@@ -129,6 +127,7 @@
     // Connect peripheral without checking how many are connected
 -(void) connectPeripheralNoCheck:(CBPeripheral *) peripheral {
     if ([peripheral state]!=CBPeripheralStateConnected) {
+        NSLog(@"connectPeripheralNoCheck");
         [centralManager connectPeripheral:peripheral options:nil];
     }
 }
@@ -233,15 +232,10 @@
     switch ([centralManager state]) {
         case CBCentralManagerStatePoweredOff: {
             NSLog(@"Central Powered OFF");
-            [self statusMessage:[NSString stringWithFormat:@"Bluetooth Powered Off\n"]];
             if (_isUpdateFW) {
                 [_foundPeripherals removeAllObjects];
             }
             
-            [self discoveryDidRefresh];
-            [self discoveryStatePoweredOff];
-            if(bleDelegate && [bleDelegate respondsToSelector:@selector(CBPowerIsOff)])
-                [bleDelegate CBPowerIsOff];
             break;
         }
         
@@ -257,27 +251,21 @@
         
         case CBCentralManagerStatePoweredOn: {
             NSLog(@"Central powered ON");
-            [self statusMessage:[NSString stringWithFormat:@"Bluetooth Powered On\n"]];
             if (_isUpdateFW) {
                 [_foundPeripherals removeAllObjects];
             }
-            if(bleDelegate && [bleDelegate respondsToSelector:@selector(CBPoweredOn)])
-                [bleDelegate CBPoweredOn];
             
             CBUUID *uuid = [CBUUID UUIDWithString:@"FEF1"];
             CBUUID *uuid1 = [CBUUID UUIDWithString:@"00001016-D102-11E1-9B23-00025B00A5A5"];
             NSDictionary *options = [self createDiscoveryOptions];
             [centralManager scanForPeripheralsWithServices:@[uuid,uuid1] options:options];
-            pendingInit = NO;
             
-            [self statusMessage:[NSString stringWithFormat:@"Scanning...\n"]];
             break;
         }
         
         case CBCentralManagerStateResetting: {
             NSLog(@"Central Resetting");
-            [self discoveryDidRefresh];
-            pendingInit = YES;
+//            [self discoveryDidRefresh];
             break;
         }
         
@@ -303,16 +291,16 @@
     NSString *adString;
     if (advertisementData[@"kCBAdvDataManufacturerData"]) {
         NSData *adData = advertisementData[@"kCBAdvDataManufacturerData"];
-        adString = [[CSRUtilities hexStringForData:adData] uppercaseString];
-        [peripheral setUuidString:adString];
+        if ([adData length]>6) {
+            adString = [[CSRUtilities hexStringForData:adData] uppercaseString];
+            [peripheral setUuidString:adString];
+        }
     }
-    
     if (self.isUpdateFW && peripheral.name != nil) {
         if (![_foundPeripherals containsObject:peripheral]) {
             [_foundPeripherals addObject:peripheral];
-            [self discoveryDidRefresh];
+            [self discoveryDidRefresh:peripheral];
         }
-        [self didDiscoverPeripheral:peripheral];
     }else if ([RSSI integerValue]>-80 && peripheral.name != nil){
         
         NSMutableDictionary *enhancedAdvertismentData = [NSMutableDictionary dictionaryWithDictionary:advertisementData];
@@ -354,7 +342,9 @@
 //}
 
 - (void)readRssi:(CBPeripheral *)peripheral {
-    [peripheral readRSSI];
+    if (!_isUpdateFW) {
+        [peripheral readRSSI];
+    }
 }
 
 -(void) peripheral:(CBPeripheral *)peripheral didReadRSSI:(NSNumber *)RSSI error:(NSError *)error {
@@ -382,21 +372,15 @@
     // if also connected to another Bridge then disconnect from that.
     
     if (_isUpdateFW) {
-        [_connectedPeripherals addObject:peripheral];
-        [self statusMessage:[NSString stringWithFormat:@"1010>>Established Connection To Peripheral %@\n",peripheral.name]];
+        self.discoveredChars = [NSNumber numberWithBool:NO];
         peripheral.delegate=self;
         
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        appDelegate.discoveredChars = [NSNumber numberWithBool: NO];
         if (peripheral.services.count==0) {
-            NSLog(@" -Discovering Services");
             [peripheral discoverServices:nil];
         }
         else {
-            NSLog(@" -skipped discover services");
             for (CBService *service in peripheral.services) {
-                NSLog (@" - Service=%@",service.UUID);
-                [self statusMessage:[NSString stringWithFormat:@" - Service=%@",service.UUID]];
+                NSLog(@"didConnectPeripheral_service: %@",service.UUID);
             }
         }
         
@@ -409,12 +393,6 @@
     peripheral.delegate=self;
     
     [peripheral discoverServices:nil];
-    
-    if (bleDelegate && [bleDelegate respondsToSelector:@selector(didConnectBridge:)]) {
-        
-        [bleDelegate didConnectBridge:peripheral];
-        
-    }
     
 #ifdef BRIDGE_ROAMING_ENABLE
         [[CSRBridgeRoaming sharedInstance] connectedPeripheral:peripheral];
@@ -434,30 +412,36 @@
     }
 }
 
+- (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
+    NSLog(@"Attempted connection to peripheral %@ failed: %@", [peripheral name], [error localizedDescription]);
+}
+
     //============================================================================
     // This callback occurs on a Successful disconnection to a Peripheral
 - (void) centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
-    if ([_connectedPeripherals containsObject:peripheral]) {
-        [_connectedPeripherals removeObject:peripheral];
-        [[MeshServiceApi sharedInstance] disconnectBridge:peripheral];
-        
-        //#ifdef  BRIDGE_DISCONNECT_ALERT
-        NSLog (@"BRIDGE DISCONNECTED : %@",peripheral.name);
-        
-        //#endif
-        
-        // Call up Bridge Select View
-        //#ifdef BRIDGE_ROAMING_ENABLE
-        [[CSRBridgeRoaming sharedInstance] disconnectedPeripheral:peripheral];
-        //#endif
-        
-        // Call up Bridge Select View
-        if (_connectedPeripherals.count==0)
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"BridgeDisconnectedNotification" object:nil];
-    }
+    
     if(_isUpdateFW) {
-        [self statusMessage:[NSString stringWithFormat:@"Removed Connection To Peripheral %@\n",peripheral.name]];
-        [self didDisconnect:peripheral error:error];
+        NSLog(@"did disconnect Peripheral %@\n",peripheral.name);
+        [self didDisconnectPeripheral:peripheral withError:error];
+    }else {
+        if ([_connectedPeripherals containsObject:peripheral]) {
+            [_connectedPeripherals removeObject:peripheral];
+            [[MeshServiceApi sharedInstance] disconnectBridge:peripheral];
+            
+            //#ifdef  BRIDGE_DISCONNECT_ALERT
+            NSLog (@"BRIDGE DISCONNECTED : %@",peripheral.name);
+            
+            //#endif
+            
+            // Call up Bridge Select View
+            //#ifdef BRIDGE_ROAMING_ENABLE
+            [[CSRBridgeRoaming sharedInstance] disconnectedPeripheral:peripheral];
+            //#endif
+            
+            // Call up Bridge Select View
+            if (_connectedPeripherals.count==0)
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"BridgeDisconnectedNotification" object:nil];
+        }
     }
 }
 
@@ -466,52 +450,23 @@
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
     if (_isUpdateFW) {
-        bool isOtau=NO;
-        NSLog(@"did discover services for peripheral %@",peripheral.name);
         if (error == nil) {
-            if (peripheral.state==CBPeripheralStateConnected) {
-                [self didDiscoverServices:peripheral];
-                [self statusMessage:[NSString stringWithFormat:@"1212>>Found Services\n"]];
-                CBUUID *uuid = [CBUUID UUIDWithString:serviceApplicationOtauUuid];
-                CBUUID *bl_uuid = [CBUUID UUIDWithString:serviceBootOtauUuid];
-                CBUUID *devInfoUuid = [CBUUID UUIDWithString:serviceDeviceInfoUuid];
-                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                appDelegate.devInfoService = nil;
-                for (CBService *service in peripheral.services) {
-                    NSLog(@" -Found service %@",service.UUID);
-                    [self statusMessage:[NSString stringWithFormat:@"1313>>%@\n",service.UUID]];
-                    if ([service.UUID isEqual:uuid]) {
-                        isOtau = YES;
-                        appDelegate.peripheralInBoot = [NSNumber numberWithBool: NO];
-                        [self didChangeMode];
-                        [peripheral discoverCharacteristics:nil forService:service];
-                        appDelegate.targetService = service;
-                        if (appDelegate.devInfoService != nil) {
-                            break;
-                        }
-                    }
-                    else if ([service.UUID isEqual:bl_uuid]) {
-                        isOtau = YES;
-                        appDelegate.peripheralInBoot = [NSNumber numberWithBool: YES];
-                        [self didChangeMode];
-                        [peripheral discoverCharacteristics:nil forService:service];
-                        appDelegate.targetService = service;
-                        if (appDelegate.devInfoService != nil) {
-                            break;
-                        }
-                    }
-                    else if ([service.UUID isEqual:devInfoUuid]) {
-                        [peripheral discoverCharacteristics:nil forService:service];
-                        appDelegate.devInfoService = service;
-                        if (isOtau) {
-                            // Already found the OTAU service so we are done now.
-                            break;
-                        }
-                    }
+            CBUUID *uuid = [CBUUID UUIDWithString:serviceApplicationOtauUuid];
+            CBUUID *bl_uuid = [CBUUID UUIDWithString:serviceBootOtauUuid];
+            for (CBService *service in peripheral.services) {
+                NSLog(@"didDiscoverServices_service: %@",service.UUID);
+                if ([service.UUID isEqual:uuid]) {
+                    self.peripheralInBoot = [NSNumber numberWithBool:NO];
+                    [peripheral discoverCharacteristics:nil forService:service];
+                    self.targetService = service;
+                }else if ([service.UUID isEqual:bl_uuid]) {
+                    self.peripheralInBoot = [NSNumber numberWithBool:YES];
+                    [peripheral discoverCharacteristics:nil forService:service];
+                    self.targetService = service;
                 }
-                [self discoveryDidRefresh];
-                
             }
+        }else {
+            NSLog(@"%@ Error = %@", peripheral.name, [error userInfo]);
         }
     }else {
     if (error == nil) {
@@ -544,8 +499,6 @@
             }
             
             [peripheral setIsBridgeService:@(YES)];
-            if(bleDelegate && [bleDelegate respondsToSelector:@selector(didConnectBridge:)])
-                [bleDelegate didConnectBridge:peripheral];
             
 #ifdef BRIDGE_ROAMING_ENABLE
             [[CSRBridgeRoaming sharedInstance] connectedPeripheral:peripheral];
@@ -563,13 +516,19 @@
 
     }else {
         if (error == nil) {
+            for (CBCharacteristic *charateristic in service.characteristics) {
+                NSLog(@"charateristic: %@",charateristic.UUID);
+            }
             CBUUID *uuid = [CBUUID UUIDWithString:serviceApplicationOtauUuid];
             CBUUID *bl_uuid = [CBUUID UUIDWithString:serviceBootOtauUuid];
             
             if ([service.UUID isEqual:uuid] || [service.UUID isEqual:bl_uuid]) {
-                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                appDelegate.discoveredChars = [NSNumber numberWithBool: YES];
-                [self otauPeripheralTest:peripheral :YES];
+                [centralManager stopScan];
+                self.targetPeripheral = peripheral;
+                self.discoveredChars = [NSNumber numberWithBool:YES];
+                if (!_secondConnectBool) {
+                    [[OTAU shareInstance] initOTAU:peripheral];
+                }
             }
         }
         
@@ -637,8 +596,8 @@
     //     Key = CBAdvertisementDataIsConnectable object = NSNumber of the BOOL NO
     //     Key = @"didUpdateValueForCharacteristic" object = handle to the characeterisic
 -(void) peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+//    NSLog(@"didUpdateValueForCharacteristic for peripheral %@ & Characteristic %@ value=%@",peripheral.name, characteristic.UUID, characteristic.value);
 
-    
     NSMutableDictionary *advertisementData = [NSMutableDictionary dictionary];
 
     [advertisementData setObject:@(NO) forKey:CBAdvertisementDataIsConnectable];
@@ -647,7 +606,6 @@
     [advertisementData setObject:characteristic.value forKey:CSR_NotifiedValueForCharacteristic];
     [advertisementData setObject:characteristic forKey:CSR_didUpdateValueForCharacteristic];
     [advertisementData setObject:peripheral forKey:CSR_PERIPHERAL];
-
     [[MeshServiceApi sharedInstance] processMeshAdvert:advertisementData RSSI:nil];
 }
 
@@ -681,12 +639,11 @@
         for (CBPeripheral *peripheral in peripherals) {
             [_foundPeripherals addObject:peripheral];
         }
-        [self discoveryDidRefresh];
+//        [self discoveryDidRefresh];
     }
 }
 
 - (void)startOTAUTest: (CBPeripheral *) peripheral {
-    [self statusMessage:[NSString stringWithFormat:@"\nStart: OTAU Test\n"]];
     if (peripheral.state != CBPeripheralStateConnected) {
         [self connectPeripheralNoCheck:peripheral];
     }
@@ -700,12 +657,6 @@
 
 
 ///////////////////////////////////////////////////////////////////
--(void) didDiscoverPeripheral:(CBPeripheral *) peripheral {
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
-        if(self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(didDiscoverPeripheral:)])
-            [self.bleDelegate didDiscoverPeripheral:peripheral];
-    }];
-}
 
 -(void) didConnectPeripheral:(CBPeripheral *) peripheral {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
@@ -714,52 +665,21 @@
     }];
 }
 
--(void) didDisconnect:(CBPeripheral *)peripheral error:(NSError *)error {
+-(void) didDisconnectPeripheral:(CBPeripheral *)peripheral withError:(NSError *)error {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
-        if(self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(didDisconnect: error:)])
-            [self.bleDelegate didDisconnect:peripheral error:error];
+        if(self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(didDisconnectPeripheral:withError:)])
+            [self.bleDelegate didDisconnectPeripheral:peripheral withError:error];
     }];
 }
 
--(void) didChangeMode {
+-(void) discoveryDidRefresh:(CBPeripheral *) peripheral {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
-        if(self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(didChangeMode)])
-            [self.bleDelegate didChangeMode];
-    }];
-}
-
--(void) discoveryDidRefresh {
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
-        if(self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(discoveryDidRefresh)])
-            [self.bleDelegate discoveryDidRefresh];
-    }];
-}
-
--(void) discoveryStatePoweredOff {
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
-        if(self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(discoveryStatePoweredOff)])
-            [self.bleDelegate discoveryStatePoweredOff];
-    }];
-}
-
--(void) statusMessage:(NSString *)message {
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
-        if(self.bleDelegate  && [self.bleDelegate  respondsToSelector:@selector(statusMessage:)])
-            [self.bleDelegate  statusMessage:message];
-    }];
-}
-
--(void) otauPeripheralTest:(CBPeripheral *) peripheral :(BOOL) isOtau {
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
-        if(self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(otauPeripheralTest::)])
-            [self.bleDelegate otauPeripheralTest:peripheral:isOtau];
-    }];
-}
-
--(void) didDiscoverServices:(CBPeripheral *) peripheral {
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
-        if(self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(didDiscoverServices:)])
-            [self.bleDelegate didDiscoverServices:peripheral];
+        if(self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(discoveryDidRefresh:)]) {
+            [self.bleDelegate discoveryDidRefresh:peripheral];
+        }
+        if (self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(discoveryDidRefresh:)]) {
+            [self.bleDelegate discoveryDidRefresh:peripheral];
+        }
     }];
 }
 

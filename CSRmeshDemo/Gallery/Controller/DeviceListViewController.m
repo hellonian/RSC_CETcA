@@ -177,12 +177,43 @@
         }
         
     }else if (self.selectMode == DeviceListSelectMode_ForLightSensor) {
+        NSMutableArray *areaMutableArray =  [[[CSRAppStateManager sharedInstance].selectedPlace.areas allObjects] mutableCopy];
+        if (areaMutableArray && [areaMutableArray count] != 0) {
+            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
+            [areaMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+            
+            for (CSRAreaEntity *area in areaMutableArray) {
+                __block BOOL exist = NO;
+                [area.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity  *deviceEntity, BOOL * _Nonnull stop) {
+                    if ([deviceEntity.shortName isEqualToString:@"D1-10IB"]||[deviceEntity.shortName isEqualToString:@"D0/1-10IB"]||[deviceEntity.shortName isEqualToString:@"D1-10VIBH"]) {
+                        exist = YES;
+                        *stop = YES;
+                    }
+                }];
+                if (exist) {
+                    GroupListSModel *model = [[GroupListSModel alloc] init];
+                    model.areaIconNum = area.areaIconNum;
+                    model.areaID = area.areaID;
+                    model.areaName = area.areaName;
+                    model.areaImage = area.areaImage;
+                    model.sortId = area.sortId;
+                    model.devices = area.devices;
+                    model.isForList = YES;
+                    if ([self.originalMembers containsObject:area.areaID]) {
+                        model.isSelected = YES;
+                        [self.selectedDevices addObject:area.areaID];
+                    }
+                    [_devicesCollectionView.dataArray addObject:model];
+                }
+            }
+        }
+        
         NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
         if (mutableArray && [mutableArray count] != 0) {
             NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
             [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-                if ([deviceEntity.shortName isEqualToString:@"D1-10IB"]||[deviceEntity.shortName isEqualToString:@"D0/1-10IB"]) {
+                if ([deviceEntity.shortName isEqualToString:@"D1-10IB"]||[deviceEntity.shortName isEqualToString:@"D0/1-10IB"]||[deviceEntity.shortName isEqualToString:@"D1-10VIBH"]) {
                     SingleDeviceModel *singleDevice = [[SingleDeviceModel alloc] init];
                     singleDevice.deviceId = deviceEntity.deviceId;
                     singleDevice.deviceName = deviceEntity.name;
@@ -196,6 +227,7 @@
                 }
             }];
         }
+        
     }else {
         NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
         if (mutableArray != nil || [mutableArray count] != 0) {
@@ -343,6 +375,11 @@
                         }
                     }];
                     
+                    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
+                    if ([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName] || [CSRUtilities belongToSocket:deviceEntity.shortName]) {
+                        [self mainCollectionViewDelegateLongPressAction:cell];
+                    }
+                    
                 }
             }else {
                 if ([self.selectedDevices containsObject:mainCell.deviceId]) {
@@ -400,11 +437,66 @@
             }
         }
         
+    }else if (self.selectMode == DeviceListSelectMode_ForLightSensor) {
+        if ([cell isKindOfClass:[MainCollectionViewCell class]]) {
+            MainCollectionViewCell *mainCell = (MainCollectionViewCell *)cell;
+            if (mainCell.selected) {
+                if ([mainCell.deviceId isEqualToNumber:@2000] && ![self.selectedDevices containsObject:mainCell.groupId]) {
+                    [self.selectedDevices addObject:mainCell.groupId];
+                    
+                    [_devicesCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell * enCell, NSUInteger idx, BOOL * _Nonnull stop) {
+                        if ([enCell.deviceId isEqualToNumber:@2000]) {
+                            if (![enCell.groupId isEqualToNumber:mainCell.groupId] && enCell.selected && [self.selectedDevices containsObject:enCell.groupId]) {
+                                [self.selectedDevices removeObject:enCell.groupId];
+                                enCell.selected = NO;
+                                [enCell.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                            }
+                        }else {
+                            if (enCell.selected && [self.selectedDevices containsObject:enCell.deviceId]) {
+                                [self.selectedDevices removeObject:enCell.deviceId];
+                                enCell.selected = NO;
+                                [enCell.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                            }
+                        }
+                    }];
+                }else if ([mainCell.groupId isEqualToNumber:@2000] && ![self.selectedDevices containsObject:mainCell.deviceId]) {
+                    [self.selectedDevices addObject:mainCell.deviceId];
+                    
+                    [_devicesCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell * enCell, NSUInteger idx, BOOL * _Nonnull stop) {
+                        if ([enCell.groupId isEqualToNumber:@2000]) {
+                            if (![enCell.deviceId isEqualToNumber:mainCell.deviceId] && enCell.selected && [self.selectedDevices containsObject:enCell.deviceId]) {
+                                [self.selectedDevices removeObject:enCell.deviceId];
+                                enCell.selected = NO;
+                                [enCell.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                            }
+                        }else {
+                            if (enCell.selected && [self.selectedDevices containsObject:enCell.groupId]) {
+                                [self.selectedDevices removeObject:enCell.groupId];
+                                enCell.selected = NO;
+                                [enCell.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                            }
+                        }
+                    }];
+                }
+                
+            }else {
+                if ([self.selectedDevices containsObject:mainCell.groupId]) {
+                    [self.selectedDevices removeObject:mainCell.groupId];
+                }
+                if ([self.selectedDevices containsObject:mainCell.deviceId]) {
+                    [self.selectedDevices removeObject:mainCell.deviceId];
+                }
+            }
+        }
     }else {
         if ([cell isKindOfClass:[MainCollectionViewCell class]]) {
             MainCollectionViewCell *mainCell = (MainCollectionViewCell *)cell;
             if (mainCell.selected) {
                 [self.selectedDevices addObject:mainCell.deviceId];
+                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
+                if ([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName] || [CSRUtilities belongToSocket:deviceEntity.shortName]) {
+                    [self mainCollectionViewDelegateLongPressAction:cell];
+                }
             }else {
                 if ([self.selectedDevices containsObject:mainCell.deviceId]) {
                     [self.selectedDevices removeObject:mainCell.deviceId];
@@ -427,6 +519,7 @@
     }
 
 }
+
 /*
 - (void)mainCollectionViewDelegateSelectAction:(NSNumber *)cellDeviceId cellGroupId:(NSNumber *)cellGroupId cellSceneId:(NSNumber *)cellSceneId{
 

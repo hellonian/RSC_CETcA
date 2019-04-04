@@ -32,6 +32,7 @@
     // Do any additional setup after loading the view.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange) name:ZZAppLanguageDidChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reGetDataForPlaceChanged) name:@"reGetDataForPlaceChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setPowerStateSuccess:) name:@"setPowerStateSuccess" object:nil];
     if (@available(iOS 11.0, *)) {
         self.additionalSafeAreaInsets = UIEdgeInsetsMake(-35, 0, 0, 0);
     }
@@ -234,6 +235,19 @@
 - (void)reGetDataForPlaceChanged {
     [self getLightSensorData];
     [self layoutViews];
+}
+
+- (void)setPowerStateSuccess:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    [self.tableView.visibleCells enumerateObjectsUsingBlock:^(__kindof UITableViewCell * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.contentView.tag == [deviceId integerValue]) {
+            UISwitch *cellSwitch = [obj viewWithTag:621];
+            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+            [cellSwitch setOn:[model.powerState boolValue]];
+            *stop = YES;
+        }
+    }];
 }
 
 - (void)languageChange {

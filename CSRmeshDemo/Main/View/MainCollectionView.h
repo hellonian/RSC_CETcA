@@ -22,6 +22,7 @@
 - (void)mainCollectionViewDelegateClickEmptyGroupCellAction:(NSIndexPath *)cellIndexPath;
 - (void)mainCollectionViewCellDelegateSceneCellTapAction:(NSNumber *)sceneId;
 - (void)mainCollectionViewCellDelegateCurtainTapAction:(NSNumber *)deviceId;
+- (void)mainCollectionViewCellDelegateTwoFingersTapAction:(NSNumber *)groupId;
 
 @end
 

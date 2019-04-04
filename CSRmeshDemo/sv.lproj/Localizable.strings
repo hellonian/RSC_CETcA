@@ -153,3 +153,9 @@
 "thisMonth" = "Den här månaden";
 "closeChildrenModeAlert" = "Vänligen stäng av barnläget först.";
 "closeSocketStateAlert" = "Stäng alltid strömuttaget först.";
+"colorTemp" = "Färgtemperatur";
+"change" = "Ändern";
+"reset" = "Återställ";
+"color" = "Färg";
+"colorSat" = "Färgmättnad";
+"musicFlow" = "Musikflöde";

@@ -28,6 +28,7 @@ typedef enum : NSUInteger {
 - (void)superCollectionViewCellDelegateClickEmptyGroupCellAction:(NSIndexPath *)cellIndexPath;
 - (void)superCollectionViewCellDelegateSceneCellTapAction:(NSNumber *)sceneId;
 - (void)superCollectionViewCellDelegateCurtainTapAction:(NSNumber *)deviceId;
+- (void)superCollectionViewCellDelegateTwoFingersTapAction:(NSNumber *)groupId;
 
 @end
 

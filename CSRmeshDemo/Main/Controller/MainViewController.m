@@ -47,6 +47,8 @@
 
 #import <CSRmesh/DataModelApi.h>
 
+#import "GroupControlView.h"
+
 @interface MainViewController ()<MainCollectionViewDelegate,PlaceColorIconPickerViewDelegate,MBProgressHUDDelegate>
 {
     NSNumber *selectedSceneId;
@@ -255,13 +257,17 @@
     if (mutableArray != nil || [mutableArray count] != 0) {
         __block BOOL isOldCVesion = NO;
         [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSLog(@"~~~~~> %@  %@  %@",deviceEntity.name,deviceEntity.cvVersion,deviceEntity.deviceId);
+            NSLog(@"~~~~~> %@  %@  %@  %@",deviceEntity.name,deviceEntity.cvVersion,deviceEntity.deviceId,deviceEntity.uuid);
             if ([CSRUtilities belongToMainVCDevice: deviceEntity.shortName]) {
                 if (![deviceIdWasInAreaArray containsObject:deviceEntity.deviceId]) {
                     deviceEntity.isEditting = @(_mainCVEditting);
                     [_mainCollectionView.dataArray addObject:deviceEntity];
                 }
                 
+                if ([deviceEntity.cvVersion integerValue]<18) {
+                    isOldCVesion = YES;
+                }
+            }else if ([deviceEntity.shortName isEqualToString:@"RB01"]) {
                 if ([deviceEntity.cvVersion integerValue]<18) {
                     isOldCVesion = YES;
                 }
@@ -602,6 +608,31 @@
     }
 }
 
+- (void)mainCollectionViewCellDelegateTwoFingersTapAction:(NSNumber *)groupId {
+    CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:groupId];
+    BOOL threeColorTemperature = NO;
+    BOOL colorTemperature = NO;
+    BOOL RGB = NO;
+    for (CSRDeviceEntity *deviceEntity in areaEntity.devices) {
+        if ([CSRUtilities belongToThreeSpeedColorTemperatureDevice:deviceEntity.shortName]) {
+            threeColorTemperature = YES;
+        }else if ([CSRUtilities belongToCWDevice:deviceEntity.shortName] || [CSRUtilities belongToCWNoLevelDevice:deviceEntity.shortName]) {
+            colorTemperature = YES;
+        }else if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBNoLevelDevice:deviceEntity.shortName]) {
+            RGB = YES;
+        }else if ([CSRUtilities belongToRGBCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWNoLevelDevice:deviceEntity.shortName]) {
+            colorTemperature = YES;
+            RGB = YES;
+        }
+    }
+    if (threeColorTemperature || colorTemperature || RGB) {
+        GroupControlView *groupControlView = [[GroupControlView alloc] initWithFrame:self.view.frame threeColorTemperature:threeColorTemperature colorTemperature:colorTemperature RGB:RGB];
+        groupControlView.groupID = groupId;
+        [[UIApplication sharedApplication].keyWindow addSubview:groupControlView];
+        [groupControlView autoPinEdgesToSuperviewEdges];
+    }
+}
+
 - (void)settedSceneFailure:(NSNotification *)notification {
     NSDictionary *dic = notification.userInfo;
     NSNumber *deviceId = dic[@"deviceId"];
@@ -847,7 +878,6 @@
             }
             [self.semaphores removeAllObjects];
             for (SceneMemberEntity *sceneMember in members) {
-                NSLog(@"*************** %@",sceneMember.kindString);
                 if ([CSRUtilities belongToSocket:sceneMember.kindString] || [CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString]) {
                     NSString *cmdString = [NSString stringWithFormat:@"5d0303%@",[CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]]];
                     [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
@@ -871,7 +901,6 @@
             [devices enumerateObjectsUsingBlock:^(NSNumber *deviceId, NSUInteger idx, BOOL * _Nonnull stop) {
                 DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
                 CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
-                NSLog(@"devices>>> %@",deviceEntity.shortName);
                 SceneMemberEntity *sceneMember = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
                 sceneMember.sceneID = sceneEntity.sceneID;
                 sceneMember.deviceID = deviceId;
@@ -970,7 +999,6 @@
                 
                 NSString *rcIndexString = [CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]];
                 if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
-                    NSLog(@"==>>> %d  %d",deviceModel.channel1Selected,deviceModel.channel2Selected);
                     
                     dispatch_queue_t queue = dispatch_queue_create("串行", NULL);
                     if (deviceModel.channel1Selected && deviceModel.channel2Selected) {
@@ -1060,30 +1088,49 @@
             [members enumerateObjectsUsingBlock:^(SceneMemberEntity *sceneMember, NSUInteger idx, BOOL * _Nonnull stop) {
                 
                 if ([CSRUtilities belongToSocket:sceneMember.kindString]) {
-                    if ([sceneMember.eveType isEqualToNumber:@(11)]) {
-                        [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"51050100010000"] success:nil failure:nil];
-                        [NSThread sleepForTimeInterval:0.03];
-                    }else if ([sceneMember.eveType isEqualToNumber:@(10)]) {
-                        [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"510501000101ff"] success:nil failure:nil];
-                        [NSThread sleepForTimeInterval:0.03];
+                    if (sceneMember.eveType && sceneMember.colorTemperature && [sceneMember.eveType isEqualToNumber:@(11)] && [sceneMember.colorTemperature isEqualToNumber:@(11)]) {
+                        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:@(0)];
+                    }else if (sceneMember.eveType && sceneMember.colorTemperature && [sceneMember.eveType isEqualToNumber:@(10)] && [sceneMember.colorTemperature isEqualToNumber:@(10)]) {
+                        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:@(1)];
+                    }else {
+                        if ([sceneMember.eveType isEqualToNumber:@(11)]) {
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"51050100010000"] success:nil failure:nil];
+                            [NSThread sleepForTimeInterval:0.05];
+                        }else if ([sceneMember.eveType isEqualToNumber:@(10)]) {
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"510501000101ff"] success:nil failure:nil];
+                            [NSThread sleepForTimeInterval:0.05];
+                        }
+                        if ([sceneMember.colorTemperature isEqualToNumber:@(11)]) {
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"51050200010000"] success:nil failure:nil];
+                        }else if ([sceneMember.colorTemperature isEqualToNumber:@(10)]) {
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"510502000101ff"] success:nil failure:nil];
+                        }
                     }
-                    if ([sceneMember.colorTemperature isEqualToNumber:@(11)]) {
-                        [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"51050200010000"] success:nil failure:nil];
-                    }else if ([sceneMember.colorTemperature isEqualToNumber:@(10)]) {
-                        [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"510502000101ff"] success:nil failure:nil];
-                    }
-                }else if ([CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString]){
-                    if ([sceneMember.eveType isEqualToNumber:@(11)]) {
-                        [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"51050100010000"] success:nil failure:nil];
-                        [NSThread sleepForTimeInterval:0.03];
-                    }else if ([sceneMember.eveType isEqualToNumber:@(12)]) {
-                        [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"510501000301%@",[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]]]] success:nil failure:nil];
-                        [NSThread sleepForTimeInterval:0.03];
-                    }
-                    if ([sceneMember.colorTemperature isEqualToNumber:@(11)]) {
-                        [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"51050200010000"] success:nil failure:nil];
-                    }else if ([sceneMember.colorTemperature isEqualToNumber:@(12)]) {
-                        [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"510502000301%@",[CSRUtilities stringWithHexNumber:[sceneMember.colorGreen integerValue]]]] success:nil failure:nil];
+                }else if ([CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString]) {
+                    if (sceneMember.eveType && sceneMember.colorTemperature && [sceneMember.eveType isEqualToNumber:@(11)] && [sceneMember.colorTemperature isEqualToNumber:@(11)]) {
+                        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:@(0)];
+                    }else if (sceneMember.eveType && sceneMember.colorTemperature && [sceneMember.eveType isEqualToNumber:@(12)] && [sceneMember.colorTemperature isEqualToNumber:@(12)] && sceneMember.level && sceneMember.colorGreen && [sceneMember.level isEqualToNumber:sceneMember.colorGreen]) {
+                        [[LightModelApi sharedInstance] setLevel:sceneMember.deviceID level:sceneMember.level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                            
+                        } failure:^(NSError * _Nullable error) {
+                            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sceneMember.deviceID];
+                            model.isleave = YES;
+                            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":sceneMember.deviceID}];
+                        }];
+
+                    }else {
+                        if ([sceneMember.eveType isEqualToNumber:@(11)]) {
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"51050100010000"] success:nil failure:nil];
+                            [NSThread sleepForTimeInterval:0.05];
+                        }else if ([sceneMember.eveType isEqualToNumber:@(12)]) {
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"510501000301%@",[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]]]] success:nil failure:nil];
+                            [NSThread sleepForTimeInterval:0.05];
+                        }
+                        if ([sceneMember.colorTemperature isEqualToNumber:@(11)]) {
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"51050200010000"] success:nil failure:nil];
+                        }else if ([sceneMember.colorTemperature isEqualToNumber:@(12)]) {
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"510502000301%@",[CSRUtilities stringWithHexNumber:[sceneMember.colorGreen integerValue]]]] success:nil failure:nil];
+                        }
                     }
                 }else {
                     if ([sceneMember.eveType isEqualToNumber:@(11)]) {
@@ -1280,7 +1327,7 @@
         GroupViewController *gvc = [[GroupViewController alloc] init];
         __weak MainViewController *weakSelf = self;
         gvc.handle = ^{
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [weakSelf getMainDataArray];
             });
         };

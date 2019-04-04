@@ -83,6 +83,17 @@
                 }
             }
                 break;
+            case 5:
+            {
+                NSDateFormatter *hourFormatter = [[NSDateFormatter alloc] init];
+                [hourFormatter setDateFormat:@"HH"];
+                if ([[hourFormatter stringFromDate:p.powerDate] isEqualToString:[hourFormatter stringFromDate:[NSDate date]]]) {
+                    self.dateLabel.text = @"Now";
+                }else {
+                    self.dateLabel.text = [hourFormatter stringFromDate:p.powerDate];
+                }
+            }
+                break;
             default:
                 break;
         }

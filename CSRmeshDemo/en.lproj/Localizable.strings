@@ -153,3 +153,9 @@
 "thisMonth" = "This Month";
 "closeChildrenModeAlert" = "Please turn off children mode first.";
 "closeSocketStateAlert" = "Please close the current socket first.";
+"colorTemp" = "Color Temperature";
+"change" = "Change";
+"reset" = "Reset";
+"color" = "Color";
+"colorSat" = "Color Saturation";
+"musicFlow" = "Music Flow";

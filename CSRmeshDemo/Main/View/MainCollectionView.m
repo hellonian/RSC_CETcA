@@ -171,6 +171,12 @@
     }
 }
 
+- (void)superCollectionViewCellDelegateTwoFingersTapAction:(NSNumber *)groupId {
+    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewCellDelegateTwoFingersTapAction:)]) {
+        [self.mainDelegate mainCollectionViewCellDelegateTwoFingersTapAction:groupId];
+    }
+}
+
 #pragma mark - lazy
 
 - (NSMutableArray *)dataArray {

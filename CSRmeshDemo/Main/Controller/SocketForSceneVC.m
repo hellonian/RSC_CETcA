@@ -68,9 +68,12 @@
 }
 
 - (IBAction)channelSeleteBtn:(UIButton *)sender {
+    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:_deviceId];
+    if ((deviceModel.channel1Selected && !deviceModel.channel2Selected && sender.tag == 1) || (!deviceModel.channel1Selected && deviceModel.channel2Selected && sender.tag == 2)) {
+        return;
+    }
     sender.selected = !sender.selected;
     UIImage *image = sender.selected? [UIImage imageNamed:@"Be_selected"]:[UIImage imageNamed:@"To_select"];
-    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:_deviceId];
     switch (sender.tag) {
         case 1:
             _channelSelected1ImageView.image = image;

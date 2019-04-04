@@ -19,10 +19,6 @@
 
 @property (nonatomic,strong) MainTabBarController *mainTabBarController;
 
-@property (strong, atomic) NSNumber *peripheralInBoot;
-@property (strong, nonatomic) CBService *targetService;
-@property (strong, nonatomic) CBService *devInfoService;
-@property (strong, atomic) NSNumber *discoveredChars;
 @property (strong,nonatomic) MainViewController *mainVC;
 @end
 

@@ -153,3 +153,9 @@
 "thisMonth" = "Tässä kuussa";
 "closeChildrenModeAlert" = "Poista lasten tila ensin käytöstä.";
 "closeSocketStateAlert" = "Sulje nykyinen liitin ensin.";
+"colorTemp" = "Värilämpötila";
+"change" = "Vaihda";
+"reset" = "Nollaus";
+"color" = "Väri";
+"colorSat" = "Värikylläisyys";
+"musicFlow" = "Musiikkivirta";

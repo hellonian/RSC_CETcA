@@ -10,7 +10,6 @@
 
 #import <CSRmesh/LightModelApi.h>
 #import <CSRmesh/PowerModelApi.h>
-#import "CSRMeshUtilities.h"
 #import "CSRDeviceEntity.h"
 #import "CSRDatabaseManager.h"
 #import "CSRBridgeRoaming.h"

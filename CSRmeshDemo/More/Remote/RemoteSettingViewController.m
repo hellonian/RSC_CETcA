@@ -18,6 +18,7 @@
 #import "SingleDeviceModel.h"
 #import "SceneMemberEntity.h"
 #import <CSRmesh/DataModelApi.h>
+#import "DeviceModelManager.h"
 
 @interface RemoteSettingViewController ()<UITextFieldDelegate,MBProgressHUDDelegate>
 {
@@ -801,16 +802,26 @@
     timerSeconde = 20;
     [self showHudTogether];
     
-    if ([[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]) {
+    if (![[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]) {
         if ([_remoteEntity.shortName isEqualToString:@"RB01"]) {
             NSString *cmdStr1;
             if ([_fConrolOneLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_fSelectOneLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
                 NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectOneLabel.tag];
-                if ([self isSwitchByDevcieIdInt:_fSelectOneLabel.tag]) {
-                    cmdStr1 = [NSString stringWithFormat:@"010200%@",deviceIdString];
+                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_fSelectOneLabel.tag]];
+                if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    NSString *chanelSelect;
+                    if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
+                        chanelSelect = @"2";
+                    }else if (!deviceModel.channel1Selected && deviceModel.channel2Selected) {
+                        chanelSelect = @"3";
+                    }else {
+                        chanelSelect = @"1";
+                    }
+                    cmdStr1 = [NSString stringWithFormat:@"010%@00%@",chanelSelect,deviceIdString];
                 }else {
                     cmdStr1 = [NSString stringWithFormat:@"010100%@",deviceIdString];
                 }
+                
             }else if ([_fConrolOneLabel.text containsString:AcTECLocalizedStringFromTable(@"Group", @"Localizable")] && ![_fSelectOneLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
                 NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectOneLabel.tag];
                 if ([self isContainInGroupByGroupIdInt:_fSelectOneLabel.tag]) {
@@ -828,8 +839,17 @@
             NSString *cmdStr2;
             if ([_fConrolTwoLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_fSelectTwoLabel.text isEqualToString:@"Not found"]) {
                 NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectTwoLabel.tag];
-                if ([self isSwitchByDevcieIdInt:_fSelectTwoLabel.tag]) {
-                    cmdStr2 = [NSString stringWithFormat:@"020200%@",deviceIdString];
+                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_fSelectOneLabel.tag]];
+                if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    NSString *chanelSelect;
+                    if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
+                        chanelSelect = @"2";
+                    }else if (!deviceModel.channel1Selected && deviceModel.channel2Selected) {
+                        chanelSelect = @"3";
+                    }else {
+                        chanelSelect = @"1";
+                    }
+                    cmdStr2 = [NSString stringWithFormat:@"020%@00%@",chanelSelect,deviceIdString];
                 }else {
                     cmdStr2 = [NSString stringWithFormat:@"020100%@",deviceIdString];
                 }
@@ -850,8 +870,17 @@
             NSString *cmdStr3;
             if ([_fConrolThreeLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_fSelectThreeLabel.text isEqualToString:@"Not found"]) {
                 NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectThreeLabel.tag];
-                if ([self isSwitchByDevcieIdInt:_fSelectThreeLabel.tag]) {
-                    cmdStr3 = [NSString stringWithFormat:@"030200%@",deviceIdString];
+                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_fSelectOneLabel.tag]];
+                if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    NSString *chanelSelect;
+                    if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
+                        chanelSelect = @"2";
+                    }else if (!deviceModel.channel1Selected && deviceModel.channel2Selected) {
+                        chanelSelect = @"3";
+                    }else {
+                        chanelSelect = @"1";
+                    }
+                    cmdStr3 = [NSString stringWithFormat:@"030%@00%@",chanelSelect,deviceIdString];
                 }else {
                     cmdStr3 = [NSString stringWithFormat:@"030100%@",deviceIdString];
                 }
@@ -872,8 +901,17 @@
             NSString *cmdStr4;
             if ([_fConrolFourLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_fSelectFourLabel.text isEqualToString:@"Not found"]) {
                 NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectFourLabel.tag];
-                if ([self isSwitchByDevcieIdInt:_fSelectFourLabel.tag]) {
-                    cmdStr4 = [NSString stringWithFormat:@"040200%@",deviceIdString];
+                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_fSelectOneLabel.tag]];
+                if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    NSString *chanelSelect;
+                    if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
+                        chanelSelect = @"2";
+                    }else if (!deviceModel.channel1Selected && deviceModel.channel2Selected) {
+                        chanelSelect = @"3";
+                    }else {
+                        chanelSelect = @"1";
+                    }
+                    cmdStr4 = [NSString stringWithFormat:@"040%@00%@",chanelSelect,deviceIdString];
                 }else {
                     cmdStr4 = [NSString stringWithFormat:@"040100%@",deviceIdString];
                 }
@@ -911,7 +949,20 @@
             NSString *cmdStr1;
             if ([_sConrolOneLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_sSelectOneLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
                 NSString *deviceIdString = [self exchangePositionOfDeviceId:_sSelectOneLabel.tag];
-                cmdStr1 = [NSString stringWithFormat:@"9b0601010100%@",deviceIdString];
+                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_sSelectOneLabel.tag]];
+                if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    NSString *chanelSelect;
+                    if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
+                        chanelSelect = @"2";
+                    }else if (!deviceModel.channel1Selected && deviceModel.channel2Selected) {
+                        chanelSelect = @"3";
+                    }else {
+                        chanelSelect = @"1";
+                    }
+                    cmdStr1 = [NSString stringWithFormat:@"9b0601010%@00%@",chanelSelect,deviceIdString];
+                }else {
+                    cmdStr1 = [NSString stringWithFormat:@"9b0601010100%@",deviceIdString];
+                }
             }else if ([_sConrolOneLabel.text containsString:AcTECLocalizedStringFromTable(@"Group", @"Localizable")] && ![_sSelectOneLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
                 
                 NSString *rcIndexStr;
@@ -961,7 +1012,20 @@
             NSString *cmdStr1;
             if ([_fConrolOneLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_fSelectOneLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
                 NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectOneLabel.tag];
-                cmdStr1 = [NSString stringWithFormat:@"730e01010100010000%@0000000000",deviceIdString];
+                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_fSelectOneLabel.tag]];
+                if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    NSString *chanelSelect;
+                    if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
+                        chanelSelect = @"2";
+                    }else if (!deviceModel.channel1Selected && deviceModel.channel2Selected) {
+                        chanelSelect = @"3";
+                    }else {
+                        chanelSelect = @"1";
+                    }
+                    cmdStr1 = [NSString stringWithFormat:@"730e01010%@00010000%@0000000000",chanelSelect,deviceIdString];
+                }else {
+                    cmdStr1 = [NSString stringWithFormat:@"730e01010100010000%@0000000000",deviceIdString];
+                }
             }else if ([_fConrolOneLabel.text containsString:AcTECLocalizedStringFromTable(@"Group", @"Localizable")] && ![_fSelectOneLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
                 NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectOneLabel.tag];
                 cmdStr1 = [NSString stringWithFormat:@"730e01012000010000%@0000000000",deviceIdString];
@@ -974,7 +1038,20 @@
             NSString *cmdStr2;
             if ([_fConrolTwoLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_fSelectTwoLabel.text isEqualToString:@"Not found"]) {
                 NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectTwoLabel.tag];
-                cmdStr2 = [NSString stringWithFormat:@"730e01020100010000%@0000000000",deviceIdString];
+                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_fSelectTwoLabel.tag]];
+                if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    NSString *chanelSelect;
+                    if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
+                        chanelSelect = @"2";
+                    }else if (!deviceModel.channel1Selected && deviceModel.channel2Selected) {
+                        chanelSelect = @"3";
+                    }else {
+                        chanelSelect = @"1";
+                    }
+                    cmdStr2 = [NSString stringWithFormat:@"730e01020%@00010000%@0000000000",chanelSelect,deviceIdString];
+                }else {
+                    cmdStr2 = [NSString stringWithFormat:@"730e01020100010000%@0000000000",deviceIdString];
+                }
             }else if ([_fConrolTwoLabel.text containsString:AcTECLocalizedStringFromTable(@"Group", @"Localizable")] && ![_fSelectTwoLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
                 NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectTwoLabel.tag];
                 cmdStr2 = [NSString stringWithFormat:@"730e01022000010000%@0000000000",deviceIdString];
@@ -987,7 +1064,20 @@
             NSString *cmdStr3;
             if ([_fConrolThreeLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_fSelectThreeLabel.text isEqualToString:@"Not found"]) {
                 NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectThreeLabel.tag];
-                cmdStr3 = [NSString stringWithFormat:@"730e01030100010000%@0000000000",deviceIdString];
+                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_fSelectThreeLabel.tag]];
+                if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    NSString *chanelSelect;
+                    if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
+                        chanelSelect = @"2";
+                    }else if (!deviceModel.channel1Selected && deviceModel.channel2Selected) {
+                        chanelSelect = @"3";
+                    }else {
+                        chanelSelect = @"1";
+                    }
+                    cmdStr3 = [NSString stringWithFormat:@"730e01030%@00010000%@0000000000",chanelSelect,deviceIdString];
+                }else {
+                    cmdStr3 = [NSString stringWithFormat:@"730e01030100010000%@0000000000",deviceIdString];
+                }
             }else if ([_fConrolThreeLabel.text containsString:AcTECLocalizedStringFromTable(@"Group", @"Localizable")] && ![_fSelectThreeLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
                 NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectThreeLabel.tag];
                 cmdStr3 = [NSString stringWithFormat:@"730e01032000010000%@0000000000",deviceIdString];
@@ -1000,7 +1090,20 @@
             NSString *cmdStr4;
             if ([_fConrolFourLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_fSelectFourLabel.text isEqualToString:@"Not found"]) {
                 NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectFourLabel.tag];
-                cmdStr4 = [NSString stringWithFormat:@"730e01040100010000%@0000000000",deviceIdString];
+                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_fSelectFourLabel.tag]];
+                if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    NSString *chanelSelect;
+                    if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
+                        chanelSelect = @"2";
+                    }else if (!deviceModel.channel1Selected && deviceModel.channel2Selected) {
+                        chanelSelect = @"3";
+                    }else {
+                        chanelSelect = @"1";
+                    }
+                    cmdStr4 = [NSString stringWithFormat:@"730e01040%@00010000%@0000000000",chanelSelect,deviceIdString];
+                }else {
+                    cmdStr4 = [NSString stringWithFormat:@"730e01040100010000%@0000000000",deviceIdString];
+                }
             }else if ([_fConrolFourLabel.text containsString:AcTECLocalizedStringFromTable(@"Group", @"Localizable")] && ![_fSelectFourLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
                 NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectFourLabel.tag];
                 cmdStr4 = [NSString stringWithFormat:@"730e01042000010000%@0000000000",deviceIdString];
@@ -1109,7 +1212,20 @@
             NSString *cmdStr1;
             if ([_sConrolOneLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_sSelectOneLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
                 NSString *deviceIdString = [self exchangePositionOfDeviceId:_sSelectOneLabel.tag];
-                cmdStr1 = [NSString stringWithFormat:@"730e01010100010000%@0000000000",deviceIdString];
+                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_sSelectOneLabel.tag]];
+                if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    NSString *chanelSelect;
+                    if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
+                        chanelSelect = @"2";
+                    }else if (!deviceModel.channel1Selected && deviceModel.channel2Selected) {
+                        chanelSelect = @"3";
+                    }else {
+                        chanelSelect = @"1";
+                    }
+                    cmdStr1 = [NSString stringWithFormat:@"730e01010%@00010000%@0000000000",chanelSelect,deviceIdString];
+                }else {
+                    cmdStr1 = [NSString stringWithFormat:@"730e01010100010000%@0000000000",deviceIdString];
+                }
             }else if ([_sConrolOneLabel.text containsString:AcTECLocalizedStringFromTable(@"Group", @"Localizable")] && ![_sSelectOneLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
                 NSString *deviceIdString = [self exchangePositionOfDeviceId:_sSelectOneLabel.tag];
                 cmdStr1 = [NSString stringWithFormat:@"730e01012000010000%@0000000000",deviceIdString];
