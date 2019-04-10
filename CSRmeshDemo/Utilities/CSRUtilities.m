@@ -1207,14 +1207,7 @@
     return NO;
 }
 
-+ (BOOL)belongToMCUDevice:(NSString *)shortName {
-    if ([kMCUDevices containsObject:shortName]) {
-        return YES;
-    }
-    return NO;
-}
-
-+ (BOOL)belongToTwoChannelDimmer:(NSString *)shortName{
++ (BOOL)belongToTwoChannelDimmer:(NSString *)shortName {
     if ([kTwoChannelDimmers containsObject:shortName]) {
         return YES;
     }

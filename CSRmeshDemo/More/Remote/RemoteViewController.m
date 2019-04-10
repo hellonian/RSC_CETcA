@@ -138,6 +138,8 @@
         cell.imageView.image = [UIImage imageNamed:@"Setting_fremote"];
     }else if ([deviceEntity.shortName isEqualToString:@"RB02"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_sremote"];
+    }else if ([deviceEntity.shortName isEqualToString:@"RB04"] || [deviceEntity.shortName isEqualToString:@"RSIBH"]) {
+        cell.imageView.image = [UIImage imageNamed:@"Setting_fremote"];
     }
     cell.textLabel.text = deviceEntity.name;
     return cell;

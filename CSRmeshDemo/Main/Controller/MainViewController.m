@@ -257,7 +257,7 @@
     if (mutableArray != nil || [mutableArray count] != 0) {
         __block BOOL isOldCVesion = NO;
         [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSLog(@"~~~~~> %@  %@  %@  %@",deviceEntity.name,deviceEntity.cvVersion,deviceEntity.deviceId,deviceEntity.uuid);
+            NSLog(@"~~~~~> %@  %@  %@  %@ %@",deviceEntity.name,deviceEntity.cvVersion,deviceEntity.deviceId,deviceEntity.uuid,deviceEntity.firVersion);
             if ([CSRUtilities belongToMainVCDevice: deviceEntity.shortName]) {
                 if (![deviceIdWasInAreaArray containsObject:deviceEntity.deviceId]) {
                     deviceEntity.isEditting = @(_mainCVEditting);
@@ -864,7 +864,6 @@
                 deviceModel.deviceShortName = deviceEntity.shortName;
                 [singleDevices addObject:deviceModel];
             }
-            
         }];
         list.originalMembers = singleDevices;
         

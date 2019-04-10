@@ -35,5 +35,6 @@
 @dynamic mcuBootVersion;
 @dynamic mcuHVersion;
 @dynamic mcuSVersion;
+@dynamic hwVersion;
 
 @end

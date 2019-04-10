@@ -255,7 +255,7 @@
         }
         self.macAddressLabel.text = doneTitle;
         
-        if ([CSRUtilities belongToMCUDevice:_device.shortName]) {
+        if ([deviceEntity.hwVersion integerValue]==2) {
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MCUUpdateDataCall:) name:@"MCUUpdateDataCall" object:nil];
             NSMutableString *mutStr = [NSMutableString stringWithString:_device.shortName];
             NSRange range = {0,_device.shortName.length};

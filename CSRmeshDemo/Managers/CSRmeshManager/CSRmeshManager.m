@@ -254,9 +254,7 @@
             
         }];
         
-        if ([CSRUtilities belongToMCUDevice:deviceEntity.shortName]) {
-            [[DataModelManager shareInstance] sendCmdData:@"ea35" toDeviceId:deviceId];
-        }
+        [[DataModelManager shareInstance] sendCmdData:@"ea35" toDeviceId:deviceId];
         
     } else {
         

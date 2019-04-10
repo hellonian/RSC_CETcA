@@ -117,7 +117,6 @@
 + (BOOL)belongToFanController:(NSString *)shortName;
 + (BOOL)belongToSocket:(NSString *)shortName;
 + (BOOL)belongToTwoChannelDimmer:(NSString *)shortName;
-+ (BOOL)belongToMCUDevice:(NSString *)shortName;
 
 +(NSString *)convertToJsonData:(NSDictionary *)dict;
 + (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString;

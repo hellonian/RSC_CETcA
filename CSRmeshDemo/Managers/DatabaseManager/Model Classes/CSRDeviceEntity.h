@@ -35,6 +35,7 @@
 @property (nonatomic, retain) NSNumber * mcuBootVersion;
 @property (nonatomic, retain) NSNumber * mcuHVersion;
 @property (nonatomic, retain) NSNumber * mcuSVersion;
+@property (nonatomic, retain) NSNumber * hwVersion;
 
 @end
 

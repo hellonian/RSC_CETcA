@@ -398,8 +398,8 @@ static DataModelManager *manager = nil;
     
     //获取固件版本
     if ([dataStr hasPrefix:@"a8"]) {
+        NSString *hardwareVersion = [dataStr substringWithRange:NSMakeRange(14, 2)];
         NSString *firmwareVersion = [dataStr substringWithRange:NSMakeRange(16, 2)];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"getFirmwareVersion" object:nil userInfo:@{@"getFirmwareVersion":@([CSRUtilities numberWithHexString:firmwareVersion]),@"deviceId":sourceDeviceId}];
         NSString *CVVersionStr;
         if ([dataStr length] == 20) {
             CVVersionStr = [dataStr substringWithRange:NSMakeRange(18, 2)];
@@ -409,6 +409,7 @@ static DataModelManager *manager = nil;
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sourceDeviceId];
         deviceEntity.firVersion = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:firmwareVersion]];
         deviceEntity.cvVersion = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:CVVersionStr]];
+        deviceEntity.hwVersion = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:hardwareVersion]];
         [[CSRDatabaseManager sharedInstance] saveContext];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"reGetDataForPlaceChanged" object:nil];
     }
@@ -527,6 +528,12 @@ static DataModelManager *manager = nil;
     
     if ([dataStr hasPrefix:@"eb30"]||[dataStr hasPrefix:@"eb32"]||[dataStr hasPrefix:@"eb33"]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"MCUUpdateDataCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"MCUUpdateDataCall":[dataStr substringFromIndex:2]}];
+    }
+    
+    if ([dataStr hasPrefix:@"eb5002"]) {
+        if ([dataStr length] >= 10) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"getRemoteEnableState" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"getRemoteEnableState":[dataStr substringFromIndex:8]}];
+        }
     }
 }
 

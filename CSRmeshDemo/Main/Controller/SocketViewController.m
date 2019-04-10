@@ -90,7 +90,7 @@
         
         [self changeUI:_deviceId];
         
-        if ([CSRUtilities belongToMCUDevice:curtainEntity.shortName]) {
+        if ([curtainEntity.hwVersion integerValue]==2) {
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MCUUpdateDataCall:) name:@"MCUUpdateDataCall" object:nil];
             NSMutableString *mutStr = [NSMutableString stringWithString:curtainEntity.shortName];
             NSRange range = {0,curtainEntity.shortName.length};
