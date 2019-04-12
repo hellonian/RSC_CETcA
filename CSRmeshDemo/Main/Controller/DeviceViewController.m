@@ -66,6 +66,12 @@
 @property (weak, nonatomic) IBOutlet UILabel *colorSaturationLabel;
 
 @property (nonatomic,strong) MBProgressHUD *updatingHud;
+@property (strong, nonatomic) IBOutlet UIView *dalinView;
+@property (weak, nonatomic) IBOutlet UIButton *daliAllSelectBtn;
+@property (weak, nonatomic) IBOutlet UIButton *daliGroupSelectBtn;
+@property (weak, nonatomic) IBOutlet UIButton *daliAddressBtn;
+@property (weak, nonatomic) IBOutlet UITextField *daliGroupTF;
+@property (weak, nonatomic) IBOutlet UITextField *daliAddressTF;
 
 @end
 
@@ -78,6 +84,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange:) name:ZZAppLanguageDidChangeNotification object:nil];
     
     _scrollView = [[UIScrollView alloc] init];
+    _scrollView.userInteractionEnabled = YES;
     [self.view addSubview:_scrollView];
     [_scrollView setTranslatesAutoresizingMaskIntoConstraints:NO];
     NSLayoutConstraint *top;
@@ -192,6 +199,14 @@
                 [_threeSpeedcolorTemperatureView autoAlignAxisToSuperviewAxis:ALAxisVertical];
                 
                 _scrollView.contentSize = CGSizeMake(1, 327+20);
+            }else if ([_device.shortName isEqualToString:@"DDSB"]) {
+                [[NSNotificationCenter defaultCenter] addObserver:self
+                                                         selector:@selector(getDaliAdress:)
+                                                             name:@"getDaliAdress"
+                                                           object:nil];
+                [[DataModelManager shareInstance] sendCmdData:@"ea520102" toDeviceId:_deviceId];
+                [self addSubviewDalinView];
+                _scrollView.contentSize = CGSizeMake(1, 208+20+20+220);
             }else {
                 _scrollView.contentSize = CGSizeMake(1, 208+20);
             }
@@ -470,6 +485,16 @@
     [_brightnessView autoAlignAxisToSuperviewAxis:ALAxisVertical];
 }
 
+- (void)addSubviewDalinView {
+    _daliGroupTF.delegate = self;
+    _daliAddressTF.delegate = self;
+    [_scrollView addSubview:_dalinView];
+    [_dalinView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_brightnessView withOffset:20.0];
+    [_dalinView autoSetDimension:ALDimensionHeight toSize:220.0];
+    [_dalinView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+    [_dalinView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+}
+
 - (void)addSubViewColorTemperatuteView {
     [_scrollView addSubview:_colorTemperatureTitle];
     [_colorTemperatureTitle autoSetDimension:ALDimensionHeight toSize:20];
@@ -733,18 +758,113 @@
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    textField.backgroundColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1];
+    switch (textField.tag) {
+        case 11:
+            textField.backgroundColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1];
+            break;
+        default:
+            break;
+    }
     return YES;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    textField.backgroundColor = [UIColor whiteColor];
+    switch (textField.tag) {
+        case 11:
+            textField.backgroundColor = [UIColor whiteColor];
+            break;
+        default:
+            break;
+    }
+    
     [textField resignFirstResponder];
     return YES;
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-    [self saveNickName];
+    switch (textField.tag) {
+        case 11:
+            [self saveNickName];
+            break;
+        case 12:
+            if ([textField.text length]>0 && [textField.text integerValue]<=15) {
+                [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea520101%@",[CSRUtilities stringWithHexNumber:[textField.text integerValue] + 64]] toDeviceId:_deviceId];
+            }
+            break;
+        case 13:
+            if ([textField.text length]>0 && [textField.text integerValue]<=15) {
+                [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea520101%@",[CSRUtilities stringWithHexNumber:[textField.text integerValue]]] toDeviceId:_deviceId];
+            }
+            break;
+        default:
+            break;
+    }
+    self.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    switch (textField.tag) {
+        case 12:
+        {
+            NSString *aString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+            if ([self validateNumber:string]) {
+                if ([aString integerValue]>15) {
+                    return NO;
+                }else {
+                    return YES;
+                }
+            }else {
+                return NO;
+            }
+        }
+            break;
+        case 13:
+        {
+            NSString *aString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+            if ([self validateNumber:string]) {
+                if ([aString integerValue]>63) {
+                    return NO;
+                }else {
+                    return YES;
+                }
+            }else {
+                return NO;
+            }
+        }
+            break;
+        default:
+            break;
+    }
+    return YES;
+}
+
+- (BOOL)validateNumber:(NSString*)number {
+    BOOL res = YES;
+    NSCharacterSet* tmpSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789"];
+    int i = 0;
+    while (i < number.length) {
+        NSString * string = [number substringWithRange:NSMakeRange(i, 1)];
+        NSRange range = [string rangeOfCharacterFromSet:tmpSet];
+        if (range.length == 0) {
+            res = NO;
+            break;
+        }
+        i++;
+    }
+    return res;
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    CGPoint pointx = [_scrollView convertPoint:textField.frame.origin fromView:_dalinView];
+    CGPoint point = [self.view convertPoint:pointx fromView:_scrollView];
+    int offset = point.y + textField.frame.size.height - (self.view.frame.size.height - 256.0);
+    NSTimeInterval animaTime = 0.30f;
+    [UIView beginAnimations:@"ResizeForKeyboard" context:nil];
+    [UIView setAnimationDuration:animaTime];
+    if (offset>0) {
+        self.view.frame = CGRectMake(0.0f, -offset, self.view.frame.size.width, self.view.frame.size.height);
+    }
+    [UIView commitAnimations];
 }
 
 #pragma mark - 保存修改后的灯名
@@ -822,5 +942,89 @@
     [hud removeFromSuperview];
     hud = nil;
 }
+
+- (IBAction)daliAdressSelectAction:(UIButton *)sender {
+    sender.selected = !sender.selected;
+    UIImage *image = sender.selected? [UIImage imageNamed:@"Be_selected"]:[UIImage imageNamed:@"To_select"];
+    [sender setImage:image forState:UIControlStateNormal];
+    switch (sender.tag) {
+        case 1:
+            if (sender.selected) {
+                if (_daliGroupSelectBtn.selected) {
+                    _daliGroupSelectBtn.selected = NO;
+                    [_daliGroupSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                    [_daliGroupTF resignFirstResponder];
+                }else if (_daliAddressBtn.selected) {
+                    _daliAddressBtn.selected = NO;
+                    [_daliAddressBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                    [_daliAddressTF resignFirstResponder];
+                }
+                [[DataModelManager shareInstance] sendCmdData:@"ea520101ff" toDeviceId:_deviceId];
+            }
+            break;
+        case 2:
+            if (sender.selected) {
+                if (_daliAllSelectBtn.selected) {
+                    _daliAllSelectBtn.selected = NO;
+                    [_daliAllSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                }else if (_daliAddressBtn.selected) {
+                    _daliAddressBtn.selected = NO;
+                    [_daliAddressBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                    [_daliAddressTF resignFirstResponder];
+                }
+                [_daliGroupTF becomeFirstResponder];
+            }
+            break;
+        case 3:
+            if (sender.selected) {
+                if (_daliGroupSelectBtn.selected) {
+                    _daliGroupSelectBtn.selected = NO;
+                    [_daliGroupSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                    [_daliGroupTF resignFirstResponder];
+                }else if (_daliAllSelectBtn.selected) {
+                    _daliAllSelectBtn.selected = NO;
+                    [_daliAllSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                }
+                [_daliAddressTF becomeFirstResponder];
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+- (void)getDaliAdress:(NSNotification *)notification {
+    NSDictionary *userDic = notification.userInfo;
+    NSInteger address = [CSRUtilities numberWithHexString:userDic[@"addressStr"]];
+    if (address == 255) {
+        _daliAllSelectBtn.selected = YES;
+        [_daliAllSelectBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+        _daliGroupSelectBtn.selected = NO;
+        [_daliGroupSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        _daliGroupTF.text = nil;
+        _daliAddressBtn.selected = NO;
+        [_daliAddressBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        _daliAddressTF.text = nil;
+    }else if (address >= 64 && address <= 79) {
+        _daliAllSelectBtn.selected = NO;
+        [_daliAllSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        _daliGroupSelectBtn.selected = YES;
+        [_daliGroupSelectBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+        _daliGroupTF.text = [NSString stringWithFormat:@"%ld",address-64];
+        _daliAddressBtn.selected = NO;
+        [_daliAddressBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        _daliAddressTF.text = nil;
+    }else if (address < 64){
+        _daliAllSelectBtn.selected = NO;
+        [_daliAllSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        _daliGroupSelectBtn.selected = NO;
+        [_daliGroupSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        _daliGroupTF.text = nil;
+        _daliAddressBtn.selected = YES;
+        [_daliAddressBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+        _daliAddressTF.text = [NSString stringWithFormat:@"%ld",address];
+    }
+}
+
 
 @end

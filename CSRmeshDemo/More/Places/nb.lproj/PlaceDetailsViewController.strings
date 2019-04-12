@@ -1,0 +1,21 @@
+
+/* Class = "UITextField"; placeholder = "Place name"; ObjectID = "Jd1-eJ-EqW"; */
+"Jd1-eJ-EqW.placeholder" = "Stedsnavn";
+
+/* Class = "UILabel"; text = "Scan the RQ code to share place with this phone. Please make sure the two phones are under the same WIFI."; ObjectID = "WAl-Hv-Wp5"; */
+"WAl-Hv-Wp5.text" = "Skann QR-koden for å dele sted med denne telefonen. Sørg for at de to telefonene er koblet til samme WIFI.";
+
+/* Class = "UILabel"; text = "Network key"; ObjectID = "bs7-mY-b11"; */
+"bs7-mY-b11.text" = "Nettverksnøkkel";
+
+/* Class = "UILabel"; text = "Place name"; ObjectID = "hYf-3F-9HS"; */
+"hYf-3F-9HS.text" = "Stedsnavn";
+
+/* Class = "UIButton"; normalTitle = "Delete"; ObjectID = "lRG-Nx-Y7O"; */
+"lRG-Nx-Y7O.normalTitle" = "Slett";
+
+/* Class = "UILabel"; text = "Show password"; ObjectID = "rQO-oA-8kS"; */
+"rQO-oA-8kS.text" = "Vis passord";
+
+/* Class = "UITextField"; placeholder = "Network key"; ObjectID = "zjv-Gy-2n3"; */
+"zjv-Gy-2n3.placeholder" = "Nettverksnøkkel";

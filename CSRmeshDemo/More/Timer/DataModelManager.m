@@ -535,6 +535,12 @@ static DataModelManager *manager = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"getRemoteEnableState" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"getRemoteEnableState":[dataStr substringFromIndex:8]}];
         }
     }
+    
+    if ([dataStr hasPrefix:@"eb52"]) {
+        if ([dataStr length]>=10) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"getDaliAdress" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"addressStr":[dataStr substringWithRange:NSMakeRange(8, 2)]}];
+        }
+    }
 }
 
 - (void)didReceiveStreamData:(NSNumber *)deviceId streamNumber:(NSNumber *)streamNumber data:(NSData *)data {
