@@ -277,8 +277,6 @@
             [mutStr replaceOccurrencesOfString:@"/" withString:@"" options:NSLiteralSearch range:range];
             NSString *urlString = [NSString stringWithFormat:@"http://39.108.152.134/MCU/%@/%@.php",mutStr,mutStr];
             NSLog(@"urlString>> %@",urlString);
-            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]];
-            request.cachePolicy = NSURLRequestReturnCacheDataElseLoad;
             
             AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
             sessionManager.responseSerializer.acceptableContentTypes = nil;
@@ -289,7 +287,7 @@
                 latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
                 downloadAddress = dic[@"Download_address"];
                 NSLog(@">> %@  %ld  %ld",downloadAddress,(long)[deviceEntity.mcuSVersion integerValue],(long)latestMCUSVersion);
-//                if ([deviceEntity.mcuSVersion integerValue]<latestMCUSVersion) {
+                if ([deviceEntity.mcuSVersion integerValue]<latestMCUSVersion) {
                     UIButton *updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
                     [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
                     [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
@@ -300,7 +298,7 @@
                     [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeRight];
                     [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom];
                     [updateMCUBtn autoSetDimension:ALDimensionHeight toSize:44.0];
-//                }
+                }
             } failure:^(NSURLSessionDataTask *task, NSError *error) {
                 NSLog(@"%@",error);
             }];
