@@ -382,7 +382,7 @@
             self.iconView.image = [UIImage imageNamed:@"Device_Dimmer"];
         }else if ([CSRUtilities belongToSwitch:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Switch"];
-        }else if ([appearanceShortname containsString:@"RB01"]) {
+        }else if ([appearanceShortname containsString:@"RB01"] || [appearanceShortname containsString:@"R5BSBH"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote1"];
         }else if ([appearanceShortname containsString:@"RB02"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote2"];

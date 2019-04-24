@@ -11,6 +11,7 @@
 #import "DeviceModelManager.h"
 #import "CSRDatabaseManager.h"
 #import <CSRmesh/LightModelApi.h>
+#import "SoundListenTool.h"
 
 @implementation GroupControlView
 
@@ -154,17 +155,6 @@
             [_musicImageView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_musicTitleLabel withOffset:5.0];
             [_musicImageView autoSetDimensionsToSize:CGSizeMake(148.0, 148.0)];
             
-            [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionMixWithOthers error:nil];
-            [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
-            NSURL *url = [NSURL fileURLWithPath:@"/dev/null"];
-            NSDictionary *settings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                      [NSNumber numberWithFloat: 44100.0], AVSampleRateKey,
-                                      [NSNumber numberWithInt: kAudioFormatAppleLossless], AVFormatIDKey,
-                                      [NSNumber numberWithInt: 2], AVNumberOfChannelsKey,
-                                      [NSNumber numberWithInt: AVAudioQualityMax], AVEncoderAudioQualityKey,
-                                      nil];
-            NSError *error;
-            self.audioRecorder = [[AVAudioRecorder alloc] initWithURL:url settings:settings error:&error];
         }
         
         if (threeColorTemp && !colorTemp && !rgb) {
@@ -361,50 +351,15 @@
 }
 
 - (void)playPause:(UIButton *)sender {
-    if (self.audioRecorder) {
-        if (self.audioRecorder.recording) {
-            [_musicImageView stopAnimating];
-            [sender setBackgroundImage:[UIImage imageNamed:@"music"] forState:UIControlStateNormal];
-            [self.audioRecorder stop];
-            [self.recordTimer invalidate];
-            self.recordTimer = nil;
-        }else {
-            [sender setBackgroundImage:[UIImage imageNamed:@"musicHighlight"] forState:UIControlStateNormal];
-            [_musicImageView startAnimating];
-            [self.audioRecorder prepareToRecord];
-            self.audioRecorder.meteringEnabled = YES;
-            [self.audioRecorder record];
-            self.recordTimer = [NSTimer scheduledTimerWithTimeInterval:0.1f target:self selector: @selector(recordTimerAction:) userInfo: nil repeats: YES];
-        }
+    if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+        [_musicImageView stopAnimating];
+        [sender setBackgroundImage:[UIImage imageNamed:@"music"] forState:UIControlStateNormal];
+        [[SoundListenTool sharedInstance] stopRecord];
+    }else {
+        [sender setBackgroundImage:[UIImage imageNamed:@"musicHighlight"] forState:UIControlStateNormal];
+        [_musicImageView startAnimating];
+        [[SoundListenTool sharedInstance] record:_groupID];
     }
-}
-
-- (void)recordTimerAction:(NSTimer *)sender {
-    [self.audioRecorder updateMeters];
-    float hue;
-    float minDecibels = -80.0f;
-    float decibels = [self.audioRecorder averagePowerForChannel:0];
-    
-    if (decibels < minDecibels)
-    {
-        hue = 0.0f;
-    }
-    else if (decibels >= 0.0f)
-    {
-        hue = 1.0f;
-    }
-    else
-    {
-        float   root            = 2.0f;
-        float   minAmp          = powf(10.0f, 0.05f * minDecibels);
-        float   inverseAmpRange = 1.0f / (1.0f - minAmp);
-        float   amp             = powf(10.0f, 0.05f * decibels);
-        float   adjAmp          = (amp - minAmp) * inverseAmpRange;
-        
-        hue = powf(adjAmp, 1.0f / root);
-    }
-    UIColor *color = [UIColor colorWithHue:(hue-0.2)/0.4 saturation:1.0 brightness:1.0 alpha:1.0];
-    [[LightModelApi sharedInstance] setColor:_groupID color:color duration:@0 success:nil failure:nil];
 }
 
 @end

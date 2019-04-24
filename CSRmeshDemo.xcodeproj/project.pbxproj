@@ -88,6 +88,7 @@
 		2E48BBE020D239E500401CDD /* LightSensorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E48BBDF20D239E500401CDD /* LightSensorViewController.m */; };
 		2E48BBE420D25C7800401CDD /* LightSensorSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E48BBE220D25C7800401CDD /* LightSensorSettingViewController.m */; };
 		2E4902AF224233F5003B901A /* cskey_db.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E4902AE224233F5003B901A /* cskey_db.json */; };
+		2E4BC03D227051BF000719EA /* SoundListenTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E4BC03C227051BF000719EA /* SoundListenTool.m */; };
 		2E4DDCEB21F9680900B2ACF3 /* FanViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E4DDCED21F9680900B2ACF3 /* FanViewController.xib */; };
 		2E4DDCF221F968FF00B2ACF3 /* SocketViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E4DDCF421F968FF00B2ACF3 /* SocketViewController.xib */; };
 		2E4DDCF921F969B900B2ACF3 /* SocketForSceneVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E4DDCFB21F969B900B2ACF3 /* SocketForSceneVC.xib */; };
@@ -353,6 +354,8 @@
 		2E48BBE120D25C7800401CDD /* LightSensorSettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LightSensorSettingViewController.h; sourceTree = "<group>"; };
 		2E48BBE220D25C7800401CDD /* LightSensorSettingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LightSensorSettingViewController.m; sourceTree = "<group>"; };
 		2E4902AE224233F5003B901A /* cskey_db.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = cskey_db.json; sourceTree = "<group>"; };
+		2E4BC03B227051BF000719EA /* SoundListenTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SoundListenTool.h; sourceTree = "<group>"; };
+		2E4BC03C227051BF000719EA /* SoundListenTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SoundListenTool.m; sourceTree = "<group>"; };
 		2E4DDCEC21F9680900B2ACF3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/FanViewController.xib; sourceTree = "<group>"; };
 		2E4DDCEF21F9680E00B2ACF3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2E4DDCF121F9681000B2ACF3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/FanViewController.strings"; sourceTree = "<group>"; };
@@ -1120,6 +1123,8 @@
 				2EC8BB35214653AF002ED85F /* MeterTable.mm */,
 				2EC7D0DC21E6F549007F44C1 /* PowerModel.h */,
 				2EC7D0DD21E6F549007F44C1 /* PowerModel.m */,
+				2E4BC03B227051BF000719EA /* SoundListenTool.h */,
+				2E4BC03C227051BF000719EA /* SoundListenTool.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1411,6 +1416,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				Base,
 				en,
 				"zh-Hans",
@@ -1652,6 +1658,7 @@
 				2E6A02131F39884500111312 /* TabBarButton.m in Sources */,
 				2EC8BB3421460F0E002ED85F /* MusicPlayTools.mm in Sources */,
 				2E6D543B211AB6C6003D02DB /* ColorSlider.m in Sources */,
+				2E4BC03D227051BF000719EA /* SoundListenTool.m in Sources */,
 				F4658A221C99747A00C284F4 /* CSREventEntity.m in Sources */,
 				2E2E70901FF5DE60002D1C1D /* PlaceColorIconPickerView.m in Sources */,
 				2E2E70911FF5DE60002D1C1D /* PlaceIconCollectionViewCell.m in Sources */,

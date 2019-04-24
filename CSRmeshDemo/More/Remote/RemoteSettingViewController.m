@@ -600,7 +600,7 @@
             _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
         }
         
-    }else if ([self.remoteEntity.shortName isEqualToString:@"R5BSHB"]) {
+    }else if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"]) {
         _practicalityImageView.image = [UIImage imageNamed:@"rb01"];
         [self.view addSubview:self.R5BSHBView];
         [self.R5BSHBView autoSetDimension:ALDimensionHeight toSize:224.0f];
@@ -812,7 +812,7 @@
             NSLog(@"%@",dic);
             latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
             downloadAddress = dic[@"Download_address"];
-            NSLog(@">> %@  %ld  %ld",downloadAddress,(long)[_remoteEntity.mcuSVersion integerValue],latestMCUSVersion);
+            NSLog(@">> %@  %ld  %ld",downloadAddress,(long)[_remoteEntity.mcuSVersion integerValue],(long)latestMCUSVersion);
             if ([_remoteEntity.mcuSVersion integerValue]<latestMCUSVersion) {
                 UIButton *updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
                 [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
@@ -1517,7 +1517,7 @@
         } failure:^(NSError * _Nonnull error) {
             
         }];
-    }else if ([_remoteEntity.shortName isEqualToString:@"R5BSHB"]) {
+    }else if ([_remoteEntity.shortName isEqualToString:@"R5BSBH"]) {
         NSString *cmdStr1;
         if ([_R5BSHBControlOneLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_R5BSHBSelectOneLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
             NSString *deviceIdString = [self exchangePositionOfDeviceId:_R5BSHBSelectOneLabel.tag];
@@ -1629,9 +1629,9 @@
                 }else {
                     chanelSelect = @"1";
                 }
-                cmdStr3 = [NSString stringWithFormat:@"020%@00%@",chanelSelect,deviceIdString];
+                cmdStr3 = [NSString stringWithFormat:@"030%@00%@",chanelSelect,deviceIdString];
             }else {
-                cmdStr3 = [NSString stringWithFormat:@"020100%@",deviceIdString];
+                cmdStr3 = [NSString stringWithFormat:@"030100%@",deviceIdString];
             }
         }else if ([_R5BSHBControlThreeLabel.text containsString:AcTECLocalizedStringFromTable(@"Group", @"Localizable")] && ![_R5BSHBSelectThreeLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
             
@@ -1657,12 +1657,12 @@
                 rcIndexStr = @"32";
             }
             NSString *deviceIdString = [self exchangePositionOfDeviceId:_R5BSHBSelectThreeLabel.tag];
-            cmdStr3 = [NSString stringWithFormat:@"02%@00%@",[CSRUtilities stringWithHexNumber:[rcIndexStr integerValue]],deviceIdString];
+            cmdStr3 = [NSString stringWithFormat:@"03%@00%@",[CSRUtilities stringWithHexNumber:[rcIndexStr integerValue]],deviceIdString];
         }else if ([_R5BSHBControlThreeLabel.text containsString:AcTECLocalizedStringFromTable(@"Scene", @"Localizable")] && ![_R5BSHBSelectThreeLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
             NSString *deviceIdString = [self exchangePositionOfDeviceId:_R5BSHBSelectThreeLabel.tag];
-            cmdStr3 = [NSString stringWithFormat:@"02%@0000",deviceIdString];
+            cmdStr3 = [NSString stringWithFormat:@"03%@0000",deviceIdString];
         }else{
-            cmdStr3 = @"0200000000";
+            cmdStr3 = @"0300000000";
         }
         
         NSString *cmdStr4;
@@ -1678,9 +1678,9 @@
                 }else {
                     chanelSelect = @"1";
                 }
-                cmdStr4 = [NSString stringWithFormat:@"020%@00%@",chanelSelect,deviceIdString];
+                cmdStr4 = [NSString stringWithFormat:@"040%@00%@",chanelSelect,deviceIdString];
             }else {
-                cmdStr4 = [NSString stringWithFormat:@"020100%@",deviceIdString];
+                cmdStr4 = [NSString stringWithFormat:@"040100%@",deviceIdString];
             }
         }else if ([_R5BSHBControlFourLabel.text containsString:AcTECLocalizedStringFromTable(@"Group", @"Localizable")] && ![_R5BSHBSelectFourLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
             
@@ -1706,12 +1706,12 @@
                 rcIndexStr = @"32";
             }
             NSString *deviceIdString = [self exchangePositionOfDeviceId:_R5BSHBSelectFourLabel.tag];
-            cmdStr4 = [NSString stringWithFormat:@"02%@00%@",[CSRUtilities stringWithHexNumber:[rcIndexStr integerValue]],deviceIdString];
+            cmdStr4 = [NSString stringWithFormat:@"04%@00%@",[CSRUtilities stringWithHexNumber:[rcIndexStr integerValue]],deviceIdString];
         }else if ([_R5BSHBControlFourLabel.text containsString:AcTECLocalizedStringFromTable(@"Scene", @"Localizable")] && ![_R5BSHBSelectFourLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
             NSString *deviceIdString = [self exchangePositionOfDeviceId:_R5BSHBSelectFourLabel.tag];
-            cmdStr4 = [NSString stringWithFormat:@"02%@0000",deviceIdString];
+            cmdStr4 = [NSString stringWithFormat:@"04%@0000",deviceIdString];
         }else{
-            cmdStr4 = @"0200000000";
+            cmdStr4 = @"0400000000";
         }
         
         NSString *cmdStr5;
@@ -1727,9 +1727,9 @@
                 }else {
                     chanelSelect = @"1";
                 }
-                cmdStr5 = [NSString stringWithFormat:@"020%@00%@",chanelSelect,deviceIdString];
+                cmdStr5 = [NSString stringWithFormat:@"000%@00%@",chanelSelect,deviceIdString];
             }else {
-                cmdStr5 = [NSString stringWithFormat:@"020100%@",deviceIdString];
+                cmdStr5 = [NSString stringWithFormat:@"000100%@",deviceIdString];
             }
         }else if ([_R5BSHBControlFiveLabel.text containsString:AcTECLocalizedStringFromTable(@"Group", @"Localizable")] && ![_R5BSHBSelectFiveLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
             
@@ -1755,15 +1755,15 @@
                 rcIndexStr = @"32";
             }
             NSString *deviceIdString = [self exchangePositionOfDeviceId:_R5BSHBSelectFiveLabel.tag];
-            cmdStr5 = [NSString stringWithFormat:@"02%@00%@",[CSRUtilities stringWithHexNumber:[rcIndexStr integerValue]],deviceIdString];
+            cmdStr5 = [NSString stringWithFormat:@"00%@00%@",[CSRUtilities stringWithHexNumber:[rcIndexStr integerValue]],deviceIdString];
         }else if ([_R5BSHBControlFiveLabel.text containsString:AcTECLocalizedStringFromTable(@"Scene", @"Localizable")] && ![_R5BSHBSelectFiveLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
             NSString *deviceIdString = [self exchangePositionOfDeviceId:_R5BSHBSelectFiveLabel.tag];
-            cmdStr5 = [NSString stringWithFormat:@"02%@0000",deviceIdString];
+            cmdStr5 = [NSString stringWithFormat:@"00%@0000",deviceIdString];
         }else{
-            cmdStr5 = @"0200000000";
+            cmdStr5 = @"0000000000";
         }
         
-        NSString *cmdString = [NSString stringWithFormat:@"9b1102%@%@%@%@%@",cmdStr1,cmdStr2,cmdStr3,cmdStr4,cmdStr5];
+        NSString *cmdString = [NSString stringWithFormat:@"9b1105%@%@%@%@%@",cmdStr1,cmdStr2,cmdStr3,cmdStr4,cmdStr5];
         [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdString] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
             
             _remoteEntity.remoteBranch = cmdString;
