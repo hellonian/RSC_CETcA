@@ -254,8 +254,6 @@
             
         }];
         
-        [[DataModelManager shareInstance] sendCmdData:@"ea35" toDeviceId:deviceId];
-        
     } else {
         
         NSMutableDictionary *objects = [NSMutableDictionary dictionary];
@@ -279,10 +277,23 @@
 - (void)getVersion: (NSNumber *)deviceId {
     [[DataModelManager shareInstance] sendCmdData:@"880100" toDeviceId:deviceId];
     __weak CSRmeshManager *weakself = self;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
-        if (!deviceEntity.firVersion && !deviceEntity.cvVersion) {
+        if ([deviceEntity.cvVersion integerValue]==0) {
             [weakself getVersion:deviceId];
+        }else if ([deviceEntity.hwVersion integerValue]== 2) {
+            [weakself getMcuSVersion:deviceId];
+        }
+    });
+}
+
+- (void)getMcuSVersion: (NSNumber *)deviceId {
+    [[DataModelManager shareInstance] sendCmdData:@"ea35" toDeviceId:deviceId];
+    __weak CSRmeshManager *weakself = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+        if ([deviceEntity.mcuBootVersion integerValue]==0) {
+            [weakself getMcuSVersion:deviceId];
         }
     });
 }

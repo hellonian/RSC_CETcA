@@ -138,6 +138,7 @@
 		2EDF04DB213D14CA00B9E92F /* SRGBSceneDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF04D9213D14CA00B9E92F /* SRGBSceneDetailViewController.m */; };
 		2EDF04E0213D151300B9E92F /* MRGBSceneDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF04DE213D151300B9E92F /* MRGBSceneDetailViewController.m */; };
 		2EE50F2D20DA3E3D00B484F7 /* LightSensorSettingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EE50F2F20DA3E3D00B484F7 /* LightSensorSettingViewController.xib */; };
+		2EE5E8C8227194A500EFE8B9 /* MCUUpdateTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE5E8C7227194A500EFE8B9 /* MCUUpdateTool.m */; };
 		2EE757C720102B7B00FB75C5 /* MainCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE757C620102B7B00FB75C5 /* MainCollectionView.m */; };
 		2EE757CA201030CA00FB75C5 /* TopImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE757C9201030CA00FB75C5 /* TopImageView.m */; };
 		2EE757CD2010763C00FB75C5 /* SuperCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE757CC2010763C00FB75C5 /* SuperCollectionViewCell.m */; };
@@ -622,6 +623,8 @@
 		2EDF04DD213D151300B9E92F /* MRGBSceneDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MRGBSceneDetailViewController.h; sourceTree = "<group>"; };
 		2EDF04DE213D151300B9E92F /* MRGBSceneDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MRGBSceneDetailViewController.m; sourceTree = "<group>"; };
 		2EE50F2E20DA3E3D00B484F7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LightSensorSettingViewController.xib; sourceTree = "<group>"; };
+		2EE5E8C6227194A500EFE8B9 /* MCUUpdateTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MCUUpdateTool.h; sourceTree = "<group>"; };
+		2EE5E8C7227194A500EFE8B9 /* MCUUpdateTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MCUUpdateTool.m; sourceTree = "<group>"; };
 		2EE757C520102B7B00FB75C5 /* MainCollectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainCollectionView.h; sourceTree = "<group>"; };
 		2EE757C620102B7B00FB75C5 /* MainCollectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainCollectionView.m; sourceTree = "<group>"; };
 		2EE757C8201030CA00FB75C5 /* TopImageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TopImageView.h; sourceTree = "<group>"; };
@@ -1125,6 +1128,8 @@
 				2EC7D0DD21E6F549007F44C1 /* PowerModel.m */,
 				2E4BC03B227051BF000719EA /* SoundListenTool.h */,
 				2E4BC03C227051BF000719EA /* SoundListenTool.m */,
+				2EE5E8C6227194A500EFE8B9 /* MCUUpdateTool.h */,
+				2EE5E8C7227194A500EFE8B9 /* MCUUpdateTool.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1638,6 +1643,7 @@
 				F4C85EA81CB3EE0E003E1FF3 /* CSRControllerEntity.m in Sources */,
 				2E3B9661200F2553000BD086 /* DeviceModel.m in Sources */,
 				2EDF04E0213D151300B9E92F /* MRGBSceneDetailViewController.m in Sources */,
+				2EE5E8C8227194A500EFE8B9 /* MCUUpdateTool.m in Sources */,
 				2EE757D1201078A000FB75C5 /* MainCollectionViewCell.m in Sources */,
 				2EC3FB7A223B4EFA0050A5DD /* DiscoveryTableViewController.m in Sources */,
 				2E2E70B21FF5DE60002D1C1D /* PCM.m in Sources */,
