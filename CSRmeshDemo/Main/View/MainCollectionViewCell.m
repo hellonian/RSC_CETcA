@@ -388,6 +388,8 @@
             self.iconView.image = [UIImage imageNamed:@"Device_Remote2"];
         }else if ([appearanceShortname containsString:@"RB04"] || [appearanceShortname containsString:@"RSIBH"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote1"];
+        }else if ([appearanceShortname containsString:@"R9BSBH"]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_Remote1"];
         }else if ([CSRUtilities belongToLightSensor:appearanceShortname]){
             self.iconView.image = [UIImage imageNamed:@"Device_Sensor"];
         }else if ([CSRUtilities belongToCWDevice:appearanceShortname] || [CSRUtilities belongToRGBDevice:appearanceShortname] || [CSRUtilities belongToRGBCWDevice:appearanceShortname] || [CSRUtilities belongToCWNoLevelDevice:appearanceShortname] || [CSRUtilities belongToRGBNoLevelDevice:appearanceShortname] || [CSRUtilities belongToRGBCWNoLevelDevice:appearanceShortname]) {

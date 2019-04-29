@@ -541,6 +541,24 @@ static DataModelManager *manager = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"getDaliAdress" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"addressStr":[dataStr substringWithRange:NSMakeRange(8, 2)]}];
         }
     }
+    
+    if ([dataStr hasPrefix:@"eb61"]) {
+        if ([dataStr length]>=8) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setRemotePasswordCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"state":[dataStr substringWithRange:NSMakeRange(6, 2)]}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"eb62"]) {
+        if ([dataStr length]>=6) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"enableRemotePasswordCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"state":[dataStr substringWithRange:NSMakeRange(4, 2)]}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"eb63"]) {
+        if ([dataStr length]>=12) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"getRemotePassword" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"enable":[dataStr substringWithRange:NSMakeRange(4, 1)],@"passwordCnt":[dataStr substringWithRange:NSMakeRange(5, 1)],@"password":[dataStr substringFromIndex:6]}];
+        }
+    }
 }
 
 - (void)didReceiveStreamData:(NSNumber *)deviceId streamNumber:(NSNumber *)streamNumber data:(NSData *)data {

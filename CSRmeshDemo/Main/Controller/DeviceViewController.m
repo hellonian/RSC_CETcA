@@ -657,39 +657,44 @@
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    switch (textField.tag) {
-        case 12:
-        {
-            NSString *aString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-            if ([self validateNumber:string]) {
-                if ([aString integerValue]>15) {
-                    return NO;
+    if (range.length == 1 && string.length == 0) {
+        return YES;
+    }else {
+        switch (textField.tag) {
+            case 12:
+            {
+                NSString *aString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+                if ([self validateNumber:string]) {
+                    if ([aString integerValue]>15) {
+                        return NO;
+                    }else {
+                        return YES;
+                    }
                 }else {
-                    return YES;
-                }
-            }else {
-                return NO;
-            }
-        }
-            break;
-        case 13:
-        {
-            NSString *aString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-            if ([self validateNumber:string]) {
-                if ([aString integerValue]>63) {
                     return NO;
-                }else {
-                    return YES;
                 }
-            }else {
-                return NO;
             }
+                break;
+            case 13:
+            {
+                
+                NSString *aString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+                if ([self validateNumber:string]) {
+                    if ([aString integerValue]>63) {
+                        return NO;
+                    }else {
+                        return YES;
+                    }
+                }else {
+                    return NO;
+                }
+            }
+                break;
+            default:
+                break;
         }
-            break;
-        default:
-            break;
+        return YES;
     }
-    return YES;
 }
 
 - (BOOL)validateNumber:(NSString*)number {
