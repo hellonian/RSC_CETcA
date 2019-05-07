@@ -105,9 +105,9 @@
 "Setting_back" = "Setting_back_en";
 "GroupIcons" = "Gruppeikoner";
 "EnterSceneName" = "Indtast et navn for scenen.";
-"Lamp" = "Lampe";
-"Group" = "Gruppe";
-"Scene" = "Scene";
+"Lamp" = "lampe";
+"Group" = "gruppe";
+"Scene" = "scene";
 "RemoveGroupMember" = "Fjern gruppemedlem";
 "RemoveDeviceOffLine" = "Enheden blev ikke fundet. Vil du fjerne den alligevel?";
 "NoAvailableDevices" = "Ingen tilgængelige enheder";
@@ -159,3 +159,4 @@
 "color" = "Farve";
 "colorSat" = "Farvemætning";
 "musicFlow" = "Musikstrømning";
+"fail" = "SVIGTE";

@@ -18,5 +18,6 @@
 @property (nonatomic,strong) NSNumber *deviceId;
 @property (nonatomic,assign) BOOL needUpdate;
 @property (nonatomic,assign) BOOL connected;
+@property (nonatomic,strong) NSNumber *bleHwVersion;
 
 @end

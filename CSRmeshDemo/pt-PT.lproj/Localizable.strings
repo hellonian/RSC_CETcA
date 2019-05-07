@@ -105,9 +105,9 @@
 "Setting_back" = "Setting_back_en";
 "GroupIcons" = "Ícones de grupo";
 "EnterSceneName" = "Introduza um nome para o cenário.";
-"Lamp" = "Candeeiro";
-"Group" = "Grupo";
-"Scene" = "Cenário";
+"Lamp" = "candeeiro";
+"Group" = "grupo";
+"Scene" = "cenário";
 "RemoveGroupMember" = "Remover membro do grupo";
 "RemoveDeviceOffLine" = "O dispositivo não foi encontrado. Mesmo assim, pretende eliminar";
 "NoAvailableDevices" = "Nenhum dispositivo disponível";
@@ -159,3 +159,4 @@
 "color" = "Cor";
 "colorSat" = "Saturação da cor";
 "musicFlow" = "Fluxo de música";
+"fail" = "FALHOU";

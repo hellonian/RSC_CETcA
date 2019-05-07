@@ -99,6 +99,8 @@
 @property (weak, nonatomic) IBOutlet UITextField *passwordTF;
 @property (weak, nonatomic) IBOutlet UISwitch *passwordEnableSwitch;
 @property (nonatomic, strong) NSString *resendCmd;
+@property (weak, nonatomic) IBOutlet UIButton *deleteBtn;
+@property (nonatomic,strong) UIView *translucentBgView;
 
 @end
 
@@ -466,7 +468,7 @@
                 [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
                 [updateMCUBtn setTitleColor:DARKORAGE forState:UIControlStateNormal];
                 [updateMCUBtn addTarget:self action:@selector(askUpdateMCU) forControlEvents:UIControlEventTouchUpInside];
-                [self.view addSubview:updateMCUBtn];
+                [_customContentView addSubview:updateMCUBtn];
                 [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft];
                 [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeRight];
                 [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:45.0];
@@ -485,7 +487,8 @@
 
 - (void)starteUpdateHud {
     if (!_updatingHud) {
-        _updatingHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+        _updatingHud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
         _updatingHud.mode = MBProgressHUDModeAnnularDeterminate;
         _updatingHud.delegate = self;
     }
@@ -500,6 +503,8 @@
 - (void)hideUpdateHud {
     if (_updatingHud) {
         [_updatingHud hideAnimated:YES];
+        [self.translucentBgView removeFromSuperview];
+        self.translucentBgView = nil;
     }
 }
 
@@ -559,32 +564,32 @@
     if (@available(iOS 11.0, *)) {
         CGFloat safeHeight = HEIGHT - self.view.safeAreaInsets.bottom - self.view.safeAreaInsets.top;
         if ([self.remoteEntity.shortName isEqualToString:@"RB01"]) {
-            if (safeHeight <= 490.5) {
-                _contentViewHeight.constant = 490.5;
+            if (safeHeight <= 406.5) {
+                _contentViewHeight.constant = 406.5;
             }else {
                 _contentViewHeight.constant = safeHeight;
             }
         }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]) {
-            if (safeHeight <= 355.5) {
-                _contentViewHeight.constant = 355.5;
+            if (safeHeight <= 371.5) {
+                _contentViewHeight.constant = 371.5;
             }else {
                 _contentViewHeight.constant = safeHeight;
             }
         }else if ([self.remoteEntity.shortName isEqualToString:@"RB04"] || [self.remoteEntity.shortName isEqualToString:@"RSIBH"]) {
-            if (safeHeight <= 445.5) {
-                _contentViewHeight.constant = 445.5;
+            if (safeHeight <= 461.5) {
+                _contentViewHeight.constant = 461.5;
             }else {
                 _contentViewHeight.constant = safeHeight;
             }
         }else if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"]) {
-            if (safeHeight <= 535.5) {
-                _contentViewHeight.constant = 535.5;
+            if (safeHeight <= 551.5) {
+                _contentViewHeight.constant = 551.5;
             }else {
                 _contentViewHeight.constant = safeHeight;
             }
         }else if ([self.remoteEntity.shortName isEqualToString:@"R9BSBH"]) {
-            if (safeHeight <= 834.5) {
-                _contentViewHeight.constant = 834.5;
+            if (safeHeight <= 850.5) {
+                _contentViewHeight.constant = 850.5;
             }else {
                 _contentViewHeight.constant = safeHeight;
             }
@@ -2047,6 +2052,15 @@
              selectedLabel.text = AcTECLocalizedStringFromTable(@"Notfound", @"Localizable");
          }
      }
+}
+
+- (UIView *)translucentBgView {
+    if (!_translucentBgView) {
+        _translucentBgView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        _translucentBgView.backgroundColor = [UIColor blackColor];
+        _translucentBgView.alpha = 0.4;
+    }
+    return _translucentBgView;
 }
 
 @end

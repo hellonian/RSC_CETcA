@@ -65,6 +65,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *daliAddressBtn;
 @property (weak, nonatomic) IBOutlet UITextField *daliGroupTF;
 @property (weak, nonatomic) IBOutlet UITextField *daliAddressTF;
+@property (nonatomic,strong) UIView *translucentBgView;
 
 @end
 
@@ -301,7 +302,8 @@
 
 - (void)starteUpdateHud {
     if (!_updatingHud) {
-        _updatingHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+        _updatingHud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
         _updatingHud.mode = MBProgressHUDModeAnnularDeterminate;
         _updatingHud.delegate = self;
     }
@@ -316,6 +318,8 @@
 - (void)hideUpdateHud {
     if (_updatingHud) {
         [_updatingHud hideAnimated:YES];
+        [self.translucentBgView removeFromSuperview];
+        self.translucentBgView = nil;
     }
 }
 
@@ -883,6 +887,15 @@
         [_daliAddressBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
         _daliAddressTF.text = [NSString stringWithFormat:@"%ld",address];
     }
+}
+
+- (UIView *)translucentBgView {
+    if (!_translucentBgView) {
+        _translucentBgView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        _translucentBgView.backgroundColor = [UIColor blackColor];
+        _translucentBgView.alpha = 0.4;
+    }
+    return _translucentBgView;
 }
 
 

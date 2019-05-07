@@ -194,7 +194,9 @@
 - (IBAction)selectDeviceOrGroup:(id)sender {
     DeviceListViewController *list = [[DeviceListViewController alloc] init];
     list.selectMode = DeviceListSelectMode_ForLightSensor;
-    list.originalMembers = [NSArray arrayWithObject:self.selectedNum];
+    if (self.selectedNum) {
+        list.originalMembers = [NSArray arrayWithObject:self.selectedNum];
+    }
     __weak LightSensorSettingViewController *weakSelf = self;
     [list getSelectedDevices:^(NSArray *devices) {
         if ([devices count]>0) {

@@ -105,9 +105,9 @@
 "Setting_back" = "Setting_back_en";
 "GroupIcons" = "Iconos del grupo";
 "EnterSceneName" = "Por favor, introduzca un nombre de escena.";
-"Lamp" = "Lámpara";
-"Group" = "Grupo";
-"Scene" = "Escena";
+"Lamp" = "lámpara";
+"Group" = "grupo";
+"Scene" = "escena";
 "RemoveGroupMember" = "Quite un miembro del grupo";
 "RemoveDeviceOffLine" = "No se ha encontrado el dispositivo. ¿Desea quitarlo de todas formas?";
 "NoAvailableDevices" = "No se han encontrado dispositivos disponibles";
@@ -159,3 +159,4 @@
 "color" = "Color";
 "colorSat" = "Saturación";
 "musicFlow" = "Flujo musical";
+"fail" = "FALLAR";

@@ -105,9 +105,9 @@
 "Setting_back" = "Setting_back_en";
 "GroupIcons" = "Ryhmäkuvakkeet";
 "EnterSceneName" = "Syötä nimi kohtaukselle.";
-"Lamp" = "Valo";
-"Group" = "Ryhmä";
-"Scene" = "Kohtaus";
+"Lamp" = "valo";
+"Group" = "ryhmä";
+"Scene" = "kohtaus";
 "RemoveGroupMember" = "Poista ryhmän jäsen";
 "RemoveDeviceOffLine" = "Laitetta ei löytynyt. Haluatko poista sen kuitenkin";
 "NoAvailableDevices" = "Laitteita ei saatavissa";
@@ -159,3 +159,4 @@
 "color" = "Väri";
 "colorSat" = "Värikylläisyys";
 "musicFlow" = "Musiikkivirta";
+"fail" = "FAIL";

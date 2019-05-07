@@ -107,7 +107,7 @@
 "EnterSceneName" = "Einen Namen für die Szene eingeben.";
 "Lamp" = "Lampe";
 "Group" = "Gruppe";
-"Scene" = "Szene";
+"Scene" = "scene";
 "RemoveGroupMember" = "Gruppenmitglied entfernen";
 "RemoveDeviceOffLine" = "Gerät wurde nicht gefunden. Möchten Sie es trotzdem löschen?";
 "NoAvailableDevices" = "Keine verfügbaren Geräte";
@@ -159,3 +159,4 @@
 "color" = "Farbe";
 "colorSat" = "Farbsättigung";
 "musicFlow" = "Music-Vorgabe";
+"fail" = "SCHEITERN";

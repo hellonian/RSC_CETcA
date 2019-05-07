@@ -105,10 +105,12 @@
 }
 
 - (IBAction)lampPowerStateSwitch:(UISwitch *)sender {
+    _lampPowerState = sender.on;
     [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"9c04010%d0%d0%d",_fanPowerState,_fanSpeed,sender.on]] success:nil failure:nil];
 }
 
 - (IBAction)fanPowerStateSwitch:(UISwitch *)sender {
+    _fanPowerState = sender.on;
     [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"9c04010%d0%d0%d",sender.on,_fanSpeed,_lampPowerState]] success:nil failure:nil];
 }
 - (IBAction)fanSpeedChange:(UISlider *)sender {
@@ -121,6 +123,7 @@
         speed = 2;
     }
     [sender setValue:speed];
+    _fanSpeed = speed;
     if (_fanPowerState) {
         [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"9c0401010%d0%d",speed,_lampPowerState]] success:nil failure:nil];
     }

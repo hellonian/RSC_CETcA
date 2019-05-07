@@ -40,6 +40,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *child1Btn;
 @property (weak, nonatomic) IBOutlet UIButton *socket2Btn;
 @property (weak, nonatomic) IBOutlet UIButton *child2Btn;
+@property (nonatomic,strong) UIView *translucentBgView;
 
 @end
 
@@ -127,7 +128,8 @@
 
 - (void)starteUpdateHud {
     if (!_updatingHud) {
-        _updatingHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+        _updatingHud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
         _updatingHud.mode = MBProgressHUDModeAnnularDeterminate;
         _updatingHud.delegate = self;
     }
@@ -142,6 +144,8 @@
 - (void)hideUpdateHud {
     if (_updatingHud) {
         [_updatingHud hideAnimated:YES];
+        [self.translucentBgView removeFromSuperview];
+        self.translucentBgView = nil;
     }
 }
 
@@ -322,6 +326,15 @@
 - (void)hudWasHidden:(MBProgressHUD *)hud {
     [hud removeFromSuperview];
     hud = nil;
+}
+
+- (UIView *)translucentBgView {
+    if (!_translucentBgView) {
+        _translucentBgView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        _translucentBgView.backgroundColor = [UIColor blackColor];
+        _translucentBgView.alpha = 0.4;
+    }
+    return _translucentBgView;
 }
 
 @end

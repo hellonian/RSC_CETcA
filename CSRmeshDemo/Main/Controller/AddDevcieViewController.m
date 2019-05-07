@@ -352,7 +352,7 @@
             [[UIApplication sharedApplication].keyWindow addSubview:_customizeHud];
             [_customizeHud autoCenterInSuperview];
             [_customizeHud autoSetDimensionsToSize:CGSizeMake(270, 130)];
-            _customizeHud.text = @"The device is being connected.";
+            _customizeHud.text = AcTECLocalizedStringFromTable(@"Associating", @"Localizable");;
             [_customizeHud updateProgress:0];
         });
     }

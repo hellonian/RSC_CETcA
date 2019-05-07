@@ -92,7 +92,7 @@
 "RemoteIntroduce" = "U kunt uw bluetooth afstandsbediening toevoegen en lichten toewijzen aan de knoppen.";
 "AddRemote" = "Een afstandsbediening toevoegen";
 "TapToSelect" = "Tik om te selecteren";
-"ControlLamp" = "Controleer een lamp ";
+"ControlLamp" = "Controleer een lamp";
 "ControlGroup" = "Controleer een groep";
 "ControlScene" = "Controleer scène";
 "Notfound" = "Niet gevonden";
@@ -106,8 +106,8 @@
 "GroupIcons" = "Groep iconen";
 "EnterSceneName" = "Voer een naam in voor de scène.";
 "Lamp" = "lamp";
-"Group" = "Groep";
-"Scene" = "Scène";
+"Group" = "groep";
+"Scene" = "scène";
 "RemoveGroupMember" = "Verwijder groepslid";
 "RemoveDeviceOffLine" = "Apparaat niet gevonden. Wilt u het alsnog verwijderen";
 "NoAvailableDevices" = "Niet beschikbare apparaten";
@@ -159,3 +159,4 @@
 "color" = "Kleur";
 "colorSat" = "Kleurverzadiging";
 "musicFlow" = "Muziek flow";
+"fail" = "FAIL";

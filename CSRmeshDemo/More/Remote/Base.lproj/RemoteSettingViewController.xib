@@ -45,6 +45,7 @@
                 <outlet property="R9BSBHView" destination="Vmt-Bb-FFN" id="IT4-dT-T1l"/>
                 <outlet property="contentViewHeight" destination="RNf-Tl-LTH" id="YR8-gs-aLg"/>
                 <outlet property="customContentView" destination="url-dh-Qlm" id="Tr8-HE-NVZ"/>
+                <outlet property="deleteBtn" destination="dWc-Zh-M0f" id="YdP-YY-1KA"/>
                 <outlet property="enableSwitch" destination="Qgi-G4-7Cd" id="f4K-TI-IGr"/>
                 <outlet property="fConrolFourLabel" destination="a1X-yh-iNG" id="QWD-zV-lhA"/>
                 <outlet property="fConrolOneLabel" destination="4aQ-hU-fda" id="TgQ-eO-BTV"/>

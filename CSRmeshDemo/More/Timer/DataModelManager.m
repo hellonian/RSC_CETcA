@@ -400,6 +400,8 @@ static DataModelManager *manager = nil;
     if ([dataStr hasPrefix:@"a8"]) {
         NSString *hardwareVersion = [dataStr substringWithRange:NSMakeRange(14, 2)];
         NSString *firmwareVersion = [dataStr substringWithRange:NSMakeRange(16, 2)];
+        NSString *bleHardwareVersion = [dataStr substringWithRange:NSMakeRange(8, 2)];
+        NSString *blefirwareVersion = [dataStr substringWithRange:NSMakeRange(10, 4)];
         NSString *CVVersionStr;
         if ([dataStr length] == 20) {
             CVVersionStr = [dataStr substringWithRange:NSMakeRange(18, 2)];
@@ -410,6 +412,8 @@ static DataModelManager *manager = nil;
         deviceEntity.firVersion = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:firmwareVersion]];
         deviceEntity.cvVersion = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:CVVersionStr]];
         deviceEntity.hwVersion = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:hardwareVersion]];
+        deviceEntity.bleHwVersion = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:bleHardwareVersion]];
+        deviceEntity.bleFirVersion = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:blefirwareVersion]];
         [[CSRDatabaseManager sharedInstance] saveContext];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"reGetDataForPlaceChanged" object:nil];
     }

@@ -36,6 +36,8 @@
 @property (nonatomic, retain) NSNumber * mcuHVersion;
 @property (nonatomic, retain) NSNumber * mcuSVersion;
 @property (nonatomic, retain) NSNumber * hwVersion;
+@property (nonatomic, retain) NSNumber * bleFirVersion;
+@property (nonatomic, retain) NSNumber * bleHwVersion;
 
 @end
 

@@ -105,9 +105,9 @@
 "Setting_back" = "Setting_back_en";
 "GroupIcons" = "Gruppikoner";
 "EnterSceneName" = "Ange ett namn för scenen.";
-"Lamp" = "Lampa";
-"Group" = "Grupp";
-"Scene" = "Scen ";
+"Lamp" = "lampa";
+"Group" = "grupp";
+"Scene" = "scen";
 "RemoveGroupMember" = "Ta bort gruppmedlem";
 "RemoveDeviceOffLine" = "Enheten hittades inte. Vill du ta bort den ändå?";
 "NoAvailableDevices" = "Inga tillgängliga enheter";
@@ -159,3 +159,4 @@
 "color" = "Färg";
 "colorSat" = "Färgmättnad";
 "musicFlow" = "Musikflöde";
+"fail" = "MISSLYCKAS";

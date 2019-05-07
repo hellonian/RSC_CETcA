@@ -105,9 +105,9 @@
 "Setting_back" = "Setting_back_en";
 "GroupIcons" = "Grupper ikoner";
 "EnterSceneName" = "Tast inn et navn for scenarioet.";
-"Lamp" = "Lampe";
-"Group" = "Gruppe";
-"Scene" = "Scenario";
+"Lamp" = "lampe";
+"Group" = "gruppe";
+"Scene" = "scenario";
 "RemoveGroupMember" = "Fjern gruppemedlem";
 "RemoveDeviceOffLine" = "Enheten ble ikke funnet. Vil du slette den likevel?";
 "NoAvailableDevices" = "Ingen enheter tilgjengelig";
@@ -159,3 +159,4 @@
 "color" = "Farge";
 "colorSat" = "Fargemetning";
 "musicFlow" = "Musikkstrømming";
+"fail" = "FAIL";

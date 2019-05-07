@@ -36,5 +36,7 @@
 @dynamic mcuHVersion;
 @dynamic mcuSVersion;
 @dynamic hwVersion;
+@dynamic bleFirVersion;
+@dynamic bleHwVersion;
 
 @end
