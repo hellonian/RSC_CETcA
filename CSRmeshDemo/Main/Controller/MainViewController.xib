@@ -12,6 +12,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MainViewController">
             <connections>
+                <outlet property="connectedPLable" destination="KdI-9f-xsZ" id="JUD-PE-MmB"/>
                 <outlet property="topImageView" destination="K7E-gQ-cG5" id="gVa-V4-36S"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -89,6 +90,16 @@
                         <constraint firstAttribute="width" constant="70" id="JSG-RP-nIL"/>
                     </constraints>
                 </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KdI-9f-xsZ">
+                    <rect key="frame" x="10" y="165" width="200" height="20"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="20" id="Foy-Ga-V5T"/>
+                        <constraint firstAttribute="width" constant="200" id="zo9-o5-PPL"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" red="0.76470588235294112" green="0.76470588235294112" blue="0.76470588235294112" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
@@ -96,11 +107,13 @@
                 <constraint firstItem="0a2-cY-kJj" firstAttribute="bottom" secondItem="OQB-hW-lVt" secondAttribute="bottom" id="5td-eQ-g78"/>
                 <constraint firstItem="5j1-BH-Lgh" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="20" id="8AM-02-nMg"/>
                 <constraint firstItem="OQB-hW-lVt" firstAttribute="leading" secondItem="5j1-BH-Lgh" secondAttribute="leading" id="Ajb-Fp-7FE"/>
+                <constraint firstItem="KdI-9f-xsZ" firstAttribute="bottom" secondItem="K7E-gQ-cG5" secondAttribute="bottom" constant="-5" id="JEG-jf-Ayg"/>
                 <constraint firstItem="OQB-hW-lVt" firstAttribute="top" secondItem="5j1-BH-Lgh" secondAttribute="bottom" id="JRz-M2-vAb"/>
                 <constraint firstItem="K7E-gQ-cG5" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="Ji0-Mk-AEx"/>
                 <constraint firstItem="QLT-ma-7Rn" firstAttribute="leading" secondItem="0a2-cY-kJj" secondAttribute="trailing" id="KnZ-B0-jPd"/>
                 <constraint firstItem="K7E-gQ-cG5" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" priority="750" id="NSz-AA-EwM"/>
                 <constraint firstItem="K7E-gQ-cG5" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="Qb3-Re-Fup"/>
+                <constraint firstItem="KdI-9f-xsZ" firstAttribute="leading" secondItem="K7E-gQ-cG5" secondAttribute="leading" constant="10" id="RKz-uL-aG7"/>
                 <constraint firstItem="1QM-uJ-WA6" firstAttribute="width" secondItem="OQB-hW-lVt" secondAttribute="width" id="RdV-tj-GlC"/>
                 <constraint firstItem="QLT-ma-7Rn" firstAttribute="bottom" secondItem="1QM-uJ-WA6" secondAttribute="bottom" id="YxW-wI-5AX"/>
                 <constraint firstItem="CpJ-tl-0ld" firstAttribute="top" secondItem="OQB-hW-lVt" secondAttribute="top" id="cAy-vI-gv9"/>

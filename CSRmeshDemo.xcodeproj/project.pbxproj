@@ -88,6 +88,8 @@
 		2E48BBE020D239E500401CDD /* LightSensorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E48BBDF20D239E500401CDD /* LightSensorViewController.m */; };
 		2E48BBE420D25C7800401CDD /* LightSensorSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E48BBE220D25C7800401CDD /* LightSensorSettingViewController.m */; };
 		2E4902AF224233F5003B901A /* cskey_db.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E4902AE224233F5003B901A /* cskey_db.json */; };
+		2E4BBD4E22811FC7005650F8 /* CSRGaia.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E4BBD4922811FC7005650F8 /* CSRGaia.m */; };
+		2E4BBD4F22811FC7005650F8 /* CSRGaiaGattCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E4BBD4A22811FC7005650F8 /* CSRGaiaGattCommand.m */; };
 		2E4BC03D227051BF000719EA /* SoundListenTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E4BC03C227051BF000719EA /* SoundListenTool.m */; };
 		2E4DDCEB21F9680900B2ACF3 /* FanViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E4DDCED21F9680900B2ACF3 /* FanViewController.xib */; };
 		2E4DDCF221F968FF00B2ACF3 /* SocketViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E4DDCF421F968FF00B2ACF3 /* SocketViewController.xib */; };
@@ -122,6 +124,11 @@
 		2EAD47991FFC6DA8007D45E9 /* GalleryControlImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAD47981FFC6DA8007D45E9 /* GalleryControlImageView.m */; };
 		2EAD479C1FFC76F3007D45E9 /* GallreyDropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAD479B1FFC76F3007D45E9 /* GallreyDropView.m */; };
 		2EAD4EA82004A4BB003733CA /* GalleryEditToolView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAD4EA72004A4BB003733CA /* GalleryEditToolView.m */; };
+		2EB246AD2282A73500DFF5D3 /* CSRGaiaManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB246AB2282A73500DFF5D3 /* CSRGaiaManager.m */; };
+		2EB246B22282A82600DFF5D3 /* QTIRWCP.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB246AE2282A82500DFF5D3 /* QTIRWCP.m */; };
+		2EB246B32282A82600DFF5D3 /* QTIRWCPSegment.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB246AF2282A82600DFF5D3 /* QTIRWCPSegment.m */; };
+		2EB246B62282CD8B00DFF5D3 /* CSRCallbacks.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB246B52282CD8B00DFF5D3 /* CSRCallbacks.m */; };
+		2EB246B92282CEB500DFF5D3 /* CSRBLEUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB246B82282CEB500DFF5D3 /* CSRBLEUtil.m */; };
 		2EBBA91D21D7442E00D2E7DA /* SocketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EBBA91B21D7442E00D2E7DA /* SocketViewController.m */; };
 		2EC3893A204921C2004D822D /* TimerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC38938204921C2004D822D /* TimerTableViewCell.m */; };
 		2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EC38939204921C2004D822D /* TimerTableViewCell.xib */; };
@@ -232,8 +239,6 @@
 		0DE95D3E1B2990C4006D0397 /* CSRDatabaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CSRDatabaseManager.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		2E06A4FC20205B0E007B8BEA /* GroupViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GroupViewController.h; sourceTree = "<group>"; };
 		2E06A4FD20205B0E007B8BEA /* GroupViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GroupViewController.m; sourceTree = "<group>"; };
-		2E0AA21321266EF500DB45EB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
-		2E0AA21521266F2000DB45EB /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/DeviceViewController.strings"; sourceTree = "<group>"; };
 		2E0AA21A2126758300DB45EB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
 		2E0AA21C2126758F00DB45EB /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/RemoteSettingViewController.strings"; sourceTree = "<group>"; };
 		2E0AA2202126761900DB45EB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/AboutViewController.xib; sourceTree = "<group>"; };
@@ -259,6 +264,8 @@
 		2E2A016721425F7F00B2EFAF /* GetDataTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetDataTools.m; sourceTree = "<group>"; };
 		2E2B55B52216CC6E008864A1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SocketViewController.strings; sourceTree = "<group>"; };
 		2E2B55B72216CC8C008864A1 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SocketViewController.strings"; sourceTree = "<group>"; };
+		2E2D962B229D4BBE003FF662 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/DeviceViewController.strings"; sourceTree = "<group>"; };
+		2E2D962D229D4C52003FF662 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
 		2E2E70041FF5DE60002D1C1D /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
 		2E2E70051FF5DE60002D1C1D /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
 		2E2E70071FF5DE60002D1C1D /* MasterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
@@ -355,6 +362,10 @@
 		2E48BBE120D25C7800401CDD /* LightSensorSettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LightSensorSettingViewController.h; sourceTree = "<group>"; };
 		2E48BBE220D25C7800401CDD /* LightSensorSettingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LightSensorSettingViewController.m; sourceTree = "<group>"; };
 		2E4902AE224233F5003B901A /* cskey_db.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = cskey_db.json; sourceTree = "<group>"; };
+		2E4BBD4822811FC7005650F8 /* CSRGaiaGattCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRGaiaGattCommand.h; sourceTree = "<group>"; };
+		2E4BBD4922811FC7005650F8 /* CSRGaia.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSRGaia.m; sourceTree = "<group>"; };
+		2E4BBD4A22811FC7005650F8 /* CSRGaiaGattCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSRGaiaGattCommand.m; sourceTree = "<group>"; };
+		2E4BBD4B22811FC7005650F8 /* CSRGaia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRGaia.h; sourceTree = "<group>"; };
 		2E4BC03B227051BF000719EA /* SoundListenTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SoundListenTool.h; sourceTree = "<group>"; };
 		2E4BC03C227051BF000719EA /* SoundListenTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SoundListenTool.m; sourceTree = "<group>"; };
 		2E4DDCEC21F9680900B2ACF3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/FanViewController.xib; sourceTree = "<group>"; };
@@ -458,6 +469,16 @@
 		2EAD479B1FFC76F3007D45E9 /* GallreyDropView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GallreyDropView.m; sourceTree = "<group>"; };
 		2EAD4EA62004A4BB003733CA /* GalleryEditToolView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GalleryEditToolView.h; sourceTree = "<group>"; };
 		2EAD4EA72004A4BB003733CA /* GalleryEditToolView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GalleryEditToolView.m; sourceTree = "<group>"; };
+		2EB246AB2282A73500DFF5D3 /* CSRGaiaManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSRGaiaManager.m; sourceTree = "<group>"; };
+		2EB246AC2282A73500DFF5D3 /* CSRGaiaManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRGaiaManager.h; sourceTree = "<group>"; };
+		2EB246AE2282A82500DFF5D3 /* QTIRWCP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTIRWCP.m; sourceTree = "<group>"; };
+		2EB246AF2282A82600DFF5D3 /* QTIRWCPSegment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTIRWCPSegment.m; sourceTree = "<group>"; };
+		2EB246B02282A82600DFF5D3 /* QTIRWCP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTIRWCP.h; sourceTree = "<group>"; };
+		2EB246B12282A82600DFF5D3 /* QTIRWCPSegment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTIRWCPSegment.h; sourceTree = "<group>"; };
+		2EB246B42282CD8B00DFF5D3 /* CSRCallbacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRCallbacks.h; sourceTree = "<group>"; };
+		2EB246B52282CD8B00DFF5D3 /* CSRCallbacks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSRCallbacks.m; sourceTree = "<group>"; };
+		2EB246B72282CEB400DFF5D3 /* CSRBLEUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRBLEUtil.h; sourceTree = "<group>"; };
+		2EB246B82282CEB500DFF5D3 /* CSRBLEUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSRBLEUtil.m; sourceTree = "<group>"; };
 		2EBBA91A21D7442E00D2E7DA /* SocketViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SocketViewController.h; sourceTree = "<group>"; };
 		2EBBA91B21D7442E00D2E7DA /* SocketViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SocketViewController.m; sourceTree = "<group>"; };
 		2EC18BC4221D225F008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
@@ -1021,6 +1042,7 @@
 		2E2E70671FF5DE60002D1C1D /* Update */ = {
 			isa = PBXGroup;
 			children = (
+				2E4BBD4622811FC7005650F8 /* GAIA */,
 				2E2E706B1FF5DE60002D1C1D /* OTAU Library */,
 				2E2E70761FF5DE60002D1C1D /* UpdateDeviceModel.h */,
 				2E2E70771FF5DE60002D1C1D /* UpdateDeviceModel.m */,
@@ -1189,6 +1211,43 @@
 				2EE50F2F20DA3E3D00B484F7 /* LightSensorSettingViewController.xib */,
 			);
 			path = LightSensor;
+			sourceTree = "<group>";
+		};
+		2E4BBD4622811FC7005650F8 /* GAIA */ = {
+			isa = PBXGroup;
+			children = (
+				2E4BBD4722811FC7005650F8 /* GaiaLibrary */,
+				2E4BBD4C22811FC7005650F8 /* BTLibrary */,
+			);
+			path = GAIA;
+			sourceTree = "<group>";
+		};
+		2E4BBD4722811FC7005650F8 /* GaiaLibrary */ = {
+			isa = PBXGroup;
+			children = (
+				2E4BBD4B22811FC7005650F8 /* CSRGaia.h */,
+				2E4BBD4922811FC7005650F8 /* CSRGaia.m */,
+				2E4BBD4822811FC7005650F8 /* CSRGaiaGattCommand.h */,
+				2E4BBD4A22811FC7005650F8 /* CSRGaiaGattCommand.m */,
+				2EB246AC2282A73500DFF5D3 /* CSRGaiaManager.h */,
+				2EB246AB2282A73500DFF5D3 /* CSRGaiaManager.m */,
+				2EB246B02282A82600DFF5D3 /* QTIRWCP.h */,
+				2EB246AE2282A82500DFF5D3 /* QTIRWCP.m */,
+				2EB246B12282A82600DFF5D3 /* QTIRWCPSegment.h */,
+				2EB246AF2282A82600DFF5D3 /* QTIRWCPSegment.m */,
+			);
+			path = GaiaLibrary;
+			sourceTree = "<group>";
+		};
+		2E4BBD4C22811FC7005650F8 /* BTLibrary */ = {
+			isa = PBXGroup;
+			children = (
+				2EB246B42282CD8B00DFF5D3 /* CSRCallbacks.h */,
+				2EB246B52282CD8B00DFF5D3 /* CSRCallbacks.m */,
+				2EB246B72282CEB400DFF5D3 /* CSRBLEUtil.h */,
+				2EB246B82282CEB500DFF5D3 /* CSRBLEUtil.m */,
+			);
+			path = BTLibrary;
 			sourceTree = "<group>";
 		};
 		2E6A02221F39B02500111312 /* tabBar */ = {
@@ -1557,6 +1616,7 @@
 				F43D7A5C1D004225009ADD96 /* CSRGatewayEntity+CoreDataProperties.m in Sources */,
 				2E5A587D21378B6800E416F9 /* MusicViewController.m in Sources */,
 				2E06A4FF20205B0E007B8BEA /* GroupViewController.m in Sources */,
+				2EB246B92282CEB500DFF5D3 /* CSRBLEUtil.m in Sources */,
 				2E2A016821425F7F00B2EFAF /* GetDataTools.m in Sources */,
 				F4F11C131D00408C0080F3BB /* CSRGatewayEntity.m in Sources */,
 				2E37075720CE647A000AF696 /* NSBundle+AppLanguageSwitch.m in Sources */,
@@ -1565,6 +1625,7 @@
 				0D835B361B9749E600FF4376 /* AppDelegate.m in Sources */,
 				2EA18F0821E5EFD200E4D35B /* TwoChannelDimmerVC.m in Sources */,
 				2E3A65F7202BF97300B3E425 /* SingleDeviceModel.m in Sources */,
+				2EB246B22282A82600DFF5D3 /* QTIRWCP.m in Sources */,
 				2EC3893F204939CE004D822D /* TimerDetailViewController.m in Sources */,
 				2EE757CA201030CA00FB75C5 /* TopImageView.m in Sources */,
 				2EE757C720102B7B00FB75C5 /* MainCollectionView.m in Sources */,
@@ -1585,6 +1646,7 @@
 				0D835B411B9749E600FF4376 /* CSRAppStateManager.m in Sources */,
 				0D835B421B9749E600FF4376 /* CSRDevicesManager.m in Sources */,
 				2EC73CF62124197700850882 /* ColorSquare.m in Sources */,
+				2EB246AD2282A73500DFF5D3 /* CSRGaiaManager.m in Sources */,
 				0D835B431B9749E600FF4376 /* CSRmeshDevice.m in Sources */,
 				2EC3FB7D223B85D20050A5DD /* OTAU.m in Sources */,
 				0D835B441B9749E600FF4376 /* CSRmeshArea.m in Sources */,
@@ -1621,17 +1683,20 @@
 				2E2E70A61FF5DE60002D1C1D /* DataModelManager.m in Sources */,
 				F4C85EA71CB3EE0E003E1FF3 /* CSRControllerEntity+CoreDataProperties.m in Sources */,
 				2EAD479C1FFC76F3007D45E9 /* GallreyDropView.m in Sources */,
+				2E4BBD4F22811FC7005650F8 /* CSRGaiaGattCommand.m in Sources */,
 				2EC7D0DE21E6F549007F44C1 /* PowerModel.m in Sources */,
 				2E2E70971FF5DE60002D1C1D /* RemoteViewController.m in Sources */,
 				2E2E708E1FF5DE60002D1C1D /* PlaceColorCollectionViewCell.m in Sources */,
 				2EF2DB5A200DA6CF00A1B236 /* DeviceModelManager.m in Sources */,
 				2EEA6E361F453B1300895CE2 /* ControlMaskView.m in Sources */,
+				2EB246B62282CD8B00DFF5D3 /* CSRCallbacks.m in Sources */,
 				2EAD47991FFC6DA8007D45E9 /* GalleryControlImageView.m in Sources */,
 				2EE98D9721B0DD5000FAC3AF /* ScanViewController.m in Sources */,
 				2E2E708A1FF5DE60002D1C1D /* PlaceDetailsViewController.m in Sources */,
 				2E2E707E1FF5DE60002D1C1D /* MoreViewController.m in Sources */,
 				2EF332552045031300565374 /* HelpViewController.m in Sources */,
 				2E3B967F200F3847000BD086 /* MainViewController.m in Sources */,
+				2EB246B32282A82600DFF5D3 /* QTIRWCPSegment.m in Sources */,
 				2E63A54321E328B800FCE49D /* SocketPowerCell.m in Sources */,
 				F4658A211C99747A00C284F4 /* CSREventEntity+CoreDataProperties.m in Sources */,
 				2ED3963C204D09A00068B666 /* TimerEntity.m in Sources */,
@@ -1651,6 +1716,7 @@
 				2E5A58782137896500E416F9 /* RGBDeviceViewController.m in Sources */,
 				2E2E707B1FF5DE60002D1C1D /* AboutViewController.m in Sources */,
 				2EF332502045030100565374 /* LanguageViewController.m in Sources */,
+				2E4BBD4E22811FC7005650F8 /* CSRGaia.m in Sources */,
 				2EA101B720E0BBE500D2C88F /* SceneListSModel.m in Sources */,
 				2EE95A831FAB0F9700E1F945 /* ViewController.m in Sources */,
 				2E2000AC2018227E000AD8C3 /* SceneMemberEntity.m in Sources */,
@@ -1720,8 +1786,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				2E37074F20CE4C16000AF696 /* Base */,
-				2E0AA21321266EF500DB45EB /* en */,
-				2E0AA21521266F2000DB45EB /* zh-Hans */,
 				2EC4205122179F2800E1717F /* de */,
 				2E48A7F6221BAEBD0052A617 /* sv */,
 				2E747FCF221CE2A100FBEB14 /* nb */,
@@ -1732,6 +1796,8 @@
 				2EC18BFD221D229E008B33DC /* fr */,
 				2EC18C10221D22B6008B33DC /* pt-PT */,
 				2EC18C23221D22E7008B33DC /* fi-FI */,
+				2E2D962B229D4BBE003FF662 /* zh-Hans */,
+				2E2D962D229D4C52003FF662 /* en */,
 			);
 			name = DeviceViewController.xib;
 			sourceTree = "<group>";
@@ -2183,7 +2249,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2241,7 +2307,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

@@ -68,6 +68,7 @@
                 <outlet property="tConrolTwoLabel" destination="ZAX-t4-UDp" id="4en-5z-rr9"/>
                 <outlet property="tSelectOneLabel" destination="lZq-LO-YIx" id="ock-2u-VUX"/>
                 <outlet property="tSelectTwoLabel" destination="WSQ-1U-ylg" id="Bz9-LS-Opy"/>
+                <outlet property="twoRemoteEnableView" destination="omH-2Q-gkZ" id="AVJ-Ig-fwb"/>
                 <outlet property="twoRemoteView" destination="WG2-RJ-8Up" id="LbE-S8-Qs3"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -496,7 +497,7 @@
             <point key="canvasLocation" x="-686" y="-54"/>
         </view>
         <view contentMode="scaleToFill" id="WG2-RJ-8Up">
-            <rect key="frame" x="0.0" y="0.0" width="417" height="138"/>
+            <rect key="frame" x="0.0" y="0.0" width="417" height="84"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d6K-ib-pNv">
@@ -588,45 +589,16 @@
                         <constraint firstAttribute="width" constant="9" id="kWi-Ds-rIN"/>
                     </constraints>
                 </imageView>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VlD-iO-r55">
-                    <rect key="frame" x="20" y="89" width="397" height="1"/>
-                    <color key="backgroundColor" red="0.90196078430000004" green="0.90196078430000004" blue="0.90196078430000004" alpha="1" colorSpace="calibratedRGB"/>
-                    <constraints>
-                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="1" id="E7D-xK-FFU"/>
-                        <constraint firstAttribute="height" constant="1" id="saf-bY-9wj"/>
-                    </constraints>
-                </view>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enable" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qoG-l2-Sbu">
-                    <rect key="frame" x="20" y="102" width="46" height="20"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="20" id="szF-M8-Igu"/>
-                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="46" id="tSm-OJ-Dun"/>
-                    </constraints>
-                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <color key="textColor" red="0.30196078430000001" green="0.30196078430000001" blue="0.30196078430000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qgi-G4-7Cd">
-                    <rect key="frame" x="353" y="96.5" width="51" height="31"/>
-                    <color key="onTintColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <connections>
-                        <action selector="enableRemote:" destination="-1" eventType="valueChanged" id="fJk-Pc-Fqx"/>
-                    </connections>
-                </switch>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstItem="VlD-iO-r55" firstAttribute="leading" secondItem="WG2-RJ-8Up" secondAttribute="leading" constant="20" id="1Dp-z2-ECk"/>
                 <constraint firstItem="BCJ-Xg-Jho" firstAttribute="leading" secondItem="WG2-RJ-8Up" secondAttribute="leading" id="4Wm-Zx-Z8F"/>
                 <constraint firstItem="TxR-Sa-P5Z" firstAttribute="leading" secondItem="fee-To-sN2" secondAttribute="leading" constant="8" id="4fy-uY-LBy"/>
                 <constraint firstItem="WSQ-1U-ylg" firstAttribute="leading" secondItem="KCy-st-CLa" secondAttribute="trailing" constant="8" id="5pE-OK-9Yq"/>
                 <constraint firstItem="3L5-is-ruH" firstAttribute="centerY" secondItem="BCJ-Xg-Jho" secondAttribute="centerY" id="B9p-xF-05m"/>
                 <constraint firstItem="KCy-st-CLa" firstAttribute="top" secondItem="d6K-ib-pNv" secondAttribute="bottom" constant="9" id="E7r-iF-MxZ"/>
-                <constraint firstItem="qoG-l2-Sbu" firstAttribute="top" secondItem="VlD-iO-r55" secondAttribute="bottom" constant="12" id="Fct-zF-QtN"/>
                 <constraint firstAttribute="trailing" secondItem="Okw-Pg-tWd" secondAttribute="trailing" id="GXO-55-jWv"/>
                 <constraint firstAttribute="trailing" secondItem="3L5-is-ruH" secondAttribute="trailing" constant="15" id="IDu-4L-c7a"/>
-                <constraint firstAttribute="trailing" secondItem="VlD-iO-r55" secondAttribute="trailing" id="Jpa-it-XM2"/>
-                <constraint firstItem="VlD-iO-r55" firstAttribute="top" secondItem="d6K-ib-pNv" secondAttribute="bottom" constant="44" id="Jr6-aF-HaD"/>
                 <constraint firstItem="d6K-ib-pNv" firstAttribute="leading" secondItem="WG2-RJ-8Up" secondAttribute="leading" constant="20" id="MJ2-bF-34g"/>
                 <constraint firstItem="d6K-ib-pNv" firstAttribute="top" secondItem="lZq-LO-YIx" secondAttribute="bottom" constant="5" id="QCK-po-Azk"/>
                 <constraint firstItem="BCJ-Xg-Jho" firstAttribute="top" secondItem="d6K-ib-pNv" secondAttribute="bottom" id="Qhb-kK-BrX"/>
@@ -637,11 +609,8 @@
                 <constraint firstItem="WSQ-1U-ylg" firstAttribute="trailing" secondItem="ZAX-t4-UDp" secondAttribute="trailing" id="XvS-SQ-6UT"/>
                 <constraint firstItem="d6K-ib-pNv" firstAttribute="top" secondItem="WG2-RJ-8Up" secondAttribute="top" constant="44" id="axh-hF-GJW"/>
                 <constraint firstAttribute="trailing" secondItem="BCJ-Xg-Jho" secondAttribute="trailing" id="bbj-is-1wd"/>
-                <constraint firstItem="fee-To-sN2" firstAttribute="trailing" secondItem="Qgi-G4-7Cd" secondAttribute="trailing" constant="15" id="cia-3J-kpF"/>
                 <constraint firstItem="d6K-ib-pNv" firstAttribute="top" secondItem="Okw-Pg-tWd" secondAttribute="bottom" id="ewe-6z-ear"/>
                 <constraint firstAttribute="trailing" secondItem="d6K-ib-pNv" secondAttribute="trailing" id="hrI-ZQ-Nan"/>
-                <constraint firstItem="Qgi-G4-7Cd" firstAttribute="centerY" secondItem="qoG-l2-Sbu" secondAttribute="centerY" id="iVN-bd-StJ"/>
-                <constraint firstItem="qoG-l2-Sbu" firstAttribute="leading" secondItem="fee-To-sN2" secondAttribute="leading" constant="20" id="lRJ-wd-kcZ"/>
                 <constraint firstItem="ps3-Tw-Fes" firstAttribute="centerY" secondItem="Okw-Pg-tWd" secondAttribute="centerY" id="mW1-OC-Rsy"/>
                 <constraint firstAttribute="trailing" secondItem="WSQ-1U-ylg" secondAttribute="trailing" constant="30" id="mhB-n6-HnS"/>
                 <constraint firstItem="ZAX-t4-UDp" firstAttribute="top" secondItem="d6K-ib-pNv" secondAttribute="bottom" constant="5" id="p3w-OE-3Jd"/>
@@ -656,7 +625,7 @@
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="fee-To-sN2"/>
-            <point key="canvasLocation" x="-654" y="320"/>
+            <point key="canvasLocation" x="-655.20000000000005" y="289.65517241379314"/>
         </view>
         <view contentMode="scaleToFill" id="Fbk-vk-Rhu">
             <rect key="frame" x="0.0" y="0.0" width="375" height="227"/>
@@ -987,7 +956,7 @@
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vDF-kn-4hi"/>
-            <point key="canvasLocation" x="-687" y="533"/>
+            <point key="canvasLocation" x="-687" y="579"/>
         </view>
         <view contentMode="scaleToFill" id="eeK-0t-NWm">
             <rect key="frame" x="0.0" y="0.0" width="375" height="97"/>
@@ -1009,7 +978,7 @@
                     <color key="textColor" red="0.30196078430000001" green="0.30196078430000001" blue="0.30196078430000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eCR-Hr-95u">
+                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="eCR-Hr-95u">
                     <rect key="frame" x="311" y="51.5" width="51" height="31"/>
                     <color key="onTintColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <connections>
@@ -1682,6 +1651,39 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="kYu-sw-zji"/>
             <point key="canvasLocation" x="54" y="731"/>
+        </view>
+        <view contentMode="scaleToFill" id="omH-2Q-gkZ">
+            <rect key="frame" x="0.0" y="0.0" width="417" height="48"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enable" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qoG-l2-Sbu">
+                    <rect key="frame" x="20" y="14" width="43.5" height="20"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="20" id="szF-M8-Igu"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <color key="textColor" red="0.30196078430000001" green="0.30196078430000001" blue="0.30196078430000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qgi-G4-7Cd">
+                    <rect key="frame" x="353" y="8.5" width="51" height="31"/>
+                    <color key="onTintColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <connections>
+                        <action selector="enableRemote:" destination="-1" eventType="valueChanged" id="fJk-Pc-Fqx"/>
+                    </connections>
+                </switch>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="qoG-l2-Sbu" firstAttribute="leading" secondItem="Zwl-Qq-hOo" secondAttribute="leading" constant="20" id="FhA-eH-OH6"/>
+                <constraint firstItem="qoG-l2-Sbu" firstAttribute="centerY" secondItem="omH-2Q-gkZ" secondAttribute="centerY" id="Heo-LP-uj8"/>
+                <constraint firstItem="Zwl-Qq-hOo" firstAttribute="trailing" secondItem="Qgi-G4-7Cd" secondAttribute="trailing" constant="15" id="dfg-j4-4ne"/>
+                <constraint firstItem="Qgi-G4-7Cd" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="qoG-l2-Sbu" secondAttribute="trailing" constant="8" symbolic="YES" id="dsd-I7-u2a"/>
+                <constraint firstItem="Qgi-G4-7Cd" firstAttribute="centerY" secondItem="qoG-l2-Sbu" secondAttribute="centerY" id="mtA-ny-bNg"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="Zwl-Qq-hOo"/>
+            <point key="canvasLocation" x="-655" y="380"/>
         </view>
     </objects>
     <resources>

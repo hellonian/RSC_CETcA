@@ -88,6 +88,7 @@
 @property (nonatomic,strong) UIAlertController *sceneSetfailureAlert;
 
 @property (nonatomic,strong) NSMutableDictionary *semaphores;
+@property (weak, nonatomic) IBOutlet UILabel *connectedPLable;
 
 @end
 
@@ -105,6 +106,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settedSceneFailure:) name:@"settedSceneFailure" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(multichannelSceneAddedSuccessCall:) name:@"multichannelSceneAddedSuccessCall" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(multichannelDeleteSceneCall:) name:@"multichannelDeleteSceneCall" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeConnectedNotification:) name:@"BridgeConnectedNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeDisconnectedNotification:) name:@"BridgeDisconnectedNotification" object:nil];
     
     self.improver = [[ImproveTouchingExperience alloc] init];
     
@@ -991,6 +994,8 @@
                             sceneMember.colorTemperature = @(11);
                         }
                     }
+                }else if ([CSRUtilities belongToCurtainController:deviceModel.shortName]) {
+                    sceneMember.eveType = @(10);
                 }
                 
                 [sceneEntity addMembersObject:sceneMember];
@@ -1903,5 +1908,15 @@
     [self getLocation];
 }
 */
+
+- (void)bridgeConnectedNotification:(NSNotification *)notification {
+    NSDictionary *dic = notification.userInfo;
+    CBPeripheral *per = dic[@"peripheral"];
+    _connectedPLable.text = [NSString stringWithFormat:@"%@ %@",per.name,per.uuidString];
+}
+
+- (void)bridgeDisconnectedNotification:(NSNotification *)notification {
+    _connectedPLable.text = @"";
+}
 
 @end

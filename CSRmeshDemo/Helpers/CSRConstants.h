@@ -41,7 +41,7 @@
 
 #define kDimmers @[@"D350BT",@"D350B-H",@"D350SB",@"D350B",@"D300IB",@"D300SB-T3",@"D350SB-T1",@"D300IB-H",@"D300IB-T2",@"D350B-B",@"D350B-L",@"D300IB-L",@"D0-10IB",@"D0/1-10IB",@"D350SB-Q2",@"D300SB",@"D350STB-Q",@"D350SB-Q",@"D1-10VIBH",@"D300IB",@"DDSB",@"D300IB-Q",@"D300B",@"D300B-H",@"DDSB",@"D300BH",@"D0/1-10B"]
 #define kSwitchs @[@"S350BT",@"S350B",@"S2400IB",@"S350B-H",@"S2400IB-H",@"S2400IB-T4",@"S10IB",@"S10IB-H2",@"S10IBH",@"S2400IB-Q"]
-#define kRemotes @[@"RB01",@"RB02",@"S10IB-H2",@"RB04",@"RSIBH",@"R5BSBH",@"R9BSBH"]
+#define kRemotes @[@"RB01",@"RB02",@"S10IB-H2",@"RB04",@"RSIBH",@"R5BSBH",@"R9BSBH",@"RB07",@"RB06",@"RSBH"]
 #define kSockets @[@"P2400B-H",@"P2400B-H2"]
 
 #define kTwoChannelDimmers @[@"D200IB-2G",@"D200GB-2G"]
@@ -61,7 +61,7 @@
 
 #define kCurtainController @[@"C300IB"]
 
-#define kFanController @[@"F350B-H"]
+#define kFanController @[@"F350B-H",@"F350IBH"]
 
 #define kMCUDevices @[@"D0/1-10IB",@"S2400IB",@"S2400IB-H",@"S2400IB-T",@"S10IB",@"S10IB-H",@"C300IB",@"C300IB-H",@"P2400B",@"P2400B-H",@"F350B",@"F350B-H",@"D1-10VIBH",@"D200IB-2G",@"S10IBH",@"D350SB-Q2",@"RB04",@"RSIBH",@"D300B",@"D300B-H"]
 

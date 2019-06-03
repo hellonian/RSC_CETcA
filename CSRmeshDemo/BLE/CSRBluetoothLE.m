@@ -13,13 +13,16 @@
 #import "CSRmeshSettings.h"
 #import "CSRConstants.h"
 #import "CSRAppStateManager.h"
-#import <CSRmesh/LightModelApi.h>
 #import "CSRDeviceEntity.h"
 
 #import "OTAU.h"
 #import "CSRUtilities.h"
 #import "DeviceModelManager.h"
 #import "DataModelManager.h"
+
+#import "CSRGaia.h"
+#import "CSRCallbacks.h"
+#import "CSRBLEUtil.h"
 
 // Uncomment to enable brige roaming
 #define   BRIDGE_ROAMING_ENABLE
@@ -31,7 +34,7 @@
 #define CSR_STORED_PERIPHERALS  @"StoredDevices"
 
 
-@interface CSRBluetoothLE () <CBCentralManagerDelegate, CBPeripheralDelegate,LightModelApiDelegate> {
+@interface CSRBluetoothLE () <CBCentralManagerDelegate, CBPeripheralDelegate> {
 	CBCentralManager    *centralManager;
     NSInteger beforeRssi;
     NSInteger lastRssi;
@@ -40,6 +43,8 @@
     // Set of objects that request the scanner to be turned On
     // Scanner will be turned off if there are no memebers in the Set
 @property (atomic)  NSMutableSet  *scannerEnablers;
+
+@property (nonatomic, strong) NSMutableDictionary *characteristicQueue;
 
 @end
 
@@ -127,8 +132,12 @@
     // Connect peripheral without checking how many are connected
 -(void) connectPeripheralNoCheck:(CBPeripheral *) peripheral {
     if ([peripheral state]!=CBPeripheralStateConnected) {
-        NSLog(@"connectPeripheralNoCheck");
+//        NSLog(@"connectPeripheralNoCheck");
         [centralManager connectPeripheral:peripheral options:nil];
+    }
+    if (_isForGAIA) {
+        [self.characteristicQueue removeAllObjects];
+        [self.listening removeAllObjects];
     }
 }
 
@@ -138,7 +147,13 @@
     // Disconnect the given peripheral.
 -(void) disconnectPeripheral:(CBPeripheral *) peripheral {
     NSLog(@"主动断开");
+    if (_isForGAIA) {
+        [self clearListeners];
+    }
     [centralManager cancelPeripheralConnection:peripheral];
+    if (_isForGAIA) {
+        self.targetPeripheral = nil;
+    }
 }
 
 
@@ -234,6 +249,9 @@
             NSLog(@"Central Powered OFF");
             if (_isUpdateFW) {
                 [_foundPeripherals removeAllObjects];
+                if (_isForGAIA && self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(didPowerOff)]) {
+                    [self.bleDelegate didPowerOff];
+                }
             }
             
             break;
@@ -253,6 +271,9 @@
             NSLog(@"Central powered ON");
             if (_isUpdateFW) {
                 [_foundPeripherals removeAllObjects];
+                if (_isForGAIA && self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(didPowerOn)]) {
+                    [self.bleDelegate didPowerOn];
+                }
             }
             
             CBUUID *uuid = [CBUUID UUIDWithString:@"FEF1"];
@@ -287,6 +308,7 @@
     //  - Inform delegate of new discovery (for UI refresh)
 
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
+//    NSLog(@"%@",advertisementData);
     [peripheral setRssi:RSSI];
     NSString *adString;
     if (advertisementData[@"kCBAdvDataManufacturerData"]) {
@@ -372,19 +394,27 @@
     // if also connected to another Bridge then disconnect from that.
     
     if (_isUpdateFW) {
-        self.discoveredChars = [NSNumber numberWithBool:NO];
-        peripheral.delegate=self;
-        
-        if (peripheral.services.count==0) {
+        if (_isForGAIA) {
+            peripheral.delegate = self;
             [peripheral discoverServices:nil];
-        }
-        else {
-            for (CBService *service in peripheral.services) {
-                NSLog(@"didConnectPeripheral_service: %@",service.UUID);
+            if (self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(didConnectToPeripheral:)]) {
+                [self.bleDelegate didConnectToPeripheral:peripheral];
             }
+        }else {
+            self.discoveredChars = [NSNumber numberWithBool:NO];
+            peripheral.delegate=self;
+            
+            if (peripheral.services.count==0) {
+                [peripheral discoverServices:nil];
+            }
+            else {
+                for (CBService *service in peripheral.services) {
+                    NSLog(@"didConnectPeripheral_service: %@",service.UUID);
+                }
+            }
+            
+            [self didConnectPeripheral:peripheral];
         }
-        
-        [self didConnectPeripheral:peripheral];
         
     }else {
 
@@ -398,10 +428,6 @@
         [[CSRBridgeRoaming sharedInstance] connectedPeripheral:peripheral];
         NSLog (@"BRIDGE CONNECTED %@  %@",peripheral.name,peripheral.uuidString);
         
-//        if (_connectedPeripherals.count>0) {
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"BridgeConnectedNotification" object:nil userInfo:@{@"peripheral":peripheral}];
-//        }
-//
 //        [[DeviceModelManager sharedInstance] getAllDevicesState];
         
 #endif
@@ -422,7 +448,15 @@
     
     if(_isUpdateFW) {
         NSLog(@"did disconnect Peripheral %@\n",peripheral.name);
-        [self didDisconnectPeripheral:peripheral withError:error];
+        if (_isForGAIA) {
+            [self clearListeners];
+            if (self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(didDisconnectFromPeripheral:)]) {
+                [self.bleDelegate didDisconnectFromPeripheral:peripheral];
+            }
+        }else {
+            [self didDisconnectPeripheral:peripheral withError:error];
+        }
+        
     }else {
         if ([_connectedPeripherals containsObject:peripheral]) {
             [_connectedPeripherals removeObject:peripheral];
@@ -451,18 +485,27 @@
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
     if (_isUpdateFW) {
         if (error == nil) {
-            CBUUID *uuid = [CBUUID UUIDWithString:serviceApplicationOtauUuid];
-            CBUUID *bl_uuid = [CBUUID UUIDWithString:serviceBootOtauUuid];
-            for (CBService *service in peripheral.services) {
-                NSLog(@"didDiscoverServices_service: %@",service.UUID);
-                if ([service.UUID isEqual:uuid]) {
-                    self.peripheralInBoot = [NSNumber numberWithBool:NO];
-                    [peripheral discoverCharacteristics:nil forService:service];
-                    self.targetService = service;
-                }else if ([service.UUID isEqual:bl_uuid]) {
-                    self.peripheralInBoot = [NSNumber numberWithBool:YES];
-                    [peripheral discoverCharacteristics:nil forService:service];
-                    self.targetService = service;
+            if (_isForGAIA) {
+                if (peripheral.state == CBPeripheralStateConnected) {
+                    for (CBService *service in peripheral.services) {
+                        NSLog(@"Service %@", service.UUID);
+                        [peripheral discoverCharacteristics:nil forService:service];
+                    }
+                }
+            }else {
+                CBUUID *uuid = [CBUUID UUIDWithString:serviceApplicationOtauUuid];
+                CBUUID *bl_uuid = [CBUUID UUIDWithString:serviceBootOtauUuid];
+                for (CBService *service in peripheral.services) {
+                    NSLog(@"didDiscoverServices_service: %@",service.UUID);
+                    if ([service.UUID isEqual:uuid]) {
+                        self.peripheralInBoot = [NSNumber numberWithBool:NO];
+                        [peripheral discoverCharacteristics:nil forService:service];
+                        self.targetService = service;
+                    }else if ([service.UUID isEqual:bl_uuid]) {
+                        self.peripheralInBoot = [NSNumber numberWithBool:YES];
+                        [peripheral discoverCharacteristics:nil forService:service];
+                        self.targetService = service;
+                    }
                 }
             }
         }else {
@@ -516,22 +559,34 @@
 
     }else {
         if (error == nil) {
-            for (CBCharacteristic *charateristic in service.characteristics) {
-                NSLog(@"charateristic: %@",charateristic.UUID);
-            }
-            CBUUID *uuid = [CBUUID UUIDWithString:serviceApplicationOtauUuid];
-            CBUUID *bl_uuid = [CBUUID UUIDWithString:serviceBootOtauUuid];
-            
-            if ([service.UUID isEqual:uuid] || [service.UUID isEqual:bl_uuid]) {
-                [centralManager stopScan];
+            if (_isForGAIA) {
+                for (CBCharacteristic *charateristic in service.characteristics) {
+                    NSLog(@"charateristic: %@",charateristic.UUID);
+                    [peripheral discoverDescriptorsForCharacteristic:charateristic];
+                }
                 self.targetPeripheral = peripheral;
-                self.discoveredChars = [NSNumber numberWithBool:YES];
-                if (!_secondConnectBool) {
-                    [[OTAU shareInstance] initOTAU:peripheral];
+                
+                if (self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(discoveredPripheralDetails)]) {
+                    [self.bleDelegate discoveredPripheralDetails];
+                }
+                
+            }else {
+                for (CBCharacteristic *charateristic in service.characteristics) {
+                    NSLog(@"charateristic: %@",charateristic.UUID);
+                }
+                CBUUID *uuid = [CBUUID UUIDWithString:serviceApplicationOtauUuid];
+                CBUUID *bl_uuid = [CBUUID UUIDWithString:serviceBootOtauUuid];
+                
+                if ([service.UUID isEqual:uuid] || [service.UUID isEqual:bl_uuid]) {
+                    [centralManager stopScan];
+                    self.targetPeripheral = peripheral;
+                    self.discoveredChars = [NSNumber numberWithBool:YES];
+                    if (!_secondConnectBool) {
+                        [[OTAU shareInstance] initOTAU:peripheral];
+                    }
                 }
             }
         }
-        
     }
 }
     
@@ -582,10 +637,26 @@
 
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     
-    if (error)
-        NSLog (@"Can't subscribe for notification to %@ of %@", characteristic.UUID, peripheral.name);
-    else
-        NSLog (@"Did subscribe for notification to %@ of %@", characteristic.UUID, peripheral.name);
+    if (_isForGAIA) {
+        if (!error) {
+            NSLog(@"didUpdateNotificationStateForCharacteristic %@ %@", characteristic, characteristic.UUID);
+            if (characteristic.isNotifying) {
+                if (!characteristic.value) {
+                    [peripheral
+                     readValueForCharacteristic:characteristic];
+                } else {
+                    if ([self.listening objectForKey:characteristic.UUID.UUIDString]) {
+                        if (self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(chracteristicChanged:)]) {
+                            [self.bleDelegate chracteristicChanged:characteristic];
+                        }
+                    }
+                }
+            }
+            if (self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(chracteristicSetNotifySuccess:)]) {
+                [self.bleDelegate chracteristicSetNotifySuccess:characteristic];
+            }
+        }
+    }
     
 }
 
@@ -598,15 +669,89 @@
 -(void) peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
 //    NSLog(@"didUpdateValueForCharacteristic for peripheral %@ & Characteristic %@ value=%@",peripheral.name, characteristic.UUID, characteristic.value);
 
-    NSMutableDictionary *advertisementData = [NSMutableDictionary dictionary];
-
-    [advertisementData setObject:@(NO) forKey:CBAdvertisementDataIsConnectable];
-
-    advertisementData [CBAdvertisementDataIsConnectable] = @(NO);
-    [advertisementData setObject:characteristic.value forKey:CSR_NotifiedValueForCharacteristic];
-    [advertisementData setObject:characteristic forKey:CSR_didUpdateValueForCharacteristic];
-    [advertisementData setObject:peripheral forKey:CSR_PERIPHERAL];
-    [[MeshServiceApi sharedInstance] processMeshAdvert:advertisementData RSSI:nil];
+    if (_isForGAIA) {
+        CSRCallbacks *cbs = [self.characteristicQueue objectForKey:characteristic.UUID.UUIDString];
+        if (!error) {
+            if ([self.listening objectForKey:characteristic.UUID.UUIDString]) {
+                if (self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(chracteristicChanged:)]) {
+                    [self.bleDelegate chracteristicChanged:characteristic];
+                }
+            }
+            if (cbs) {
+                if (cbs.successCallback) {
+                    switch (cbs.callbackType) {
+                        case CSRCallbackType_Bool: {
+                            CSRGetBoolCompletion cb = cbs.successCallback;
+                            
+                            cb([CSRBLEUtil boolValue:characteristic.value]);
+                            break;
+                        }
+                        case CSRCallbackType_Int: {
+                            CSRGetIntCompletion cb = cbs.successCallback;
+                            
+                            cb([CSRBLEUtil intValue:characteristic.value]);
+                            break;
+                        }
+                        case CSRCallbackType_Double: {
+                            CSRGetIntCompletion cb = cbs.successCallback;
+                            
+                            cb([CSRBLEUtil doubleValue:characteristic.value offset:0]);
+                            break;
+                        }
+                        case CSRCallbackType_String: {
+                            CSRGetStringCompletion cb = cbs.successCallback;
+                            
+                            cb([CSRBLEUtil stringValue:characteristic.value]);
+                            break;
+                        }
+                            
+                        case CSRCallbackType_Data: {
+                            
+                            CSRGetDataCompletion cb = cbs.successCallback;
+                            
+                            cb(characteristic.value);
+                            break;
+                            
+                        }
+                            
+                        case CSRCallbackType_SetInt:
+                        case CSRCallbackType_SetBool:
+                        case CSRCallbackType_SetData:
+                        case CSRCallbackType_SetString: {
+                            CSRSetValueCompletion cb = cbs.successCallback;
+                            
+                            cb();
+                            break;
+                        }
+                    }
+                }
+                
+                [self.characteristicQueue removeObjectForKey:characteristic.UUID.UUIDString];
+            }
+        }else {
+            NSLog(@"didUpdateValueForCharacteristic error: %@", error.localizedDescription);
+            
+            if (cbs) {
+                if (cbs.failureCallback) {
+                    CSRErrorCompletion cc = cbs.failureCallback;
+                    
+                    cc(error);
+                }
+                
+                [self.characteristicQueue removeObjectForKey:characteristic.UUID.UUIDString];
+            }
+        }
+    }else {
+        NSMutableDictionary *advertisementData = [NSMutableDictionary dictionary];
+        
+        [advertisementData setObject:@(NO) forKey:CBAdvertisementDataIsConnectable];
+        
+        advertisementData [CBAdvertisementDataIsConnectable] = @(NO);
+        [advertisementData setObject:characteristic.value forKey:CSR_NotifiedValueForCharacteristic];
+        [advertisementData setObject:characteristic forKey:CSR_didUpdateValueForCharacteristic];
+        [advertisementData setObject:peripheral forKey:CSR_PERIPHERAL];
+        [[MeshServiceApi sharedInstance] processMeshAdvert:advertisementData RSSI:nil];
+    }
 }
 
 
@@ -681,6 +826,167 @@
             [self.bleDelegate discoveryDidRefresh:peripheral];
         }
     }];
+}
+
+- (CBService *)findService:(CBPeripheral *)peripheral
+                      uuid:(NSString *)service_uuid {
+    @try {
+        CBUUID *serviceUUID = [CBUUID UUIDWithString:service_uuid];
+        
+        for (CBService *service in peripheral.services) {
+            if ([service.UUID isEqual:serviceUUID]) {
+                return service;
+            }
+        }
+    } @catch(NSException *ex) {
+        for (CBService *service in peripheral.services) {
+            if ([service.UUID.UUIDString isEqualToString:service_uuid]) {
+                return service;
+            }
+        }
+    }
+    
+    return nil;
+}
+
+- (CBService *)findService:(NSString *)service_uuid {
+    return [self findService:self.targetPeripheral
+                        uuid:service_uuid];
+}
+
+- (CBCharacteristic *)findCharacteristic:(CBService *)service
+                          characteristic:(NSString *)characteristic_uuid {
+    @try {
+        CBUUID *characteristicUUID = [CBUUID UUIDWithString:characteristic_uuid];
+        
+        for (CBCharacteristic *character in service.characteristics) {
+            if ([character.UUID isEqual:characteristicUUID]) {
+                return character;
+            }
+        }
+    } @catch(NSException *ex) {
+        for (CBCharacteristic *character in service.characteristics) {
+            if ([character.UUID.UUIDString isEqualToString:characteristic_uuid]) {
+                return character;
+            }
+        }
+    }
+    
+    return nil;
+}
+
+- (BOOL)listenFor:(NSString *)service_uuid
+   characteristic:(NSString *)charactaristic_uuid {
+    CBService *service = [self findService:service_uuid];
+    
+    if (service) {
+        CBCharacteristic *characteristic = [self findCharacteristic:service characteristic:charactaristic_uuid];
+        
+        if (characteristic) {
+            CBCharacteristic *listener = [self.listening objectForKey:characteristic.UUID.UUIDString];
+            
+            if (!listener || !listener.isNotifying) {
+                [self.listening setObject:characteristic forKey:characteristic.UUID.UUIDString];
+                [self.targetPeripheral
+                 setNotifyValue:YES
+                 forCharacteristic:characteristic];
+            }
+            return YES;
+        } else {
+            return NO;
+        }
+    } else {
+        return NO;
+    }
+}
+
+- (NSMutableDictionary *)listening {
+    if (!_listening) {
+        _listening = [[NSMutableDictionary alloc] init];
+    }
+    return _listening;
+}
+
+- (NSMutableDictionary *)characteristicQueue {
+    if (!_characteristicQueue) {
+        _characteristicQueue = [[NSMutableDictionary alloc] init];
+    }
+    return _characteristicQueue;
+}
+
+- (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+    if (_isForGAIA) {
+        if (self.characteristicQueue.count > 0) {
+            CSRCallbacks *cbs = [self.characteristicQueue objectForKey:characteristic.UUID.UUIDString];
+            
+            if (error) {
+                NSLog(@"didWriteValueForCharacteristic error: %@", error.localizedDescription);
+                
+                if (cbs) {
+                    if (cbs.failureCallback) {
+                        CSRErrorCompletion cc = cbs.failureCallback;
+                        
+                        cc(error);
+                    }
+                    
+                    [self.characteristicQueue removeObjectForKey:characteristic.UUID.UUIDString];
+                }
+            } else {
+                if (cbs) {
+                    if (cbs.successCallback) {
+                        CSRSetValueCompletion sv = cbs.successCallback;
+                        
+                        sv();
+                    }
+                    
+                    [self.characteristicQueue removeObjectForKey:characteristic.UUID.UUIDString];
+                }
+            }
+        }
+        if (self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(delegatePeripheral:didWriteValueForCharacteristic:error:)]) {
+            [self.bleDelegate delegatePeripheral:peripheral didWriteValueForCharacteristic:characteristic error:error];
+        }
+    }
+}
+
+- (void)clearListeners {
+    if (self.targetPeripheral.state == CBPeripheralStateConnected) {
+        for (NSString *uuid in self.listening) {
+            CBCharacteristic *characteristic = [self findCharacteristic:uuid];
+            
+            if (characteristic && characteristic.isNotifying) {
+                [self.targetPeripheral
+                 setNotifyValue:NO
+                 forCharacteristic:characteristic];
+            }
+        }
+    }
+    
+    [self.listening removeAllObjects];
+}
+
+- (CBCharacteristic *)findCharacteristic:(NSString *)characteristic_uuid {
+    @try {
+        CBUUID *characteristicUUID = [CBUUID UUIDWithString:characteristic_uuid];
+        
+        for (CBService *service in self.targetPeripheral.services) {
+            for (CBCharacteristic *character in service.characteristics) {
+                if ([character.UUID isEqual:characteristicUUID]) {
+                    return character;
+                }
+            }
+        }
+    } @catch(NSException *ex) {
+        for (CBService *service in self.targetPeripheral.services) {
+            for (CBCharacteristic *character in service.characteristics) {
+                if ([character.UUID.UUIDString isEqualToString:characteristic_uuid]) {
+                    return character;
+                }
+            }
+        }
+    }
+    
+    return nil;
 }
 
 @end

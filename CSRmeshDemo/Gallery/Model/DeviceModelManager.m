@@ -472,12 +472,13 @@
             }else {
                 model.powerState = @(0);
             }
-            if (model.channel1Level>model.channel2Level) {
-                model.level = [NSNumber numberWithInteger:model.channel1Level];
-            }else {
-                model.level = [NSNumber numberWithInteger:model.channel2Level];
+            if (channelPowerState) {
+                if (model.channel1Level>model.channel2Level) {
+                    model.level = [NSNumber numberWithInteger:model.channel1Level];
+                }else {
+                    model.level = [NSNumber numberWithInteger:model.channel2Level];
+                }
             }
-            
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
             *stop = YES;
         }

@@ -70,11 +70,7 @@
         self.groupMembers = [areaEntity.devices allObjects];
         self.nameLabel.hidden = NO;
         self.level2Label.hidden = YES;
-        if ([areaEntity.areaName isEqualToString:@"Living room"] || [areaEntity.areaName isEqualToString:@"Bed room"] || [areaEntity.areaName isEqualToString:@"Dining room"] || [areaEntity.areaName isEqualToString:@"Toilet"] || [areaEntity.areaName isEqualToString:@"Kitchen"]) {
-            self.nameLabel.text = AcTECLocalizedStringFromTable(areaEntity.areaName, @"Localizable");
-        }else {
-            self.nameLabel.text = areaEntity.areaName;
-        }
+        self.nameLabel.text = areaEntity.areaName;
         self.kindLabel.hidden = NO;
         NSString *kind=@"";
         NSInteger dimmerNum = 0;
@@ -137,11 +133,7 @@
         self.groupMembers = [model.devices allObjects];
         self.nameLabel.hidden = NO;
         self.level2Label.hidden = YES;
-        if ([model.areaName isEqualToString:@"Living room"] || [model.areaName isEqualToString:@"Bed room"] || [model.areaName isEqualToString:@"Dining room"] || [model.areaName isEqualToString:@"Toilet"] || [model.areaName isEqualToString:@"Kitchen"]) {
-            self.nameLabel.text = AcTECLocalizedStringFromTable(model.areaName, @"Localizable");
-        }else {
-            self.nameLabel.text = model.areaName;
-        }
+        self.nameLabel.text = model.areaName;
         self.kindLabel.hidden = NO;
         NSString *kind=@"";
         NSInteger dimmerNum = 0;
@@ -384,10 +376,10 @@
             self.iconView.image = [UIImage imageNamed:@"Device_Switch"];
         }else if ([appearanceShortname containsString:@"RB01"] || [appearanceShortname containsString:@"R5BSBH"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote1"];
-        }else if ([appearanceShortname containsString:@"RB02"]) {
+        }else if ([appearanceShortname containsString:@"RB02"]||[appearanceShortname isEqualToString:@"RB06"]||[appearanceShortname isEqualToString:@"RSBH"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote2"];
-        }else if ([appearanceShortname containsString:@"RB04"] || [appearanceShortname containsString:@"RSIBH"]) {
-            self.iconView.image = [UIImage imageNamed:@"Device_Remote1"];
+        }else if ([appearanceShortname containsString:@"RB04"] || [appearanceShortname containsString:@"RSIBH"] || [appearanceShortname containsString:@"RB07"]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_bajiao"];
         }else if ([appearanceShortname containsString:@"R9BSBH"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote1"];
         }else if ([CSRUtilities belongToLightSensor:appearanceShortname]){
@@ -641,7 +633,9 @@
                         if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateCurtainTapAction:)]) {
                             [self.superCellDelegate superCollectionViewCellDelegateCurtainTapAction:_deviceId];
                         }
-                        
+                    }else {
+                        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+                        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(![model.powerState boolValue])];
                     }
                 }else {
                     DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];

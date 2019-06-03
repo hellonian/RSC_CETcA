@@ -278,9 +278,13 @@
     [[DataModelManager shareInstance] sendCmdData:@"880100" toDeviceId:deviceId];
     __weak CSRmeshManager *weakself = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        static int i = 0;
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
         if ([deviceEntity.cvVersion integerValue]==0) {
-            [weakself getVersion:deviceId];
+            if (i < 10) {
+                i++;
+                [weakself getVersion:deviceId];
+            }
         }else if ([deviceEntity.hwVersion integerValue]== 2) {
             [weakself getMcuSVersion:deviceId];
         }
@@ -291,9 +295,13 @@
     [[DataModelManager shareInstance] sendCmdData:@"ea35" toDeviceId:deviceId];
     __weak CSRmeshManager *weakself = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        static int i = 0;
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
         if ([deviceEntity.mcuBootVersion integerValue]==0) {
-            [weakself getMcuSVersion:deviceId];
+            if (i < 10) {
+                i++;
+                [weakself getMcuSVersion:deviceId];
+            }
         }
     });
 }

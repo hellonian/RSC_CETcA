@@ -16,7 +16,11 @@
 #import "CustomizeProgressHud.h"
 #import "PureLayout.h"
 
-@interface DiscoveryTableViewController ()<CSRBluetoothLEDelegate,OTAUDelegate>
+#import "CSRGaia.h"
+#import "CSRGaiaManager.h"
+#import "DataModelManager.h"
+
+@interface DiscoveryTableViewController ()<CSRBluetoothLEDelegate,OTAUDelegate,CSRUpdateManagerDelegate>
 
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)NSMutableArray *uuids;
@@ -24,6 +28,10 @@
 @property (nonatomic,strong) NSDictionary *latestDic;
 @property (nonatomic,strong) CustomizeProgressHud *customizeHud;
 @property (nonatomic,strong) UIView *translucentBgView;
+
+@property (nonatomic,assign) BOOL isDataEndPointAvailabile;
+@property (nonatomic,strong) NSString *sourceFilePath;
+@property (nonatomic,strong) NSNumber *targetDeviceId;
 
 @end
 
@@ -84,7 +92,9 @@
         NSLog(@"%@",error);
     }];
     
-     NSArray *connectedPeripherals = [[CSRBluetoothLE sharedInstance] connectedPeripherals];
+    self.isDataEndPointAvailabile = NO;
+    
+    NSArray *connectedPeripherals = [[CSRBluetoothLE sharedInstance] connectedPeripherals];
     for (CBPeripheral *peripheral in connectedPeripherals) {
         __block CSRDeviceEntity *connectDevice;
         [_appAllDevcies enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -106,6 +116,44 @@
             [self.tableView reloadData];
         }
     }
+    
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    refreshControl.tintColor = [UIColor grayColor];
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Scanning for devices"];
+    [refreshControl addTarget:self action:@selector(refreshDevices:) forControlEvents:UIControlEventValueChanged];
+    self.tableView.refreshControl = refreshControl;
+}
+
+- (void)refreshDevices:(id)sender {
+    [self.dataArray removeAllObjects];
+    [self.uuids removeAllObjects];
+    NSArray *connectedPeripherals = [[CSRBluetoothLE sharedInstance] connectedPeripherals];
+    for (CBPeripheral *peripheral in connectedPeripherals) {
+        __block CSRDeviceEntity *connectDevice;
+        [_appAllDevcies enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
+            NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
+            if ([adUuidString isEqualToString:deviceUuidString]) {
+                connectDevice = deviceEntity;
+                *stop = YES;
+            }
+        }];
+        if (connectDevice) {
+            UpdateDeviceModel *model = [[UpdateDeviceModel alloc] init];
+            model.peripheral = peripheral;
+            model.name = connectDevice.name;
+            model.connected = YES;
+            model.kind = connectDevice.shortName;
+            model.deviceId = connectDevice.deviceId;
+            [_dataArray addObject:model];
+            
+        }
+    }
+    [self.refreshControl endRefreshing];
+    [self.tableView reloadData];
+    [[CSRBluetoothLE sharedInstance] stopScan];
+    [[CSRBluetoothLE sharedInstance] startScan];;
+    
 }
 
 - (void)backSetting{
@@ -145,6 +193,7 @@
     [[CSRBluetoothLE sharedInstance] stopScan];
     [[CSRBluetoothLE sharedInstance] setBleDelegate:nil];
     [[CSRBluetoothLE sharedInstance] setIsUpdateFW:NO];
+    [[CSRBluetoothLE sharedInstance] setIsForGAIA:NO];
 }
 
 #pragma mark - Table view data source
@@ -212,33 +261,59 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     NSString *fileName = [urlString lastPathComponent];
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.requestSerializer.cachePolicy = NSURLRequestReloadIgnoringCacheData;
     NSProgress *progress = nil;
     NSURLSessionDownloadTask *task = [manager downloadTaskWithRequest:request progress:&progress destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
         NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/%@",fileName]];
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        if ([fileManager fileExistsAtPath:path]) {
-            [fileManager removeItemAtPath:path error:nil];
-        }
+//        NSFileManager *fileManager = [NSFileManager defaultManager];
+//        if ([fileManager fileExistsAtPath:path]) {
+//            [fileManager removeItemAtPath:path error:nil];
+//        }
         NSLog(@"downloadTaskWithRequest: %@",path);
         dispatch_async(dispatch_get_main_queue(), ^{
             [_customizeHud updateProgress:0.1];
         });
-        [[OTAU shareInstance] setSourceFilePath:path];
-        if (model.connected) {
-            CBUUID *uuid = [CBUUID UUIDWithString:serviceApplicationOtauUuid];
-            CBUUID *bl_uuid = [CBUUID UUIDWithString:serviceBootOtauUuid];
-            for (CBService *service in model.peripheral.services) {
-                if ([service.UUID isEqual:uuid] || [service.UUID isEqual:bl_uuid]) {
-                    [[CSRBluetoothLE sharedInstance] setTargetPeripheral:model.peripheral];
-                    [[CSRBluetoothLE sharedInstance] setDiscoveredChars:[NSNumber numberWithBool:YES]];
-                    [[OTAU shareInstance] initOTAU:model.peripheral];
-                    break;
+        
+        if ([model.bleHwVersion integerValue] >= 16 && [model.bleHwVersion integerValue] < 32) {
+            [[CSRBluetoothLE sharedInstance] setIsForGAIA:NO];
+            [[OTAU shareInstance] setSourceFilePath:path];
+            if (model.connected) {
+                CBUUID *uuid = [CBUUID UUIDWithString:serviceApplicationOtauUuid];
+                CBUUID *bl_uuid = [CBUUID UUIDWithString:serviceBootOtauUuid];
+                for (CBService *service in model.peripheral.services) {
+                    if ([service.UUID isEqual:uuid] || [service.UUID isEqual:bl_uuid]) {
+                        [[CSRBluetoothLE sharedInstance] setTargetPeripheral:model.peripheral];
+                        [[CSRBluetoothLE sharedInstance] setDiscoveredChars:[NSNumber numberWithBool:YES]];
+                        [[OTAU shareInstance] initOTAU:model.peripheral];
+                        break;
+                    }
                 }
+            }else {
+                [[CSRBluetoothLE sharedInstance] setSecondConnectBool:NO];
+                [[CSRBluetoothLE sharedInstance] connectPeripheralNoCheck:model.peripheral];
             }
-        }else {
-            [[CSRBluetoothLE sharedInstance] setSecondConnectBool:NO];
-            [[CSRBluetoothLE sharedInstance] connectPeripheralNoCheck:model.peripheral];
+        }else if ([model.bleHwVersion integerValue] >= 32 && [model.bleHwVersion integerValue] < 48) {
+            self.sourceFilePath = path;
+            self.targetDeviceId = model.deviceId;
+            [[CSRBluetoothLE sharedInstance] setIsForGAIA:YES];
+            self.isDataEndPointAvailabile = false;
+            [CSRGaiaManager sharedInstance].delegate = self;
+            
+            if (model.connected) {
+                CBUUID *uuid = [CBUUID UUIDWithString:UUID_GAIA_SERVICE];
+                for (CBService *service in model.peripheral.services) {
+                    if ([service.UUID isEqual:uuid]) {
+                        [[CSRGaia sharedInstance] connectPeripheral:[[CSRBluetoothLE sharedInstance] targetPeripheral]];
+                        [[CSRGaiaManager sharedInstance] connect];
+                        [[CSRGaiaManager sharedInstance] setDataEndPointMode:true];
+                        break;
+                    }
+                }
+            }else {
+                [[CSRBluetoothLE sharedInstance] connectPeripheralNoCheck:model.peripheral];
+            }
         }
+        
         return [NSURL fileURLWithPath:path];
         
     } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
@@ -260,7 +335,20 @@
     }
 }
 
+- (void)discoveredPripheralDetails {
+    CBUUID *uuid = [CBUUID UUIDWithString:UUID_GAIA_SERVICE];
+    for (CBService *service in [[CSRBluetoothLE sharedInstance] targetPeripheral].services) {
+        if ([service.UUID isEqual:uuid]) {
+            [[CSRGaia sharedInstance] connectPeripheral:[[CSRBluetoothLE sharedInstance] targetPeripheral]];
+            [[CSRGaiaManager sharedInstance] connect];
+            [[CSRGaiaManager sharedInstance] setDataEndPointMode:true];
+            break;
+        }
+    }
+}
+
 - (void)discoveryDidRefresh:(CBPeripheral *)peripheral {
+    NSLog(@"%@  %@  %@",peripheral.name,peripheral.uuidString,peripheral.identifier.UUIDString);
     for (CSRDeviceEntity *deviceEntity in _appAllDevcies) {
         NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
         NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
@@ -268,8 +356,10 @@
             UpdateDeviceModel *model = [[UpdateDeviceModel alloc] init];
             model.peripheral = peripheral;
             model.name = deviceEntity.name;
+            model.deviceId = deviceEntity.deviceId;
             model.connected = NO;
             model.kind = deviceEntity.shortName;
+            model.bleHwVersion = deviceEntity.bleHwVersion;
             NSInteger lastestVersion = [[_latestDic objectForKey:deviceEntity.shortName] integerValue];
             NSLog(@"%@ %ld",deviceEntity.firVersion,lastestVersion);
             if (deviceEntity.firVersion && [deviceEntity.firVersion integerValue] < lastestVersion) {
@@ -294,12 +384,267 @@
     [_translucentBgView removeFromSuperview];
     _translucentBgView = nil;
     [UIApplication sharedApplication].idleTimerDisabled = NO;
-    
 }
 
 - (void)updateProgressDelegteMethod:(CGFloat)percentage {
     dispatch_async(dispatch_get_main_queue(), ^{
         [_customizeHud updateProgress:percentage];
+    });
+}
+
+- (void)didReceiveGaiaGattResponse:(CSRGaiaGattCommand *)command {
+    GaiaCommandType cmdType = [command getCommandId];
+    NSData *requestPayload = [command getPayload];
+    uint8_t success = 0;
+    
+    [requestPayload getBytes:&success range:NSMakeRange(0, sizeof(uint8_t))];
+    
+    if (cmdType == GaiaCommand_SetDataEndPointMode && requestPayload.length > 0) {
+        uint8_t value = 0;
+        
+        [requestPayload getBytes:&value range:NSMakeRange(0, sizeof(uint8_t))];
+        
+        if (value == GaiaStatus_Success) {
+            self.isDataEndPointAvailabile = true;
+        } else {
+            self.isDataEndPointAvailabile = false;
+        }
+        
+        [[CSRGaiaManager sharedInstance] start:self.sourceFilePath useDataEndpoint:self.isDataEndPointAvailabile];
+        
+    }
+}
+
+- (void)confirmRequired {
+    
+    UIAlertController *alert = [UIAlertController
+                                alertControllerWithTitle:@"Finalise Update"
+                                message:@"Would you like to complete the upgrade?"
+                                preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okButton = [UIAlertAction
+                               actionWithTitle:@"OK"
+                               style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * action) {
+                                   [[CSRGaiaManager sharedInstance] commitConfirm:YES];
+                               }];
+    UIAlertAction *cancelActionButton = [UIAlertAction
+                                         actionWithTitle:@"Cancel"
+                                         style:UIAlertActionStyleDefault
+                                         handler:^(UIAlertAction * action) {
+                                             [[CSRGaiaManager sharedInstance] commitConfirm:NO];
+                                         }];
+    
+    [alert addAction:okButton];
+    [alert addAction:cancelActionButton];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)confirmForceUpgrade {
+    UIAlertController *alert = [UIAlertController
+                                alertControllerWithTitle:@"Synchronisation Failed"
+                                message:@"Another update has already been started. Would you like to force the upgrade?"
+                                preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okButton = [UIAlertAction
+                               actionWithTitle:@"OK"
+                               style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * action) {
+                                   [[CSRGaiaManager sharedInstance] abortAndRestart];
+                               }];
+    UIAlertAction *cancelActionButton = [UIAlertAction
+                                         actionWithTitle:@"Cancel"
+                                         style:UIAlertActionStyleDefault
+                                         handler:^(UIAlertAction * action) {
+                                             [self tidyUp];
+                                         }];
+    
+    [alert addAction:okButton];
+    [alert addAction:cancelActionButton];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)okayRequired {
+    UIAlertController *alert = [UIAlertController
+                                alertControllerWithTitle:@"SQIF Erase"
+                                message:@"About to erase SQIF partition"
+                                preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okButton = [UIAlertAction
+                               actionWithTitle:@"OK"
+                               style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * action) {
+                                   [[CSRGaiaManager sharedInstance] eraseSqifConfirm];
+                               }];
+    
+    [alert addAction:okButton];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)didAbortWithError:(NSError *)error {
+    NSString *errorMessage = [error.userInfo objectForKey:CSRGaiaErrorParam];
+    UIAlertController *alert = [UIAlertController
+                                alertControllerWithTitle:error.code <= 128 ? @"Update failed" : @"Warning"
+                                message:errorMessage
+                                preferredStyle:UIAlertControllerStyleAlert];
+    
+    if (error.code <= 128) {
+        
+        [[CSRGaiaManager sharedInstance] confirmError];
+        
+    }
+    
+    UIAlertAction *okButton = [UIAlertAction
+                               actionWithTitle:@"OK"
+                               style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * action) {
+                                   if (error.code <= 128) {
+                                       [self tidyUp];
+                                   }
+                               }];
+    
+    [alert addAction:okButton];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)didMakeProgress:(double)value eta:(NSString *)eta {
+//    self.updateProgressView.progress = value / 100;
+//
+//    self.title = [NSString stringWithFormat:@"%.2f%% Complete", value];
+//    self.timeLeftLabel.text = eta;
+//    NSLog(@"%@\n%@",[NSString stringWithFormat:@"%.2f%% Complete", value],eta);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_customizeHud updateProgress:value];
+    });
+}
+
+- (void)didCompleteUpgrade {
+    
+    NSString *message = [NSString stringWithFormat:@"Update with: %@", self.sourceFilePath];
+    UIAlertController *alert = [UIAlertController
+                                alertControllerWithTitle:@"Update successful"
+                                message:message
+                                preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okButton = [UIAlertAction
+                               actionWithTitle:@"OK"
+                               style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * action) {
+                                   [self tidyUp];
+                               }];
+    
+    [alert addAction:okButton];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)didAbortUpgrade {
+    NSString *message = [NSString stringWithFormat:@"Update with: %@", self.sourceFilePath];
+    UIAlertController *alert = [UIAlertController
+                                alertControllerWithTitle:@"Update aborted"
+                                message:message
+                                preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okButton = [UIAlertAction
+                               actionWithTitle:@"OK"
+                               style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * action) {
+                                   [self abortTidyUp];
+                               }];
+    
+    [alert addAction:okButton];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)confirmTransferRequired {
+    UIAlertController *alert = [UIAlertController
+                                alertControllerWithTitle:@"File transfer complete"
+                                message:@"Would you like to proceed?"
+                                preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okButton = [UIAlertAction
+                               actionWithTitle:@"OK"
+                               style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * action) {
+                                   [[CSRGaiaManager sharedInstance] updateTransferComplete];
+                               }];
+    UIAlertAction *cancelActionButton = [UIAlertAction
+                                         actionWithTitle:@"Cancel"
+                                         style:UIAlertActionStyleDefault
+                                         handler:^(UIAlertAction * action) {
+                                             [self tidyUp];
+                                         }];
+    
+    [alert addAction:okButton];
+    [alert addAction:cancelActionButton];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)confirmBatteryOkay {
+    UIAlertController *alert = [UIAlertController
+                                alertControllerWithTitle:@"Battery Low"
+                                message:@"The battery is low on your audio device. Please connect it to a charger"
+                                preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okButton = [UIAlertAction
+                               actionWithTitle:@"OK"
+                               style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * action) {
+                                   [[CSRGaiaManager sharedInstance] syncRequest];
+                               }];
+    
+    [alert addAction:okButton];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)tidyUp {
+    
+    [[CSRGaiaManager sharedInstance] disconnect];
+    [CSRGaiaManager sharedInstance].delegate = nil;
+    [CSRGaiaManager sharedInstance].updateInProgress = NO;
+    [[CSRBluetoothLE sharedInstance] setIsForGAIA:NO];
+    
+    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:self.targetDeviceId];
+    deviceEntity.firVersion = nil;
+    [[CSRDatabaseManager sharedInstance] saveContext];
+    [self getVersion:self.targetDeviceId];
+}
+
+- (void)abortTidyUp {
+    
+    [CSRGaiaManager sharedInstance].updateInProgress = NO;
+}
+
+- (void)didUpdateStatus:(NSString *)value {
+    NSLog(@"didUpdateStatus 》》 %@",value);
+}
+
+- (void)didWarmBoot {
+    NSLog(@"didWarmBoot");
+}
+
+- (void)getVersion: (NSNumber *)deviceId {
+    [[DataModelManager shareInstance] sendCmdData:@"880100" toDeviceId:deviceId];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:self.targetDeviceId];
+        if (deviceEntity) {
+            if (!deviceEntity.cvVersion) {
+                [self getVersion:deviceId];
+            }else {
+                for (UpdateDeviceModel *model in _dataArray) {
+                    if ([model.deviceId isEqualToNumber:deviceId]) {
+                        model.needUpdate = NO;
+                        [self.tableView reloadData];
+                        break;
+                    }
+                }
+                [_customizeHud removeFromSuperview];
+                _customizeHud = nil;
+                [_translucentBgView removeFromSuperview];
+                _translucentBgView = nil;
+                [UIApplication sharedApplication].idleTimerDisabled = NO;
+            }
+        }
     });
 }
 

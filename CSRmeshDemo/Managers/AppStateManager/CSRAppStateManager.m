@@ -275,8 +275,8 @@
         for (int i=0; i<5; i++) {
             CSRAreaEntity *defaultArea = [NSEntityDescription insertNewObjectForEntityForName:@"CSRAreaEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
             
-            defaultArea.areaID = @(i+1);
-            defaultArea.areaName = defaultAreaNames[i];
+            defaultArea.areaID = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRAreaEntity"];
+            defaultArea.areaName = AcTECLocalizedStringFromTable(defaultAreaNames[i], @"Localizable");
             defaultArea.areaIconNum = @(i);
             defaultArea.sortId = @(i);
             

@@ -18,6 +18,7 @@
 //@property (weak, nonatomic) IBOutlet UILabel *musicTitle;
 @property (weak, nonatomic) IBOutlet UIImageView *musicImageView;
 @property (nonatomic, strong) NSMutableArray *images;
+@property (weak, nonatomic) IBOutlet UIButton *playBtn;
 
 @end
 
@@ -36,6 +37,15 @@
     }
     _musicImageView.animationDuration = 1;
     _musicImageView.animationImages = _images;
+    
+    if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+        [_playBtn setBackgroundImage:[UIImage imageNamed:@"musicHighlight"] forState:UIControlStateNormal];
+        [_musicImageView startAnimating];
+    }else {
+        [_musicImageView stopAnimating];
+        [_playBtn setBackgroundImage:[UIImage imageNamed:@"music"] forState:UIControlStateNormal];
+    }
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -73,13 +83,13 @@
 //    }
     
     if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+        [[SoundListenTool sharedInstance] stopRecord];
         [_musicImageView stopAnimating];
         [sender setBackgroundImage:[UIImage imageNamed:@"music"] forState:UIControlStateNormal];
-        [[SoundListenTool sharedInstance] stopRecord];
     }else {
+        [[SoundListenTool sharedInstance] record:_deviceId];
         [sender setBackgroundImage:[UIImage imageNamed:@"musicHighlight"] forState:UIControlStateNormal];
         [_musicImageView startAnimating];
-        [[SoundListenTool sharedInstance] record:_deviceId];
     }
 }
 

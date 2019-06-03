@@ -60,6 +60,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *tSelectTwoLabel;
 @property (weak, nonatomic) IBOutlet UILabel *tConrolOneLabel;
 @property (weak, nonatomic) IBOutlet UILabel *tConrolTwoLabel;
+@property (strong, nonatomic) IBOutlet UIView *twoRemoteEnableView;
 @property (weak, nonatomic) IBOutlet UISwitch *enableSwitch;
 
 @property (nonatomic,strong) MBProgressHUD *updatingHud;
@@ -311,7 +312,7 @@
             }
         }
         
-    }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]) {
+    }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]) {
         _practicalityImageView.image = [UIImage imageNamed:@"rb02"];
         [self.customContentView addSubview:self.singleRemoteView];
         [self.singleRemoteView autoSetDimension:ALDimensionHeight toSize:44.0f];
@@ -369,14 +370,19 @@
         }
         
     }else if ([self.remoteEntity.shortName isEqualToString:@"RB04"] || [self.remoteEntity.shortName isEqualToString:@"RSIBH"]) {
-        _practicalityImageView.image = [UIImage imageNamed:@"rb04"];
+        _practicalityImageView.image = [UIImage imageNamed:@"bajiao"];
         [self.customContentView addSubview:self.twoRemoteView];
-        [self.twoRemoteView autoSetDimension:ALDimensionHeight toSize:134.0f];
+        [self.twoRemoteView autoSetDimension:ALDimensionHeight toSize:89.0f];
         [self.twoRemoteView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
         [self.twoRemoteView autoPinEdgeToSuperviewEdge:ALEdgeRight];
         [self.twoRemoteView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameBgView withOffset:30];
+        [self.customContentView addSubview:self.twoRemoteEnableView];
+        [self.twoRemoteEnableView autoSetDimension:ALDimensionHeight toSize:45.0f];
+        [self.twoRemoteEnableView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+        [self.twoRemoteEnableView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+        [self.twoRemoteEnableView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.twoRemoteView];
         
-        if (self.remoteEntity.remoteBranch && self.remoteEntity.remoteBranch.length > 26) {
+        if (self.remoteEntity.remoteBranch && self.remoteEntity.remoteBranch.length >= 26) {
             [self fillControlLabel:_tConrolOneLabel selectedLabel:_tSelectOneLabel brachString:[self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(8, 8)]];
             [self fillControlLabel:_tConrolTwoLabel selectedLabel:_tSelectTwoLabel brachString:[self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(18, 8)]];
         }else {
@@ -442,6 +448,110 @@
             _R9BSBHControlEightLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
             _R9BSBHControlNineLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
         }
+    }else if ([self.remoteEntity.shortName isEqualToString:@"RB07"]) {
+        _practicalityImageView.image = [UIImage imageNamed:@"bajiao"];
+        [self.customContentView addSubview:self.twoRemoteView];
+        [self.twoRemoteView autoSetDimension:ALDimensionHeight toSize:89.0f];
+        [self.twoRemoteView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+        [self.twoRemoteView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+        [self.twoRemoteView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameBgView withOffset:30];
+        if ([[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]) {
+            if (self.remoteEntity.remoteBranch && self.remoteEntity.remoteBranch.length >37) {
+                NSArray *remoteArray = [self.remoteEntity.remoteBranch componentsSeparatedByString:@"|"];
+                for (NSString *brach in remoteArray) {
+                    NSString *swIndex = [brach substringToIndex:2];
+                    NSString *rcIndex = [brach substringWithRange:NSMakeRange(2, 4)];
+                    
+                    if ([swIndex isEqualToString:@"01"]) {
+                        if ([rcIndex isEqualToString:@"0000"]) {
+                            _tConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+                            _tSelectOneLabel.text = @"";
+                        }else if ([rcIndex isEqualToString:@"0100"]) {
+                            _tConrolOneLabel.text = AcTECLocalizedStringFromTable(@"ControlLamp", @"Localizable");
+                            NSInteger deviceId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(12, 4)]];
+                            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:[NSNumber numberWithInteger:deviceId]];
+                            if (deviceEntity) {
+                                _tSelectOneLabel.text = deviceEntity.name;
+                                _tSelectOneLabel.tag = deviceId;
+                            }else {
+                                _tSelectOneLabel.text = AcTECLocalizedStringFromTable(@"Notfound", @"Localizable");
+                            }
+                        }else if ([rcIndex isEqualToString:@"2000"]) {
+                            _tConrolOneLabel.text = AcTECLocalizedStringFromTable(@"ControlGroup", @"Localizable");
+                            NSInteger areaId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(12, 4)]];
+                            CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:[NSNumber numberWithInteger:areaId]];
+                            if (areaEntity) {
+                                _tSelectOneLabel.text = areaEntity.areaName;
+                                _tSelectOneLabel.tag = areaId;
+                            }else {
+                                _tSelectOneLabel.text = AcTECLocalizedStringFromTable(@"Notfound", @"Localizable");
+                            }
+                            
+                        }else {
+                            _tConrolOneLabel.text = AcTECLocalizedStringFromTable(@"ControlScene", @"Localizable");
+                            NSInteger rcIndexInt = [self exchangePositionOfDeviceIdString:rcIndex];
+                            SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:[NSNumber numberWithInteger:rcIndexInt]];
+                            if (sceneEntity) {
+                                _tSelectOneLabel.text = sceneEntity.sceneName;
+                                _tSelectOneLabel.tag = rcIndexInt;
+                            }else {
+                                _tSelectOneLabel.text = AcTECLocalizedStringFromTable(@"Notfound", @"Localizable");
+                            }
+                            
+                        }
+                    }
+                    if ([swIndex isEqualToString:@"02"]) {
+                        if ([rcIndex isEqualToString:@"0000"]) {
+                            _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+                            _tSelectTwoLabel.text = @"";
+                        }else if ([rcIndex isEqualToString:@"0100"]) {
+                            _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"ControlLamp", @"Localizable");
+                            NSInteger deviceId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(12, 4)]];
+                            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:[NSNumber numberWithInteger:deviceId]];
+                            if (deviceEntity) {
+                                _tSelectTwoLabel.text = deviceEntity.name;
+                                _tSelectTwoLabel.tag = deviceId;
+                            }else {
+                                _tSelectTwoLabel.text = AcTECLocalizedStringFromTable(@"Notfound", @"Localizable");
+                            }
+                            
+                        }else if ([rcIndex isEqualToString:@"2000"]) {
+                            _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"ControlGroup", @"Localizable");
+                            NSInteger areaId = [self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(12, 4)]];
+                            CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:[NSNumber numberWithInteger:areaId]];
+                            if (areaEntity) {
+                                _tSelectTwoLabel.text = areaEntity.areaName;
+                                _tSelectTwoLabel.tag = areaId;
+                            }else {
+                                _tSelectTwoLabel.text = AcTECLocalizedStringFromTable(@"Notfound", @"Localizable");
+                            }
+                            
+                        }else {
+                            _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"ControlScene", @"Localizable");
+                            NSInteger rcIndexInt = [self exchangePositionOfDeviceIdString:rcIndex];
+                            SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:[NSNumber numberWithInteger:rcIndexInt]];
+                            if (sceneEntity) {
+                                _tSelectTwoLabel.text = sceneEntity.sceneName;
+                                _tSelectTwoLabel.tag = rcIndexInt;
+                            }else {
+                                _tSelectTwoLabel.text = AcTECLocalizedStringFromTable(@"Notfound", @"Localizable");
+                            }
+                        }
+                    }
+                }
+            }else {
+                _tConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+                _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            }
+        }else {
+            if (self.remoteEntity.remoteBranch && self.remoteEntity.remoteBranch.length >= 26) {
+                [self fillControlLabel:_tConrolOneLabel selectedLabel:_tSelectOneLabel brachString:[self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(8, 8)]];
+                [self fillControlLabel:_tConrolTwoLabel selectedLabel:_tSelectTwoLabel brachString:[self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(18, 8)]];
+            }else {
+                _tConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+                _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            }
+        }
     }
     
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
@@ -459,7 +569,6 @@
         sessionManager.requestSerializer.cachePolicy = NSURLRequestReloadIgnoringCacheData;
         [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
             NSDictionary *dic = (NSDictionary *)responseObject;
-            NSLog(@"%@",dic);
             latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
             downloadAddress = dic[@"Download_address"];
             if ([_remoteEntity.mcuSVersion integerValue]<latestMCUSVersion) {
@@ -564,8 +673,8 @@
     if (@available(iOS 11.0, *)) {
         CGFloat safeHeight = HEIGHT - self.view.safeAreaInsets.bottom - self.view.safeAreaInsets.top;
         if ([self.remoteEntity.shortName isEqualToString:@"RB01"]) {
-            if (safeHeight <= 406.5) {
-                _contentViewHeight.constant = 406.5;
+            if (safeHeight <= 506.5) {
+                _contentViewHeight.constant = 506.5;
             }else {
                 _contentViewHeight.constant = safeHeight;
             }
@@ -601,7 +710,7 @@
     NSDictionary *dic = notification.userInfo;
     NSNumber *deviceId = dic[@"deviceId"];
     NSString *stateStr = dic[@"getRemoteEnableState"];
-    if ([deviceId isEqualToNumber:_remoteEntity.deviceId]) {
+    if (_remoteEntity.deviceId && [deviceId isEqualToNumber:_remoteEntity.deviceId]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [_enableSwitch setOn:[stateStr boolValue]];
         });
@@ -1371,7 +1480,7 @@
                 }];
                 
                 
-            }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"S10IB-H2"]) {
+            }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"S10IB-H2"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]) {
                 
                 NSString *cmdStr1 = [self cmdStringFromControlLabel:_sConrolOneLabel selectedLabel:_sSelectOneLabel];
                 
@@ -1389,7 +1498,26 @@
                 } failure:^(NSError * _Nonnull error) {
                     
                 }];
+            } if ([_remoteEntity.shortName isEqualToString:@"RB07"]) {
+                NSString *cmdStr1 = [self cmdStringFromControlLabel:_tConrolOneLabel selectedLabel:_tSelectOneLabel];
+                
+                NSString *cmdStr2 = [self cmdStringFromControlLabel:_tConrolTwoLabel selectedLabel:_tSelectTwoLabel];
+                
+                NSString *cmdString = [NSString stringWithFormat:@"9b0b0201%@02%@",cmdStr1,cmdStr2];
+                [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdString] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                    
+                    _remoteEntity.remoteBranch = cmdString;
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                    _setSuccess = YES;
+                    [_hub hideAnimated:YES];
+                    [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+                    [timer invalidate];
+                    timer = nil;
+                } failure:^(NSError * _Nonnull error) {
+                    
+                }];
             }
+            
         }else {
             if ([_remoteEntity.shortName isEqualToString:@"RB01"]) {
                 NSString *cmdStr1;
@@ -1591,7 +1719,7 @@
                     }
                     
                 });
-            }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]) {
+            }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]) {
                 NSString *cmdStr1;
                 if ([_sConrolOneLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_sSelectOneLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
                     NSString *deviceIdString = [self exchangePositionOfDeviceId:_sSelectOneLabel.tag];
@@ -1635,6 +1763,108 @@
                 }else {
                     [self showTextHud:[NSString stringWithFormat:@"%@",AcTECLocalizedStringFromTable(@"outLargeScene", @"Localizable")]];
                 }
+            } else if ([_remoteEntity.shortName isEqualToString:@"RB07"]) {
+                NSString *cmdStr1;
+                if ([_tConrolOneLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_tSelectOneLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
+                    NSString *deviceIdString = [self exchangePositionOfDeviceId:_tSelectOneLabel.tag];
+                    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_tSelectOneLabel.tag]];
+                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                        NSString *chanelSelect;
+                        if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
+                            chanelSelect = @"2";
+                        }else if (!deviceModel.channel1Selected && deviceModel.channel2Selected) {
+                            chanelSelect = @"3";
+                        }else {
+                            chanelSelect = @"1";
+                        }
+                        cmdStr1 = [NSString stringWithFormat:@"730e01010%@00010000%@0000000000",chanelSelect,deviceIdString];
+                    }else {
+                        cmdStr1 = [NSString stringWithFormat:@"730e01010100010000%@0000000000",deviceIdString];
+                    }
+                }else if ([_tConrolOneLabel.text containsString:AcTECLocalizedStringFromTable(@"Group", @"Localizable")] && ![_tSelectOneLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
+                    NSString *deviceIdString = [self exchangePositionOfDeviceId:_tSelectOneLabel.tag];
+                    cmdStr1 = [NSString stringWithFormat:@"730e01012000010000%@0000000000",deviceIdString];
+                }else if ([_tConrolOneLabel.text containsString:AcTECLocalizedStringFromTable(@"Scene", @"Localizable")] && ![_tSelectOneLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
+                    cmdStr1 = [self cmdStringWithSceneRcIndex:_tSelectOneLabel.tag swIndex:1];
+                }else{
+                    cmdStr1 = @"730701010000000000";
+                }
+                
+                NSString *cmdStr2;
+                if ([_tConrolTwoLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_tSelectTwoLabel.text isEqualToString:@"Not found"]) {
+                    NSString *deviceIdString = [self exchangePositionOfDeviceId:_tSelectTwoLabel.tag];
+                    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_tSelectTwoLabel.tag]];
+                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                        NSString *chanelSelect;
+                        if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
+                            chanelSelect = @"2";
+                        }else if (!deviceModel.channel1Selected && deviceModel.channel2Selected) {
+                            chanelSelect = @"3";
+                        }else {
+                            chanelSelect = @"1";
+                        }
+                        cmdStr2 = [NSString stringWithFormat:@"730e01020%@00010000%@0000000000",chanelSelect,deviceIdString];
+                    }else {
+                        cmdStr2 = [NSString stringWithFormat:@"730e01020100010000%@0000000000",deviceIdString];
+                    }
+                }else if ([_tConrolTwoLabel.text containsString:AcTECLocalizedStringFromTable(@"Group", @"Localizable")] && ![_tSelectTwoLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
+                    NSString *deviceIdString = [self exchangePositionOfDeviceId:_tSelectTwoLabel.tag];
+                    cmdStr2 = [NSString stringWithFormat:@"730e01022000010000%@0000000000",deviceIdString];
+                }else if ([_tConrolTwoLabel.text containsString:AcTECLocalizedStringFromTable(@"Scene", @"Localizable")] && ![_tSelectTwoLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
+                    cmdStr2 = [self cmdStringWithSceneRcIndex:_tSelectTwoLabel.tag swIndex:2];
+                }else{
+                    cmdStr2 = @"730701020000000000";
+                }
+                
+                dispatch_queue_t queue = dispatch_queue_create("串行", NULL);
+                dispatch_async(queue, ^{
+                    
+                    if (cmdStr1.length>0) {
+                        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdStr1] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                                dispatch_semaphore_signal(semaphore);
+                                timerSeconde = 20;
+                            } failure:^(NSError * _Nonnull error) {
+                                
+                            }];
+                        });
+                        
+                        NSLog(@"信号量-1 第一个按键  %@",cmdStr1);
+                        
+                    }else {
+                        [self showTextHud:[NSString stringWithFormat:@"%@",AcTECLocalizedStringFromTable(@"outLargeScene", @"Localizable")]];
+                    }
+                    
+                });
+                
+                dispatch_async(queue, ^{
+                    
+                    if (cmdStr2.length>0) {
+                        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdStr2] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                                dispatch_semaphore_signal(semaphore);
+                                NSString *remoteBranch = [NSString stringWithFormat:@"%@|%@",[cmdStr1 substringFromIndex:6],[cmdStr2 substringFromIndex:6]];
+                                _remoteEntity.remoteBranch = remoteBranch;
+                                [[CSRDatabaseManager sharedInstance] saveContext];
+                                _setSuccess = YES;
+                                [_hub hideAnimated:YES];
+                                [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+                                [timer invalidate];
+                                timer = nil;
+                            } failure:^(NSError * _Nonnull error) {
+                                
+                            }];
+                        });
+                        
+                        NSLog(@"信号量-1 第二个按键  %@",cmdStr2);
+                        
+                    }else {
+                        [self showTextHud:[NSString stringWithFormat:@"%@",AcTECLocalizedStringFromTable(@"outLargeScene", @"Localizable")]];
+                    }
+                    
+                });
             }
         }
     }

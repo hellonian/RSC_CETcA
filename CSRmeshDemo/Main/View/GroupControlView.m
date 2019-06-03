@@ -146,7 +146,13 @@
             [scrollView addSubview:_musicImageView];
             
             UIButton *musicBtn = [[UIButton alloc] init];
-            [musicBtn setBackgroundImage:[UIImage imageNamed:@"music"] forState:UIControlStateNormal];
+            if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+                [musicBtn setBackgroundImage:[UIImage imageNamed:@"musicHighlight"] forState:UIControlStateNormal];
+                [_musicImageView startAnimating];
+            }else {
+                [_musicImageView stopAnimating];
+                [musicBtn setBackgroundImage:[UIImage imageNamed:@"music"] forState:UIControlStateNormal];
+            }
             [musicBtn addTarget:self action:@selector(playPause:) forControlEvents:UIControlEventTouchUpInside];
             [_musicImageView addSubview:musicBtn];
             [musicBtn autoPinEdgesToSuperviewEdges];
@@ -352,13 +358,13 @@
 
 - (void)playPause:(UIButton *)sender {
     if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+        [[SoundListenTool sharedInstance] stopRecord];
         [_musicImageView stopAnimating];
         [sender setBackgroundImage:[UIImage imageNamed:@"music"] forState:UIControlStateNormal];
-        [[SoundListenTool sharedInstance] stopRecord];
     }else {
+        [[SoundListenTool sharedInstance] record:_groupID];
         [sender setBackgroundImage:[UIImage imageNamed:@"musicHighlight"] forState:UIControlStateNormal];
         [_musicImageView startAnimating];
-        [[SoundListenTool sharedInstance] record:_groupID];
     }
 }
 

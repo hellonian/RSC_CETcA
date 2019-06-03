@@ -115,7 +115,7 @@
         _hud.delegate = self;
     }
     NSString *wifiname = [self getWifiName];
-    if (wifiname && ![dic[@"WIFIName"] isEqualToString:[self getWifiName]]) {
+    if ((wifiname && ![dic[@"WIFIName"] isEqualToString:[self getWifiName]])||!wifiname) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"noSameWIFI", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
         [alert.view setTintColor:DARKORAGE];
         UIAlertAction *action = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {

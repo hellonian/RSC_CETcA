@@ -84,7 +84,7 @@
 //        NSLog(@"%d  %ld  %ld  %ld",_connectting,_num,connectedBridges.count,connectingBridges.count);
         if (_connectting) {
             _num++;
-            if (_num == 10) {
+            if (_num == 20) {
                 [connectingBridges removeAllObjects];
                 _connectting = NO;
                 _num = 0;

@@ -1,12 +1,21 @@
 
+/* Class = "UILabel"; text = "1s 脉冲模式"; ObjectID = "52Z-Lb-uYn"; */
+"52Z-Lb-uYn.text" = "1s 脉冲模式";
+
 /* Class = "UILabel"; text = "Brightness"; ObjectID = "ClO-Me-qxg"; */
 "ClO-Me-qxg.text" = "亮度";
+
+/* Class = "UILabel"; text = "all"; ObjectID = "Dba-Oe-G4M"; */
+"Dba-Oe-G4M.text" = "all";
 
 /* Class = "UILabel"; text = "360"; ObjectID = "FWl-MM-RoK"; */
 "FWl-MM-RoK.text" = "360";
 
 /* Class = "UILabel"; text = "Color"; ObjectID = "H8t-il-Prv"; */
 "H8t-il-Prv.text" = "颜色";
+
+/* Class = "UILabel"; text = "group  (0~15)"; ObjectID = "LpE-ya-LiW"; */
+"LpE-ya-LiW.text" = "group  (0~15)";
 
 /* Class = "UILabel"; text = "Reset"; ObjectID = "OV2-JY-QYi"; */
 "OV2-JY-QYi.text" = "重置";
@@ -17,13 +26,16 @@
 /* Class = "UILabel"; text = "Color Temperature"; ObjectID = "SZQ-9z-LDa"; */
 "SZQ-9z-LDa.text" = "色温";
 
-/* Class = "UILabel"; text = "Switch"; ObjectID = "Whw-sT-xn2"; */
+/* Class = "UILabel"; text = "ON/OFF"; ObjectID = "Whw-sT-xn2"; */
 "Whw-sT-xn2.text" = "开/关";
+
+/* Class = "UILabel"; text = "6s 脉冲模式"; ObjectID = "d83-Jj-AHV"; */
+"d83-Jj-AHV.text" = "6s 脉冲模式";
 
 /* Class = "UILabel"; text = "Name"; ObjectID = "g45-W0-rBI"; */
 "g45-W0-rBI.text" = "标签";
 
-/* Class = "UILabel"; text = "7000K"; ObjectID = "gaa-Nj-7D5"; */
+/* Class = "UILabel"; text = "6500K"; ObjectID = "gaa-Nj-7D5"; */
 "gaa-Nj-7D5.text" = "6500K";
 
 /* Class = "UILabel"; text = "Change"; ObjectID = "jzp-Uo-C7S"; */
@@ -32,8 +44,17 @@
 /* Class = "UILabel"; text = "100%"; ObjectID = "lRY-vT-dpa"; */
 "lRY-vT-dpa.text" = "100%";
 
+/* Class = "UILabel"; text = "9s 脉冲模式"; ObjectID = "lRs-Jl-CfF"; */
+"lRs-Jl-CfF.text" = "9s 脉冲模式";
+
+/* Class = "UILabel"; text = "address (0~63)"; ObjectID = "oe0-qN-HUY"; */
+"oe0-qN-HUY.text" = "address (0~63)";
+
 /* Class = "UILabel"; text = "100%"; ObjectID = "qgh-p1-B7s"; */
 "qgh-p1-B7s.text" = "100%";
+
+/* Class = "UILabel"; text = "开关模式"; ObjectID = "vaJ-RI-Ns1"; */
+"vaJ-RI-Ns1.text" = "开关模式";
 
 /* Class = "UILabel"; text = "Color Saturation"; ObjectID = "xVp-9l-H0g"; */
 "xVp-9l-H0g.text" = "饱和度";

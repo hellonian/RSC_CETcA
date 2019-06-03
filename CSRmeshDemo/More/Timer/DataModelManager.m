@@ -439,6 +439,18 @@ static DataModelManager *manager = nil;
         }
     }
     
+    if ([dataStr hasPrefix:@"760603"]) {
+        if ([dataStr length]>=16) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"settedLightSensorCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"dataStr":[dataStr substringFromIndex:6]}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"760305"]) {
+        if ([dataStr length]>=10) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"getCurrenIllumination" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"dataStr":[dataStr substringFromIndex:6]}];
+        }
+    }
+    
     if ([dataStr hasPrefix:@"79"] && dataStr.length == 8) {
         NSString *correctionStep = [dataStr substringFromIndex:6];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"calibrateCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"correctionStep":correctionStep}];
@@ -561,6 +573,12 @@ static DataModelManager *manager = nil;
     if ([dataStr hasPrefix:@"eb63"]) {
         if ([dataStr length]>=12) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"getRemotePassword" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"enable":[dataStr substringWithRange:NSMakeRange(4, 1)],@"passwordCnt":[dataStr substringWithRange:NSMakeRange(5, 1)],@"password":[dataStr substringFromIndex:6]}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"eb71"]) {
+        if ([dataStr length]>=6) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"getGanjiedianModel" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"state":[dataStr substringWithRange:NSMakeRange(4, 2)]}];
         }
     }
 }

@@ -70,11 +70,118 @@
         float   adjAmp          = (amp - minAmp) * inverseAmpRange;
         
         hue = powf(adjAmp, 1.0f / root);
+//        NSLog(@"%f",hue);
     }
-    UIColor *color = [UIColor colorWithHue:hue saturation:1.0 brightness:1.0 alpha:1.0];
-    CGFloat red,green,blue,alpha;
-    if ([color getRed:&red green:&green blue:&blue alpha:&alpha]) {
-        [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"640600%@%@%@0000",[CSRUtilities stringWithHexNumber:red*255],[CSRUtilities stringWithHexNumber:green*255],[CSRUtilities stringWithHexNumber:blue*255]] toDeviceId:self.deviceId];
+    if (hue > 0.3) {
+        /*
+        CGFloat colorHue = (hue-0.3)/0.5,colorBrightness = (hue-0.3)/0.5;
+        if (colorHue < 0) {
+            colorHue = 0;
+        }else if (colorHue > 1) {
+            colorHue = 1.0;
+        }
+        if (colorBrightness < 0) {
+            colorBrightness = 0;
+        }else if (colorBrightness > 1.0) {
+            colorBrightness = 1.0;
+        }
+        static float i=0, minus;
+        if (i==0) {
+            i=0.5;
+        }else if (i==0.5) {
+            i=0;
+        }
+        colorHue = colorHue - i;
+        if (colorHue < 0) {
+            colorHue = colorHue + 1;
+        }
+        UIColor *color = [UIColor colorWithHue:colorHue saturation:1.0 brightness:colorBrightness alpha:1.0];
+        CGFloat red,green,blue,alpha;
+        if ([color getRed:&red green:&green blue:&blue alpha:&alpha]) {
+            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"640600%@%@%@0000",[CSRUtilities stringWithHexNumber:red*255],[CSRUtilities stringWithHexNumber:green*255],[CSRUtilities stringWithHexNumber:blue*255]] toDeviceId:self.deviceId];
+        }
+        NSLog(@">> %f",minus-hue);
+        minus = hue;
+         */
+        /*
+        static float i=0, minus,lastHue,offsetValue,colorBrightness,colorHue;
+        
+        colorHue = hue;
+        minus = hue - lastHue;
+        
+        offsetValue = hue * minus * (hue*20);
+        if (offsetValue>0.5) {
+            offsetValue=0.5;
+        }else if (offsetValue<-0.5) {
+            offsetValue=-0.5;
+        }
+        
+        if (i==0) {
+            i=1.0;
+        }else if (i==1) {
+            i=0;
+            colorHue = fabsf(lastHue + offsetValue);
+            if (colorHue > 1.0) {
+                colorHue = colorHue - 1.0;
+            }
+        }
+        
+        colorBrightness = hue + minus;
+        if (colorBrightness < 0.03) {
+            colorBrightness = 0.03;
+        }else if (colorBrightness > 1.0) {
+            colorBrightness = 1.0;
+        }
+        
+        UIColor *color = [UIColor colorWithHue:colorHue saturation:1.0 brightness:colorBrightness alpha:1.0];
+        CGFloat red,green,blue,alpha;
+        if ([color getRed:&red green:&green blue:&blue alpha:&alpha]) {
+            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"640600%@%@%@0000",[CSRUtilities stringWithHexNumber:red*255],[CSRUtilities stringWithHexNumber:green*255],[CSRUtilities stringWithHexNumber:blue*255]] toDeviceId:self.deviceId];
+        }
+        
+        lastHue = hue;
+        
+        NSLog(@"%f  ||%f  》%f  >%f  ~%f",hue,colorHue,minus,offsetValue,colorBrightness);
+//        NSLog(@">> %f",hue);
+        */
+        
+        static float minus,lastHue,offsetValue,colorBrightness,colorHue,lastColorHue;
+        
+        minus = hue - lastHue;
+        
+        offsetValue = hue * minus * (hue*20);
+        if (offsetValue>0.5) {
+            offsetValue=0.5;
+        }else if (offsetValue<-0.5) {
+            offsetValue=-0.5;
+        }
+        
+        colorHue = lastColorHue + offsetValue;
+        if (colorHue<0) {
+            colorHue = fabsf(colorHue);
+        }else if (colorHue>1.0) {
+            colorHue = colorHue - 1.0;
+        }
+        
+        colorBrightness = hue + minus;
+        if (colorBrightness < 0.03) {
+            colorBrightness = 0.03;
+        }else if (colorBrightness > 1.0) {
+            colorBrightness = 1.0;
+        }
+        
+        UIColor *color = [UIColor colorWithHue:colorHue saturation:1.0 brightness:colorBrightness alpha:1.0];
+        CGFloat red,green,blue,alpha;
+        if ([color getRed:&red green:&green blue:&blue alpha:&alpha]) {
+            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"640600%@%@%@0000",[CSRUtilities stringWithHexNumber:red*255],[CSRUtilities stringWithHexNumber:green*255],[CSRUtilities stringWithHexNumber:blue*255]] toDeviceId:self.deviceId];
+        }
+        
+        lastHue = hue;
+        lastColorHue = colorHue;
+        
+//        NSLog(@"%f  ||%f  》%f  >%f  ~%f",hue,colorHue,minus,offsetValue,colorBrightness);
+//        NSLog(@"~%f  >%f",colorHue,offsetValue);
+        
     }
 }
 

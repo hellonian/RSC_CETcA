@@ -234,7 +234,7 @@
             NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
             [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-                if ([CSRUtilities belongToMainVCDevice:deviceEntity.shortName] && ![CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
+                if ([CSRUtilities belongToMainVCDevice:deviceEntity.shortName]) {
                     SingleDeviceModel *singleDevice = [[SingleDeviceModel alloc] init];
                     singleDevice.deviceId = deviceEntity.deviceId;
                     singleDevice.deviceName = deviceEntity.name;

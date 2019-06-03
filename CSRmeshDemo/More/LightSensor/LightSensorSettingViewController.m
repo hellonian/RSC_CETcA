@@ -8,7 +8,6 @@
 
 #import "LightSensorSettingViewController.h"
 #import "DeviceListViewController.h"
-#import <CSRmesh/DataModelApi.h>
 #import "CSRUtilities.h"
 #import "CSRDatabaseManager.h"
 #import "CSRDevicesManager.h"
@@ -16,6 +15,7 @@
 #import "SingleDeviceModel.h"
 #import "PureLayout.h"
 #import <MBProgressHUD.h>
+#import "DataModelManager.h"
 
 @interface LightSensorSettingViewController ()</*UITableViewDelegate,UITableViewDataSource,*/PowerModelApiDelegate,UITextFieldDelegate,MBProgressHUDDelegate>
 
@@ -36,6 +36,10 @@
 @property (nonatomic, strong) NSNumber *selectedNum;
 @property (weak, nonatomic) IBOutlet UILabel *selectedLabel;
 
+@property (weak, nonatomic) IBOutlet UILabel *targetIllLabel;
+@property (weak, nonatomic) IBOutlet UILabel *currentIllLabel;
+
+
 @end
 
 @implementation LightSensorSettingViewController
@@ -43,9 +47,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
-    self.navigationItem.rightBarButtonItem = done;
-    self.navigationItem.rightBarButtonItem.enabled = NO;
+//    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
+//    self.navigationItem.rightBarButtonItem = done;
+//    self.navigationItem.rightBarButtonItem.enabled = NO;
     
     self.navigationItem.title = self.lightSensor.name;
     self.nameTF.delegate = self;
@@ -108,6 +112,7 @@
     }
     */
     
+    /*
     if (self.lightSensor.remoteBranch && [self.lightSensor.remoteBranch containsString:@"|"]) {
         NSArray *ary = [self.lightSensor.remoteBranch componentsSeparatedByString:@"|"];
         
@@ -126,25 +131,68 @@
         NSInteger luxTarget = [CSRUtilities numberWithHexString:ary[1]];
         self.luxTF.text = [NSString stringWithFormat:@"%ld",(long)luxTarget];
     }
+     */
+    
+    if (self.lightSensor.remoteBranch && [self.lightSensor.remoteBranch length]>=10) {
+        NSInteger idInteger = [self exchangeLowHigh:[self.lightSensor.remoteBranch substringWithRange:NSMakeRange(2, 4)]];
+        self.selectedNum = [NSNumber numberWithInteger:idInteger];
+        NSString *name;
+        if (idInteger > 32768) {
+            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:[NSNumber numberWithInteger:idInteger]];
+            name = deviceEntity.name;
+        }else {
+            CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:[NSNumber numberWithInteger:idInteger]];
+            name = areaEntity.areaName;
+        }
+        self.selectedLabel.text = name;
+        
+        NSInteger luxInteger = [self exchangeLowHigh:[self.lightSensor.remoteBranch substringWithRange:NSMakeRange(6, 4)]];
+        self.targetIllLabel.text = [NSString stringWithFormat:@"%ld Lux",(long)luxInteger];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settedLightSensorCall:) name:@"settedLightSensorCall" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCurrenIllumination:) name:@"getCurrenIllumination" object:nil];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"settedLightSensorCall" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"getCurrenIllumination" object:nil];
 }
 
 - (void)settedLightSensorCall:(NSNotification *)info {
-    if (_hud) {
-        [_hud hideAnimated:YES];
-        _hud = nil;
-        [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
-        self.navigationItem.rightBarButtonItem.enabled = NO;
+    NSDictionary *dic = info.userInfo;
+    NSString *dataStr = dic[@"dataStr"];
+    NSNumber *sourceDeviceId = dic[@"deviceId"];
+    if ([sourceDeviceId isEqualToNumber:_lightSensor.deviceId]) {
+        if (_hud) {
+            [_hud hideAnimated:YES];
+            _hud = nil;
+            //        self.navigationItem.rightBarButtonItem.enabled = NO;
+        }
+        BOOL state = [[dataStr substringToIndex:2] boolValue];
+        if (state) {
+            [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+        }
+        
+        NSString *targetIllStr = [dataStr substringWithRange:NSMakeRange(6, 4)];
+        NSInteger targetIllInt = [self exchangeLowHigh:targetIllStr];
+        _targetIllLabel.text = [NSString stringWithFormat:@"%ld Lux",(long)targetIllInt];
+        
+        self.lightSensor.remoteBranch = dataStr;
+        [[CSRDatabaseManager sharedInstance] saveContext];
     }
+   
+}
+
+- (NSInteger)exchangeLowHigh:(NSString *)string {
+    NSString *str1 = [string substringToIndex:2];
+    NSString *str2 = [string substringFromIndex:2];
+    NSString *newString = [NSString stringWithFormat:@"%@%@",str2,str1];
+    return [CSRUtilities numberWithHexString:newString];
 }
 
 //- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
@@ -210,7 +258,7 @@
 }
 
 - (void)didSelected:(NSNumber *)number {
-    if (number) {
+    if ((number && self.selectedNum && ![number isEqualToNumber:self.selectedNum]) || !self.selectedNum) {
         self.selectedNum = number;
         NSString *name;
         if ([number integerValue]>32768) {
@@ -221,7 +269,10 @@
             name = areaEntity.areaName;
         }
         self.selectedLabel.text = name;
-        self.navigationItem.rightBarButtonItem.enabled = YES;
+//        self.navigationItem.rightBarButtonItem.enabled = YES;
+        NSString *address = [CSRUtilities exchangePositionOfDeviceId:[self.selectedNum integerValue]];
+        
+        [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"76040001%@",address] toDeviceId:self.lightSensor.deviceId];
     }
 }
 
@@ -286,7 +337,7 @@
         NSString *maxLevel = [CSRUtilities stringWithHexNumber:_maxSlider.value];
         self.lightSensor.remoteBranch = [NSString stringWithFormat:@"%@|%@",[CSRUtilities stringWithHexNumber:[self.selectedNum integerValue]],[CSRUtilities stringWithHexNumber:[_luxTF.text integerValue]]];
         [[CSRDatabaseManager sharedInstance] saveContext];
-        [[DataModelApi sharedInstance] sendData:self.lightSensor.deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"740701%@%@%@%@",address,targetLux,minLevel,maxLevel]] success:nil failure:nil];
+        [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"740701%@%@%@%@",address,targetLux,minLevel,maxLevel] toDeviceId:self.lightSensor.deviceId];
     }
 }
 
@@ -460,5 +511,18 @@
     [successHud hideAnimated:YES afterDelay:1.5f];
 }
 
+- (IBAction)getCurrenLux:(id)sender {
+    [[DataModelManager shareInstance] sendCmdData:@"760104" toDeviceId:self.lightSensor.deviceId];
+}
+
+- (void)getCurrenIllumination:(NSNotification *)info {
+    NSDictionary *dic = info.userInfo;
+    NSString *dataStr = dic[@"dataStr"];
+    NSNumber *sourceDeviceId = dic[@"deviceId"];
+    if ([sourceDeviceId isEqualToNumber:_lightSensor.deviceId]) {
+        NSInteger currentIllInt = [self exchangeLowHigh:dataStr];
+        _currentIllLabel.text = [NSString stringWithFormat:@"%ld Lux",(long)currentIllInt];
+    }
+}
 
 @end

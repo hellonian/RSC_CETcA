@@ -11,6 +11,7 @@
 #import <CSRmesh/DataModelApi.h>
 #import "CSRUtilities.h"
 #import <CSRmesh/LightModelApi.h>
+#import "DeviceModelManager.h"
 
 @interface CurtainViewController ()<UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *nameTf;
@@ -46,6 +47,10 @@
     self.navigationItem.rightBarButtonItem = calibrate;
     
     if (_deviceId) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(setPowerStateSuccess:)
+                                                     name:@"setPowerStateSuccess"
+                                                   object:nil];
         CSRDeviceEntity *curtainEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
         self.navigationItem.title = curtainEntity.name;
         self.nameTf.delegate = self;
@@ -72,6 +77,8 @@
             [self.openBtn setImage:[UIImage imageNamed:@"curtainVOpen"] forState:UIControlStateNormal];
             [self.closeBtn setImage:[UIImage imageNamed:@"curtainVClose"] forState:UIControlStateNormal];
         }
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+        [_curtainSlider setValue:[model.level floatValue] animated:YES];
     }
 }
 
@@ -226,6 +233,15 @@
         } failure:^(NSError * _Nullable error) {
             
         }];
+    }
+}
+
+- (void)setPowerStateSuccess:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+        [_curtainSlider setValue:[model.level floatValue] animated:YES];
     }
 }
 

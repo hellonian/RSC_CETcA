@@ -19,6 +19,15 @@
 - (void) didDisconnectPeripheral:(CBPeripheral *)peripheral withError:(NSError *)error;
 - (void) discoveryDidRefresh:(CBPeripheral *) peripheral;
 
+- (void)didPowerOn;
+- (void)didPowerOff;
+- (void)discoveredPripheralDetails;
+- (void)chracteristicChanged:(CBCharacteristic *)characteristic;
+- (void)didConnectToPeripheral:(CBPeripheral *)peripheral;
+- (void)delegatePeripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error;
+- (void)didDisconnectFromPeripheral:(CBPeripheral *)peripheral;
+- (void)chracteristicSetNotifySuccess:(CBCharacteristic *)characteristic;
+
 @end
 
 
@@ -61,5 +70,14 @@
 @property (nonatomic, strong) CBService *targetService;
 @property (nonatomic, strong) CBPeripheral *targetPeripheral;
 @property (nonatomic,assign) BOOL secondConnectBool;
+
+@property (nonatomic,assign) BOOL isForGAIA;
+@property (nonatomic,strong) NSMutableDictionary *listening;
+
+- (CBService *)findService:(NSString *)service_uuid;
+- (CBCharacteristic *)findCharacteristic:(CBService *)service
+                          characteristic:(NSString *)characteristic_uuid;
+- (BOOL)listenFor:(NSString *)service_uuid
+   characteristic:(NSString *)charactaristic_uuid;
 
 @end

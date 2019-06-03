@@ -67,6 +67,12 @@
 @property (weak, nonatomic) IBOutlet UITextField *daliAddressTF;
 @property (nonatomic,strong) UIView *translucentBgView;
 
+@property (strong, nonatomic) IBOutlet UIView *ganjiedianView;
+@property (weak, nonatomic) IBOutlet UIButton *switchModelBtn;
+@property (weak, nonatomic) IBOutlet UIButton *oneSecondModelBtn;
+@property (weak, nonatomic) IBOutlet UIButton *sixSecondModelBtn;
+@property (weak, nonatomic) IBOutlet UIButton *nineSecondModelBtn;
+
 @end
 
 @implementation DeviceViewController
@@ -171,6 +177,14 @@
                 
                 _scrollView.contentSize = CGSizeMake(1, 253+20);
                 
+            }else if ([_device.shortName isEqualToString:@"S10IB"]||[_device.shortName isEqualToString:@"S10IBH"]) {
+                [[NSNotificationCenter defaultCenter] addObserver:self
+                                                         selector:@selector(getGanjiedianModel:)
+                                                             name:@"getGanjiedianModel"
+                                                           object:nil];
+                [[DataModelManager shareInstance] sendCmdData:@"ea70" toDeviceId:_deviceId];
+                [self addSubviewGanjiedianView];
+                _scrollView.contentSize = CGSizeMake(1, 253+20+20+128);
             }else {
                 _scrollView.contentSize = CGSizeMake(1, 134+20);
             }
@@ -351,6 +365,14 @@
     [_dalinView autoSetDimension:ALDimensionHeight toSize:220.0];
     [_dalinView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
     [_dalinView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+}
+
+- (void)addSubviewGanjiedianView {
+    [_scrollView addSubview:_ganjiedianView];
+    [_ganjiedianView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_topView withOffset:20.0];
+    [_ganjiedianView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+    [_ganjiedianView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [_ganjiedianView autoSetDimension:ALDimensionHeight toSize:128.0];
 }
 
 - (void)addSubViewColorTemperatuteView {
@@ -650,7 +672,7 @@
             }
             break;
         case 13:
-            if ([textField.text length]>0 && [textField.text integerValue]<=15) {
+            if ([textField.text length]>0 && [textField.text integerValue]<=63) {
                 [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea520101%@",[CSRUtilities stringWithHexNumber:[textField.text integerValue]]] toDeviceId:_deviceId];
             }
             break;
@@ -886,6 +908,123 @@
         _daliAddressBtn.selected = YES;
         [_daliAddressBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
         _daliAddressTF.text = [NSString stringWithFormat:@"%ld",address];
+    }
+}
+
+- (void)getGanjiedianModel:(NSNotification *)notification {
+    NSDictionary *userDic = notification.userInfo;
+    NSString *stateStr = userDic[@"state"];
+    NSNumber *sourceDeviceId = userDic[@"deviceId"];
+    if ([sourceDeviceId isEqualToNumber:_deviceId]) {
+        if ([stateStr isEqualToString:@"00"]) {
+            _switchModelBtn.selected = YES;
+            [_switchModelBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+            _oneSecondModelBtn.selected = NO;
+            [_oneSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+            _sixSecondModelBtn.selected = NO;
+            [_sixSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+            _nineSecondModelBtn.selected = NO;
+            [_nineSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        }else if ([stateStr isEqualToString:@"01"]) {
+            _switchModelBtn.selected = NO;
+            [_switchModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+            _oneSecondModelBtn.selected = YES;
+            [_oneSecondModelBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+            _sixSecondModelBtn.selected = NO;
+            [_sixSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+            _nineSecondModelBtn.selected = NO;
+            [_nineSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        }else if ([stateStr isEqualToString:@"06"]) {
+            _switchModelBtn.selected = NO;
+            [_switchModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+            _oneSecondModelBtn.selected = NO;
+            [_oneSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+            _sixSecondModelBtn.selected = YES;
+            [_sixSecondModelBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+            _nineSecondModelBtn.selected = NO;
+            [_nineSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        }else if ([stateStr isEqualToString:@"09"]) {
+            _switchModelBtn.selected = NO;
+            [_switchModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+            _oneSecondModelBtn.selected = NO;
+            [_oneSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+            _sixSecondModelBtn.selected = NO;
+            [_sixSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+            _nineSecondModelBtn.selected = YES;
+            [_nineSecondModelBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+        }
+    }
+}
+- (IBAction)ganjiedianSelectAction:(UIButton *)sender {
+    if (sender.selected) {
+        return;
+    }
+    sender.selected = YES;
+    UIImage *image = [UIImage imageNamed:@"Be_selected"];
+    [sender setImage:image forState:UIControlStateNormal];
+    switch (sender.tag) {
+        case 1:
+            if (sender.selected) {
+                if (_oneSecondModelBtn.selected) {
+                    _oneSecondModelBtn.selected = NO;
+                    [_oneSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                }else if (_sixSecondModelBtn.selected) {
+                    _sixSecondModelBtn.selected = NO;
+                    [_sixSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                }else if (_nineSecondModelBtn.selected) {
+                    _nineSecondModelBtn.selected = NO;
+                    [_nineSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                }
+                [[DataModelManager shareInstance] sendCmdData:@"ea7200" toDeviceId:_deviceId];
+            }
+            break;
+        case 2:
+            if (sender.selected) {
+                if (_switchModelBtn.selected) {
+                    _switchModelBtn.selected = NO;
+                    [_switchModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                }else if (_sixSecondModelBtn.selected) {
+                    _sixSecondModelBtn.selected = NO;
+                    [_sixSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                }else if (_nineSecondModelBtn.selected) {
+                    _nineSecondModelBtn.selected = NO;
+                    [_nineSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                }
+                [[DataModelManager shareInstance] sendCmdData:@"ea7201" toDeviceId:_deviceId];
+            }
+            break;
+        case 3:
+            if (sender.selected) {
+                if (_oneSecondModelBtn.selected) {
+                    _oneSecondModelBtn.selected = NO;
+                    [_oneSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                }else if (_switchModelBtn.selected) {
+                    _switchModelBtn.selected = NO;
+                    [_switchModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                }else if (_nineSecondModelBtn.selected) {
+                    _nineSecondModelBtn.selected = NO;
+                    [_nineSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                }
+                [[DataModelManager shareInstance] sendCmdData:@"ea7206" toDeviceId:_deviceId];
+            }
+            break;
+        case 4:
+            if (sender.selected) {
+                if (_oneSecondModelBtn.selected) {
+                    _oneSecondModelBtn.selected = NO;
+                    [_oneSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                }else if (_sixSecondModelBtn.selected) {
+                    _sixSecondModelBtn.selected = NO;
+                    [_sixSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                }else if (_switchModelBtn.selected) {
+                    _switchModelBtn.selected = NO;
+                    [_switchModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                }
+                [[DataModelManager shareInstance] sendCmdData:@"ea7209" toDeviceId:_deviceId];
+            }
+            break;
+        default:
+            break;
     }
 }
 
