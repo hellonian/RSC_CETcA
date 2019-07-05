@@ -142,11 +142,16 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:_downloadAddress]];
     NSString *fileName = [_downloadAddress lastPathComponent];
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.responseSerializer.acceptableContentTypes = nil;
     manager.requestSerializer.cachePolicy = NSURLRequestReloadIgnoringCacheData;
     NSProgress *progress = nil;
     __block MCUUpdateTool *weakSelf = self;
     NSURLSessionDownloadTask *task = [manager downloadTaskWithRequest:request progress:&progress destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
         NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/%@",fileName]];
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if ([fileManager fileExistsAtPath:path]) {
+            [fileManager removeItemAtPath:path error:nil];
+        }
         return [NSURL fileURLWithPath:path];
         
     } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {

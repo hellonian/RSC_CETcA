@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface SocketForSceneVC : UIViewController
 
 @property (nonatomic,strong)NSNumber *deviceId;
+@property (nonatomic,strong)NSNumber *buttonNum;
 
 @end
 

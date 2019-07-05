@@ -148,11 +148,14 @@
                 }else if (levelInt > 179 && levelInt < 256) {
                     model.fansSpeed = 2;
                 }
-            }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToSocket:model.shortName]) {
+            }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToSocketTwoChannel:model.shortName]) {
                 model.channel1PowerState = [powerState boolValue];
                 model.channel1Level = [level integerValue];
                 model.channel2PowerState = [red boolValue];
                 model.channel2Level = [green integerValue];
+            }else if ([CSRUtilities belongToSocketOneChannel:model.shortName]) {
+                model.channel1PowerState = [powerState boolValue];
+                model.channel1Level = [level integerValue];
             }
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
@@ -191,6 +194,9 @@
             model.channel1Level = [level integerValue];
             model.channel2PowerState = [red boolValue];
             model.channel2Level = [green integerValue];
+        }else if ([CSRUtilities belongToSocketOneChannel:model.shortName]) {
+            model.channel1PowerState = [powerState boolValue];
+            model.channel1Level = [level integerValue];
         }
         [_allDevices addObject:model];
     }
@@ -208,9 +214,11 @@
             if ([CSRUtilities belongToFanController:model.shortName]) {
                 model.fanState = [state boolValue];
                 model.lampState = [state boolValue];
-            }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToSocket:model.shortName]) {
+            }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToSocketTwoChannel:model.shortName]) {
                 model.channel1PowerState = [state boolValue];
                 model.channel2PowerState = [state boolValue];
+            }else if ([CSRUtilities belongToSocketOneChannel:model.shortName]) {
+                model.channel1PowerState = [state boolValue];
             }
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId}];
             
@@ -232,6 +240,8 @@
         }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToSocket:model.shortName]) {
             model.channel1PowerState = [state boolValue];
             model.channel2PowerState = [state boolValue];
+        }else if ([CSRUtilities belongToSocketOneChannel:model.shortName]) {
+            model.channel1PowerState = [state boolValue];
         }
         [_allDevices addObject:model];
     }
@@ -467,19 +477,25 @@
                     }
                 }
             }
-            if (model.channel1PowerState || model.channel2PowerState) {
-                model.powerState = @(1);
+            if ([CSRUtilities belongToSocketOneChannel:model.shortName]) {
+                model.powerState = [NSNumber numberWithBool:model.channel1PowerState];
+                model.level = [NSNumber numberWithInteger:model.channel1Level];
             }else {
-                model.powerState = @(0);
-            }
-            if (channelPowerState) {
-                if (model.channel1Level>model.channel2Level) {
-                    model.level = [NSNumber numberWithInteger:model.channel1Level];
+                if (model.channel1PowerState || model.channel2PowerState) {
+                    model.powerState = @(1);
                 }else {
-                    model.level = [NSNumber numberWithInteger:model.channel2Level];
+                    model.powerState = @(0);
+                }
+                if (channelPowerState) {
+                    if (model.channel1Level>model.channel2Level) {
+                        model.level = [NSNumber numberWithInteger:model.channel1Level];
+                    }else {
+                        model.level = [NSNumber numberWithInteger:model.channel2Level];
+                    }
                 }
             }
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setMultichannelStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":[NSNumber numberWithInteger:channel]}];
             *stop = YES;
         }
     }];

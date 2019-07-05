@@ -29,6 +29,7 @@
     NSString *repeatStr;
     NSLayoutConstraint *top_chooseTitle;
     dispatch_semaphore_t semaphore;
+    BOOL reparePop;
     NSInteger memeberCount;
     
     NSNumber *channeling;
@@ -561,7 +562,7 @@
         }
         
         if ([self.backs count]<[_selectedScene.members count]) {
-            NSLog(@"-->>>>> %ld %ld",[self.backs count],[_selectedScene.members count]);
+            NSLog(@"-->>>>> %lu %lu",(unsigned long)[self.backs count],(unsigned long)[_selectedScene.members count]);
             NSString *addFailNames = @"";
             for (SceneMemberEntity *sceneMember in _selectedScene.members) {
                 if (![self.backs containsObject:sceneMember.deviceID]) {
@@ -574,6 +575,10 @@
             UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 if (self.handle) {
                     self.handle();
+                }
+                if ([self.backs count]>0) {
+                    reparePop = YES;
+                    dispatch_semaphore_signal(semaphore);
                 }
                 [self.navigationController popViewControllerAnimated:YES];
             }];
@@ -665,45 +670,55 @@
             if (sceneMember.eveType && sceneMember.colorTemperature) {
                 dispatch_async(queue, ^{
                     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        channeling = @(1);
-                        [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.eveType level:[sceneMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"01"];
-                    });
+                    if (!reparePop) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            channeling = @(1);
+                            [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.eveType level:[sceneMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"01"];
+                        });
+                    }
                 });
                 
                 dispatch_async(queue, ^{
                     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        channeling = @(2);
-                        [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.colorTemperature level:[sceneMember.colorGreen integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"02"];
-                    });
+                    if (!reparePop) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            channeling = @(2);
+                            [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.colorTemperature level:[sceneMember.colorGreen integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"02"];
+                        });
+                    }
                 });
             }else {
                 if (sceneMember.eveType) {
                     dispatch_async(queue, ^{
                         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            channeling = @(1);
-                            [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.eveType level:[sceneMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"01"];
-                        });
+                        if (!reparePop) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                channeling = @(1);
+                                [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.eveType level:[sceneMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"01"];
+                            });
+                        }
                     });
                 }
                 if (sceneMember.colorTemperature) {
                     dispatch_async(queue, ^{
                         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            channeling = @(2);
-                            [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.colorTemperature level:[sceneMember.colorGreen integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"02"];
-                        });
+                        if (!reparePop) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                channeling = @(2);
+                                [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.colorTemperature level:[sceneMember.colorGreen integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"02"];
+                            });
+                        }
                     });
                 }
             }
         }else {
             dispatch_async(queue, ^{
                 dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.eveType level:[sceneMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3];
-                });
+                if (!reparePop) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.eveType level:[sceneMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3];
+                    });
+                }
             });
         }
     }
@@ -795,7 +810,7 @@
             [self.backs addObject:deviceId];
         }
     }
-    NSLog(@"++>>>>> %ld %ld %@",[self.backs count],[_selectedScene.members count],sceneMembering.colorTemperature);
+    NSLog(@"++>>>>> %lu %lu %@",(unsigned long)[self.backs count],(unsigned long)[_selectedScene.members count],sceneMembering.colorTemperature);
     if ([self.backs count] == [_selectedScene.members count]) {
         if (self.handle) {
             self.handle();
@@ -856,7 +871,7 @@
     NSDictionary *resultDic = result.userInfo;
     NSString *state = [resultDic objectForKey:@"changeAlarmEnabledCall"];
     NSNumber *deviceId = [resultDic objectForKey:@"deviceId"];
-    NSLog(@"---->> %@ ~~~ %@",deviceId,state);
+    NSLog(@"---->> %@ +++ %@",deviceId,state);
     dispatch_semaphore_signal(semaphore);
     
     if ([state boolValue]) {
@@ -917,11 +932,19 @@
                 if (self.handle) {
                     self.handle();
                 }
+                if ([self.backs count]>0) {
+                    reparePop = YES;
+                    dispatch_semaphore_signal(semaphore);
+                }
                 [self.navigationController popViewControllerAnimated:YES];
             }];
             UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 if (self.handle) {
                     self.handle();
+                }
+                if ([self.backs count]>0) {
+                    reparePop = YES;
+                    dispatch_semaphore_signal(semaphore);
                 }
                 [self.navigationController popViewControllerAnimated:YES];
             }];
@@ -934,20 +957,22 @@
     
     [self.backs removeAllObjects];
     
-    NSLog(@"开始删除，成员个数：%ld",[_timerEntity.timerDevices count]);
+    NSLog(@"开始删除，成员个数：%lu",(unsigned long)[_timerEntity.timerDevices count]);
     semaphore = dispatch_semaphore_create(1);
     dispatch_queue_t queue = dispatch_queue_create("串行", NULL);
     for (TimerDeviceEntity *timeDevice in _timerEntity.timerDevices) {
         dispatch_async(queue, ^{
             dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSLog(@"删除定时器：%@",timeDevice.deviceID);
-                if ([timeDevice.channel isEqualToNumber:@(10)]) {
-                    [[DataModelManager shareInstance] deleteAlarmForDevice:timeDevice.deviceID index:[timeDevice.timerIndex integerValue]];
-                }else {
-                    [[DataModelManager shareInstance] deleteAlarmForDevice:timeDevice.deviceID channel:[timeDevice.channel integerValue] index:[timeDevice.timerIndex integerValue]];
-                }
-            });
+            if (!reparePop) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSLog(@"删除定时器：%@",timeDevice.deviceID);
+                    if ([timeDevice.channel isEqualToNumber:@(10)]) {
+                        [[DataModelManager shareInstance] deleteAlarmForDevice:timeDevice.deviceID index:[timeDevice.timerIndex integerValue]];
+                    }else {
+                        [[DataModelManager shareInstance] deleteAlarmForDevice:timeDevice.deviceID channel:[timeDevice.channel integerValue] index:[timeDevice.timerIndex integerValue]];
+                    }
+                });
+            }
         });
     }
 }
@@ -988,6 +1013,10 @@
                     if (self.handle) {
                         self.handle();
                     }
+                    if ([self.backs count]>0) {
+                        reparePop = YES;
+                        dispatch_semaphore_signal(semaphore);
+                    }
                     [self.navigationController popViewControllerAnimated:YES];
                 }];
                 [alertController addAction:yesAction];
@@ -995,20 +1024,22 @@
             }
         });
         
-        NSLog(@"开始改使能，成员个数：%ld",[_timerEntity.timerDevices count]);
+        NSLog(@"开始改使能，成员个数：%lu",(unsigned long)[_timerEntity.timerDevices count]);
         semaphore = dispatch_semaphore_create(1);
         dispatch_queue_t queue = dispatch_queue_create("串行", NULL);
         for (TimerDeviceEntity *timerDevice in _timerEntity.timerDevices) {
             dispatch_async(queue, ^{
                 dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    NSLog(@"使能定时器：%@",timerDevice.deviceID);
-                    if ([timerDevice.channel isEqualToNumber:@(10)]) {
-                        [[DataModelManager shareInstance] enAlarmForDevice:timerDevice.deviceID stata:sender.on index:[timerDevice.timerIndex integerValue]];
-                    }else {
-                        [[DataModelManager shareInstance] enAlarmForDevice:timerDevice.deviceID stata:sender.on index:[timerDevice.timerIndex integerValue] channel:[timerDevice.channel integerValue]];
-                    }
-                });
+                if (!reparePop) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        NSLog(@"使能定时器：%@",timerDevice.deviceID);
+                        if ([timerDevice.channel isEqualToNumber:@(10)]) {
+                            [[DataModelManager shareInstance] enAlarmForDevice:timerDevice.deviceID stata:sender.on index:[timerDevice.timerIndex integerValue]];
+                        }else {
+                            [[DataModelManager shareInstance] enAlarmForDevice:timerDevice.deviceID stata:sender.on index:[timerDevice.timerIndex integerValue] channel:[timerDevice.channel integerValue]];
+                        }
+                    });
+                }
             });
         }
     }

@@ -1,27 +1,18 @@
 
-/* Class = "UILabel"; text = "1%"; ObjectID = "BQn-4F-mjf"; */
-"BQn-4F-mjf.text" = "1%";
+/* Class = "UILabel"; text = "Click to get the current illumination"; ObjectID = "G4L-8Q-aBl"; */
+"G4L-8Q-aBl.text" = "Click to get the current illumination";
 
-/* Class = "UILabel"; text = "100%"; ObjectID = "D7A-Gt-k49"; */
-"D7A-Gt-k49.text" = "100%";
+/* Class = "UILabel"; text = "Name"; ObjectID = "GcV-0y-6fU"; */
+"GcV-0y-6fU.text" = "Name";
 
-/* Class = "UIButton"; normalTitle = "Choose Device"; ObjectID = "E3V-Xs-LfZ"; */
-"E3V-Xs-LfZ.normalTitle" = "Choose Device";
+/* Class = "UILabel"; text = "MAC"; ObjectID = "LgO-6I-E8j"; */
+"LgO-6I-E8j.text" = "MAC";
 
-/* Class = "UILabel"; text = "Lux Target"; ObjectID = "R6v-52-bi2"; */
-"R6v-52-bi2.text" = "Lux Target";
+/* Class = "UILabel"; text = "Target illumination"; ObjectID = "PPb-iF-STy"; */
+"PPb-iF-STy.text" = "Target illumination";
 
-/* Class = "UILabel"; text = "Maximum"; ObjectID = "ZVt-63-HCq"; */
-"ZVt-63-HCq.text" = "Maximum";
+/* Class = "UILabel"; text = "Choose Device/Group"; ObjectID = "aP3-cN-G0F"; */
+"aP3-cN-G0F.text" = "Choose Device/Group";
 
-/* Class = "UILabel"; text = "Name"; ObjectID = "bnz-UY-uDy"; */
-"bnz-UY-uDy.text" = "Name";
-
-/* Class = "UIButton"; normalTitle = "Delete"; ObjectID = "dnf-uh-sKU"; */
-"dnf-uh-sKU.normalTitle" = "Delete";
-
-/* Class = "UILabel"; text = "32768 Lux"; ObjectID = "hUc-kA-5fo"; */
-"hUc-kA-5fo.text" = "32768 Lux";
-
-/* Class = "UILabel"; text = "Minimum"; ObjectID = "jxr-vh-GQH"; */
-"jxr-vh-GQH.text" = "Minimum";
+/* Class = "UIButton"; normalTitle = "Delete"; ObjectID = "nQy-jj-b5R"; */
+"nQy-jj-b5R.normalTitle" = "Delete";

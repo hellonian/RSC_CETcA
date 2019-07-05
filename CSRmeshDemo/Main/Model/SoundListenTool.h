@@ -9,16 +9,22 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 
+@protocol SoundListenToolDelegate <NSObject>
+
+- (void)stopPlayButtonAnimation:(NSNumber *)deviceId;
+
+@end
 
 @interface SoundListenTool : NSObject
 
 @property (nonatomic, strong) AVAudioRecorder *audioRecorder;
 @property (nonatomic, strong) NSTimer *recordTimer;
 @property (nonatomic, strong) NSNumber *deviceId;
+@property (nonatomic, weak) id<SoundListenToolDelegate> delegate;
 
 + (instancetype)sharedInstance;
 - (void)record:(NSNumber *)deviceId;
-- (void)stopRecord;
+- (void)stopRecord:(NSNumber *)deviceId;
 
 @end
 

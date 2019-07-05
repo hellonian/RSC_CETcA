@@ -214,6 +214,8 @@
             deviceEntity.mcuBootVersion = deviceDict[@"mcuBootVersion"];
             deviceEntity.mcuHVersion = deviceDict[@"mcuHVersion"];
             deviceEntity.mcuSVersion = deviceDict[@"mcuSVersion"];
+            deviceEntity.bleFirVersion = deviceDict[@"bleFirVersion"];
+            deviceEntity.bleHwVersion = deviceDict[@"bleHwVersion"];
             
             NSMutableArray *rgbScenes = [NSMutableArray new];
             if (parsingDictionary[@"rgbScene_list"]) {
@@ -484,7 +486,9 @@
                                           @"firVersion":(device.firVersion)?(device.firVersion):@0,
                                           @"mcuBootVersion":(device.mcuBootVersion)?(device.mcuBootVersion):@0,
                                           @"mcuHVersion":(device.mcuHVersion)?(device.mcuHVersion):@0,
-                                          @"mcuSVersion":(device.mcuSVersion)?(device.mcuSVersion):@0
+                                          @"mcuSVersion":(device.mcuSVersion)?(device.mcuSVersion):@0,
+                                          @"bleFirVersion":(device.bleFirVersion)?(device.bleFirVersion):@0,
+                                          @"bleHwVersion":(device.bleHwVersion)?(device.bleHwVersion):@0
                                           }];
                 
                 if (device.rgbScenes && [device.rgbScenes count]>0) {

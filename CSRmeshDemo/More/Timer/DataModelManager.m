@@ -250,6 +250,7 @@ static DataModelManager *manager = nil;
         [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
             
         } failure:^(NSError * _Nonnull error) {
+            NSLog(@">>SSSSS>>>");
             [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteAlarmCall" object:nil userInfo:@{@"deviceId":deviceId,@"deleteAlarmCall":@"00"}];
         }];
     }
@@ -579,6 +580,24 @@ static DataModelManager *manager = nil;
     if ([dataStr hasPrefix:@"eb71"]) {
         if ([dataStr length]>=6) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"getGanjiedianModel" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"state":[dataStr substringWithRange:NSMakeRange(4, 2)]}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"eb46"]) {
+        if ([dataStr length]>=8) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"clearSocketPower" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"channel":[dataStr substringWithRange:NSMakeRange(4, 2)],@"state":[dataStr substringWithRange:NSMakeRange(6, 2)]}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"eb49"]) {
+        if ([dataStr length]>=8) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"socketPowerAbnormalReport" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"channel":[dataStr substringWithRange:NSMakeRange(4, 2)],@"state":[dataStr substringWithRange:NSMakeRange(6, 2)]}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"eb48"] || [dataStr hasPrefix:@"eb47"]) {
+        if ([dataStr length]>=10) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"socketPowerThreshold" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"channel":[dataStr substringWithRange:NSMakeRange(4, 2)],@"socketPowerThreshold":[dataStr substringFromIndex:6]}];
         }
     }
 }

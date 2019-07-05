@@ -1214,6 +1214,20 @@
     return NO;
 }
 
++ (BOOL)belongToSocketOneChannel:(NSString *)shortName {
+    if ([kSocketsOneChannel containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToSocketTwoChannel:(NSString *)shortName {
+    if ([kSocketsTwoChannel containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
 
 //十六进制字符串转十进制数据
 + (NSInteger)numberWithHexString:(NSString *)hexString {

@@ -25,6 +25,7 @@
     
     NSString *downloadAddress;
     NSInteger latestMCUSVersion;
+    UIButton *updateMCUBtn;
 }
 
 @property (weak, nonatomic) IBOutlet UITextField *nameTf;
@@ -108,7 +109,7 @@
                 latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
                 downloadAddress = dic[@"Download_address"];
                 if ([curtainEntity.mcuSVersion integerValue]<latestMCUSVersion) {
-                    UIButton *updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
+                    updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
                     [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
                     [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
                     [updateMCUBtn setTitleColor:DARKORAGE forState:UIControlStateNormal];
@@ -151,6 +152,8 @@
         [_updatingHud hideAnimated:YES];
         [self.translucentBgView removeFromSuperview];
         self.translucentBgView = nil;
+        [updateMCUBtn removeFromSuperview];
+        updateMCUBtn = nil;
     }
 }
 
@@ -281,10 +284,38 @@
         case 1:
             _channelSelected1ImageView.image = image;
             deviceModel.channel1Selected = sender.selected;
+            if (_buttonNum) {
+                NSNumber *obj = [deviceModel.buttonnumAndChannel objectForKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                if (sender.selected) {
+                    if (obj && [obj isEqualToNumber:@3]) {
+                        [deviceModel addValue:@1 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                    }else {
+                        [deviceModel addValue:@2 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                    }
+                }else {
+                    if (obj && [obj isEqualToNumber:@1]) {
+                        [deviceModel addValue:@3 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                    }
+                }
+            }
             break;
         case 2:
             _channelSelected2ImageView.image = image;
             deviceModel.channel2Selected = sender.selected;
+            if (_buttonNum) {
+                NSNumber *obj = [deviceModel.buttonnumAndChannel objectForKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                if (sender.selected) {
+                    if (obj && [obj isEqualToNumber:@2]) {
+                        [deviceModel addValue:@1 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                    }else {
+                        [deviceModel addValue:@3 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                    }
+                }else {
+                    if (obj && [obj isEqualToNumber:@1]) {
+                        [deviceModel addValue:@2 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                    }
+                }
+            }
             break;
         default:
             break;

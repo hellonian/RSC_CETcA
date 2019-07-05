@@ -822,9 +822,6 @@
         if(self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(discoveryDidRefresh:)]) {
             [self.bleDelegate discoveryDidRefresh:peripheral];
         }
-        if (self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(discoveryDidRefresh:)]) {
-            [self.bleDelegate discoveryDidRefresh:peripheral];
-        }
     }];
 }
 

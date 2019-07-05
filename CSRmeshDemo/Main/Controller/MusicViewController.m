@@ -12,7 +12,7 @@
 //#import "MusicPlayTools.h"
 #import "SoundListenTool.h"
 
-@interface MusicViewController ()
+@interface MusicViewController ()<SoundListenToolDelegate>
 
 //@property (weak, nonatomic) IBOutlet UIButton *chooseMusicBtn;
 //@property (weak, nonatomic) IBOutlet UILabel *musicTitle;
@@ -38,6 +38,7 @@
     _musicImageView.animationDuration = 1;
     _musicImageView.animationImages = _images;
     
+    [SoundListenTool sharedInstance].delegate = self;
     if ([SoundListenTool sharedInstance].audioRecorder.recording) {
         [_playBtn setBackgroundImage:[UIImage imageNamed:@"musicHighlight"] forState:UIControlStateNormal];
         [_musicImageView startAnimating];
@@ -83,13 +84,18 @@
 //    }
     
     if ([SoundListenTool sharedInstance].audioRecorder.recording) {
-        [[SoundListenTool sharedInstance] stopRecord];
-        [_musicImageView stopAnimating];
-        [sender setBackgroundImage:[UIImage imageNamed:@"music"] forState:UIControlStateNormal];
+        [[SoundListenTool sharedInstance] stopRecord:_deviceId];
     }else {
         [[SoundListenTool sharedInstance] record:_deviceId];
         [sender setBackgroundImage:[UIImage imageNamed:@"musicHighlight"] forState:UIControlStateNormal];
         [_musicImageView startAnimating];
+    }
+}
+
+- (void)stopPlayButtonAnimation:(NSNumber *)deviceId {
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        [_musicImageView stopAnimating];
+        [_playBtn setBackgroundImage:[UIImage imageNamed:@"music"] forState:UIControlStateNormal];
     }
 }
 

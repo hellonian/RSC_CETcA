@@ -160,4 +160,8 @@
 "colorSat" = "饱和度";
 "musicFlow" = "音乐律动";
 "fail" = "密码设置失败";
+"onoffmode" = "开关模式";
+"pulsewidth1" = "1s 脉冲模式";
+"pulsewidth6" = "6s 脉冲模式";
+"pulsewidth9" = "9s 脉冲模式";
 

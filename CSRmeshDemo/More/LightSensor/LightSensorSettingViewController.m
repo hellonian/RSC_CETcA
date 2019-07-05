@@ -25,11 +25,6 @@
 @property (nonatomic,strong) UIActivityIndicatorView *spinner;
 @property (weak, nonatomic) IBOutlet UITextField *nameTF;
 @property (nonatomic,copy) NSString *originalName;
-@property (weak, nonatomic) IBOutlet UITextField *luxTF;
-@property (weak, nonatomic) IBOutlet UILabel *minLabel;
-@property (weak, nonatomic) IBOutlet UISlider *minSlider;
-@property (weak, nonatomic) IBOutlet UILabel *maxLabel;
-@property (weak, nonatomic) IBOutlet UISlider *maxSlider;
 @property (weak, nonatomic) IBOutlet UIView *bgView;
 @property (nonatomic,strong) MBProgressHUD *hud;
 @property (weak, nonatomic) IBOutlet UILabel *macAddressLabel;
@@ -47,14 +42,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-//    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
-//    self.navigationItem.rightBarButtonItem = done;
-//    self.navigationItem.rightBarButtonItem.enabled = NO;
     
     self.navigationItem.title = self.lightSensor.name;
     self.nameTF.delegate = self;
     self.nameTF.text = self.lightSensor.name;
-    self.luxTF.delegate = self;
     self.originalName = self.lightSensor.name;
     NSString *macAddr = [self.lightSensor.uuid substringFromIndex:24];
     NSString *doneTitle = @"";
@@ -69,11 +60,6 @@
     }
     self.macAddressLabel.text = doneTitle;
     
-//    _tableView.delegate = self;
-//    _tableView.dataSource = self;
-//    _tableView.backgroundView = [[UIView alloc] init];
-//    _tableView.backgroundColor = [UIColor clearColor];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(deleteStatus:)
                                                  name:kCSRDeviceManagerDeviceFoundForReset
@@ -82,56 +68,6 @@
     }else {
         [_bgView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:64];
     }
-    
-    /*
-    if (self.lightSensor.remoteBranch.length > 13) {
-        NSString *luxStr = [self.lightSensor.remoteBranch substringWithRange:NSMakeRange(10, 4)];
-        NSString *str0 = [luxStr substringToIndex:2];
-        NSString *str1 = [luxStr substringFromIndex:2];
-        NSInteger lux = [CSRUtilities numberWithHexString:[NSString stringWithFormat:@"%@%@",str1,str0]];
-        self.luxTF.text = [NSString stringWithFormat:@"%ld",lux];
-        NSString *minStr = [self.lightSensor.remoteBranch substringWithRange:NSMakeRange(14, 2)];
-        NSInteger min = [CSRUtilities numberWithHexString:minStr];
-        self.minLabel.text = [NSString stringWithFormat:@"%.f%%",min/255.0*100];
-        [self.minSlider setValue:min];
-        NSString *maxStr = [self.lightSensor.remoteBranch substringWithRange:NSMakeRange(16, 2)];
-        NSInteger max = [CSRUtilities numberWithHexString:maxStr];
-        self.maxLabel.text = [NSString stringWithFormat:@"%.f%%",max/255.0*100];
-        [self.maxSlider setValue:max];
-        NSString *cntStr = [self.lightSensor.remoteBranch substringWithRange:NSMakeRange(4, 2)];
-        NSInteger cnt = [CSRUtilities numberWithHexString:cntStr];
-        [self.dataArray removeAllObjects];
-        for (int i = 0; i<cnt; i++) {
-            NSString *deviceIdStr = [self.lightSensor.remoteBranch substringWithRange:NSMakeRange(6+12*i, 4)];
-            NSString *str1 = [deviceIdStr substringToIndex:2];
-            NSString *str2 = [deviceIdStr substringFromIndex:2];
-            NSNumber *deviceId = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[NSString stringWithFormat:@"%@%@",str2,str1]]];
-            [self.dataArray addObject:deviceId];
-        }
-        [self.tableView reloadData];
-    }
-    */
-    
-    /*
-    if (self.lightSensor.remoteBranch && [self.lightSensor.remoteBranch containsString:@"|"]) {
-        NSArray *ary = [self.lightSensor.remoteBranch componentsSeparatedByString:@"|"];
-        
-        NSInteger idInteger = [CSRUtilities numberWithHexString:self.lightSensor.remoteBranch];
-        self.selectedNum = [NSNumber numberWithInteger:idInteger];
-        NSString *name;
-        if (idInteger > 32768) {
-            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:[NSNumber numberWithInteger:idInteger]];
-            name = deviceEntity.name;
-        }else {
-            CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:[NSNumber numberWithInteger:idInteger]];
-            name = areaEntity.areaName;
-        }
-        self.selectedLabel.text = name;
-        
-        NSInteger luxTarget = [CSRUtilities numberWithHexString:ary[1]];
-        self.luxTF.text = [NSString stringWithFormat:@"%ld",(long)luxTarget];
-    }
-     */
     
     if (self.lightSensor.remoteBranch && [self.lightSensor.remoteBranch length]>=10) {
         NSInteger idInteger = [self exchangeLowHigh:[self.lightSensor.remoteBranch substringWithRange:NSMakeRange(2, 4)]];
@@ -171,7 +107,6 @@
         if (_hud) {
             [_hud hideAnimated:YES];
             _hud = nil;
-            //        self.navigationItem.rightBarButtonItem.enabled = NO;
         }
         BOOL state = [[dataStr substringToIndex:2] boolValue];
         if (state) {
@@ -195,50 +130,6 @@
     return [CSRUtilities numberWithHexString:newString];
 }
 
-//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-//    return 0.01f;
-//}
-//
-//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//    return [self.dataArray count];
-//}
-//
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
-//    if (!cell) {
-//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
-//    }
-//    NSNumber *deviceId = [self.dataArray objectAtIndex:indexPath.row];
-//    cell.tag = [deviceId integerValue];
-//    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
-//    if (deviceEntity) {
-//        cell.textLabel.text = deviceEntity.name;
-//    }else {
-//        cell.textLabel.text = AcTECLocalizedStringFromTable(@"Notfound", @"Localizable");
-//    }
-//    return cell;
-//}
-//
-//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-//}
-
-//- (IBAction)selectDevices:(id)sender {
-//    DeviceListViewController *list = [[DeviceListViewController alloc] init];
-//    list.selectMode = DeviceListSelectMode_ForLightSensor;
-//    list.originalMembers = [self.dataArray copy];
-//    [list getSelectedDevices:^(NSArray *devices) {
-//        [self.dataArray removeAllObjects];
-//        [self.dataArray addObjectsFromArray:devices];
-//        [self.tableView reloadData];
-//        if (devices != nil && [devices count] != 0) {
-//            self.navigationItem.rightBarButtonItem.enabled = YES;
-//        }
-//    }];
-//    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
-//    [self presentViewController:nav animated:YES completion:nil];
-//}
 - (IBAction)selectDeviceOrGroup:(id)sender {
     DeviceListViewController *list = [[DeviceListViewController alloc] init];
     list.selectMode = DeviceListSelectMode_ForLightSensor;
@@ -251,6 +142,10 @@
             [weakSelf didSelected:devices[0]];
         }else {
             self.selectedNum = nil;
+            self.targetIllLabel.text = nil;
+            [[DataModelManager shareInstance] sendCmdData:@"760400000000" toDeviceId:self.lightSensor.deviceId];
+            self.lightSensor.remoteBranch = nil;
+            [[CSRDatabaseManager sharedInstance] saveContext];
         }
     }];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
@@ -269,84 +164,11 @@
             name = areaEntity.areaName;
         }
         self.selectedLabel.text = name;
-//        self.navigationItem.rightBarButtonItem.enabled = YES;
         NSString *address = [CSRUtilities exchangePositionOfDeviceId:[self.selectedNum integerValue]];
         
         [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"76040001%@",address] toDeviceId:self.lightSensor.deviceId];
     }
 }
-
-- (void)doneAction {
-    /*
-    if ([self.dataArray count] != 0 && self.dataArray != nil) {
-        if (!_hud) {
-            _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            _hud.mode = MBProgressHUDModeIndeterminate;
-            _hud.delegate = self;
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                if (_hud) {
-                    [_hud removeFromSuperview];
-                    _hud = nil;
-                    [self showTextHud:AcTECLocalizedStringFromTable(@"TimeOut", @"Localizable")];
-                }
-            });
-        }
-        
-//        NSInteger cnt = [self.dataArray count];
-        NSInteger num = 6*cnt+1;
-        NSString *cmdHead = [NSString stringWithFormat:@"74%@%@",[CSRUtilities stringWithHexNumber:num],[CSRUtilities stringWithHexNumber:cnt]];
-        
-        NSString *targetLux = [self exchangePositionOfDeviceId:[_luxTF.text integerValue]];
-        NSString *minLevel = [CSRUtilities stringWithHexNumber:_minSlider.value];
-        NSString *maxLevel = [CSRUtilities stringWithHexNumber:_maxSlider.value];
-        
-        __block NSString *blockCmd = cmdHead;
-        __weak LightSensorSettingViewController *weakSelf = self;
-//        [self.tableView.visibleCells enumerateObjectsUsingBlock:^(__kindof UITableViewCell * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//            NSString *deviceIdStr = [weakSelf exchangePositionOfDeviceId:obj.tag];
-//            blockCmd = [NSString stringWithFormat:@"%@%@%@%@%@",blockCmd,deviceIdStr,targetLux,minLevel,maxLevel];
-//        }];
-        
-        self.lightSensor.remoteBranch = blockCmd;
-        [[CSRDatabaseManager sharedInstance] saveContext];
-        
-        [[DataModelApi sharedInstance] sendData:self.lightSensor.deviceId data:[CSRUtilities dataForHexString:blockCmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-            
-        } failure:^(NSError * _Nonnull error) {
-            
-        }];
-    }
-*/
-    
-    if (self.selectedNum) {
-        if (!_hud) {
-            _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            _hud.mode = MBProgressHUDModeIndeterminate;
-            _hud.delegate = self;
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                if (_hud) {
-                    [_hud removeFromSuperview];
-                    _hud = nil;
-                    [self showTextHud:AcTECLocalizedStringFromTable(@"TimeOut", @"Localizable")];
-                }
-            });
-        }
-        NSString *address = [CSRUtilities exchangePositionOfDeviceId:[self.selectedNum integerValue]];
-        NSString *targetLux = [CSRUtilities exchangePositionOfDeviceId:[_luxTF.text integerValue]];
-        NSString *minLevel = [CSRUtilities stringWithHexNumber:_minSlider.value];
-        NSString *maxLevel = [CSRUtilities stringWithHexNumber:_maxSlider.value];
-        self.lightSensor.remoteBranch = [NSString stringWithFormat:@"%@|%@",[CSRUtilities stringWithHexNumber:[self.selectedNum integerValue]],[CSRUtilities stringWithHexNumber:[_luxTF.text integerValue]]];
-        [[CSRDatabaseManager sharedInstance] saveContext];
-        [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"740701%@%@%@%@",address,targetLux,minLevel,maxLevel] toDeviceId:self.lightSensor.deviceId];
-    }
-}
-
-//- (NSMutableArray *)dataArray {
-//    if (!_dataArray) {
-//        _dataArray = [[NSMutableArray alloc] init];
-//    }
-//    return _dataArray;
-//}
 
 #pragma mark - 删除光感
 
@@ -465,12 +287,6 @@
         [self saveNickName];
         return;
     }
-    if ([textField isEqual:_luxTF]) {
-        if (self.selectedNum && [textField.text length]>0) {
-            self.navigationItem.rightBarButtonItem.enabled = YES;
-        }
-        return;
-    }
 }
 
 - (void)saveNickName {
@@ -482,20 +298,6 @@
             self.reloadDataHandle();
         }
     }
-}
-
-- (IBAction)minValue:(UISlider *)sender {
-    if (sender.value>_maxSlider.value) {
-        sender.value = _maxSlider.value-3;
-    }
-    self.minLabel.text = [NSString stringWithFormat:@"%.f%%",sender.value/255.0*100];
-}
-
-- (IBAction)maxValue:(UISlider *)sender {
-    if (sender.value<_minSlider.value) {
-        sender.value = _minSlider.value + 3;
-    }
-    self.maxLabel.text = [NSString stringWithFormat:@"%.f%%",sender.value/255.0*100];
 }
 
 - (void)hudWasHidden:(MBProgressHUD *)hud {
@@ -524,5 +326,14 @@
         _currentIllLabel.text = [NSString stringWithFormat:@"%ld Lux",(long)currentIllInt];
     }
 }
-
+    
+- (IBAction)learn:(UIButton *)sender {
+    if (self.selectedNum) {
+        NSString *address = [CSRUtilities exchangePositionOfDeviceId:[self.selectedNum integerValue]];
+        [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"76040001%@",address] toDeviceId:self.lightSensor.deviceId];
+    }else {
+        [[DataModelManager shareInstance] sendCmdData:@"760400000000" toDeviceId:self.lightSensor.deviceId];
+    }
+}
+    
 @end

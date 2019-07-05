@@ -25,6 +25,7 @@ typedef void(^DeviceListSelectedHandle)(NSArray *devices);
 
 @property (nonatomic,assign)DeviceListSelectMode selectMode;
 @property (nonatomic,strong)NSArray *originalMembers;
+@property (nonatomic,strong)NSNumber *buttonNum;
 
 - (void)getSelectedDevices:(DeviceListSelectedHandle)handle;
 

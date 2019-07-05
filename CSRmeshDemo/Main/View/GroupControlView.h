@@ -10,12 +10,15 @@
 #import "ColorSlider.h"
 #import "ColorSquare.h"
 #import <AVFoundation/AVFoundation.h>
+#import "SoundListenTool.h"
 
 
-@interface GroupControlView : UIView <ColorSliderDelegate,ColorSquareDelegate>
-
+@interface GroupControlView : UIView <ColorSliderDelegate,ColorSquareDelegate,SoundListenToolDelegate>
+{
+    BOOL musicBehavior;
+}
 @property (nonatomic, strong) UILabel *threeColorTempTitleLabel, *colorTempTitleLabel, *colorTempLabel, *rgbTitleLabel, *colorLabel, *colorSatTitleLabel, *colorSatLabel, *musicTitleLabel;
-@property (nonatomic, strong) UIButton *threeColorTempChangeBtn, *threeColorTempResetBtn;
+@property (nonatomic, strong) UIButton *threeColorTempChangeBtn, *threeColorTempResetBtn, *musicBtn;
 @property (nonatomic, strong) UIImageView *colorTempIconImageView, *rgbIconImageView, *colorSatIconImageView, *musicImageView;
 @property (nonatomic, strong) UISlider *colorTempSlider, *colorSatSlider;
 @property (nonatomic, strong) ColorSlider *colorSlider;

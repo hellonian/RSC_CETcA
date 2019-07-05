@@ -17,6 +17,9 @@
 /* Class = "UILabel"; text = "group  (0~15)"; ObjectID = "LpE-ya-LiW"; */
 "LpE-ya-LiW.text" = "group  (0~15)";
 
+/* Class = "UILabel"; text = "pulse width"; ObjectID = "NqI-o9-19F"; */
+"NqI-o9-19F.text" = "pulse width";
+
 /* Class = "UILabel"; text = "Reset"; ObjectID = "OV2-JY-QYi"; */
 "OV2-JY-QYi.text" = "Reset";
 
@@ -32,11 +35,17 @@
 /* Class = "UILabel"; text = "pulse width 6s"; ObjectID = "d83-Jj-AHV"; */
 "d83-Jj-AHV.text" = "pulse width 6s";
 
+/* Class = "UIButton"; normalTitle = "pulse width 6s"; ObjectID = "eu8-A4-nY5"; */
+"eu8-A4-nY5.normalTitle" = "pulse width 6s";
+
 /* Class = "UILabel"; text = "Name"; ObjectID = "g45-W0-rBI"; */
 "g45-W0-rBI.text" = "Name";
 
 /* Class = "UILabel"; text = "6500K"; ObjectID = "gaa-Nj-7D5"; */
 "gaa-Nj-7D5.text" = "6500K";
+
+/* Class = "UIButton"; normalTitle = "ON/OFF mode"; ObjectID = "hVU-jX-KKC"; */
+"hVU-jX-KKC.normalTitle" = "ON/OFF mode";
 
 /* Class = "UILabel"; text = "Change"; ObjectID = "jzp-Uo-C7S"; */
 "jzp-Uo-C7S.text" = "Change";
@@ -50,11 +59,17 @@
 /* Class = "UILabel"; text = "address (0~63)"; ObjectID = "oe0-qN-HUY"; */
 "oe0-qN-HUY.text" = "address (0~63)";
 
+/* Class = "UIButton"; normalTitle = "pulse width 1s"; ObjectID = "pLf-su-PzH"; */
+"pLf-su-PzH.normalTitle" = "pulse width 1s";
+
 /* Class = "UILabel"; text = "100%"; ObjectID = "qgh-p1-B7s"; */
 "qgh-p1-B7s.text" = "100%";
 
 /* Class = "UILabel"; text = "ON/OFF mode"; ObjectID = "vaJ-RI-Ns1"; */
 "vaJ-RI-Ns1.text" = "ON/OFF mode";
+
+/* Class = "UIButton"; normalTitle = "pulse width 9s"; ObjectID = "xUc-Ex-DNe"; */
+"xUc-Ex-DNe.normalTitle" = "pulse width 9s";
 
 /* Class = "UILabel"; text = "Color Saturation"; ObjectID = "xVp-9l-H0g"; */
 "xVp-9l-H0g.text" = "Color Saturation";

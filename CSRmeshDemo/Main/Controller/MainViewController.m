@@ -511,8 +511,14 @@
                     }
                 }
             }];
+            if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+                [[SoundListenTool sharedInstance] stopRecord:groupId];
+            }
             [[DeviceModelManager sharedInstance] setLevelWithDeviceId:groupId withLevel:self.originalLevel withState:state direction:direction];
         }else {
+            if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+                [[SoundListenTool sharedInstance] stopRecord:deviceId];
+            }
             DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
             self.originalLevel = model.level;
             [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:self.originalLevel withState:state direction:direction];

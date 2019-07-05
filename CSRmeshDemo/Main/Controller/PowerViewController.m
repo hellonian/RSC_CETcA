@@ -135,8 +135,8 @@
 }
 
 - (IBAction)dayWeekMonthTouch:(UIButton *)sender {
-    [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
-    [[UIApplication sharedApplication].keyWindow addSubview:self.indicatorView];
+    [self.view addSubview:self.translucentBgView];
+    [self.view addSubview:self.indicatorView];
     [self.indicatorView autoCenterInSuperview];
     
     [self.indicatorView startAnimating];
@@ -157,11 +157,11 @@
             
             _fulOffsets = @[@(0),@(3),@(6),@(9),@(12),@(15),@(18),@(21),@(24),@(27)];
             
-            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea434%ldff001e",_channel]] success:nil failure:nil];
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea434%ldff001e",(long)_channel]] success:nil failure:nil];
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 if (![_offsets containsObject:@(30)]) {
-                    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea434%ld1e",_channel]] success:nil failure:nil];
+                    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea434%ld1e",(long)_channel]] success:nil failure:nil];
                 }
             });
         }
@@ -178,11 +178,11 @@
             [_monthBtn setTitleColor:[UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1] forState:UIControlStateNormal];
             screenRowNum = 7;
             _fulOffsets = @[@(0),@(3),@(6),@(9)];
-            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea433%ldff000b",_channel]] success:nil failure:nil];
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea433%ldff000b",(long)_channel]] success:nil failure:nil];
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 if (![_offsets containsObject:@(9)]) {
-                    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea433%ld09",_channel]] success:nil failure:nil];
+                    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea433%ld09",(long)_channel]] success:nil failure:nil];
                 }
             });
         }
@@ -199,11 +199,11 @@
             [_weekBtn setTitleColor:[UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1] forState:UIControlStateNormal];
             screenRowNum = 5;
             _fulOffsets = @[@(0),@(3),@(6),@(9)];
-            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea432%ldff000b",_channel]] success:nil failure:nil];
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea432%ldff000b",(long)_channel]] success:nil failure:nil];
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 if (![_offsets containsObject:@(9)]) {
-                    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea432%ld09",_channel]] success:nil failure:nil];
+                    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea432%ld09",(long)_channel]] success:nil failure:nil];
                 }
             });
         }
@@ -220,11 +220,11 @@
             [_monthBtn setTitleColor:[UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1] forState:UIControlStateNormal];
             screenRowNum = 9;
             _fulOffsets = @[@(0),@(6),@(12),@(18)];
-            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea435%ldff0017",_channel]] success:nil failure:nil];
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea435%ldff0017",(long)_channel]] success:nil failure:nil];
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 if (![_offsets containsObject:@(18)]) {
-                    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea435%ld12",_channel]] success:nil failure:nil];
+                    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea435%ld12",(long)_channel]] success:nil failure:nil];
                 }
             });
             
@@ -268,7 +268,7 @@
                             if ([_dataMutableArray count]<31) {
                                 for (NSNumber *offset in _fulOffsets) {
                                     if (![_offsets containsObject:offset]) {
-                                        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea434%ld%@",_channel,[CSRUtilities stringWithHexNumber:[offset integerValue]]]] success:nil failure:nil];
+                                        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea434%ld%@",(long)_channel,[CSRUtilities stringWithHexNumber:[offset integerValue]]]] success:nil failure:nil];
                                     }
                                 }
                             }
@@ -347,7 +347,7 @@
                             if ([_dataMutableArray count]<12) {
                                 for (NSNumber *offset in _fulOffsets) {
                                     if (![_offsets containsObject:offset]) {
-                                        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea433%ld%@",_channel,[CSRUtilities stringWithHexNumber:[offset integerValue]]]] success:nil failure:nil];
+                                        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea433%ld%@",(long)_channel,[CSRUtilities stringWithHexNumber:[offset integerValue]]]] success:nil failure:nil];
                                     }
                                 }
                             }
@@ -408,7 +408,7 @@
                             if ([_dataMutableArray count]<12) {
                                 for (NSNumber *offset in _fulOffsets) {
                                     if (![_offsets containsObject:offset]) {
-                                        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea432%ld%@",_channel,[CSRUtilities stringWithHexNumber:[offset integerValue]]]] success:nil failure:nil];
+                                        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea432%ld%@",(long)_channel,[CSRUtilities stringWithHexNumber:[offset integerValue]]]] success:nil failure:nil];
                                     }
                                 }
                             }
@@ -462,7 +462,7 @@
                             if ([_dataMutableArray count]<24) {
                                 for (NSNumber *offset in _fulOffsets) {
                                     if (![_offsets containsObject:offset]) {
-                                        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea435%ld%@",_channel,[CSRUtilities stringWithHexNumber:[offset integerValue]]]] success:nil failure:nil];
+                                        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea435%ld%@",(long)_channel,[CSRUtilities stringWithHexNumber:[offset integerValue]]]] success:nil failure:nil];
                                     }
                                 }
                             }

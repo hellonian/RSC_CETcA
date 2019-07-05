@@ -28,6 +28,7 @@
 #import "FanViewController.h"
 #import "SocketForSceneVC.h"
 #import "TwoChannelDimmerVC.h"
+#import "DeviceModelManager.h"
 
 
 @interface DeviceListViewController ()<MainCollectionViewDelegate>
@@ -42,6 +43,8 @@
 @property (nonatomic,strong) UIView *curtainKindView;
 @property (nonatomic,strong) NSNumber *selectedCurtainDeviceId;
 @property (nonatomic,strong) UIView *translucentBgView;
+
+@property (nonatomic,strong) UIView *curtainDetailSelectedView;
 
 @end
 
@@ -378,6 +381,11 @@
                     CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
                     if ([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName] || [CSRUtilities belongToSocket:deviceEntity.shortName]) {
                         [self mainCollectionViewDelegateLongPressAction:cell];
+                    }else if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
+                        self.curtainDetailSelectedView = [self curtainDetailSelectedView:mainCell.deviceId];
+                        [self.view addSubview:self.curtainDetailSelectedView];
+                        [self.curtainDetailSelectedView autoCenterInSuperview];
+                        [self.curtainDetailSelectedView autoSetDimensionsToSize:CGSizeMake(271, 166)];
                     }
                     
                 }
@@ -612,6 +620,7 @@
         }else if ([CSRUtilities belongToSocket:deviceEntity.shortName]) {
             SocketForSceneVC *socketVC = [[SocketForSceneVC alloc] init];
             socketVC.deviceId = mainCell.deviceId;
+            socketVC.buttonNum = self.buttonNum;
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:socketVC];
             nav.modalPresentationStyle = UIModalPresentationPopover;
             [self presentViewController:nav animated:YES completion:nil];
@@ -621,6 +630,7 @@
             TwoChannelDimmerVC *TDVC = [[TwoChannelDimmerVC alloc] init];
             TDVC.deviceId = mainCell.deviceId;
             TDVC.forSelected = YES;
+            TDVC.buttonNum = self.buttonNum;
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:TDVC];
             nav.modalPresentationStyle = UIModalPresentationPopover;
             [self presentViewController:nav animated:YES completion:nil];
@@ -659,6 +669,65 @@
         _maskLayer = [[ControlMaskView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     }
     return _maskLayer;
+}
+
+- (UIView *)curtainDetailSelectedView:(NSNumber *)deviceId {
+    if (!_curtainDetailSelectedView) {
+        _curtainDetailSelectedView = [[UIView alloc] initWithFrame:CGRectZero];
+        _curtainDetailSelectedView.backgroundColor = [UIColor whiteColor];
+        _curtainDetailSelectedView.alpha = 0.9;
+        _curtainDetailSelectedView.layer.cornerRadius = 14;
+        _curtainDetailSelectedView.layer.masksToBounds = YES;
+        _curtainDetailSelectedView.tag = [deviceId integerValue];
+        
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 271, 30)];
+        titleLabel.text = @"选择开启或者关闭";
+        titleLabel.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+        titleLabel.textAlignment = NSTextAlignmentCenter;
+        [_curtainDetailSelectedView addSubview:titleLabel];
+        
+        UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 30, 271, 1)];
+        line.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+        [_curtainDetailSelectedView addSubview:line];
+        
+        UIButton *horizontalBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 31, 135, 135)];
+        horizontalBtn.tag = 11;
+        [horizontalBtn addTarget:self action:@selector(curtainDetailSelectedAction:) forControlEvents:UIControlEventTouchUpInside];
+        [_curtainDetailSelectedView addSubview:horizontalBtn];
+        
+        UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(135, 31, 1, 135)];
+        line1.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+        [_curtainDetailSelectedView addSubview:line1];
+        
+        UIButton *verticalBtn = [[UIButton alloc] initWithFrame:CGRectMake(136, 31, 135, 135)];
+        verticalBtn.tag = 22;
+        [verticalBtn addTarget:self action:@selector(curtainDetailSelectedAction:) forControlEvents:UIControlEventTouchUpInside];
+        [_curtainDetailSelectedView addSubview:verticalBtn];
+        
+        CSRDeviceEntity *curtainEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+        if ([curtainEntity.remoteBranch isEqualToString:@"ch"]) {
+            [horizontalBtn setImage:[UIImage imageNamed:@"curtainHOpen"] forState:UIControlStateNormal];
+            [verticalBtn setImage:[UIImage imageNamed:@"curtainHClose"] forState:UIControlStateNormal];
+        }else if ([curtainEntity.remoteBranch isEqualToString:@"cv"]) {
+            [horizontalBtn setImage:[UIImage imageNamed:@"curtainVOpen"] forState:UIControlStateNormal];
+            [verticalBtn setImage:[UIImage imageNamed:@"curtainVClose"] forState:UIControlStateNormal];
+        }
+        
+    }
+    return _curtainDetailSelectedView;
+}
+
+- (void)curtainDetailSelectedAction:(UIButton *)button {
+    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:[NSNumber numberWithInteger:_curtainDetailSelectedView.tag]];
+    if (_buttonNum) {
+        if (button.tag == 11) {
+            [deviceModel addValue:@2 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+        }else if (button.tag == 22) {
+            [deviceModel addValue:@3 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+        }
+    }
+    [self.curtainDetailSelectedView removeFromSuperview];
+    self.curtainDetailSelectedView = nil;
 }
 
 @end

@@ -22,6 +22,7 @@
     NSTimer *timer;
     NSString *downloadAddress;
     NSInteger latestMCUSVersion;
+    UIButton *updateMCUBtn;
 }
 
 @property (weak, nonatomic) IBOutlet UITextField *nameTf;
@@ -41,6 +42,16 @@
 @property (weak, nonatomic) IBOutlet UIButton *socket2Btn;
 @property (weak, nonatomic) IBOutlet UIButton *child2Btn;
 @property (nonatomic,strong) UIView *translucentBgView;
+@property (weak, nonatomic) IBOutlet UIView *contentView;
+@property (weak, nonatomic) IBOutlet UIView *firstChannelView;
+@property (strong, nonatomic) IBOutlet UIView *secondChannelView;
+@property (strong, nonatomic) IBOutlet UIButton *clearPowerDataBtn;
+@property (weak, nonatomic) IBOutlet UILabel *abnormalLab1;
+@property (weak, nonatomic) IBOutlet UILabel *abnormalLab2;
+@property (weak, nonatomic) IBOutlet UILabel *thresholdLab1;
+@property (weak, nonatomic) IBOutlet UILabel *thresholdLab2;
+@property (weak, nonatomic) IBOutlet UISwitch *thresholdSwitch1;
+@property (weak, nonatomic) IBOutlet UISwitch *thresholdSwitch2;
 
 @end
 
@@ -59,8 +70,24 @@
         self.navigationItem.leftBarButtonItem = back;
     }
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(setSocketSuccess:)
+                                             selector:@selector(setPowerStateSuccess:)
                                                  name:@"setPowerStateSuccess"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(setMultichannelStateSuccess:)
+                                                 name:@"setMultichannelStateSuccess"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(clearSocketPower:)
+                                                 name:@"clearSocketPower"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(socketPowerAbnormalReport:)
+                                                 name:@"socketPowerAbnormalReport"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(socketPowerThreshold:)
+                                                 name:@"socketPowerThreshold"
                                                object:nil];
     if (_deviceId) {
         CSRDeviceEntity *curtainEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
@@ -81,6 +108,31 @@
         }
         self.macAddressLabel.text = doneTitle;
         
+        if ([CSRUtilities belongToSocketTwoChannel:curtainEntity.shortName]) {
+            [_contentView addSubview:_secondChannelView];
+            [_secondChannelView autoSetDimension:ALDimensionHeight toSize:267.0];
+            [_secondChannelView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_firstChannelView withOffset:10.0];
+            [_secondChannelView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+            [_secondChannelView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+            
+            [_contentView addSubview:_clearPowerDataBtn];
+            [_clearPowerDataBtn autoSetDimension:ALDimensionHeight toSize:44.0];
+            [_clearPowerDataBtn autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_secondChannelView withOffset:20.0];
+            [_clearPowerDataBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+            [_clearPowerDataBtn autoPinEdgeToSuperviewEdge:ALEdgeRight];
+            
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"ea4803"] success:nil failure:nil];
+            
+        }else if ([CSRUtilities belongToSocketOneChannel:curtainEntity.shortName]) {
+            [_contentView addSubview:_clearPowerDataBtn];
+            [_clearPowerDataBtn autoSetDimension:ALDimensionHeight toSize:44.0];
+            [_clearPowerDataBtn autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_firstChannelView withOffset:20.0];
+            [_clearPowerDataBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+            [_clearPowerDataBtn autoPinEdgeToSuperviewEdge:ALEdgeRight];
+            
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"ea4801"] success:nil failure:nil];
+        }
+        
         [self changeUI:_deviceId];
         if ([curtainEntity.hwVersion integerValue]==2) {
             NSMutableString *mutStr = [NSMutableString stringWithString:curtainEntity.shortName];
@@ -92,11 +144,12 @@
             sessionManager.requestSerializer.cachePolicy = NSURLRequestReloadIgnoringCacheData;
             [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
                 NSDictionary *dic = (NSDictionary *)responseObject;
-                NSLog(@"%@",dic);
+//                NSLog(@"mcuSVersion> %@",curtainEntity.mcuSVersion);
+//                NSLog(@"dic> %@",dic);
                 latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
                 downloadAddress = dic[@"Download_address"];
                 if ([curtainEntity.mcuSVersion integerValue]<latestMCUSVersion) {
-                    UIButton *updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
+                    updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
                     [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
                     [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
                     [updateMCUBtn setTitleColor:DARKORAGE forState:UIControlStateNormal];
@@ -121,8 +174,15 @@
 
 -(void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    if ((522 - self.scrollView.bounds.size.height + 44)/2>0) {
-        self.constantH.constant = (522 - self.scrollView.bounds.size.height + 44)/2;
+    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+    if ([CSRUtilities belongToSocketOneChannel:deviceEntity.shortName]) {
+        if ((522 - self.scrollView.bounds.size.height + 44 + 64 - 206 - 10)/2>0) {
+            self.constantH.constant = (522 - self.scrollView.bounds.size.height + 44 + 64 - 206 - 10 + 61)/2;
+        }
+    }else if ([CSRUtilities belongToSocketTwoChannel:deviceEntity.shortName]) {
+        if ((522 - self.scrollView.bounds.size.height + 44 + 64)/2>0) {
+            self.constantH.constant = (522 - self.scrollView.bounds.size.height + 44 + 64 + 61*2)/2;
+        }
     }
 }
 
@@ -146,6 +206,8 @@
         [_updatingHud hideAnimated:YES];
         [self.translucentBgView removeFromSuperview];
         self.translucentBgView = nil;
+        [updateMCUBtn removeFromSuperview];
+        updateMCUBtn = nil;
     }
 }
 
@@ -155,6 +217,7 @@
                                              selector:@selector(socketPowerCall:)
                                                  name:@"socketPowerCall"
                                                object:nil];
+    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"ea42"] success:nil failure:nil];
     timer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(timerMethod:) userInfo:nil repeats:YES];
     [timer fire];
 }
@@ -222,11 +285,64 @@
     [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
 }
 
-- (void)setSocketSuccess: (NSNotification *)notification {
+- (void)setPowerStateSuccess:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
     if ([deviceId isEqualToNumber:_deviceId]) {
         [self changeUI:deviceId];
+    }
+}
+
+- (void)setMultichannelStateSuccess: (NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    NSInteger channel = [userInfo[@"channel"] integerValue];
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        [self changeUI:deviceId channel:channel];
+    }
+}
+
+- (void)changeUI:(NSNumber *)deviceId channel:(NSInteger)channel{
+    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:deviceId];
+    if (deviceModel) {
+        
+        if (channel == 1) {
+            [_channel1Switch setOn:deviceModel.channel1PowerState];
+            if (deviceModel.channel1PowerState && !deviceModel.childrenState1) {
+                [_childSwitch1 setEnabled:NO];
+                _child1Btn.hidden = NO;
+            }else {
+                [_childSwitch1 setEnabled:YES];
+                _child1Btn.hidden = YES;
+            }
+            
+            [_childSwitch1 setOn:deviceModel.childrenState1];
+            if (deviceModel.childrenState1) {
+                [_channel1Switch setEnabled:NO];
+                _socket1Btn.hidden = NO;
+            }else {
+                [_channel1Switch setEnabled:YES];
+                _socket1Btn.hidden = YES;
+            }
+        }else if (channel == 2) {
+            [_channel2Switch setOn:deviceModel.channel2PowerState];
+            if (deviceModel.channel2PowerState && !deviceModel.childrenState2) {
+                [_childSwitch2 setEnabled:NO];
+                _child2Btn.hidden = NO;
+            }else {
+                [_childSwitch2 setEnabled:YES];
+                _child2Btn.hidden = YES;
+            }
+            
+            [_childSwitch2 setOn:deviceModel.childrenState2];
+            if (deviceModel.childrenState2) {
+                [_channel2Switch setEnabled:NO];
+                _socket2Btn.hidden = NO;
+            }else {
+                [_channel2Switch setEnabled:YES];
+                _socket2Btn.hidden = YES;
+            }
+        }
     }
 }
 
@@ -335,6 +451,177 @@
         _translucentBgView.alpha = 0.4;
     }
     return _translucentBgView;
+}
+
+- (IBAction)clearAction:(UIButton *)sender {
+    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+    if ([CSRUtilities belongToSocketOneChannel:deviceEntity.shortName]) {
+        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"ea4601"] success:nil failure:nil];
+    }else if ([CSRUtilities belongToSocketTwoChannel:deviceEntity.shortName]) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        [alert.view setTintColor:DARKORAGE];
+        UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"清除第1路电量数据" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"ea4601"] success:nil failure:nil];
+        }];
+        UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"清除第2路电量数据" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"ea4602"] success:nil failure:nil];
+        }];
+        UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"清除两路电量数据" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"ea4603"] success:nil failure:nil];
+        }];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        [alert addAction:action1];
+        [alert addAction:action2];
+        [alert addAction:action3];
+        [alert addAction:cancel];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
+}
+
+- (void)clearSocketPower:(NSNotification *)notification {
+    NSDictionary *dic = notification.userInfo;
+    NSNumber *deviceId = dic[@"deviceId"];
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        NSString *channel = dic[@"channel"];
+        BOOL state = [dic[@"state"] boolValue];
+        NSString *stateStr = state? @"成功":@"失败";
+        NSString *channelStr = [channel isEqualToString:@"01"]? @"第1路":([channel isEqualToString:@"02"]? @"第2路":@"两路");
+        [self showTextHud:[NSString stringWithFormat:@"%@电量数据清除%@",channelStr,stateStr]];
+    }
+}
+
+- (void)showTextHud:(NSString *)text {
+    MBProgressHUD *successHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    successHud.mode = MBProgressHUDModeText;
+    successHud.label.text = text;
+    successHud.label.numberOfLines = 0;
+    successHud.delegate = self;
+    [successHud hideAnimated:YES afterDelay:4.0f];
+}
+
+- (void)socketPowerAbnormalReport:(NSNotification *)notification {
+    NSDictionary *dic = notification.userInfo;
+    NSNumber *deviceId = dic[@"deviceId"];
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        NSString *channel = dic[@"channel"];
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        formatter.dateFormat = @"MM-dd HH:mm:ss";
+        NSString *dateStr = [formatter stringFromDate:[NSDate date]];
+        if ([channel isEqualToString:@"01"]) {
+            _abnormalLab1.text = [NSString stringWithFormat:@"%@\nError_code:%@",dateStr,dic[@"state"]];
+        }else if ([channel isEqualToString:@"02"]) {
+            _abnormalLab2.text = [NSString stringWithFormat:@"%@\nError_code:%@",dateStr,dic[@"state"]];
+        }
+    }
+}
+
+- (void)socketPowerThreshold:(NSNotification *)notification {
+    NSDictionary *dic = notification.userInfo;
+    NSNumber *deviceId = dic[@"deviceId"];
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        NSString *channel = dic[@"channel"];
+        NSString *dataStr = dic[@"socketPowerThreshold"];
+        if ([channel isEqualToString:@"01"] && [dataStr length]>=4) {
+            BOOL enable = [[dataStr substringWithRange:NSMakeRange(0, 2)] boolValue];
+            NSInteger pvalue = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(2, 2)]];
+            [_thresholdSwitch1 setOn:enable];
+            _thresholdLab1.text = [NSString stringWithFormat:@"%ld",(long)pvalue];
+        }else if ([channel isEqualToString:@"02"] && [dataStr length]>=4) {
+            BOOL enable = [[dataStr substringWithRange:NSMakeRange(0, 2)] boolValue];
+            NSInteger pvalue = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(2, 2)]];
+            [_thresholdSwitch2 setOn:enable];
+            _thresholdLab2.text = [NSString stringWithFormat:@"%ld",(long)pvalue];
+        }else if ([channel isEqualToString:@"03"] && [dataStr length]>=8) {
+            BOOL enable1 = [[dataStr substringWithRange:NSMakeRange(0, 2)] boolValue];
+            NSInteger pvalue1 = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(2, 2)]];
+            BOOL enable2 = [[dataStr substringWithRange:NSMakeRange(4, 2)] boolValue];
+            NSInteger pvalue2 = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 2)]];
+            [_thresholdSwitch1 setOn:enable1];
+            _thresholdLab1.text = [NSString stringWithFormat:@"%ld",(long)pvalue1];
+            [_thresholdSwitch2 setOn:enable2];
+            _thresholdLab2.text = [NSString stringWithFormat:@"%ld",(long)pvalue2];
+        }
+    }
+}
+
+- (IBAction)thresholdEnableSwitch:(UISwitch *)sender {
+    switch (sender.tag) {
+        case 1:
+        if ([_thresholdLab1.text length]>0 && [_thresholdLab1.text integerValue]>=2 && [_thresholdLab1.text integerValue]<=20) {
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea47010%d%@",sender.on,[CSRUtilities stringWithHexNumber:[_thresholdLab1.text integerValue]]]] success:nil failure:nil];
+        }else {
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea47010%d02",sender.on]] success:nil failure:nil];
+        }
+        break;
+        case 2:
+        if ([_thresholdLab2.text length]>0 && [_thresholdLab2.text integerValue]>=2 && [_thresholdLab2.text integerValue]<=20) {
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea47020%d%@",sender.on,[CSRUtilities stringWithHexNumber:[_thresholdLab2.text integerValue]]]] success:nil failure:nil];
+        }else {
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea47020%d02",sender.on]] success:nil failure:nil];
+        }
+        break;
+        default:
+        break;
+    }
+}
+
+- (IBAction)thresholdValueChangeBtn:(UIButton *)sender {
+    NSString *channel = nil;
+    BOOL enable = YES;
+    NSString *Pvalue = @"2";
+    switch (sender.tag) {
+        case 11:
+        channel = @"01";
+        enable = _thresholdSwitch1.on;
+        if ([_thresholdLab1.text length]>0) {
+            if ([_thresholdLab1.text integerValue]>20){
+                Pvalue = @"20";
+            }else if ([_thresholdLab1.text integerValue]>2 && [_thresholdLab1.text integerValue]<=20) {
+                Pvalue = [NSString stringWithFormat:@"%d",[_thresholdLab1.text integerValue]-1];
+            }
+        }
+        break;
+        case 12:
+        channel = @"01";
+        enable = _thresholdSwitch1.on;
+        if ([_thresholdLab1.text length]>0) {
+            if ([_thresholdLab1.text integerValue]>=20) {
+                Pvalue = @"20";
+            }else if ([_thresholdLab1.text integerValue]>=2 && [_thresholdLab1.text integerValue]<20) {
+                Pvalue = [NSString stringWithFormat:@"%d",[_thresholdLab1.text integerValue]+1];
+            }
+        }
+        break;
+        case 21:
+        channel = @"02";
+        enable = _thresholdSwitch2.on;
+        if ([_thresholdLab2.text length]>0) {
+            if ([_thresholdLab2.text integerValue]>20) {
+                Pvalue = @"20";
+            }else if ([_thresholdLab2.text integerValue]>2 && [_thresholdLab2.text integerValue]<=20) {
+                Pvalue = [NSString stringWithFormat:@"%d",[_thresholdLab2.text integerValue]-1];
+            }
+        }
+        break;
+        case 22:
+        channel = @"02";
+        enable = _thresholdSwitch2.on;
+        if ([_thresholdLab2.text length]>0) {
+            if ([_thresholdLab2.text integerValue]>=20) {
+                Pvalue = @"20";
+            }else if ([_thresholdLab2.text integerValue]>=2 && [_thresholdLab2.text integerValue]<20) {
+                Pvalue = [NSString stringWithFormat:@"%d",[_thresholdLab2.text integerValue]+1];
+            }
+        }
+        break;
+        default:
+        break;
+    }
+    if (channel) {
+        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea47%@0%d%@",channel,enable,[CSRUtilities stringWithHexNumber:[Pvalue integerValue]]]] success:nil failure:nil];
+    }
 }
 
 @end

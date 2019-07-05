@@ -12,8 +12,17 @@
 #import "CSRUtilities.h"
 #import <CSRmesh/LightModelApi.h>
 #import "DeviceModelManager.h"
+#import <MBProgressHUD.h>
+#import "MCUUpdateTool.h"
+#import "AFHTTPSessionManager.h"
+#import "PureLayout.h"
 
-@interface CurtainViewController ()<UITextFieldDelegate>
+@interface CurtainViewController ()<UITextFieldDelegate,MBProgressHUDDelegate,MCUUpdateToolDelegate>
+{
+    NSString *downloadAddress;
+    NSInteger latestMCUSVersion;
+    UIButton *updateMCUBtn;
+}
 @property (weak, nonatomic) IBOutlet UITextField *nameTf;
 @property (weak, nonatomic) IBOutlet UILabel *macAddressLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *curtainTypeImageView;
@@ -26,6 +35,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *PauseBtn;
 @property (weak, nonatomic) IBOutlet UISlider *curtainSlider;
 @property (weak, nonatomic) IBOutlet UILabel *bubbleLabel;
+@property (nonatomic,strong) MBProgressHUD *updatingHud;
+@property (nonatomic,strong) UIView *translucentBgView;
 
 @end
 
@@ -79,6 +90,66 @@
         }
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
         [_curtainSlider setValue:[model.level floatValue] animated:YES];
+        
+        if ([curtainEntity.hwVersion integerValue]==2) {
+            NSMutableString *mutStr = [NSMutableString stringWithString:curtainEntity.shortName];
+            NSRange range = {0,curtainEntity.shortName.length};
+            [mutStr replaceOccurrencesOfString:@"/" withString:@"" options:NSLiteralSearch range:range];
+            NSString *urlString = [NSString stringWithFormat:@"http://39.108.152.134/MCU/%@/%@.php",mutStr,mutStr];
+            AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
+            sessionManager.responseSerializer.acceptableContentTypes = nil;
+            sessionManager.requestSerializer.cachePolicy = NSURLRequestReloadIgnoringCacheData;
+            [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+                NSDictionary *dic = (NSDictionary *)responseObject;
+                latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
+                downloadAddress = dic[@"Download_address"];
+                if ([curtainEntity.mcuSVersion integerValue]<latestMCUSVersion) {
+                    updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
+                    [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
+                    [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
+                    [updateMCUBtn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+                    [updateMCUBtn addTarget:self action:@selector(askUpdateMCU) forControlEvents:UIControlEventTouchUpInside];
+                    [self.view addSubview:updateMCUBtn];
+                    [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+                    [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeRight];
+                    [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom];
+                    [updateMCUBtn autoSetDimension:ALDimensionHeight toSize:44.0];
+                }
+            } failure:^(NSURLSessionDataTask *task, NSError *error) {
+                NSLog(@"%@",error);
+            }];
+        }
+        
+    }
+}
+
+- (void)askUpdateMCU {
+    [MCUUpdateTool sharedInstace].toolDelegate = self;
+    [[MCUUpdateTool sharedInstace] askUpdateMCU:_deviceId downloadAddress:downloadAddress latestMCUSVersion:latestMCUSVersion];
+}
+
+- (void)starteUpdateHud {
+    if (!_updatingHud) {
+        [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+        _updatingHud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
+        _updatingHud.mode = MBProgressHUDModeAnnularDeterminate;
+        _updatingHud.delegate = self;
+    }
+}
+
+- (void)updateHudProgress:(CGFloat)progress {
+    if (_updatingHud) {
+        _updatingHud.progress = progress;
+    }
+}
+
+- (void)hideUpdateHud {
+    if (_updatingHud) {
+        [_updatingHud hideAnimated:YES];
+        [self.translucentBgView removeFromSuperview];
+        self.translucentBgView = nil;
+        [updateMCUBtn removeFromSuperview];
+        updateMCUBtn = nil;
     }
 }
 
@@ -243,6 +314,20 @@
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
         [_curtainSlider setValue:[model.level floatValue] animated:YES];
     }
+}
+
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+    [hud removeFromSuperview];
+    hud = nil;
+}
+
+- (UIView *)translucentBgView {
+    if (!_translucentBgView) {
+        _translucentBgView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        _translucentBgView.backgroundColor = [UIColor blackColor];
+        _translucentBgView.alpha = 0.4;
+    }
+    return _translucentBgView;
 }
 
 @end

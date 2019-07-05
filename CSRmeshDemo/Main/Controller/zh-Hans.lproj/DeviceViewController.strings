@@ -58,3 +58,18 @@
 
 /* Class = "UILabel"; text = "Color Saturation"; ObjectID = "xVp-9l-H0g"; */
 "xVp-9l-H0g.text" = "饱和度";
+
+/* Class = "UIButton"; normalTitle = "ON/OFF mode"; ObjectID = "hVU-jX-KKC"; */
+"hVU-jX-KKC.normalTitle" = "开关模式";
+
+/* Class = "UIButton"; normalTitle = "pulse width 1s"; ObjectID = "pLf-su-PzH"; */
+"pLf-su-PzH.normalTitle" = "1s 脉冲模式";
+
+/* Class = "UIButton"; normalTitle = "pulse width 6s"; ObjectID = "eu8-A4-nY5"; */
+"eu8-A4-nY5.normalTitle" = "6s 脉冲模式";
+
+/* Class = "UIButton"; normalTitle = "pulse width 9s"; ObjectID = "xUc-Ex-DNe"; */
+"xUc-Ex-DNe.normalTitle" = "9s 脉冲模式";
+
+/* Class = "UILabel"; text = "pulse width"; ObjectID = "NqI-o9-19F"; */
+"NqI-o9-19F.text" = "脉冲宽度";

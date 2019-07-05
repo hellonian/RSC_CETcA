@@ -11,7 +11,6 @@
 #import "DeviceModelManager.h"
 #import "CSRDatabaseManager.h"
 #import <CSRmesh/LightModelApi.h>
-#import "SoundListenTool.h"
 
 @implementation GroupControlView
 
@@ -145,17 +144,20 @@
             _musicImageView.userInteractionEnabled = YES;
             [scrollView addSubview:_musicImageView];
             
-            UIButton *musicBtn = [[UIButton alloc] init];
+            musicBehavior = YES;
+            [SoundListenTool sharedInstance].delegate = self;
+            
+            _musicBtn = [[UIButton alloc] init];
             if ([SoundListenTool sharedInstance].audioRecorder.recording) {
-                [musicBtn setBackgroundImage:[UIImage imageNamed:@"musicHighlight"] forState:UIControlStateNormal];
+                [_musicBtn setBackgroundImage:[UIImage imageNamed:@"musicHighlight"] forState:UIControlStateNormal];
                 [_musicImageView startAnimating];
             }else {
                 [_musicImageView stopAnimating];
-                [musicBtn setBackgroundImage:[UIImage imageNamed:@"music"] forState:UIControlStateNormal];
+                [_musicBtn setBackgroundImage:[UIImage imageNamed:@"music"] forState:UIControlStateNormal];
             }
-            [musicBtn addTarget:self action:@selector(playPause:) forControlEvents:UIControlEventTouchUpInside];
-            [_musicImageView addSubview:musicBtn];
-            [musicBtn autoPinEdgesToSuperviewEdges];
+            [_musicBtn addTarget:self action:@selector(playPause:) forControlEvents:UIControlEventTouchUpInside];
+            [_musicImageView addSubview:_musicBtn];
+            [_musicBtn autoPinEdgesToSuperviewEdges];
             
             [_musicImageView autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [_musicImageView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_musicTitleLabel withOffset:5.0];
@@ -292,6 +294,11 @@
 
 //调色温
 - (void)colorTemperatureSliderTouchDown:(UISlider *)sender {
+    if (musicBehavior) {
+        if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+            [[SoundListenTool sharedInstance] stopRecord:_groupID];
+        }
+    }
     [[DeviceModelManager sharedInstance] setColorTemperatureWithDeviceId:_groupID withColorTemperature:@(sender.value) withState:UIGestureRecognizerStateBegan];
     _colorTempLabel.text = [NSString stringWithFormat:@"%.f K",sender.value];
 }
@@ -307,6 +314,13 @@
 }
 //颜色
 - (void)colorSliderValueChanged:(CGFloat)myValue withState:(UIGestureRecognizerState)state {
+    if (state == UIGestureRecognizerStateBegan) {
+        if (musicBehavior) {
+            if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+                [[SoundListenTool sharedInstance] stopRecord:_groupID];
+            }
+        }
+    }
     UIColor *color = [UIColor colorWithHue:myValue saturation:_colorSatSlider.value brightness:1.0 alpha:1.0];
     [[DeviceModelManager sharedInstance] setColorWithDeviceId:_groupID withColor:color withState:state];
     _colorLabel.text = [NSString stringWithFormat:@"%.f",myValue*360];
@@ -314,6 +328,11 @@
 }
 //饱和度
 - (void)colorSaturationSliderTouchDown:(UISlider *)sender {
+    if (musicBehavior) {
+        if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+            [[SoundListenTool sharedInstance] stopRecord:_groupID];
+        }
+    }
     UIColor *color = [UIColor colorWithHue:_colorSlider.myValue saturation:sender.value brightness:1.0 alpha:1.0];
     [[DeviceModelManager sharedInstance] setColorWithDeviceId:_groupID withColor:color withState:UIGestureRecognizerStateBegan];
     _colorSatLabel.text = [NSString stringWithFormat:@"%.f%%",sender.value*100];
@@ -335,6 +354,11 @@
 }
 //色盘
 - (void)tapColorChangeWithHue:(CGFloat)hue colorSaturation:(CGFloat)colorSatutation {
+    if (musicBehavior) {
+        if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+            [[SoundListenTool sharedInstance] stopRecord:_groupID];
+        }
+    }
     UIColor *color = [UIColor colorWithHue:hue saturation:colorSatutation brightness:1.0 alpha:1.0];
     [[LightModelApi sharedInstance] setColor:_groupID color:color duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
         
@@ -348,6 +372,13 @@
 }
 
 - (void)panColorChangeWithHue:(CGFloat)hue colorSaturation:(CGFloat)colorSatutation state:(UIGestureRecognizerState)state {
+    if (state == UIGestureRecognizerStateBegan) {
+        if (musicBehavior) {
+            if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+                [[SoundListenTool sharedInstance] stopRecord:_groupID];
+            }
+        }
+    }
     UIColor *color = [UIColor colorWithHue:hue saturation:colorSatutation brightness:1.0 alpha:1.0];
     [[DeviceModelManager sharedInstance] setColorWithDeviceId:_groupID withColor:color withState:state];
     _colorLabel.text = [NSString stringWithFormat:@"%.f",hue*360];
@@ -358,13 +389,18 @@
 
 - (void)playPause:(UIButton *)sender {
     if ([SoundListenTool sharedInstance].audioRecorder.recording) {
-        [[SoundListenTool sharedInstance] stopRecord];
-        [_musicImageView stopAnimating];
-        [sender setBackgroundImage:[UIImage imageNamed:@"music"] forState:UIControlStateNormal];
+        [[SoundListenTool sharedInstance] stopRecord:_groupID];
     }else {
         [[SoundListenTool sharedInstance] record:_groupID];
         [sender setBackgroundImage:[UIImage imageNamed:@"musicHighlight"] forState:UIControlStateNormal];
         [_musicImageView startAnimating];
+    }
+}
+
+-(void)stopPlayButtonAnimation:(NSNumber *)deviceId {
+    if ([deviceId isEqualToNumber:_groupID]) {
+        [_musicImageView stopAnimating];
+        [_musicBtn setBackgroundImage:[UIImage imageNamed:@"music"] forState:UIControlStateNormal];
     }
 }
 

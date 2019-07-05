@@ -361,7 +361,7 @@
             model.kind = deviceEntity.shortName;
             model.bleHwVersion = deviceEntity.bleHwVersion;
             NSInteger lastestVersion = [[_latestDic objectForKey:deviceEntity.shortName] integerValue];
-            NSLog(@"%@ %ld",deviceEntity.firVersion,lastestVersion);
+            NSLog(@"%@ %ld",deviceEntity.firVersion,(long)lastestVersion);
             if (deviceEntity.firVersion && [deviceEntity.firVersion integerValue] < lastestVersion) {
                 model.needUpdate = YES;
             }else {

@@ -92,7 +92,7 @@
         self.updateFileName = fileName;
         self.fileData = [[NSData alloc] initWithContentsOfFile:fileName];
         
-        NSLog(@"self.fileData.length: %ld %@",self.fileData.length,self.updateFileName);
+        NSLog(@"self.fileData.length: %lu %@",(unsigned long)self.fileData.length,self.updateFileName);
         self.fileIndex = 0;
         self.restart = NO;
         self.syncRequested = NO;

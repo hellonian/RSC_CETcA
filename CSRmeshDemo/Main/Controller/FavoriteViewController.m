@@ -15,6 +15,7 @@
 #import <CSRmesh/LightModelApi.h>
 #import "DeviceModelManager.h"
 #import "CSRUtilities.h"
+#import "SoundListenTool.h"
 
 @interface FavoriteViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,RGBSceneCellDelegate>
 
@@ -105,6 +106,10 @@
     if ([info isKindOfClass:[RGBSceneEntity class]]) {
         RGBSceneEntity *rgbSceneEntity = (RGBSceneEntity *)info;
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+        
+        if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+            [[SoundListenTool sharedInstance] stopRecord:_deviceId];
+        }
         
         if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
             [[LightModelApi sharedInstance] setLevel:_deviceId level:rgbSceneEntity.level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {

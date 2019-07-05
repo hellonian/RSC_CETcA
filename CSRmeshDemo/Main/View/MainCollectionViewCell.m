@@ -18,6 +18,7 @@
 #import "SceneListSModel.h"
 #import "GroupListSModel.h"
 #import "CSRDatabaseManager.h"
+#import "SoundListenTool.h"
 
 @interface MainCollectionViewCell ()<UIGestureRecognizerDelegate>
 {
@@ -244,7 +245,7 @@
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
         }
-        if ([CSRUtilities belongToSocket:deviceEntity.shortName]) {
+        if ([CSRUtilities belongToSocketTwoChannel:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"socketsingle2"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = NO;
@@ -255,6 +256,12 @@
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable");
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = NO;
+        }
+        if ([CSRUtilities belongToSocketOneChannel:deviceEntity.shortName]) {
+            self.iconView.image = [UIImage imageNamed:@"socketsingle1"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
+            self.levelLabel.hidden = NO;
+            self.level2Label.hidden = YES;
         }
         
         self.cellIndexPath = indexPath;
@@ -309,7 +316,7 @@
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
         }
-        if ([CSRUtilities belongToSocket:device.deviceShortName]) {
+        if ([CSRUtilities belongToSocketTwoChannel:device.deviceShortName]) {
             self.iconView.image = [UIImage imageNamed:@"Device_socket2"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = NO;
@@ -320,6 +327,12 @@
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable");
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = NO;
+        }
+        if ([CSRUtilities belongToSocketOneChannel:device.deviceShortName]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_socket1"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
+            self.levelLabel.hidden = NO;
+            self.level2Label.hidden = YES;
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
@@ -390,10 +403,12 @@
             self.iconView.image = [UIImage imageNamed:@"Device_Curtain"];
         }else if ([CSRUtilities belongToFanController:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_fan"];
-        }else if ([CSRUtilities belongToSocket:appearanceShortname]) {
+        }else if ([CSRUtilities belongToSocketTwoChannel:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_socket2"];
         }else if ([CSRUtilities belongToTwoChannelDimmer:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_dimmer2"];
+        }else if ([CSRUtilities belongToSocketOneChannel:appearanceShortname]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_socket1"];
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
@@ -433,7 +448,7 @@
     DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
 //    NSLog(@"~~~> %@ ; %@ ; %@",model.shortName,model.powerState,model.level);
     if (!model.isleave) {
-        if ([CSRUtilities belongToSocket:model.shortName]) {
+        if ([CSRUtilities belongToSocketTwoChannel:model.shortName]) {
             if ([model.powerState boolValue]) {
                 self.nameLabel.textColor = DARKORAGE;
             }else {
@@ -452,6 +467,19 @@
             }else {
                 self.level2Label.text = @"OFF";
                 self.level2Label.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+            }
+        }else if ([CSRUtilities belongToSocketOneChannel:model.shortName]) {
+            if ([model.powerState boolValue]) {
+                self.nameLabel.textColor = DARKORAGE;
+            }else {
+                self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+            }
+            if (model.channel1PowerState) {
+                self.levelLabel.text = @"ON";
+                self.levelLabel.textColor = DARKORAGE;
+            }else {
+                self.levelLabel.text = @"OFF";
+                self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
             }
         }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName]) {
             if (model.channel1PowerState) {
@@ -596,6 +624,9 @@
                     [self.superCellDelegate superCollectionViewCellDelegateAddDeviceAction:self.deviceId cellIndexPath:self.cellIndexPath];
                 }
             }else if ([self.deviceId isEqualToNumber:@2000]) {
+                if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+                    [[SoundListenTool sharedInstance] stopRecord:_groupId];
+                }
                 if (_groupPower) {
                     [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:self.groupId withPowerState:@(0)];
                 }else {
@@ -627,6 +658,9 @@
                 }
                 _groupPower = !_groupPower;
             }else {
+                if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+                    [[SoundListenTool sharedInstance] stopRecord:_deviceId];
+                }
                 CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
                 if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
                     if (!deviceEntity.remoteBranch || deviceEntity.remoteBranch.length == 0) {

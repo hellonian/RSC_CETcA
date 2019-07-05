@@ -821,6 +821,7 @@
 - (void)selectMember:(DeviceListSelectMode)selectMode withButton:(UIButton *)button{
     DeviceListViewController *list = [[DeviceListViewController alloc] init];
     list.selectMode = selectMode;
+    list.buttonNum = [NSNumber numberWithInteger:(button.tag % 10 + 1)];
     
     [list getSelectedDevices:^(NSArray *devices) {
         if ([devices count] > 0) {
@@ -1377,9 +1378,9 @@
     
     if ([_remoteEntity.shortName isEqualToString:@"RB04"] || [_remoteEntity.shortName isEqualToString:@"RSIBH"]) {
         
-        NSString *cmdStr1 = [self cmdStringFromControlLabel:_tConrolOneLabel selectedLabel:_tSelectOneLabel];
+        NSString *cmdStr1 = [self cmdStringFromControlLabel:_tConrolOneLabel selectedLabel:_tSelectOneLabel buttonNum:@1];
         
-        NSString *cmdStr2 = [self cmdStringFromControlLabel:_tConrolTwoLabel selectedLabel:_tSelectTwoLabel];
+        NSString *cmdStr2 = [self cmdStringFromControlLabel:_tConrolTwoLabel selectedLabel:_tSelectTwoLabel buttonNum:@2];
         
         NSString *cmdString = [NSString stringWithFormat:@"9b0b0201%@02%@",cmdStr1,cmdStr2];
         [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdString] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
@@ -1395,15 +1396,15 @@
             
         }];
     }else if ([_remoteEntity.shortName isEqualToString:@"R5BSBH"]) {
-        NSString *cmdStr1 = [self cmdStringFromControlLabel:_R5BSHBControlOneLabel selectedLabel:_R5BSHBSelectOneLabel];
+        NSString *cmdStr1 = [self cmdStringFromControlLabel:_R5BSHBControlOneLabel selectedLabel:_R5BSHBSelectOneLabel buttonNum:@1];
         
-        NSString *cmdStr2 = [self cmdStringFromControlLabel:_R5BSHBControlTwoLabel selectedLabel:_R5BSHBSelectTwoLabel];
+        NSString *cmdStr2 = [self cmdStringFromControlLabel:_R5BSHBControlTwoLabel selectedLabel:_R5BSHBSelectTwoLabel buttonNum:@2];
         
-        NSString *cmdStr3 = [self cmdStringFromControlLabel:_R5BSHBControlThreeLabel selectedLabel:_R5BSHBSelectThreeLabel];
+        NSString *cmdStr3 = [self cmdStringFromControlLabel:_R5BSHBControlThreeLabel selectedLabel:_R5BSHBSelectThreeLabel buttonNum:@3];
         
-        NSString *cmdStr4 = [self cmdStringFromControlLabel:_R5BSHBControlFourLabel selectedLabel:_R5BSHBSelectFourLabel];
+        NSString *cmdStr4 = [self cmdStringFromControlLabel:_R5BSHBControlFourLabel selectedLabel:_R5BSHBSelectFourLabel buttonNum:@4];
         
-        NSString *cmdStr5 = [self cmdStringFromControlLabel:_R5BSHBControlFiveLabel selectedLabel:_R5BSHBSelectFiveLabel];
+        NSString *cmdStr5 = [self cmdStringFromControlLabel:_R5BSHBControlFiveLabel selectedLabel:_R5BSHBSelectFiveLabel buttonNum:@5];
         
         NSString *cmdString = [NSString stringWithFormat:@"9b1a0501%@02%@03%@04%@00%@",cmdStr1,cmdStr2,cmdStr3,cmdStr4,cmdStr5];
         [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdString] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
@@ -1419,23 +1420,23 @@
             
         }];
     }else if ([_remoteEntity.shortName isEqualToString:@"R9BSBH"]) {
-        NSString *cmdStr1 = [self cmdStringFromControlLabel:_R9BSBHControlOneLabel selectedLabel:_R9BSBHSelectOneLabel];
+        NSString *cmdStr1 = [self cmdStringFromControlLabel:_R9BSBHControlOneLabel selectedLabel:_R9BSBHSelectOneLabel buttonNum:@1];
         
-        NSString *cmdStr2 = [self cmdStringFromControlLabel:_R9BSBHControlTwoLabel selectedLabel:_R9BSBHSelectTwoLabel];
+        NSString *cmdStr2 = [self cmdStringFromControlLabel:_R9BSBHControlTwoLabel selectedLabel:_R9BSBHSelectTwoLabel buttonNum:@2];
         
-        NSString *cmdStr3 = [self cmdStringFromControlLabel:_R9BSBHControlThreeLabel selectedLabel:_R9BSBHSelectThreeLabel];
+        NSString *cmdStr3 = [self cmdStringFromControlLabel:_R9BSBHControlThreeLabel selectedLabel:_R9BSBHSelectThreeLabel buttonNum:@3];
         
-        NSString *cmdStr4 = [self cmdStringFromControlLabel:_R9BSBHControlFourLabel selectedLabel:_R9BSBHSelectFourLabel];
+        NSString *cmdStr4 = [self cmdStringFromControlLabel:_R9BSBHControlFourLabel selectedLabel:_R9BSBHSelectFourLabel buttonNum:@4];
         
-        NSString *cmdStr5 = [self cmdStringFromControlLabel:_R9BSBHControlFiveLabel selectedLabel:_R9BSBHSelectFiveLabel];
+        NSString *cmdStr5 = [self cmdStringFromControlLabel:_R9BSBHControlFiveLabel selectedLabel:_R9BSBHSelectFiveLabel buttonNum:@5];
         
-        NSString *cmdStr6 = [self cmdStringFromControlLabel:_R9BSBHControlSixLabel selectedLabel:_R9BSBHSelectSixLabel];
+        NSString *cmdStr6 = [self cmdStringFromControlLabel:_R9BSBHControlSixLabel selectedLabel:_R9BSBHSelectSixLabel buttonNum:@6];
         
-        NSString *cmdStr7 = [self cmdStringFromControlLabel:_R9BSBHControlSevenLabel selectedLabel:_R9BSBHSelectSevenLabel];
+        NSString *cmdStr7 = [self cmdStringFromControlLabel:_R9BSBHControlSevenLabel selectedLabel:_R9BSBHSelectSevenLabel buttonNum:@7];
         
-        NSString *cmdStr8 = [self cmdStringFromControlLabel:_R9BSBHControlEightLabel selectedLabel:_R9BSBHSelectEightLabel];
+        NSString *cmdStr8 = [self cmdStringFromControlLabel:_R9BSBHControlEightLabel selectedLabel:_R9BSBHSelectEightLabel buttonNum:@8];
         
-        NSString *cmdStr9 = [self cmdStringFromControlLabel:_R9BSBHControlNineLabel selectedLabel:_R9BSBHSelectNineLabel];
+        NSString *cmdStr9 = [self cmdStringFromControlLabel:_R9BSBHControlNineLabel selectedLabel:_R9BSBHSelectNineLabel buttonNum:@9];
         
         NSString *cmdString = [NSString stringWithFormat:@"9b2e0901%@02%@03%@04%@05%@06%@07%@08%@09%@",cmdStr1,cmdStr2,cmdStr3,cmdStr4,cmdStr5,cmdStr6,cmdStr7,cmdStr8,cmdStr9];
         
@@ -1456,13 +1457,13 @@
         if (![[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]) {
             if ([_remoteEntity.shortName isEqualToString:@"RB01"]) {
                 
-                NSString *cmdStr1 = [self cmdStringFromControlLabel:_fConrolOneLabel selectedLabel:_fSelectOneLabel];
+                NSString *cmdStr1 = [self cmdStringFromControlLabel:_fConrolOneLabel selectedLabel:_fSelectOneLabel buttonNum:@1];
                 
-                NSString *cmdStr2 = [self cmdStringFromControlLabel:_fConrolTwoLabel selectedLabel:_fSelectTwoLabel];
+                NSString *cmdStr2 = [self cmdStringFromControlLabel:_fConrolTwoLabel selectedLabel:_fSelectTwoLabel buttonNum:@2];
                 
-                NSString *cmdStr3 = [self cmdStringFromControlLabel:_fConrolThreeLabel selectedLabel:_fSelectThreeLabel];
+                NSString *cmdStr3 = [self cmdStringFromControlLabel:_fConrolThreeLabel selectedLabel:_fSelectThreeLabel buttonNum:@3];
                 
-                NSString *cmdStr4 = [self cmdStringFromControlLabel:_fConrolFourLabel selectedLabel:_fSelectFourLabel];
+                NSString *cmdStr4 = [self cmdStringFromControlLabel:_fConrolFourLabel selectedLabel:_fSelectFourLabel buttonNum:@4];
                 
                 NSString *cmdString = [NSString stringWithFormat:@"9b150401%@02%@03%@04%@",cmdStr1,cmdStr2,cmdStr3,cmdStr4];
                 
@@ -1482,7 +1483,7 @@
                 
             }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"S10IB-H2"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]) {
                 
-                NSString *cmdStr1 = [self cmdStringFromControlLabel:_sConrolOneLabel selectedLabel:_sSelectOneLabel];
+                NSString *cmdStr1 = [self cmdStringFromControlLabel:_sConrolOneLabel selectedLabel:_sSelectOneLabel buttonNum:@1];
                 
                 NSString *cmdString = [NSString stringWithFormat:@"9b060101%@",cmdStr1];
                 
@@ -1499,9 +1500,9 @@
                     
                 }];
             } if ([_remoteEntity.shortName isEqualToString:@"RB07"]) {
-                NSString *cmdStr1 = [self cmdStringFromControlLabel:_tConrolOneLabel selectedLabel:_tSelectOneLabel];
+                NSString *cmdStr1 = [self cmdStringFromControlLabel:_tConrolOneLabel selectedLabel:_tSelectOneLabel buttonNum:@1];
                 
-                NSString *cmdStr2 = [self cmdStringFromControlLabel:_tConrolTwoLabel selectedLabel:_tSelectTwoLabel];
+                NSString *cmdStr2 = [self cmdStringFromControlLabel:_tConrolTwoLabel selectedLabel:_tSelectTwoLabel buttonNum:@2];
                 
                 NSString *cmdString = [NSString stringWithFormat:@"9b0b0201%@02%@",cmdStr1,cmdStr2];
                 [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdString] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
@@ -2195,21 +2196,18 @@
     
 }
 
-- (NSString *)cmdStringFromControlLabel:(UILabel *)controlLabel selectedLabel:(UILabel *)selectedLabel {
+- (NSString *)cmdStringFromControlLabel:(UILabel *)controlLabel selectedLabel:(UILabel *)selectedLabel buttonNum:(NSNumber *)num {
     NSString *cmdString;
     if ([controlLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![selectedLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
         NSString *deviceIdString = [self exchangePositionOfDeviceId:selectedLabel.tag];
         DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:selectedLabel.tag]];
-        if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
-            NSString *chanelSelect;
-            if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
-                chanelSelect = @"2";
-            }else if (!deviceModel.channel1Selected && deviceModel.channel2Selected) {
-                chanelSelect = @"3";
+        if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] ||[CSRUtilities belongToCurtainController:deviceModel.shortName]) {
+            NSNumber *obj = [deviceModel.buttonnumAndChannel objectForKey:[NSString stringWithFormat:@"%@",num]];
+            if (obj) {
+                cmdString = [NSString stringWithFormat:@"0%@00%@",obj,deviceIdString];
             }else {
-                chanelSelect = @"1";
+                cmdString = @"00000000";
             }
-            cmdString = [NSString stringWithFormat:@"0%@00%@",chanelSelect,deviceIdString];
         }else {
             cmdString = [NSString stringWithFormat:@"0100%@",deviceIdString];
         }

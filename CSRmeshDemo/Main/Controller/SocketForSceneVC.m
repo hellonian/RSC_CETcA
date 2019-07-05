@@ -78,10 +78,38 @@
         case 1:
             _channelSelected1ImageView.image = image;
             deviceModel.channel1Selected = sender.selected;
+            if (_buttonNum) {
+                NSNumber *obj = [deviceModel.buttonnumAndChannel objectForKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                if (sender.selected) {
+                    if (obj && [obj isEqualToNumber:@3]) {
+                        [deviceModel addValue:@1 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                    }else {
+                        [deviceModel addValue:@2 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                    }
+                }else {
+                    if (obj && [obj isEqualToNumber:@1]) {
+                        [deviceModel addValue:@3 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                    }
+                }
+            }
             break;
         case 2:
             _channelSelected2ImageView.image = image;
             deviceModel.channel2Selected = sender.selected;
+            if (_buttonNum) {
+                NSNumber *obj = [deviceModel.buttonnumAndChannel objectForKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                if (sender.selected) {
+                    if (obj && [obj isEqualToNumber:@2]) {
+                        [deviceModel addValue:@1 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                    }else {
+                        [deviceModel addValue:@3 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                    }
+                }else {
+                    if (obj && [obj isEqualToNumber:@1]) {
+                        [deviceModel addValue:@2 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                    }
+                }
+            }
             break;
         default:
             break;

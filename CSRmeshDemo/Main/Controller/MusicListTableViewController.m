@@ -98,7 +98,7 @@
     }else {
         cell.imageView.image = nil;
         MPMediaItem *item = self.dataArray[indexPath.row];
-        cell.textLabel.text = [NSString stringWithFormat:@"%ld   %@",indexPath.row,[item valueForProperty:MPMediaItemPropertyTitle]];
+        cell.textLabel.text = [NSString stringWithFormat:@"%ld   %@",(long)indexPath.row,[item valueForProperty:MPMediaItemPropertyTitle]];
     }
     
     return cell;

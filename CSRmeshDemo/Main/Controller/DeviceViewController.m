@@ -19,11 +19,14 @@
 #import "AFHTTPSessionManager.h"
 #import <MBProgressHUD.h>
 #import "MCUUpdateTool.h"
+#import "SoundListenTool.h"
 
 @interface DeviceViewController ()<UITextFieldDelegate,ColorSliderDelegate,ColorSquareDelegate,MBProgressHUDDelegate,MCUUpdateToolDelegate>
 {
     NSString *downloadAddress;
     NSInteger latestMCUSVersion;
+    BOOL musicBehavior;
+    UIButton *updateMCUBtn;
 }
 
 @property (weak, nonatomic) IBOutlet UITextField *nameTF;
@@ -72,6 +75,10 @@
 @property (weak, nonatomic) IBOutlet UIButton *oneSecondModelBtn;
 @property (weak, nonatomic) IBOutlet UIButton *sixSecondModelBtn;
 @property (weak, nonatomic) IBOutlet UIButton *nineSecondModelBtn;
+@property (strong, nonatomic) IBOutlet UIView *ganjiedianCustomView;
+@property (strong, nonatomic) IBOutlet UIView *ganjiedianRowView;
+@property (weak, nonatomic) IBOutlet UIImageView *dropDownImageView;
+@property (weak, nonatomic) IBOutlet UILabel *pulseModeLabel;
 
 @end
 
@@ -183,8 +190,11 @@
                                                              name:@"getGanjiedianModel"
                                                            object:nil];
                 [[DataModelManager shareInstance] sendCmdData:@"ea70" toDeviceId:_deviceId];
-                [self addSubviewGanjiedianView];
-                _scrollView.contentSize = CGSizeMake(1, 253+20+20+128);
+//                [self addSubviewGanjiedianView];
+//                _scrollView.contentSize = CGSizeMake(1, 253+20+20+128);
+                [self addSubviewGanjiedianRowView];
+                _scrollView.contentSize = CGSizeMake(1, 253+20+45);
+                
             }else {
                 _scrollView.contentSize = CGSizeMake(1, 134+20);
             }
@@ -227,6 +237,7 @@
         }
         
         else if ([CSRUtilities belongToRGBDevice:_device.shortName]) {
+            musicBehavior = YES;
             [self addSubviewBrightnessView];
             [_scrollView addSubview:_colorTitle];
             [_colorTitle autoSetDimension:ALDimensionHeight toSize:20];
@@ -240,6 +251,7 @@
         }
         
         else if ([CSRUtilities belongToRGBCWDevice:_device.shortName]) {
+            musicBehavior = YES;
             [self addSubviewBrightnessView];
             
             [self addSubViewColorTemperatuteView];
@@ -291,7 +303,7 @@
                 latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
                 downloadAddress = dic[@"Download_address"];
                 if ([deviceEntity.mcuSVersion integerValue]<latestMCUSVersion) {
-                    UIButton *updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
+                    updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
                     [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
                     [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
                     [updateMCUBtn setTitleColor:DARKORAGE forState:UIControlStateNormal];
@@ -334,6 +346,8 @@
         [_updatingHud hideAnimated:YES];
         [self.translucentBgView removeFromSuperview];
         self.translucentBgView = nil;
+        [updateMCUBtn removeFromSuperview];
+        updateMCUBtn = nil;
     }
 }
 
@@ -373,6 +387,13 @@
     [_ganjiedianView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
     [_ganjiedianView autoAlignAxisToSuperviewAxis:ALAxisVertical];
     [_ganjiedianView autoSetDimension:ALDimensionHeight toSize:128.0];
+}
+- (void)addSubviewGanjiedianRowView {
+    [_scrollView addSubview:_ganjiedianRowView];
+    [_ganjiedianRowView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_topView];
+    [_ganjiedianRowView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+    [_ganjiedianRowView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [_ganjiedianRowView autoSetDimension:ALDimensionHeight toSize:45.0];
 }
 
 - (void)addSubViewColorTemperatuteView {
@@ -570,6 +591,11 @@
 }
 //开关
 - (IBAction)powerStateSwitch:(UISwitch *)sender {
+    if (musicBehavior) {
+        if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+            [[SoundListenTool sharedInstance] stopRecord:_deviceId];
+        }
+    }
     [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(sender.on)];
 }
 //调光
@@ -583,6 +609,11 @@
 }
 
 - (IBAction)levelSliderTouchDown:(UISlider *)sender {
+    if (musicBehavior) {
+        if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+            [[SoundListenTool sharedInstance] stopRecord:_deviceId];
+        }
+    }
     _sliderIsMoving = YES;
     [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId withLevel:@(sender.value) withState:UIGestureRecognizerStateBegan direction:PanGestureMoveDirectionHorizontal];
 }
@@ -593,6 +624,11 @@
 }
 //调色温
 - (IBAction)colorTemperatureSliderTouchDown:(UISlider *)sender {
+    if (musicBehavior) {
+        if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+            [[SoundListenTool sharedInstance] stopRecord:_deviceId];
+        }
+    }
     _colorTemperatureSliderIsMoving = YES;
     [[DeviceModelManager sharedInstance] setColorTemperatureWithDeviceId:_deviceId withColorTemperature:@(sender.value) withState:UIGestureRecognizerStateBegan];
 }
@@ -613,6 +649,11 @@
 
 //饱和度
 - (IBAction)colorSaturationSliderTouchDown:(UISlider *)sender {
+    if (musicBehavior) {
+        if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+            [[SoundListenTool sharedInstance] stopRecord:_deviceId];
+        }
+    }
     _colorSaturationSliderIsMoving = YES;
     UIColor *color = [UIColor colorWithHue:_colorSlider.myValue saturation:sender.value brightness:1.0 alpha:1.0];
     [[DeviceModelManager sharedInstance] setColorWithDeviceId:_deviceId withColor:color withState:UIGestureRecognizerStateBegan];
@@ -787,6 +828,11 @@
 //设置颜色，自定义滑动条代理方法
 - (void)colorSliderValueChanged:(CGFloat)myValue withState:(UIGestureRecognizerState)state{
     if (state == UIGestureRecognizerStateBegan) {
+        if (musicBehavior) {
+            if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+                [[SoundListenTool sharedInstance] stopRecord:_deviceId];
+            }
+        }
         _colorSliderIsMoving = YES;
     }else if (state == UIGestureRecognizerStateEnded) {
         _colorSliderIsMoving = NO;
@@ -797,6 +843,11 @@
 
 //设置颜色，颜色图的代理方法
 - (void)tapColorChangeWithHue:(CGFloat)hue colorSaturation:(CGFloat)colorSatutation {
+    if (musicBehavior) {
+        if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+            [[SoundListenTool sharedInstance] stopRecord:_deviceId];
+        }
+    }
     UIColor *color = [UIColor colorWithHue:hue saturation:colorSatutation brightness:1.0 alpha:1.0];
     [[LightModelApi sharedInstance] setColor:_deviceId color:color duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
         
@@ -809,6 +860,11 @@
 
 - (void)panColorChangeWithHue:(CGFloat)hue colorSaturation:(CGFloat)colorSatutation state:(UIGestureRecognizerState)state {
     if (state == UIGestureRecognizerStateBegan) {
+        if (musicBehavior) {
+            if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+                [[SoundListenTool sharedInstance] stopRecord:_deviceId];
+            }
+        }
         _colorSquareIsMoving = YES;
     }else if (state == UIGestureRecognizerStateEnded) {
         _colorSquareIsMoving = NO;
@@ -895,7 +951,7 @@
         [_daliAllSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
         _daliGroupSelectBtn.selected = YES;
         [_daliGroupSelectBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
-        _daliGroupTF.text = [NSString stringWithFormat:@"%ld",address-64];
+        _daliGroupTF.text = [NSString stringWithFormat:@"%d",address-64];
         _daliAddressBtn.selected = NO;
         [_daliAddressBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
         _daliAddressTF.text = nil;
@@ -907,7 +963,7 @@
         _daliGroupTF.text = nil;
         _daliAddressBtn.selected = YES;
         [_daliAddressBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
-        _daliAddressTF.text = [NSString stringWithFormat:@"%ld",address];
+        _daliAddressTF.text = [NSString stringWithFormat:@"%ld",(long)address];
     }
 }
 
@@ -917,41 +973,45 @@
     NSNumber *sourceDeviceId = userDic[@"deviceId"];
     if ([sourceDeviceId isEqualToNumber:_deviceId]) {
         if ([stateStr isEqualToString:@"00"]) {
-            _switchModelBtn.selected = YES;
-            [_switchModelBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
-            _oneSecondModelBtn.selected = NO;
-            [_oneSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-            _sixSecondModelBtn.selected = NO;
-            [_sixSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-            _nineSecondModelBtn.selected = NO;
-            [_nineSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+            _pulseModeLabel.text = AcTECLocalizedStringFromTable(@"onoffmode", @"Localizable");
+//            _switchModelBtn.selected = YES;
+//            [_switchModelBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+//            _oneSecondModelBtn.selected = NO;
+//            [_oneSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+//            _sixSecondModelBtn.selected = NO;
+//            [_sixSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+//            _nineSecondModelBtn.selected = NO;
+//            [_nineSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
         }else if ([stateStr isEqualToString:@"01"]) {
-            _switchModelBtn.selected = NO;
-            [_switchModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-            _oneSecondModelBtn.selected = YES;
-            [_oneSecondModelBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
-            _sixSecondModelBtn.selected = NO;
-            [_sixSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-            _nineSecondModelBtn.selected = NO;
-            [_nineSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+            _pulseModeLabel.text = AcTECLocalizedStringFromTable(@"pulsewidth1", @"Localizable");
+//            _switchModelBtn.selected = NO;
+//            [_switchModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+//            _oneSecondModelBtn.selected = YES;
+//            [_oneSecondModelBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+//            _sixSecondModelBtn.selected = NO;
+//            [_sixSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+//            _nineSecondModelBtn.selected = NO;
+//            [_nineSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
         }else if ([stateStr isEqualToString:@"06"]) {
-            _switchModelBtn.selected = NO;
-            [_switchModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-            _oneSecondModelBtn.selected = NO;
-            [_oneSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-            _sixSecondModelBtn.selected = YES;
-            [_sixSecondModelBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
-            _nineSecondModelBtn.selected = NO;
-            [_nineSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+            _pulseModeLabel.text = AcTECLocalizedStringFromTable(@"pulsewidth6", @"Localizable");
+//            _switchModelBtn.selected = NO;
+//            [_switchModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+//            _oneSecondModelBtn.selected = NO;
+//            [_oneSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+//            _sixSecondModelBtn.selected = YES;
+//            [_sixSecondModelBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+//            _nineSecondModelBtn.selected = NO;
+//            [_nineSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
         }else if ([stateStr isEqualToString:@"09"]) {
-            _switchModelBtn.selected = NO;
-            [_switchModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-            _oneSecondModelBtn.selected = NO;
-            [_oneSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-            _sixSecondModelBtn.selected = NO;
-            [_sixSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-            _nineSecondModelBtn.selected = YES;
-            [_nineSecondModelBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+            _pulseModeLabel.text = AcTECLocalizedStringFromTable(@"pulsewidth9", @"Localizable");
+//            _switchModelBtn.selected = NO;
+//            [_switchModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+//            _oneSecondModelBtn.selected = NO;
+//            [_oneSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+//            _sixSecondModelBtn.selected = NO;
+//            [_sixSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+//            _nineSecondModelBtn.selected = YES;
+//            [_nineSecondModelBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
         }
     }
 }
@@ -1026,6 +1086,63 @@
         default:
             break;
     }
+}
+
+- (IBAction)ganjiedianRowTapAction:(UIButton *)sender {
+    if (!_ganjiedianCustomView.superview) {
+        _ganjiedianCustomView.layer.borderWidth = 2;
+        _ganjiedianCustomView.layer.borderColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1.0].CGColor;
+        _ganjiedianCustomView.frame = CGRectMake(WIDTH-179.0, _ganjiedianRowView.frame.origin.y-134.0, 200.0, 179.0);
+        [_scrollView addSubview:_ganjiedianCustomView];
+        [_scrollView sendSubviewToBack:_ganjiedianCustomView];
+        
+        [UIView beginAnimations:@"ganjiedianCustomViewAnimation" context:nil];
+        [UIView setAnimationsEnabled:YES];
+        [UIView setAnimationDuration:0.5];
+        _dropDownImageView.transform = CGAffineTransformMakeRotation(M_PI/2);
+        _ganjiedianCustomView.frame = CGRectMake(WIDTH-179.0, _ganjiedianRowView.frame.origin.y+45.0, 200.0, 179.0);
+        [UIView commitAnimations];
+    }else {
+        [UIView beginAnimations:@"ganjiedianCustomViewBackAnimation" context:nil];
+        [UIView setAnimationsEnabled:YES];
+        [UIView setAnimationDuration:0.5];
+        _dropDownImageView.transform = CGAffineTransformIdentity;
+        _ganjiedianCustomView.frame = CGRectMake(WIDTH-179.0, _ganjiedianRowView.frame.origin.y-134.0, 200.0, 179.0);
+        [UIView commitAnimations];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [_ganjiedianCustomView removeFromSuperview];
+        });
+    }
+}
+
+- (IBAction)selectPulseWidthAction:(UIButton *)sender {
+    [UIView beginAnimations:@"ganjiedianCustomViewBackAnimation" context:nil];
+    [UIView setAnimationsEnabled:YES];
+    [UIView setAnimationDuration:0.5];
+    _dropDownImageView.transform = CGAffineTransformIdentity;
+    _ganjiedianCustomView.frame = CGRectMake(WIDTH-179.0, _ganjiedianRowView.frame.origin.y-134.0, 200.0, 179.0);
+    [UIView commitAnimations];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [_ganjiedianCustomView removeFromSuperview];
+    });
+    
+    switch (sender.tag) {
+        case 1:
+            [[DataModelManager shareInstance] sendCmdData:@"ea7200" toDeviceId:_deviceId];
+            break;
+        case 2:
+            [[DataModelManager shareInstance] sendCmdData:@"ea7201" toDeviceId:_deviceId];
+            break;
+        case 3:
+            [[DataModelManager shareInstance] sendCmdData:@"ea7206" toDeviceId:_deviceId];
+            break;
+        case 4:
+            [[DataModelManager shareInstance] sendCmdData:@"ea7209" toDeviceId:_deviceId];
+            break;
+        default:
+            break;
+    }
+    
 }
 
 - (UIView *)translucentBgView {

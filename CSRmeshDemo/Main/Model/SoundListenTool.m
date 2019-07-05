@@ -9,6 +9,7 @@
 #import "SoundListenTool.h"
 #import "DataModelManager.h"
 #import "CSRUtilities.h"
+#import "CSRDatabaseManager.h"
 
 @implementation SoundListenTool
 
@@ -69,7 +70,7 @@
         float   amp             = powf(10.0f, 0.05f * decibels);
         float   adjAmp          = (amp - minAmp) * inverseAmpRange;
         
-        hue = powf(adjAmp, 1.0f / root);
+        hue = powf(adjAmp, 1.0f / root);//分贝值，范围0~1
 //        NSLog(@"%f",hue);
     }
     if (hue > 0.3) {
@@ -185,11 +186,49 @@
     }
 }
 
-- (void)stopRecord {
-    [self.audioRecorder stop];
-    [self.recordTimer invalidate];
-    self.recordTimer = nil;
-    self.deviceId = nil;
+- (void)stopRecord:(NSNumber *)deviceId {
+    
+    BOOL exist = NO;
+    
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        
+        exist = YES;
+        
+    }else {
+        
+        if ([deviceId integerValue]<65521 && [deviceId integerValue]>32768) {
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+            if (device && [device.areas count]>0) {
+                for (CSRAreaEntity *area in device.areas) {
+                    if ([area.areaID isEqualToNumber:_deviceId]) {
+                        exist = YES;
+                        break;
+                    }
+                }
+            }
+        }else if ([deviceId integerValue]<32768 && [deviceId integerValue]>9) {
+            CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:deviceId];
+            if (area && [area.devices count]>0 ) {
+                for (CSRDeviceEntity *device in area.devices) {
+                    if ([device.deviceId isEqualToNumber:_deviceId]) {
+                        exist = YES;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    if (exist) {
+        [self.audioRecorder stop];
+        [self.recordTimer invalidate];
+        self.recordTimer = nil;
+        self.deviceId = nil;
+        
+        if (self.delegate && [self.delegate respondsToSelector:@selector(stopPlayButtonAnimation:)]) {
+            [self.delegate stopPlayButtonAnimation:deviceId];
+        }
+    }
 }
 
 @end
