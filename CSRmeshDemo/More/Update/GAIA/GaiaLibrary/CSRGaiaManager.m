@@ -906,7 +906,7 @@
             }
             
             if (errorMessage) {
-                NSLog(@"Gaia update error: %ld %@", (long)error_code, errorMessage);
+                NSLog(@">Gaia update error: %ld %@", (long)error_code, errorMessage);
                 
                 if (abortUpdate) {
                     [self resetUpdate];

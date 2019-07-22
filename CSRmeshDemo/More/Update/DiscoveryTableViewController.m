@@ -15,6 +15,7 @@
 #import "CSRDatabaseManager.h"
 #import "CustomizeProgressHud.h"
 #import "PureLayout.h"
+#import "CSRUtilities.h"
 
 #import "CSRGaia.h"
 #import "CSRGaiaManager.h"
@@ -66,6 +67,35 @@
     _dataArray = [[NSMutableArray alloc] init];
     _uuids = [[NSMutableArray alloc] init];
     _appAllDevcies = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
+    
+    NSArray *connectedPeripherals = [[CSRBluetoothLE sharedInstance] connectedPeripherals];
+    for (CBPeripheral *peripheral in connectedPeripherals) {
+        __block CSRDeviceEntity *connectDevice;
+        [_appAllDevcies enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
+            NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
+//            NSLog(@"nn: %@  %@",adUuidString,deviceUuidString);
+            if ([adUuidString isEqualToString:deviceUuidString]) {
+                connectDevice = deviceEntity;
+                *stop = YES;
+            }
+        }];
+        if (connectDevice) {
+            UpdateDeviceModel *model = [[UpdateDeviceModel alloc] init];
+            model.peripheral = peripheral;
+            model.name = connectDevice.name;
+            model.connected = YES;
+            model.kind = connectDevice.shortName;
+            model.deviceId = connectDevice.deviceId;
+            model.bleHwVersion = connectDevice.bleHwVersion;
+            model.bleFVersion = connectDevice.bleFirVersion;
+            model.fVersion = connectDevice.firVersion;
+            model.hVersion = connectDevice.hwVersion;
+            [_dataArray addObject:model];
+            [self.tableView reloadData];
+        }
+    }
+    
     NSString *urlString = @"http://39.108.152.134/firware.php";
     AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
     sessionManager.responseSerializer.acceptableContentTypes = nil;
@@ -83,6 +113,7 @@
                     model.needUpdate = NO;
                 }
             }
+            [self.tableView reloadData];
         }
         [[CSRBluetoothLE sharedInstance] setIsUpdateFW:YES];
         [[CSRBluetoothLE sharedInstance] setBleDelegate:self];
@@ -94,29 +125,6 @@
     
     self.isDataEndPointAvailabile = NO;
     
-    NSArray *connectedPeripherals = [[CSRBluetoothLE sharedInstance] connectedPeripherals];
-    for (CBPeripheral *peripheral in connectedPeripherals) {
-        __block CSRDeviceEntity *connectDevice;
-        [_appAllDevcies enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
-            NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
-            if ([adUuidString isEqualToString:deviceUuidString]) {
-                connectDevice = deviceEntity;
-                *stop = YES;
-            }
-        }];
-        if (connectDevice) {
-            UpdateDeviceModel *model = [[UpdateDeviceModel alloc] init];
-            model.peripheral = peripheral;
-            model.name = connectDevice.name;
-            model.connected = YES;
-            model.kind = connectDevice.shortName;
-            model.deviceId = connectDevice.deviceId;
-            [_dataArray addObject:model];
-            [self.tableView reloadData];
-        }
-    }
-    
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     refreshControl.tintColor = [UIColor grayColor];
     refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Scanning for devices"];
@@ -127,6 +135,7 @@
 - (void)refreshDevices:(id)sender {
     [self.dataArray removeAllObjects];
     [self.uuids removeAllObjects];
+    [[[CSRBluetoothLE sharedInstance] foundPeripherals] removeAllObjects];
     NSArray *connectedPeripherals = [[CSRBluetoothLE sharedInstance] connectedPeripherals];
     for (CBPeripheral *peripheral in connectedPeripherals) {
         __block CSRDeviceEntity *connectDevice;
@@ -145,6 +154,16 @@
             model.connected = YES;
             model.kind = connectDevice.shortName;
             model.deviceId = connectDevice.deviceId;
+            model.bleHwVersion = connectDevice.bleHwVersion;
+            model.bleFVersion = connectDevice.bleFirVersion;
+            model.fVersion = connectDevice.firVersion;
+            model.hVersion = connectDevice.hwVersion;
+            NSInteger lastestVersion = [[_latestDic objectForKey:connectDevice.shortName] integerValue];
+            if (connectDevice.firVersion && [connectDevice.firVersion integerValue] < lastestVersion) {
+                model.needUpdate = YES;
+            }else {
+                model.needUpdate = NO;
+            }
             [_dataArray addObject:model];
             
         }
@@ -209,11 +228,18 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"dicoveryListCell"];
     if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"dicoveryListCell"];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"dicoveryListCell"];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     UpdateDeviceModel *model = [self.dataArray objectAtIndex:indexPath.row];
     cell.textLabel.text = model.name;
+    NSString *bleFString = @"";
+    if ([model.bleFVersion integerValue]==513) {
+        bleFString = @"21";
+    }else if ([model.bleFVersion integerValue]==258) {
+        bleFString = @"12";
+    }
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"V%@.%@.%@.%@",[CSRUtilities stringWithHexNumber:[model.bleHwVersion integerValue]],bleFString,model.hVersion,model.fVersion];
     if (model.needUpdate) {
         cell.textLabel.textColor = DARKORAGE;
     }
@@ -241,7 +267,6 @@
         });
         
         NSString *urlString = [NSString stringWithFormat:@"http://39.108.152.134/Firmware/%@/%@.php",model.kind,model.kind];
-        NSLog(@"%@",urlString);
         AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
         sessionManager.responseSerializer.acceptableContentTypes = nil;
         sessionManager.requestSerializer.cachePolicy = NSURLRequestReloadIgnoringCacheData;
@@ -253,6 +278,12 @@
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             
         }];
+    }else {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"蓝牙固件已经是最新版本。" preferredStyle:UIAlertControllerStyleAlert];
+        [alert.view setTintColor:DARKORAGE];
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:nil];
+        [alert addAction:okAction];
+        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 
@@ -265,10 +296,10 @@
     NSProgress *progress = nil;
     NSURLSessionDownloadTask *task = [manager downloadTaskWithRequest:request progress:&progress destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
         NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/%@",fileName]];
-//        NSFileManager *fileManager = [NSFileManager defaultManager];
-//        if ([fileManager fileExistsAtPath:path]) {
-//            [fileManager removeItemAtPath:path error:nil];
-//        }
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if ([fileManager fileExistsAtPath:path]) {
+            [fileManager removeItemAtPath:path error:nil];
+        }
         NSLog(@"downloadTaskWithRequest: %@",path);
         dispatch_async(dispatch_get_main_queue(), ^{
             [_customizeHud updateProgress:0.1];
@@ -348,10 +379,11 @@
 }
 
 - (void)discoveryDidRefresh:(CBPeripheral *)peripheral {
-    NSLog(@"%@  %@  %@",peripheral.name,peripheral.uuidString,peripheral.identifier.UUIDString);
+//    NSLog(@"%@  %@  %@",peripheral.name,peripheral.uuidString,peripheral.identifier.UUIDString);
     for (CSRDeviceEntity *deviceEntity in _appAllDevcies) {
         NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
         NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
+//        NSLog(@"~> %@",adUuidString);
         if ([adUuidString isEqualToString:deviceUuidString]) {
             UpdateDeviceModel *model = [[UpdateDeviceModel alloc] init];
             model.peripheral = peripheral;
@@ -360,13 +392,18 @@
             model.connected = NO;
             model.kind = deviceEntity.shortName;
             model.bleHwVersion = deviceEntity.bleHwVersion;
+            model.bleFVersion = deviceEntity.bleFirVersion;
+            model.fVersion = deviceEntity.firVersion;
+            model.hVersion = deviceEntity.hwVersion;
             NSInteger lastestVersion = [[_latestDic objectForKey:deviceEntity.shortName] integerValue];
-            NSLog(@"%@ %ld",deviceEntity.firVersion,(long)lastestVersion);
+//            NSLog(@"%@ %@ %@ %@",deviceEntity.bleHwVersion,deviceEntity.bleFirVersion,deviceEntity.hwVersion,deviceEntity.firVersion);
+//            NSLog(@"%@ %ld",deviceEntity.firVersion,(long)lastestVersion);
             if (deviceEntity.firVersion && [deviceEntity.firVersion integerValue] < lastestVersion) {
                 model.needUpdate = YES;
             }else {
                 model.needUpdate = NO;
             }
+            
             if (![_uuids containsObject:peripheral.uuidString]) {
                 [_uuids addObject:peripheral.uuidString];
                 [_dataArray addObject:model];
@@ -625,10 +662,12 @@
 
 - (void)getVersion: (NSNumber *)deviceId {
     [[DataModelManager shareInstance] sendCmdData:@"880100" toDeviceId:deviceId];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:self.targetDeviceId];
         if (deviceEntity) {
-            if (!deviceEntity.cvVersion) {
+//            NSLog(@"deviceEntity.cvVersion:%@",deviceEntity.cvVersion);
+            NSInteger lastestVersion = [[_latestDic objectForKey:deviceEntity.shortName] integerValue];
+            if (!deviceEntity.cvVersion || [deviceEntity.firVersion integerValue] < lastestVersion) {
                 [self getVersion:deviceId];
             }else {
                 for (UpdateDeviceModel *model in _dataArray) {

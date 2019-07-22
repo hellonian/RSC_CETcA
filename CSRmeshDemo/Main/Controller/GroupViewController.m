@@ -364,28 +364,21 @@
                                                             }];
                     [NSThread sleepForTimeInterval:0.3];
                 }
-                
-                
-                
             }
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * ([_areaEntity.devices count]) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [self saveArea:areaIdNumber sortId:_areaEntity.sortId];
-                if (_hud && ((removeNum>0 && removeNum == [self.groupRemoveDevices count]) || removeNum==0)) {
+            
+            [self saveArea:areaIdNumber sortId:_areaEntity.sortId];
+            if (_hud && ((removeNum>0 && removeNum == [self.groupRemoveDevices count]) || removeNum==0)) {
+                [_hud hideAnimated:YES];
+                _hud = nil;
+            }
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                if (_hud) {
                     [_hud hideAnimated:YES];
                     _hud = nil;
                 }
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    if (_hud) {
-                        [_hud hideAnimated:YES];
-                        _hud = nil;
-                    }
-                });
             });
             
-            
-            
         }
-        
     }
 }
 
@@ -424,6 +417,7 @@
                                                                     uint16_t *groups = (uint16_t *) myData.mutableBytes;
                                                                     *(groups + groupIndexInt) = desiredValue;
                                                                 }
+                                                                NSLog(@"~~~~> %@",groupId);
                                                                 deviceEntity.sortId = _areaEntity.sortId;
                                                                 deviceEntity.groups = [CSRUtilities hexStringFromData:(NSData*)myData];
                                                                 CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId: groupId];
@@ -443,6 +437,8 @@
         }
         
     }
+    
+    [NSThread sleepForTimeInterval:1.0];
     
     if (self.handle) {
         self.handle();

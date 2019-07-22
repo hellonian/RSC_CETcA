@@ -318,12 +318,15 @@
             [peripheral setUuidString:adString];
         }
     }
+//    if ([peripheral.name isEqualToString:@"DNLT11W"]||[peripheral.name isEqualToString:@"IERGBCW"]) {
+//        NSLog(@"ble:%@  %@  %d",peripheral.name,peripheral.uuidString,self.isUpdateFW);
+//    }
     if (self.isUpdateFW && peripheral.name != nil) {
         if (![_foundPeripherals containsObject:peripheral]) {
             [_foundPeripherals addObject:peripheral];
             [self discoveryDidRefresh:peripheral];
         }
-    }else if ([RSSI integerValue]>-80 && peripheral.name != nil){
+    }else if ([RSSI integerValue]>-80 && peripheral.name != nil) {
         
         NSMutableDictionary *enhancedAdvertismentData = [NSMutableDictionary dictionaryWithDictionary:advertisementData];
         enhancedAdvertismentData [CSR_PERIPHERAL] = peripheral;

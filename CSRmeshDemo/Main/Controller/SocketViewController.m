@@ -46,12 +46,12 @@
 @property (weak, nonatomic) IBOutlet UIView *firstChannelView;
 @property (strong, nonatomic) IBOutlet UIView *secondChannelView;
 @property (strong, nonatomic) IBOutlet UIButton *clearPowerDataBtn;
-@property (weak, nonatomic) IBOutlet UILabel *abnormalLab1;
-@property (weak, nonatomic) IBOutlet UILabel *abnormalLab2;
 @property (weak, nonatomic) IBOutlet UILabel *thresholdLab1;
 @property (weak, nonatomic) IBOutlet UILabel *thresholdLab2;
 @property (weak, nonatomic) IBOutlet UISwitch *thresholdSwitch1;
 @property (weak, nonatomic) IBOutlet UISwitch *thresholdSwitch2;
+@property (weak, nonatomic) IBOutlet UIImageView *abnormalImageView1;
+@property (weak, nonatomic) IBOutlet UIImageView *abnormalImageView2;
 
 @end
 
@@ -110,7 +110,7 @@
         
         if ([CSRUtilities belongToSocketTwoChannel:curtainEntity.shortName]) {
             [_contentView addSubview:_secondChannelView];
-            [_secondChannelView autoSetDimension:ALDimensionHeight toSize:267.0];
+            [_secondChannelView autoSetDimension:ALDimensionHeight toSize:339.0];
             [_secondChannelView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_firstChannelView withOffset:10.0];
             [_secondChannelView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
             [_secondChannelView autoPinEdgeToSuperviewEdge:ALEdgeRight];
@@ -176,12 +176,12 @@
     [super viewDidLayoutSubviews];
     CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
     if ([CSRUtilities belongToSocketOneChannel:deviceEntity.shortName]) {
-        if ((522 - self.scrollView.bounds.size.height + 44 + 64 - 206 - 10)/2>0) {
-            self.constantH.constant = (522 - self.scrollView.bounds.size.height + 44 + 64 - 206 - 10 + 61)/2;
+        if ((548 - self.scrollView.bounds.size.height)/2>0) {
+            self.constantH.constant = (548 - self.scrollView.bounds.size.height)/2;
         }
     }else if ([CSRUtilities belongToSocketTwoChannel:deviceEntity.shortName]) {
-        if ((522 - self.scrollView.bounds.size.height + 44 + 64)/2>0) {
-            self.constantH.constant = (522 - self.scrollView.bounds.size.height + 44 + 64 + 61*2)/2;
+        if ((897 - self.scrollView.bounds.size.height)/2>0) {
+            self.constantH.constant = (897 - self.scrollView.bounds.size.height)/2;
         }
     }
 }
@@ -506,13 +506,15 @@
     NSNumber *deviceId = dic[@"deviceId"];
     if ([deviceId isEqualToNumber:_deviceId]) {
         NSString *channel = dic[@"channel"];
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        formatter.dateFormat = @"MM-dd HH:mm:ss";
-        NSString *dateStr = [formatter stringFromDate:[NSDate date]];
+//        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//        formatter.dateFormat = @"MM-dd HH:mm:ss";
+//        NSString *dateStr = [formatter stringFromDate:[NSDate date]];
         if ([channel isEqualToString:@"01"]) {
-            _abnormalLab1.text = [NSString stringWithFormat:@"%@\nError_code:%@",dateStr,dic[@"state"]];
+//            _abnormalLab1.text = [NSString stringWithFormat:@"%@\nError_code:%@",dateStr,dic[@"state"]];
+            _abnormalImageView1.image = [UIImage imageNamed:@"abnormal"];
         }else if ([channel isEqualToString:@"02"]) {
-            _abnormalLab2.text = [NSString stringWithFormat:@"%@\nError_code:%@",dateStr,dic[@"state"]];
+//            _abnormalLab2.text = [NSString stringWithFormat:@"%@\nError_code:%@",dateStr,dic[@"state"]];
+            _abnormalImageView2.image = [UIImage imageNamed:@"abnormal"];
         }
     }
 }

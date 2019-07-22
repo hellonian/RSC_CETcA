@@ -16,6 +16,7 @@
 {
     NSInteger _nowBinPage;
     dispatch_semaphore_t _semaphore;
+    int _semNum;
     NSMutableDictionary *_updateEveDataDic;
     NSMutableDictionary *_updateSuccessDic;
     BOOL _isLastPage;
@@ -99,7 +100,12 @@
                 
                 NSLog(@"%@  %@  %@",mcuString,resultHexStr,resultBinStr);
                 if ([countBinString isEqualToString:resultBinStr]) {
-                    dispatch_semaphore_signal(_semaphore);
+                    
+                    if (_semNum<1) {
+                        dispatch_semaphore_signal(_semaphore);
+                        _semNum ++;
+                    }
+                    
                     [_updateSuccessDic setObject:@(![[_updateSuccessDic objectForKey:@(backBinPage)] boolValue]) forKey:@(backBinPage)];
                     if (_isLastPage) {
                         NSLog(@"最后一页成功");
@@ -167,6 +173,7 @@
     NSData *data = [[NSData alloc] initWithContentsOfURL:path];
     NSLog(@"data length>> %lu",(unsigned long)[data length]);
     _semaphore = dispatch_semaphore_create(1);
+    _semNum = 1;
     _updateEveDataDic = [[NSMutableDictionary alloc] init];
     _updateSuccessDic = [[NSMutableDictionary alloc] init];
     _isLastPage = NO;
@@ -176,6 +183,7 @@
         for (NSInteger binPage=0; binPage<([data length]/128+1); binPage++) {
             dispatch_async(queue, ^{
                 dispatch_semaphore_wait(_semaphore, DISPATCH_TIME_FOREVER);
+                _semNum --;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [_updateSuccessDic setObject:@(0) forKey:@(binPage)];
                     NSLog(@"xunfan %ld",(long)binPage);

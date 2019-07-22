@@ -361,9 +361,7 @@
 
 
 - (void)mainCollectionViewDelegateSelectAction:(id)cell {
-    
     if (self.selectMode == DeviceListSelectMode_Single || self.selectMode == DeviceListSelectMode_ForDrop) {
-        
         if ([cell isKindOfClass:[MainCollectionViewCell class]]) {
             MainCollectionViewCell *mainCell = (MainCollectionViewCell *)cell;
             if (mainCell.selected) {
@@ -397,7 +395,6 @@
         }
         
     }else if (self.selectMode == DeviceListSelectMode_SelectScene) {
-        
         if ([cell isKindOfClass:[MainCollectionViewCell class]]) {
             MainCollectionViewCell *mainCell = (MainCollectionViewCell *)cell;
             
@@ -502,7 +499,7 @@
             if (mainCell.selected) {
                 [self.selectedDevices addObject:mainCell.deviceId];
                 CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
-                if ([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName] || [CSRUtilities belongToSocket:deviceEntity.shortName]) {
+                if (([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName] || [CSRUtilities belongToSocket:deviceEntity.shortName]) && self.selectMode != DeviceListSelectMode_ForGroup) {
                     [self mainCollectionViewDelegateLongPressAction:cell];
                 }
             }else {

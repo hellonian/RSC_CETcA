@@ -59,7 +59,7 @@
 #define kRGBDevices @[@"RGB"]
 #define kRGBNoLevelDevices @[@"RGBNL"]
 
-#define kRGBCWDevices @[@"RGBCW",@"IE-RGBCW"]
+#define kRGBCWDevices @[@"RGBCW",@"IE-RGBCW",@"DNLT11W-H",@"DNLT11W"]
 #define kRGBCWNoLevelDevices @[@"RGBCWNL"]
 
 #define kCurtainController @[@"C300IB",@"C300IBH"]

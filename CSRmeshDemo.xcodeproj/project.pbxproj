@@ -262,8 +262,6 @@
 		2E2A016421425D7600B2EFAF /* MusicListTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicListTableViewController.m; sourceTree = "<group>"; };
 		2E2A016621425F7F00B2EFAF /* GetDataTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetDataTools.h; sourceTree = "<group>"; };
 		2E2A016721425F7F00B2EFAF /* GetDataTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetDataTools.m; sourceTree = "<group>"; };
-		2E2B55B52216CC6E008864A1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SocketViewController.strings; sourceTree = "<group>"; };
-		2E2B55B72216CC8C008864A1 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SocketViewController.strings"; sourceTree = "<group>"; };
 		2E2D962B229D4BBE003FF662 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/DeviceViewController.strings"; sourceTree = "<group>"; };
 		2E2D9D3722A68F1B00B3FACA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
 		2E2E70041FF5DE60002D1C1D /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
@@ -677,6 +675,8 @@
 		2EF332522045031300565374 /* HelpViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelpViewController.h; sourceTree = "<group>"; };
 		2EF332532045031300565374 /* HelpViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelpViewController.m; sourceTree = "<group>"; };
 		2EF332542045031300565374 /* HelpViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HelpViewController.xib; sourceTree = "<group>"; };
+		2EF4D11522E5921C0058484E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SocketViewController.strings; sourceTree = "<group>"; };
+		2EF4D11722E592B90058484E /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SocketViewController.strings"; sourceTree = "<group>"; };
 		2EF5F07A1F445AC30069C594 /* ImproveTouchingExperience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImproveTouchingExperience.h; sourceTree = "<group>"; };
 		2EF5F07B1F445AC30069C594 /* ImproveTouchingExperience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImproveTouchingExperience.m; sourceTree = "<group>"; };
 		2EF718271FFB224800901918 /* GalleryEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GalleryEntity.h; sourceTree = "<group>"; };
@@ -1926,8 +1926,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				2E4DDCF321F968FF00B2ACF3 /* Base */,
-				2E2B55B52216CC6E008864A1 /* en */,
-				2E2B55B72216CC8C008864A1 /* zh-Hans */,
 				2EC4205922179F2B00E1717F /* de */,
 				2E48A7FE221BAEC00052A617 /* sv */,
 				2E747FD7221CE2AA00FBEB14 /* nb */,
@@ -1938,6 +1936,8 @@
 				2EC18C05221D22A0008B33DC /* fr */,
 				2EC18C18221D22B8008B33DC /* pt-PT */,
 				2EC18C2B221D22E9008B33DC /* fi-FI */,
+				2EF4D11522E5921C0058484E /* en */,
+				2EF4D11722E592B90058484E /* zh-Hans */,
 			);
 			name = SocketViewController.xib;
 			sourceTree = "<group>";

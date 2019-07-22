@@ -369,7 +369,7 @@
             }
         }
         
-    }else if ([self.remoteEntity.shortName isEqualToString:@"RB04"] || [self.remoteEntity.shortName isEqualToString:@"RSIBH"]) {
+    }else if ([self.remoteEntity.shortName isEqualToString:@"RB04"] || [self.remoteEntity.shortName isEqualToString:@"RSIBH"] || [self.remoteEntity.shortName isEqualToString:@"S10IB-H2"]) {
         _practicalityImageView.image = [UIImage imageNamed:@"bajiao"];
         [self.customContentView addSubview:self.twoRemoteView];
         [self.twoRemoteView autoSetDimension:ALDimensionHeight toSize:89.0f];
@@ -678,13 +678,13 @@
             }else {
                 _contentViewHeight.constant = safeHeight;
             }
-        }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]) {
+        }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]||[self.remoteEntity.shortName isEqualToString:@"RB06"]||[self.remoteEntity.shortName isEqualToString:@"RSBH"]) {
             if (safeHeight <= 371.5) {
                 _contentViewHeight.constant = 371.5;
             }else {
                 _contentViewHeight.constant = safeHeight;
             }
-        }else if ([self.remoteEntity.shortName isEqualToString:@"RB04"] || [self.remoteEntity.shortName isEqualToString:@"RSIBH"]) {
+        }else if ([self.remoteEntity.shortName isEqualToString:@"RB04"] || [self.remoteEntity.shortName isEqualToString:@"RSIBH"] || [self.remoteEntity.shortName isEqualToString:@"S10IB-H2"]||[self.remoteEntity.shortName isEqualToString:@"RB07"]) {
             if (safeHeight <= 461.5) {
                 _contentViewHeight.constant = 461.5;
             }else {

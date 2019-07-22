@@ -14,10 +14,12 @@
 //@property (nonatomic,strong) NSString *uuidStr;
 @property (nonatomic,strong) NSString *name;
 @property (nonatomic,strong) NSString *kind;
-//@property (nonatomic,assign) NSInteger firwareVersion;
 @property (nonatomic,strong) NSNumber *deviceId;
 @property (nonatomic,assign) BOOL needUpdate;
 @property (nonatomic,assign) BOOL connected;
 @property (nonatomic,strong) NSNumber *bleHwVersion;
+@property (nonatomic,strong) NSNumber *fVersion;
+@property (nonatomic,strong) NSNumber *hVersion;
+@property (nonatomic,strong) NSNumber *bleFVersion;
 
 @end
