@@ -44,6 +44,10 @@
     [super awakeFromNib];
     // Initialization code
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setPowerStateSuccess:) name:@"setPowerStateSuccess" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(setPowerStateSuccess:)
+                                                 name:@"setMultichannelStateSuccess"
+                                               object:nil];
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mainCellTapGestureAction:)];
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(mainCellPanGestureAction:)];
     panGesture.delegate = self;
@@ -409,6 +413,8 @@
             self.iconView.image = [UIImage imageNamed:@"Device_dimmer2"];
         }else if ([CSRUtilities belongToSocketOneChannel:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_socket1"];
+        }else if ([appearanceShortname containsString:@"RB08"]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_rb08"];
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;

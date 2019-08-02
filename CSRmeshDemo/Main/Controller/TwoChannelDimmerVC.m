@@ -66,6 +66,10 @@
                                              selector:@selector(setSocketSuccess:)
                                                  name:@"setPowerStateSuccess"
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(setMultichannelStateSuccess:)
+                                                 name:@"setMultichannelStateSuccess"
+                                               object:nil];
     if (_deviceId) {
         CSRDeviceEntity *curtainEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
         self.navigationItem.title = curtainEntity.name;
@@ -342,6 +346,47 @@
         _translucentBgView.alpha = 0.4;
     }
     return _translucentBgView;
+}
+
+- (void)setMultichannelStateSuccess: (NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    NSInteger channel = [userInfo[@"channel"] integerValue];
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        [self changeUI:deviceId channel:channel];
+    }
+}
+
+- (void)changeUI:(NSNumber *)deviceId channel:(NSInteger)channel{
+    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:deviceId];
+    if (deviceModel) {
+        
+        if (channel == 1) {
+            [_channel1Switch setOn:deviceModel.channel1PowerState];
+            _channelSelected1ImageView.image = deviceModel.channel1Selected? [UIImage imageNamed:@"Be_selected"]:[UIImage imageNamed:@"To_select"];
+            if (deviceModel.channel1PowerState) {
+                _channel1Slider.enabled = YES;
+                [_channel1Slider setValue:deviceModel.channel1Level];
+                _channel1LevelLabel.text = [NSString stringWithFormat:@"%.f%%",deviceModel.channel1Level/255.0*100];
+            }else {
+                _channel1Slider.enabled = NO;
+                [_channel1Slider setValue:0];
+                _channel1LevelLabel.text = @"0%";
+            }
+        }else if (channel == 2) {
+            [_channel2Switch setOn:deviceModel.channel2PowerState];
+            _channelSelected2ImageView.image = deviceModel.channel2Selected? [UIImage imageNamed:@"Be_selected"]:[UIImage imageNamed:@"To_select"];
+            if (deviceModel.channel2PowerState) {
+                _channel2Slider.enabled = YES;
+                [_channel2Slider setValue:deviceModel.channel2Level];
+                _channel2LevelLabel.text = [NSString stringWithFormat:@"%.f%%",deviceModel.channel2Level/255.0*100];
+            }else {
+                _channel2Slider.enabled = NO;
+                [_channel2Slider setValue:0];
+                _channel2LevelLabel.text = @"0%";
+            }
+        }
+    }
 }
 
 @end

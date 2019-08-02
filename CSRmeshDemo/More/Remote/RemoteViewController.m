@@ -142,6 +142,8 @@
         cell.imageView.image = [UIImage imageNamed:@"Setting_bajiao"];
     }else if ([deviceEntity.shortName isEqualToString:@"R9BSBH"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_fremote"];
+    }else if ([deviceEntity.shortName isEqualToString:@"RB08"]) {
+        cell.imageView.image = [UIImage imageNamed:@"Setting_rb08"];
     }
     cell.textLabel.text = deviceEntity.name;
     return cell;

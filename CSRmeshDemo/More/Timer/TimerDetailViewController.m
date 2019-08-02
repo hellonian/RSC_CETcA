@@ -29,12 +29,14 @@
     NSString *repeatStr;
     NSLayoutConstraint *top_chooseTitle;
     dispatch_semaphore_t semaphore;
-    BOOL reparePop;
+    BOOL reparePop;//当信号量为0时，释放semaphore会引起程序奔溃。
     NSInteger memeberCount;
     
     NSNumber *channeling;
     NSNumber *indexing;
     SceneMemberEntity *sceneMembering;
+    
+    int sendandreceive;
 }
 
 @property (weak, nonatomic) IBOutlet UIDatePicker *timerPicker;
@@ -282,7 +284,7 @@
         }
         
     }
-    
+    sendandreceive = 0;
 }
 
 - (UIView *)addSceneView:(NSMutableArray *)scenes {
@@ -413,7 +415,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(multichannelAddAlarmCall:) name:@"multichannelAddAlarmCall" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteTimerCall:) name:@"deleteAlarmCall" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeAlarmEnabledCall:) name:@"changeAlarmEnabledCall" object:nil];
-    [[MeshServiceApi sharedInstance] setRetryCount:@2];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSendStreamData:) name:@"didSendStreamData" object:nil];
+//    [[MeshServiceApi sharedInstance] setRetryCount:@2];
 }
 
 
@@ -423,7 +426,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"multichannelAddAlarmCall" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"deleteAlarmCall" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeAlarmEnabledCall" object:nil];
-    [[MeshServiceApi sharedInstance] setRetryCount:@6];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"didSendStreamData" object:nil];
+//    [[MeshServiceApi sharedInstance] setRetryCount:@6];
 }
 
 #pragma mark - 修改日期选择器的字体颜色
@@ -579,7 +583,12 @@
                 if ([self.backs count]>0) {
                     reparePop = YES;
                     dispatch_semaphore_signal(semaphore);
+                    dispatch_semaphore_signal(semaphore);
                 }
+                NSLog(@"popViewControllerAnimated~>1");
+                reparePop = YES;
+                dispatch_semaphore_signal(semaphore);
+                dispatch_semaphore_signal(semaphore);
                 [self.navigationController popViewControllerAnimated:YES];
             }];
             [alertController addAction:cancelAction];
@@ -667,7 +676,7 @@
             eveD2 = [colorTemperatureStr substringFromIndex:2];
         }
         if ([CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString] || [CSRUtilities belongToSocket:sceneMember.kindString]) {
-            if (sceneMember.eveType && sceneMember.colorTemperature) {
+            if (sceneMember.eveType && [sceneMember.eveType integerValue]>0 && sceneMember.colorTemperature && [sceneMember.colorTemperature integerValue]>0) {
                 dispatch_async(queue, ^{
                     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
                     if (!reparePop) {
@@ -688,7 +697,7 @@
                     }
                 });
             }else {
-                if (sceneMember.eveType) {
+                if (sceneMember.eveType && [sceneMember.eveType integerValue]>0) {
                     dispatch_async(queue, ^{
                         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
                         if (!reparePop) {
@@ -699,7 +708,7 @@
                         }
                     });
                 }
-                if (sceneMember.colorTemperature) {
+                if (sceneMember.colorTemperature && [sceneMember.colorTemperature integerValue]>0) {
                     dispatch_async(queue, ^{
                         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
                         if (!reparePop) {
@@ -724,12 +733,29 @@
     }
 }
 
+- (void)didSendStreamData:(NSNotification *)result {
+//    NSDictionary *resultDic = result.userInfo;
+//    NSNumber *deviceId = [resultDic objectForKey:@"deviceId"];
+    if (sendandreceive==1) {
+        dispatch_semaphore_signal(semaphore);
+        sendandreceive = 0;
+    }else {
+        sendandreceive ++;
+    }
+}
+
 - (void)addTimerToDeviceCall:(NSNotification *)result {
     NSDictionary *resultDic = result.userInfo;
     NSString *resultStr = [resultDic objectForKey:@"addAlarmCall"];
     NSNumber *deviceId = [resultDic objectForKey:@"deviceId"];
     NSLog(@"---->> %@ ::: %@",deviceId,resultStr);
-    dispatch_semaphore_signal(semaphore);
+    if (sendandreceive==1) {
+        dispatch_semaphore_signal(semaphore);
+        sendandreceive = 0;
+    }else {
+        sendandreceive ++;
+    }
+
     if ([resultStr boolValue]) {
         [self.backs addObject:deviceId];
         _timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:enabled fireTime:time fireDate:date repeatStr:repeatStr sceneID:_selectedScene.sceneID];
@@ -768,6 +794,10 @@
             [_translucentBgView removeFromSuperview];
             _translucentBgView = nil;
         }
+        NSLog(@"popViewControllerAnimated~>2");
+        reparePop = YES;
+        dispatch_semaphore_signal(semaphore);
+        dispatch_semaphore_signal(semaphore);
         [self.navigationController popViewControllerAnimated:YES];
     }
     
@@ -779,7 +809,13 @@
     NSNumber *channel = resultDic[@"channel"];
     NSNumber *index = resultDic[@"index"];
     NSNumber *state = resultDic[@"state"];
-    dispatch_semaphore_signal(semaphore);
+    if (sendandreceive==1) {
+        dispatch_semaphore_signal(semaphore);
+        sendandreceive = 0;
+    }else {
+        sendandreceive ++;
+    }
+
     NSLog(@"%@,%@,%@,%@,%@,%@,%@",deviceId,channel,index,state,sceneMembering.deviceID,channeling,indexing);
     if ([state boolValue] && [deviceId isEqualToNumber:sceneMembering.deviceID] && [channel isEqualToNumber:channeling] && [index isEqualToNumber:indexing]) {
         _timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:enabled fireTime:time fireDate:date repeatStr:repeatStr sceneID:_selectedScene.sceneID];
@@ -823,7 +859,19 @@
             [_translucentBgView removeFromSuperview];
             _translucentBgView = nil;
         }
-        [self.navigationController popViewControllerAnimated:YES];
+        NSString *messge = [state boolValue]? AcTECLocalizedStringFromTable(@"timeraddsuccess", @"Localizable"):AcTECLocalizedStringFromTable(@"timeraddfail", @"Localizable");
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:messge preferredStyle:UIAlertControllerStyleAlert];
+        [alertController.view setTintColor:DARKORAGE];
+        UIAlertAction *yesAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            NSLog(@"popViewControllerAnimated~>3");
+            reparePop = YES;
+            dispatch_semaphore_signal(semaphore);
+            dispatch_semaphore_signal(semaphore);
+            [self.navigationController popViewControllerAnimated:YES];
+        }];
+        [alertController addAction:yesAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+        
     }
 }
 
@@ -832,7 +880,12 @@
     NSString *state = [resultDic objectForKey:@"deleteAlarmCall"];
     NSNumber *deviceId = [resultDic objectForKey:@"deviceId"];
     NSLog(@"---->> %@ ~~~ %@",deviceId,state);
-    dispatch_semaphore_signal(semaphore);
+    if (sendandreceive==1) {
+        dispatch_semaphore_signal(semaphore);
+        sendandreceive = 0;
+    }else {
+        sendandreceive ++;
+    }
     if ([state boolValue]) {
         [self.backs addObject:deviceId];
         [_timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timeDevice, BOOL * _Nonnull stop) {
@@ -863,6 +916,10 @@
             [_translucentBgView removeFromSuperview];
             _translucentBgView = nil;
         }
+        NSLog(@"popViewControllerAnimated~>4");
+        reparePop = YES;
+        dispatch_semaphore_signal(semaphore);
+        dispatch_semaphore_signal(semaphore);
         [self.navigationController popViewControllerAnimated:YES];
     }
 }
@@ -872,7 +929,12 @@
     NSString *state = [resultDic objectForKey:@"changeAlarmEnabledCall"];
     NSNumber *deviceId = [resultDic objectForKey:@"deviceId"];
     NSLog(@"---->> %@ +++ %@",deviceId,state);
-    dispatch_semaphore_signal(semaphore);
+    if (sendandreceive==1) {
+        dispatch_semaphore_signal(semaphore);
+        sendandreceive = 0;
+    }else {
+        sendandreceive ++;
+    }
     
     if ([state boolValue]) {
         [self.backs addObject:deviceId];
@@ -895,6 +957,10 @@
             [_translucentBgView removeFromSuperview];
             _translucentBgView = nil;
         }
+        NSLog(@"popViewControllerAnimated~>5");
+        reparePop = YES;
+        dispatch_semaphore_signal(semaphore);
+        dispatch_semaphore_signal(semaphore);
         [self.navigationController popViewControllerAnimated:YES];
     }
 }
@@ -935,7 +1001,9 @@
                 if ([self.backs count]>0) {
                     reparePop = YES;
                     dispatch_semaphore_signal(semaphore);
+                    dispatch_semaphore_signal(semaphore);
                 }
+                NSLog(@"popViewControllerAnimated~>6");
                 [self.navigationController popViewControllerAnimated:YES];
             }];
             UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
@@ -945,7 +1013,9 @@
                 if ([self.backs count]>0) {
                     reparePop = YES;
                     dispatch_semaphore_signal(semaphore);
+                    dispatch_semaphore_signal(semaphore);
                 }
+                NSLog(@"popViewControllerAnimated~>7");
                 [self.navigationController popViewControllerAnimated:YES];
             }];
             [alertController addAction:yesAction];
@@ -1016,7 +1086,9 @@
                     if ([self.backs count]>0) {
                         reparePop = YES;
                         dispatch_semaphore_signal(semaphore);
+                        dispatch_semaphore_signal(semaphore);
                     }
+                    NSLog(@"popViewControllerAnimated~>8");
                     [self.navigationController popViewControllerAnimated:YES];
                 }];
                 [alertController addAction:yesAction];

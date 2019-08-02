@@ -164,3 +164,5 @@
 "pulsewidth1" = "pulse width 1s";
 "pulsewidth6" = "pulse width 6s";
 "pulsewidth9" = "pulse width 9s";
+"timeraddsuccess"="Timer set success!";
+"timeraddfail"="Fail! The device timer number beyond maximum!";

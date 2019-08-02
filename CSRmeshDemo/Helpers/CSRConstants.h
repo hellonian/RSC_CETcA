@@ -41,10 +41,10 @@
 
 #define kDimmers @[@"D350BT",@"D350B-H",@"D350SB",@"D350B",@"D300IB",@"D300SB-T3",@"D350SB-T1",@"D300IB-H",@"D300IB-T2",@"D350B-B",@"D350B-L",@"D300IB-L",@"D0-10IB",@"D0/1-10IB",@"D350SB-Q2",@"D300SB",@"D350STB-Q",@"D350SB-Q",@"D1-10VIBH",@"D300IB",@"DDSB",@"D300IB-Q",@"D300B",@"D300B-H",@"DDSB",@"D300BH",@"D0/1-10B",@"PD350B"]
 #define kSwitchs @[@"S350BT",@"S350B",@"S2400IB",@"S350B-H",@"S2400IB-H",@"S2400IB-T4",@"S10IB",@"S10IB-H2",@"S10IBH",@"S2400IB-Q"]
-#define kRemotes @[@"RB01",@"RB02",@"S10IB-H2",@"RB04",@"RSIBH",@"R5BSBH",@"R9BSBH",@"RB07",@"RB06",@"RSBH"]
-#define kSockets @[@"P2400B-H",@"P2400B-H2",@"P2400B",@"PS2400B"]
+#define kRemotes @[@"RB01",@"RB02",@"S10IB-H2",@"RB04",@"RSIBH",@"R5BSBH",@"R9BSBH",@"RB07",@"RB06",@"RSBH",@"RB08"]
+#define kSockets @[@"P2400B-H",@"P2400B-H2",@"P2400B",@"PS2400B",@"SR2400"]
 
-#define kSocketsOneChannel @[@"PS2400B"]
+#define kSocketsOneChannel @[@"PS2400B",@"SR2400"]
 #define kSocketsTwoChannel @[@"P2400B-H",@"P2400B-H2",@"P2400B"]
 
 #define kTwoChannelDimmers @[@"D200IB-2G",@"D200GB-2G"]

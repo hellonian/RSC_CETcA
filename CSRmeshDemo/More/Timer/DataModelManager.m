@@ -103,6 +103,7 @@ static DataModelManager *manager = nil;
         [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
             
         } failure:^(NSError * _Nonnull error) {
+            NSLog(@">>>>>>>>>");
             [[NSNotificationCenter defaultCenter] postNotificationName:@"addAlarmCall" object:nil userInfo:@{@"addAlarmCall":@"00",@"deviceId":deviceId}];
         }];
     }
@@ -147,11 +148,12 @@ static DataModelManager *manager = nil;
     NSDate *current = [NSDate date];
     NSString *currentDateString = [self YMdStringForDate:current];
     NSString *cmd = [NSString stringWithFormat:@"501801%@%@0%d%@%@%@%@%@%@%@%@00%@ffffff",chanel,indexStr,enabled,YMdString,hmsString,repeatString,alarnActionType,levelString,eveD1String,eveD2String,eveD3String,currentDateString];
-    
+    NSLog(@"nnnnn>> %@",cmd);
     if (deviceId) {
         [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
             
         } failure:^(NSError * _Nonnull error) {
+            NSLog(@"<<<<<<<<<");
             [[NSNotificationCenter defaultCenter] postNotificationName:@"addAlarmCall" object:nil userInfo:@{@"addAlarmCall":@"00",@"deviceId":deviceId}];
         }];
     }
@@ -228,7 +230,11 @@ static DataModelManager *manager = nil;
 
 - (void)enAlarmForDevice:(NSNumber *)deviceId stata:(BOOL)state index:(NSInteger)index channel:(NSInteger)channel {
     NSString *cmdString = [NSString stringWithFormat:@"500505%@%@0%d",[CSRUtilities stringWithHexNumber:channel],[self exchangeLowHight:[CSRUtilities stringWithHexNumber:index]],state];
-    [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+    [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmdString] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+        
+    } failure:^(NSError * _Nonnull error) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"changeAlarmEnabledCall" object:nil userInfo:@{@"deviceId":deviceId,@"changeAlarmEnabledCall":@"00"}];
+    }];
 }
 
 //删除设备闹钟
@@ -258,7 +264,12 @@ static DataModelManager *manager = nil;
 
 - (void)deleteAlarmForDevice:(NSNumber *)deviceId channel:(NSInteger)channel index:(NSInteger)index {
     NSString *cmdString = [NSString stringWithFormat:@"500407%@%@",[CSRUtilities stringWithHexNumber:channel],[self exchangeLowHight:[CSRUtilities stringWithHexNumber:index]]];
-    [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+    [_manager sendData:deviceId data:[CSRUtilities dataForHexString:cmdString] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+
+    } failure:^(NSError * _Nonnull error) {
+        NSLog(@">>SSSSS>>>");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteAlarmCall" object:nil userInfo:@{@"deviceId":deviceId,@"deleteAlarmCall":@"00"}];
+    }];
 }
 
 - (void)changeColorTemperature:(NSNumber *)deviceId {
@@ -274,6 +285,7 @@ static DataModelManager *manager = nil;
 
 - (void)didSendData:(NSNumber *)deviceId data:(NSData *)data meshRequestId:(NSNumber *)meshRequestId {
     NSLog(@"didSendData : %@",data);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"didSendStreamData" object:nil userInfo:@{@"deviceId":deviceId}];
 }
 
 - (void)didReceiveBlockData:(NSNumber *)destinationDeviceId sourceDeviceId:(NSNumber *)sourceDeviceId data:(NSData *)data {
