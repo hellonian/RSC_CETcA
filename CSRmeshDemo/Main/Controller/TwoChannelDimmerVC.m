@@ -363,7 +363,6 @@
         
         if (channel == 1) {
             [_channel1Switch setOn:deviceModel.channel1PowerState];
-            _channelSelected1ImageView.image = deviceModel.channel1Selected? [UIImage imageNamed:@"Be_selected"]:[UIImage imageNamed:@"To_select"];
             if (deviceModel.channel1PowerState) {
                 _channel1Slider.enabled = YES;
                 [_channel1Slider setValue:deviceModel.channel1Level];
@@ -375,7 +374,6 @@
             }
         }else if (channel == 2) {
             [_channel2Switch setOn:deviceModel.channel2PowerState];
-            _channelSelected2ImageView.image = deviceModel.channel2Selected? [UIImage imageNamed:@"Be_selected"]:[UIImage imageNamed:@"To_select"];
             if (deviceModel.channel2PowerState) {
                 _channel2Slider.enabled = YES;
                 [_channel2Slider setValue:deviceModel.channel2Level];
@@ -386,6 +384,27 @@
                 _channel2LevelLabel.text = @"0%";
             }
         }
+        
+        if (_buttonNum && [deviceModel.buttonnumAndChannel count]>0 && [deviceModel.buttonnumAndChannel objectForKey:[NSString stringWithFormat:@"%@",_buttonNum]]) {
+            NSNumber *obj = [deviceModel.buttonnumAndChannel objectForKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+            if ([obj isEqualToNumber:@1]) {
+                _channelSelected1ImageView.image = [UIImage imageNamed:@"Be_selected"];
+                _channelSelected2ImageView.image = [UIImage imageNamed:@"Be_selected"];
+            }else if ([obj isEqualToNumber:@2]){
+                _channelSelected1ImageView.image = [UIImage imageNamed:@"Be_selected"];
+                _channelSelected2ImageView.image = [UIImage imageNamed:@"To_select"];
+            }else if ([obj isEqualToNumber:@3]) {
+                _channelSelected1ImageView.image = [UIImage imageNamed:@"To_select"];
+                _channelSelected2ImageView.image = [UIImage imageNamed:@"Be_selected"];
+            }else {
+                _channelSelected1ImageView.image = [UIImage imageNamed:@"To_select"];
+                _channelSelected2ImageView.image = [UIImage imageNamed:@"To_select"];
+            }
+        }else {
+            _channelSelected1ImageView.image = [UIImage imageNamed:@"To_select"];
+            _channelSelected2ImageView.image = [UIImage imageNamed:@"To_select"];
+        }
+        
     }
 }
 
