@@ -60,7 +60,7 @@
                     <color key="textColor" red="0.31372549020000001" green="0.31372549020000001" blue="0.31372549020000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Version 2.10" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fR3-yP-Qst">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Version 2.11" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fR3-yP-Qst">
                     <rect key="frame" x="20" y="267.5" width="335" height="20"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="20" id="eRR-aK-Tbj"/>
@@ -97,7 +97,7 @@
                 <constraint firstItem="yBi-Ea-ROH" firstAttribute="centerX" secondItem="fje-Ql-qU2" secondAttribute="centerX" id="nms-Sy-OOP"/>
                 <constraint firstItem="fR3-yP-Qst" firstAttribute="leading" secondItem="fje-Ql-qU2" secondAttribute="leading" constant="20" id="sCP-sE-UHP"/>
             </constraints>
-            <point key="canvasLocation" x="-54" y="-155"/>
+            <point key="canvasLocation" x="-18" y="-173"/>
         </view>
     </objects>
     <resources>

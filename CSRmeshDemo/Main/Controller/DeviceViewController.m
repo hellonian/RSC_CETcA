@@ -225,6 +225,10 @@
                 [[DataModelManager shareInstance] sendCmdData:@"ea520102" toDeviceId:_deviceId];
                 [self addSubviewDalinView];
                 _scrollView.contentSize = CGSizeMake(1, 208+20+20+220);
+                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                if (deviceEntity.remoteBranch && [deviceEntity.remoteBranch length]>0) {
+                    [self configDaliAppearance:[CSRUtilities numberWithHexString:deviceEntity.remoteBranch]];
+                }
             }else {
                 _scrollView.contentSize = CGSizeMake(1, 208+20);
             }
@@ -302,6 +306,7 @@
                 NSDictionary *dic = (NSDictionary *)responseObject;
                 latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
                 downloadAddress = dic[@"Download_address"];
+                NSLog(@"%@  %ld",deviceEntity.mcuSVersion,latestMCUSVersion);
                 if ([deviceEntity.mcuSVersion integerValue]<latestMCUSVersion) {
                     updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
                     [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
@@ -937,6 +942,10 @@
 - (void)getDaliAdress:(NSNotification *)notification {
     NSDictionary *userDic = notification.userInfo;
     NSInteger address = [CSRUtilities numberWithHexString:userDic[@"addressStr"]];
+    [self configDaliAppearance:address];
+}
+
+- (void)configDaliAppearance:(NSInteger)address {
     if (address == 255) {
         _daliAllSelectBtn.selected = YES;
         [_daliAllSelectBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
