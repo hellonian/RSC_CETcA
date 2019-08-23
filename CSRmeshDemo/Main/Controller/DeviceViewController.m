@@ -20,6 +20,7 @@
 #import <MBProgressHUD.h>
 #import "MCUUpdateTool.h"
 #import "SoundListenTool.h"
+#import "PowerViewController.h"
 
 @interface DeviceViewController ()<UITextFieldDelegate,ColorSliderDelegate,ColorSquareDelegate,MBProgressHUDDelegate,MCUUpdateToolDelegate>
 {
@@ -27,6 +28,8 @@
     NSInteger latestMCUSVersion;
     BOOL musicBehavior;
     UIButton *updateMCUBtn;
+    
+    NSTimer *timer;
 }
 
 @property (weak, nonatomic) IBOutlet UITextField *nameTF;
@@ -79,6 +82,9 @@
 @property (strong, nonatomic) IBOutlet UIView *ganjiedianRowView;
 @property (weak, nonatomic) IBOutlet UIImageView *dropDownImageView;
 @property (weak, nonatomic) IBOutlet UILabel *pulseModeLabel;
+
+@property (strong, nonatomic) IBOutlet UIView *powerView;
+@property (weak, nonatomic) IBOutlet UILabel *currentPower1Label;
 
 @end
 
@@ -229,6 +235,25 @@
                 if (deviceEntity.remoteBranch && [deviceEntity.remoteBranch length]>0) {
                     [self configDaliAppearance:[CSRUtilities numberWithHexString:deviceEntity.remoteBranch]];
                 }
+            }else if ([_device.shortName isEqualToString:@"SD350"]) {
+                [[NSNotificationCenter defaultCenter] addObserver:self
+                                                         selector:@selector(socketPowerCall:)
+                                                             name:@"socketPowerCall"
+                                                           object:nil];
+                [[NSNotificationCenter defaultCenter] addObserver:self
+                                                         selector:@selector(clearSocketPower:)
+                                                             name:@"clearSocketPower"
+                                                           object:nil];
+                [_scrollView addSubview:_powerView];
+                [_powerView autoSetDimension:ALDimensionHeight toSize:153.0];
+                [_powerView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+                [_powerView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+                [_powerView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_brightnessView withOffset:20.0];
+                _scrollView.contentSize = CGSizeMake(1, 401);
+                
+                timer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(timerMethod:) userInfo:nil repeats:YES];
+                [timer fire];
+                
             }else {
                 _scrollView.contentSize = CGSizeMake(1, 208+20);
             }
@@ -460,6 +485,16 @@
                                              selector:@selector(setPowerStateSuccess:)
                                                  name:@"setPowerStateSuccess"
                                                object:nil];
+    if ([_device.shortName isEqualToString:@"SD350"]) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(socketPowerCall:)
+                                                     name:@"socketPowerCall"
+                                                   object:nil];
+        if (!timer) {
+            timer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(timerMethod:) userInfo:nil repeats:YES];
+            [timer fire];
+        }
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -468,6 +503,13 @@
                                                     name:@"setPowerStateSuccess"
                                                   object:nil];
     [UIApplication sharedApplication].idleTimerDisabled = NO;
+    if ([_device.shortName isEqualToString:@"SD350"]) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"socketPowerCall" object:nil];
+        if (timer) {
+            [timer invalidate];
+            timer = nil;
+        }
+    }
 }
 
 - (void)closeAction {
@@ -960,7 +1002,7 @@
         [_daliAllSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
         _daliGroupSelectBtn.selected = YES;
         [_daliGroupSelectBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
-        _daliGroupTF.text = [NSString stringWithFormat:@"%d",address-64];
+        _daliGroupTF.text = [NSString stringWithFormat:@"%ld",address-64];
         _daliAddressBtn.selected = NO;
         [_daliAddressBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
         _daliAddressTF.text = nil;
@@ -1163,5 +1205,56 @@
     return _translucentBgView;
 }
 
+- (void)timerMethod:(NSTimer *)timer {
+    [[DataModelManager shareInstance]sendCmdData:@"ea4401" toDeviceId:_deviceId];
+}
+
+- (void)socketPowerCall:(NSNotification *)notification {
+    NSDictionary *dic = notification.userInfo;
+    NSNumber *deviceId = dic[@"deviceId"];
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        NSNumber *channel = dic[@"channel"];
+        if ([channel integerValue]==1) {
+            NSNumber *power1 = dic[@"power1"];
+            _currentPower1Label.text = [NSString stringWithFormat:@"%.1fW",[power1 floatValue]];
+        }
+    }
+}
+
+- (IBAction)getPowerBtn:(UIButton *)sender {
+    PowerViewController *pvc = [[PowerViewController alloc] init];
+    pvc.channel = sender.tag/10;
+    pvc.deviceId = _deviceId;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:pvc];
+    CATransition *animation = [CATransition animation];
+    [animation setDuration:0.3];
+    [animation setType:kCATransitionMoveIn];
+    [animation setSubtype:kCATransitionFromRight];
+    [self.view.window.layer addAnimation:animation forKey:nil];
+    [self presentViewController:nav animated:NO completion:nil];
+}
+
+- (IBAction)clearAction:(UIButton *)sender {
+    [[DataModelManager shareInstance]sendCmdData:@"ea4601" toDeviceId:_deviceId];
+}
+
+- (void)clearSocketPower:(NSNotification *)notification {
+    NSDictionary *dic = notification.userInfo;
+    NSNumber *deviceId = dic[@"deviceId"];
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        BOOL state = [dic[@"state"] boolValue];
+        NSString *stateStr = state? @"成功":@"失败";
+        [self showTextHud:[NSString stringWithFormat:@"电量数据清除%@",stateStr]];
+    }
+}
+
+- (void)showTextHud:(NSString *)text {
+    MBProgressHUD *successHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    successHud.mode = MBProgressHUDModeText;
+    successHud.label.text = text;
+    successHud.label.numberOfLines = 0;
+    successHud.delegate = self;
+    [successHud hideAnimated:YES afterDelay:4.0f];
+}
 
 @end

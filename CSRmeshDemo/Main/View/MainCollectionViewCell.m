@@ -214,7 +214,11 @@
         self.nameLabel.text = deviceEntity.name;
         self.kindLabel.hidden = NO;
         if ([CSRUtilities belongToDimmer:deviceEntity.shortName]) {
-            self.iconView.image = [UIImage imageNamed:@"dimmersingle"];
+            if ([deviceEntity.shortName isEqualToString:@"SD350"]) {
+                self.iconView.image = [UIImage imageNamed:@"socketsingle1"];
+            }else {
+                self.iconView.image = [UIImage imageNamed:@"dimmersingle"];
+            }
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable");
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = YES;
@@ -285,7 +289,11 @@
         self.nameLabel.text = device.deviceName;
         self.kindLabel.hidden = NO;
         if ([CSRUtilities belongToDimmer:device.deviceShortName]) {
-            self.iconView.image = [UIImage imageNamed:@"Device_Dimmer"];
+            if ([device.deviceShortName isEqualToString:@"SD350"]) {
+                self.iconView.image = [UIImage imageNamed:@"Device_socket1"];
+            }else {
+                self.iconView.image = [UIImage imageNamed:@"Device_Dimmer"];
+            }
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable");
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = YES;
@@ -388,7 +396,11 @@
         self.nameLabel.text = appearanceShortname;
         self.kindLabel.text = [NSString stringWithFormat:@"%@",[device.uuid.UUIDString substringFromIndex:24]];
         if ([CSRUtilities belongToDimmer:appearanceShortname]) {
-            self.iconView.image = [UIImage imageNamed:@"Device_Dimmer"];
+            if ([appearanceShortname isEqualToString:@"SD350"]) {
+                self.iconView.image = [UIImage imageNamed:@"Device_socket1"];
+            }else {
+                self.iconView.image = [UIImage imageNamed:@"Device_Dimmer"];
+            }
         }else if ([CSRUtilities belongToSwitch:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Switch"];
         }else if ([appearanceShortname containsString:@"RB01"] || [appearanceShortname containsString:@"R5BSBH"]) {

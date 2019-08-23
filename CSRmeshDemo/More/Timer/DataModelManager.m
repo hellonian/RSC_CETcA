@@ -517,14 +517,14 @@ static DataModelManager *manager = nil;
     }
     
     if ([dataStr hasPrefix:@"eb44"]) {
-        if ([dataStr length]>=14) {
+        if ([dataStr length]>=12) {
             NSNumber *channel = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(4, 2)]]];
-            if ([channel integerValue] == 3) {
-                NSInteger power1 = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 4)]];
-                NSInteger power2 = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(10, 4)]];
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"socketPowerCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"power1":[NSNumber numberWithFloat:power1/10.0],@"power2":[NSNumber numberWithFloat:power2/10.0],@"channel":channel}];
+            NSInteger power1 = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 4)]];
+            NSInteger power2 = 0;
+            if ([channel integerValue] == 3 && [dataStr length]>=14) {
+                power2 = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(10, 4)]];
             }
-            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"socketPowerCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"power1":[NSNumber numberWithFloat:power1/10.0],@"power2":[NSNumber numberWithFloat:power2/10.0],@"channel":channel}];
         }
     }
     
