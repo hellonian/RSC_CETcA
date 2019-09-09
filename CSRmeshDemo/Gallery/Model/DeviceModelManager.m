@@ -443,7 +443,13 @@
             model.fanState = fanState;
             model.fansSpeed = fanSpeed;
             model.lampState = lampState;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setFanSuccess" object:self userInfo:@{@"deviceId":deviceId}];
+            if (model.fanState && model.lampState) {
+                model.powerState = @1;
+            }else {
+                model.powerState = @0;
+            }
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"setFanSuccess" object:self userInfo:@{@"deviceId":deviceId}];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
             *stop = YES;
         }
     }];

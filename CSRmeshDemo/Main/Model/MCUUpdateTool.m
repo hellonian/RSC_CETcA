@@ -26,6 +26,10 @@
     NSInteger _latestMCUSVersion;
     BOOL _startedUpdate;
     NSNumber *_deviceId;
+    BOOL eb32Back;
+    NSInteger resendea32Num;
+    BOOL eb35Back;
+    NSInteger resendea35Num;
 }
 
 @end
@@ -45,6 +49,7 @@
     self = [super init];
     if (self) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MCUUpdateDataCall:) name:@"MCUUpdateDataCall" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedMCUVersionData:) name:@"receivedMCUVersionData" object:nil];
     }
     return self;
 }
@@ -109,7 +114,10 @@
                     [_updateSuccessDic setObject:@(![[_updateSuccessDic objectForKey:@(backBinPage)] boolValue]) forKey:@(backBinPage)];
                     if (_isLastPage) {
                         NSLog(@"最后一页成功");
+                        eb32Back = NO;
+                        resendea32Num = 0;
                         [[DataModelManager shareInstance] sendCmdData:@"ea32" toDeviceId:_deviceId];
+                        [self resendea32];
                     }
                     if (self.toolDelegate && [self.toolDelegate respondsToSelector:@selector(updateHudProgress:)]) {
                         [self.toolDelegate updateHudProgress:(backBinPage+1)/(CGFloat)_pageNum];
@@ -132,14 +140,65 @@
                 }
             }
         }else if ([mcuString hasPrefix:@"32"]) {
-            if (self.toolDelegate && [self.toolDelegate respondsToSelector:@selector(hideUpdateHud)]) {
-                [self.toolDelegate hideUpdateHud];
-            }
+            
+            eb32Back = YES;
+            
+            eb35Back = NO;
+            resendea35Num = 0;
+            [self sendReadMCUVersionCmd];
+
             [UIApplication sharedApplication].idleTimerDisabled = NO;
             _startedUpdate = NO;
             CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
             deviceEntity.mcuSVersion = [NSNumber numberWithInteger:_latestMCUSVersion];
             [[CSRDatabaseManager sharedInstance] saveContext];
+        }
+    }
+}
+
+- (void)resendea32 {
+    if (!eb32Back) {
+        if (resendea32Num<3) {
+            __block NSInteger block_resendea32Num = resendea32Num;
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                block_resendea32Num++;
+                [[DataModelManager shareInstance] sendCmdData:@"ea32" toDeviceId:_deviceId];
+                [self resendea32];
+            });
+        }else {
+            eb35Back = NO;
+            resendea35Num = 0;
+            [self sendReadMCUVersionCmd];
+        }
+    }
+}
+
+- (void)sendReadMCUVersionCmd {
+    if (!eb35Back) {
+        if (resendea35Num<3) {
+            __block NSInteger block_resendea35Num = resendea35Num;
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                block_resendea35Num++;
+                [[DataModelManager shareInstance] sendCmdData:@"ea35" toDeviceId:_deviceId];
+                [self sendReadMCUVersionCmd];
+            });
+        }else {
+            if (self.toolDelegate && [self.toolDelegate respondsToSelector:@selector(updateSuccess:)]) {
+                [self.toolDelegate updateSuccess:NO];
+            }
+        }
+    }
+    
+}
+
+- (void)receivedMCUVersionData:(NSNotification *)notification {
+    NSDictionary *dic = notification.userInfo;
+    NSNumber *sourceDeviceId = dic[@"deviceId"];
+    BOOL higher = [dic[@"higher"] boolValue];
+    if ([sourceDeviceId isEqualToNumber:_deviceId]) {
+        eb35Back = YES;
+        if (self.toolDelegate && [self.toolDelegate respondsToSelector:@selector(updateSuccess:)]) {
+            [self.toolDelegate updateSuccess:higher];
         }
     }
 }
@@ -218,13 +277,18 @@
 }
 
 - (void)resendData:(NSInteger)binPage {
-    __weak MCUUpdateTool *weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         NSLog(@"首次延时~~ %ld | %d",(long)binPage,[[_updateSuccessDic objectForKey:@(binPage)] boolValue]);
         if (![[_updateSuccessDic objectForKey:@(binPage)] boolValue] && _resendQueryNumber<6) {
             _resendQueryNumber++;
             [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea33%@",[CSRUtilities stringWithHexNumber:binPage]] toDeviceId:_deviceId];
-            [weakSelf resendData:binPage];
+            [self resendData:binPage];
+        }else {
+            if (self.toolDelegate && [self respondsToSelector:@selector(updateSuccess:)]) {
+                [self.toolDelegate updateSuccess:NO];
+            }
+            [UIApplication sharedApplication].idleTimerDisabled = NO;
+            _startedUpdate = NO;
         }
     });
 }

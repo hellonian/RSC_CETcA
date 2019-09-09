@@ -540,6 +540,11 @@ static DataModelManager *manager = nil;
         NSInteger mcuSVersion = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(8, 2)]];
         CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sourceDeviceId];
         if (device) {
+            BOOL higher = NO;
+            if (device.mcuSVersion && [device.mcuSVersion integerValue]<mcuSVersion) {
+                higher = YES;
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"receivedMCUVersionData" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"higher":@(higher)}];
             device.mcuBootVersion = [NSNumber numberWithInteger:mcuBootVersion];
             device.mcuHVersion = [NSNumber numberWithInteger:mcuHVersion];
             device.mcuSVersion = [NSNumber numberWithInteger:mcuSVersion];

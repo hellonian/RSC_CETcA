@@ -666,7 +666,7 @@
         NSString *eveD1 = @"00";
         NSString *eveD2 = @"00";
         NSString *eveD3 = @"00";
-        if ([sceneMember.eveType isEqualToNumber:@(13)] || [sceneMember.eveType isEqualToNumber:@(14)]) {
+        if ([sceneMember.eveType isEqualToNumber:@(13)] || [sceneMember.eveType isEqualToNumber:@(14)] || [sceneMember.eveType isEqualToNumber:@(20)]) {
             eveD1 = [NSString stringWithFormat:@"%@",sceneMember.colorRed];
             eveD2 = [NSString stringWithFormat:@"%@",sceneMember.colorGreen];
             eveD3 = [NSString stringWithFormat:@"%@",sceneMember.colorBlue];

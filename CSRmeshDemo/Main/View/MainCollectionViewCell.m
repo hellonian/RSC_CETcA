@@ -405,12 +405,14 @@
             self.iconView.image = [UIImage imageNamed:@"Device_Switch"];
         }else if ([appearanceShortname containsString:@"RB01"] || [appearanceShortname containsString:@"R5BSBH"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote1"];
-        }else if ([appearanceShortname containsString:@"RB02"]||[appearanceShortname isEqualToString:@"RB06"]||[appearanceShortname isEqualToString:@"RSBH"]) {
+        }else if ([appearanceShortname containsString:@"RB02"]||[appearanceShortname isEqualToString:@"RB06"]||[appearanceShortname isEqualToString:@"RSBH"]||[appearanceShortname isEqualToString:@"1BMBH"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote2"];
         }else if ([appearanceShortname containsString:@"RB04"] || [appearanceShortname containsString:@"RSIBH"] || [appearanceShortname containsString:@"RB07"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_bajiao"];
         }else if ([appearanceShortname containsString:@"R9BSBH"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote1"];
+        }else if ([appearanceShortname containsString:@"RB05"]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_rb05"];
         }else if ([CSRUtilities belongToLightSensor:appearanceShortname]){
             self.iconView.image = [UIImage imageNamed:@"Device_Sensor"];
         }else if ([CSRUtilities belongToCWDevice:appearanceShortname] || [CSRUtilities belongToRGBDevice:appearanceShortname] || [CSRUtilities belongToRGBCWDevice:appearanceShortname] || [CSRUtilities belongToCWNoLevelDevice:appearanceShortname] || [CSRUtilities belongToRGBNoLevelDevice:appearanceShortname] || [CSRUtilities belongToRGBCWNoLevelDevice:appearanceShortname]) {
@@ -427,6 +429,8 @@
             self.iconView.image = [UIImage imageNamed:@"Device_socket1"];
         }else if ([appearanceShortname containsString:@"RB08"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_rb08"];
+        }else if ([appearanceShortname containsString:@"RB09"]||[appearanceShortname containsString:@"5RSIBH"]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_bajiao"];
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;

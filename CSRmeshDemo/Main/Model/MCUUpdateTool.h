@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)starteUpdateHud;
 - (void)updateHudProgress:(CGFloat)progress;
-- (void)hideUpdateHud;
+- (void)updateSuccess:(BOOL)value;
 
 @end
 

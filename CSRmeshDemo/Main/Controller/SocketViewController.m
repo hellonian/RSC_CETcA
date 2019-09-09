@@ -16,6 +16,7 @@
 #import "AFHTTPSessionManager.h"
 #import "PureLayout.h"
 #import "MCUUpdateTool.h"
+#import "DataModelManager.h"
 
 @interface SocketViewController ()<UITextFieldDelegate,MBProgressHUDDelegate,MCUUpdateToolDelegate>
 {
@@ -188,6 +189,8 @@
 
 - (void)starteUpdateHud {
     if (!_updatingHud) {
+        [timer invalidate];
+        timer = nil;
         [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
         _updatingHud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
         _updatingHud.mode = MBProgressHUDModeAnnularDeterminate;
@@ -201,13 +204,22 @@
     }
 }
 
-- (void)hideUpdateHud {
+- (void)updateSuccess:(BOOL)value {
     if (_updatingHud) {
         [_updatingHud hideAnimated:YES];
         [self.translucentBgView removeFromSuperview];
         self.translucentBgView = nil;
         [updateMCUBtn removeFromSuperview];
         updateMCUBtn = nil;
+        if (value) {
+            timer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(timerMethod:) userInfo:nil repeats:YES];
+            [timer fire];
+        }
+        NSString *valueStr = value? AcTECLocalizedStringFromTable(@"Success", @"Localizable"):AcTECLocalizedStringFromTable(@"Error", @"Localizable");
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:valueStr preferredStyle:UIAlertControllerStyleAlert];
+        [alert.view setTintColor:DARKORAGE];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+        [alert addAction:cancel];
     }
 }
 

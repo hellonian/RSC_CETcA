@@ -136,7 +136,7 @@
     CSRDeviceEntity *deviceEntity = self.dataArray[indexPath.row];
     if ([deviceEntity.shortName isEqualToString:@"RB01"] || [deviceEntity.shortName isEqualToString:@"R5BSBH"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_fremote"];
-    }else if ([deviceEntity.shortName isEqualToString:@"RB02"]||[deviceEntity.shortName isEqualToString:@"RB06"]||[deviceEntity.shortName isEqualToString:@"RSBH"]) {
+    }else if ([deviceEntity.shortName isEqualToString:@"RB02"]||[deviceEntity.shortName isEqualToString:@"RB06"]||[deviceEntity.shortName isEqualToString:@"RSBH"]||[deviceEntity.shortName isEqualToString:@"1BMBH"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_sremote"];
     }else if ([deviceEntity.shortName isEqualToString:@"RB04"]|| [deviceEntity.shortName isEqualToString:@"RB07"]||[deviceEntity.shortName isEqualToString:@"RSIBH"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_bajiao"];
@@ -144,6 +144,10 @@
         cell.imageView.image = [UIImage imageNamed:@"Setting_fremote"];
     }else if ([deviceEntity.shortName isEqualToString:@"RB08"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_rb08"];
+    }else if ([deviceEntity.shortName isEqualToString:@"RB05"]) {
+        cell.imageView.image = [UIImage imageNamed:@"Setting_rb05"];
+    }else if ([deviceEntity.shortName isEqualToString:@"RB09"]||[deviceEntity.shortName isEqualToString:@"5RSIBH"]) {
+        cell.imageView.image = [UIImage imageNamed:@"Setting_bajiao"];
     }
     cell.textLabel.text = deviceEntity.name;
     return cell;

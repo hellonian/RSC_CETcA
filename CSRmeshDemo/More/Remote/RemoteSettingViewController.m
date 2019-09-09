@@ -135,8 +135,13 @@
     self.nameTF.text = self.remoteEntity.name;
     self.originalName = self.remoteEntity.name;
     
-    if ([self.remoteEntity.shortName isEqualToString:@"RB01"]) {
-        _practicalityImageView.image = [UIImage imageNamed:@"rb01"];
+    if ([self.remoteEntity.shortName isEqualToString:@"RB01"]||[self.remoteEntity.shortName isEqualToString:@"RB05"]) {
+        if ([self.remoteEntity.shortName isEqualToString:@"RB01"]) {
+            _practicalityImageView.image = [UIImage imageNamed:@"rb01"];
+        }else if ([self.remoteEntity.shortName isEqualToString:@"RB05"]) {
+            _practicalityImageView.image = [UIImage imageNamed:@"rb05"];
+        }
+        
         [_customContentView addSubview:self.fiveRemoteView];
         [self.fiveRemoteView autoSetDimension:ALDimensionHeight toSize:179.0f];
         [self.fiveRemoteView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
@@ -327,7 +332,7 @@
             }
         }
         
-    }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]) {
+    }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]||[_remoteEntity.shortName isEqualToString:@"1BMBH"]) {
         _practicalityImageView.image = [UIImage imageNamed:@"rb02"];
         [self.customContentView addSubview:self.singleRemoteView];
         [self.singleRemoteView autoSetDimension:ALDimensionHeight toSize:44.0f];
@@ -405,8 +410,13 @@
             _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
         }
         
-    }else if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"]) {
-        _practicalityImageView.image = [UIImage imageNamed:@"rb01"];
+    }else if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"] || [self.remoteEntity.shortName isEqualToString:@"RB09"] || [self.remoteEntity.shortName isEqualToString:@"5RSIBH"]) {
+        if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"]) {
+            _practicalityImageView.image = [UIImage imageNamed:@"rb01"];
+        }else {
+            _practicalityImageView.image = [UIImage imageNamed:@"bajiao"];
+        }
+        
         [self.customContentView addSubview:self.R5BSHBView];
         [self.R5BSHBView autoSetDimension:ALDimensionHeight toSize:224.0f];
         [self.R5BSHBView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
@@ -954,13 +964,13 @@
     [super viewDidLayoutSubviews];
     if (@available(iOS 11.0, *)) {
         CGFloat safeHeight = HEIGHT - self.view.safeAreaInsets.bottom - self.view.safeAreaInsets.top;
-        if ([self.remoteEntity.shortName isEqualToString:@"RB01"]) {
+        if ([self.remoteEntity.shortName isEqualToString:@"RB01"]||[self.remoteEntity.shortName isEqualToString:@"RB05"]) {
             if (safeHeight <= 506.5) {
                 _contentViewHeight.constant = 506.5;
             }else {
                 _contentViewHeight.constant = safeHeight;
             }
-        }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]||[self.remoteEntity.shortName isEqualToString:@"RB06"]||[self.remoteEntity.shortName isEqualToString:@"RSBH"]) {
+        }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]||[self.remoteEntity.shortName isEqualToString:@"RB06"]||[self.remoteEntity.shortName isEqualToString:@"RSBH"]||[self.remoteEntity.shortName isEqualToString:@"1BMBH"]) {
             if (safeHeight <= 371.5) {
                 _contentViewHeight.constant = 371.5;
             }else {
@@ -972,7 +982,7 @@
             }else {
                 _contentViewHeight.constant = safeHeight;
             }
-        }else if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"]) {
+        }else if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"]||[self.remoteEntity.shortName isEqualToString:@"RB09"]||[self.remoteEntity.shortName isEqualToString:@"5RSIBH"]) {
             if (safeHeight <= 551.5) {
                 _contentViewHeight.constant = 551.5;
             }else {
@@ -1821,7 +1831,7 @@
         } failure:^(NSError * _Nonnull error) {
             
         }];
-    }else if ([_remoteEntity.shortName isEqualToString:@"R5BSBH"]) {
+    }else if ([_remoteEntity.shortName isEqualToString:@"R5BSBH"] || [_remoteEntity.shortName isEqualToString:@"RB09"] || [_remoteEntity.shortName isEqualToString:@"5RSIBH"]) {
         NSString *cmdStr1 = [self cmdStringFromControlLabel:_R5BSHBControlOneLabel selectedLabel:_R5BSHBSelectOneLabel buttonNum:@1];
         
         NSString *cmdStr2 = [self cmdStringFromControlLabel:_R5BSHBControlTwoLabel selectedLabel:_R5BSHBSelectTwoLabel buttonNum:@2];
@@ -1832,7 +1842,13 @@
         
         NSString *cmdStr5 = [self cmdStringFromControlLabel:_R5BSHBControlFiveLabel selectedLabel:_R5BSHBSelectFiveLabel buttonNum:@5];
         
-        NSString *cmdString = [NSString stringWithFormat:@"9b1a0501%@02%@03%@04%@00%@",cmdStr1,cmdStr2,cmdStr3,cmdStr4,cmdStr5];
+        NSString *cmdString;
+        if ([_remoteEntity.shortName isEqualToString:@"R5BSBH"]) {
+            cmdString = [NSString stringWithFormat:@"9b1a0501%@02%@03%@04%@00%@",cmdStr1,cmdStr2,cmdStr3,cmdStr4,cmdStr5];
+        }else if ([_remoteEntity.shortName isEqualToString:@"RB09"]||[_remoteEntity.shortName isEqualToString:@"5RSIBH"]) {
+            cmdString = [NSString stringWithFormat:@"9b1a0501%@02%@03%@04%@05%@",cmdStr1,cmdStr2,cmdStr3,cmdStr4,cmdStr5];
+        }
+        
         [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdString] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
             
             _remoteEntity.remoteBranch = cmdString;
@@ -1881,7 +1897,7 @@
         
     }else {
         if (![[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]) {
-            if ([_remoteEntity.shortName isEqualToString:@"RB01"]) {
+            if ([_remoteEntity.shortName isEqualToString:@"RB01"]||[_remoteEntity.shortName isEqualToString:@"RB05"]) {
                 
                 NSString *cmdStr1 = [self cmdStringFromControlLabel:_fConrolOneLabel selectedLabel:_fSelectOneLabel buttonNum:@1];
                 
@@ -1907,7 +1923,7 @@
                 }];
                 
                 
-            }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"S10IB-H2"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]) {
+            }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"S10IB-H2"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]||[_remoteEntity.shortName isEqualToString:@"1BMBH"]) {
                 
                 NSString *cmdStr1 = [self cmdStringFromControlLabel:_sConrolOneLabel selectedLabel:_sSelectOneLabel buttonNum:@1];
                 
@@ -1974,7 +1990,7 @@
             }
             
         }else {
-            if ([_remoteEntity.shortName isEqualToString:@"RB01"]) {
+            if ([_remoteEntity.shortName isEqualToString:@"RB01"]||[_remoteEntity.shortName isEqualToString:@"RB05"]) {
                 NSString *cmdStr1;
                 if ([_fConrolOneLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_fSelectOneLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
                     NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectOneLabel.tag];
@@ -2174,7 +2190,7 @@
                     }
                     
                 });
-            }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]) {
+            }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]||[_remoteEntity.shortName isEqualToString:@"1BMBH"]) {
                 NSString *cmdStr1;
                 if ([_sConrolOneLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_sSelectOneLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
                     NSString *deviceIdString = [self exchangePositionOfDeviceId:_sSelectOneLabel.tag];
