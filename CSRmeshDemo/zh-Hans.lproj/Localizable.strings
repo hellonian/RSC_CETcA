@@ -166,3 +166,4 @@
 "pulsewidth9" = "9s 脉冲模式";
 "timeraddsuccess"="定时器设置成功。";
 "timeraddfail"="设备定时器超出最大个数。";
+"Calibrationfailure"="校准失败";

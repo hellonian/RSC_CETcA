@@ -75,7 +75,7 @@
 @property (weak, nonatomic) IBOutlet TopImageView *topImageView;
 
 @property (nonatomic,strong) UIView *curtainKindView;
-@property (nonatomic,strong) NSNumber *selectedCurtainDeviceId;
+@property (nonatomic,strong) CSRDeviceEntity *selectedCurtainDeviceEntity;
 
 //@property (weak, nonatomic) IBOutlet UIImageView *weatherImageView;
 //@property (weak, nonatomic) IBOutlet UILabel *tempLabel;
@@ -1262,12 +1262,16 @@
         }else if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
             
             if (!deviceEntity.remoteBranch || deviceEntity.remoteBranch.length == 0) {
-                _selectedCurtainDeviceId = mainCell.deviceId;
+                _selectedCurtainDeviceEntity = deviceEntity;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
                     [[UIApplication sharedApplication].keyWindow addSubview:self.curtainKindView];
                     [self.curtainKindView autoCenterInSuperview];
-                    [self.curtainKindView autoSetDimensionsToSize:CGSizeMake(271, 166)];
+                    if ([CSRUtilities belongToOneChannelCurtainController:deviceEntity.shortName]) {
+                        [self.curtainKindView autoSetDimensionsToSize:CGSizeMake(271, 166)];
+                    }else if ([CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName]) {
+                        [self.curtainKindView autoSetDimensionsToSize:CGSizeMake(271, 302)];
+                    }
                 });
             }else {
                 CurtainViewController *curtainVC = [[CurtainViewController alloc] init];
@@ -1553,30 +1557,41 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
-- (void)mainCollectionViewCellDelegateCurtainTapAction:(NSNumber *)deviceId {
+- (void)mainCollectionViewCellDelegateCurtainTapAction:(CSRDeviceEntity *)deviceEntity {
 
-    _selectedCurtainDeviceId = deviceId;
+    _selectedCurtainDeviceEntity = deviceEntity;
     dispatch_async(dispatch_get_main_queue(), ^{
         [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
         [[UIApplication sharedApplication].keyWindow addSubview:self.curtainKindView];
         [self.curtainKindView autoCenterInSuperview];
-        [self.curtainKindView autoSetDimensionsToSize:CGSizeMake(271, 166)];
+        if ([CSRUtilities belongToOneChannelCurtainController:deviceEntity.shortName]) {
+            [self.curtainKindView autoSetDimensionsToSize:CGSizeMake(271, 166)];
+        }else if ([CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName]) {
+            [self.curtainKindView autoSetDimensionsToSize:CGSizeMake(271, 302)];
+        }
     });
 }
 
 - (void)selectTypeOfCurtain:(UIButton *)sender {
     
-    CSRDeviceEntity *curtainEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_selectedCurtainDeviceId];
     if (sender.tag == 11) {
-        curtainEntity.remoteBranch = @"ch";
+        _selectedCurtainDeviceEntity.remoteBranch = @"ch";
     }else if (sender.tag == 22) {
-        curtainEntity.remoteBranch = @"cv";
+        _selectedCurtainDeviceEntity.remoteBranch = @"cv";
+    }else if (sender.tag == 33) {
+        _selectedCurtainDeviceEntity.remoteBranch = @"chh";
+    }else if (sender.tag == 44) {
+        _selectedCurtainDeviceEntity.remoteBranch = @"cvv";
+    }else if (sender.tag == 55) {
+        _selectedCurtainDeviceEntity.remoteBranch = @"chv";
+    }else if (sender.tag == 66) {
+        _selectedCurtainDeviceEntity.remoteBranch = @"cvh";
     }
     [[CSRDatabaseManager sharedInstance] saveContext];
     
     [self getMainDataArray];
     
-    _selectedCurtainDeviceId = nil;
+    _selectedCurtainDeviceEntity = nil;
     
     [self.curtainKindView removeFromSuperview];
     self.curtainKindView = nil;
@@ -1749,22 +1764,55 @@
         line.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
         [_curtainKindView addSubview:line];
         
-        UIButton *horizontalBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 31, 135, 135)];
-        horizontalBtn.tag = 11;
-        [horizontalBtn setImage:[UIImage imageNamed:@"curtainHImage"] forState:UIControlStateNormal];
-        [horizontalBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
-        [_curtainKindView addSubview:horizontalBtn];
-        
-        UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(135, 31, 1, 135)];
-        line1.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
-        [_curtainKindView addSubview:line1];
-        
-        UIButton *verticalBtn = [[UIButton alloc] initWithFrame:CGRectMake(136, 31, 135, 135)];
-        verticalBtn.tag = 22;
-        [verticalBtn setImage:[UIImage imageNamed:@"curtainVImage"] forState:UIControlStateNormal];
-        [verticalBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
-        [_curtainKindView addSubview:verticalBtn];
-        
+        if ([CSRUtilities belongToOneChannelCurtainController:_selectedCurtainDeviceEntity.shortName]) {
+            UIButton *horizontalBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 31, 135, 135)];
+            horizontalBtn.tag = 11;
+            [horizontalBtn setImage:[UIImage imageNamed:@"curtainHImage"] forState:UIControlStateNormal];
+            [horizontalBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
+            [_curtainKindView addSubview:horizontalBtn];
+            
+            UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(135, 31, 1, 135)];
+            line1.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+            [_curtainKindView addSubview:line1];
+            
+            UIButton *verticalBtn = [[UIButton alloc] initWithFrame:CGRectMake(136, 31, 135, 135)];
+            verticalBtn.tag = 22;
+            [verticalBtn setImage:[UIImage imageNamed:@"curtainVImage"] forState:UIControlStateNormal];
+            [verticalBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
+            [_curtainKindView addSubview:verticalBtn];
+        } else if ([CSRUtilities belongToTwoChannelCurtainController:_selectedCurtainDeviceEntity.shortName]) {
+            UIButton *hhBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 31, 135, 135)];
+            hhBtn.tag = 33;
+            [hhBtn setImage:[UIImage imageNamed:@"curtainHHImage"] forState:UIControlStateNormal];
+            [hhBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
+            [_curtainKindView addSubview:hhBtn];
+            
+            UIButton *vvBtn = [[UIButton alloc] initWithFrame:CGRectMake(136, 31, 135, 135)];
+            vvBtn.tag = 44;
+            [vvBtn setImage:[UIImage imageNamed:@"curtainVVImage"] forState:UIControlStateNormal];
+            [vvBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
+            [_curtainKindView addSubview:vvBtn];
+            
+            UIButton *hvBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 168, 135, 135)];
+            hvBtn.tag = 55;
+            [hvBtn setImage:[UIImage imageNamed:@"curtainHVImage"] forState:UIControlStateNormal];
+            [hvBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
+            [_curtainKindView addSubview:hvBtn];
+            
+            UIButton *vhBtn = [[UIButton alloc] initWithFrame:CGRectMake(136, 168, 135, 135)];
+            vhBtn.tag = 66;
+            [vhBtn setImage:[UIImage imageNamed:@"curtainVHImage"] forState:UIControlStateNormal];
+            [vhBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
+            [_curtainKindView addSubview:vhBtn];
+            
+            UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(135, 31, 1, 271)];
+            line1.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+            [_curtainKindView addSubview:line1];
+            
+            UIView *line2 = [[UIView alloc] initWithFrame:CGRectMake(0, 167, 271, 1)];
+            line2.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+            [_curtainKindView addSubview:line2];
+        }
     }
     return _curtainKindView;
 }

@@ -2,17 +2,26 @@
 /* Class = "UILabel"; text = "pulse width 1s"; ObjectID = "52Z-Lb-uYn"; */
 "52Z-Lb-uYn.text" = "pulse width 1s";
 
+/* Class = "UILabel"; text = "功率异常使能"; ObjectID = "AAE-kx-OFi"; */
+"AAE-kx-OFi.text" = "Enabled";
+
 /* Class = "UILabel"; text = "Brightness"; ObjectID = "ClO-Me-qxg"; */
 "ClO-Me-qxg.text" = "Brightness";
 
 /* Class = "UILabel"; text = "all"; ObjectID = "Dba-Oe-G4M"; */
 "Dba-Oe-G4M.text" = "all";
 
+/* Class = "UILabel"; text = "功率异常门限值"; ObjectID = "Ey3-na-Gtm"; */
+"Ey3-na-Gtm.text" = "Threshold";
+
 /* Class = "UILabel"; text = "360"; ObjectID = "FWl-MM-RoK"; */
 "FWl-MM-RoK.text" = "360";
 
 /* Class = "UILabel"; text = "Color"; ObjectID = "H8t-il-Prv"; */
 "H8t-il-Prv.text" = "Color";
+
+/* Class = "UIButton"; normalTitle = "Clear Data"; ObjectID = "LaI-r3-tNR"; */
+"LaI-r3-tNR.normalTitle" = "Clear Data";
 
 /* Class = "UILabel"; text = "group  (0~15)"; ObjectID = "LpE-ya-LiW"; */
 "LpE-ya-LiW.text" = "group  (0~15)";
@@ -32,6 +41,12 @@
 /* Class = "UILabel"; text = "ON/OFF"; ObjectID = "Whw-sT-xn2"; */
 "Whw-sT-xn2.text" = "ON/OFF";
 
+/* Class = "UILabel"; text = "Power"; ObjectID = "ZaU-2S-EOd"; */
+"ZaU-2S-EOd.text" = "Power";
+
+/* Class = "UILabel"; text = "Current Power"; ObjectID = "aRX-Hr-8Kd"; */
+"aRX-Hr-8Kd.text" = "Current Power";
+
 /* Class = "UILabel"; text = "pulse width 6s"; ObjectID = "d83-Jj-AHV"; */
 "d83-Jj-AHV.text" = "pulse width 6s";
 
@@ -44,11 +59,17 @@
 /* Class = "UILabel"; text = "6500K"; ObjectID = "gaa-Nj-7D5"; */
 "gaa-Nj-7D5.text" = "6500K";
 
+/* Class = "UILabel"; text = "功率异常变化"; ObjectID = "glv-5P-Z8u"; */
+"glv-5P-Z8u.text" = "Abnormal";
+
 /* Class = "UIButton"; normalTitle = "ON/OFF mode"; ObjectID = "hVU-jX-KKC"; */
 "hVU-jX-KKC.normalTitle" = "ON/OFF mode";
 
 /* Class = "UILabel"; text = "Change"; ObjectID = "jzp-Uo-C7S"; */
 "jzp-Uo-C7S.text" = "Change";
+
+/* Class = "UIButton"; normalTitle = "+"; ObjectID = "kBu-go-7KO"; */
+"kBu-go-7KO.normalTitle" = "+";
 
 /* Class = "UILabel"; text = "100%"; ObjectID = "lRY-vT-dpa"; */
 "lRY-vT-dpa.text" = "100%";
@@ -64,6 +85,9 @@
 
 /* Class = "UILabel"; text = "100%"; ObjectID = "qgh-p1-B7s"; */
 "qgh-p1-B7s.text" = "100%";
+
+/* Class = "UIButton"; normalTitle = "-"; ObjectID = "sO6-V8-TmG"; */
+"sO6-V8-TmG.normalTitle" = "-";
 
 /* Class = "UILabel"; text = "ON/OFF mode"; ObjectID = "vaJ-RI-Ns1"; */
 "vaJ-RI-Ns1.text" = "ON/OFF mode";

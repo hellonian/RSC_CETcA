@@ -38,6 +38,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *bubbleLabel;
 @property (nonatomic,strong) MBProgressHUD *updatingHud;
 @property (nonatomic,strong) UIView *translucentBgView;
+@property (nonatomic,assign) NSInteger controllChannel;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *channelSelectSeg;
+@property (nonatomic,strong) CSRDeviceEntity *curtainEntity;
 
 @end
 
@@ -63,12 +66,16 @@
                                                  selector:@selector(setPowerStateSuccess:)
                                                      name:@"setPowerStateSuccess"
                                                    object:nil];
-        CSRDeviceEntity *curtainEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-        self.navigationItem.title = curtainEntity.name;
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(setMultichannelStateSuccess:)
+                                                     name:@"setMultichannelStateSuccess"
+                                                   object:nil];
+        _curtainEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+        self.navigationItem.title = _curtainEntity.name;
         self.nameTf.delegate = self;
-        self.nameTf.text = curtainEntity.name;
-        self.originalName = curtainEntity.name;
-        NSString *macAddr = [curtainEntity.uuid substringFromIndex:24];
+        self.nameTf.text = _curtainEntity.name;
+        self.originalName = _curtainEntity.name;
+        NSString *macAddr = [_curtainEntity.uuid substringFromIndex:24];
         NSString *doneTitle = @"";
         int count = 0;
         for (int i = 0; i<macAddr.length; i++) {
@@ -80,21 +87,46 @@
             }
         }
         self.macAddressLabel.text = doneTitle;
-        if ([curtainEntity.remoteBranch isEqualToString:@"ch"]) {
+        self.controllChannel = 1;
+        if ([_curtainEntity.remoteBranch isEqualToString:@"ch"]) {
+            self.channelSelectSeg.hidden = YES;
             self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainHImage"];
             [self.openBtn setImage:[UIImage imageNamed:@"curtainHOpen"] forState:UIControlStateNormal];
             [self.closeBtn setImage:[UIImage imageNamed:@"curtainHClose"] forState:UIControlStateNormal];
-        }else if ([curtainEntity.remoteBranch isEqualToString:@"cv"]) {
+        }else if ([_curtainEntity.remoteBranch isEqualToString:@"cv"]) {
             self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainVImage"];
+            self.channelSelectSeg.hidden = YES;
+            [self.openBtn setImage:[UIImage imageNamed:@"curtainVOpen"] forState:UIControlStateNormal];
+            [self.closeBtn setImage:[UIImage imageNamed:@"curtainVClose"] forState:UIControlStateNormal];
+        }else if ([_curtainEntity.remoteBranch isEqualToString:@"chh"]) {
+            self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainHHImage"];
+            [self.openBtn setImage:[UIImage imageNamed:@"curtainHOpen"] forState:UIControlStateNormal];
+            [self.closeBtn setImage:[UIImage imageNamed:@"curtainHClose"] forState:UIControlStateNormal];
+        }else if ([_curtainEntity.remoteBranch isEqualToString:@"cvv"]) {
+            self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainVVImage"];
+            [self.openBtn setImage:[UIImage imageNamed:@"curtainVOpen"] forState:UIControlStateNormal];
+            [self.closeBtn setImage:[UIImage imageNamed:@"curtainVClose"] forState:UIControlStateNormal];
+        }else if ([_curtainEntity.remoteBranch isEqualToString:@"chv"]) {
+            self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainHVImage"];
+            [self.openBtn setImage:[UIImage imageNamed:@"curtainHOpen"] forState:UIControlStateNormal];
+            [self.closeBtn setImage:[UIImage imageNamed:@"curtainHClose"] forState:UIControlStateNormal];
+        }else if ([_curtainEntity.remoteBranch isEqualToString:@"cvh"]) {
+            self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainVHImage"];
             [self.openBtn setImage:[UIImage imageNamed:@"curtainVOpen"] forState:UIControlStateNormal];
             [self.closeBtn setImage:[UIImage imageNamed:@"curtainVClose"] forState:UIControlStateNormal];
         }
-        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-        [_curtainSlider setValue:[model.level floatValue] animated:YES];
+        if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
+            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+            [_curtainSlider setValue:[model.level floatValue] animated:YES];
+        }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
+            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+            [_curtainSlider setValue:model.channel1Level animated:YES];
+        }
         
-        if ([curtainEntity.hwVersion integerValue]==2) {
-            NSMutableString *mutStr = [NSMutableString stringWithString:curtainEntity.shortName];
-            NSRange range = {0,curtainEntity.shortName.length};
+        
+        if ([_curtainEntity.hwVersion integerValue]==2) {
+            NSMutableString *mutStr = [NSMutableString stringWithString:_curtainEntity.shortName];
+            NSRange range = {0,_curtainEntity.shortName.length};
             [mutStr replaceOccurrencesOfString:@"/" withString:@"" options:NSLiteralSearch range:range];
             NSString *urlString = [NSString stringWithFormat:@"http://39.108.152.134/MCU/%@/%@.php",mutStr,mutStr];
             AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
@@ -104,7 +136,7 @@
                 NSDictionary *dic = (NSDictionary *)responseObject;
                 latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
                 downloadAddress = dic[@"Download_address"];
-                if ([curtainEntity.mcuSVersion integerValue]<latestMCUSVersion) {
+                if ([_curtainEntity.mcuSVersion integerValue]<latestMCUSVersion) {
                     updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
                     [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
                     [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
@@ -154,8 +186,9 @@
         NSString *valueStr = value? AcTECLocalizedStringFromTable(@"Success", @"Localizable"):AcTECLocalizedStringFromTable(@"Error", @"Localizable");
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:valueStr preferredStyle:UIAlertControllerStyleAlert];
         [alert.view setTintColor:DARKORAGE];
-        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
         [alert addAction:cancel];
+        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 
@@ -176,7 +209,11 @@
     _calibrateImageView.hidden = NO;
     _bubbleLabel.hidden = NO;
     
-    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"79020401"] success:nil failure:nil]; 
+    if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
+        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"79020401"] success:nil failure:nil];
+    }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
+        [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"790304010%ld",(long)_controllChannel] toDeviceId:_deviceId];
+    }
 }
 
 - (void)doneCalibrateAction {
@@ -195,7 +232,11 @@
     _calibrateImageView.image = [UIImage imageNamed:@"bubble_mid"];
     _bubbleLabel.text = AcTECLocalizedStringFromTable(@"bubble_mid_words", @"Localizable");
     
-    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"79020400"] success:nil failure:nil];
+    if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
+        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"79020400"] success:nil failure:nil];
+    }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
+        [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"790304000%ld",(long)_controllChannel] toDeviceId:_deviceId];
+    }
 }
 
 #pragma mark - UITextFieldDelegate
@@ -236,22 +277,53 @@
     NSString *correctionStep = resultDic[@"correctionStep"];
     NSNumber *sourceDeviceId = resultDic[@"deviceId"];
     if ([sourceDeviceId isEqualToNumber:_deviceId]) {
-        if ([correctionStep isEqualToString:@"01"]) {
+        NSString *stepStr = [correctionStep substringWithRange:NSMakeRange(0, 2)];
+        NSInteger channel;
+        if ([correctionStep length] == 4) {
+            channel = [CSRUtilities numberWithHexString:[correctionStep substringWithRange:NSMakeRange(2, 2)]];
+        }
+        
+        if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
+            if ([correctionStep length] == 4) {
+                NSInteger channel = [CSRUtilities numberWithHexString:[correctionStep substringWithRange:NSMakeRange(2, 2)]];
+                if (channel != _controllChannel) {
+                    return;
+                }
+            }
+        }
+        
+        if ([stepStr isEqualToString:@"01"]) {
             _calibrateReady = YES;
 //            _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_left", @"Localizable")];
             _calibrateImageView.image = [UIImage imageNamed:@"bubble_left"];
             _bubbleLabel.text = AcTECLocalizedStringFromTable(@"bubble_left_words", @"Localizable");
-        }else if ([correctionStep isEqualToString:@"02"]) {
+        }else if ([stepStr isEqualToString:@"02"]) {
 //            _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_right", @"Localizable")];
             _calibrateImageView.image = [UIImage imageNamed:@"bubble_right"];
             _bubbleLabel.text = AcTECLocalizedStringFromTable(@"bubble_right_words", @"Localizable");
-        }else if ([correctionStep isEqualToString:@"03"]) {
+        }else if ([stepStr isEqualToString:@"03"]) {
 //            _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_left", @"Localizable")];
             _calibrateImageView.image = [UIImage imageNamed:@"bubble_left"];
             _bubbleLabel.text = AcTECLocalizedStringFromTable(@"bubble_left_words", @"Localizable");
-        }else if ([correctionStep isEqualToString:@"ff"]) {
+        }else if ([stepStr isEqualToString:@"ff"]) {
             _calibrateReady = NO;
             [self doneCalibrateAction];
+        }else if ([stepStr isEqualToString:@"00"]) {
+            _calibrateReady = NO;
+            UIBarButtonItem *calibrate = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"calibrate", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(calibrateAction)];
+            self.navigationItem.rightBarButtonItem = calibrate;
+            _calibrating = NO;
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:@"calibrateCall" object:nil];
+            _curtainSlider.hidden = NO;
+            _calibrateImageView.hidden = YES;
+            _bubbleLabel.hidden = YES;
+            _calibrateImageView.image = [UIImage imageNamed:@"bubble_mid"];
+            _bubbleLabel.text = AcTECLocalizedStringFromTable(@"bubble_mid_words", @"Localizable");
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"Calibrationfailure", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+            [alert.view setTintColor:DARKORAGE];
+            UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+            [alert addAction:cancel];
+            [self presentViewController:alert animated:YES completion:nil];
         }
     }
 }
@@ -260,56 +332,124 @@
 
 - (IBAction)curtainOpenTouchDown:(UIButton *)sender {
     if (_calibrating && _calibrateReady) {
-        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790303ff00"] success:nil failure:nil];
+        if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790303ff00"] success:nil failure:nil];
+        }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
+            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"790403ff000%ld",(long)_controllChannel] toDeviceId:_deviceId];
+        }
     }
 }
 
 - (IBAction)curtainCloseTouchDown:(UIButton *)sender {
     if (_calibrating && _calibrateReady) {
-        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790303ff00"] success:nil failure:nil];
+        if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790303ff00"] success:nil failure:nil];
+        }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
+            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"790403ff000%ld",(long)_controllChannel] toDeviceId:_deviceId];
+        }
     }
 }
 
 #pragma mark - 控制
 
+- (IBAction)channelSelectAction:(UISegmentedControl *)sender {
+    switch (sender.selectedSegmentIndex) {
+        case 0:
+        {
+            self.controllChannel = 1;
+            if ([_curtainEntity.remoteBranch isEqualToString:@"chv"]) {
+                [self.openBtn setImage:[UIImage imageNamed:@"curtainHOpen"] forState:UIControlStateNormal];
+                [self.closeBtn setImage:[UIImage imageNamed:@"curtainHClose"] forState:UIControlStateNormal];
+            }else if ([_curtainEntity.remoteBranch isEqualToString:@"cvh"]) {
+                [self.openBtn setImage:[UIImage imageNamed:@"curtainVOpen"] forState:UIControlStateNormal];
+                [self.closeBtn setImage:[UIImage imageNamed:@"curtainVClose"] forState:UIControlStateNormal];
+            }
+            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+            [_curtainSlider setValue:model.channel1Level animated:YES];
+        }
+            break;
+        case 1:
+        {
+            self.controllChannel = 2;
+            if ([_curtainEntity.remoteBranch isEqualToString:@"chv"]) {
+                [self.openBtn setImage:[UIImage imageNamed:@"curtainVOpen"] forState:UIControlStateNormal];
+                [self.closeBtn setImage:[UIImage imageNamed:@"curtainVClose"] forState:UIControlStateNormal];
+            }else if ([_curtainEntity.remoteBranch isEqualToString:@"cvh"]) {
+                [self.openBtn setImage:[UIImage imageNamed:@"curtainHOpen"] forState:UIControlStateNormal];
+                [self.closeBtn setImage:[UIImage imageNamed:@"curtainHClose"] forState:UIControlStateNormal];
+            }
+            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+            [_curtainSlider setValue:model.channel2Level animated:YES];
+        }
+            break;
+        default:
+            break;
+    }
+}
+
 - (IBAction)curtainOpenAction:(UIButton *)sender {
     if (!_calibrating) {
-        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790102"] success:nil failure:nil];
+//        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790102"] success:nil failure:nil];
+        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"7902020%ld",(long)_controllChannel]] success:nil failure:nil];
     }else if (_calibrateReady) {
-        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"7903030000"] success:nil failure:nil];
+        if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"7903030000"] success:nil failure:nil];
+        }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
+            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"79040300000%ld",(long)_controllChannel] toDeviceId:_deviceId];
+        }
     }
 }
 - (IBAction)curtainPauseAction:(UIButton *)sender {
     if (!_calibrating) {
-        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790100"] success:nil failure:nil];
+//        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790100"] success:nil failure:nil];
+        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"7902000%ld",(long)_controllChannel]] success:nil failure:nil];
     }
     
 }
 - (IBAction)crutainClose:(UIButton *)sender {
     if (!_calibrating) {
-        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790101"] success:nil failure:nil];
+//        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790101"] success:nil failure:nil];
+        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"7902010%ld",(long)_controllChannel]] success:nil failure:nil];
     }else if (_calibrateReady) {
-        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"7903030000"] success:nil failure:nil];
+        if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"7903030000"] success:nil failure:nil];
+        }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
+            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"79040300000%ld",(long)_controllChannel] toDeviceId:_deviceId];
+        }
     }
 }
 
 - (IBAction)sliderTouchUpInside:(UISlider *)sender {
     if (!_calibrating) {
-        [[LightModelApi sharedInstance] setLevel:_deviceId level:@(sender.value) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-            
-        } failure:^(NSError * _Nullable error) {
-            
-        }];
+        if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
+            [[LightModelApi sharedInstance] setLevel:_deviceId level:@(sender.value) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                
+            } failure:^(NSError * _Nullable error) {
+                
+            }];
+        }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
+            BOOL state = sender.value == 255? NO:YES;
+            NSString *cmdStr = [NSString stringWithFormat:@"7906060%ld00030%d%@",(long)_controllChannel,state,[CSRUtilities stringWithHexNumber:sender.value]];
+            [[DataModelManager shareInstance] sendCmdData:cmdStr toDeviceId:_deviceId];
+        }
+        
     }
 }
 
 - (IBAction)sliderTouchUpOutside:(UISlider *)sender {
     if (!_calibrating) {
-        [[LightModelApi sharedInstance] setLevel:_deviceId level:@(sender.value) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-            
-        } failure:^(NSError * _Nullable error) {
-            
-        }];
+        if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
+            [[LightModelApi sharedInstance] setLevel:_deviceId level:@(sender.value) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                
+            } failure:^(NSError * _Nullable error) {
+                
+            }];
+        }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
+            BOOL state = sender.value == 255? NO:YES;
+            NSString *cmdStr = [NSString stringWithFormat:@"7906060%ld00030%d%@",(long)_controllChannel,state,[CSRUtilities stringWithHexNumber:sender.value]];
+            [[DataModelManager shareInstance] sendCmdData:cmdStr toDeviceId:_deviceId];
+        }
+        
     }
 }
 
@@ -319,6 +459,21 @@
     if ([deviceId isEqualToNumber:_deviceId]) {
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
         [_curtainSlider setValue:[model.level floatValue] animated:YES];
+    }
+}
+
+- (void)setMultichannelStateSuccess: (NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    NSInteger channel = [userInfo[@"channel"] integerValue];
+    if ([deviceId isEqualToNumber:_deviceId] && channel == _controllChannel) {
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+        if (channel == 1) {
+            [_curtainSlider setValue:model.channel1Level animated:YES];
+        }else if (channel == 2) {
+            [_curtainSlider setValue:model.channel2Level animated:YES];
+        }
+        
     }
 }
 

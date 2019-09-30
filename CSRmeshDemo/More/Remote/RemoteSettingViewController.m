@@ -2966,7 +2966,7 @@
     if ([controlLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![selectedLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
         NSString *deviceIdString = [self exchangePositionOfDeviceId:selectedLabel.tag];
         DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:selectedLabel.tag]];
-        if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] ||[CSRUtilities belongToCurtainController:deviceModel.shortName]) {
+        if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToCurtainController:deviceModel.shortName] || [CSRUtilities belongToFanController:deviceModel.shortName]) {
             NSNumber *obj = [deviceModel.buttonnumAndChannel objectForKey:[NSString stringWithFormat:@"%@",num]];
             if (obj) {
                 cmdString = [NSString stringWithFormat:@"0%@00%@",obj,deviceIdString];

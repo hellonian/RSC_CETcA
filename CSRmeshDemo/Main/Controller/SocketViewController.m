@@ -218,8 +218,9 @@
         NSString *valueStr = value? AcTECLocalizedStringFromTable(@"Success", @"Localizable"):AcTECLocalizedStringFromTable(@"Error", @"Localizable");
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:valueStr preferredStyle:UIAlertControllerStyleAlert];
         [alert.view setTintColor:DARKORAGE];
-        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
         [alert addAction:cancel];
+        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 
@@ -593,7 +594,7 @@
             if ([_thresholdLab1.text integerValue]>20){
                 Pvalue = @"20";
             }else if ([_thresholdLab1.text integerValue]>2 && [_thresholdLab1.text integerValue]<=20) {
-                Pvalue = [NSString stringWithFormat:@"%d",[_thresholdLab1.text integerValue]-1];
+                Pvalue = [NSString stringWithFormat:@"%ld",[_thresholdLab1.text integerValue]-1];
             }
         }
         break;
@@ -604,7 +605,7 @@
             if ([_thresholdLab1.text integerValue]>=20) {
                 Pvalue = @"20";
             }else if ([_thresholdLab1.text integerValue]>=2 && [_thresholdLab1.text integerValue]<20) {
-                Pvalue = [NSString stringWithFormat:@"%d",[_thresholdLab1.text integerValue]+1];
+                Pvalue = [NSString stringWithFormat:@"%ld",[_thresholdLab1.text integerValue]+1];
             }
         }
         break;
@@ -615,7 +616,7 @@
             if ([_thresholdLab2.text integerValue]>20) {
                 Pvalue = @"20";
             }else if ([_thresholdLab2.text integerValue]>2 && [_thresholdLab2.text integerValue]<=20) {
-                Pvalue = [NSString stringWithFormat:@"%d",[_thresholdLab2.text integerValue]-1];
+                Pvalue = [NSString stringWithFormat:@"%ld",[_thresholdLab2.text integerValue]-1];
             }
         }
         break;
@@ -626,7 +627,7 @@
             if ([_thresholdLab2.text integerValue]>=20) {
                 Pvalue = @"20";
             }else if ([_thresholdLab2.text integerValue]>=2 && [_thresholdLab2.text integerValue]<20) {
-                Pvalue = [NSString stringWithFormat:@"%d",[_thresholdLab2.text integerValue]+1];
+                Pvalue = [NSString stringWithFormat:@"%ld",[_thresholdLab2.text integerValue]+1];
             }
         }
         break;

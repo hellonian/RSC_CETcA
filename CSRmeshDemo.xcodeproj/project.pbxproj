@@ -262,8 +262,6 @@
 		2E2A016421425D7600B2EFAF /* MusicListTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicListTableViewController.m; sourceTree = "<group>"; };
 		2E2A016621425F7F00B2EFAF /* GetDataTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetDataTools.h; sourceTree = "<group>"; };
 		2E2A016721425F7F00B2EFAF /* GetDataTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetDataTools.m; sourceTree = "<group>"; };
-		2E2D962B229D4BBE003FF662 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/DeviceViewController.strings"; sourceTree = "<group>"; };
-		2E2D9D3722A68F1B00B3FACA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
 		2E2E70041FF5DE60002D1C1D /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
 		2E2E70051FF5DE60002D1C1D /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
 		2E2E70071FF5DE60002D1C1D /* MasterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
@@ -385,6 +383,8 @@
 		2E5A587A21378B6800E416F9 /* MusicViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MusicViewController.h; sourceTree = "<group>"; };
 		2E5A587B21378B6800E416F9 /* MusicViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicViewController.m; sourceTree = "<group>"; };
 		2E5EA0D6217F123700554825 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		2E5EA85423263DAB00EC1921 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/DeviceViewController.strings"; sourceTree = "<group>"; };
+		2E5EA85623263F8200EC1921 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
 		2E63A54021E328B800FCE49D /* SocketPowerCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SocketPowerCell.h; sourceTree = "<group>"; };
 		2E63A54121E328B800FCE49D /* SocketPowerCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SocketPowerCell.m; sourceTree = "<group>"; };
 		2E63A54221E328B800FCE49D /* SocketPowerCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SocketPowerCell.xib; sourceTree = "<group>"; };
@@ -1796,8 +1796,8 @@
 				2EC18BFD221D229E008B33DC /* fr */,
 				2EC18C10221D22B6008B33DC /* pt-PT */,
 				2EC18C23221D22E7008B33DC /* fi-FI */,
-				2E2D962B229D4BBE003FF662 /* zh-Hans */,
-				2E2D9D3722A68F1B00B3FACA /* en */,
+				2E5EA85423263DAB00EC1921 /* zh-Hans */,
+				2E5EA85623263F8200EC1921 /* en */,
 			);
 			name = DeviceViewController.xib;
 			sourceTree = "<group>";
@@ -2248,6 +2248,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2269,6 +2270,7 @@
 					"$(inherited)",
 					"\"${PODS_ROOT}/OpenSSL/lib\"",
 				);
+				MARKETING_VERSION = 2.13;
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-isystem",
@@ -2306,6 +2308,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2327,6 +2330,7 @@
 					"$(inherited)",
 					"\"${PODS_ROOT}/OpenSSL/lib\"",
 				);
+				MARKETING_VERSION = 2.13;
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-isystem",

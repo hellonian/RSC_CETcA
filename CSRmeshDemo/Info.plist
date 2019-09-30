@@ -17,11 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.11</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSApplicationCategoryType</key>
 	<dict/>
 	<key>LSApplicationQueriesSchemes</key>
@@ -49,6 +49,8 @@
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Use Media Library to enable RGB devices to change color with music rhythm.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>AcTEC BLE needs to use Bluetooth because it is designed to control Bluetooth smart devices.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>AcTEC BLE  is designed to control Bluetooth smart devices.</string>
 	<key>NSCameraUsageDescription</key>

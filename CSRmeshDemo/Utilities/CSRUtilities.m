@@ -1138,7 +1138,7 @@
 }
 
 + (BOOL)belongToMainVCDevice: (NSString *)shortName {
-    if ([kDimmers containsObject:shortName] || [kSwitchs containsObject:shortName] || [kCWDevices containsObject:shortName] || [kRGBDevices containsObject:shortName] || [kRGBCWDevices containsObject:shortName] || [kCurtainController containsObject:shortName] || [kFanController containsObject:shortName] || [kSockets containsObject:shortName] || [kTwoChannelDimmers containsObject:shortName]) {
+    if ([kDimmers containsObject:shortName] || [kSwitchs containsObject:shortName] || [kCWDevices containsObject:shortName] || [kRGBDevices containsObject:shortName] || [kRGBCWDevices containsObject:shortName] || [kOneChannelCurtainController containsObject:shortName] || [kTwoChannelCurtainController containsObject:shortName] || [kFanController containsObject:shortName] || [kSockets containsObject:shortName] || [kTwoChannelDimmers containsObject:shortName]) {
         return YES;
     }
     return NO;
@@ -1187,7 +1187,21 @@
 }
 
 + (BOOL)belongToCurtainController:(NSString *)shortName {
-    if ([kCurtainController containsObject:shortName]) {
+    if ([kOneChannelCurtainController containsObject:shortName] || [kTwoChannelCurtainController containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToOneChannelCurtainController:(NSString *)shortName {
+    if ([kOneChannelCurtainController containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToTwoChannelCurtainController:(NSString *)shortName {
+    if ([kTwoChannelCurtainController containsObject:shortName]) {
         return YES;
     }
     return NO;

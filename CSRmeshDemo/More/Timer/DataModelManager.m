@@ -464,9 +464,16 @@ static DataModelManager *manager = nil;
         }
     }
     
-    if ([dataStr hasPrefix:@"79"] && dataStr.length == 8) {
+    if ([dataStr hasPrefix:@"79"] && dataStr.length >= 8) {
         NSString *correctionStep = [dataStr substringFromIndex:6];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"calibrateCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"correctionStep":correctionStep}];
+    }
+    
+    if ([dataStr hasPrefix:@"7a"] && dataStr.length >= 14) {
+        NSString *channelStr = [dataStr substringWithRange:NSMakeRange(10, 2)];
+        NSString *levelStr = [dataStr substringWithRange:NSMakeRange(8, 2)];
+        NSString *stateStr = [dataStr substringWithRange:NSMakeRange(6, 2)];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"multichannelActionCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"channelStr":channelStr,@"levelStr":levelStr,@"stateStr":stateStr}];
     }
     
     if ([dataStr hasPrefix:@"9d"] ) {
@@ -475,8 +482,10 @@ static DataModelManager *manager = nil;
     }
     
     if ([dataStr hasPrefix:@"52"] ) {
-        NSString *string = [dataStr substringFromIndex:4];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"multichannelActionCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"multichannelActionCall":string}];
+        NSString *channelStr = [dataStr substringWithRange:NSMakeRange(4, 2)];
+        NSString *levelStr = [dataStr substringWithRange:NSMakeRange(10, 2)];
+        NSString *stateStr = [dataStr substringWithRange:NSMakeRange(8, 2)];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"multichannelActionCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"channelStr":channelStr,@"levelStr":levelStr,@"stateStr":stateStr}];
     }
     
     if ([dataStr hasPrefix:@"5a"]) {

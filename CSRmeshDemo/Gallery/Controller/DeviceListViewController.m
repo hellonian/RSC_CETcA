@@ -377,7 +377,7 @@
                     }];
                     
                     CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
-                    if ([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName] || [CSRUtilities belongToSocket:deviceEntity.shortName]) {
+                    if ([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName] || [CSRUtilities belongToSocket:deviceEntity.shortName] || [CSRUtilities belongToFanController:deviceEntity.shortName]) {
                         [self mainCollectionViewDelegateLongPressAction:cell];
                     }else if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
                         self.curtainDetailSelectedView = [self curtainDetailSelectedView:mainCell.deviceId];
@@ -608,6 +608,8 @@
         }else if ([CSRUtilities belongToFanController:deviceEntity.shortName]) {
             FanViewController *fanVC = [[FanViewController alloc] init];
             fanVC.deviceId = mainCell.deviceId;
+            fanVC.forSelected = YES;
+            fanVC.buttonNum = self.buttonNum;
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:fanVC];
             nav.modalPresentationStyle = UIModalPresentationPopover;
             [self presentViewController:nav animated:YES completion:nil];

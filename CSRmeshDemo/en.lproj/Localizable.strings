@@ -166,3 +166,4 @@
 "pulsewidth9" = "pulse width 9s";
 "timeraddsuccess"="Timer set success!";
 "timeraddfail"="Fail! The device timer number beyond maximum!";
+"Calibrationfailure"="Calibration failure";

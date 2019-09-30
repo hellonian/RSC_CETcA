@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -15,6 +13,7 @@
                 <outlet property="PauseBtn" destination="irT-NK-eAB" id="YNb-Ku-uPD"/>
                 <outlet property="bubbleLabel" destination="YZK-da-iY4" id="Xsf-6f-qE9"/>
                 <outlet property="calibrateImageView" destination="4S6-Ro-7nR" id="eJW-R5-BAf"/>
+                <outlet property="channelSelectSeg" destination="tvx-hh-vue" id="16a-a5-egK"/>
                 <outlet property="closeBtn" destination="BC7-td-67b" id="jnj-OD-Dw7"/>
                 <outlet property="curtainSlider" destination="huh-A0-6YH" id="b3r-fZ-AVf"/>
                 <outlet property="curtainTypeImageView" destination="6uP-lv-0Rm" id="lZC-82-eCY"/>
@@ -72,7 +71,7 @@
                     </connections>
                 </button>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PMS-Yf-4B9">
-                    <rect key="frame" x="0.0" y="20" width="375" height="90"/>
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="90"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IIj-bC-sch">
                             <rect key="frame" x="20" y="44" width="355" height="1"/>
@@ -162,6 +161,20 @@
                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="tvx-hh-vue">
+                    <rect key="frame" x="112.5" y="420.5" width="150" height="32"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="150" id="8pi-L7-WVk"/>
+                    </constraints>
+                    <segments>
+                        <segment title="1"/>
+                        <segment title="2"/>
+                    </segments>
+                    <color key="tintColor" red="0.58823529409999997" green="0.58823529409999997" blue="0.58823529409999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <connections>
+                        <action selector="channelSelectAction:" destination="-1" eventType="valueChanged" id="3iX-cr-7HG"/>
+                    </connections>
+                </segmentedControl>
             </subviews>
             <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.95294117649999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
@@ -181,7 +194,9 @@
                 <constraint firstItem="4S6-Ro-7nR" firstAttribute="leading" secondItem="lsN-aN-5EW" secondAttribute="leading" id="gqt-XM-shM"/>
                 <constraint firstItem="lsN-aN-5EW" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" multiplier="0.5" id="iQ6-hZ-5Ql"/>
                 <constraint firstItem="YZK-da-iY4" firstAttribute="bottom" secondItem="4S6-Ro-7nR" secondAttribute="bottom" id="jeI-0s-KKO"/>
+                <constraint firstItem="tvx-hh-vue" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="kjO-PE-Q1A"/>
                 <constraint firstItem="irT-NK-eAB" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="lYP-hC-msf"/>
+                <constraint firstItem="irT-NK-eAB" firstAttribute="top" secondItem="tvx-hh-vue" secondAttribute="bottom" constant="30" id="q8N-E9-Tqv"/>
                 <constraint firstItem="irT-NK-eAB" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" multiplier="3/2" id="rwd-8i-0Co"/>
                 <constraint firstItem="BC7-td-67b" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" multiplier="3/2" id="xWv-em-ZrM"/>
                 <constraint firstItem="huh-A0-6YH" firstAttribute="top" secondItem="irT-NK-eAB" secondAttribute="bottom" constant="30" id="yWx-3m-Lm1"/>

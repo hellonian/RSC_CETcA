@@ -149,11 +149,11 @@
                     _hud = nil;
                     [self creatHud];
                 }];
-                UIAlertAction *exit = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Exit", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    [self exitApplication];
-                }];
+//                UIAlertAction *exit = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Exit", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//                    [self exitApplication];
+//                }];
                 [_alertController addAction:rescan];
-                [_alertController addAction:exit];
+//                [_alertController addAction:exit];
                 [self presentViewController:_alertController animated:YES completion:nil];
             }
         });

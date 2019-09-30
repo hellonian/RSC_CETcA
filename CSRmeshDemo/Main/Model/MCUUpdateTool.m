@@ -14,9 +14,7 @@
 
 @interface MCUUpdateTool ()
 {
-    NSInteger _nowBinPage;
     dispatch_semaphore_t _semaphore;
-    int _semNum;
     NSMutableDictionary *_updateEveDataDic;
     NSMutableDictionary *_updateSuccessDic;
     BOOL _isLastPage;
@@ -90,7 +88,8 @@
             }
         }else if ([mcuString hasPrefix:@"33"]) {
             NSInteger backBinPage = [CSRUtilities numberWithHexString:[mcuString substringWithRange:NSMakeRange(2, 2)]];
-            if (backBinPage == _nowBinPage) {
+            
+            if ([[_updateSuccessDic allKeys] containsObject:@(backBinPage)] && ![[_updateSuccessDic objectForKey:@(backBinPage)] boolValue]) {
                 NSInteger count = [[_updateEveDataDic objectForKey:@(backBinPage)] count];
                 NSString *countBinString = @"";
                 for (int i=0; i<count; i++) {
@@ -106,10 +105,7 @@
                 NSLog(@"%@  %@  %@",mcuString,resultHexStr,resultBinStr);
                 if ([countBinString isEqualToString:resultBinStr]) {
                     
-                    if (_semNum<1) {
-                        dispatch_semaphore_signal(_semaphore);
-                        _semNum ++;
-                    }
+                    dispatch_semaphore_signal(_semaphore);
                     
                     [_updateSuccessDic setObject:@(![[_updateSuccessDic objectForKey:@(backBinPage)] boolValue]) forKey:@(backBinPage)];
                     if (_isLastPage) {
@@ -130,12 +126,9 @@
                         if (![resultStr boolValue]) {
                             NSString *binResendString = [[_updateEveDataDic objectForKey:@(backBinPage)] objectAtIndex:i];
                             [[DataModelManager shareInstance] sendCmdData:binResendString toDeviceId:_deviceId];
-                            [NSThread sleepForTimeInterval:0.1];
+                            [NSThread sleepForTimeInterval:0.02];
                         }
                     }
-                    
-                    _resendQueryNumber = 0;
-                    [self resendData:backBinPage];
                     
                 }
             }
@@ -149,9 +142,9 @@
 
             [UIApplication sharedApplication].idleTimerDisabled = NO;
             _startedUpdate = NO;
-            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-            deviceEntity.mcuSVersion = [NSNumber numberWithInteger:_latestMCUSVersion];
-            [[CSRDatabaseManager sharedInstance] saveContext];
+//            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+//            deviceEntity.mcuSVersion = [NSNumber numberWithInteger:_latestMCUSVersion];
+//            [[CSRDatabaseManager sharedInstance] saveContext];
         }
     }
 }
@@ -232,7 +225,6 @@
     NSData *data = [[NSData alloc] initWithContentsOfURL:path];
     NSLog(@"data length>> %lu",(unsigned long)[data length]);
     _semaphore = dispatch_semaphore_create(1);
-    _semNum = 1;
     _updateEveDataDic = [[NSMutableDictionary alloc] init];
     _updateSuccessDic = [[NSMutableDictionary alloc] init];
     _isLastPage = NO;
@@ -242,11 +234,9 @@
         for (NSInteger binPage=0; binPage<([data length]/128+1); binPage++) {
             dispatch_async(queue, ^{
                 dispatch_semaphore_wait(_semaphore, DISPATCH_TIME_FOREVER);
-                _semNum --;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [_updateSuccessDic setObject:@(0) forKey:@(binPage)];
                     NSLog(@"xunfan %ld",(long)binPage);
-                    _nowBinPage = binPage;
                     NSInteger binPageLength = 128;
                     if (binPage == [data length]/128) {
                         binPageLength = [data length]%128;
@@ -263,12 +253,19 @@
                         NSString *binSendString = [NSString stringWithFormat:@"ea31%@%@%@",[CSRUtilities stringWithHexNumber:binPage],[CSRUtilities stringWithHexNumber:binRow],[CSRUtilities hexStringForData:binRowData]];
                         [eveDataArray insertObject:binSendString atIndex:binRow];
                         [[DataModelManager shareInstance] sendCmdData:binSendString toDeviceId:_deviceId];
-                        [NSThread sleepForTimeInterval:0.1];
+                        [NSThread sleepForTimeInterval:0.02];
                     }
                     [_updateEveDataDic setObject:eveDataArray forKey:@(binPage)];
                     
                     _resendQueryNumber = 0;
-                    [self resendData:binPage];
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        NSLog(@"首次查询~~ %ld | %d",(long)binPage,[[_updateSuccessDic objectForKey:@(binPage)] boolValue]);
+                        if (![[_updateSuccessDic objectForKey:@(binPage)] boolValue] && _resendQueryNumber<6) {
+                            _resendQueryNumber++;
+                            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea33%@",[CSRUtilities stringWithHexNumber:binPage]] toDeviceId:_deviceId];
+                            [self resendData:binPage];
+                        }
+                    });
                 });
             });
         }
@@ -278,7 +275,7 @@
 
 - (void)resendData:(NSInteger)binPage {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSLog(@"首次延时~~ %ld | %d",(long)binPage,[[_updateSuccessDic objectForKey:@(binPage)] boolValue]);
+        NSLog(@"再次准备查询~~ %ld | %d",(long)binPage,[[_updateSuccessDic objectForKey:@(binPage)] boolValue]);
         if (![[_updateSuccessDic objectForKey:@(binPage)] boolValue] && _resendQueryNumber<6) {
             _resendQueryNumber++;
             [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea33%@",[CSRUtilities stringWithHexNumber:binPage]] toDeviceId:_deviceId];

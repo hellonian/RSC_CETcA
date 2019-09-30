@@ -85,6 +85,9 @@
 
 @property (strong, nonatomic) IBOutlet UIView *powerView;
 @property (weak, nonatomic) IBOutlet UILabel *currentPower1Label;
+@property (weak, nonatomic) IBOutlet UIImageView *abnormalImageView;
+@property (weak, nonatomic) IBOutlet UISwitch *thresholdSwitch;
+@property (weak, nonatomic) IBOutlet UILabel *thresholdLab;
 
 @end
 
@@ -235,7 +238,7 @@
                 if (deviceEntity.remoteBranch && [deviceEntity.remoteBranch length]>0) {
                     [self configDaliAppearance:[CSRUtilities numberWithHexString:deviceEntity.remoteBranch]];
                 }
-            }else if ([_device.shortName isEqualToString:@"SD350"]) {
+            }else if ([_device.shortName isEqualToString:@"SD350"]||[_device.shortName isEqualToString:@"SSD150"]) {
                 [[NSNotificationCenter defaultCenter] addObserver:self
                                                          selector:@selector(socketPowerCall:)
                                                              name:@"socketPowerCall"
@@ -244,15 +247,22 @@
                                                          selector:@selector(clearSocketPower:)
                                                              name:@"clearSocketPower"
                                                            object:nil];
+                [[NSNotificationCenter defaultCenter] addObserver:self
+                                                         selector:@selector(socketPowerAbnormalReport:)
+                                                             name:@"socketPowerAbnormalReport"
+                                                           object:nil];
+                [[NSNotificationCenter defaultCenter] addObserver:self
+                                                         selector:@selector(socketPowerThreshold:)
+                                                             name:@"socketPowerThreshold"
+                                                           object:nil];
                 [_scrollView addSubview:_powerView];
-                [_powerView autoSetDimension:ALDimensionHeight toSize:153.0];
+                [_powerView autoSetDimension:ALDimensionHeight toSize:287.0];
                 [_powerView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
                 [_powerView autoAlignAxisToSuperviewAxis:ALAxisVertical];
                 [_powerView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_brightnessView withOffset:20.0];
-                _scrollView.contentSize = CGSizeMake(1, 401);
+                _scrollView.contentSize = CGSizeMake(1, 535);
                 
-                timer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(timerMethod:) userInfo:nil repeats:YES];
-                [timer fire];
+                [[DataModelManager shareInstance] sendCmdData:@"ea4801" toDeviceId:_deviceId];
                 
             }else {
                 _scrollView.contentSize = CGSizeMake(1, 208+20);
@@ -358,7 +368,7 @@
 
 - (void)starteUpdateHud {
     if (!_updatingHud) {
-        if ([_device.shortName isEqualToString:@"SD350"]) {
+        if ([_device.shortName isEqualToString:@"SD350"]||[_device.shortName isEqualToString:@"SSD150"]) {
             if (timer) {
                 [timer invalidate];
                 timer = nil;
@@ -384,15 +394,16 @@
         self.translucentBgView = nil;
         [updateMCUBtn removeFromSuperview];
         updateMCUBtn = nil;
-        if ([_device.shortName isEqualToString:@"SD350"] && value) {
+        if (([_device.shortName isEqualToString:@"SD350"]||[_device.shortName isEqualToString:@"SSD150"]) && value) {
             timer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(timerMethod:) userInfo:nil repeats:YES];
             [timer fire];
         }
         NSString *valueStr = value? AcTECLocalizedStringFromTable(@"Success", @"Localizable"):AcTECLocalizedStringFromTable(@"Error", @"Localizable");
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:valueStr preferredStyle:UIAlertControllerStyleAlert];
         [alert.view setTintColor:DARKORAGE];
-        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
         [alert addAction:cancel];
+        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 
@@ -500,14 +511,14 @@
                                              selector:@selector(setPowerStateSuccess:)
                                                  name:@"setPowerStateSuccess"
                                                object:nil];
-    if ([_device.shortName isEqualToString:@"SD350"]) {
+    if ([_device.shortName isEqualToString:@"SD350"]||[_device.shortName isEqualToString:@"SSD150"]) {
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(socketPowerCall:)
                                                      name:@"socketPowerCall"
                                                    object:nil];
         if (!timer) {
             timer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(timerMethod:) userInfo:nil repeats:YES];
-            [timer fire];
+//            [timer fire];
         }
     }
 }
@@ -518,7 +529,7 @@
                                                     name:@"setPowerStateSuccess"
                                                   object:nil];
     [UIApplication sharedApplication].idleTimerDisabled = NO;
-    if ([_device.shortName isEqualToString:@"SD350"]) {
+    if ([_device.shortName isEqualToString:@"SD350"]||[_device.shortName isEqualToString:@"SSD150"]) {
         [[NSNotificationCenter defaultCenter] removeObserver:self name:@"socketPowerCall" object:nil];
         if (timer) {
             [timer invalidate];
@@ -1270,6 +1281,70 @@
     successHud.label.numberOfLines = 0;
     successHud.delegate = self;
     [successHud hideAnimated:YES afterDelay:4.0f];
+}
+
+- (void)socketPowerAbnormalReport:(NSNotification *)notification {
+    NSDictionary *dic = notification.userInfo;
+    NSNumber *deviceId = dic[@"deviceId"];
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        NSString *channel = dic[@"channel"];
+        if ([channel isEqualToString:@"01"]) {
+            _abnormalImageView.image = [UIImage imageNamed:@"abnormal"];
+        }
+    }
+}
+
+- (void)socketPowerThreshold:(NSNotification *)notification {
+    NSDictionary *dic = notification.userInfo;
+    NSNumber *deviceId = dic[@"deviceId"];
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        NSString *channel = dic[@"channel"];
+        NSString *dataStr = dic[@"socketPowerThreshold"];
+        if ([channel isEqualToString:@"01"] && [dataStr length]>=4) {
+            BOOL enable = [[dataStr substringWithRange:NSMakeRange(0, 2)] boolValue];
+            NSInteger pvalue = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(2, 2)]];
+            [_thresholdSwitch setOn:enable];
+            _thresholdLab.text = [NSString stringWithFormat:@"%ld",(long)pvalue];
+        }
+    }
+}
+
+- (IBAction)thresholdEnableSwitch:(UISwitch *)sender {
+    if ([_thresholdLab.text length]>0 && [_thresholdLab.text integerValue]>=2 && [_thresholdLab.text integerValue]<=20) {
+        [[DataModelManager shareInstance]sendCmdData:[NSString stringWithFormat:@"ea47010%d%@",sender.on,[CSRUtilities stringWithHexNumber:[_thresholdLab.text integerValue]]] toDeviceId:_deviceId];
+    }else {
+        [[DataModelManager shareInstance]sendCmdData:[NSString stringWithFormat:@"ea47010%d02",sender.on] toDeviceId:_deviceId];
+    }
+}
+
+- (IBAction)thresholdValueChangeBtn:(UIButton *)sender {
+    BOOL enable = YES;
+    NSString *Pvalue = @"2";
+    switch (sender.tag) {
+        case 11:
+            enable = _thresholdSwitch.on;
+            if ([_thresholdLab.text length]>0) {
+                if ([_thresholdLab.text integerValue]>20){
+                    Pvalue = @"20";
+                }else if ([_thresholdLab.text integerValue]>2 && [_thresholdLab.text integerValue]<=20) {
+                    Pvalue = [NSString stringWithFormat:@"%ld",[_thresholdLab.text integerValue]-1];
+                }
+            }
+            break;
+        case 12:
+            enable = _thresholdSwitch.on;
+            if ([_thresholdLab.text length]>0) {
+                if ([_thresholdLab.text integerValue]>=20) {
+                    Pvalue = @"20";
+                }else if ([_thresholdLab.text integerValue]>=2 && [_thresholdLab.text integerValue]<20) {
+                    Pvalue = [NSString stringWithFormat:@"%ld",[_thresholdLab.text integerValue]+1];
+                }
+            }
+            break;
+        default:
+            break;
+    }
+    [[DataModelManager shareInstance]sendCmdData:[NSString stringWithFormat:@"ea47010%d%@",enable,[CSRUtilities stringWithHexNumber:[Pvalue integerValue]]] toDeviceId:_deviceId];
 }
 
 @end

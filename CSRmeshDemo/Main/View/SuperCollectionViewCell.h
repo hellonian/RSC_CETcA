@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CSRDeviceEntity.h"
 
 typedef enum : NSUInteger {
     PanGestureMoveDirectionNone,
@@ -27,7 +28,7 @@ typedef enum : NSUInteger {
 - (void)superCollectionViewCellDelegateSelectAction:(id)cell;
 - (void)superCollectionViewCellDelegateClickEmptyGroupCellAction:(NSIndexPath *)cellIndexPath;
 - (void)superCollectionViewCellDelegateSceneCellTapAction:(NSNumber *)sceneId;
-- (void)superCollectionViewCellDelegateCurtainTapAction:(NSNumber *)deviceId;
+- (void)superCollectionViewCellDelegateCurtainTapAction:(CSRDeviceEntity *)deviceEntity;
 - (void)superCollectionViewCellDelegateTwoFingersTapAction:(NSNumber *)groupId;
 
 @end

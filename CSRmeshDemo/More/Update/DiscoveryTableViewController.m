@@ -665,9 +665,8 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:self.targetDeviceId];
         if (deviceEntity) {
-//            NSLog(@"deviceEntity.cvVersion:%@",deviceEntity.cvVersion);
-            NSInteger lastestVersion = [[_latestDic objectForKey:deviceEntity.shortName] integerValue];
-            if (!deviceEntity.cvVersion || [deviceEntity.firVersion integerValue] < lastestVersion) {
+//            NSInteger lastestVersion = [[_latestDic objectForKey:deviceEntity.shortName] integerValue];
+            if (!deviceEntity.firVersion) {
                 [self getVersion:deviceId];
             }else {
                 for (UpdateDeviceModel *model in _dataArray) {

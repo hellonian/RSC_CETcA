@@ -69,6 +69,7 @@
                                                  selector:@selector(childrenModelState:)
                                                      name:@"childrenModelState"
                                                    object:nil];
+        
         [DataModelManager shareInstance];
         
         NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
@@ -129,7 +130,11 @@
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
             model.powerState = powerState;
-            model.level = level;
+            if ([level integerValue]<3) {
+                model.level = @3;
+            }else {
+                model.level = level;
+            }
             model.isleave = NO;
             model.colorTemperature = colorTemperature;
             model.supports = supports;
@@ -148,7 +153,7 @@
                 }else if (levelInt > 179 && levelInt < 256) {
                     model.fansSpeed = 2;
                 }
-            }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToSocketTwoChannel:model.shortName]) {
+            }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToSocketTwoChannel:model.shortName] || [CSRUtilities belongToTwoChannelCurtainController:model.shortName]) {
                 model.channel1PowerState = [powerState boolValue];
                 model.channel1Level = [level integerValue];
                 model.channel2PowerState = [red boolValue];
@@ -171,7 +176,11 @@
         model.shortName = deviceEntity.shortName;
         model.name = deviceEntity.name;
         model.powerState = powerState;
-        model.level = level;
+        if ([level integerValue]<3) {
+            model.level = @3;
+        }else {
+            model.level = level;
+        }
         model.isleave = NO;
         model.colorTemperature = colorTemperature;
         model.supports = supports;
@@ -455,52 +464,23 @@
     }];
 }
 
-- (void)multichannelActionCall: (NSNotification *)notification {
+- (void)multichannelActionCall:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
-    NSString *string = userInfo[@"multichannelActionCall"];
-    NSInteger channel = [CSRUtilities numberWithHexString:[string substringWithRange:NSMakeRange(0, 2)]];
-    BOOL channelPowerState = [[string substringWithRange:NSMakeRange(5, 1)] boolValue];
-    NSInteger level = [CSRUtilities numberWithHexString:[string substringWithRange:NSMakeRange(6, 2)]];
+    NSInteger channel = [CSRUtilities numberWithHexString:userInfo[@"channelStr"]];
+    NSInteger position = [CSRUtilities numberWithHexString:userInfo[@"levelStr"]];
+    BOOL state = [userInfo[@"stateStr"] boolValue];
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
             if (channel == 1) {
-                model.channel1PowerState = channelPowerState;
-                if (channelPowerState) {
-                    if (level<3) {
-                        model.channel1Level = 3;
-                    }else {
-                        model.channel1Level = level;
-                    }
-                }
+                model.channel1PowerState = state;
+                model.channel1Level = position;
             }else if (channel == 2) {
-                model.channel2PowerState = channelPowerState;
-                if (channelPowerState) {
-                    if (level < 3) {
-                        model.channel2Level = 3;
-                    }else {
-                        model.channel2Level = level;
-                    }
-                }
+                model.channel2PowerState = state;
+                model.channel2Level = position;
             }
-            if ([CSRUtilities belongToSocketOneChannel:model.shortName]) {
-                model.powerState = [NSNumber numberWithBool:model.channel1PowerState];
-                model.level = [NSNumber numberWithInteger:model.channel1Level];
-            }else {
-                if (model.channel1PowerState || model.channel2PowerState) {
-                    model.powerState = @(1);
-                }else {
-                    model.powerState = @(0);
-                }
-                if (channelPowerState) {
-                    if (model.channel1Level>model.channel2Level) {
-                        model.level = [NSNumber numberWithInteger:model.channel1Level];
-                    }else {
-                        model.level = [NSNumber numberWithInteger:model.channel2Level];
-                    }
-                }
-            }
-            
+            model.powerState = (model.channel1PowerState || model.channel2PowerState)? @1:@0;
+            model.level = model.channel1Level>model.channel2Level? [NSNumber numberWithInteger:model.channel1Level]:[NSNumber numberWithInteger:model.channel2Level];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setMultichannelStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":[NSNumber numberWithInteger:channel]}];
             *stop = YES;
         }
