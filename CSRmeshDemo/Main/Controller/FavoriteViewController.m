@@ -50,8 +50,13 @@
 }
 
 - (void)getData {
-    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-    _dataMutableArray = [[deviceEntity.rgbScenes allObjects] mutableCopy];
+    if ([_deviceId integerValue] > 32768/*单设备*/) {
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+        _dataMutableArray = [[deviceEntity.rgbScenes allObjects] mutableCopy];
+    }else {
+        CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+        _dataMutableArray = [[areaEntity.rgbScenes allObjects] mutableCopy];
+    }
     if ([_dataMutableArray count]>0) {
         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortID" ascending:YES];
         [_dataMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];

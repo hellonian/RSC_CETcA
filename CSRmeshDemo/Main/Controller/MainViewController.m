@@ -40,6 +40,7 @@
 #import "FanViewController.h"
 #import "SocketViewController.h"
 #import "TwoChannelDimmerVC.h"
+#import "TwoChannelSwitchVC.h"
 
 //#import <CoreLocation/CoreLocation.h>
 //#import "AFHTTPSessionManager.h"
@@ -619,6 +620,68 @@
 
 - (void)mainCollectionViewCellDelegateTwoFingersTapAction:(NSNumber *)groupId {
     CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:groupId];
+    __block BOOL exist = NO;
+    [areaEntity.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, BOOL * _Nonnull stop) {
+        if ([CSRUtilities belongToRGBCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWNoLevelDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBNoLevelDevice:deviceEntity.shortName]) {
+            exist = YES;
+            *stop = YES;
+        }
+    }];
+    if (exist) {
+        
+        if ([areaEntity.rgbScenes count] == 0) {
+            NSArray *names = kRGBSceneDefaultName;
+            NSArray *levels = kRGBSceneDefaultLevel;
+            NSArray *hues = kRGBSceneDefaultHue;
+            NSArray *sats = kRGBSceneDefaultColorSat;
+            for (int i = 0; i<12; i++) {
+                RGBSceneEntity *rgbScenetity = [NSEntityDescription insertNewObjectForEntityForName:@"RGBSceneEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+                rgbScenetity.deviceID = groupId;
+                rgbScenetity.name = names[i];
+                rgbScenetity.isDefaultImg = @1;
+                rgbScenetity.rgbSceneID = @(i);
+                rgbScenetity.sortID = @(i);
+                
+                if (i<9) {
+                    rgbScenetity.eventType = @(0);
+                    rgbScenetity.hueA = hues[i];
+                    rgbScenetity.level = levels[i];
+                    rgbScenetity.colorSat = sats[i];
+                }else {
+                    rgbScenetity.eventType = @(1);
+                    rgbScenetity.changeSpeed = @(1);
+                    NSArray *colorfulHues = hues[i];
+                    rgbScenetity.hueA = colorfulHues[0];
+                    rgbScenetity.hueB = colorfulHues[1];
+                    rgbScenetity.hueC = colorfulHues[2];
+                    rgbScenetity.hueD = colorfulHues[3];
+                    rgbScenetity.hueE = colorfulHues[4];
+                    rgbScenetity.hueF = colorfulHues[5];
+                    rgbScenetity.level = @(255);
+                    rgbScenetity.colorSat = @(1);
+                }
+                [areaEntity addRgbScenesObject:rgbScenetity];
+            }
+            [[CSRDatabaseManager sharedInstance] saveContext];
+        }
+        
+        RGBDeviceViewController *rgbgroupVC = [[RGBDeviceViewController alloc] init];
+        rgbgroupVC.deviceId = groupId;
+        rgbgroupVC.RGBDVCReloadDataHandle = ^{
+            [self getMainDataArray];
+        };
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:rgbgroupVC];
+        nav.modalPresentationStyle = UIModalPresentationPopover;
+        [self presentViewController:nav animated:YES completion:nil];
+        [self.mainCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell *cell, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([cell.groupId isEqualToNumber:groupId]) {
+                nav.popoverPresentationController.sourceRect = cell.bounds;
+                nav.popoverPresentationController.sourceView = cell;
+                *stop = YES;
+            }
+        }];
+    }
+    /*
     BOOL threeColorTemperature = NO;
     BOOL colorTemperature = NO;
     BOOL RGB = NO;
@@ -640,6 +703,7 @@
         [[UIApplication sharedApplication].keyWindow addSubview:groupControlView];
         [groupControlView autoPinEdgesToSuperviewEdges];
     }
+     */
 }
 
 - (void)settedSceneFailure:(NSNotification *)notification {
@@ -761,7 +825,7 @@
                     sceneMember.colorRed = [NSNumber numberWithInt:deviceModel.fansSpeed];
                     sceneMember.colorGreen = [NSNumber numberWithBool:deviceModel.lampState];
                     sceneMember.colorBlue = @(255);
-                }else if ([CSRUtilities belongToSocket:deviceModel.shortName]||[CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]){
+                }else if ([CSRUtilities belongToSocket:deviceModel.shortName]||[CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]){
                     //colorTemperature:两路设备中的第二路事件类型；colorRed：两路设备中的第二路power状态；colorGreen：两路设备中的第二路亮度值
                     sceneMember.powerState = [NSNumber numberWithBool:deviceModel.channel1PowerState];
                     sceneMember.level = [NSNumber numberWithInteger:deviceModel.channel1Level];
@@ -776,7 +840,7 @@
                 }
                 sceneMember.sortID = deviceEntity.sortId;
                 sceneMember.colorTemperature = deviceModel.colorTemperature;
-                if (![deviceModel.powerState boolValue] && ![CSRUtilities belongToFanController:deviceModel.shortName] && ![CSRUtilities belongToSocket:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                if (![deviceModel.powerState boolValue] && ![CSRUtilities belongToFanController:deviceModel.shortName] && ![CSRUtilities belongToSocket:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
                     sceneMember.eveType = @(11);
                 }else if ([CSRUtilities belongToSwitch:deviceModel.shortName]) {
                     sceneMember.eveType = @(10);
@@ -812,7 +876,7 @@
                     }
                 }else if ([CSRUtilities belongToFanController:deviceModel.shortName]) {
                     sceneMember.eveType = @(20);
-                }else if ([CSRUtilities belongToSocket:deviceModel.shortName]) {
+                }else if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
                     if (deviceModel.channel1Selected) {
                         if (deviceModel.channel1PowerState) {
                             sceneMember.eveType = @(10);
@@ -886,7 +950,7 @@
             }
             [self.semaphores removeAllObjects];
             for (SceneMemberEntity *sceneMember in members) {
-                if ([CSRUtilities belongToSocket:sceneMember.kindString] || [CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString]) {
+                if ([CSRUtilities belongToSocket:sceneMember.kindString] || [CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString] || [CSRUtilities belongToTwoChannelSwitch:sceneMember.kindString]) {
                     NSString *cmdString = [NSString stringWithFormat:@"5d0303%@",[CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]]];
                     [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
                     
@@ -919,7 +983,7 @@
                     sceneMember.colorRed = [NSNumber numberWithInt:deviceModel.fansSpeed];
                     sceneMember.colorGreen = [NSNumber numberWithBool:deviceModel.lampState];
                     sceneMember.colorBlue = @(255);
-                }else if ([CSRUtilities belongToSocket:deviceModel.shortName]||[CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]){
+                }else if ([CSRUtilities belongToSocket:deviceModel.shortName]||[CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]){
                     //colorTemperature:两路设备中的第二路事件类型；colorRed：两路设备中的第二路power状态；colorGreen：两路设备中的第二路亮度值
                     sceneMember.powerState = [NSNumber numberWithBool:deviceModel.channel1PowerState];
                     sceneMember.level = [NSNumber numberWithInteger:deviceModel.channel1Level];
@@ -934,7 +998,7 @@
                 }
                 sceneMember.sortID = deviceEntity.sortId;
                 sceneMember.colorTemperature = deviceModel.colorTemperature;
-                if (![deviceModel.powerState boolValue] && ![CSRUtilities belongToFanController:deviceModel.shortName] && ![CSRUtilities belongToSocket:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                if (![deviceModel.powerState boolValue] && ![CSRUtilities belongToFanController:deviceModel.shortName] && ![CSRUtilities belongToSocket:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
                     sceneMember.eveType = @(11);
                 }else if ([CSRUtilities belongToSwitch:deviceModel.shortName]) {
                     sceneMember.eveType = @(10);
@@ -970,7 +1034,7 @@
                     }
                 }else if ([CSRUtilities belongToFanController:deviceModel.shortName]) {
                     sceneMember.eveType = @(20);
-                }else if ([CSRUtilities belongToSocket:deviceModel.shortName]) {
+                }else if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
                     if (deviceModel.channel1Selected) {
                         if (deviceModel.channel1PowerState) {
                             sceneMember.eveType = @(10);
@@ -1008,7 +1072,7 @@
                 [[CSRDatabaseManager sharedInstance] saveContext];
                 
                 NSString *rcIndexString = [CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]];
-                if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
                     
                     dispatch_queue_t queue = dispatch_queue_create("串行", NULL);
                     if (deviceModel.channel1Selected && deviceModel.channel2Selected) {
@@ -1097,7 +1161,7 @@
             [members sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             [members enumerateObjectsUsingBlock:^(SceneMemberEntity *sceneMember, NSUInteger idx, BOOL * _Nonnull stop) {
                 
-                if ([CSRUtilities belongToSocket:sceneMember.kindString]) {
+                if ([CSRUtilities belongToSocket:sceneMember.kindString] || [CSRUtilities belongToTwoChannelSwitch:sceneMember.kindString]) {
                     if (sceneMember.eveType && sceneMember.colorTemperature && [sceneMember.eveType isEqualToNumber:@(11)] && [sceneMember.colorTemperature isEqualToNumber:@(11)]) {
                         [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:@(0)];
                     }else if (sceneMember.eveType && sceneMember.colorTemperature && [sceneMember.eveType isEqualToNumber:@(10)] && [sceneMember.colorTemperature isEqualToNumber:@(10)]) {
@@ -1320,6 +1384,17 @@
                 [weakSelf getMainDataArray];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:tdvc];
+            nav.modalPresentationStyle = UIModalPresentationPopover;
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
+        }else if ([CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName]) {
+            TwoChannelSwitchVC *tsvc = [[TwoChannelSwitchVC alloc] init];
+            tsvc.deviceId = mainCell.deviceId;
+            tsvc.reloadDataHandle = ^{
+                [self getMainDataArray];
+            };
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:tsvc];
             nav.modalPresentationStyle = UIModalPresentationPopover;
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;

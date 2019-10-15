@@ -1,15 +1,14 @@
 //
-//  TwoChannelDimmerVC.m
+//  TwoChannelSwitchVC.m
 //  CSRmeshDemo
 //
-//  Created by AcTEC on 2019/1/9.
+//  Created by AcTEC on 2019/10/11.
 //  Copyright © 2019 Cambridge Silicon Radio Ltd. All rights reserved.
 //
 
-#import "TwoChannelDimmerVC.h"
+#import "TwoChannelSwitchVC.h"
 #import "CSRDatabaseManager.h"
 #import "CSRUtilities.h"
-#import <CSRmesh/DataModelApi.h>
 #import "DeviceModelManager.h"
 #import "AFHTTPSessionManager.h"
 #import "PureLayout.h"
@@ -17,12 +16,8 @@
 #import <MBProgressHUD.h>
 #import "MCUUpdateTool.h"
 
-@interface TwoChannelDimmerVC ()<UITextFieldDelegate,MBProgressHUDDelegate,MCUUpdateToolDelegate>
+@interface TwoChannelSwitchVC ()<UITextFieldDelegate,MBProgressHUDDelegate,MCUUpdateToolDelegate>
 {
-    NSTimer *timer;
-    NSInteger currentLevel;
-    NSInteger currenState;
-    
     NSString *downloadAddress;
     NSInteger latestMCUSVersion;
     UIButton *updateMCUBtn;
@@ -33,10 +28,6 @@
 @property (nonatomic,copy) NSString *originalName;
 @property (weak, nonatomic) IBOutlet UISwitch *channel1Switch;
 @property (weak, nonatomic) IBOutlet UISwitch *channel2Switch;
-@property (weak, nonatomic) IBOutlet UISlider *channel1Slider;
-@property (weak, nonatomic) IBOutlet UISlider *channel2Slider;
-@property (weak, nonatomic) IBOutlet UILabel *channel1LevelLabel;
-@property (weak, nonatomic) IBOutlet UILabel *channel2LevelLabel;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *left1Constaint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *left2Constaint;
 @property (weak, nonatomic) IBOutlet UIImageView *channelSelected1ImageView;
@@ -48,7 +39,7 @@
 
 @end
 
-@implementation TwoChannelDimmerVC
+@implementation TwoChannelSwitchVC
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -62,6 +53,7 @@
         UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
         self.navigationItem.leftBarButtonItem = back;
     }
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(setSocketSuccess:)
                                                  name:@"setPowerStateSuccess"
@@ -70,6 +62,7 @@
                                              selector:@selector(setMultichannelStateSuccess:)
                                                  name:@"setMultichannelStateSuccess"
                                                object:nil];
+    
     if (_deviceId) {
         CSRDeviceEntity *curtainEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
         self.navigationItem.title = curtainEntity.name;
@@ -127,10 +120,12 @@
             }];
         }
     }
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
     if ([_remoteBrach length]>=8) {
         NSString *str1 = [_remoteBrach substringWithRange:NSMakeRange(4, 2)];
         NSString *str2 = [_remoteBrach substringWithRange:NSMakeRange(6, 2)];
@@ -180,10 +175,7 @@
         self.translucentBgView = nil;
         [updateMCUBtn removeFromSuperview];
         updateMCUBtn = nil;
-        if (value) {
-            timer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(timerMethod:) userInfo:nil repeats:YES];
-            [timer fire];
-        }
+        
         NSString *valueStr = value? AcTECLocalizedStringFromTable(@"Success", @"Localizable"):AcTECLocalizedStringFromTable(@"Error", @"Localizable");
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:valueStr preferredStyle:UIAlertControllerStyleAlert];
         [alert.view setTintColor:DARKORAGE];
@@ -193,70 +185,22 @@
     }
 }
 
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+    [hud removeFromSuperview];
+    hud = nil;
+}
+
+- (UIView *)translucentBgView {
+    if (!_translucentBgView) {
+        _translucentBgView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        _translucentBgView.backgroundColor = [UIColor blackColor];
+        _translucentBgView.alpha = 0.4;
+    }
+    return _translucentBgView;
+}
+
 - (void)closeAction {
     [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)setSocketSuccess: (NSNotification *)notification {
-    NSDictionary *userInfo = notification.userInfo;
-    NSNumber *deviceId = userInfo[@"deviceId"];
-    if ([deviceId isEqualToNumber:_deviceId]) {
-        [self changeUI:deviceId];
-    }
-}
-
-- (void)changeUI:(NSNumber *)deviceId {
-    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:deviceId];
-    if (deviceModel) {
-        [_channel1Switch setOn:deviceModel.channel1PowerState];
-        [_channel2Switch setOn:deviceModel.channel2PowerState];
-        if (_forSelected) {
-            if (_buttonNum) {
-                NSNumber *obj = [deviceModel.buttonnumAndChannel objectForKey:[NSString stringWithFormat:@"%@",_buttonNum]];
-                if (obj) {
-                    if ([obj isEqualToNumber:@1]) {
-                        _channelSelected1ImageView.image = [UIImage imageNamed:@"Be_selected"];
-                        _channelSelected1Btn.selected = YES;
-                        _channelSelected2ImageView.image = [UIImage imageNamed:@"Be_selected"];
-                        _channelSelected2Btn.selected = YES;
-                    }else if ([obj isEqualToNumber:@2]) {
-                        _channelSelected1ImageView.image = [UIImage imageNamed:@"Be_selected"];
-                        _channelSelected1Btn.selected = YES;
-                        _channelSelected2ImageView.image = [UIImage imageNamed:@"To_select"];
-                        _channelSelected2Btn.selected = NO;
-                    }else if ([obj isEqualToNumber:@3]) {
-                        _channelSelected1ImageView.image = [UIImage imageNamed:@"To_select"];
-                        _channelSelected1Btn.selected = NO;
-                        _channelSelected2ImageView.image = [UIImage imageNamed:@"Be_selected"];
-                        _channelSelected2Btn.selected = YES;
-                    }else {
-                        _channelSelected1ImageView.image = [UIImage imageNamed:@"To_select"];
-                        _channelSelected1Btn.selected = NO;
-                        _channelSelected2ImageView.image = [UIImage imageNamed:@"To_select"];
-                        _channelSelected2Btn.selected = NO;
-                    }
-                }
-            }
-        }
-        if (deviceModel.channel1PowerState) {
-            _channel1Slider.enabled = YES;
-            [_channel1Slider setValue:deviceModel.channel1Level];
-            _channel1LevelLabel.text = [NSString stringWithFormat:@"%.f%%",deviceModel.channel1Level/255.0*100];
-        }else {
-            _channel1Slider.enabled = NO;
-            [_channel1Slider setValue:0];
-            _channel1LevelLabel.text = @"0%";
-        }
-        if (deviceModel.channel2PowerState) {
-            _channel2Slider.enabled = YES;
-            [_channel2Slider setValue:deviceModel.channel2Level];
-            _channel2LevelLabel.text = [NSString stringWithFormat:@"%.f%%",deviceModel.channel2Level/255.0*100];
-        }else {
-            _channel2Slider.enabled = NO;
-            [_channel2Slider setValue:0];
-            _channel2LevelLabel.text = @"0%";
-        }
-    }
 }
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
@@ -299,37 +243,90 @@
         default:
             break;
     }
-    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+    [[DataModelManager shareInstance] sendCmdData:cmdString toDeviceId:_deviceId];
 }
 
-- (IBAction)touchDown:(UISlider *)sender {
-    currenState = 1;
-    currentLevel=sender.value;
-    if (timer) {
-        [timer invalidate];
-        timer = nil;
+- (void)setMultichannelStateSuccess: (NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    NSInteger channel = [userInfo[@"channel"] integerValue];
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        [self changeUI:deviceId channel:channel];
     }
-    timer = [NSTimer timerWithTimeInterval:0.5 target:self selector:@selector(timerMethod:) userInfo:@(sender.tag) repeats:YES];
-    [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
 }
 
-- (IBAction)valueChanged:(UISlider *)sender {
-    currenState = 2;
-    currentLevel=sender.value;
+- (void)changeUI:(NSNumber *)deviceId channel:(NSInteger)channel{
+    
+    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:deviceId];
+    if (deviceModel) {
+        if (channel == 1) {
+            [_channel1Switch setOn:deviceModel.channel1PowerState];
+        }else if (channel == 2) {
+            [_channel2Switch setOn:deviceModel.channel2PowerState];
+        }
+        if (_forSelected) {
+            if (_buttonNum) {
+                NSNumber *obj = [deviceModel.buttonnumAndChannel objectForKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                if (obj) {
+                    if ([obj isEqualToNumber:@1]) {
+                        _channelSelected1ImageView.image = [UIImage imageNamed:@"Be_selected"];
+                        _channelSelected2ImageView.image = [UIImage imageNamed:@"Be_selected"];
+                    }else if ([obj isEqualToNumber:@2]) {
+                        _channelSelected1ImageView.image = [UIImage imageNamed:@"Be_selected"];
+                        _channelSelected2ImageView.image = [UIImage imageNamed:@"To_select"];
+                    }else if ([obj isEqualToNumber:@3]) {
+                        _channelSelected1ImageView.image = [UIImage imageNamed:@"To_select"];
+                        _channelSelected2ImageView.image = [UIImage imageNamed:@"Be_selected"];
+                    }else {
+                        _channelSelected1ImageView.image = [UIImage imageNamed:@"To_select"];
+                        _channelSelected2ImageView.image = [UIImage imageNamed:@"To_select"];
+                    }
+                }
+            }
+        }
+    }
 }
 
-- (IBAction)touchUpInSideOrTouchUpOutSide:(UISlider *)sender {
-    currenState = 3;
-    currentLevel=sender.value;
+- (void)setSocketSuccess: (NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        [self changeUI:deviceId];
+    }
 }
 
-- (void)timerMethod:(NSTimer *)infotimer {
-    @synchronized (self) {
-        NSNumber *channel = infotimer.userInfo;
-        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"5105%@000301%@",[CSRUtilities stringWithHexNumber:[channel integerValue]],[CSRUtilities stringWithHexNumber:currentLevel]]] success:nil failure:nil];
-        if (currenState==3) {
-            [timer invalidate];
-            timer = nil;
+- (void)changeUI:(NSNumber *)deviceId {
+    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:deviceId];
+    if (deviceModel) {
+        [_channel1Switch setOn:deviceModel.channel1PowerState];
+        [_channel2Switch setOn:deviceModel.channel2PowerState];
+        if (_forSelected) {
+            if (_buttonNum) {
+                NSNumber *obj = [deviceModel.buttonnumAndChannel objectForKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                if (obj) {
+                    if ([obj isEqualToNumber:@1]) {
+                        _channelSelected1ImageView.image = [UIImage imageNamed:@"Be_selected"];
+                        _channelSelected1Btn.selected = YES;
+                        _channelSelected2ImageView.image = [UIImage imageNamed:@"Be_selected"];
+                        _channelSelected2Btn.selected = YES;
+                    }else if ([obj isEqualToNumber:@2]) {
+                        _channelSelected1ImageView.image = [UIImage imageNamed:@"Be_selected"];
+                        _channelSelected1Btn.selected = YES;
+                        _channelSelected2ImageView.image = [UIImage imageNamed:@"To_select"];
+                        _channelSelected2Btn.selected = NO;
+                    }else if ([obj isEqualToNumber:@3]) {
+                        _channelSelected1ImageView.image = [UIImage imageNamed:@"To_select"];
+                        _channelSelected1Btn.selected = NO;
+                        _channelSelected2ImageView.image = [UIImage imageNamed:@"Be_selected"];
+                        _channelSelected2Btn.selected = YES;
+                    }else {
+                        _channelSelected1ImageView.image = [UIImage imageNamed:@"To_select"];
+                        _channelSelected1Btn.selected = NO;
+                        _channelSelected2ImageView.image = [UIImage imageNamed:@"To_select"];
+                        _channelSelected2Btn.selected = NO;
+                    }
+                }
+            }
         }
     }
 }
@@ -383,89 +380,6 @@
             break;
         default:
             break;
-    }
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    if (timer) {
-        [timer invalidate];
-        timer = nil;
-    }
-}
-
-- (void)hudWasHidden:(MBProgressHUD *)hud {
-    [hud removeFromSuperview];
-    hud = nil;
-}
-
-- (UIView *)translucentBgView {
-    if (!_translucentBgView) {
-        _translucentBgView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        _translucentBgView.backgroundColor = [UIColor blackColor];
-        _translucentBgView.alpha = 0.4;
-    }
-    return _translucentBgView;
-}
-
-- (void)setMultichannelStateSuccess: (NSNotification *)notification {
-    NSDictionary *userInfo = notification.userInfo;
-    NSNumber *deviceId = userInfo[@"deviceId"];
-    NSInteger channel = [userInfo[@"channel"] integerValue];
-    if ([deviceId isEqualToNumber:_deviceId]) {
-        [self changeUI:deviceId channel:channel];
-    }
-}
-
-- (void)changeUI:(NSNumber *)deviceId channel:(NSInteger)channel{
-    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:deviceId];
-    if (deviceModel) {
-        
-        if (channel == 1) {
-            [_channel1Switch setOn:deviceModel.channel1PowerState];
-            if (deviceModel.channel1PowerState) {
-                _channel1Slider.enabled = YES;
-                [_channel1Slider setValue:deviceModel.channel1Level];
-                _channel1LevelLabel.text = [NSString stringWithFormat:@"%.f%%",deviceModel.channel1Level/255.0*100];
-            }else {
-                _channel1Slider.enabled = NO;
-                [_channel1Slider setValue:0];
-                _channel1LevelLabel.text = @"0%";
-            }
-        }else if (channel == 2) {
-            [_channel2Switch setOn:deviceModel.channel2PowerState];
-            if (deviceModel.channel2PowerState) {
-                _channel2Slider.enabled = YES;
-                [_channel2Slider setValue:deviceModel.channel2Level];
-                _channel2LevelLabel.text = [NSString stringWithFormat:@"%.f%%",deviceModel.channel2Level/255.0*100];
-            }else {
-                _channel2Slider.enabled = NO;
-                [_channel2Slider setValue:0];
-                _channel2LevelLabel.text = @"0%";
-            }
-        }
-        
-        if (_forSelected) {
-            if (_buttonNum) {
-                NSNumber *obj = [deviceModel.buttonnumAndChannel objectForKey:[NSString stringWithFormat:@"%@",_buttonNum]];
-                if (obj) {
-                    if ([obj isEqualToNumber:@1]) {
-                        _channelSelected1ImageView.image = [UIImage imageNamed:@"Be_selected"];
-                        _channelSelected2ImageView.image = [UIImage imageNamed:@"Be_selected"];
-                    }else if ([obj isEqualToNumber:@2]) {
-                        _channelSelected1ImageView.image = [UIImage imageNamed:@"Be_selected"];
-                        _channelSelected2ImageView.image = [UIImage imageNamed:@"To_select"];
-                    }else if ([obj isEqualToNumber:@3]) {
-                        _channelSelected1ImageView.image = [UIImage imageNamed:@"To_select"];
-                        _channelSelected2ImageView.image = [UIImage imageNamed:@"Be_selected"];
-                    }else {
-                        _channelSelected1ImageView.image = [UIImage imageNamed:@"To_select"];
-                        _channelSelected2ImageView.image = [UIImage imageNamed:@"To_select"];
-                    }
-                }
-            }
-        }
-        
     }
 }
 

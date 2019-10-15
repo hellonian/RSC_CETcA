@@ -40,8 +40,13 @@
         self.navigationItem.leftBarButtonItem = back;
     }
     
-    CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-    self.navigationItem.title = device.name;
+    if ([_deviceId integerValue]>32768/*单设备*/) {
+        CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+        self.navigationItem.title = device.name;
+    }else {/*分组*/
+        CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+        self.navigationItem.title = area.areaName;
+    }
     
     _selecteBtn = _dimmingBtn;
     
@@ -76,7 +81,6 @@
     [_allViews addObject:mvc.view];
     
     [_threeView bringSubviewToFront:_allViews.firstObject];
-    
 }
 
 - (IBAction)switchThreeView:(UIButton *)sender {

@@ -5,7 +5,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class CSRDeviceEntity;
+@class CSRDeviceEntity,RGBSceneEntity;
 
 @interface CSRAreaEntity : NSManagedObject
 
@@ -18,6 +18,7 @@
 @property (nonatomic, retain) NSSet *devices;
 @property (nonatomic, retain) NSNumber *isEditting;
 @property (nonatomic, retain) NSNumber *androidId;
+@property (nonatomic, retain) NSSet *rgbScenes;
 
 @end
 
@@ -27,5 +28,10 @@
 - (void)removeDevicesObject:(CSRDeviceEntity *)value;
 - (void)addDevices:(NSSet *)values;
 - (void)removeDevices:(NSSet *)values;
+
+- (void)addRgbScenesObject:(RGBSceneEntity *)value;
+- (void)removeRgbScenesObject:(RGBSceneEntity *)value;
+- (void)addRgbScenes:(NSSet *)values;
+- (void)removeRGBScenes:(NSSet *)values;
 
 @end

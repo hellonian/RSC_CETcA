@@ -675,7 +675,7 @@
             eveD1 = [colorTemperatureStr substringToIndex:2];
             eveD2 = [colorTemperatureStr substringFromIndex:2];
         }
-        if ([CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString] || [CSRUtilities belongToSocket:sceneMember.kindString]) {
+        if ([CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString] || [CSRUtilities belongToSocket:sceneMember.kindString] || [CSRUtilities belongToTwoChannelSwitch:sceneMember.kindString]) {
             if (sceneMember.eveType && [sceneMember.eveType integerValue]>0 && sceneMember.colorTemperature && [sceneMember.colorTemperature integerValue]>0) {
                 dispatch_async(queue, ^{
                     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);

@@ -29,6 +29,7 @@
 #import "SocketForSceneVC.h"
 #import "TwoChannelDimmerVC.h"
 #import "DeviceModelManager.h"
+#import "TwoChannelSwitchVC.h"
 
 
 @interface DeviceListViewController ()<MainCollectionViewDelegate>
@@ -231,6 +232,56 @@
             }];
         }
         
+    }else if (self.selectMode == DeviceListSelectMode_SelectRGBDeviceOrGroup) {
+        NSMutableArray *areaMutableArray =  [[[CSRAppStateManager sharedInstance].selectedPlace.areas allObjects] mutableCopy];
+        if (areaMutableArray && [areaMutableArray count] != 0) {
+            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
+            [areaMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+            for (CSRAreaEntity *area in areaMutableArray) {
+                __block BOOL exist = NO;
+                [area.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity  *deviceEntity, BOOL * _Nonnull stop) {
+                    if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBNoLevelDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWNoLevelDevice:deviceEntity.shortName]) {
+                        exist = YES;
+                        *stop = YES;
+                    }
+                }];
+                if (exist) {
+                    GroupListSModel *model = [[GroupListSModel alloc] init];
+                    model.areaIconNum = area.areaIconNum;
+                    model.areaID = area.areaID;
+                    model.areaName = area.areaName;
+                    model.areaImage = area.areaImage;
+                    model.sortId = area.sortId;
+                    model.devices = area.devices;
+                    model.isForList = YES;
+                    if ([self.originalMembers containsObject:area.areaID]) {
+                        model.isSelected = YES;
+                        [self.selectedDevices addObject:area.areaID];
+                    }
+                    [_devicesCollectionView.dataArray addObject:model];
+                }
+            }
+        }
+        
+        NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
+        if (mutableArray && [mutableArray count] != 0) {
+            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
+            [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+            [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+                if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBNoLevelDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWNoLevelDevice:deviceEntity.shortName]) {
+                    SingleDeviceModel *singleDevice = [[SingleDeviceModel alloc] init];
+                    singleDevice.deviceId = deviceEntity.deviceId;
+                    singleDevice.deviceName = deviceEntity.name;
+                    singleDevice.deviceShortName = deviceEntity.shortName;
+                    singleDevice.isForList = YES;
+                    if ([self.originalMembers containsObject:deviceEntity.deviceId]) {
+                        singleDevice.isSelected = YES;
+                        [self.selectedDevices addObject:deviceEntity.deviceId];
+                    }
+                    [_devicesCollectionView.dataArray addObject:singleDevice];
+                }
+            }];
+        }
     }else {
         NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
         if (mutableArray != nil || [mutableArray count] != 0) {
@@ -265,10 +316,7 @@
                 [self.selectedDevices addObject:singleDevice.deviceId];
             }
         }
-        
     }
-    
-    
     
     [self.view addSubview:_devicesCollectionView];
     [_devicesCollectionView setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -377,7 +425,7 @@
                     }];
                     
                     CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
-                    if ([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName] || [CSRUtilities belongToSocket:deviceEntity.shortName] || [CSRUtilities belongToFanController:deviceEntity.shortName]) {
+                    if ([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName] || [CSRUtilities belongToSocket:deviceEntity.shortName] || [CSRUtilities belongToFanController:deviceEntity.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName]) {
                         [self mainCollectionViewDelegateLongPressAction:cell];
                     }else if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
                         self.curtainDetailSelectedView = [self curtainDetailSelectedView:mainCell.deviceId];
@@ -442,7 +490,7 @@
             }
         }
         
-    }else if (self.selectMode == DeviceListSelectMode_ForLightSensor) {
+    }else if (self.selectMode == DeviceListSelectMode_ForLightSensor || self.selectMode == DeviceListSelectMode_SelectRGBDeviceOrGroup) {
         if ([cell isKindOfClass:[MainCollectionViewCell class]]) {
             MainCollectionViewCell *mainCell = (MainCollectionViewCell *)cell;
             if (mainCell.selected) {
@@ -499,7 +547,7 @@
             if (mainCell.selected) {
                 [self.selectedDevices addObject:mainCell.deviceId];
                 CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
-                if (([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName] || [CSRUtilities belongToSocket:deviceEntity.shortName]) && self.selectMode != DeviceListSelectMode_ForGroup) {
+                if (([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName] || [CSRUtilities belongToSocket:deviceEntity.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName]) && self.selectMode != DeviceListSelectMode_ForGroup) {
                     [self mainCollectionViewDelegateLongPressAction:cell];
                 }
             }else {
@@ -628,9 +676,25 @@
         }else if ([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName]) {
             TwoChannelDimmerVC *TDVC = [[TwoChannelDimmerVC alloc] init];
             TDVC.deviceId = mainCell.deviceId;
-            TDVC.forSelected = YES;
             TDVC.buttonNum = self.buttonNum;
+            TDVC.remoteBrach = _remoteBranch;
+            if (_selectMode != DeviceListSelectMode_ForGroup) {
+                TDVC.forSelected = YES;
+            }
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:TDVC];
+            nav.modalPresentationStyle = UIModalPresentationPopover;
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
+        }else if ([CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName]) {
+            TwoChannelSwitchVC *tsvc = [[TwoChannelSwitchVC alloc] init];
+            tsvc.deviceId = mainCell.deviceId;
+            tsvc.buttonNum = self.buttonNum;
+            tsvc.remoteBrach = _remoteBranch;
+            if (_selectMode != DeviceListSelectMode_ForGroup) {
+                tsvc.forSelected = YES;
+            }
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:tsvc];
             nav.modalPresentationStyle = UIModalPresentationPopover;
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;

@@ -142,12 +142,14 @@
         cell.imageView.image = [UIImage imageNamed:@"Setting_bajiao"];
     }else if ([deviceEntity.shortName isEqualToString:@"R9BSBH"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_fremote"];
-    }else if ([deviceEntity.shortName isEqualToString:@"RB08"]) {
+    }else if ([deviceEntity.shortName isEqualToString:@"RB08"] || [deviceEntity.shortName isEqualToString:@"GR10B"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_rb08"];
     }else if ([deviceEntity.shortName isEqualToString:@"RB05"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_rb05"];
     }else if ([deviceEntity.shortName isEqualToString:@"RB09"]||[deviceEntity.shortName isEqualToString:@"5RSIBH"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_bajiao"];
+    }else if ([deviceEntity.shortName isEqualToString:@"GR15B"]) {
+        cell.imageView.image = [UIImage imageNamed:@"Setting_gr15b"];
     }
     cell.textLabel.text = deviceEntity.name;
     return cell;

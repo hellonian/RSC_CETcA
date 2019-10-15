@@ -27,6 +27,7 @@
 #import "RGBDeviceViewController.h"
 #import "SocketViewController.h"
 #import "TwoChannelDimmerVC.h"
+#import "TwoChannelSwitchVC.h"
 
 @interface GroupViewController ()<UITextFieldDelegate,PlaceColorIconPickerViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,MainCollectionViewDelegate,MBProgressHUDDelegate>
 {
@@ -435,7 +436,6 @@
                 }
             }
         }
-        
     }
     
     [NSThread sleepForTimeInterval:1.0];
@@ -644,8 +644,19 @@
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
+        }else if ([CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName]) {
+            TwoChannelSwitchVC *tsvc = [[TwoChannelSwitchVC alloc] init];
+            tsvc.deviceId = mainCell.deviceId;
+            tsvc.reloadDataHandle = ^{
+                [self loadMemberData];
+                [_devicesCollectionView reloadData];
+            };
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:tsvc];
+            nav.modalPresentationStyle = UIModalPresentationPopover;
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
         }else{
-            
             DeviceViewController *dvc = [[DeviceViewController alloc] init];
             dvc.deviceId = mainCell.deviceId;
             __weak GroupViewController *weakSelf = self;

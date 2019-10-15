@@ -1138,7 +1138,7 @@
 }
 
 + (BOOL)belongToMainVCDevice: (NSString *)shortName {
-    if ([kDimmers containsObject:shortName] || [kSwitchs containsObject:shortName] || [kCWDevices containsObject:shortName] || [kRGBDevices containsObject:shortName] || [kRGBCWDevices containsObject:shortName] || [kOneChannelCurtainController containsObject:shortName] || [kTwoChannelCurtainController containsObject:shortName] || [kFanController containsObject:shortName] || [kSockets containsObject:shortName] || [kTwoChannelDimmers containsObject:shortName]) {
+    if ([kDimmers containsObject:shortName] || [kSwitchs containsObject:shortName] || [kCWDevices containsObject:shortName] || [kRGBDevices containsObject:shortName] || [kRGBCWDevices containsObject:shortName] || [kOneChannelCurtainController containsObject:shortName] || [kTwoChannelCurtainController containsObject:shortName] || [kFanController containsObject:shortName] || [kSockets containsObject:shortName] || [kTwoChannelDimmers containsObject:shortName] || [kTwoChannelSwitchs containsObject:shortName]) {
         return YES;
     }
     return NO;
@@ -1242,6 +1242,19 @@
     return NO;
 }
 
++ (BOOL)belongToTwoChannelSwitch:(NSString *)shortName {
+    if ([kTwoChannelSwitchs containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToDALDevice:(NSString *)shortName {
+    if ([kDALDevice containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
 
 //十六进制字符串转十进制数据
 + (NSInteger)numberWithHexString:(NSString *)hexString {

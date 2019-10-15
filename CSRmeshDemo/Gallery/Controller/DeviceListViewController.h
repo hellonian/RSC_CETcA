@@ -16,7 +16,8 @@ typedef NS_ENUM(NSInteger,DeviceListSelectMode)
     DeviceListSelectMode_ForGroup,
     DeviceListSelectMode_SelectGroup,
     DeviceListSelectMode_SelectScene,
-    DeviceListSelectMode_ForLightSensor
+    DeviceListSelectMode_ForLightSensor,
+    DeviceListSelectMode_SelectRGBDeviceOrGroup,
 };
 
 typedef void(^DeviceListSelectedHandle)(NSArray *devices);
@@ -26,6 +27,7 @@ typedef void(^DeviceListSelectedHandle)(NSArray *devices);
 @property (nonatomic,assign)DeviceListSelectMode selectMode;
 @property (nonatomic,strong)NSArray *originalMembers;
 @property (nonatomic,strong)NSNumber *buttonNum;
+@property (nonatomic,strong)NSString *remoteBranch;
 
 - (void)getSelectedDevices:(DeviceListSelectedHandle)handle;
 

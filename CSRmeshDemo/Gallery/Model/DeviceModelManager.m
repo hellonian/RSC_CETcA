@@ -153,7 +153,7 @@
                 }else if (levelInt > 179 && levelInt < 256) {
                     model.fansSpeed = 2;
                 }
-            }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToSocketTwoChannel:model.shortName] || [CSRUtilities belongToTwoChannelCurtainController:model.shortName]) {
+            }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToSocketTwoChannel:model.shortName] || [CSRUtilities belongToTwoChannelCurtainController:model.shortName] || [CSRUtilities belongToTwoChannelSwitch:model.shortName]) {
                 model.channel1PowerState = [powerState boolValue];
                 model.channel1Level = [level integerValue];
                 model.channel2PowerState = [red boolValue];
@@ -198,7 +198,7 @@
             }else if (levelInt > 179 && levelInt < 256) {
                 model.fansSpeed = 2;
             }
-        }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToSocket:model.shortName]) {
+        }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToSocket:model.shortName] || [CSRUtilities belongToTwoChannelSwitch:model.shortName] || [CSRUtilities belongToTwoChannelCurtainController:model.shortName]) {
             model.channel1PowerState = [powerState boolValue];
             model.channel1Level = [level integerValue];
             model.channel2PowerState = [red boolValue];
@@ -223,7 +223,7 @@
             if ([CSRUtilities belongToFanController:model.shortName]) {
                 model.fanState = [state boolValue];
                 model.lampState = [state boolValue];
-            }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToSocketTwoChannel:model.shortName]) {
+            }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToSocketTwoChannel:model.shortName] || [CSRUtilities belongToTwoChannelSwitch:model.shortName]) {
                 model.channel1PowerState = [state boolValue];
                 model.channel2PowerState = [state boolValue];
             }else if ([CSRUtilities belongToSocketOneChannel:model.shortName]) {
@@ -246,7 +246,7 @@
         if ([CSRUtilities belongToFanController:deviceEntity.shortName]) {
             model.fanState = [state boolValue];
             model.lampState = [state boolValue];
-        }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToSocket:model.shortName]) {
+        }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToSocket:model.shortName] || [CSRUtilities belongToTwoChannelSwitch:model.shortName]) {
             model.channel1PowerState = [state boolValue];
             model.channel2PowerState = [state boolValue];
         }else if ([CSRUtilities belongToSocketOneChannel:model.shortName]) {

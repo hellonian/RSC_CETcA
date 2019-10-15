@@ -17,5 +17,6 @@
 @dynamic devices;
 @dynamic isEditting;
 @dynamic androidId;
+@dynamic rgbScenes;
 
 @end

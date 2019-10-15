@@ -114,6 +114,8 @@
 		2E6D543B211AB6C6003D02DB /* ColorSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6D543A211AB6C6003D02DB /* ColorSlider.m */; };
 		2E6FBD9620E1D43F0045DDAC /* GroupListSModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6FBD9520E1D43F0045DDAC /* GroupListSModel.m */; };
 		2E706CFF212A7278008D0EC4 /* GalleryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E706D01212A7278008D0EC4 /* GalleryViewController.xib */; };
+		2E712CFD235015E5003DBA72 /* TwoChannelSwitchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E712CFB235015E5003DBA72 /* TwoChannelSwitchVC.m */; };
+		2E712CFE235015E5003DBA72 /* TwoChannelSwitchVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E712CFC235015E5003DBA72 /* TwoChannelSwitchVC.xib */; };
 		2E80C46D21DC62CE0024584C /* SocketForSceneVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E80C46B21DC62CE0024584C /* SocketForSceneVC.m */; };
 		2E8623492019DB28004EF0E0 /* DeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8623472019DB28004EF0E0 /* DeviceViewController.m */; };
 		2E9622BF20C913530097C617 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E9622C120C913530097C617 /* Localizable.strings */; };
@@ -406,6 +408,9 @@
 		2E706D00212A7278008D0EC4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/GalleryViewController.xib; sourceTree = "<group>"; };
 		2E706D03212A727E008D0EC4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2E706D05212A7282008D0EC4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/GalleryViewController.strings"; sourceTree = "<group>"; };
+		2E712CFA235015E5003DBA72 /* TwoChannelSwitchVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TwoChannelSwitchVC.h; sourceTree = "<group>"; };
+		2E712CFB235015E5003DBA72 /* TwoChannelSwitchVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TwoChannelSwitchVC.m; sourceTree = "<group>"; };
+		2E712CFC235015E5003DBA72 /* TwoChannelSwitchVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoChannelSwitchVC.xib; sourceTree = "<group>"; };
 		2E747FCF221CE2A100FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
 		2E747FD0221CE2A600FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/GroupViewController.strings; sourceTree = "<group>"; };
 		2E747FD1221CE2A700FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/RGBDeviceViewController.strings; sourceTree = "<group>"; };
@@ -1127,6 +1132,9 @@
 				2EA18F0521E5EFD200E4D35B /* TwoChannelDimmerVC.h */,
 				2EA18F0621E5EFD200E4D35B /* TwoChannelDimmerVC.m */,
 				2E4DDD0221F969F200B2ACF3 /* TwoChannelDimmerVC.xib */,
+				2E712CFA235015E5003DBA72 /* TwoChannelSwitchVC.h */,
+				2E712CFB235015E5003DBA72 /* TwoChannelSwitchVC.m */,
+				2E712CFC235015E5003DBA72 /* TwoChannelSwitchVC.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1541,6 +1549,7 @@
 				2E2E70B31FF5DE60002D1C1D /* ErrorCodes.strings in Resources */,
 				0DE95D161B297FFB006D0397 /* Images.xcassets in Resources */,
 				2EE50F2D20DA3E3D00B484F7 /* LightSensorSettingViewController.xib in Resources */,
+				2E712CFE235015E5003DBA72 /* TwoChannelSwitchVC.xib in Resources */,
 				2E5EA0D7217F123700554825 /* LaunchScreen.storyboard in Resources */,
 				2E2E70921FF5DE60002D1C1D /* PlaceIconCollectionViewCell.xib in Resources */,
 				2ED23F6E215DCCCA0040A922 /* CurtainViewController.xib in Resources */,
@@ -1714,6 +1723,7 @@
 				2E2E70B21FF5DE60002D1C1D /* PCM.m in Sources */,
 				2EAD4EA82004A4BB003733CA /* GalleryEditToolView.m in Sources */,
 				2E5A58782137896500E416F9 /* RGBDeviceViewController.m in Sources */,
+				2E712CFD235015E5003DBA72 /* TwoChannelSwitchVC.m in Sources */,
 				2E2E707B1FF5DE60002D1C1D /* AboutViewController.m in Sources */,
 				2EF332502045030100565374 /* LanguageViewController.m in Sources */,
 				2E4BBD4E22811FC7005650F8 /* CSRGaia.m in Sources */,

@@ -69,8 +69,10 @@
 @property (weak, nonatomic) IBOutlet UIButton *daliAllSelectBtn;
 @property (weak, nonatomic) IBOutlet UIButton *daliGroupSelectBtn;
 @property (weak, nonatomic) IBOutlet UIButton *daliAddressBtn;
+@property (weak, nonatomic) IBOutlet UIButton *daliSceneSelectBtn;
 @property (weak, nonatomic) IBOutlet UITextField *daliGroupTF;
 @property (weak, nonatomic) IBOutlet UITextField *daliAddressTF;
+@property (weak, nonatomic) IBOutlet UITextField *daliSceneTF;
 @property (nonatomic,strong) UIView *translucentBgView;
 
 @property (strong, nonatomic) IBOutlet UIView *ganjiedianView;
@@ -88,6 +90,9 @@
 @property (weak, nonatomic) IBOutlet UIImageView *abnormalImageView;
 @property (weak, nonatomic) IBOutlet UISwitch *thresholdSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *thresholdLab;
+
+@property (strong, nonatomic) IBOutlet UIView *RGBGroupControllSwitchView;
+@property (weak, nonatomic) IBOutlet UISwitch *RGBGroupControllSwitch;
 
 @end
 
@@ -156,12 +161,6 @@
     
     [NSLayoutConstraint activateConstraints:@[top,left,bottom,right]];
     
-    [_scrollView addSubview:_topView];
-    [_topView autoSetDimension:ALDimensionHeight toSize:134];
-    [_topView autoPinEdgeToSuperviewEdge:ALEdgeTop];
-    [_topView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-    [_topView autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    
     if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
         UIButton *btn = [[UIButton alloc] init];
         [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
@@ -174,7 +173,14 @@
     
     self.nameTF.delegate = self;
     
-    if (_deviceId) {
+    if ([_deviceId integerValue] > 32768/*单设备*/) {
+        
+        [_scrollView addSubview:_topView];
+        [_topView autoSetDimension:ALDimensionHeight toSize:134];
+        [_topView autoPinEdgeToSuperviewEdge:ALEdgeTop];
+        [_topView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+        [_topView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+        
         _device = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
         if ([CSRUtilities belongToSwitch:_device.shortName]) {
             if ([CSRUtilities belongToThreeSpeedColorTemperatureDevice:_device.shortName]) {
@@ -226,14 +232,14 @@
                 [_threeSpeedcolorTemperatureView autoAlignAxisToSuperviewAxis:ALAxisVertical];
                 
                 _scrollView.contentSize = CGSizeMake(1, 327+20);
-            }else if ([_device.shortName isEqualToString:@"DDSB"]) {
+            }else if ([CSRUtilities belongToDALDevice:_device.shortName]) {
                 [[NSNotificationCenter defaultCenter] addObserver:self
                                                          selector:@selector(getDaliAdress:)
                                                              name:@"getDaliAdress"
                                                            object:nil];
                 [[DataModelManager shareInstance] sendCmdData:@"ea520102" toDeviceId:_deviceId];
                 [self addSubviewDalinView];
-                _scrollView.contentSize = CGSizeMake(1, 208+20+20+220);
+                _scrollView.contentSize = CGSizeMake(1, 208+20+20+220+82);
                 CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
                 if (deviceEntity.remoteBranch && [deviceEntity.remoteBranch length]>0) {
                     [self configDaliAppearance:[CSRUtilities numberWithHexString:deviceEntity.remoteBranch]];
@@ -341,7 +347,7 @@
                 NSDictionary *dic = (NSDictionary *)responseObject;
                 latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
                 downloadAddress = dic[@"Download_address"];
-                NSLog(@"%@  %ld",deviceEntity.mcuSVersion,latestMCUSVersion);
+                NSLog(@"%@  %ld",deviceEntity.mcuSVersion,(long)latestMCUSVersion);
                 if ([deviceEntity.mcuSVersion integerValue]<latestMCUSVersion) {
                     updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
                     [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
@@ -357,6 +363,35 @@
             } failure:^(NSURLSessionDataTask *task, NSError *error) {
                 NSLog(@"%@",error);
             }];
+        }
+    }else {/*分组*/
+        [self forRGBGroupControllerAddSwitchView];
+        [self forRGBGroupControllerAddBrightnessView];
+        CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+        __block BOOL exist = NO;
+        [area.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, BOOL * _Nonnull stop) {
+            if ([CSRUtilities belongToRGBCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWNoLevelDevice:deviceEntity.shortName]) {
+                exist = YES;
+                *stop = YES;
+            }
+        }];
+        if (exist) {
+            [self addSubViewColorTemperatuteView];
+            [_scrollView addSubview:_colorTitle];
+            [_colorTitle autoSetDimension:ALDimensionHeight toSize:20];
+            [_colorTitle autoSetDimension:ALDimensionWidth toSize:80];
+            [_colorTitle autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_colorTempratureView withOffset:5];
+            [_colorTitle autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
+            [self addSubViewColorView];
+            _scrollView.contentSize = CGSizeMake(1, 560);
+        }else {
+            [_scrollView addSubview:_colorTitle];
+            [_colorTitle autoSetDimension:ALDimensionHeight toSize:20];
+            [_colorTitle autoSetDimension:ALDimensionWidth toSize:80];
+            [_colorTitle autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_brightnessView withOffset:5];
+            [_colorTitle autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
+            [self addSubViewColorView];
+            _scrollView.contentSize = CGSizeMake(1, 526);
         }
     }
 }
@@ -410,7 +445,11 @@
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     [self.view layoutIfNeeded];
-    [self adjustInterface];
+    if ([_deviceId integerValue] > 32768/*单设备*/) {
+        [self adjustInterface];
+    }else {
+        [self forRGBGroupControllAdustInterface];
+    }
 }
 
 - (void)addSubviewBrightnessView {
@@ -430,9 +469,10 @@
 - (void)addSubviewDalinView {
     _daliGroupTF.delegate = self;
     _daliAddressTF.delegate = self;
+    _daliSceneTF.delegate = self;
     [_scrollView addSubview:_dalinView];
     [_dalinView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_brightnessView withOffset:20.0];
-    [_dalinView autoSetDimension:ALDimensionHeight toSize:220.0];
+    [_dalinView autoSetDimension:ALDimensionHeight toSize:302.0];
     [_dalinView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
     [_dalinView autoAlignAxisToSuperviewAxis:ALAxisVertical];
 }
@@ -658,8 +698,22 @@
 - (void)setPowerStateSuccess:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
-    if ([deviceId isEqualToNumber:_deviceId]) {
-        [self adjustInterface];
+    if ([_deviceId integerValue] > 32768/*单设备*/) {
+        if ([deviceId isEqualToNumber:_deviceId]) {
+            [self adjustInterface];
+        }
+    }else {
+        CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+        __block BOOL exist = NO;
+        [area.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, BOOL * _Nonnull stop) {
+            if ([deviceEntity.deviceId isEqualToNumber:deviceId]) {
+                exist = YES;
+                *stop = YES;
+            }
+        }];
+        if (exist) {
+            [self forRGBGroupControllAdustInterface];
+        }
     }
 }
 //开关
@@ -669,6 +723,7 @@
             [[SoundListenTool sharedInstance] stopRecord:_deviceId];
         }
     }
+    [[DeviceModelManager sharedInstance] invalidateColofulTimer];
     [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(sender.on)];
 }
 //调光
@@ -687,6 +742,7 @@
             [[SoundListenTool sharedInstance] stopRecord:_deviceId];
         }
     }
+    [[DeviceModelManager sharedInstance] invalidateColofulTimer];
     _sliderIsMoving = YES;
     [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId withLevel:@(sender.value) withState:UIGestureRecognizerStateBegan direction:PanGestureMoveDirectionHorizontal];
 }
@@ -702,6 +758,7 @@
             [[SoundListenTool sharedInstance] stopRecord:_deviceId];
         }
     }
+    [[DeviceModelManager sharedInstance] invalidateColofulTimer];
     _colorTemperatureSliderIsMoving = YES;
     [[DeviceModelManager sharedInstance] setColorTemperatureWithDeviceId:_deviceId withColorTemperature:@(sender.value) withState:UIGestureRecognizerStateBegan];
 }
@@ -727,6 +784,7 @@
             [[SoundListenTool sharedInstance] stopRecord:_deviceId];
         }
     }
+    [[DeviceModelManager sharedInstance] invalidateColofulTimer];
     _colorSaturationSliderIsMoving = YES;
     UIColor *color = [UIColor colorWithHue:_colorSlider.myValue saturation:sender.value brightness:1.0 alpha:1.0];
     [[DeviceModelManager sharedInstance] setColorWithDeviceId:_deviceId withColor:color withState:UIGestureRecognizerStateBegan];
@@ -738,13 +796,17 @@
 }
 
 - (IBAction)colorSaturationSliderTouchUpInSide:(UISlider *)sender {
-    _colorSaturationSliderIsMoving = NO;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        _colorSaturationSliderIsMoving = NO;
+    });
     UIColor *color = [UIColor colorWithHue:_colorSlider.myValue saturation:sender.value brightness:1.0 alpha:1.0];
     [[DeviceModelManager sharedInstance] setColorWithDeviceId:_deviceId withColor:color withState:UIGestureRecognizerStateEnded];
 }
 
 - (IBAction)colorSaturationSliderTouchUpOutSide:(UISlider *)sender {
-    _colorSaturationSliderIsMoving = NO;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        _colorSaturationSliderIsMoving = NO;
+    });
     UIColor *color = [UIColor colorWithHue:_colorSlider.myValue saturation:sender.value brightness:1.0 alpha:1.0];
     [[DeviceModelManager sharedInstance] setColorWithDeviceId:_deviceId withColor:color withState:UIGestureRecognizerStateEnded];
 }
@@ -790,6 +852,11 @@
                 [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea520101%@",[CSRUtilities stringWithHexNumber:[textField.text integerValue]]] toDeviceId:_deviceId];
             }
             break;
+        case 14:
+            if ([textField.text length]>0 && [textField.text integerValue]<=15) {
+                [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea520101%@",[CSRUtilities stringWithHexNumber:[textField.text integerValue] + 80]] toDeviceId:_deviceId];
+            }
+            break;
         default:
             break;
     }
@@ -821,6 +888,20 @@
                 NSString *aString = [textField.text stringByReplacingCharactersInRange:range withString:string];
                 if ([self validateNumber:string]) {
                     if ([aString integerValue]>63) {
+                        return NO;
+                    }else {
+                        return YES;
+                    }
+                }else {
+                    return NO;
+                }
+            }
+                break;
+            case 14:
+            {
+                NSString *aString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+                if ([self validateNumber:string]) {
+                    if ([aString integerValue]>15) {
                         return NO;
                     }else {
                         return YES;
@@ -906,9 +987,12 @@
                 [[SoundListenTool sharedInstance] stopRecord:_deviceId];
             }
         }
+        [[DeviceModelManager sharedInstance] invalidateColofulTimer];
         _colorSliderIsMoving = YES;
     }else if (state == UIGestureRecognizerStateEnded) {
-        _colorSliderIsMoving = NO;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            _colorSliderIsMoving = NO;
+        });
     }
     UIColor *color = [UIColor colorWithHue:myValue saturation:_colorSaturationSlider.value brightness:1.0 alpha:1.0];
     [[DeviceModelManager sharedInstance] setColorWithDeviceId:_deviceId withColor:color withState:state];
@@ -921,6 +1005,7 @@
             [[SoundListenTool sharedInstance] stopRecord:_deviceId];
         }
     }
+    [[DeviceModelManager sharedInstance] invalidateColofulTimer];
     UIColor *color = [UIColor colorWithHue:hue saturation:colorSatutation brightness:1.0 alpha:1.0];
     [[LightModelApi sharedInstance] setColor:_deviceId color:color duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
         
@@ -938,9 +1023,12 @@
                 [[SoundListenTool sharedInstance] stopRecord:_deviceId];
             }
         }
+        [[DeviceModelManager sharedInstance] invalidateColofulTimer];
         _colorSquareIsMoving = YES;
     }else if (state == UIGestureRecognizerStateEnded) {
-        _colorSquareIsMoving = NO;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            _colorSquareIsMoving = NO;
+        });
     }
     UIColor *color = [UIColor colorWithHue:hue saturation:colorSatutation brightness:1.0 alpha:1.0];
     [[DeviceModelManager sharedInstance] setColorWithDeviceId:_deviceId withColor:color withState:state];
@@ -972,6 +1060,10 @@
                     _daliAddressBtn.selected = NO;
                     [_daliAddressBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
                     [_daliAddressTF resignFirstResponder];
+                }else if (_daliSceneSelectBtn.selected) {
+                    _daliSceneSelectBtn.selected = NO;
+                    [_daliSceneSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                    [_daliSceneTF resignFirstResponder];
                 }
                 [[DataModelManager shareInstance] sendCmdData:@"ea520101ff" toDeviceId:_deviceId];
             }
@@ -985,6 +1077,10 @@
                     _daliAddressBtn.selected = NO;
                     [_daliAddressBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
                     [_daliAddressTF resignFirstResponder];
+                }else if (_daliSceneSelectBtn.selected) {
+                    _daliSceneSelectBtn.selected = NO;
+                    [_daliSceneSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                    [_daliSceneTF resignFirstResponder];
                 }
                 [_daliGroupTF becomeFirstResponder];
             }
@@ -998,8 +1094,29 @@
                 }else if (_daliAllSelectBtn.selected) {
                     _daliAllSelectBtn.selected = NO;
                     [_daliAllSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                }else if (_daliSceneSelectBtn.selected) {
+                    _daliSceneSelectBtn.selected = NO;
+                    [_daliSceneSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                    [_daliSceneTF resignFirstResponder];
                 }
                 [_daliAddressTF becomeFirstResponder];
+            }
+            break;
+        case 4:
+            if (sender.selected) {
+                if (_daliAllSelectBtn.selected) {
+                    _daliAllSelectBtn.selected = NO;
+                    [_daliAllSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                }else if (_daliAddressBtn.selected) {
+                    _daliAddressBtn.selected = NO;
+                    [_daliAddressBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                    [_daliAddressTF resignFirstResponder];
+                }else if (_daliGroupSelectBtn.selected) {
+                    _daliGroupSelectBtn.selected = NO;
+                    [_daliGroupSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                    [_daliGroupTF resignFirstResponder];
+                }
+                [_daliSceneTF becomeFirstResponder];
             }
             break;
         default:
@@ -1023,15 +1140,21 @@
         _daliAddressBtn.selected = NO;
         [_daliAddressBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
         _daliAddressTF.text = nil;
+        _daliSceneSelectBtn.selected = NO;
+        [_daliSceneSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        _daliSceneTF.text = nil;
     }else if (address >= 64 && address <= 79) {
         _daliAllSelectBtn.selected = NO;
         [_daliAllSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
         _daliGroupSelectBtn.selected = YES;
         [_daliGroupSelectBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
-        _daliGroupTF.text = [NSString stringWithFormat:@"%ld",address-64];
+        _daliGroupTF.text = [NSString stringWithFormat:@"%d",address-64];
         _daliAddressBtn.selected = NO;
         [_daliAddressBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
         _daliAddressTF.text = nil;
+        _daliSceneSelectBtn.selected = NO;
+        [_daliSceneSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        _daliSceneTF.text = nil;
     }else if (address < 64){
         _daliAllSelectBtn.selected = NO;
         [_daliAllSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
@@ -1041,6 +1164,21 @@
         _daliAddressBtn.selected = YES;
         [_daliAddressBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
         _daliAddressTF.text = [NSString stringWithFormat:@"%ld",(long)address];
+        _daliSceneSelectBtn.selected = NO;
+        [_daliSceneSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        _daliSceneTF.text = nil;
+    }else if (address > 79 && address <= 95) {
+        _daliAllSelectBtn.selected = NO;
+        [_daliAllSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        _daliGroupSelectBtn.selected = NO;
+        [_daliGroupSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        _daliGroupTF.text = nil;
+        _daliAddressBtn.selected = NO;
+        [_daliAddressBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        _daliAddressTF.text = nil;
+        _daliSceneSelectBtn.selected = YES;
+        [_daliSceneSelectBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+        _daliSceneTF.text = [NSString stringWithFormat:@"%ld",address-80];
     }
 }
 
@@ -1345,6 +1483,69 @@
             break;
     }
     [[DataModelManager shareInstance]sendCmdData:[NSString stringWithFormat:@"ea47010%d%@",enable,[CSRUtilities stringWithHexNumber:[Pvalue integerValue]]] toDeviceId:_deviceId];
+}
+
+- (void)forRGBGroupControllerAddSwitchView {
+    [_scrollView addSubview:_RGBGroupControllSwitchView];
+    [_RGBGroupControllSwitchView autoSetDimension:ALDimensionHeight toSize:44.0];
+    [_RGBGroupControllSwitchView autoPinEdgeToSuperviewEdge:ALEdgeTop];
+    [_RGBGroupControllSwitchView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+    [_RGBGroupControllSwitchView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+}
+
+- (void)forRGBGroupControllerAddBrightnessView {
+    [_scrollView addSubview:_brightnessTitle];
+    [_brightnessTitle autoSetDimension:ALDimensionHeight toSize:20];
+    [_brightnessTitle autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_RGBGroupControllSwitchView withOffset:5];
+    [_brightnessTitle autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
+    [_brightnessTitle autoSetDimension:ALDimensionWidth toSize:120];
+    
+    [_scrollView addSubview:_brightnessView];
+    [_brightnessView autoSetDimension:ALDimensionHeight toSize:44];
+    [_brightnessView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_brightnessTitle withOffset:5];
+    [_brightnessView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+    [_brightnessView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+}
+
+- (void)forRGBGroupControllAdustInterface {
+    CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+    __block NSInteger brightness = 0;
+    [area.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, BOOL * _Nonnull stop) {
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceEntity.deviceId];
+        if ([model.powerState boolValue] && [model.level integerValue]>brightness && !model.isleave) {
+            brightness = [model.level integerValue];
+        }
+    }];
+    if (brightness) {
+        [_RGBGroupControllSwitch setOn:YES];
+        if (!_sliderIsMoving) {
+            [_levelSlider setValue:brightness animated:YES];
+        }
+    }else {
+        [_RGBGroupControllSwitch setOn:NO];
+        [_levelSlider setValue:0 animated:YES];
+    }
+    CSRDeviceEntity *lastDevice = [[area.devices allObjects] lastObject];
+    DeviceModel *lastModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:lastDevice.deviceId];
+    if (!_colorTemperatureSliderIsMoving) {
+                   [_colorTemperatureSlider setValue:(CGFloat)[lastModel.colorTemperature integerValue] animated:YES];
+               }
+           _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[lastModel.colorTemperature integerValue]];
+    UIColor *color = [UIColor colorWithRed:[lastModel.red integerValue]/255.0 green:[lastModel.green integerValue]/255.0 blue:[lastModel.blue integerValue]/255.0 alpha:1.0];
+    CGFloat hue,saturation,level,alpha;
+    if ([color getHue:&hue saturation:&saturation brightness:&level alpha:&alpha]) {
+        if (!_colorSliderIsMoving) {
+            [self.colorSlider sliderMyValue:hue];
+        }
+        self.colorLabel.text = [NSString stringWithFormat:@"%.f",hue*360];
+        if (!_colorSaturationSliderIsMoving) {
+            [self.colorSaturationSlider setValue:saturation animated:YES];
+        }
+        self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",saturation*100];
+        if (!_colorSquareIsMoving) {
+            [self.colorSquareView locationPickView:hue colorSaturation:saturation];
+        }
+    }
 }
 
 @end

@@ -30,6 +30,7 @@
     
     NSString *downloadAddress;
     NSInteger latestMCUSVersion;
+    UIButton *updateMCUBtn;
 }
 
 @property (weak, nonatomic) IBOutlet UIView *customContentView;
@@ -116,6 +117,16 @@
 @property (weak, nonatomic) IBOutlet UILabel *RB08SelectFiveLabel;
 @property (weak, nonatomic) IBOutlet UILabel *RB08ControlSixLabel;
 @property (weak, nonatomic) IBOutlet UILabel *RB08SelectSixLabel;
+
+@property (strong, nonatomic) IBOutlet UIView *GR15BView;
+@property (weak, nonatomic) IBOutlet UILabel *GR15BControlOneLabel;
+@property (weak, nonatomic) IBOutlet UILabel *GR15BSelectOneLabel;
+@property (weak, nonatomic) IBOutlet UILabel *GR15BControlTwoLabel;
+@property (weak, nonatomic) IBOutlet UILabel *GR15BSelectTwoLabel;
+@property (weak, nonatomic) IBOutlet UILabel *GR15BControlThreeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *GR15BSelectThreeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *GR15BControlFourLabel;
+@property (weak, nonatomic) IBOutlet UILabel *GR15BSelectFourLabel;
 
 
 @end
@@ -577,7 +588,7 @@
                 _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
             }
         }
-    }else if ([self.remoteEntity.shortName isEqualToString:@"RB08"]) {
+    }else if ([self.remoteEntity.shortName isEqualToString:@"RB08"] || [self.remoteEntity.shortName isEqualToString:@"GR10B"]) {
         _practicalityImageView.image = [UIImage imageNamed:@"rb08"];
         [self.customContentView addSubview:self.RB08View];
         [self.RB08View autoSetDimension:ALDimensionHeight toSize:269.0];
@@ -844,6 +855,25 @@
                 _RB08ControlSixLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
             }
         }
+    }else if ([self.remoteEntity.shortName isEqualToString:@"GR15B"]) {
+        _practicalityImageView.image = [UIImage imageNamed:@"gr15b"];
+        [_customContentView addSubview:self.GR15BView];
+        [self.GR15BView autoSetDimension:ALDimensionHeight toSize:179.0f];
+        [self.GR15BView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+        [self.GR15BView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+        [self.GR15BView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameBgView withOffset:30];
+        
+        if (self.remoteEntity.remoteBranch && self.remoteEntity.remoteBranch.length >= 46) {
+            [self fillControlLabel:_GR15BControlOneLabel selectedLabel:_GR15BSelectOneLabel brachString:[self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(8, 8)]];
+            [self fillControlLabel:_GR15BControlTwoLabel selectedLabel:_GR15BSelectTwoLabel brachString:[self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(18, 8)]];
+            [self fillControlLabel:_GR15BControlThreeLabel selectedLabel:_GR15BSelectThreeLabel brachString:[self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(28, 8)]];
+            [self fillControlLabel:_GR15BControlFourLabel selectedLabel:_GR15BSelectFourLabel brachString:[self.remoteEntity.remoteBranch substringWithRange:NSMakeRange(38, 8)]];
+        }else {
+            _R5BSHBControlOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _R5BSHBControlTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _R5BSHBControlThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _R5BSHBControlFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        }
     }
     
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
@@ -864,7 +894,7 @@
             latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
             downloadAddress = dic[@"Download_address"];
             if ([_remoteEntity.mcuSVersion integerValue]<latestMCUSVersion) {
-                UIButton *updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
+                updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
                 [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
                 [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
                 [updateMCUBtn setTitleColor:DARKORAGE forState:UIControlStateNormal];
@@ -901,11 +931,19 @@
     }
 }
 
-- (void)hideUpdateHud {
+- (void)updateSuccess:(BOOL)value {
     if (_updatingHud) {
         [_updatingHud hideAnimated:YES];
         [self.translucentBgView removeFromSuperview];
         self.translucentBgView = nil;
+        [updateMCUBtn removeFromSuperview];
+        updateMCUBtn = nil;
+        NSString *valueStr = value? AcTECLocalizedStringFromTable(@"Success", @"Localizable"):AcTECLocalizedStringFromTable(@"Error", @"Localizable");
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:valueStr preferredStyle:UIAlertControllerStyleAlert];
+        [alert.view setTintColor:DARKORAGE];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+        [alert addAction:cancel];
+        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 
@@ -994,9 +1032,15 @@
             }else {
                 _contentViewHeight.constant = safeHeight;
             }
-        }else if ([self.remoteEntity.shortName isEqualToString:@"RB08"]) {
+        }else if ([self.remoteEntity.shortName isEqualToString:@"RB08"] || [self.remoteEntity.shortName isEqualToString:@"GR10B"]) {
             if (safeHeight <= 596.5) {
                 _contentViewHeight.constant = 596.5;
+            }else {
+                _contentViewHeight.constant = safeHeight;
+            }
+        }else if ([self.remoteEntity.shortName isEqualToString:@"GR15B"]) {
+            if (safeHeight <= 506.5) {
+                _contentViewHeight.constant = 506.5;
             }else {
                 _contentViewHeight.constant = safeHeight;
             }
@@ -1120,6 +1164,9 @@
     DeviceListViewController *list = [[DeviceListViewController alloc] init];
     list.selectMode = selectMode;
     list.buttonNum = [NSNumber numberWithInteger:(button.tag % 10 + 1)];
+    if (_remoteEntity.remoteBranch && [_remoteEntity.remoteBranch length]>=button.tag % 10 * 10 + 16) {
+        list.remoteBranch = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(button.tag % 10 * 10 + 8, 8)];
+    }
     
     [list getSelectedDevices:^(NSArray *devices) {
         if ([devices count] > 0) {
@@ -1807,6 +1854,120 @@
     return nil;
 }
 
+- (IBAction)selectRGBDeviceAction:(UIButton *)sender {
+    DeviceListViewController *list = [[DeviceListViewController alloc] init];
+    list.selectMode = DeviceListSelectMode_SelectRGBDeviceOrGroup;
+    switch (sender.tag) {
+        case 800:
+            if (_GR15BSelectOneLabel.tag!=0) {
+                list.originalMembers = [NSArray arrayWithObject:[NSNumber numberWithInteger:_GR15BSelectOneLabel.tag]];
+            }
+            break;
+        case 801:
+            if (_GR15BSelectTwoLabel.tag!=0) {
+                list.originalMembers = [NSArray arrayWithObject:[NSNumber numberWithInteger:_GR15BSelectTwoLabel.tag]];
+            }
+            break;
+        case 802:
+            if (_GR15BSelectThreeLabel.tag!=0) {
+                list.originalMembers = [NSArray arrayWithObject:[NSNumber numberWithInteger:_GR15BSelectThreeLabel.tag]];
+            }
+            break;
+        case 803:
+            if (_GR15BSelectFourLabel.tag!=0) {
+                list.originalMembers = [NSArray arrayWithObject:[NSNumber numberWithInteger:_GR15BSelectFourLabel.tag]];
+            }
+            break;
+        default:
+            break;
+    }
+    [list getSelectedDevices:^(NSArray *devices) {
+        if ([devices count]>0) {
+            NSNumber *num = devices[0];
+            if ([num integerValue] > 32768) {
+                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:num];
+                switch (sender.tag) {
+                    case 800:
+                        _GR15BControlOneLabel.text = AcTECLocalizedStringFromTable(@"ControlLamp", @"Localizable");
+                        _GR15BSelectOneLabel.text = deviceEntity.name;
+                        _GR15BSelectOneLabel.tag = [num integerValue];
+                        break;
+                    case 801:
+                        _GR15BControlTwoLabel.text = AcTECLocalizedStringFromTable(@"ControlLamp", @"Localizable");
+                        _GR15BSelectTwoLabel.text = deviceEntity.name;
+                        _GR15BSelectTwoLabel.tag = [num integerValue];
+                        break;
+                    case 802:
+                        _GR15BControlThreeLabel.text = AcTECLocalizedStringFromTable(@"ControlLamp", @"Localizable");
+                        _GR15BSelectThreeLabel.text = deviceEntity.name;
+                        _GR15BSelectThreeLabel.tag = [num integerValue];
+                        break;
+                    case 803:
+                        _GR15BControlFourLabel.text = AcTECLocalizedStringFromTable(@"ControlLamp", @"Localizable");
+                        _GR15BSelectFourLabel.text = deviceEntity.name;
+                        _GR15BSelectFourLabel.tag = [num integerValue];
+                        break;
+                    default:
+                        break;
+                }
+            }else {
+                CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:num];
+                switch (sender.tag) {
+                    case 800:
+                        _GR15BControlOneLabel.text = AcTECLocalizedStringFromTable(@"ControlGroup", @"Localizable");
+                        _GR15BSelectOneLabel.text = areaEntity.areaName;
+                        _GR15BSelectOneLabel.tag = [num integerValue];
+                        break;
+                    case 801:
+                        _GR15BControlTwoLabel.text = AcTECLocalizedStringFromTable(@"ControlGroup", @"Localizable");
+                        _GR15BSelectTwoLabel.text = areaEntity.areaName;
+                        _GR15BSelectTwoLabel.tag = [num integerValue];
+                        break;
+                    case 802:
+                        _GR15BControlThreeLabel.text = AcTECLocalizedStringFromTable(@"ControlGroup", @"Localizable");
+                        _GR15BSelectThreeLabel.text = areaEntity.areaName;
+                        _GR15BSelectThreeLabel.tag = [num integerValue];
+                        break;
+                    case 803:
+                        _GR15BControlFourLabel.text = AcTECLocalizedStringFromTable(@"ControlGroup", @"Localizable");
+                        _GR15BSelectFourLabel.text = areaEntity.areaName;
+                        _GR15BSelectFourLabel.tag = [num integerValue];
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }else {
+            switch (sender.tag) {
+                case 800:
+                    _GR15BControlOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+                    _GR15BSelectOneLabel.text = @"";
+                    _GR15BSelectOneLabel.tag = 0;
+                    break;
+                case 801:
+                    _GR15BControlTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+                    _GR15BSelectTwoLabel.text = @"";
+                    _GR15BSelectTwoLabel.tag = 0;
+                    break;
+                case 802:
+                    _GR15BControlThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+                    _GR15BSelectThreeLabel.text = @"";
+                    _GR15BSelectThreeLabel.tag = 0;
+                    break;
+                case 803:
+                    _GR15BControlFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+                    _GR15BSelectFourLabel.text = @"";
+                    _GR15BSelectFourLabel.tag = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+    }];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
 - (void)doneAction {
     _setSuccess = NO;
     timerSeconde = 20;
@@ -1895,6 +2056,29 @@
             
         }];
         
+    }else if ([_remoteEntity.shortName isEqualToString:@"GR15B"]) {
+        NSString *cmdStr1 = [self cmdStringFromControlLabel:_GR15BControlOneLabel selectedLabel:_GR15BSelectOneLabel buttonNum:@1];
+        
+        NSString *cmdStr2 = [self cmdStringFromControlLabel:_GR15BControlTwoLabel selectedLabel:_GR15BSelectTwoLabel buttonNum:@2];
+        
+        NSString *cmdStr3 = [self cmdStringFromControlLabel:_GR15BControlThreeLabel selectedLabel:_GR15BSelectThreeLabel buttonNum:@3];
+        
+        NSString *cmdStr4 = [self cmdStringFromControlLabel:_GR15BControlFourLabel selectedLabel:_GR15BSelectFourLabel buttonNum:@4];
+        
+        NSString *cmdString = [NSString stringWithFormat:@"9b150407%@08%@09%@0a%@",cmdStr1,cmdStr2,cmdStr3,cmdStr4];
+        
+        [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmdString] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+            
+            _remoteEntity.remoteBranch = cmdString;
+            [[CSRDatabaseManager sharedInstance] saveContext];
+            _setSuccess = YES;
+            [_hub hideAnimated:YES];
+            [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+            [timer invalidate];
+            timer = nil;
+        } failure:^(NSError * _Nonnull error) {
+            
+        }];
     }else {
         if (![[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]) {
             if ([_remoteEntity.shortName isEqualToString:@"RB01"]||[_remoteEntity.shortName isEqualToString:@"RB05"]) {
@@ -1959,7 +2143,7 @@
                 } failure:^(NSError * _Nonnull error) {
                     
                 }];
-            }else if ([_remoteEntity.shortName isEqualToString:@"RB08"]) {
+            }else if ([_remoteEntity.shortName isEqualToString:@"RB08"] || [_remoteEntity.shortName isEqualToString:@"GR10B"]) {
                 NSString *cmdStr1 = [self cmdStringFromControlLabel:_RB08ControlOneLabel selectedLabel:_RB08SelectOneLabel buttonNum:@1];
                 
                 NSString *cmdStr2 = [self cmdStringFromControlLabel:_RB08ControlTwoLabel selectedLabel:_RB08SelectTwoLabel buttonNum:@2];
@@ -1995,7 +2179,7 @@
                 if ([_fConrolOneLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_fSelectOneLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
                     NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectOneLabel.tag];
                     DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_fSelectOneLabel.tag]];
-                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
                         NSString *chanelSelect;
                         if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
                             chanelSelect = @"2";
@@ -2021,7 +2205,7 @@
                 if ([_fConrolTwoLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_fSelectTwoLabel.text isEqualToString:@"Not found"]) {
                     NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectTwoLabel.tag];
                     DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_fSelectTwoLabel.tag]];
-                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
                         NSString *chanelSelect;
                         if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
                             chanelSelect = @"2";
@@ -2047,7 +2231,7 @@
                 if ([_fConrolThreeLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_fSelectThreeLabel.text isEqualToString:@"Not found"]) {
                     NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectThreeLabel.tag];
                     DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_fSelectThreeLabel.tag]];
-                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
                         NSString *chanelSelect;
                         if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
                             chanelSelect = @"2";
@@ -2073,7 +2257,7 @@
                 if ([_fConrolFourLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_fSelectFourLabel.text isEqualToString:@"Not found"]) {
                     NSString *deviceIdString = [self exchangePositionOfDeviceId:_fSelectFourLabel.tag];
                     DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_fSelectFourLabel.tag]];
-                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
                         NSString *chanelSelect;
                         if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
                             chanelSelect = @"2";
@@ -2195,7 +2379,7 @@
                 if ([_sConrolOneLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_sSelectOneLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
                     NSString *deviceIdString = [self exchangePositionOfDeviceId:_sSelectOneLabel.tag];
                     DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_sSelectOneLabel.tag]];
-                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
                         NSString *chanelSelect;
                         if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
                             chanelSelect = @"2";
@@ -2239,7 +2423,7 @@
                 if ([_tConrolOneLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_tSelectOneLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
                     NSString *deviceIdString = [self exchangePositionOfDeviceId:_tSelectOneLabel.tag];
                     DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_tSelectOneLabel.tag]];
-                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
                         NSString *chanelSelect;
                         if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
                             chanelSelect = @"2";
@@ -2265,7 +2449,7 @@
                 if ([_tConrolTwoLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_tSelectTwoLabel.text isEqualToString:@"Not found"]) {
                     NSString *deviceIdString = [self exchangePositionOfDeviceId:_tSelectTwoLabel.tag];
                     DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_tSelectTwoLabel.tag]];
-                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
                         NSString *chanelSelect;
                         if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
                             chanelSelect = @"2";
@@ -2336,12 +2520,12 @@
                     }
                     
                 });
-            }else if ([_remoteEntity.shortName isEqualToString:@"RB08"]) {
+            }else if ([_remoteEntity.shortName isEqualToString:@"RB08"] || [_remoteEntity.shortName isEqualToString:@"GR10B"]) {
                 NSString *cmdStr1;
                 if ([_RB08ControlOneLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_RB08SelectOneLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
                     NSString *deviceIdString = [self exchangePositionOfDeviceId:_RB08SelectOneLabel.tag];
                     DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_RB08SelectOneLabel.tag]];
-                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
                         NSString *chanelSelect;
                         if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
                             chanelSelect = @"2";
@@ -2367,7 +2551,7 @@
                 if ([_RB08ControlTwoLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_RB08SelectTwoLabel.text isEqualToString:@"Not found"]) {
                     NSString *deviceIdString = [self exchangePositionOfDeviceId:_RB08SelectTwoLabel.tag];
                     DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_RB08SelectTwoLabel.tag]];
-                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
                         NSString *chanelSelect;
                         if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
                             chanelSelect = @"2";
@@ -2393,7 +2577,7 @@
                 if ([_RB08ControlThreeLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_RB08SelectThreeLabel.text isEqualToString:@"Not found"]) {
                     NSString *deviceIdString = [self exchangePositionOfDeviceId:_RB08SelectThreeLabel.tag];
                     DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_RB08SelectThreeLabel.tag]];
-                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
                         NSString *chanelSelect;
                         if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
                             chanelSelect = @"2";
@@ -2419,7 +2603,7 @@
                 if ([_RB08ControlFourLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_RB08SelectFourLabel.text isEqualToString:@"Not found"]) {
                     NSString *deviceIdString = [self exchangePositionOfDeviceId:_RB08SelectFourLabel.tag];
                     DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_RB08SelectFourLabel.tag]];
-                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
                         NSString *chanelSelect;
                         if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
                             chanelSelect = @"2";
@@ -2445,7 +2629,7 @@
                 if ([_RB08ControlFiveLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_RB08SelectFiveLabel.text isEqualToString:@"Not found"]) {
                     NSString *deviceIdString = [self exchangePositionOfDeviceId:_RB08SelectFiveLabel.tag];
                     DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_RB08SelectFiveLabel.tag]];
-                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
                         NSString *chanelSelect;
                         if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
                             chanelSelect = @"2";
@@ -2471,7 +2655,7 @@
                 if ([_RB08ControlSixLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![_RB08SelectSixLabel.text isEqualToString:@"Not found"]) {
                     NSString *deviceIdString = [self exchangePositionOfDeviceId:_RB08SelectSixLabel.tag];
                     DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:_RB08SelectSixLabel.tag]];
-                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
                         NSString *chanelSelect;
                         if (deviceModel.channel1Selected && !deviceModel.channel2Selected) {
                             chanelSelect = @"2";
@@ -2966,7 +3150,7 @@
     if ([controlLabel.text containsString:AcTECLocalizedStringFromTable(@"Lamp", @"Localizable")] && ![selectedLabel.text isEqualToString:AcTECLocalizedStringFromTable(@"Notfound", @"Localizable")]) {
         NSString *deviceIdString = [self exchangePositionOfDeviceId:selectedLabel.tag];
         DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:[NSNumber numberWithInteger:selectedLabel.tag]];
-        if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToCurtainController:deviceModel.shortName] || [CSRUtilities belongToFanController:deviceModel.shortName]) {
+        if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToCurtainController:deviceModel.shortName] || [CSRUtilities belongToFanController:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
             NSNumber *obj = [deviceModel.buttonnumAndChannel objectForKey:[NSString stringWithFormat:@"%@",num]];
             if (obj) {
                 cmdString = [NSString stringWithFormat:@"0%@00%@",obj,deviceIdString];

@@ -121,6 +121,8 @@
 + (BOOL)belongToTwoChannelDimmer:(NSString *)shortName;
 + (BOOL)belongToSocketOneChannel:(NSString *)shortName;
 + (BOOL)belongToSocketTwoChannel:(NSString *)shortName;
++ (BOOL)belongToTwoChannelSwitch:(NSString *)shortName;
++ (BOOL)belongToDALDevice:(NSString *)shortName;
 
 +(NSString *)convertToJsonData:(NSDictionary *)dict;
 + (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString;

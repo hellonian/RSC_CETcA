@@ -117,7 +117,11 @@
         }
         if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
             DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-            [_curtainSlider setValue:[model.level floatValue] animated:YES];
+            if ([_curtainEntity.shortName isEqualToString:@"C300IB"] || [_curtainEntity.shortName isEqualToString:@"C300IBH"]/*旧设备*/) {
+                [_curtainSlider setValue:[model.level floatValue] animated:YES];
+            }else {
+                [_curtainSlider setValue:model.channel1Level animated:YES];
+            }
         }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
             DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
             [_curtainSlider setValue:model.channel1Level animated:YES];
@@ -210,7 +214,11 @@
     _bubbleLabel.hidden = NO;
     
     if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
-        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"79020401"] success:nil failure:nil];
+        if ([_curtainEntity.shortName isEqualToString:@"C300IB"] || [_curtainEntity.shortName isEqualToString:@"C300IBH"]/*旧设备*/) {
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"79020401"] success:nil failure:nil];
+        }else {
+            [[DataModelManager shareInstance] sendCmdData:@"7903040101" toDeviceId:_deviceId];
+        }
     }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
         [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"790304010%ld",(long)_controllChannel] toDeviceId:_deviceId];
     }
@@ -233,7 +241,11 @@
     _bubbleLabel.text = AcTECLocalizedStringFromTable(@"bubble_mid_words", @"Localizable");
     
     if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
-        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"79020400"] success:nil failure:nil];
+        if ([_curtainEntity.shortName isEqualToString:@"C300IB"] || [_curtainEntity.shortName isEqualToString:@"C300IBH"]/*旧设备*/) {
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"79020400"] success:nil failure:nil];
+        }else {
+            [[DataModelManager shareInstance] sendCmdData:@"7903040001" toDeviceId:_deviceId];
+        }
     }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
         [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"790304000%ld",(long)_controllChannel] toDeviceId:_deviceId];
     }
@@ -333,7 +345,11 @@
 - (IBAction)curtainOpenTouchDown:(UIButton *)sender {
     if (_calibrating && _calibrateReady) {
         if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
-            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790303ff00"] success:nil failure:nil];
+            if ([_curtainEntity.shortName isEqualToString:@"C300IB"] || [_curtainEntity.shortName isEqualToString:@"C300IBH"]/*旧设备*/) {
+                [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790303ff00"] success:nil failure:nil];
+            }else {
+                [[DataModelManager shareInstance] sendCmdData:@"790403ff0001" toDeviceId:_deviceId];
+            }
         }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
             [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"790403ff000%ld",(long)_controllChannel] toDeviceId:_deviceId];
         }
@@ -343,7 +359,11 @@
 - (IBAction)curtainCloseTouchDown:(UIButton *)sender {
     if (_calibrating && _calibrateReady) {
         if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
-            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790303ff00"] success:nil failure:nil];
+            if ([_curtainEntity.shortName isEqualToString:@"C300IB"] || [_curtainEntity.shortName isEqualToString:@"C300IBH"]/*旧设备*/) {
+                [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790303ff00"] success:nil failure:nil];
+            }else {
+                [[DataModelManager shareInstance] sendCmdData:@"790403ff0001" toDeviceId:_deviceId];
+            }
         }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
             [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"790403ff000%ld",(long)_controllChannel] toDeviceId:_deviceId];
         }
@@ -393,7 +413,11 @@
         [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"7902020%ld",(long)_controllChannel]] success:nil failure:nil];
     }else if (_calibrateReady) {
         if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
-            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"7903030000"] success:nil failure:nil];
+            if ([_curtainEntity.shortName isEqualToString:@"C300IB"] || [_curtainEntity.shortName isEqualToString:@"C300IBH"]/*旧设备*/) {
+                [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"7903030000"] success:nil failure:nil];
+            }else {
+                [[DataModelManager shareInstance] sendCmdData:@"790403000001" toDeviceId:_deviceId];
+            }
         }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
             [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"79040300000%ld",(long)_controllChannel] toDeviceId:_deviceId];
         }
@@ -412,7 +436,11 @@
         [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"7902010%ld",(long)_controllChannel]] success:nil failure:nil];
     }else if (_calibrateReady) {
         if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
-            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"7903030000"] success:nil failure:nil];
+            if ([_curtainEntity.shortName isEqualToString:@"C300IB"] || [_curtainEntity.shortName isEqualToString:@"C300IBH"]/*旧设备*/) {
+                [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"7903030000"] success:nil failure:nil];
+            }else {
+                [[DataModelManager shareInstance] sendCmdData:@"790403000001" toDeviceId:_deviceId];
+            }
         }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
             [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"79040300000%ld",(long)_controllChannel] toDeviceId:_deviceId];
         }
@@ -439,11 +467,16 @@
 - (IBAction)sliderTouchUpOutside:(UISlider *)sender {
     if (!_calibrating) {
         if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
-            [[LightModelApi sharedInstance] setLevel:_deviceId level:@(sender.value) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-                
-            } failure:^(NSError * _Nullable error) {
-                
-            }];
+            if ([_curtainEntity.shortName isEqualToString:@"C300IB"] || [_curtainEntity.shortName isEqualToString:@"C300IBH"]/*旧设备*/) {
+                [[LightModelApi sharedInstance] setLevel:_deviceId level:@(sender.value) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                    
+                } failure:^(NSError * _Nullable error) {
+                    
+                }];
+            }else {
+                BOOL state = sender.value == 255? NO:YES;
+                [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"7906060100030%d%@",state,[CSRUtilities stringWithHexNumber:sender.value]] toDeviceId:_deviceId];
+            }
         }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
             BOOL state = sender.value == 255? NO:YES;
             NSString *cmdStr = [NSString stringWithFormat:@"7906060%ld00030%d%@",(long)_controllChannel,state,[CSRUtilities stringWithHexNumber:sender.value]];
