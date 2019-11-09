@@ -61,7 +61,6 @@
                     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
                     NSDateComponents *weekdayComponents = [gregorian components:NSCalendarUnitWeekday fromDate:p.powerDate];
                     NSInteger week = [weekdayComponents weekday];
-                    NSLog(@"%@  %ld",p.powerDate,(long)week);
                     NSDateComponents *sDateComponents = [[NSDateComponents alloc] init];
                     [sDateComponents setDay:-(week-1)];
                     NSDate *startDate = [gregorian dateByAddingComponents:sDateComponents toDate:p.powerDate options:0];

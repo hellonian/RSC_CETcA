@@ -19,6 +19,8 @@
     CGFloat cellW;
     CGFloat maxPowerValue;
     NSInteger screenRowNum;
+    NSInteger resendreadcmdCount;
+    NSInteger category;
 }
 
 @property (weak, nonatomic) IBOutlet UIButton *dayBtn;
@@ -142,6 +144,7 @@
     [self.indicatorView startAnimating];
     [_dataMutableArray removeAllObjects];
     [_offsets removeAllObjects];
+    resendreadcmdCount = 0;
     switch (sender.tag) {
         case 1:
         {
@@ -155,15 +158,8 @@
             [_monthBtn setTitleColor:[UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1] forState:UIControlStateNormal];
             screenRowNum = 13;
             
-            _fulOffsets = @[@(0),@(3),@(6),@(9),@(12),@(15),@(18),@(21),@(24),@(27)];
-            
             [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea434%ldff001e",(long)_channel]] success:nil failure:nil];
-            
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                if (![_offsets containsObject:@(30)]) {
-                    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea434%ld1e",(long)_channel]] success:nil failure:nil];
-                }
-            });
+            [self resendReadCmd];
         }
             break;
         case 2:
@@ -177,14 +173,9 @@
             [_monthBtn setImage:[UIImage imageNamed:@"btn_month"] forState:UIControlStateNormal];
             [_monthBtn setTitleColor:[UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1] forState:UIControlStateNormal];
             screenRowNum = 7;
-            _fulOffsets = @[@(0),@(3),@(6),@(9)];
-            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea433%ldff000b",(long)_channel]] success:nil failure:nil];
             
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                if (![_offsets containsObject:@(9)]) {
-                    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea433%ld09",(long)_channel]] success:nil failure:nil];
-                }
-            });
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea433%ldff000b",(long)_channel]] success:nil failure:nil];
+            [self resendReadCmd];
         }
             break;
         case 3:
@@ -198,14 +189,10 @@
             [_weekBtn setImage:[UIImage imageNamed:@"btn_week"] forState:UIControlStateNormal];
             [_weekBtn setTitleColor:[UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1] forState:UIControlStateNormal];
             screenRowNum = 5;
-            _fulOffsets = @[@(0),@(3),@(6),@(9)];
+            
             [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea432%ldff000b",(long)_channel]] success:nil failure:nil];
             
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                if (![_offsets containsObject:@(9)]) {
-                    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea432%ld09",(long)_channel]] success:nil failure:nil];
-                }
-            });
+            [self resendReadCmd];
         }
             break;
         case 4:
@@ -219,20 +206,54 @@
             [_monthBtn setImage:[UIImage imageNamed:@"btn_month"] forState:UIControlStateNormal];
             [_monthBtn setTitleColor:[UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1] forState:UIControlStateNormal];
             screenRowNum = 9;
-            _fulOffsets = @[@(0),@(6),@(12),@(18)];
+            
             [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea435%ldff0017",(long)_channel]] success:nil failure:nil];
-            
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                if (![_offsets containsObject:@(18)]) {
-                    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea435%ld12",(long)_channel]] success:nil failure:nil];
-                }
-            });
-            
+            [self resendReadCmd];
         }
             break;
         default:
             break;
     }
+}
+
+- (void)resendReadCmd {
+    [self performSelector:@selector(delayMethod) withObject:nil afterDelay:10.0];
+}
+
+- (void)delayMethod {
+//    NSLog(@"offset:%@\nfuloffset:%@\nresendreadcmdCount:%ld",_offsets,_fulOffsets,resendreadcmdCount);
+    if ([_offsets count] == 0) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"Error:Unable to read data." preferredStyle:UIAlertControllerStyleAlert];
+            [alert.view setTintColor:DARKORAGE];
+            UIAlertAction *yesAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                [self backSetting];
+            }];
+            [alert addAction:yesAction];
+            [self presentViewController:alert animated:YES completion:nil];
+        }else if ([_offsets count]<[_fulOffsets count]) {
+            if (resendreadcmdCount<3) {
+                for (NSNumber *offset in _fulOffsets) {
+                    if (![_offsets containsObject:offset]) {
+                        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea43%ld%ld%@",category,(long)_channel,[CSRUtilities stringWithHexNumber:[offset integerValue]]]] success:nil failure:nil];
+                        [NSThread sleepForTimeInterval:0.1];
+                    }
+                }
+                resendreadcmdCount ++;
+                [self resendReadCmd];
+            }else {
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"Error:Unable to read data." preferredStyle:UIAlertControllerStyleAlert];
+                [alert.view setTintColor:DARKORAGE];
+                UIAlertAction *yesAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    [self backSetting];
+                }];
+                [alert addAction:yesAction];
+                [self presentViewController:alert animated:YES completion:nil];
+            }
+        }
+}
+
+- (void)cancelResendReadCmd {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayMethod) object:nil];
 }
 
 - (void)socketPowerStatisticsCall:(NSNotification *)notification {
@@ -243,13 +264,14 @@
     
     if ([deviceId isEqualToNumber:_deviceId] && channel == _channel) {
         
-        NSString *kindStr = [userInfoStr substringWithRange:NSMakeRange(0, 1)];
+        category = [[userInfoStr substringWithRange:NSMakeRange(0, 1)] integerValue];
         NSInteger offset =[CSRUtilities numberWithHexString:[userInfoStr substringWithRange:NSMakeRange(2, 2)]];
         if (![_offsets containsObject:@(offset)]) {
             [_offsets addObject:@(offset)];
-            switch ([kindStr integerValue]) {
+            switch (category) {
                 case 4:
                     if (screenRowNum==13) {
+                        _fulOffsets = @[@(0),@(3),@(6),@(9),@(12),@(15),@(18),@(21),@(24),@(27),@(30)];
                         if (offset==30) {
                             PowerModel *powerModel = [[PowerModel alloc] init];
                             powerModel.kindInt = 4;
@@ -263,15 +285,7 @@
                                 [_dataMutableArray addObject:powerModel];
                             }
                             
-                            NSLog(@"4~~> %@  %f  %d",powerModel.powerDate,powerModel.power,powerModel.selected);
-                            
-                            if ([_dataMutableArray count]<31) {
-                                for (NSNumber *offset in _fulOffsets) {
-                                    if (![_offsets containsObject:offset]) {
-                                        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea434%ld%@",(long)_channel,[CSRUtilities stringWithHexNumber:[offset integerValue]]]] success:nil failure:nil];
-                                    }
-                                }
-                            }
+//                            NSLog(@"4~~> %@  %f  %d",powerModel.powerDate,powerModel.power,powerModel.selected);
                             
                         }else {
                             for (int i=0; i<3; i++) {
@@ -287,7 +301,7 @@
                                 }else {
                                     powerModel.selected = NO;
                                 }
-                                NSLog(@"4~~> %@  %f",powerModel.powerDate,powerModel.power);
+//                                NSLog(@"4~~> %@  %f",powerModel.powerDate,powerModel.power);
                                 if (![_dataMutableArray containsObject:powerModel]) {
                                     [_dataMutableArray addObject:powerModel];
                                 }
@@ -295,6 +309,7 @@
                         }
                         
                         if ([_dataMutableArray count]==31) {
+                            [self cancelResendReadCmd];
                             NSSortDescriptor *sort1 = [NSSortDescriptor sortDescriptorWithKey:@"power" ascending:YES];
                             [_dataMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort1]];
                             PowerModel *p = [_dataMutableArray lastObject];
@@ -306,7 +321,7 @@
                                 [_dataMutableArray insertObject:@(0) atIndex:0];
                                 [_dataMutableArray addObject:@(0)];
                             }
-                            NSLog(@"%@",_dataMutableArray);
+//                            NSLog(@"%@",_dataMutableArray);
                             
                             [_powerList reloadData];
                             
@@ -325,6 +340,7 @@
                     break;
                 case 3:
                     if (screenRowNum == 7) {
+                        _fulOffsets = @[@(0),@(3),@(6),@(9)];
                         for (int i=0; i<3; i++) {
                             PowerModel *powerModel = [[PowerModel alloc] init];
                             powerModel.kindInt = 3;
@@ -338,22 +354,14 @@
                             [dateComponents setDay:-offset*7-i*7];
                             powerModel.powerDate = [calendar dateByAddingComponents:dateComponents toDate:[NSDate date] options:0];
                             powerModel.power = [CSRUtilities numberWithHexString:[userInfoStr substringWithRange:NSMakeRange(4*i+4, 4)]]/10.0;
-                            NSLog(@"3~~> %@  %f",powerModel.powerDate,powerModel.power);
+//                            NSLog(@"3~~> %@  %f",powerModel.powerDate,powerModel.power);
                             if (![_dataMutableArray containsObject:powerModel]) {
                                 [_dataMutableArray addObject:powerModel];
                             }
                         }
-                        if (offset==9) {
-                            if ([_dataMutableArray count]<12) {
-                                for (NSNumber *offset in _fulOffsets) {
-                                    if (![_offsets containsObject:offset]) {
-                                        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea433%ld%@",(long)_channel,[CSRUtilities stringWithHexNumber:[offset integerValue]]]] success:nil failure:nil];
-                                    }
-                                }
-                            }
-                        }
                         
                         if ([_dataMutableArray count]==12) {
+                            [self cancelResendReadCmd];
                             NSSortDescriptor *sort1 = [NSSortDescriptor sortDescriptorWithKey:@"power" ascending:YES];
                             [_dataMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort1]];
                             PowerModel *p = [_dataMutableArray lastObject];
@@ -388,6 +396,7 @@
                     break;
                 case 2:
                     if (screenRowNum==5) {
+                        _fulOffsets = @[@(0),@(3),@(6),@(9)];
                         for (int i=0; i<3; i++) {
                             PowerModel *powerModel = [[PowerModel alloc] init];
                             powerModel.kindInt = 2;
@@ -401,19 +410,12 @@
                             [dateComponents setMonth:-i-offset];
                             powerModel.powerDate = [calendar dateByAddingComponents:dateComponents toDate:[NSDate date] options:0];
                             powerModel.power = [CSRUtilities numberWithHexString:[userInfoStr substringWithRange:NSMakeRange(4*i+4, 4)]]/10.0;
-                            NSLog(@"2~~> %@  %f",powerModel.powerDate,powerModel.power);
+//                            NSLog(@"2~~> %@  %f",powerModel.powerDate,powerModel.power);
                             [_dataMutableArray addObject:powerModel];
                         }
-                        if (offset==9) {
-                            if ([_dataMutableArray count]<12) {
-                                for (NSNumber *offset in _fulOffsets) {
-                                    if (![_offsets containsObject:offset]) {
-                                        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea432%ld%@",(long)_channel,[CSRUtilities stringWithHexNumber:[offset integerValue]]]] success:nil failure:nil];
-                                    }
-                                }
-                            }
-                        }
+
                         if ([_dataMutableArray count]==12) {
+                            [self cancelResendReadCmd];
                             NSSortDescriptor *sort1 = [NSSortDescriptor sortDescriptorWithKey:@"power" ascending:YES];
                             [_dataMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort1]];
                             PowerModel *p = [_dataMutableArray lastObject];
@@ -442,6 +444,7 @@
                     break;
                 case 5:
                     if (screenRowNum==9) {
+                        _fulOffsets = @[@(0),@(6),@(12),@(18)];
                         for (int i=0; i<6; i++) {
                             PowerModel *powerModel = [[PowerModel alloc] init];
                             powerModel.kindInt = 5;
@@ -455,19 +458,12 @@
                             [dateComponents setHour:-offset-i];
                             powerModel.powerDate = [calendar dateByAddingComponents:dateComponents toDate:[NSDate date] options:0];
                             powerModel.power = [CSRUtilities numberWithHexString:[userInfoStr substringWithRange:NSMakeRange(2*i+4, 2)]]/10.0;
-                            NSLog(@"5~~> %@  %f",powerModel.powerDate,powerModel.power);
+//                            NSLog(@"5~~> %@  %f",powerModel.powerDate,powerModel.power);
                             [_dataMutableArray addObject:powerModel];
                         }
-                        if (offset == 18) {
-                            if ([_dataMutableArray count]<24) {
-                                for (NSNumber *offset in _fulOffsets) {
-                                    if (![_offsets containsObject:offset]) {
-                                        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea435%ld%@",(long)_channel,[CSRUtilities stringWithHexNumber:[offset integerValue]]]] success:nil failure:nil];
-                                    }
-                                }
-                            }
-                        }
+
                         if ([_dataMutableArray count]==24) {
+                            [self cancelResendReadCmd];
                             NSSortDescriptor *sort1 = [NSSortDescriptor sortDescriptorWithKey:@"power" ascending:YES];
                             [_dataMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort1]];
                             PowerModel *p = [_dataMutableArray lastObject];
@@ -478,7 +474,7 @@
                                 [_dataMutableArray insertObject:@(0) atIndex:0];
                                 [_dataMutableArray addObject:@(0)];
                             }
-                            NSLog(@"%@",_dataMutableArray);
+//                            NSLog(@"%@",_dataMutableArray);
                             [_powerList reloadData];
                             
                             [_powerList scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:31 inSection:0] atScrollPosition:UICollectionViewScrollPositionRight animated:NO];
@@ -488,6 +484,122 @@
                             PowerModel *endP = [_dataMutableArray objectAtIndex:27];
                             _topDateLabel.text = [NSString stringWithFormat:@"%@-%@",[hourFormatter stringFromDate:startP.powerDate],[hourFormatter stringFromDate:endP.powerDate]];
                             _middleLabel.text = [NSString stringWithFormat:@"%.1f",endP.power];
+                            
+                            [self.indicatorView stopAnimating];
+                            [self.translucentBgView removeFromSuperview];
+                        }
+                    }
+                    break;
+                case 9:
+                    if (screenRowNum==9) {
+                        _fulOffsets = @[@(0),@(3),@(6),@(9),@(12),@(15),@(18),@(21)];
+                        for (int i=0; i<3; i++) {
+                            PowerModel *powerModel = [[PowerModel alloc] init];
+                            powerModel.kindInt = 5;
+                            if (offset==0&&i==0) {
+                                powerModel.selected = YES;
+                            }else {
+                                powerModel.selected = NO;
+                            }
+                            NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+                            NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+                            [dateComponents setHour:-offset-i];
+                            powerModel.powerDate = [calendar dateByAddingComponents:dateComponents toDate:[NSDate date] options:0];
+                            powerModel.power = [CSRUtilities numberWithHexString:[userInfoStr substringWithRange:NSMakeRange(4*i+4, 4)]]/100.0;
+//                            NSLog(@"9~~> %@  %f",powerModel.powerDate,powerModel.power);
+                            [_dataMutableArray addObject:powerModel];
+                        }
+                        
+                        if ([_dataMutableArray count]==24) {
+                            [self cancelResendReadCmd];
+                            NSSortDescriptor *sort1 = [NSSortDescriptor sortDescriptorWithKey:@"power" ascending:YES];
+                            [_dataMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort1]];
+                            PowerModel *p = [_dataMutableArray lastObject];
+                            maxPowerValue = p.power;
+                            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"powerDate" ascending:YES];
+                            [_dataMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+                            for (int i=0; i<4; i++) {
+                                [_dataMutableArray insertObject:@(0) atIndex:0];
+                                [_dataMutableArray addObject:@(0)];
+                            }
+//                            NSLog(@"%@",_dataMutableArray);
+                            [_powerList reloadData];
+                            
+                            [_powerList scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:31 inSection:0] atScrollPosition:UICollectionViewScrollPositionRight animated:NO];
+                            NSDateFormatter *hourFormatter = [[NSDateFormatter alloc] init];
+                            [hourFormatter setDateFormat:@"HH"];
+                            PowerModel *startP = [_dataMutableArray objectAtIndex:23];
+                            PowerModel *endP = [_dataMutableArray objectAtIndex:27];
+                            _topDateLabel.text = [NSString stringWithFormat:@"%@-%@",[hourFormatter stringFromDate:startP.powerDate],[hourFormatter stringFromDate:endP.powerDate]];
+                            _middleLabel.text = [NSString stringWithFormat:@"%.2f",endP.power];
+                            
+                            [self.indicatorView stopAnimating];
+                            [self.translucentBgView removeFromSuperview];
+                        }
+                    }
+                    break;
+                case 8:
+                    if (screenRowNum==13) {
+                        _fulOffsets = @[@(0),@(3),@(6),@(9),@(12),@(15),@(18),@(21),@(24),@(27),@(30)];
+                        if (offset==30) {
+                            PowerModel *powerModel = [[PowerModel alloc] init];
+                            powerModel.kindInt = 4;
+                            NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+                            NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+                            [dateComponents setDay:-offset];
+                            powerModel.powerDate = [calendar dateByAddingComponents:dateComponents toDate:[NSDate date] options:0];
+                            powerModel.power = [CSRUtilities numberWithHexString:[userInfoStr substringWithRange:NSMakeRange(4, 4)]]/100.0;
+                            powerModel.selected = NO;
+                            if (![_dataMutableArray containsObject:powerModel]) {
+                                [_dataMutableArray addObject:powerModel];
+                            }
+//                            NSLog(@"8~~> %@  %f  %d",powerModel.powerDate,powerModel.power,powerModel.selected);
+                            
+                        }else {
+                            for (int i=0; i<3; i++) {
+                                PowerModel *powerModel = [[PowerModel alloc] init];
+                                powerModel.kindInt = 4;
+                                NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+                                NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+                                [dateComponents setDay:-offset-i];
+                                powerModel.powerDate = [calendar dateByAddingComponents:dateComponents toDate:[NSDate date] options:0];
+                                powerModel.power = [CSRUtilities numberWithHexString:[userInfoStr substringWithRange:NSMakeRange(4*i+4, 4)]]/100.0;
+                                if (offset==0&&i==0) {
+                                    powerModel.selected = YES;
+                                }else {
+                                    powerModel.selected = NO;
+                                }
+//                                NSLog(@"8~~> %@  %f",powerModel.powerDate,powerModel.power);
+                                if (![_dataMutableArray containsObject:powerModel]) {
+                                    [_dataMutableArray addObject:powerModel];
+                                }
+                            }
+                        }
+                        
+                        if ([_dataMutableArray count]==31) {
+                            [self cancelResendReadCmd];
+                            NSSortDescriptor *sort1 = [NSSortDescriptor sortDescriptorWithKey:@"power" ascending:YES];
+                            [_dataMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort1]];
+                            PowerModel *p = [_dataMutableArray lastObject];
+                            maxPowerValue = p.power;
+                            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"powerDate" ascending:YES];
+                            [_dataMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+                            
+                            for (int i=0; i<6; i++) {
+                                [_dataMutableArray insertObject:@(0) atIndex:0];
+                                [_dataMutableArray addObject:@(0)];
+                            }
+//                            NSLog(@"%@",_dataMutableArray);
+                            
+                            [_powerList reloadData];
+                            
+                            [_powerList scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:42 inSection:0] atScrollPosition:UICollectionViewScrollPositionRight animated:NO];
+                            PowerModel *startP = [_dataMutableArray objectAtIndex:30];
+                            PowerModel *endP = [_dataMutableArray objectAtIndex:36];
+                            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                            [formatter setDateFormat:@"dd/MM"];
+                            _topDateLabel.text = [NSString stringWithFormat:@"%@-%@",[formatter stringFromDate:startP.powerDate],[formatter stringFromDate:endP.powerDate]];
+                            _middleLabel.text = [NSString stringWithFormat:@"%.2f",endP.power];
                             
                             [self.indicatorView stopAnimating];
                             [self.translucentBgView removeFromSuperview];
@@ -625,7 +737,7 @@
             if (idx == index) {
                 if (!p.selected) {
                     p.selected = YES;
-                    _middleLabel.text = [NSString stringWithFormat:@"%.1f",p.power];
+                    _middleLabel.text = [NSString stringWithFormat:@"%.2f",p.power];
                     NSDate *startDate;
                     NSDate *endDate;
                     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];

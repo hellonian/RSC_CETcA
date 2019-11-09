@@ -453,12 +453,16 @@
             self.iconView.image = [UIImage imageNamed:@"Device_dimmer2"];
         }else if ([CSRUtilities belongToSocketOneChannel:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_socket1"];
-        }else if ([appearanceShortname containsString:@"RB08"] || [appearanceShortname containsString:@"RG10B"]) {
+        }else if ([appearanceShortname containsString:@"RB08"] || [appearanceShortname containsString:@"GR10B"] || [appearanceShortname containsString:@"6BWS"] || [appearanceShortname containsString:@"1BWS"] || [appearanceShortname containsString:@"2BWS"] || [appearanceShortname containsString:@"3BWS"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_rb08"];
         }else if ([appearanceShortname containsString:@"RB09"]||[appearanceShortname containsString:@"5RSIBH"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_bajiao"];
         }else if ([appearanceShortname containsString:@"GR15B"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_gr15b"];
+        }else if ([appearanceShortname containsString:@"GR13B"]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_gr13b"];
+        }else if ([appearanceShortname containsString:@"GR12B"]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_gr12b"];
         }else if ([CSRUtilities belongToTwoChannelSwitch:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_switch2"];
         }
@@ -679,6 +683,7 @@
                 if ([SoundListenTool sharedInstance].audioRecorder.recording) {
                     [[SoundListenTool sharedInstance] stopRecord:_groupId];
                 }
+                [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_groupId];
                 if (_groupPower) {
                     [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:self.groupId withPowerState:@(0)];
                 }else {
@@ -713,6 +718,7 @@
                 if ([SoundListenTool sharedInstance].audioRecorder.recording) {
                     [[SoundListenTool sharedInstance] stopRecord:_deviceId];
                 }
+                [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
                 CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
                 if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
                     if (!deviceEntity.remoteBranch || deviceEntity.remoteBranch.length == 0) {

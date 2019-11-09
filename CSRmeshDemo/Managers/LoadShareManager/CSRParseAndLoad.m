@@ -664,7 +664,7 @@
 //                                                       options:0
 //                                                         error:&error];
     NSString *jsonString = [CSRUtilities convertToJsonData:jsonDictionary];
-//    NSLog(@"%@",jsonString);
+    NSLog(@"%@",jsonString);
     NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     return jsonData;
     
@@ -705,7 +705,7 @@
                 NSNumber *type = (NSNumber *)deviceDict[@"`c_type`"];
                 if ([type isEqualToNumber:@(0)]) {
                     CSRAreaEntity *groupObj = [NSEntityDescription insertNewObjectForEntityForName:@"CSRAreaEntity" inManagedObjectContext:managedObjectContext];
-                    groupObj.areaName = deviceDict[@"`c_name`"];
+                    groupObj.areaName = deviceDict[@"`c_subName`"];
                     groupObj.areaID = deviceDict[@"`c_csr_deviceId`"];
                     groupObj.sortId = deviceDict[@"`c_orderIndex`"];
                     groupObj.androidId = deviceDict[@"`_id`"];

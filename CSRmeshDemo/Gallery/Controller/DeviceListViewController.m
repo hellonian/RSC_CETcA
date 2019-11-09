@@ -282,6 +282,56 @@
                 }
             }];
         }
+    }else if (self.selectMode == DeviceListSelectMode_SelectCWDeviceOrGroup) {
+        NSMutableArray *areaMutableArray =  [[[CSRAppStateManager sharedInstance].selectedPlace.areas allObjects] mutableCopy];
+        if (areaMutableArray && [areaMutableArray count] != 0) {
+            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
+            [areaMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+            for (CSRAreaEntity *area in areaMutableArray) {
+                __block BOOL exist = NO;
+                [area.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity  *deviceEntity, BOOL * _Nonnull stop) {
+                    if ([CSRUtilities belongToRGBCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWNoLevelDevice:deviceEntity.shortName] || [CSRUtilities belongToCWDevice:deviceEntity.shortName] || [CSRUtilities belongToCWNoLevelDevice:deviceEntity.shortName]) {
+                        exist = YES;
+                        *stop = YES;
+                    }
+                }];
+                if (exist) {
+                    GroupListSModel *model = [[GroupListSModel alloc] init];
+                    model.areaIconNum = area.areaIconNum;
+                    model.areaID = area.areaID;
+                    model.areaName = area.areaName;
+                    model.areaImage = area.areaImage;
+                    model.sortId = area.sortId;
+                    model.devices = area.devices;
+                    model.isForList = YES;
+                    if ([self.originalMembers containsObject:area.areaID]) {
+                        model.isSelected = YES;
+                        [self.selectedDevices addObject:area.areaID];
+                    }
+                    [_devicesCollectionView.dataArray addObject:model];
+                }
+            }
+        }
+        
+        NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
+        if (mutableArray && [mutableArray count] != 0) {
+            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
+            [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+            [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+                if ([CSRUtilities belongToRGBCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWNoLevelDevice:deviceEntity.shortName] || [CSRUtilities belongToCWDevice:deviceEntity.shortName] || [CSRUtilities belongToCWNoLevelDevice:deviceEntity.shortName]) {
+                    SingleDeviceModel *singleDevice = [[SingleDeviceModel alloc] init];
+                    singleDevice.deviceId = deviceEntity.deviceId;
+                    singleDevice.deviceName = deviceEntity.name;
+                    singleDevice.deviceShortName = deviceEntity.shortName;
+                    singleDevice.isForList = YES;
+                    if ([self.originalMembers containsObject:deviceEntity.deviceId]) {
+                        singleDevice.isSelected = YES;
+                        [self.selectedDevices addObject:deviceEntity.deviceId];
+                    }
+                    [_devicesCollectionView.dataArray addObject:singleDevice];
+                }
+            }];
+        }
     }else {
         NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
         if (mutableArray != nil || [mutableArray count] != 0) {
@@ -305,6 +355,9 @@
                         singleDevice.isSelected = YES;
                     }else {
                         singleDevice.isSelected = NO;
+                    }
+                    if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
+                        singleDevice.curtainDirection = deviceEntity.remoteBranch;
                     }
                     [_devicesCollectionView.dataArray addObject:singleDevice];
                 }
@@ -427,11 +480,39 @@
                     CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
                     if ([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName] || [CSRUtilities belongToSocket:deviceEntity.shortName] || [CSRUtilities belongToFanController:deviceEntity.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName]) {
                         [self mainCollectionViewDelegateLongPressAction:cell];
-                    }else if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
+                    }else if ([CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName]) {
                         self.curtainDetailSelectedView = [self curtainDetailSelectedView:mainCell.deviceId];
                         [self.view addSubview:self.curtainDetailSelectedView];
                         [self.curtainDetailSelectedView autoCenterInSuperview];
                         [self.curtainDetailSelectedView autoSetDimensionsToSize:CGSizeMake(271, 166)];
+                        if ([_remoteBranch length]>=8) {
+                            NSString *str1 = [_remoteBranch substringWithRange:NSMakeRange(4, 2)];
+                            NSString *str2 = [_remoteBranch substringWithRange:NSMakeRange(6, 2)];
+                            NSString *str = [NSString stringWithFormat:@"%@%@",str2,str1];
+                            NSNumber *remoteDeviceId = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:str]];
+                            if ([remoteDeviceId isEqualToNumber:mainCell.deviceId]) {
+                                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:mainCell.deviceId];
+                                if (deviceModel && _buttonNum) {
+                                    NSString *remoteChannel = [_remoteBranch substringWithRange:NSMakeRange(0, 4)];
+                                    if ([remoteChannel isEqualToString:@"0100"]) {
+                                        [deviceModel addValue:@1 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                                        UIButton *allSelectBtn = (UIButton *)[self.curtainDetailSelectedView viewWithTag:1];
+                                        allSelectBtn.selected = YES;
+                                        [allSelectBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+                                    }else if ([remoteChannel isEqualToString:@"0200"]) {
+                                        [deviceModel addValue:@2 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                                        UIButton *channel1SelectBtn = (UIButton *)[self.curtainDetailSelectedView viewWithTag:2];
+                                        channel1SelectBtn.selected = YES;
+                                        [channel1SelectBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+                                    }else if ([remoteChannel isEqualToString:@"0300"]) {
+                                        [deviceModel addValue:@3 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                                        UIButton *channel2SelectBtn = (UIButton *)[self.curtainDetailSelectedView viewWithTag:3];
+                                        channel2SelectBtn.selected = YES;
+                                        [channel2SelectBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+                                    }
+                                }
+                            }
+                        }
                     }
                     
                 }
@@ -457,7 +538,6 @@
                             [enCell.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
                         }
                     }];
-                    
                 }
             }else {
                 if ([self.selectedDevices containsObject:mainCell.sceneId]) {
@@ -490,7 +570,7 @@
             }
         }
         
-    }else if (self.selectMode == DeviceListSelectMode_ForLightSensor || self.selectMode == DeviceListSelectMode_SelectRGBDeviceOrGroup) {
+    }else if (self.selectMode == DeviceListSelectMode_ForLightSensor || self.selectMode == DeviceListSelectMode_SelectRGBDeviceOrGroup || self.selectMode == DeviceListSelectMode_SelectCWDeviceOrGroup) {
         if ([cell isKindOfClass:[MainCollectionViewCell class]]) {
             MainCollectionViewCell *mainCell = (MainCollectionViewCell *)cell;
             if (mainCell.selected) {
@@ -549,6 +629,14 @@
                 CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
                 if (([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName] || [CSRUtilities belongToSocket:deviceEntity.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName]) && self.selectMode != DeviceListSelectMode_ForGroup) {
                     [self mainCollectionViewDelegateLongPressAction:cell];
+                }else if ([CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName] && self.selectMode != DeviceListSelectMode_ForGroup) {
+                    self.curtainDetailSelectedView = [self curtainDetailSelectedView:mainCell.deviceId];
+                    [self.view addSubview:self.curtainDetailSelectedView];
+                    [self.curtainDetailSelectedView autoCenterInSuperview];
+                    [self.curtainDetailSelectedView autoSetDimensionsToSize:CGSizeMake(271, 166)];
+                }else if ([CSRUtilities belongToOneChannelCurtainController:deviceEntity.shortName]) {
+                    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:mainCell.deviceId];
+                    deviceModel.channel1Selected = YES;
                 }
             }else {
                 if ([self.selectedDevices containsObject:mainCell.deviceId]) {
@@ -641,7 +729,7 @@
                     [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
                     [[UIApplication sharedApplication].keyWindow addSubview:self.curtainKindView];
                     [self.curtainKindView autoCenterInSuperview];
-                    [self.curtainKindView autoSetDimensionsToSize:CGSizeMake(271, 166)];
+                    [self.curtainKindView autoSetDimensionsToSize:CGSizeMake(271, 165)];
                 });
             }else {
                 CurtainViewController *curtainVC = [[CurtainViewController alloc] init];
@@ -744,7 +832,7 @@
         _curtainDetailSelectedView.tag = [deviceId integerValue];
         
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 271, 30)];
-        titleLabel.text = @"选择开启或者关闭";
+        titleLabel.text = AcTECLocalizedStringFromTable(@"Select", @"Localizable");
         titleLabel.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
         titleLabel.textAlignment = NSTextAlignmentCenter;
         [_curtainDetailSelectedView addSubview:titleLabel];
@@ -753,6 +841,54 @@
         line.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
         [_curtainDetailSelectedView addSubview:line];
         
+        UIButton *allSelectBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 31, 271, 44)];
+        [allSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        [allSelectBtn setTitle:AcTECLocalizedStringFromTable(@"ChannelAll", @"Localizable") forState:UIControlStateNormal];
+        [allSelectBtn setTitleColor:[UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1] forState:UIControlStateNormal];
+        allSelectBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        allSelectBtn.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        allSelectBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, -20);
+        allSelectBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 40, 0, -40);
+        allSelectBtn.tag = 1;
+        [allSelectBtn addTarget:self action:@selector(curtainDetailSelectedDownAction:) forControlEvents:UIControlEventTouchDown];
+        [allSelectBtn addTarget:self action:@selector(curtainDetailSelectedInsideAction:) forControlEvents:UIControlEventTouchUpInside];
+        [_curtainDetailSelectedView addSubview:allSelectBtn];
+        
+        UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(60, 75, 211, 1)];
+        line1.backgroundColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1];
+        [_curtainDetailSelectedView addSubview:line1];
+        
+        UIButton *channel1SelectBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 76, 271, 44)];
+        [channel1SelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        [channel1SelectBtn setTitle:AcTECLocalizedStringFromTable(@"Channel1", @"Localizable") forState:UIControlStateNormal];
+        [channel1SelectBtn setTitleColor:[UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1] forState:UIControlStateNormal];
+        channel1SelectBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        channel1SelectBtn.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        channel1SelectBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, -20);
+        channel1SelectBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 40, 0, -40);
+        channel1SelectBtn.tag = 2;
+        [channel1SelectBtn addTarget:self action:@selector(curtainDetailSelectedDownAction:) forControlEvents:UIControlEventTouchDown];
+        [channel1SelectBtn addTarget:self action:@selector(curtainDetailSelectedInsideAction:) forControlEvents:UIControlEventTouchUpInside];
+        [_curtainDetailSelectedView addSubview:channel1SelectBtn];
+        
+        UIView *line2 = [[UIView alloc] initWithFrame:CGRectMake(60, 120, 221, 1)];
+        line2.backgroundColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1];
+        [_curtainDetailSelectedView addSubview:line2];
+        
+        UIButton *channel2SelectBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 121, 271, 44)];
+        [channel2SelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        [channel2SelectBtn setTitle:AcTECLocalizedStringFromTable(@"Channel2", @"Localizable") forState:UIControlStateNormal];
+        [channel2SelectBtn setTitleColor:[UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1] forState:UIControlStateNormal];
+        channel2SelectBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        channel2SelectBtn.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        channel2SelectBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, -20);
+        channel2SelectBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 40, 0, -40);
+        channel2SelectBtn.tag = 3;
+        [channel2SelectBtn addTarget:self action:@selector(curtainDetailSelectedDownAction:) forControlEvents:UIControlEventTouchDown];
+        [channel2SelectBtn addTarget:self action:@selector(curtainDetailSelectedInsideAction:) forControlEvents:UIControlEventTouchUpInside];
+        [_curtainDetailSelectedView addSubview:channel2SelectBtn];
+        
+        /*
         UIButton *horizontalBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 31, 135, 135)];
         horizontalBtn.tag = 11;
         [horizontalBtn addTarget:self action:@selector(curtainDetailSelectedAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -775,20 +911,113 @@
             [horizontalBtn setImage:[UIImage imageNamed:@"curtainVOpen"] forState:UIControlStateNormal];
             [verticalBtn setImage:[UIImage imageNamed:@"curtainVClose"] forState:UIControlStateNormal];
         }
-        
+        */
     }
     return _curtainDetailSelectedView;
 }
 
-- (void)curtainDetailSelectedAction:(UIButton *)button {
+- (void)curtainDetailSelectedDownAction:(UIButton *)button {
     DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:[NSNumber numberWithInteger:_curtainDetailSelectedView.tag]];
-    if (_buttonNum) {
-        if (button.tag == 11) {
-            [deviceModel addValue:@2 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
-        }else if (button.tag == 22) {
-            [deviceModel addValue:@3 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+    
+    if (self.selectMode == DeviceListSelectMode_Single || self.selectMode == DeviceListSelectMode_ForDrop) {
+        
+        button.selected = !button.selected;
+        UIImage *image = button.selected? [UIImage imageNamed:@"Be_selected"]:[UIImage imageNamed:@"To_select"];
+        [button setImage:image forState:UIControlStateNormal];
+        
+        switch (button.tag) {
+            case 1:
+                if (button.selected) {
+                    UIButton *channel1SelectBtn = (UIButton *)[button.superview viewWithTag:2];
+                    if (channel1SelectBtn.selected) {
+                        channel1SelectBtn.selected = NO;
+                        [channel1SelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                    }
+                    UIButton *channel2SelectBtn = (UIButton *)[button.superview viewWithTag:3];
+                    if (channel2SelectBtn.selected) {
+                        channel2SelectBtn.selected = NO;
+                        [channel2SelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                    }
+                    if (_buttonNum) {
+                        [deviceModel addValue:@1 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                    }
+                }else {
+                    if (_buttonNum) {
+                        [deviceModel.buttonnumAndChannel removeObjectForKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                    }
+                }
+                break;
+            case 2:
+                if (button.selected) {
+                    UIButton *allSelectBtn = (UIButton *)[button.superview viewWithTag:1];
+                    if (allSelectBtn.selected) {
+                        allSelectBtn.selected = NO;
+                        [allSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                    }
+                    UIButton *channel2SelectBtn = (UIButton *)[button.superview viewWithTag:3];
+                    if (channel2SelectBtn.selected) {
+                        channel2SelectBtn.selected = NO;
+                        [channel2SelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                    }
+                    if (_buttonNum) {
+                        [deviceModel addValue:@2 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                    }
+                }else {
+                    if (_buttonNum) {
+                        [deviceModel.buttonnumAndChannel removeObjectForKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                    }
+                }
+                break;
+            case 3:
+                if (button.selected) {
+                    UIButton *allSelectBtn = (UIButton *)[button.superview viewWithTag:1];
+                    if (allSelectBtn.selected) {
+                        allSelectBtn.selected = NO;
+                        [allSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                    }
+                    UIButton *channel1SelectBtn = (UIButton *)[button.superview viewWithTag:2];
+                    if (channel1SelectBtn.selected) {
+                        channel1SelectBtn.selected = NO;
+                        [channel1SelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+                    }
+                    if (_buttonNum) {
+                        [deviceModel addValue:@3 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                    }
+                }else {
+                    if (_buttonNum) {
+                        [deviceModel.buttonnumAndChannel removeObjectForKey:[NSString stringWithFormat:@"%@",_buttonNum]];
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }else {
+        if (!button.selected) {
+            button.selected = YES;
+            [button setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
+            
+            switch (button.tag) {
+                case 1:
+                    deviceModel.channel1Selected = YES;
+                    deviceModel.channel2Selected = YES;
+                    break;
+                case 2:
+                    deviceModel.channel1Selected = YES;
+                    deviceModel.channel2Selected = NO;
+                    break;
+                case 3:
+                    deviceModel.channel1Selected = NO;
+                    deviceModel.channel2Selected = YES;
+                    break;
+                default:
+                    break;
+            }
         }
     }
+}
+
+- (void)curtainDetailSelectedInsideAction:(UIButton *)button {
     [self.curtainDetailSelectedView removeFromSuperview];
     self.curtainDetailSelectedView = nil;
 }

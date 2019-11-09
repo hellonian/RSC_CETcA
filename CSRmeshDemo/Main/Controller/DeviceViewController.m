@@ -723,12 +723,14 @@
             [[SoundListenTool sharedInstance] stopRecord:_deviceId];
         }
     }
-    [[DeviceModelManager sharedInstance] invalidateColofulTimer];
+    [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
     [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(sender.on)];
 }
 //调光
 - (IBAction)levelSliderTouchUpInSide:(UISlider *)sender {
-    _sliderIsMoving = NO;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        _sliderIsMoving = NO;
+    });
     [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
 }
 
@@ -742,13 +744,15 @@
             [[SoundListenTool sharedInstance] stopRecord:_deviceId];
         }
     }
-    [[DeviceModelManager sharedInstance] invalidateColofulTimer];
+    [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
     _sliderIsMoving = YES;
     [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId withLevel:@(sender.value) withState:UIGestureRecognizerStateBegan direction:PanGestureMoveDirectionHorizontal];
 }
 
 - (IBAction)levelSliderTouchUpOutSide:(UISlider *)sender {
-    _sliderIsMoving = NO;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        _sliderIsMoving = NO;
+    });
     [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
 }
 //调色温
@@ -758,7 +762,7 @@
             [[SoundListenTool sharedInstance] stopRecord:_deviceId];
         }
     }
-    [[DeviceModelManager sharedInstance] invalidateColofulTimer];
+    [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
     _colorTemperatureSliderIsMoving = YES;
     [[DeviceModelManager sharedInstance] setColorTemperatureWithDeviceId:_deviceId withColorTemperature:@(sender.value) withState:UIGestureRecognizerStateBegan];
 }
@@ -768,12 +772,16 @@
 }
 
 - (IBAction)colorTemperatureSliderTouchUpInSide:(UISlider *)sender {
-    _colorTemperatureSliderIsMoving = NO;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        _colorTemperatureSliderIsMoving = NO;
+    });
     [[DeviceModelManager sharedInstance] setColorTemperatureWithDeviceId:_deviceId withColorTemperature:@(sender.value) withState:UIGestureRecognizerStateEnded];
 }
 
 - (IBAction)colorTemperatureSliderTouchUpOutSide:(UISlider *)sender {
-    _colorTemperatureSliderIsMoving = NO;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        _colorTemperatureSliderIsMoving = NO;
+    });
     [[DeviceModelManager sharedInstance] setColorTemperatureWithDeviceId:_deviceId withColorTemperature:@(sender.value) withState:UIGestureRecognizerStateEnded];
 }
 
@@ -784,7 +792,7 @@
             [[SoundListenTool sharedInstance] stopRecord:_deviceId];
         }
     }
-    [[DeviceModelManager sharedInstance] invalidateColofulTimer];
+    [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
     _colorSaturationSliderIsMoving = YES;
     UIColor *color = [UIColor colorWithHue:_colorSlider.myValue saturation:sender.value brightness:1.0 alpha:1.0];
     [[DeviceModelManager sharedInstance] setColorWithDeviceId:_deviceId withColor:color withState:UIGestureRecognizerStateBegan];
@@ -796,7 +804,7 @@
 }
 
 - (IBAction)colorSaturationSliderTouchUpInSide:(UISlider *)sender {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         _colorSaturationSliderIsMoving = NO;
     });
     UIColor *color = [UIColor colorWithHue:_colorSlider.myValue saturation:sender.value brightness:1.0 alpha:1.0];
@@ -804,7 +812,7 @@
 }
 
 - (IBAction)colorSaturationSliderTouchUpOutSide:(UISlider *)sender {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         _colorSaturationSliderIsMoving = NO;
     });
     UIColor *color = [UIColor colorWithHue:_colorSlider.myValue saturation:sender.value brightness:1.0 alpha:1.0];
@@ -987,10 +995,10 @@
                 [[SoundListenTool sharedInstance] stopRecord:_deviceId];
             }
         }
-        [[DeviceModelManager sharedInstance] invalidateColofulTimer];
+        [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
         _colorSliderIsMoving = YES;
     }else if (state == UIGestureRecognizerStateEnded) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             _colorSliderIsMoving = NO;
         });
     }
@@ -1005,7 +1013,7 @@
             [[SoundListenTool sharedInstance] stopRecord:_deviceId];
         }
     }
-    [[DeviceModelManager sharedInstance] invalidateColofulTimer];
+    [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
     UIColor *color = [UIColor colorWithHue:hue saturation:colorSatutation brightness:1.0 alpha:1.0];
     [[LightModelApi sharedInstance] setColor:_deviceId color:color duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
         
@@ -1023,10 +1031,10 @@
                 [[SoundListenTool sharedInstance] stopRecord:_deviceId];
             }
         }
-        [[DeviceModelManager sharedInstance] invalidateColofulTimer];
+        [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
         _colorSquareIsMoving = YES;
     }else if (state == UIGestureRecognizerStateEnded) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             _colorSquareIsMoving = NO;
         });
     }
@@ -1521,9 +1529,11 @@
         if (!_sliderIsMoving) {
             [_levelSlider setValue:brightness animated:YES];
         }
+        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",brightness/255.0*100];
     }else {
         [_RGBGroupControllSwitch setOn:NO];
         [_levelSlider setValue:0 animated:YES];
+        self.levelLabel.text = @"0%";
     }
     CSRDeviceEntity *lastDevice = [[area.devices allObjects] lastObject];
     DeviceModel *lastModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:lastDevice.deviceId];

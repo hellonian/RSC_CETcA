@@ -27,7 +27,9 @@
 #import "GCDAsyncSocket.h"
 #import <MBProgressHUD.h>
 
-@interface PlaceDetailsViewController ()<UITextFieldDelegate,CSRCheckboxDelegate,CSRCheckboxDelegate,GCDAsyncSocketDelegate,MBProgressHUDDelegate>
+#import <CoreLocation/CLLocationManager.h>
+
+@interface PlaceDetailsViewController ()<UITextFieldDelegate,CSRCheckboxDelegate,CSRCheckboxDelegate,GCDAsyncSocketDelegate,MBProgressHUDDelegate,CLLocationManagerDelegate>
 
 @property (nonatomic,strong) NSString *oldName;
 @property (weak, nonatomic) IBOutlet UILabel *placeName;
@@ -36,6 +38,8 @@
 @property (nonatomic,strong) MBProgressHUD *hud;
 @property (weak, nonatomic) IBOutlet UIImageView *QRCodeImageView;
 @property (weak, nonatomic) IBOutlet UILabel *QRCodeLabel;
+
+@property (nonatomic, strong) CLLocationManager *locManager;
 
 @end
 
@@ -94,22 +98,53 @@
     }else if ([[_placeEntity objectID] isEqual:[[CSRAppStateManager sharedInstance].selectedPlace objectID]]) {
         _deleteButton.hidden = YES;
         if ([self startListenPort:4321]) {
-            NSString *wifiName = [self getWifiName];
-            if (wifiName) {
-                NSDictionary *dic = @{@"WIFIName":wifiName,
-                                      @"IPAddress":[self localIpAddressForCurrentDevice],
-                                      @"PORT":@(4321),
-                                      @"FROM":@"ios"};
-                NSString *jsonString = [CSRUtilities convertToJsonData:dic];
-                if (jsonString) {
-                    self.QRCodeImageView.image = [SGQRCodeObtain generateQRCodeWithData:jsonString size:200];
-                }
+            if (@available(iOS 13.0, *)) {
+                [self getcurrentLocation];
             }else {
-                _QRCodeLabel.text = AcTECLocalizedStringFromTable(@"noWifiAlert", @"Localizable");
+                [self displayQRCode];
             }
+            
+            
         }
     }
     
+}
+
+- (void)getcurrentLocation {
+    if (@available(iOS 13.0, *)) {
+        //用户明确拒绝，可以弹窗提示用户到设置中手动打开权限
+        if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
+            //使用下面接口可以打开当前应用的设置页面
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+        }
+        
+        self.locManager = [[CLLocationManager alloc] init];
+        self.locManager.delegate = self;
+        if(![CLLocationManager locationServicesEnabled] || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined){
+            //弹框提示用户是否开启位置权限
+            [self.locManager requestWhenInUseAuthorization];
+        }
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    [self displayQRCode];
+}
+
+- (void)displayQRCode {
+    NSString *wifiName = [self getWifiName];
+    if (wifiName) {
+        NSDictionary *dic = @{@"WIFIName":wifiName,
+                              @"IPAddress":[self localIpAddressForCurrentDevice],
+                              @"PORT":@(4321),
+                              @"FROM":@"ios"};
+        NSString *jsonString = [CSRUtilities convertToJsonData:dic];
+        if (jsonString) {
+            self.QRCodeImageView.image = [SGQRCodeObtain generateQRCodeWithData:jsonString size:200];
+        }
+    }else {
+        _QRCodeLabel.text = AcTECLocalizedStringFromTable(@"noWifiAlert", @"Localizable");
+    }
 }
 
 #pragma mark - Actions
@@ -153,7 +188,7 @@
             [self checkForSettings];
             [[CSRDatabaseManager sharedInstance] saveContext];
             
-            for (int i=0; i<4; i++) {
+            for (int i=0; i<6; i++) {
                 SceneEntity *defaultScene = [NSEntityDescription insertNewObjectForEntityForName:@"SceneEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
                 
                 defaultScene.rcIndex = @(arc4random()%65471+64);
@@ -173,6 +208,14 @@
                 if (i==3) {
                     defaultScene.iconID = @8;
                     defaultScene.sceneName = @"Scene2";
+                }
+                if (i==4) {
+                    defaultScene.iconID = @8;
+                    defaultScene.sceneName = @"Scene3";
+                }
+                if (i==5) {
+                    defaultScene.iconID = @8;
+                    defaultScene.sceneName = @"Scene4";
                 }
                 
                 [_placeEntity addScenesObject:defaultScene];

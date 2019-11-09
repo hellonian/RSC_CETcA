@@ -229,7 +229,7 @@
             self.reloadDataHandle();
         }
         
-        [[DeviceModelManager sharedInstance] regetHues:@[_rgbSceneEntity.hueA,_rgbSceneEntity.hueB,_rgbSceneEntity.hueC,_rgbSceneEntity.hueD,_rgbSceneEntity.hueE,_rgbSceneEntity.hueF]];
+        [[DeviceModelManager sharedInstance] regetHues:@[_rgbSceneEntity.hueA,_rgbSceneEntity.hueB,_rgbSceneEntity.hueC,_rgbSceneEntity.hueD,_rgbSceneEntity.hueE,_rgbSceneEntity.hueF] deviceId:_deviceId sceneId:_rgbSceneEntity.rgbSceneID];
     }
 }
 
@@ -260,7 +260,7 @@
     if (self.reloadDataHandle) {
         self.reloadDataHandle();
     }
-    [[DeviceModelManager sharedInstance] regetColorSaturation:sender.value];
+    [[DeviceModelManager sharedInstance] regetColorSaturation:sender.value deviceId:_deviceId sceneId:_rgbSceneEntity.rgbSceneID];
 }
 
 #pragma mark - 修改速度
@@ -273,7 +273,7 @@
     if (self.reloadDataHandle) {
         self.reloadDataHandle();
     }
-    [[DeviceModelManager sharedInstance] regetColofulTimerInterval:1.0/sender.value deviceId:_deviceId];
+    [[DeviceModelManager sharedInstance] regetColofulTimerInterval:1.0/sender.value deviceId:_deviceId sceneId:_rgbSceneEntity.rgbSceneID];
 }
 
 #pragma mark - 恢复默认值
@@ -319,7 +319,7 @@
     UIColor *colorF = [UIColor colorWithHue:[colorfulHues[5] floatValue] saturation:colorSaturation brightness:1.0 alpha:1.0];
     _hueFBtn.backgroundColor = colorF;
     
-    [[DeviceModelManager sharedInstance] invalidateColofulTimer];
+    [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
     CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
     if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
         [[LightModelApi sharedInstance] setLevel:_deviceId level:levels[i] success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {

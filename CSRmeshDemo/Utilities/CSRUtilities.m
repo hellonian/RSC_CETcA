@@ -1256,6 +1256,13 @@
     return NO;
 }
 
++ (BOOL)belongToOneChannelDimmer:(NSString *)shortName{
+    if ([kOneChannelDimmers containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
 //十六进制字符串转十进制数据
 + (NSInteger)numberWithHexString:(NSString *)hexString {
     

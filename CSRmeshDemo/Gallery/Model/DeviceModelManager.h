@@ -13,6 +13,8 @@
 @interface DeviceModelManager : NSObject
 
 @property (nonatomic, strong) NSMutableArray *allDevices;
+@property (nonatomic, strong) NSMutableDictionary *allTimers;
+@property (nonatomic, strong) NSMutableDictionary *allTimerColorfulNums;
 
 + (DeviceModelManager *)sharedInstance;
 - (void)getAllDevicesState;
@@ -23,9 +25,9 @@
 -(void)setColorWithDeviceId:(NSNumber *)deviceId withColor:(UIColor *)color withState:(UIGestureRecognizerState)state;
 
 - (void)colorfulAction:(NSNumber *)deviceId timeInterval:(NSTimeInterval)timeInterval hues:(NSArray *)huesAry colorSaturation:(NSNumber *)colorSat rgbSceneId:(NSNumber *)rgbSceneId;
-- (void)invalidateColofulTimer;
-- (void)regetHues:(NSArray *)huesAry;
-- (void)regetColorSaturation:(float)sat;
-- (void)regetColofulTimerInterval:(NSTimeInterval)interval deviceId:(NSNumber *)deviceId;
+- (void)invalidateColofulTimerWithDeviceId:(NSNumber *)deviceId;
+- (void)regetHues:(NSArray *)huesAry deviceId:(NSNumber *)deviceId sceneId:(NSNumber *)sceneId;
+- (void)regetColorSaturation:(float)sat deviceId:(NSNumber *)deviceId sceneId:(NSNumber *)sceneId;
+- (void)regetColofulTimerInterval:(NSTimeInterval)interval deviceId:(NSNumber *)deviceId sceneId:(NSNumber *)sceneId;
 
 @end

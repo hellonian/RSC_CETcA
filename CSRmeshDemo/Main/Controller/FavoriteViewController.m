@@ -110,30 +110,27 @@
     id info = _dataMutableArray[index];
     if ([info isKindOfClass:[RGBSceneEntity class]]) {
         RGBSceneEntity *rgbSceneEntity = (RGBSceneEntity *)info;
-        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
         
         if ([SoundListenTool sharedInstance].audioRecorder.recording) {
             [[SoundListenTool sharedInstance] stopRecord:_deviceId];
         }
         
-        if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
-            [[LightModelApi sharedInstance] setLevel:_deviceId level:rgbSceneEntity.level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-                
-            } failure:^(NSError * _Nullable error) {
-                DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-                model.isleave = YES;
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":_deviceId}];
-            }];
-        }
+        [[LightModelApi sharedInstance] setLevel:_deviceId level:rgbSceneEntity.level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+            
+        } failure:^(NSError * _Nullable error) {
+            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+            model.isleave = YES;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":_deviceId}];
+        }];
         
         if ([rgbSceneEntity.eventType boolValue]) {
            
-            [[DeviceModelManager sharedInstance] colorfulAction:_deviceId timeInterval:[rgbSceneEntity.changeSpeed floatValue] hues:@[rgbSceneEntity.hueA,rgbSceneEntity.hueA,rgbSceneEntity.hueB,rgbSceneEntity.hueC,rgbSceneEntity.hueD,rgbSceneEntity.hueE,rgbSceneEntity.hueF] colorSaturation:rgbSceneEntity.colorSat rgbSceneId:rgbSceneEntity.rgbSceneID];
+            [[DeviceModelManager sharedInstance] colorfulAction:_deviceId timeInterval:[rgbSceneEntity.changeSpeed floatValue] hues:@[rgbSceneEntity.hueA,rgbSceneEntity.hueB,rgbSceneEntity.hueC,rgbSceneEntity.hueD,rgbSceneEntity.hueE,rgbSceneEntity.hueF] colorSaturation:rgbSceneEntity.colorSat rgbSceneId:rgbSceneEntity.rgbSceneID];
             
             
         }else {
             
-            [[DeviceModelManager sharedInstance] invalidateColofulTimer];
+            [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
             
             UIColor *color = [UIColor colorWithHue:[rgbSceneEntity.hueA floatValue] saturation:[rgbSceneEntity.colorSat floatValue] brightness:1.0 alpha:1.0];
             [[LightModelApi sharedInstance] setColor:_deviceId color:color duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {

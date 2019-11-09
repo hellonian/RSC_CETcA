@@ -167,3 +167,6 @@
 "timeraddsuccess"="定时器设置成功。";
 "timeraddfail"="设备定时器超出最大个数。";
 "Calibrationfailure"="校准失败";
+"ChannelAll"="两路一起";
+"Channel1"="第 1 路";
+"Channel2"="第 2 路";

@@ -19,7 +19,9 @@
 #import "CSRDatabaseManager.h"
 #import "CSRUtilities.h"
 
-@interface ScanViewController ()<GCDAsyncSocketDelegate,NSStreamDelegate,MBProgressHUDDelegate>
+#import <CoreLocation/CLLocationManager.h>
+
+@interface ScanViewController ()<GCDAsyncSocketDelegate,NSStreamDelegate,MBProgressHUDDelegate,CLLocationManagerDelegate>
 {
     SGQRCodeObtain *obtain;
     NSData *headData;
@@ -37,6 +39,9 @@
 @property (nonatomic,strong) MBProgressHUD *hud;
 @property (nonatomic,strong) NSString *from;
 @property (nonatomic,strong) NSMutableArray *files;
+
+@property (nonatomic, strong) CLLocationManager *locManager;
+@property (nonatomic, strong) NSDictionary *scanDic;
 
 @end
 
@@ -114,8 +119,31 @@
         _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         _hud.delegate = self;
     }
-    NSString *wifiname = [self getWifiName];
-    if ((wifiname && ![dic[@"WIFIName"] isEqualToString:[self getWifiName]])||!wifiname) {
+    self.scanDic = dic;
+    [self getcurrentLocation];
+    
+}
+
+- (void)getcurrentLocation {
+    if (@available(iOS 13.0, *)) {
+        //用户明确拒绝，可以弹窗提示用户到设置中手动打开权限
+        if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
+            //使用下面接口可以打开当前应用的设置页面
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+        }
+        
+        self.locManager = [[CLLocationManager alloc] init];
+        self.locManager.delegate = self;
+        if(![CLLocationManager locationServicesEnabled] || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined){
+            //弹框提示用户是否开启位置权限
+            [self.locManager requestWhenInUseAuthorization];
+        }
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    NSString *wifiName = [self getWifiName];
+    if ((wifiName && ![self.scanDic[@"WIFIName"] isEqualToString:[self getWifiName]])||!wifiName) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"noSameWIFI", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
         [alert.view setTintColor:DARKORAGE];
         UIAlertAction *action = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
@@ -126,15 +154,15 @@
         return;
     }
     
-    _from = dic[@"FROM"];
+    _from = self.scanDic[@"FROM"];
     if ([_from isEqualToString:@"ios"]) {
         Byte byte[] = {0x20,0x18};
         headData = [[NSData alloc] initWithBytes:byte length:2];
     }
     
-    [self connentHost:dic[@"IPAddress"] prot:[dic[@"PORT"] intValue]];
-    
+    [self connentHost:self.scanDic[@"IPAddress"] prot:[self.scanDic[@"PORT"] intValue]];
 }
+
 
 - (void)setupNavigationBar {
     self.navigationItem.title = AcTECLocalizedStringFromTable(@"scan", @"Localizable");
@@ -196,7 +224,7 @@
                     NSData *fileData = [NSMutableData dataWithData:[receiveData subdataWithRange:NSMakeRange(8, fileLength)]];
                     if (firstFile) {
                         NSString *jsonString = [[NSString alloc] initWithData:fileData encoding:NSUTF8StringEncoding];
-//                        NSLog(@"jsonString>> %@",jsonString);
+                        NSLog(@"ajsonString>> %@",jsonString);
                         NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:jsonString];
                         [self.files addObject:jsonDictionary];
                         

@@ -118,6 +118,7 @@
 + (BOOL)belongToTwoChannelCurtainController:(NSString *)shortName;
 + (BOOL)belongToFanController:(NSString *)shortName;
 + (BOOL)belongToSocket:(NSString *)shortName;
++ (BOOL)belongToOneChannelDimmer:(NSString *)shortName;
 + (BOOL)belongToTwoChannelDimmer:(NSString *)shortName;
 + (BOOL)belongToSocketOneChannel:(NSString *)shortName;
 + (BOOL)belongToSocketTwoChannel:(NSString *)shortName;

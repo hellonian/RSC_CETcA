@@ -167,3 +167,6 @@
 "timeraddsuccess"="Timer set success!";
 "timeraddfail"="Fail! The device timer number beyond maximum!";
 "Calibrationfailure"="Calibration failure";
+"ChannelAll"="Channel all";
+"Channel1"="Channel 1";
+"Channel2"="Channel 2";

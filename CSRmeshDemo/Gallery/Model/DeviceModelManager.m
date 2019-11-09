@@ -34,11 +34,11 @@
     UIColor *currentColor;
     UIGestureRecognizerState colorCurrentState;
     
-    NSTimer *colorfulTimer;
-    NSArray *hues;
-    NSInteger colorfulNum;
-    CGFloat colorSaturation;
-    NSNumber *colorfulSceneId;
+//    NSTimer *colorfulTimer;
+//    NSArray *hues;
+//    NSInteger colorfulNum;
+//    CGFloat colorSaturation;
+//    NSNumber *colorfulSceneId;
 }
 
 @end
@@ -158,7 +158,7 @@
                 model.channel1Level = [level integerValue];
                 model.channel2PowerState = [red boolValue];
                 model.channel2Level = [green integerValue];
-            }else if ([CSRUtilities belongToSocketOneChannel:model.shortName]) {
+            }else if ([CSRUtilities belongToSocketOneChannel:model.shortName] || [CSRUtilities belongToOneChannelCurtainController:model.shortName]) {
                 model.channel1PowerState = [powerState boolValue];
                 model.channel1Level = [level integerValue];
             }
@@ -282,7 +282,7 @@
     
 }
 
-- (void)setLevelWithDeviceId:(NSNumber *)deviceId withLevel:(NSNumber *)level withState:(UIGestureRecognizerState)state direction:(PanGestureMoveDirection)direction{
+- (void)setLevelWithDeviceId:(NSNumber *)deviceId withLevel:(NSNumber *)level withState:(UIGestureRecognizerState)state direction:(PanGestureMoveDirection)direction {
     currentState = state;
     currentLevel = level;
     moveDirection = direction;
@@ -479,9 +479,22 @@
                 model.channel2PowerState = state;
                 model.channel2Level = position;
             }
-            model.powerState = (model.channel1PowerState || model.channel2PowerState)? @1:@0;
-            model.level = model.channel1Level>model.channel2Level? [NSNumber numberWithInteger:model.channel1Level]:[NSNumber numberWithInteger:model.channel2Level];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setMultichannelStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":[NSNumber numberWithInteger:channel]}];
+            
+            if ([CSRUtilities belongToOneChannelDimmer:model.shortName]) {
+                model.powerState = [NSNumber numberWithBool:state];
+                model.level = [NSNumber numberWithInteger:position];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
+            }else if ([CSRUtilities belongToSocketOneChannel:model.shortName]) {
+                if (channel == 1) {
+                    model.powerState = [NSNumber numberWithBool:state];
+                    model.level = [NSNumber numberWithInteger:position];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setMultichannelStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":[NSNumber numberWithInteger:channel]}];
+                }
+            }else {
+                model.powerState = (model.channel1PowerState || model.channel2PowerState)? @1:@0;
+                model.level = model.channel1Level>model.channel2Level? [NSNumber numberWithInteger:model.channel1Level]:[NSNumber numberWithInteger:model.channel2Level];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"setMultichannelStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":[NSNumber numberWithInteger:channel]}];
+            }
             *stop = YES;
         }
     }];
@@ -526,64 +539,130 @@
     }];
 }
 
-
-- (void)colorfulAction:(NSNumber *)deviceId timeInterval:(NSTimeInterval)timeInterval hues:(NSArray *)huesAry colorSaturation:(NSNumber *)colorSat rgbSceneId:(NSNumber *)rgbSceneId{
-    if (!colorfulTimer) {
-        colorfulTimer = [NSTimer timerWithTimeInterval:timeInterval target:self selector:@selector(colorfulTimerMethod:) userInfo:deviceId repeats:YES];
-        [[NSRunLoop mainRunLoop] addTimer:colorfulTimer forMode:NSRunLoopCommonModes];
-        hues = huesAry;
-        colorfulNum = 0;
-        colorSaturation = [colorSat floatValue];
-        colorfulSceneId = rgbSceneId;
-    }else {
-        [self invalidateColofulTimer];
-        NSLog(@"%@  %@",rgbSceneId,colorfulSceneId);
-        if (![rgbSceneId isEqualToNumber:colorfulSceneId]) {
-            colorfulTimer = [NSTimer timerWithTimeInterval:timeInterval target:self selector:@selector(colorfulTimerMethod:) userInfo:deviceId repeats:YES];
-            [[NSRunLoop mainRunLoop] addTimer:colorfulTimer forMode:NSRunLoopCommonModes];
-            hues = huesAry;
-            colorfulNum = 0;
-            colorSaturation = [colorSat floatValue];
-            colorfulSceneId = rgbSceneId;
+- (void)colorfulAction:(NSNumber *)deviceId timeInterval:(NSTimeInterval)timeInterval hues:(NSArray *)huesAry colorSaturation:(NSNumber *)colorSat rgbSceneId:(NSNumber *)rgbSceneId {
+    NSDictionary *infoDic = [self.allTimers objectForKey:[NSString stringWithFormat:@"%@",deviceId]];
+    if (infoDic) {
+        NSNumber *sceneId = [infoDic objectForKey:@"rgbSceneId"];
+        NSTimer *timer = [infoDic objectForKey:@"timer"];
+        [timer invalidate];
+        timer = nil;
+        [self.allTimers removeObjectForKey:[NSString stringWithFormat:@"%@",deviceId]];
+        [self.allTimerColorfulNums removeObjectForKey:[NSString stringWithFormat:@"%@",deviceId]];
+        if (![sceneId isEqualToNumber:rgbSceneId]) {
+            timer = [NSTimer timerWithTimeInterval:timeInterval target:self selector:@selector(colorfulTimerMethod:) userInfo:@{@"deviceId":deviceId,@"hues":huesAry,@"colorSaturation":colorSat} repeats:YES];
+            [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+            [self.allTimers setObject:@{@"rgbSceneId":rgbSceneId,@"timer":timer} forKey:[NSString stringWithFormat:@"%@",deviceId]];
+            [self.allTimerColorfulNums setObject:@0 forKey:[NSString stringWithFormat:@"%@",deviceId]];
         }
+    }else {
+        timer = [NSTimer timerWithTimeInterval:timeInterval target:self selector:@selector(colorfulTimerMethod:) userInfo:@{@"deviceId":deviceId,@"hues":huesAry,@"colorSaturation":colorSat} repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+        [self.allTimers setObject:@{@"rgbSceneId":rgbSceneId,@"timer":timer} forKey:[NSString stringWithFormat:@"%@",deviceId]];
+        [self.allTimerColorfulNums setObject:@0 forKey:[NSString stringWithFormat:@"%@",deviceId]];
     }
 }
 
 - (void)colorfulTimerMethod:(NSTimer *)infoTimer {
-    @synchronized (self) {
-       
-        NSNumber *deviceId = infoTimer.userInfo;
-        UIColor *color = [UIColor colorWithHue:[[hues objectAtIndex:colorfulNum] floatValue] saturation:colorSaturation brightness:1.0 alpha:1.0];
-        [[LightModelApi sharedInstance] setColor:deviceId color:color duration:@0 success:nil failure:nil];
-        colorfulNum ++;
-        if (colorfulNum==6) {
-            colorfulNum = 0;
+    NSDictionary *infoDic = infoTimer.userInfo;
+    NSNumber *deviceId = [infoDic objectForKey:@"deviceId"];
+    NSArray *huesAry = [infoDic objectForKey:@"hues"];
+    NSNumber *colorSat = [infoDic objectForKey:@"colorSaturation"];
+    NSInteger colorfulNum = [[self.allTimerColorfulNums objectForKey:[NSString stringWithFormat:@"%@",deviceId]] integerValue];
+    UIColor *color = [UIColor colorWithHue:[[huesAry objectAtIndex:colorfulNum] floatValue] saturation:[colorSat floatValue] brightness:1.0 alpha:1.0];
+    [[LightModelApi sharedInstance] setColor:deviceId color:color duration:@0 success:nil failure:nil];
+    colorfulNum ++;
+    if (colorfulNum==6) {
+        colorfulNum = 0;
+    }
+    [self.allTimerColorfulNums setObject:[NSNumber numberWithInteger:colorfulNum] forKey:[NSString stringWithFormat:@"%@",deviceId]];
+}
+
+- (void)invalidateColofulTimerWithDeviceId:(NSNumber *)deviceId {
+    NSDictionary *infoDic = [self.allTimers objectForKey:[NSString stringWithFormat:@"%@",deviceId]];
+    if (infoDic) {
+        NSTimer *timer = [infoDic objectForKey:@"timer"];
+        [timer invalidate];
+        timer = nil;
+        [self.allTimers removeObjectForKey:[NSString stringWithFormat:@"%@",deviceId]];
+        [self.allTimerColorfulNums removeObjectForKey:[NSString stringWithFormat:@"%@",deviceId]];
+    }
+}
+
+- (void)regetHues:(NSArray *)huesAry deviceId:(NSNumber *)deviceId sceneId:(NSNumber *)sceneId {
+    NSDictionary *infoDic = [self.allTimers objectForKey:[NSString stringWithFormat:@"%@",deviceId]];
+    if (infoDic) {
+        NSNumber *rgbSceneId = [infoDic objectForKey:@"rgbSceneId"];
+        if ([rgbSceneId isEqualToNumber:sceneId]) {
+            NSTimer *timer = [infoDic objectForKey:@"timer"];
+            NSTimeInterval timeInterval = [timer timeInterval];
+            NSNumber *colorSat = [(NSDictionary *)timer.userInfo objectForKey:@"colorSaturation"];
+            [timer invalidate];
+            timer = nil;
+            [self.allTimers removeObjectForKey:[NSString stringWithFormat:@"%@",deviceId]];
+            
+            timer = [NSTimer timerWithTimeInterval:timeInterval target:self selector:@selector(colorfulTimerMethod:) userInfo:@{@"deviceId":deviceId,@"hues":huesAry,@"colorSaturation":colorSat} repeats:YES];
+            [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+            [self.allTimers setObject:@{@"rgbSceneId":rgbSceneId,@"timer":timer} forKey:[NSString stringWithFormat:@"%@",deviceId]];
+        }
+    }
+}
+
+- (void)regetColorSaturation:(float)sat deviceId:(NSNumber *)deviceId sceneId:(NSNumber *)sceneId {
+    NSDictionary *infoDic = [self.allTimers objectForKey:[NSString stringWithFormat:@"%@",deviceId]];
+    if (infoDic) {
+        NSNumber *rgbSceneId = [infoDic objectForKey:@"rgbSceneId"];
+        if ([rgbSceneId isEqualToNumber:sceneId]) {
+            NSTimer *timer = [infoDic objectForKey:@"timer"];
+            NSTimeInterval timeInterval = [timer timeInterval];
+            NSArray *huesAry = [(NSDictionary *)timer.userInfo objectForKey:@"hues"];
+            [timer invalidate];
+            timer = nil;
+            [self.allTimers removeObjectForKey:[NSString stringWithFormat:@"%@",deviceId]];
+            
+            timer = [NSTimer timerWithTimeInterval:timeInterval target:self selector:@selector(colorfulTimerMethod:) userInfo:@{@"deviceId":deviceId,@"hues":huesAry,@"colorSaturation":[NSNumber numberWithFloat:sat]} repeats:YES];
+            [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+            [self.allTimers setObject:@{@"rgbSceneId":rgbSceneId,@"timer":timer} forKey:[NSString stringWithFormat:@"%@",deviceId]];
+        }
+    }
+}
+
+- (void)regetColofulTimerInterval:(NSTimeInterval)interval deviceId:(NSNumber *)deviceId sceneId:(NSNumber *)sceneId {
+    NSDictionary *infoDic = [self.allTimers objectForKey:[NSString stringWithFormat:@"%@",deviceId]];
+    if (infoDic) {
+        NSNumber *rgbSceneId = [infoDic objectForKey:@"rgbSceneId"];
+        if ([rgbSceneId isEqualToNumber:sceneId]) {
+            NSTimer *timer = [infoDic objectForKey:@"timer"];
+            NSDictionary *timerInfoDic = (NSDictionary *)timer.userInfo;
+            [timer invalidate];
+            timer = nil;
+            [self.allTimers removeObjectForKey:[NSString stringWithFormat:@"%@",deviceId]];
+            
+            timer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(colorfulTimerMethod:) userInfo:timerInfoDic repeats:YES];
+            [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+            [self.allTimers setObject:@{@"rgbSceneId":rgbSceneId,@"timer":timer} forKey:[NSString stringWithFormat:@"%@",deviceId]];
         }
     }
 }
 
 - (void)invalidateColofulTimer {
-    if (colorfulTimer) {
-        [colorfulTimer invalidate];
-        colorfulTimer = nil;
+//    if (colorfulTimer) {
+//        [colorfulTimer invalidate];
+//        colorfulTimer = nil;
+//    }
+}
+
+- (NSMutableDictionary *)allTimers {
+    if (!_allTimers) {
+        _allTimers = [[NSMutableDictionary alloc] init];
     }
+    return _allTimers;
 }
 
-- (void)regetHues:(NSArray *)huesAry {
-    hues = huesAry;
-}
-
-- (void)regetColorSaturation:(float)sat {
-    colorSaturation = sat;
-}
-
-- (void)regetColofulTimerInterval:(NSTimeInterval)interval deviceId:(NSNumber *)deviceId {
-    if (colorfulTimer) {
-        [colorfulTimer invalidate];
-        colorfulTimer = nil;
-        colorfulTimer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(colorfulTimerMethod:) userInfo:deviceId repeats:YES];
-        [[NSRunLoop mainRunLoop] addTimer:colorfulTimer forMode:NSRunLoopCommonModes];
+- (NSMutableDictionary *)allTimerColorfulNums {
+    if (!_allTimerColorfulNums) {
+        _allTimerColorfulNums = [[NSMutableDictionary alloc] init];
     }
+    return  _allTimerColorfulNums;
 }
 
 

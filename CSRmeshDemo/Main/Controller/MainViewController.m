@@ -825,7 +825,7 @@
                     sceneMember.colorRed = [NSNumber numberWithInt:deviceModel.fansSpeed];
                     sceneMember.colorGreen = [NSNumber numberWithBool:deviceModel.lampState];
                     sceneMember.colorBlue = @(255);
-                }else if ([CSRUtilities belongToSocket:deviceModel.shortName]||[CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]){
+                }else if ([CSRUtilities belongToSocket:deviceModel.shortName]||[CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName] || [CSRUtilities belongToCurtainController:deviceModel.shortName]){
                     //colorTemperature:两路设备中的第二路事件类型；colorRed：两路设备中的第二路power状态；colorGreen：两路设备中的第二路亮度值
                     sceneMember.powerState = [NSNumber numberWithBool:deviceModel.channel1PowerState];
                     sceneMember.level = [NSNumber numberWithInteger:deviceModel.channel1Level];
@@ -840,7 +840,7 @@
                 }
                 sceneMember.sortID = deviceEntity.sortId;
                 sceneMember.colorTemperature = deviceModel.colorTemperature;
-                if (![deviceModel.powerState boolValue] && ![CSRUtilities belongToFanController:deviceModel.shortName] && ![CSRUtilities belongToSocket:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
+                if (![deviceModel.powerState boolValue] && ![CSRUtilities belongToFanController:deviceModel.shortName] && ![CSRUtilities belongToSocket:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName] && ![CSRUtilities belongToCurtainController:deviceModel.shortName]) {
                     sceneMember.eveType = @(11);
                 }else if ([CSRUtilities belongToSwitch:deviceModel.shortName]) {
                     sceneMember.eveType = @(10);
@@ -904,6 +904,27 @@
                             sceneMember.colorTemperature = @(11);
                         }
                     }
+                }else if ([CSRUtilities belongToOneChannelDimmer:deviceModel.shortName]) {
+                    if (!deviceModel.channel1PowerState) {
+                        sceneMember.eveType = @(11);
+                    }else {
+                        sceneMember.eveType = @(12);
+                    }
+                }else if ([CSRUtilities belongToTwoChannelCurtainController:deviceModel.shortName]) {
+                    if (deviceModel.channel1Selected) {
+                        if (!deviceModel.channel1PowerState) {
+                            sceneMember.eveType = @(11);
+                        }else {
+                            sceneMember.eveType = @(12);
+                        }
+                    }
+                    if (deviceModel.channel2Selected) {
+                        if (!deviceModel.channel2PowerState) {
+                            sceneMember.colorTemperature = @(11);
+                        }else {
+                            sceneMember.colorTemperature = @(12);
+                        }
+                    }
                 }
                 
                 [sceneEntity addMembersObject:sceneMember];
@@ -950,7 +971,7 @@
             }
             [self.semaphores removeAllObjects];
             for (SceneMemberEntity *sceneMember in members) {
-                if ([CSRUtilities belongToSocket:sceneMember.kindString] || [CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString] || [CSRUtilities belongToTwoChannelSwitch:sceneMember.kindString]) {
+                if ([CSRUtilities belongToSocket:sceneMember.kindString] || [CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString] || [CSRUtilities belongToTwoChannelSwitch:sceneMember.kindString] || [CSRUtilities belongToCurtainController:sceneMember.kindString]) {
                     NSString *cmdString = [NSString stringWithFormat:@"5d0303%@",[CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]]];
                     [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
                     
@@ -983,7 +1004,7 @@
                     sceneMember.colorRed = [NSNumber numberWithInt:deviceModel.fansSpeed];
                     sceneMember.colorGreen = [NSNumber numberWithBool:deviceModel.lampState];
                     sceneMember.colorBlue = @(255);
-                }else if ([CSRUtilities belongToSocket:deviceModel.shortName]||[CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]){
+                }else if ([CSRUtilities belongToSocket:deviceModel.shortName]||[CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName] || [CSRUtilities belongToCurtainController:deviceModel.shortName]){
                     //colorTemperature:两路设备中的第二路事件类型；colorRed：两路设备中的第二路power状态；colorGreen：两路设备中的第二路亮度值
                     sceneMember.powerState = [NSNumber numberWithBool:deviceModel.channel1PowerState];
                     sceneMember.level = [NSNumber numberWithInteger:deviceModel.channel1Level];
@@ -998,7 +1019,7 @@
                 }
                 sceneMember.sortID = deviceEntity.sortId;
                 sceneMember.colorTemperature = deviceModel.colorTemperature;
-                if (![deviceModel.powerState boolValue] && ![CSRUtilities belongToFanController:deviceModel.shortName] && ![CSRUtilities belongToSocket:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
+                if (![deviceModel.powerState boolValue] && ![CSRUtilities belongToFanController:deviceModel.shortName] && ![CSRUtilities belongToSocket:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelCurtainController:deviceModel.shortName]) {
                     sceneMember.eveType = @(11);
                 }else if ([CSRUtilities belongToSwitch:deviceModel.shortName]) {
                     sceneMember.eveType = @(10);
@@ -1064,15 +1085,40 @@
                             sceneMember.colorTemperature = @(11);
                         }
                     }
-                }else if ([CSRUtilities belongToCurtainController:deviceModel.shortName]) {
-                    sceneMember.eveType = @(10);
+                }else if ([CSRUtilities belongToOneChannelDimmer:deviceModel.shortName]) {
+                    if (!deviceModel.channel1PowerState) {
+                        sceneMember.eveType = @(11);
+                    }else {
+                        sceneMember.eveType = @(12);
+                    }
+                }else if ([CSRUtilities belongToTwoChannelCurtainController:deviceModel.shortName]) {
+                    if (deviceModel.channel1Selected) {
+                        if (!deviceModel.channel1PowerState) {
+                            sceneMember.eveType = @(11);
+                        }else {
+                            sceneMember.eveType = @(12);
+                        }
+                    }
+                    if (deviceModel.channel2Selected) {
+                        if (!deviceModel.channel2PowerState) {
+                            sceneMember.colorTemperature = @(11);
+                        }else {
+                            sceneMember.colorTemperature = @(12);
+                        }
+                    }
+                }else if ([CSRUtilities belongToOneChannelCurtainController:deviceModel.shortName]) {
+                    if (!deviceModel.channel1PowerState) {
+                        sceneMember.eveType = @(11);
+                    }else {
+                        sceneMember.eveType = @(12);
+                    }
                 }
                 
                 [sceneEntity addMembersObject:sceneMember];
                 [[CSRDatabaseManager sharedInstance] saveContext];
                 
                 NSString *rcIndexString = [CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]];
-                if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
+                if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName] || [CSRUtilities belongToCurtainController:deviceModel.shortName]) {
                     
                     dispatch_queue_t queue = dispatch_queue_create("串行", NULL);
                     if (deviceModel.channel1Selected && deviceModel.channel2Selected) {
@@ -1204,6 +1250,32 @@
                             [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"51050200010000"] success:nil failure:nil];
                         }else if ([sceneMember.colorTemperature isEqualToNumber:@(12)]) {
                             [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"510502000301%@",[CSRUtilities stringWithHexNumber:[sceneMember.colorGreen integerValue]]]] success:nil failure:nil];
+                        }
+                    }
+                }else if ([CSRUtilities belongToCurtainController:sceneMember.kindString]) {
+                    if (sceneMember.eveType && sceneMember.colorTemperature && [sceneMember.eveType isEqualToNumber:@(11)] && [sceneMember.colorTemperature isEqualToNumber:@(11)]) {
+                        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:@(0)];
+                    }else if (sceneMember.eveType && sceneMember.colorTemperature && [sceneMember.eveType isEqualToNumber:@(12)] && [sceneMember.colorTemperature isEqualToNumber:@(12)] && sceneMember.level && sceneMember.colorGreen && [sceneMember.level isEqualToNumber:sceneMember.colorGreen]) {
+                        [[LightModelApi sharedInstance] setLevel:sceneMember.deviceID level:sceneMember.level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                            
+                        } failure:^(NSError * _Nullable error) {
+                            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sceneMember.deviceID];
+                            model.isleave = YES;
+                            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":sceneMember.deviceID}];
+                        }];
+
+                    }else {
+                        if ([sceneMember.eveType isEqualToNumber:@(11)]) {
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"79020101"] success:nil failure:nil];
+                            [NSThread sleepForTimeInterval:0.05];
+                        }else if ([sceneMember.eveType isEqualToNumber:@(12)]) {
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"79060601000301%@",[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]]]] success:nil failure:nil];
+                            [NSThread sleepForTimeInterval:0.05];
+                        }
+                        if ([sceneMember.colorTemperature isEqualToNumber:@(11)]) {
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"79020102"] success:nil failure:nil];
+                        }else if ([sceneMember.colorTemperature isEqualToNumber:@(12)]) {
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"79060602000301%@",[CSRUtilities stringWithHexNumber:[sceneMember.colorGreen integerValue]]]] success:nil failure:nil];
                         }
                     }
                 }else {
