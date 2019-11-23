@@ -478,7 +478,7 @@
                     }];
                     
                     CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
-                    if ([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName] || [CSRUtilities belongToSocket:deviceEntity.shortName] || [CSRUtilities belongToFanController:deviceEntity.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName]) {
+                    if ([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName] || [CSRUtilities belongToSocketTwoChannel:deviceEntity.shortName] || [CSRUtilities belongToFanController:deviceEntity.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName]) {
                         [self mainCollectionViewDelegateLongPressAction:cell];
                     }else if ([CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName]) {
                         self.curtainDetailSelectedView = [self curtainDetailSelectedView:mainCell.deviceId];
@@ -512,6 +512,11 @@
                                     }
                                 }
                             }
+                        }
+                    }else if ([CSRUtilities belongToSocketOneChannel:deviceEntity.shortName]) {
+                        DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:mainCell.deviceId];
+                        if (deviceModel && _buttonNum) {
+                            [deviceModel addValue:@2 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
                         }
                     }
                     
@@ -627,7 +632,7 @@
             if (mainCell.selected) {
                 [self.selectedDevices addObject:mainCell.deviceId];
                 CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
-                if (([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName] || [CSRUtilities belongToSocket:deviceEntity.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName]) && self.selectMode != DeviceListSelectMode_ForGroup) {
+                if (([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName] || [CSRUtilities belongToSocketTwoChannel:deviceEntity.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName]) && self.selectMode != DeviceListSelectMode_ForGroup) {
                     [self mainCollectionViewDelegateLongPressAction:cell];
                 }else if ([CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName] && self.selectMode != DeviceListSelectMode_ForGroup) {
                     self.curtainDetailSelectedView = [self curtainDetailSelectedView:mainCell.deviceId];
@@ -636,6 +641,9 @@
                     [self.curtainDetailSelectedView autoSetDimensionsToSize:CGSizeMake(271, 166)];
                 }else if ([CSRUtilities belongToOneChannelCurtainController:deviceEntity.shortName]) {
                     DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:mainCell.deviceId];
+                    deviceModel.channel1Selected = YES;
+                }else if ([CSRUtilities belongToSocketOneChannel:deviceEntity.shortName]) {
+                    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:deviceEntity.deviceId];
                     deviceModel.channel1Selected = YES;
                 }
             }else {

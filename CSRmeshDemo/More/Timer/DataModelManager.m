@@ -629,6 +629,12 @@ static DataModelManager *manager = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"socketPowerThreshold" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"channel":[dataStr substringWithRange:NSMakeRange(4, 2)],@"socketPowerThreshold":[dataStr substringFromIndex:6]}];
         }
     }
+    
+    if ([dataStr hasPrefix:@"eb53"] || [dataStr hasPrefix:@"eb54"]) {
+        if ([dataStr length]>=20) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"remoteKeyTypeCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"remoteKeyTypeCall":[dataStr substringFromIndex:3]}];
+        }
+    }
 }
 
 - (void)didReceiveStreamData:(NSNumber *)deviceId streamNumber:(NSNumber *)streamNumber data:(NSData *)data {

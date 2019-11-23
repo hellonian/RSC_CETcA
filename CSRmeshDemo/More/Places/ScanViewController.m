@@ -138,10 +138,16 @@
             //弹框提示用户是否开启位置权限
             [self.locManager requestWhenInUseAuthorization];
         }
+    }else {
+        [self compareWifiInfo];
     }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    [self compareWifiInfo];
+}
+
+- (void)compareWifiInfo {
     NSString *wifiName = [self getWifiName];
     if ((wifiName && ![self.scanDic[@"WIFIName"] isEqualToString:[self getWifiName]])||!wifiName) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"noSameWIFI", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
@@ -162,7 +168,6 @@
     
     [self connentHost:self.scanDic[@"IPAddress"] prot:[self.scanDic[@"PORT"] intValue]];
 }
-
 
 - (void)setupNavigationBar {
     self.navigationItem.title = AcTECLocalizedStringFromTable(@"scan", @"Localizable");

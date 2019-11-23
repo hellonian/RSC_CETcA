@@ -28,6 +28,7 @@
 #import "SocketViewController.h"
 #import "TwoChannelDimmerVC.h"
 #import "TwoChannelSwitchVC.h"
+#import "CurtainViewController.h"
 
 @interface GroupViewController ()<UITextFieldDelegate,PlaceColorIconPickerViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,MainCollectionViewDelegate,MBProgressHUDDelegate>
 {
@@ -656,7 +657,19 @@
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
-        }else{
+        }else if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
+            CurtainViewController *curtainVC = [[CurtainViewController alloc] init];
+            curtainVC.deviceId = mainCell.deviceId;
+            curtainVC.reloadDataHandle = ^{
+                [self loadMemberData];
+                [_devicesCollectionView reloadData];
+            };
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:curtainVC];
+            nav.modalPresentationStyle = UIModalPresentationPopover;
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
+        }else {
             DeviceViewController *dvc = [[DeviceViewController alloc] init];
             dvc.deviceId = mainCell.deviceId;
             __weak GroupViewController *weakSelf = self;

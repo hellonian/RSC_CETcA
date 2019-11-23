@@ -128,6 +128,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *GR15BControlFourLabel;
 @property (weak, nonatomic) IBOutlet UILabel *GR15BSelectFourLabel;
 
+@property (nonatomic,strong) UIView *keyTypeSettingView;
 
 @end
 
@@ -421,11 +422,25 @@
             _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
         }
         
-    }else if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"] || [self.remoteEntity.shortName isEqualToString:@"RB09"] || [self.remoteEntity.shortName isEqualToString:@"5RSIBH"]) {
-        if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"]) {
+    }else if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"] || [self.remoteEntity.shortName isEqualToString:@"RB09"] || [self.remoteEntity.shortName isEqualToString:@"5RSIBH"] || [self.remoteEntity.shortName isEqualToString:@"5BCBH"]) {
+        if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"] || [self.remoteEntity.shortName isEqualToString:@"5BCBH"]) {
             _practicalityImageView.image = [UIImage imageNamed:@"rb01"];
         }else {
             _practicalityImageView.image = [UIImage imageNamed:@"bajiao"];
+            if ([self.remoteEntity.shortName isEqualToString:@"5RSIBH"]) {
+                UIButton *btn = [[UIButton alloc] initWithFrame:CGRectZero];
+                [btn setTitle:@"Set Key Type" forState:UIControlStateNormal];
+                [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+                [btn.titleLabel setFont:[UIFont systemFontOfSize:12.0]];
+                btn.backgroundColor = [UIColor whiteColor];
+                btn.layer.cornerRadius = 5.0;
+                btn.clipsToBounds = YES;
+                [btn addTarget:self action:@selector(keyTypeSettingAction) forControlEvents:UIControlEventTouchUpInside];
+                [self.customContentView addSubview:btn];
+                [btn autoSetDimensionsToSize:CGSizeMake(100, 30)];
+                [btn autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:20.0];
+                [btn autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.nameBgView withOffset:-10.0];
+            }
         }
         
         [self.customContentView addSubview:self.R5BSHBView];
@@ -900,7 +915,7 @@
             NSDictionary *dic = (NSDictionary *)responseObject;
             latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
             downloadAddress = dic[@"Download_address"];
-            if ([_remoteEntity.mcuSVersion integerValue]<latestMCUSVersion) {
+            if ([_remoteEntity.mcuSVersion integerValue]<latestMCUSVersion && [_remoteEntity.mcuSVersion integerValue] != 0) {
                 updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
                 [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
                 [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
@@ -1027,7 +1042,7 @@
             }else {
                 _contentViewHeight.constant = safeHeight;
             }
-        }else if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"]||[self.remoteEntity.shortName isEqualToString:@"RB09"]||[self.remoteEntity.shortName isEqualToString:@"5RSIBH"]) {
+        }else if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"]||[self.remoteEntity.shortName isEqualToString:@"RB09"]||[self.remoteEntity.shortName isEqualToString:@"5RSIBH"]||[self.remoteEntity.shortName isEqualToString:@"5BCBH"]) {
             if (safeHeight <= 551.5) {
                 _contentViewHeight.constant = 551.5;
             }else {
@@ -2004,7 +2019,7 @@
         } failure:^(NSError * _Nonnull error) {
             
         }];
-    }else if ([_remoteEntity.shortName isEqualToString:@"R5BSBH"] || [_remoteEntity.shortName isEqualToString:@"RB09"] || [_remoteEntity.shortName isEqualToString:@"5RSIBH"]) {
+    }else if ([_remoteEntity.shortName isEqualToString:@"R5BSBH"] || [_remoteEntity.shortName isEqualToString:@"RB09"] || [_remoteEntity.shortName isEqualToString:@"5RSIBH"] || [_remoteEntity.shortName isEqualToString:@"5BCBH"]) {
         NSString *cmdStr1 = [self cmdStringFromControlLabel:_R5BSHBControlOneLabel selectedLabel:_R5BSHBSelectOneLabel buttonNum:@1];
         
         NSString *cmdStr2 = [self cmdStringFromControlLabel:_R5BSHBControlTwoLabel selectedLabel:_R5BSHBSelectTwoLabel buttonNum:@2];
@@ -2016,7 +2031,7 @@
         NSString *cmdStr5 = [self cmdStringFromControlLabel:_R5BSHBControlFiveLabel selectedLabel:_R5BSHBSelectFiveLabel buttonNum:@5];
         
         NSString *cmdString;
-        if ([_remoteEntity.shortName isEqualToString:@"R5BSBH"]) {
+        if ([_remoteEntity.shortName isEqualToString:@"R5BSBH"] || [_remoteEntity.shortName isEqualToString:@"5BCBH"]) {
             cmdString = [NSString stringWithFormat:@"9b1a0501%@02%@03%@04%@00%@",cmdStr1,cmdStr2,cmdStr3,cmdStr4,cmdStr5];
         }else if ([_remoteEntity.shortName isEqualToString:@"RB09"]||[_remoteEntity.shortName isEqualToString:@"5RSIBH"]) {
             cmdString = [NSString stringWithFormat:@"9b1a0501%@02%@03%@04%@05%@",cmdStr1,cmdStr2,cmdStr3,cmdStr4,cmdStr5];
@@ -3250,6 +3265,89 @@
         _translucentBgView.alpha = 0.4;
     }
     return _translucentBgView;
+}
+
+- (UIView *)keyTypeSettingView {
+    if (!_keyTypeSettingView) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(remoteKeyTypeCall:) name:@"remoteKeyTypeCall" object:nil];
+        _keyTypeSettingView = [[UIView alloc] initWithFrame:CGRectZero];
+        _keyTypeSettingView.backgroundColor = [UIColor whiteColor];
+        _keyTypeSettingView.alpha = 0.9;
+        _keyTypeSettingView.layer.borderColor = DARKORAGE.CGColor;
+        _keyTypeSettingView.layer.borderWidth = 1.0;
+        _keyTypeSettingView.layer.cornerRadius = 14.0;
+        _keyTypeSettingView.layer.masksToBounds = YES;
+        UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 40)];
+        lab.text = @"       TOGGLE  MOMENTARY";
+        lab.font = [UIFont systemFontOfSize:12.0];
+        lab.textAlignment = NSTextAlignmentCenter;
+        lab.textColor = DARKORAGE;
+        [_keyTypeSettingView addSubview:lab];
+        
+        UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 40, 200, 1)];
+        line.backgroundColor = DARKORAGE;
+        [_keyTypeSettingView addSubview:line];
+        
+        NSArray *array = [NSArray arrayWithObjects:@"TOG",@"MOM", nil];
+        for (int i=0; i<5; i++) {
+            UISegmentedControl *segment = [[UISegmentedControl alloc] initWithItems:array];
+            segment.frame = CGRectMake(50, 51+i*45, 100, 30);
+            segment.tag = i+100;
+            segment.tintColor = DARKORAGE;
+            [_keyTypeSettingView addSubview:segment];
+        }
+        
+        UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(0, 271, 200, 1)];
+        line1.backgroundColor = DARKORAGE;
+        [_keyTypeSettingView addSubview:line1];
+        
+        UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 272, 200, 40)];
+        [btn setTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") forState:UIControlStateNormal];
+        [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(keyTypeSettingCommandSendingAction:) forControlEvents:UIControlEventTouchUpInside];
+        [_keyTypeSettingView addSubview:btn];
+    }
+    return _keyTypeSettingView;
+}
+
+- (void)keyTypeSettingAction {
+    [self.view addSubview:self.keyTypeSettingView];
+    [self.keyTypeSettingView autoCenterInSuperview];
+    [self.keyTypeSettingView autoSetDimensionsToSize:CGSizeMake(200, 312)];
+    
+    [[DataModelManager shareInstance] sendCmdData:@"ea54" toDeviceId:_remoteEntity.deviceId];
+    
+}
+
+- (void)keyTypeSettingCommandSendingAction:(UIButton *)button {
+    NSString *cmd=@"";
+    UIView *supView = button.superview;
+    for (int i=0; i<5; i++) {
+        UISegmentedControl *segment = (UISegmentedControl *)[supView viewWithTag:100+i];
+        if (segment.selectedSegmentIndex == 1) {
+            cmd = [NSString stringWithFormat:@"%@%@",cmd,@"01"];
+        }else {
+            cmd = [NSString stringWithFormat:@"%@%@",cmd,@"00"];
+        }
+    }
+    [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea53%@000000",cmd] toDeviceId:_remoteEntity.deviceId];
+}
+
+- (void)remoteKeyTypeCall:(NSNotification *)notification {
+    NSDictionary *info = notification.userInfo;
+    NSNumber *deviceId = info[@"deviceId"];
+    if ([deviceId isEqualToNumber:_remoteEntity.deviceId]) {
+        NSString *dataStr = info[@"remoteKeyTypeCall"];
+        for (int i=0; i<5; i++) {
+            NSString *type = [dataStr substringWithRange:NSMakeRange(1+i*2, 2)];
+            UISegmentedControl *segment = (UISegmentedControl *)[self.keyTypeSettingView viewWithTag:100+i];
+            [type isEqualToString:@"00"]? [segment setSelectedSegmentIndex:0]:[segment setSelectedSegmentIndex:1];
+        }
+        if ([[dataStr substringWithRange:NSMakeRange(0, 1)] isEqualToString:@"3"]) {
+            [self.keyTypeSettingView removeFromSuperview];
+            self.keyTypeSettingView = nil;
+        }
+    }
 }
 
 @end

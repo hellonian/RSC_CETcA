@@ -103,11 +103,8 @@
             }else {
                 [self displayQRCode];
             }
-            
-            
         }
     }
-    
 }
 
 - (void)getcurrentLocation {

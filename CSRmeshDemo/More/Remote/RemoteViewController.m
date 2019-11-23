@@ -134,7 +134,7 @@
         cell.textLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
     }
     CSRDeviceEntity *deviceEntity = self.dataArray[indexPath.row];
-    if ([deviceEntity.shortName isEqualToString:@"RB01"] || [deviceEntity.shortName isEqualToString:@"R5BSBH"]) {
+    if ([deviceEntity.shortName isEqualToString:@"RB01"] || [deviceEntity.shortName isEqualToString:@"R5BSBH"] || [deviceEntity.shortName isEqualToString:@"5BCBH"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_fremote"];
     }else if ([deviceEntity.shortName isEqualToString:@"RB02"]||[deviceEntity.shortName isEqualToString:@"RB06"]||[deviceEntity.shortName isEqualToString:@"RSBH"]||[deviceEntity.shortName isEqualToString:@"1BMBH"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_sremote"];

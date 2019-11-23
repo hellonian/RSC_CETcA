@@ -67,6 +67,11 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"ea42"] success:nil failure:nil];
+}
+
 - (IBAction)channelSeleteBtn:(UIButton *)sender {
     DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:_deviceId];
     if ((deviceModel.channel1Selected && !deviceModel.channel2Selected && sender.tag == 1) || (!deviceModel.channel1Selected && deviceModel.channel2Selected && sender.tag == 2)) {
@@ -116,13 +121,37 @@
     }
 }
 
+- (void)showAlert {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:AcTECLocalizedStringFromTable(@"alert", @"Localizable") message:AcTECLocalizedStringFromTable(@"cantsetoff", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+    [alertController.view setTintColor:DARKORAGE];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [alertController addAction:cancelAction];
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
 - (IBAction)turnOnOFF:(UISwitch *)sender {
     NSString *cmdString;
     switch (sender.tag) {
         case 1:
+            if (!_buttonNum && sender.on) {
+                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:_deviceId];
+                if (deviceModel.childrenState1) {
+                    [self showAlert];
+                    [sender setOn:NO];
+                }
+            }
             cmdString = [NSString stringWithFormat:@"51050100010%d%@",sender.on,[CSRUtilities stringWithHexNumber:sender.on*255]];
             break;
         case 2:
+            if (!_buttonNum && sender.on) {
+                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:_deviceId];
+                if (deviceModel.childrenState2) {
+                    [self showAlert];
+                    [sender setOn:NO];
+                }
+            }
             cmdString = [NSString stringWithFormat:@"51050200010%d%@",sender.on,[CSRUtilities stringWithHexNumber:sender.on*255]];
             break;
         default:

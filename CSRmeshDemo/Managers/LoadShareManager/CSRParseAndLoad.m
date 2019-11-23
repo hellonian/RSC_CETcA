@@ -771,6 +771,45 @@
                     }
                     deviceEntity.groups = [CSRUtilities hexStringFromData:groups];
                     
+                    NSMutableArray *rgbScenes = [NSMutableArray new];
+                    if (parsingDictionary[@"KEY_RGB_SCENE_LIST"]) {
+                        for (NSDictionary *rgbSceneDict in parsingDictionary[@"KEY_RGB_SCENE_LIST"]) {
+                            if ([(NSNumber *)rgbSceneDict[@"`c_csr_deviceId`"] isEqualToNumber:(NSNumber *)deviceDict[@"`c_csr_deviceId`"]]) {
+                                RGBSceneEntity *rgbSceneObj = [NSEntityDescription insertNewObjectForEntityForName:@"RGBSceneEntity" inManagedObjectContext:managedObjectContext];
+                                rgbSceneObj.deviceID = rgbSceneDict[@"`c_csr_deviceId`"];
+                                rgbSceneObj.name = rgbSceneDict[@"`c_name`"];
+                                rgbSceneObj.isDefaultImg = rgbSceneDict[@"`c_csr_deviceId`"];
+//                                NSData *rgbSceneImage = [CSRUtilities dataForHexString:rgbSceneDict[@"rgbSceneImage"]];
+//                                rgbSceneObj.rgbSceneImage = rgbSceneImage;
+                                rgbSceneObj.rgbSceneID = rgbSceneDict[@"`c_resIndex`"];
+                                rgbSceneObj.sortID = rgbSceneDict[@"`c_resIndex`"];
+                                rgbSceneObj.level = @([rgbSceneDict[@"`c_bright`"] integerValue]/100.0*255);
+                                rgbSceneObj.colorSat = @([rgbSceneDict[@"`c_color_sta`"] integerValue]/100.0);
+                                NSInteger resIndex = [rgbSceneDict[@"`c_resIndex`"] integerValue];
+                                if (resIndex>=0 && resIndex<=8) {
+                                    rgbSceneObj.eventType = @0;
+                                    rgbSceneObj.hueA = @([rgbSceneDict[@"`c_color`"] integerValue]/360.0);
+                                }else {
+                                    rgbSceneObj.eventType = @1;
+                                    if (rgbSceneDict[@"`c_color_array`"]) {
+                                        
+                                        NSArray *ary = [rgbSceneDict[@"`c_color_array`"] componentsSeparatedByString:@","];
+                                        
+                                        rgbSceneObj.hueA = [self hueWithHex:(NSNumber *)ary[0]];
+                                        rgbSceneObj.hueB = [self hueWithHex:(NSNumber *)ary[1]];
+                                        rgbSceneObj.hueC = [self hueWithHex:(NSNumber *)ary[2]];
+                                        rgbSceneObj.hueD = [self hueWithHex:(NSNumber *)ary[3]];
+                                        rgbSceneObj.hueE = [self hueWithHex:(NSNumber *)ary[4]];
+                                        rgbSceneObj.hueF = [self hueWithHex:(NSNumber *)ary[5]];
+                                    }
+                                    rgbSceneObj.changeSpeed = @([rgbSceneDict[@"`c_speed`"] integerValue]/100 * 4.5 + 0.5);
+                                }
+                                [rgbScenes addObject:rgbSceneObj];
+                            }
+                        }
+                    }
+                    [deviceEntity addRgbScenes:[NSSet setWithArray:rgbScenes]];
+                    
                     if (self.sharePlace) {
                         [self.sharePlace addDevicesObject:deviceEntity];
                     }
@@ -784,8 +823,8 @@
                 sceneObj.sceneID = @([sceneDict[@"`_id`"] integerValue] - 5);
                 sceneObj.iconID = sceneDict[@"`c_resIndex`"];
                 sceneObj.sceneName = sceneDict[@"`c_name`"];
-                sceneObj.rcIndex = @(arc4random()%65471+64);
-                sceneObj.enumMethod = @(YES);
+                sceneObj.rcIndex = sceneDict[@"`c_csrsceneid`"];
+                sceneObj.enumMethod = @(NO);
                 
                 NSMutableArray *members = [NSMutableArray new];
                 if (parsingDictionary[@"KEY_PARENTDEVICE_LIST"]) {
@@ -878,6 +917,15 @@
     }
     
     return self.sharePlace;
+}
+
+- (NSNumber *)hueWithHex:(NSNumber *)hex {
+    UIColor *color = [CSRUtilities colorFromRGB:[hex integerValue]];
+    CGFloat hue,saturation,brightness,alpha;
+    if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
+        return [NSNumber numberWithFloat:hue];
+    }
+    return nil;
 }
 
 @end

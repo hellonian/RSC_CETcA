@@ -266,7 +266,6 @@
 #pragma mark - 修改速度
 
 - (IBAction)changeSpeed:(UISlider *)sender {
-    NSLog(@"change %f",1/sender.value);
     _changSpeedLabel.text = [NSString stringWithFormat:@"%.f%%",(sender.value-0.5)/3.5*100];
     _rgbSceneEntity.changeSpeed = [NSNumber numberWithFloat:1.0/sender.value];
     [[CSRDatabaseManager sharedInstance] saveContext];

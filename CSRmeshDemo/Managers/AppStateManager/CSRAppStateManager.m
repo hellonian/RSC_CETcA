@@ -245,7 +245,7 @@
         
         [[CSRDatabaseManager sharedInstance] saveContext];
         
-        for (int i=0; i<4; i++) {
+        for (int i=0; i<6; i++) {
             SceneEntity *defaultScene = [NSEntityDescription insertNewObjectForEntityForName:@"SceneEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
             
             defaultScene.rcIndex = @(arc4random()%65471+64);
@@ -265,6 +265,14 @@
             if (i==3) {
                 defaultScene.iconID = @8;
                 defaultScene.sceneName = @"Scene2";
+            }
+            if (i==4) {
+                defaultScene.iconID = @8;
+                defaultScene.sceneName = @"Scene3";
+            }
+            if (i==5) {
+                defaultScene.iconID = @8;
+                defaultScene.sceneName = @"Scene4";
             }
             
             [defaultPlace addScenesObject:defaultScene];

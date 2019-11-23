@@ -429,7 +429,7 @@
             }
         }else if ([CSRUtilities belongToSwitch:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Switch"];
-        }else if ([appearanceShortname containsString:@"RB01"] || [appearanceShortname containsString:@"R5BSBH"]) {
+        }else if ([appearanceShortname containsString:@"RB01"] || [appearanceShortname containsString:@"R5BSBH"] || [appearanceShortname containsString:@"5BCBH"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote1"];
         }else if ([appearanceShortname containsString:@"RB02"]||[appearanceShortname isEqualToString:@"RB06"]||[appearanceShortname isEqualToString:@"RSBH"]||[appearanceShortname isEqualToString:@"1BMBH"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote2"];
