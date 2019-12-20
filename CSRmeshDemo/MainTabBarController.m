@@ -143,11 +143,10 @@
                 [attributedMessage addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:12] range:NSMakeRange(0, [[attributedMessage string] length])];
                 [_alertController setValue:attributedMessage forKey:@"attributedMessage"];
                 [_alertController.view setTintColor:DARKORAGE];
-                UIAlertAction *rescan = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Rescan", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                UIAlertAction *rescan = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                     [_hud hideAnimated:YES];
                     [_hud removeFromSuperview];
                     _hud = nil;
-                    [self creatHud];
                 }];
 //                UIAlertAction *exit = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Exit", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
 //                    [self exitApplication];

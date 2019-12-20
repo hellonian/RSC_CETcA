@@ -22,6 +22,7 @@
 #import "DeviceModelManager.h"
 #import "ImproveTouchingExperience.h"
 #import "ControlMaskView.h"
+#import "SelectModel.h"
 
 @interface GalleryDetailViewController ()<GalleryControlImageViewDelegate,GalleryDropViewDelegate>
 
@@ -174,7 +175,7 @@
                 
                 NSNumber *dropIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"DropEntity"];
                 dropView.dropId = dropIdNumber;
-                DropEntity *dropEntity = [[CSRDatabaseManager sharedInstance] saveNewDrop:dropIdNumber device:device dropBoundRatio:@(boundR) centerXRatio:@(centerXR) centerYRatio:@(centerYR) galleryId:galleryIdNumber];
+                DropEntity *dropEntity = [[CSRDatabaseManager sharedInstance] saveNewDrop:dropIdNumber device:device dropBoundRatio:@(boundR) centerXRatio:@(centerXR) centerYRatio:@(centerYR) galleryId:galleryIdNumber channel:dropView.channel];
                 if (dropEntity) {
                     [galleryEntity addDropsObject:dropEntity];
                     [[CSRDatabaseManager sharedInstance] saveContext];
@@ -208,7 +209,7 @@
                     dropIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"DropEntity"];
                     dropView.dropId = dropIdNumber;
                 }
-                [[CSRDatabaseManager sharedInstance] saveNewDrop:dropIdNumber device:device dropBoundRatio:@(boundR) centerXRatio:@(centerXR) centerYRatio:@(centerYR) galleryId:_galleryId];
+                [[CSRDatabaseManager sharedInstance] saveNewDrop:dropIdNumber device:device dropBoundRatio:@(boundR) centerXRatio:@(centerXR) centerYRatio:@(centerYR) galleryId:_galleryId channel:dropView.channel];
                 
             }
         }];
@@ -221,16 +222,17 @@
     list.selectMode = DeviceListSelectMode_ForDrop;
     [list getSelectedDevices:^(NSArray *devices) {
         if (devices.count > 0) {
-            NSNumber *deviceId = devices[0];
+            SelectModel *model = devices[0];
             if (!_isNewAdd) {
                 _isChange = YES;
             }
             GalleryDropView *dropView = [[GalleryDropView alloc] initWithFrame:CGRectMake(0, 0, 128, 128)];
-            dropView.deviceId = deviceId;
+            dropView.deviceId = model.deviceID;
             dropView.isEditing = YES;
+            dropView.channel = model.channel;
             dropView.delegate = self;
             
-            CSRmeshDevice *device = [[CSRDevicesManager sharedInstance] getDeviceFromDeviceId:deviceId];
+            CSRmeshDevice *device = [[CSRDevicesManager sharedInstance] getDeviceFromDeviceId:model.deviceID];
             dropView.kindName = device.shortName;
             
             [_controlImageView addDropViewInCenter:dropView];
@@ -288,21 +290,21 @@
     }
 }
 
-- (void)galleryDropViewPanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId withPanState:(UIGestureRecognizerState)state {
+- (void)galleryDropViewPanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId channel:(NSNumber *)channel withPanState:(UIGestureRecognizerState)state {
     
     DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
     
     if (state == UIGestureRecognizerStateBegan) {
         self.originalLevel = model.level;
         [self.improver beginImproving];
-        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:self.originalLevel withState:state direction:PanGestureMoveDirectionHorizontal];
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId channel:channel withLevel:self.originalLevel withState:state direction:PanGestureMoveDirectionHorizontal];
         return;
     }
     if (state == UIGestureRecognizerStateChanged || state == UIGestureRecognizerStateEnded) {
         NSInteger updateLevel = [self.improver improveTouching:touchPoint referencePoint:origin primaryBrightness:[self.originalLevel integerValue]];
         CGFloat percentage = updateLevel/255.0*100;
         [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
-        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state direction:PanGestureMoveDirectionHorizontal];
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId channel:channel withLevel:@(updateLevel) withState:state direction:PanGestureMoveDirectionHorizontal];
         
         if (state == UIGestureRecognizerStateEnded) {
             [self hideControlMaskLayer];

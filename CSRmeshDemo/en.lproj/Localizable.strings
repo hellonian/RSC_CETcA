@@ -172,3 +172,6 @@
 "Channel2"="Channel 2";
 "alert"="Alert!";
 "cantsetoff"="Can't set off state when children mode is on.";
+"OK" = "OK";
+"Scene3" = "Scene3";
+"Scene4" = "Scene4";

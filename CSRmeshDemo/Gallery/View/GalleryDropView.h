@@ -13,7 +13,7 @@
 
 @optional
 - (void)galleryDropViewPanLocationAction:(NSNumber *)value;
-- (void)galleryDropViewPanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId withPanState:(UIGestureRecognizerState)state;
+- (void)galleryDropViewPanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId channel:(NSNumber *)channel withPanState:(UIGestureRecognizerState)state;
 
 @end
 
@@ -27,6 +27,7 @@
 @property (nonatomic, retain) NSNumber * centerYRatio;
 @property (nonatomic, weak) id<GalleryDropViewDelegate> delegate;
 @property (nonatomic, strong) NSString * kindName;
+@property (nonatomic, strong) NSNumber *channel;
 
 - (void)adjustDropViewBgcolorWithdeviceId:(NSNumber *)deviceId;
 

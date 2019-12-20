@@ -29,6 +29,7 @@
 #import "TwoChannelDimmerVC.h"
 #import "TwoChannelSwitchVC.h"
 #import "CurtainViewController.h"
+#import "SelectModel.h"
 
 @interface GroupViewController ()<UITextFieldDelegate,PlaceColorIconPickerViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,MainCollectionViewDelegate,MBProgressHUDDelegate>
 {
@@ -128,24 +129,21 @@
         [self editItemAction:self.editItem];
         DeviceListViewController *list = [[DeviceListViewController alloc] init];
         list.selectMode = DeviceListSelectMode_ForGroup;
-        NSMutableArray *mutableArray = [_devicesCollectionView.dataArray mutableCopy];
-        [mutableArray removeLastObject];
-        list.originalMembers = mutableArray;
+        list.sourceID = _areaEntity.areaID;
         
         [list getSelectedDevices:^(NSArray *devices) {
             self.hasChanged = YES;
             [_devicesCollectionView.dataArray removeAllObjects];
             
-            [devices enumerateObjectsUsingBlock:^(NSNumber *deviceId, NSUInteger idx, BOOL * _Nonnull stop) {
-                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
-                
-                SingleDeviceModel *deviceModel = [[SingleDeviceModel alloc] init];
-                deviceModel.deviceId = deviceId;
-                deviceModel.deviceName = deviceEntity.name;
-                deviceModel.deviceShortName = deviceEntity.shortName;
-                [_devicesCollectionView.dataArray insertObject:deviceModel atIndex:0];
-            }];
-            
+            for (SelectModel *sMod in devices) {
+                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sMod.deviceID];
+                SingleDeviceModel *model = [[SingleDeviceModel alloc] init];
+                model.deviceId = sMod.deviceID;
+                model.deviceName = deviceEntity.name;
+                model.deviceShortName = deviceEntity.shortName;
+                [_devicesCollectionView.dataArray addObject:model];
+            }
+
             [_devicesCollectionView.dataArray addObject:@1];
             [_devicesCollectionView reloadData];
             
@@ -208,7 +206,6 @@
         [alert addAction:okAction];
         [self presentViewController:alert animated:YES completion:nil];
     }else {
-        NSLog(@"分组");
         [self.editItem setTitle:AcTECLocalizedStringFromTable(@"Edit", @"Localizable") forState:UIControlStateNormal];
         self.iconEditBtn.hidden = YES;
         self.groupNameTF.enabled = NO;
@@ -224,9 +221,7 @@
         NSNumber *areaIdNumber;
         
         if (self.isCreateNewArea) {
-            
             areaIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRAreaEntity"];
-//            NSLog(@"areaIdNumber>> %@",areaIdNumber);
             NSNumber *sortId = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"SortId"];
             [self saveArea:areaIdNumber sortId:sortId];
             self.isCreateNewArea = NO;
@@ -245,7 +240,6 @@
                 [_devicesCollectionView.dataArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                     if ([obj isKindOfClass:[SingleDeviceModel class]]) {
                         SingleDeviceModel *model = (SingleDeviceModel *)obj;
-                        
                         if ([model.deviceId isEqual:deviceEntity.deviceId]) {
                             exist = YES;
                             *stop = YES;
@@ -324,6 +318,7 @@
                                                                                                                                  [_hud hideAnimated:YES];
                                                                                                                                  _hud = nil;
                                                                                                                              }
+                                                                        alertController = nil;
                                                                                                                          }];
                                                                     
                                                                     UIAlertAction *okAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable")
@@ -344,7 +339,7 @@
                                                                                                                              [_hud hideAnimated:YES];
                                                                                                                              _hud = nil;
                                                                                                                          }
-                                                                                                                         
+                                                                                                                         alertController = nil;
                                                                                                                      }];
                                                                     [alertController addAction:okAction];
                                                                     [alertController addAction:cancelAction];
@@ -369,19 +364,30 @@
             }
             
             [self saveArea:areaIdNumber sortId:_areaEntity.sortId];
-            if (_hud && ((removeNum>0 && removeNum == [self.groupRemoveDevices count]) || removeNum==0)) {
-                [_hud hideAnimated:YES];
-                _hud = nil;
-            }
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            static NSInteger count = 0;
+            [self removeHUDMethord:removeNum count:count];
+        }
+    }
+}
+
+- (void)removeHUDMethord:(NSInteger)removeNum count:(NSInteger)count {
+    __block NSInteger blockCount = count;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (_hud && ((removeNum>0 && removeNum == [self.groupRemoveDevices count]) || removeNum==0)) {
+            [_hud hideAnimated:YES];
+            _hud = nil;
+        }else {
+            blockCount ++;
+            if (blockCount >= 20) {
                 if (_hud) {
                     [_hud hideAnimated:YES];
                     _hud = nil;
                 }
-            });
-            
+            }else {
+                [self removeHUDMethord:removeNum count:blockCount];
+            }
         }
-    }
+    });
 }
 
 - (void)saveArea:(NSNumber *)areaIdNumber sortId:(NSNumber *)sortId{
@@ -419,13 +425,11 @@
                                                                     uint16_t *groups = (uint16_t *) myData.mutableBytes;
                                                                     *(groups + groupIndexInt) = desiredValue;
                                                                 }
-                                                                NSLog(@"~~~~> %@",groupId);
                                                                 deviceEntity.sortId = _areaEntity.sortId;
                                                                 deviceEntity.groups = [CSRUtilities hexStringFromData:(NSData*)myData];
                                                                 CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId: groupId];
                                                                 
                                                                 if (areaEntity) {
-                                                                    //NSLog(@"deviceEntity2 :%@", deviceEntity);
                                                                     [_areaEntity addDevicesObject:deviceEntity];
                                                                 }
                                                                 [[CSRDatabaseManager sharedInstance] saveContext];
@@ -439,7 +443,7 @@
         }
     }
     
-    [NSThread sleepForTimeInterval:1.0];
+//    [NSThread sleepForTimeInterval:1.0];
     
     if (self.handle) {
         self.handle();
@@ -536,23 +540,30 @@
     if ([cellDeviceId isEqualToNumber:@4000]) {
         DeviceListViewController *list = [[DeviceListViewController alloc] init];
         list.selectMode = DeviceListSelectMode_ForGroup;
-        
+        list.sourceID = _areaEntity.areaID;
         NSMutableArray *mutableArray = [_devicesCollectionView.dataArray mutableCopy];
         [mutableArray removeLastObject];
-        list.originalMembers = mutableArray;
+        NSMutableArray *oris = [[NSMutableArray alloc] init];
+        for (CSRDeviceEntity *device in mutableArray) {
+            SelectModel *mod = [[SelectModel alloc] init];
+            mod.deviceID = device.deviceId;
+            mod.channel = @1;
+            mod.sourceID = _areaEntity.areaID;
+            [oris addObject:mod];
+        }
+        list.originalMembers = oris;
         
         [list getSelectedDevices:^(NSArray *devices) {
             self.hasChanged = YES;
             [_devicesCollectionView.dataArray removeAllObjects];
-            
-            [devices enumerateObjectsUsingBlock:^(NSNumber *deviceId, NSUInteger idx, BOOL * _Nonnull stop) {
-                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
-                SingleDeviceModel *deviceModel = [[SingleDeviceModel alloc] init];
-                deviceModel.deviceId = deviceId;
-                deviceModel.deviceName = deviceEntity.name;
-                deviceModel.deviceShortName = deviceEntity.shortName;
-                [_devicesCollectionView.dataArray insertObject:deviceModel atIndex:0];
-            }];
+            for (SelectModel *sMod in devices) {
+                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sMod.deviceID];
+                SingleDeviceModel *model = [[SingleDeviceModel alloc] init];
+                model.deviceId = sMod.deviceID;
+                model.deviceName = deviceEntity.name;
+                model.deviceShortName = deviceEntity.shortName;
+                [_devicesCollectionView.dataArray addObject:model];
+            }
             
             [_devicesCollectionView.dataArray addObject:@1];
             [_devicesCollectionView reloadData];
@@ -569,7 +580,7 @@
     if (state == UIGestureRecognizerStateBegan) {
         self.originalLevel = model.level;
         [self.improver beginImproving];
-        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:self.originalLevel withState:state direction:direction];
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId channel:@1 withLevel:self.originalLevel withState:state direction:direction];
         return;
     }
     if (state == UIGestureRecognizerStateChanged || state == UIGestureRecognizerStateEnded) {
@@ -577,7 +588,7 @@
 
         CGFloat percentage = updateLevel/255.0*100;
         [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
-        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state direction:direction];
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId channel:@1 withLevel:@(updateLevel) withState:state direction:direction];
         
         if (state == UIGestureRecognizerStateEnded) {
             [self hideControlMaskLayer];
@@ -604,7 +615,7 @@
     if ([mainCell.groupId isEqualToNumber:@2000]) {
         
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
-        if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBNoLevelDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBCWNoLevelDevice:deviceEntity.shortName]) {
+        if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
             
             RGBDeviceViewController *RGBDVC = [[RGBDeviceViewController alloc] init];
             RGBDVC.deviceId = mainCell.deviceId;
@@ -766,14 +777,14 @@
 
 - (NSMutableArray *)groupLostDevices {
     if (!_groupLostDevices) {
-        _groupLostDevices = [NSMutableArray new];
+        _groupLostDevices = [[NSMutableArray alloc] init];
     }
     return _groupLostDevices;
 }
 
 - (NSMutableArray *)groupRemoveDevices {
     if (!_groupRemoveDevices) {
-        _groupRemoveDevices = [NSMutableArray new];
+        _groupRemoveDevices = [[NSMutableArray alloc] init];
     }
     return _groupRemoveDevices;
 }

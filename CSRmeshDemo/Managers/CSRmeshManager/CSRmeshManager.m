@@ -159,7 +159,7 @@
             NSNumber *sortId = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"SortId"];
             deviceEntity.sortId = sortId;
             
-            if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBNoLevelDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBCWNoLevelDevice:deviceEntity.shortName]) {
+            if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
                 NSArray *names = kRGBSceneDefaultName;
                 NSArray *levels = kRGBSceneDefaultLevel;
                 NSArray *hues = kRGBSceneDefaultHue;

@@ -88,6 +88,7 @@
     dropView.deviceId = drop.deviceID;
     dropView.dropId = drop.dropID;
     dropView.kindName = drop.kindName;
+    dropView.channel = drop.channel;
     [self addSubview:dropView];
     [dropView adjustDropViewBgcolorWithdeviceId:dropView.deviceId];
     [self.drops addObject:dropView];
@@ -242,16 +243,5 @@
     }
     return CGRectZero;
 }
-
-
-
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end

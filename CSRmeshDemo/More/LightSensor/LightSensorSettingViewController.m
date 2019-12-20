@@ -16,6 +16,7 @@
 #import "PureLayout.h"
 #import <MBProgressHUD.h>
 #import "DataModelManager.h"
+#import "SelectModel.h"
 
 @interface LightSensorSettingViewController ()</*UITableViewDelegate,UITableViewDataSource,*/PowerModelApiDelegate,UITextFieldDelegate,MBProgressHUDDelegate>
 
@@ -134,12 +135,16 @@
     DeviceListViewController *list = [[DeviceListViewController alloc] init];
     list.selectMode = DeviceListSelectMode_ForLightSensor;
     if (self.selectedNum) {
-        list.originalMembers = [NSArray arrayWithObject:self.selectedNum];
+        SelectModel *model = [[SelectModel alloc] init];
+        model.deviceID = _selectedNum;
+        model.channel = @1;
+        model.sourceID = _lightSensor.deviceId;
+        list.originalMembers = [NSArray arrayWithObject:model];
     }
-    __weak LightSensorSettingViewController *weakSelf = self;
     [list getSelectedDevices:^(NSArray *devices) {
         if ([devices count]>0) {
-            [weakSelf didSelected:devices[0]];
+            SelectModel *mod = devices[0];
+            [self didSelected:mod.deviceID];
         }else {
             self.selectedNum = nil;
             self.targetIllLabel.text = nil;

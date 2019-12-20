@@ -176,7 +176,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
 //        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         cell.textLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
-        cell.imageView.image = [UIImage imageNamed:@"Setting_sensorDevice"];
+        cell.imageView.image = [UIImage imageNamed:@"Setting_sensor"];
         UISwitch *powerSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
         powerSwitch.tag = 621;
         powerSwitch.onTintColor = DARKORAGE;

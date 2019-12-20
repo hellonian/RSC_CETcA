@@ -142,7 +142,17 @@
         cell.imageView.image = [UIImage imageNamed:@"Setting_bajiao"];
     }else if ([deviceEntity.shortName isEqualToString:@"R9BSBH"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_fremote"];
-    }else if ([deviceEntity.shortName isEqualToString:@"RB08"] || [deviceEntity.shortName isEqualToString:@"GR10B"] || [deviceEntity.shortName isEqualToString:@"6BWS"] || [deviceEntity.shortName containsString:@"1BWS"] || [deviceEntity.shortName containsString:@"2BWS"] || [deviceEntity.shortName containsString:@"3BWS"]) {
+    }else if ([deviceEntity.shortName isEqualToString:@"RB08"]
+              || [deviceEntity.shortName isEqualToString:@"GR10B"]
+              || [deviceEntity.shortName isEqualToString:@"6BWS"]
+              || [deviceEntity.shortName containsString:@"1BWS"]
+              || [deviceEntity.shortName containsString:@"2BWS"]
+              || [deviceEntity.shortName containsString:@"3BWS"]
+              || [deviceEntity.shortName isEqualToString:@"H1CSB-RD"]
+              || [deviceEntity.shortName isEqualToString:@"H2CSB-BU"]
+              || [deviceEntity.shortName containsString:@"H3CSB-BU"]
+              || [deviceEntity.shortName containsString:@"H4CSB-BK"]
+              || [deviceEntity.shortName containsString:@"H6CSB-WH"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_rb08"];
     }else if ([deviceEntity.shortName isEqualToString:@"RB05"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_rb05"];

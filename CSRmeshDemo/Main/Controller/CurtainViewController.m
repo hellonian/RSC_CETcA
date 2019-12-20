@@ -66,10 +66,6 @@
                                                  selector:@selector(setPowerStateSuccess:)
                                                      name:@"setPowerStateSuccess"
                                                    object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(setMultichannelStateSuccess:)
-                                                     name:@"setMultichannelStateSuccess"
-                                                   object:nil];
         _curtainEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
         self.navigationItem.title = _curtainEntity.name;
         self.nameTf.delegate = self;
@@ -104,14 +100,6 @@
             [self.closeBtn setImage:[UIImage imageNamed:@"curtainHClose"] forState:UIControlStateNormal];
         }else if ([_curtainEntity.remoteBranch isEqualToString:@"cvv"]) {
             self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainVVImage"];
-            [self.openBtn setImage:[UIImage imageNamed:@"curtainVOpen"] forState:UIControlStateNormal];
-            [self.closeBtn setImage:[UIImage imageNamed:@"curtainVClose"] forState:UIControlStateNormal];
-        }else if ([_curtainEntity.remoteBranch isEqualToString:@"chv"]) {
-            self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainHVImage"];
-            [self.openBtn setImage:[UIImage imageNamed:@"curtainHOpen"] forState:UIControlStateNormal];
-            [self.closeBtn setImage:[UIImage imageNamed:@"curtainHClose"] forState:UIControlStateNormal];
-        }else if ([_curtainEntity.remoteBranch isEqualToString:@"cvh"]) {
-            self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainVHImage"];
             [self.openBtn setImage:[UIImage imageNamed:@"curtainVOpen"] forState:UIControlStateNormal];
             [self.closeBtn setImage:[UIImage imageNamed:@"curtainVClose"] forState:UIControlStateNormal];
         }
@@ -377,13 +365,6 @@
         case 0:
         {
             self.controllChannel = 1;
-            if ([_curtainEntity.remoteBranch isEqualToString:@"chv"]) {
-                [self.openBtn setImage:[UIImage imageNamed:@"curtainHOpen"] forState:UIControlStateNormal];
-                [self.closeBtn setImage:[UIImage imageNamed:@"curtainHClose"] forState:UIControlStateNormal];
-            }else if ([_curtainEntity.remoteBranch isEqualToString:@"cvh"]) {
-                [self.openBtn setImage:[UIImage imageNamed:@"curtainVOpen"] forState:UIControlStateNormal];
-                [self.closeBtn setImage:[UIImage imageNamed:@"curtainVClose"] forState:UIControlStateNormal];
-            }
             DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
             [_curtainSlider setValue:model.channel1Level animated:YES];
         }
@@ -391,13 +372,6 @@
         case 1:
         {
             self.controllChannel = 2;
-            if ([_curtainEntity.remoteBranch isEqualToString:@"chv"]) {
-                [self.openBtn setImage:[UIImage imageNamed:@"curtainVOpen"] forState:UIControlStateNormal];
-                [self.closeBtn setImage:[UIImage imageNamed:@"curtainVClose"] forState:UIControlStateNormal];
-            }else if ([_curtainEntity.remoteBranch isEqualToString:@"cvh"]) {
-                [self.openBtn setImage:[UIImage imageNamed:@"curtainHOpen"] forState:UIControlStateNormal];
-                [self.closeBtn setImage:[UIImage imageNamed:@"curtainHClose"] forState:UIControlStateNormal];
-            }
             DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
             [_curtainSlider setValue:model.channel2Level animated:YES];
         }
@@ -499,24 +473,16 @@
 - (void)setPowerStateSuccess:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
+    NSInteger channel = [userInfo[@"channel"] integerValue];
     if ([deviceId isEqualToNumber:_deviceId]) {
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-        [_curtainSlider setValue:[model.level floatValue] animated:YES];
-    }
-}
-
-- (void)setMultichannelStateSuccess: (NSNotification *)notification {
-    NSDictionary *userInfo = notification.userInfo;
-    NSNumber *deviceId = userInfo[@"deviceId"];
-    NSInteger channel = [userInfo[@"channel"] integerValue];
-    if ([deviceId isEqualToNumber:_deviceId] && channel == _controllChannel) {
-        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-        if (channel == 1) {
+        if (channel == 3) {
+            [_curtainSlider setValue:[model.level floatValue] animated:YES];
+        }else if (channel == 1) {
             [_curtainSlider setValue:model.channel1Level animated:YES];
         }else if (channel == 2) {
             [_curtainSlider setValue:model.channel2Level animated:YES];
         }
-        
     }
 }
 

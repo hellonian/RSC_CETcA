@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FanViewController">
             <connections>
-                <outlet property="fanLeftConstaint" destination="ulQ-4v-enb" id="RSA-Y5-PXE"/>
-                <outlet property="fanSelectedBtn" destination="4vC-J1-g0N" id="5rg-GL-ZhL"/>
-                <outlet property="fanSelectedImageView" destination="g2e-HM-sHJ" id="aZL-di-dKB"/>
                 <outlet property="fanSpeedSlider" destination="X2j-r2-WPR" id="cMh-YA-JjJ"/>
                 <outlet property="fanStateSwitch" destination="frE-Ps-rKC" id="cNp-SM-uRV"/>
-                <outlet property="lampLeftConstaint" destination="aqp-dt-Zf9" id="Sqg-ON-qIK"/>
-                <outlet property="lampSelectedBtn" destination="Kf5-zA-c4k" id="MtD-xf-Ju3"/>
-                <outlet property="lampSelectedImageView" destination="n3h-Eu-8Ws" id="y4B-NZ-JKc"/>
                 <outlet property="lampStateSwitch" destination="bDE-bl-geX" id="rvm-xf-twc"/>
                 <outlet property="macAddressLabel" destination="7Ur-zD-Ti9" id="Zob-qX-lw6"/>
                 <outlet property="nameTf" destination="Mdj-n1-dDi" id="hRv-Wf-991"/>
@@ -129,34 +123,15 @@
                                 <action selector="lampPowerStateSwitch:" destination="-1" eventType="valueChanged" id="Pvp-kg-ZAa"/>
                             </connections>
                         </switch>
-                        <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="To_select" translatesAutoresizingMaskIntoConstraints="NO" id="n3h-Eu-8Ws">
-                            <rect key="frame" x="11" y="11" width="22" height="22"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="22" id="AZV-1K-uT1"/>
-                                <constraint firstAttribute="width" secondItem="n3h-Eu-8Ws" secondAttribute="height" multiplier="1:1" id="HHd-eC-eF7"/>
-                            </constraints>
-                        </imageView>
-                        <button hidden="YES" opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kf5-zA-c4k">
-                            <rect key="frame" x="0.0" y="0.0" width="286" height="44"/>
-                            <connections>
-                                <action selector="channelSelectBtn:" destination="-1" eventType="touchUpInside" id="wq2-NU-W43"/>
-                            </connections>
-                        </button>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstItem="bDE-bl-geX" firstAttribute="leading" secondItem="Kf5-zA-c4k" secondAttribute="trailing" constant="20" id="9BN-gw-0HQ"/>
-                        <constraint firstItem="n3h-Eu-8Ws" firstAttribute="leading" secondItem="GJr-Eg-gpj" secondAttribute="leading" constant="11" id="CIr-en-9eb"/>
                         <constraint firstAttribute="trailing" secondItem="bDE-bl-geX" secondAttribute="trailing" constant="20" id="IDf-2f-h16"/>
                         <constraint firstAttribute="height" constant="44" id="MHl-Qa-NEn"/>
                         <constraint firstItem="F18-Gj-LNR" firstAttribute="top" secondItem="GJr-Eg-gpj" secondAttribute="top" constant="12" id="Stw-eY-Nhb"/>
-                        <constraint firstItem="Kf5-zA-c4k" firstAttribute="leading" secondItem="GJr-Eg-gpj" secondAttribute="leading" id="U1s-KF-EA5"/>
-                        <constraint firstAttribute="bottom" secondItem="Kf5-zA-c4k" secondAttribute="bottom" id="U5G-Ec-ePd"/>
                         <constraint firstItem="F18-Gj-LNR" firstAttribute="leading" secondItem="GJr-Eg-gpj" secondAttribute="leading" constant="20" id="aqp-dt-Zf9"/>
-                        <constraint firstItem="Kf5-zA-c4k" firstAttribute="top" secondItem="GJr-Eg-gpj" secondAttribute="top" id="bAj-xF-Bgg"/>
                         <constraint firstAttribute="bottom" secondItem="F18-Gj-LNR" secondAttribute="bottom" constant="12" id="iQr-ed-4eb"/>
                         <constraint firstItem="bDE-bl-geX" firstAttribute="centerY" secondItem="GJr-Eg-gpj" secondAttribute="centerY" id="ya7-TQ-z6N"/>
-                        <constraint firstItem="n3h-Eu-8Ws" firstAttribute="top" secondItem="GJr-Eg-gpj" secondAttribute="top" constant="11" id="zMK-zk-nDT"/>
                     </constraints>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Fan" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5V9-CY-oPZ">
@@ -212,33 +187,14 @@
                             <color key="textColor" red="0.30196078430000001" green="0.30196078430000001" blue="0.30196078430000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="To_select" translatesAutoresizingMaskIntoConstraints="NO" id="g2e-HM-sHJ">
-                            <rect key="frame" x="11" y="11" width="22" height="22"/>
-                            <constraints>
-                                <constraint firstAttribute="width" secondItem="g2e-HM-sHJ" secondAttribute="height" multiplier="1:1" id="SH1-jH-VXB"/>
-                                <constraint firstAttribute="width" constant="22" id="bxp-SD-hPs"/>
-                            </constraints>
-                        </imageView>
-                        <button hidden="YES" opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4vC-J1-g0N">
-                            <rect key="frame" x="0.0" y="0.0" width="286" height="44"/>
-                            <connections>
-                                <action selector="channelSelectBtn:" destination="-1" eventType="touchUpInside" id="AIC-ts-ZNY"/>
-                            </connections>
-                        </button>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstItem="X2j-r2-WPR" firstAttribute="centerY" secondItem="Udm-Vb-7rX" secondAttribute="centerY" id="1hU-Ls-BQk"/>
                         <constraint firstItem="Udm-Vb-7rX" firstAttribute="leading" secondItem="hD9-7V-lgR" secondAttribute="leading" constant="14" id="616-Zz-nU8"/>
-                        <constraint firstItem="frE-Ps-rKC" firstAttribute="leading" secondItem="4vC-J1-g0N" secondAttribute="trailing" constant="20" id="8XN-UO-loQ"/>
                         <constraint firstItem="JBg-I5-dot" firstAttribute="leading" secondItem="hD9-7V-lgR" secondAttribute="leading" constant="20" id="AaZ-QZ-ona"/>
                         <constraint firstAttribute="height" constant="89" id="CDX-sb-9We"/>
-                        <constraint firstItem="g2e-HM-sHJ" firstAttribute="top" secondItem="hD9-7V-lgR" secondAttribute="top" constant="11" id="DMk-Mw-ji7"/>
                         <constraint firstAttribute="trailing" secondItem="X2j-r2-WPR" secondAttribute="trailing" constant="20" id="F7a-F6-5ck"/>
-                        <constraint firstItem="JBg-I5-dot" firstAttribute="top" secondItem="4vC-J1-g0N" secondAttribute="bottom" id="FZA-IV-Q1d"/>
-                        <constraint firstItem="4vC-J1-g0N" firstAttribute="top" secondItem="hD9-7V-lgR" secondAttribute="top" id="Nkd-YZ-r6C"/>
-                        <constraint firstItem="g2e-HM-sHJ" firstAttribute="leading" secondItem="hD9-7V-lgR" secondAttribute="leading" constant="11" id="OEs-uC-bN0"/>
-                        <constraint firstItem="4vC-J1-g0N" firstAttribute="leading" secondItem="hD9-7V-lgR" secondAttribute="leading" id="VIZ-Ga-4h1"/>
                         <constraint firstAttribute="trailing" secondItem="frE-Ps-rKC" secondAttribute="trailing" constant="20" id="bSw-JD-AnR"/>
                         <constraint firstItem="nZ7-Of-cRa" firstAttribute="top" secondItem="hD9-7V-lgR" secondAttribute="top" constant="12" id="e4T-8O-ANH"/>
                         <constraint firstItem="X2j-r2-WPR" firstAttribute="leading" secondItem="hD9-7V-lgR" secondAttribute="leading" constant="44" id="flc-Vq-a4H"/>
@@ -272,6 +228,5 @@
     </objects>
     <resources>
         <image name="Ico_fengli" width="16" height="16"/>
-        <image name="To_select" width="22" height="22"/>
     </resources>
 </document>

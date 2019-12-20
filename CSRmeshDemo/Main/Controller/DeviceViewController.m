@@ -370,7 +370,7 @@
         CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
         __block BOOL exist = NO;
         [area.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, BOOL * _Nonnull stop) {
-            if ([CSRUtilities belongToRGBCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWNoLevelDevice:deviceEntity.shortName]) {
+            if ([CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
                 exist = YES;
                 *stop = YES;
             }
@@ -731,11 +731,11 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         _sliderIsMoving = NO;
     });
-    [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
+    [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
 }
 
 - (IBAction)leveSliderValueChanged:(UISlider *)sender {
-    [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId withLevel:@(sender.value) withState:UIGestureRecognizerStateChanged direction:PanGestureMoveDirectionHorizontal];
+    [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateChanged direction:PanGestureMoveDirectionHorizontal];
 }
 
 - (IBAction)levelSliderTouchDown:(UISlider *)sender {
@@ -746,14 +746,14 @@
     }
     [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
     _sliderIsMoving = YES;
-    [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId withLevel:@(sender.value) withState:UIGestureRecognizerStateBegan direction:PanGestureMoveDirectionHorizontal];
+    [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateBegan direction:PanGestureMoveDirectionHorizontal];
 }
 
 - (IBAction)levelSliderTouchUpOutSide:(UISlider *)sender {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         _sliderIsMoving = NO;
     });
-    [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
+    [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
 }
 //调色温
 - (IBAction)colorTemperatureSliderTouchDown:(UISlider *)sender {

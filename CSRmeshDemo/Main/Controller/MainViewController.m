@@ -41,6 +41,7 @@
 #import "SocketViewController.h"
 #import "TwoChannelDimmerVC.h"
 #import "TwoChannelSwitchVC.h"
+#import "RemoteMainVC.h"
 
 //#import <CoreLocation/CoreLocation.h>
 //#import "AFHTTPSessionManager.h"
@@ -49,6 +50,7 @@
 #import <CSRmesh/DataModelApi.h>
 
 #import "GroupControlView.h"
+#import "SelectModel.h"
 
 @interface MainViewController ()<MainCollectionViewDelegate,PlaceColorIconPickerViewDelegate,MBProgressHUDDelegate>
 {
@@ -515,14 +517,14 @@
             if ([SoundListenTool sharedInstance].audioRecorder.recording) {
                 [[SoundListenTool sharedInstance] stopRecord:groupId];
             }
-            [[DeviceModelManager sharedInstance] setLevelWithDeviceId:groupId withLevel:self.originalLevel withState:state direction:direction];
+            [[DeviceModelManager sharedInstance] setLevelWithGroupId:groupId withLevel:self.originalLevel withState:state direction:direction];
         }else {
             if ([SoundListenTool sharedInstance].audioRecorder.recording) {
                 [[SoundListenTool sharedInstance] stopRecord:deviceId];
             }
             DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
             self.originalLevel = model.level;
-            [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:self.originalLevel withState:state direction:direction];
+            [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId channel:@1 withLevel:self.originalLevel withState:state direction:direction];
         }
         
         [self.improver beginImproving];
@@ -536,9 +538,10 @@
         [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
         
         if ([deviceId isEqualToNumber:@2000]) {
-            [[DeviceModelManager sharedInstance] setLevelWithDeviceId:groupId withLevel:@(updateLevel) withState:state direction:direction];
+            [[DeviceModelManager sharedInstance] setLevelWithGroupId:groupId withLevel:@(updateLevel) withState:state direction:direction];
+            
         }else {
-            [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state direction:direction];
+            [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId channel:@1 withLevel:@(updateLevel) withState:state direction:direction];
         }
         
         if (state == UIGestureRecognizerStateEnded) {
@@ -622,7 +625,7 @@
     CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:groupId];
     __block BOOL exist = NO;
     [areaEntity.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, BOOL * _Nonnull stop) {
-        if ([CSRUtilities belongToRGBCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWNoLevelDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBNoLevelDevice:deviceEntity.shortName]) {
+        if ([CSRUtilities belongToRGBCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBDevice:deviceEntity.shortName]) {
             exist = YES;
             *stop = YES;
         }
@@ -790,59 +793,61 @@
         DeviceListViewController *list = [[DeviceListViewController alloc] init];
         list.selectMode = DeviceListSelectMode_Multiple;
         
-        NSArray *members = [sceneEntity.members allObjects];
-        __block NSMutableArray *singleDevices = [[NSMutableArray alloc] init];
-        [members enumerateObjectsUsingBlock:^(SceneMemberEntity *sceneMember, NSUInteger idx, BOOL * _Nonnull stop) {
-            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sceneMember.deviceID];
-            if (deviceEntity) {
-                SingleDeviceModel *deviceModel = [[SingleDeviceModel alloc] init];
-                deviceModel.deviceId = deviceEntity.deviceId;
-                deviceModel.deviceName = deviceEntity.name;
-                deviceModel.deviceShortName = deviceEntity.shortName;
-                [singleDevices addObject:deviceModel];
+        NSMutableArray *oris = [[NSMutableArray alloc] init];
+        if ([sceneEntity.members count]>0) {
+            for (SceneMemberEntity *sceneMember in sceneEntity.members) {
+                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sceneMember.deviceID];
+                if (deviceEntity) {
+                    SelectModel *mod = [[SelectModel alloc] init];
+                    mod.deviceID = sceneMember.deviceID;
+                    mod.channel = sceneMember.channel;
+                    mod.sourceID = sceneEntity.rcIndex;
+                    [oris addObject:mod];
+                }
             }
-            
-        }];
-        list.originalMembers = singleDevices;
+        }
+        list.originalMembers = oris;
         
         [list getSelectedDevices:^(NSArray *devices) {
-            
-            [members enumerateObjectsUsingBlock:^(SceneMemberEntity *sceneMember, NSUInteger idx, BOOL * _Nonnull stop) {
-                [sceneEntity removeMembers:sceneEntity.members];
-                [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:sceneMember];
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            }];
-            [devices enumerateObjectsUsingBlock:^(NSNumber *deviceId, NSUInteger idx, BOOL * _Nonnull stop) {
-                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
-                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+            for (SelectModel *sMod in devices) {
                 SceneMemberEntity *sceneMember = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
                 sceneMember.sceneID = sceneEntity.sceneID;
-                sceneMember.deviceID = deviceId;
+                sceneMember.deviceID = sMod.deviceID;
+                sceneMember.channel = sMod.channel;
+                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sMod.deviceID];
+                sceneMember.sortID = deviceEntity.sortId;
+                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sMod.deviceID];
                 sceneMember.kindString = deviceModel.shortName;
                 sceneMember.powerState = deviceModel.powerState;
+                sceneMember.colorTemperature = deviceModel.colorTemperature;
                 if ([CSRUtilities belongToFanController:deviceModel.shortName]) {
                     sceneMember.level = [NSNumber numberWithBool:deviceModel.fanState];
                     sceneMember.colorRed = [NSNumber numberWithInt:deviceModel.fansSpeed];
                     sceneMember.colorGreen = [NSNumber numberWithBool:deviceModel.lampState];
                     sceneMember.colorBlue = @(255);
-                }else if ([CSRUtilities belongToSocket:deviceModel.shortName]||[CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName] || [CSRUtilities belongToCurtainController:deviceModel.shortName]){
-                    //colorTemperature:两路设备中的第二路事件类型；colorRed：两路设备中的第二路power状态；colorGreen：两路设备中的第二路亮度值
+                }else if ([CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]
+                          || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]
+                          || [CSRUtilities belongToTwoChannelCurtainController:deviceModel.shortName]
+                          || [CSRUtilities belongToSocketTwoChannel:deviceModel.shortName]) {
+                //colorTemperature--两路设备中的第二路事件类型；colorRed--两路设备中的第二路power状态；colorGreen--两路设备中的第二路亮度值
                     sceneMember.powerState = [NSNumber numberWithBool:deviceModel.channel1PowerState];
                     sceneMember.level = [NSNumber numberWithInteger:deviceModel.channel1Level];
                     sceneMember.colorRed = [NSNumber numberWithBool:deviceModel.channel2PowerState];
                     sceneMember.colorGreen = [NSNumber numberWithInteger:deviceModel.channel2Level];
-                }
-                else {
+                }else {
                     sceneMember.level = [deviceModel.powerState boolValue]? deviceModel.level:@0;
                     sceneMember.colorRed = deviceModel.red;
                     sceneMember.colorGreen = deviceModel.green;
                     sceneMember.colorBlue = deviceModel.blue;
                 }
-                sceneMember.sortID = deviceEntity.sortId;
-                sceneMember.colorTemperature = deviceModel.colorTemperature;
-                if (![deviceModel.powerState boolValue] && ![CSRUtilities belongToFanController:deviceModel.shortName] && ![CSRUtilities belongToSocket:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName] && ![CSRUtilities belongToCurtainController:deviceModel.shortName]) {
+                if (![deviceModel.powerState boolValue]
+                    && ![CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]
+                    && ![CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]
+                    && ![CSRUtilities belongToTwoChannelCurtainController:deviceModel.shortName]
+                    && ![CSRUtilities belongToSocketTwoChannel:deviceModel.shortName]) {
                     sceneMember.eveType = @(11);
-                }else if ([CSRUtilities belongToSwitch:deviceModel.shortName]) {
+                }else if ([CSRUtilities belongToSwitch:deviceModel.shortName]
+                          || [CSRUtilities belongToSocketOneChannel:deviceModel.shortName]) {
                     sceneMember.eveType = @(10);
                 }else if ([CSRUtilities belongToDimmer:deviceModel.shortName]) {
                     sceneMember.eveType = @(12);
@@ -860,31 +865,27 @@
                         sceneMember.colorGreen = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[temStr substringToIndex:2]]];
                         sceneMember.colorBlue = @(255);
                     }
-                }else if ([CSRUtilities belongToCWNoLevelDevice:deviceModel.shortName]) {
-                    sceneMember.eveType = @(18);
-                }else if ([CSRUtilities belongToRGBNoLevelDevice:deviceModel.shortName]) {
-                    sceneMember.eveType = @(13);
-                }else if ([CSRUtilities belongToRGBCWNoLevelDevice:deviceModel.shortName]) {
-                    if ([deviceModel.supports integerValue] ==0) {
-                        sceneMember.eveType = @(13);
-                    }else if ([deviceModel.supports integerValue] ==1) {
-                        sceneMember.eveType = @(18);
-                        NSString *temStr = [CSRUtilities stringWithHexNumber:[deviceModel.colorTemperature integerValue]];
-                        sceneMember.colorRed = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[temStr substringFromIndex:2]]];
-                        sceneMember.colorGreen = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[temStr substringToIndex:2]]];
-                        sceneMember.colorBlue = @(255);
-                    }
                 }else if ([CSRUtilities belongToFanController:deviceModel.shortName]) {
                     sceneMember.eveType = @(20);
-                }else if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
-                    if (deviceModel.channel1Selected) {
+                }else if ([CSRUtilities belongToSocketTwoChannel:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
+                    if ([sMod.channel integerValue] == 1) {
                         if (deviceModel.channel1PowerState) {
                             sceneMember.eveType = @(10);
                         }else {
                             sceneMember.eveType = @(11);
                         }
-                    }
-                    if (deviceModel.channel2Selected) {
+                        if (deviceModel.channel2PowerState) {
+                            sceneMember.colorTemperature = @(10);
+                        }else {
+                            sceneMember.colorTemperature = @(11);
+                        }
+                    }else if ([sMod.channel integerValue] == 2) {
+                        if (deviceModel.channel1PowerState) {
+                            sceneMember.eveType = @(10);
+                        }else {
+                            sceneMember.eveType = @(11);
+                        }
+                    }else if ([sMod.channel integerValue] == 3) {
                         if (deviceModel.channel2PowerState) {
                             sceneMember.colorTemperature = @(10);
                         }else {
@@ -892,7 +893,7 @@
                         }
                     }
                 }else if ([CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
-                    if (deviceModel.channel1Selected) {
+                    if ([sMod.channel integerValue] == 1) {
                         if (deviceModel.channel1PowerState) {
                             sceneMember.eveType = @(12);
                         }else {
@@ -903,203 +904,38 @@
                         }else {
                             sceneMember.colorTemperature = @(11);
                         }
-                    }
-                }else if ([CSRUtilities belongToOneChannelDimmer:deviceModel.shortName]) {
-                    if (!deviceModel.channel1PowerState) {
-                        sceneMember.eveType = @(11);
-                    }else {
-                        sceneMember.eveType = @(12);
+                    }else if ([sMod.channel integerValue] == 2) {
+                        if (deviceModel.channel1PowerState) {
+                            sceneMember.eveType = @(12);
+                        }else {
+                            sceneMember.eveType = @(11);
+                        }
+                    }else if ([sMod.channel integerValue] == 3) {
+                        if (deviceModel.channel2PowerState) {
+                            sceneMember.colorTemperature = @(12);
+                        }else {
+                            sceneMember.colorTemperature = @(11);
+                        }
                     }
                 }else if ([CSRUtilities belongToTwoChannelCurtainController:deviceModel.shortName]) {
-                    if (deviceModel.channel1Selected) {
+                    if ([sMod.channel integerValue] == 1) {
                         if (!deviceModel.channel1PowerState) {
                             sceneMember.eveType = @(11);
                         }else {
                             sceneMember.eveType = @(12);
                         }
-                    }
-                    if (deviceModel.channel2Selected) {
                         if (!deviceModel.channel2PowerState) {
                             sceneMember.colorTemperature = @(11);
                         }else {
                             sceneMember.colorTemperature = @(12);
                         }
-                    }
-                }
-                
-                [sceneEntity addMembersObject:sceneMember];
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            }];
-            
-            
-        }];
-        
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
-        
-        [self presentViewController:nav animated:YES completion:nil];
-    }else {
-        sceneEntity.enumMethod = @(NO);
-        [[CSRDatabaseManager sharedInstance] saveContext];
-        
-        DeviceListViewController *list = [[DeviceListViewController alloc] init];
-        list.selectMode = DeviceListSelectMode_Multiple;
-        
-        NSString *cmdString = [NSString stringWithFormat:@"950300%@",[CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]]];
-        [[DataModelApi sharedInstance] sendData:@0 data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
-        
-        NSArray *members = [sceneEntity.members allObjects];
-        __block NSMutableArray *singleDevices = [[NSMutableArray alloc] init];
-        [members enumerateObjectsUsingBlock:^(SceneMemberEntity *sceneMember, NSUInteger idx, BOOL * _Nonnull stop) {
-            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sceneMember.deviceID];
-            if (deviceEntity) {
-                SingleDeviceModel *deviceModel = [[SingleDeviceModel alloc] init];
-                deviceModel.deviceId = deviceEntity.deviceId;
-                deviceModel.deviceName = deviceEntity.name;
-                deviceModel.deviceShortName = deviceEntity.shortName;
-                [singleDevices addObject:deviceModel];
-            }
-        }];
-        list.originalMembers = singleDevices;
-        
-        __block MainViewController *weakSelf = self;
-        [list getSelectedDevices:^(NSArray *devices) {
-            
-            if (!weakSelf.sceneSettingHud) {
-                weakSelf.sceneSettingHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-                weakSelf.sceneSettingHud.mode = MBProgressHUDModeIndeterminate;
-                weakSelf.sceneSettingHud.delegate = self;
-            }
-            [self.semaphores removeAllObjects];
-            for (SceneMemberEntity *sceneMember in members) {
-                if ([CSRUtilities belongToSocket:sceneMember.kindString] || [CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString] || [CSRUtilities belongToTwoChannelSwitch:sceneMember.kindString] || [CSRUtilities belongToCurtainController:sceneMember.kindString]) {
-                    NSString *cmdString = [NSString stringWithFormat:@"5d0303%@",[CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]]];
-                    [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
-                    
-                    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-                    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithObjectsAndKeys:semaphore, @"semaphore", @1, @"channel", sceneEntity.rcIndex, @"index", nil];
-                    [self.semaphores setObject:dic forKey:sceneMember.deviceID];
-                    
-                }else if (![devices containsObject:sceneMember.deviceID]) {
-                    NSString *cmdString = [NSString stringWithFormat:@"9802%@",[CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]]];
-                    [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
-                }
-            }
-            
-            for (SceneMemberEntity *sceneMember in members) {
-                [sceneEntity removeMembersObject:sceneMember];
-                [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:sceneMember];
-            }
-            [[CSRDatabaseManager sharedInstance] saveContext];
-            
-            [devices enumerateObjectsUsingBlock:^(NSNumber *deviceId, NSUInteger idx, BOOL * _Nonnull stop) {
-                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
-                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
-                SceneMemberEntity *sceneMember = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
-                sceneMember.sceneID = sceneEntity.sceneID;
-                sceneMember.deviceID = deviceId;
-                sceneMember.kindString = deviceModel.shortName;
-                sceneMember.powerState = deviceModel.powerState;
-                if ([CSRUtilities belongToFanController:deviceModel.shortName]) {
-                    sceneMember.level = [NSNumber numberWithBool:deviceModel.fanState];
-                    sceneMember.colorRed = [NSNumber numberWithInt:deviceModel.fansSpeed];
-                    sceneMember.colorGreen = [NSNumber numberWithBool:deviceModel.lampState];
-                    sceneMember.colorBlue = @(255);
-                }else if ([CSRUtilities belongToSocket:deviceModel.shortName]||[CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName] || [CSRUtilities belongToCurtainController:deviceModel.shortName]){
-                    //colorTemperature:两路设备中的第二路事件类型；colorRed：两路设备中的第二路power状态；colorGreen：两路设备中的第二路亮度值
-                    sceneMember.powerState = [NSNumber numberWithBool:deviceModel.channel1PowerState];
-                    sceneMember.level = [NSNumber numberWithInteger:deviceModel.channel1Level];
-                    sceneMember.colorRed = [NSNumber numberWithBool:deviceModel.channel2PowerState];
-                    sceneMember.colorGreen = [NSNumber numberWithInteger:deviceModel.channel2Level];
-                }
-                else {
-                    sceneMember.level = [deviceModel.powerState boolValue]? deviceModel.level:@0;
-                    sceneMember.colorRed = deviceModel.red;
-                    sceneMember.colorGreen = deviceModel.green;
-                    sceneMember.colorBlue = deviceModel.blue;
-                }
-                sceneMember.sortID = deviceEntity.sortId;
-                sceneMember.colorTemperature = deviceModel.colorTemperature;
-                if (![deviceModel.powerState boolValue] && ![CSRUtilities belongToFanController:deviceModel.shortName] && ![CSRUtilities belongToSocket:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName] && ![CSRUtilities belongToTwoChannelCurtainController:deviceModel.shortName]) {
-                    sceneMember.eveType = @(11);
-                }else if ([CSRUtilities belongToSwitch:deviceModel.shortName]) {
-                    sceneMember.eveType = @(10);
-                }else if ([CSRUtilities belongToDimmer:deviceModel.shortName]) {
-                    sceneMember.eveType = @(12);
-                }else if ([CSRUtilities belongToCWDevice:deviceModel.shortName]) {
-                    sceneMember.eveType = @(19);
-                }else if ([CSRUtilities belongToRGBDevice:deviceModel.shortName]) {
-                    sceneMember.eveType = @(14);
-                }else if ([CSRUtilities belongToRGBCWDevice:deviceModel.shortName]) {
-                    if ([deviceModel.supports integerValue] == 0) {
-                        sceneMember.eveType = @(14);
-                    }else if ([deviceModel.supports integerValue] == 1) {
-                        sceneMember.eveType = @(19);
-                        NSString *temStr = [CSRUtilities stringWithHexNumber:[deviceModel.colorTemperature integerValue]];
-                        sceneMember.colorRed = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[temStr substringFromIndex:2]]];
-                        sceneMember.colorGreen = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[temStr substringToIndex:2]]];
-                        sceneMember.colorBlue = @(255);
-                    }
-                }else if ([CSRUtilities belongToCWNoLevelDevice:deviceModel.shortName]) {
-                    sceneMember.eveType = @(18);
-                }else if ([CSRUtilities belongToRGBNoLevelDevice:deviceModel.shortName]) {
-                    sceneMember.eveType = @(13);
-                }else if ([CSRUtilities belongToRGBCWNoLevelDevice:deviceModel.shortName]) {
-                    if ([deviceModel.supports integerValue] ==0) {
-                        sceneMember.eveType = @(13);
-                    }else if ([deviceModel.supports integerValue] ==1) {
-                        sceneMember.eveType = @(18);
-                        NSString *temStr = [CSRUtilities stringWithHexNumber:[deviceModel.colorTemperature integerValue]];
-                        sceneMember.colorRed = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[temStr substringFromIndex:2]]];
-                        sceneMember.colorGreen = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[temStr substringToIndex:2]]];
-                        sceneMember.colorBlue = @(255);
-                    }
-                }else if ([CSRUtilities belongToFanController:deviceModel.shortName]) {
-                    sceneMember.eveType = @(20);
-                }else if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
-                    if (deviceModel.channel1Selected) {
-                        if (deviceModel.channel1PowerState) {
-                            sceneMember.eveType = @(10);
-                        }else {
-                            sceneMember.eveType = @(11);
-                        }
-                    }
-                    if (deviceModel.channel2Selected) {
-                        if (deviceModel.channel2PowerState) {
-                            sceneMember.colorTemperature = @(10);
-                        }else {
-                            sceneMember.colorTemperature = @(11);
-                        }
-                    }
-                }else if ([CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
-                    if (deviceModel.channel1Selected) {
-                        if (deviceModel.channel1PowerState) {
-                            sceneMember.eveType = @(12);
-                        }else {
-                            sceneMember.eveType = @(11);
-                        }
-                    }
-                    if (deviceModel.channel2Selected) { 
-                        if (deviceModel.channel2PowerState) {
-                            sceneMember.colorTemperature = @(12);
-                        }else {
-                            sceneMember.colorTemperature = @(11);
-                        }
-                    }
-                }else if ([CSRUtilities belongToOneChannelDimmer:deviceModel.shortName]) {
-                    if (!deviceModel.channel1PowerState) {
-                        sceneMember.eveType = @(11);
-                    }else {
-                        sceneMember.eveType = @(12);
-                    }
-                }else if ([CSRUtilities belongToTwoChannelCurtainController:deviceModel.shortName]) {
-                    if (deviceModel.channel1Selected) {
+                    }else if ([sMod.channel integerValue] == 2) {
                         if (!deviceModel.channel1PowerState) {
                             sceneMember.eveType = @(11);
                         }else {
                             sceneMember.eveType = @(12);
                         }
-                    }
-                    if (deviceModel.channel2Selected) {
+                    }else if ([sMod.channel integerValue] == 3) {
                         if (!deviceModel.channel2PowerState) {
                             sceneMember.colorTemperature = @(11);
                         }else {
@@ -1113,15 +949,225 @@
                         sceneMember.eveType = @(12);
                     }
                 }
-                
+                [sceneEntity addMembersObject:sceneMember];
+                [[CSRDatabaseManager sharedInstance] saveContext];
+            }
+        }];
+        
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
+        
+        [self presentViewController:nav animated:YES completion:nil];
+    }else {
+        sceneEntity.enumMethod = @(NO);
+        [[CSRDatabaseManager sharedInstance] saveContext];
+        
+        DeviceListViewController *list = [[DeviceListViewController alloc] init];
+        list.selectMode = DeviceListSelectMode_Multiple;
+        
+        NSMutableArray *oris = [[NSMutableArray alloc] init];
+        if ([sceneEntity.members count]>0) {
+            for (SceneMemberEntity *sceneMember in sceneEntity.members) {
+                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sceneMember.deviceID];
+                if (deviceEntity) {
+                    SelectModel *mod = [[SelectModel alloc] init];
+                    mod.deviceID = sceneMember.deviceID;
+                    mod.channel = sceneMember.channel;
+                    mod.sourceID = sceneEntity.rcIndex;
+                    [oris addObject:mod];
+                }
+            }
+        }
+        list.originalMembers = oris;
+        
+        [list getSelectedDevices:^(NSArray *devices) {
+            
+            if (!_sceneSettingHud) {
+                _sceneSettingHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+                _sceneSettingHud.mode = MBProgressHUDModeIndeterminate;
+                _sceneSettingHud.delegate = self;
+            }
+            [self.semaphores removeAllObjects];
+            
+            NSSet *members = [NSSet setWithSet:sceneEntity.members];
+            if ([sceneEntity.members count]>0) {
+                for (SceneMemberEntity *sceneMember in members) {
+                    
+                    __block BOOL exist = NO;
+                    [devices enumerateObjectsUsingBlock:^(SelectModel *sMod, NSUInteger idx, BOOL * _Nonnull stop) {
+                        if ([sMod.deviceID isEqualToNumber:sceneMember.deviceID]) {
+                            exist = YES;
+                            *stop = YES;
+                        }
+                    }];
+                    if (!exist) {
+                        if ([CSRUtilities belongToTwoChannelSwitch:sceneMember.kindString]
+                            || [CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString]
+                            || [CSRUtilities belongToTwoChannelCurtainController:sceneMember.kindString]
+                            || [CSRUtilities belongToSocketTwoChannel:sceneMember.kindString]) {
+                            NSString *cmdString = [NSString stringWithFormat:@"5d0303%@",[CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]]];
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+                        }else {
+                            NSString *cmdString = [NSString stringWithFormat:@"9802%@",[CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]]];
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+                        }
+                        [sceneEntity removeMembersObject:sceneMember];
+                        [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:sceneMember];
+                    }
+                }
+                [[CSRDatabaseManager sharedInstance] saveContext];
+            }
+
+            for (SelectModel *sMod in devices) {
+                SceneMemberEntity *sceneMember = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+                sceneMember.sceneID = sceneEntity.sceneID;
+                sceneMember.deviceID = sMod.deviceID;
+                sceneMember.channel = sMod.channel;
+                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sMod.deviceID];
+                sceneMember.sortID = deviceEntity.sortId;
+                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sMod.deviceID];
+                sceneMember.kindString = deviceModel.shortName;
+                sceneMember.powerState = deviceModel.powerState;
+                sceneMember.colorTemperature = deviceModel.colorTemperature;
+                if ([CSRUtilities belongToFanController:deviceModel.shortName]) {
+                    sceneMember.level = [NSNumber numberWithBool:deviceModel.fanState];
+                    sceneMember.colorRed = [NSNumber numberWithInt:deviceModel.fansSpeed];
+                    sceneMember.colorGreen = [NSNumber numberWithBool:deviceModel.lampState];
+                    sceneMember.colorBlue = @(255);
+                }else if ([CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]
+                          || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]
+                          || [CSRUtilities belongToTwoChannelCurtainController:deviceModel.shortName]
+                          || [CSRUtilities belongToSocketTwoChannel:deviceModel.shortName]) {
+                //colorTemperature--两路设备中的第二路事件类型；colorRed--两路设备中的第二路power状态；colorGreen--两路设备中的第二路亮度值
+                    sceneMember.powerState = [NSNumber numberWithBool:deviceModel.channel1PowerState];
+                    sceneMember.level = [NSNumber numberWithInteger:deviceModel.channel1Level];
+                    sceneMember.colorRed = [NSNumber numberWithBool:deviceModel.channel2PowerState];
+                    sceneMember.colorGreen = [NSNumber numberWithInteger:deviceModel.channel2Level];
+                }else {
+                    sceneMember.level = [deviceModel.powerState boolValue]? deviceModel.level:@0;
+                    sceneMember.colorRed = deviceModel.red;
+                    sceneMember.colorGreen = deviceModel.green;
+                    sceneMember.colorBlue = deviceModel.blue;
+                }
+                if (![deviceModel.powerState boolValue]
+                    && ![CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]
+                    && ![CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]
+                    && ![CSRUtilities belongToTwoChannelCurtainController:deviceModel.shortName]
+                    && ![CSRUtilities belongToSocketTwoChannel:deviceModel.shortName]) {
+                    sceneMember.eveType = @(11);
+                }else if ([CSRUtilities belongToSwitch:deviceModel.shortName]
+                          || [CSRUtilities belongToSocketOneChannel:deviceModel.shortName]) {
+                    sceneMember.eveType = @(10);
+                }else if ([CSRUtilities belongToDimmer:deviceModel.shortName]) {
+                    sceneMember.eveType = @(12);
+                }else if ([CSRUtilities belongToCWDevice:deviceModel.shortName]) {
+                    sceneMember.eveType = @(19);
+                }else if ([CSRUtilities belongToRGBDevice:deviceModel.shortName]) {
+                    sceneMember.eveType = @(14);
+                }else if ([CSRUtilities belongToRGBCWDevice:deviceModel.shortName]) {
+                    if ([deviceModel.supports integerValue] == 0) {
+                        sceneMember.eveType = @(14);
+                    }else if ([deviceModel.supports integerValue] == 1) {
+                        sceneMember.eveType = @(19);
+                        NSString *temStr = [CSRUtilities stringWithHexNumber:[deviceModel.colorTemperature integerValue]];
+                        sceneMember.colorRed = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[temStr substringFromIndex:2]]];
+                        sceneMember.colorGreen = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[temStr substringToIndex:2]]];
+                        sceneMember.colorBlue = @(255);
+                    }
+                }else if ([CSRUtilities belongToFanController:deviceModel.shortName]) {
+                    sceneMember.eveType = @(20);
+                }else if ([CSRUtilities belongToSocketTwoChannel:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]) {
+                    if ([sMod.channel integerValue] == 1) {
+                        if (deviceModel.channel1PowerState) {
+                            sceneMember.eveType = @(10);
+                        }else {
+                            sceneMember.eveType = @(11);
+                        }
+                        if (deviceModel.channel2PowerState) {
+                            sceneMember.colorTemperature = @(10);
+                        }else {
+                            sceneMember.colorTemperature = @(11);
+                        }
+                    }else if ([sMod.channel integerValue] == 2) {
+                        if (deviceModel.channel1PowerState) {
+                            sceneMember.eveType = @(10);
+                        }else {
+                            sceneMember.eveType = @(11);
+                        }
+                    }else if ([sMod.channel integerValue] == 3) {
+                        if (deviceModel.channel2PowerState) {
+                            sceneMember.colorTemperature = @(10);
+                        }else {
+                            sceneMember.colorTemperature = @(11);
+                        }
+                    }
+                }else if ([CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
+                    if ([sMod.channel integerValue] == 1) {
+                        if (deviceModel.channel1PowerState) {
+                            sceneMember.eveType = @(12);
+                        }else {
+                            sceneMember.eveType = @(11);
+                        }
+                        if (deviceModel.channel2PowerState) {
+                            sceneMember.colorTemperature = @(12);
+                        }else {
+                            sceneMember.colorTemperature = @(11);
+                        }
+                    }else if ([sMod.channel integerValue] == 2) {
+                        if (deviceModel.channel1PowerState) {
+                            sceneMember.eveType = @(12);
+                        }else {
+                            sceneMember.eveType = @(11);
+                        }
+                    }else if ([sMod.channel integerValue] == 3) {
+                        if (deviceModel.channel2PowerState) {
+                            sceneMember.colorTemperature = @(12);
+                        }else {
+                            sceneMember.colorTemperature = @(11);
+                        }
+                    }
+                }else if ([CSRUtilities belongToTwoChannelCurtainController:deviceModel.shortName]) {
+                    if ([sMod.channel integerValue] == 1) {
+                        if (!deviceModel.channel1PowerState) {
+                            sceneMember.eveType = @(11);
+                        }else {
+                            sceneMember.eveType = @(12);
+                        }
+                        if (!deviceModel.channel2PowerState) {
+                            sceneMember.colorTemperature = @(11);
+                        }else {
+                            sceneMember.colorTemperature = @(12);
+                        }
+                    }else if ([sMod.channel integerValue] == 2) {
+                        if (!deviceModel.channel1PowerState) {
+                            sceneMember.eveType = @(11);
+                        }else {
+                            sceneMember.eveType = @(12);
+                        }
+                    }else if ([sMod.channel integerValue] == 3) {
+                        if (!deviceModel.channel2PowerState) {
+                            sceneMember.colorTemperature = @(11);
+                        }else {
+                            sceneMember.colorTemperature = @(12);
+                        }
+                    }
+                }else if ([CSRUtilities belongToOneChannelCurtainController:deviceModel.shortName]) {
+                    if (!deviceModel.powerState) {
+                        sceneMember.eveType = @(11);
+                    }else {
+                        sceneMember.eveType = @(12);
+                    }
+                }
                 [sceneEntity addMembersObject:sceneMember];
                 [[CSRDatabaseManager sharedInstance] saveContext];
                 
                 NSString *rcIndexString = [CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]];
-                if ([CSRUtilities belongToSocket:deviceModel.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName] || [CSRUtilities belongToCurtainController:deviceModel.shortName]) {
+                if ([CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]
+                    || [CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]
+                    || [CSRUtilities belongToTwoChannelCurtainController:deviceModel.shortName]
+                    || [CSRUtilities belongToSocketTwoChannel:deviceModel.shortName]) {
                     
                     dispatch_queue_t queue = dispatch_queue_create("串行", NULL);
-                    if (deviceModel.channel1Selected && deviceModel.channel2Selected) {
+                    if ([sMod.channel integerValue]==1) {
                         NSMutableDictionary *semaphoresdic = [self.semaphores objectForKey:deviceModel.deviceId];
                         __block dispatch_semaphore_t semaphore;
                         if (semaphoresdic) {
@@ -1155,22 +1201,30 @@
                                 dispatch_semaphore_t semaphore = semaphoresdic[@"semaphore"];
                                 dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                    if (deviceModel.channel1Selected) {
+                                    if ([sMod.channel intValue] == 1) {
                                         NSString *cmdString = [NSString stringWithFormat:@"590801%@%@%@000000",rcIndexString,sceneMember.eveType,[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]]];
                                         [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
-                                    }
-                                    if (deviceModel.channel2Selected) {
+                                        NSString *cmdString2 = [NSString stringWithFormat:@"590802%@%@%@000000",rcIndexString,sceneMember.colorTemperature,[CSRUtilities stringWithHexNumber:[sceneMember.colorGreen integerValue]]];
+                                        [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString2] success:nil failure:nil];
+                                    }else if ([sMod.channel intValue] == 2) {
+                                        NSString *cmdString = [NSString stringWithFormat:@"590801%@%@%@000000",rcIndexString,sceneMember.eveType,[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]]];
+                                        [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+                                    }else if ([sMod.channel intValue] == 3) {
                                         NSString *cmdString = [NSString stringWithFormat:@"590802%@%@%@000000",rcIndexString,sceneMember.colorTemperature,[CSRUtilities stringWithHexNumber:[sceneMember.colorGreen integerValue]]];
                                         [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
                                     }
                                 });
                             });
                         }else {
-                            if (deviceModel.channel1Selected) {
+                            if ([sMod.channel intValue] == 1) {
                                 NSString *cmdString = [NSString stringWithFormat:@"590801%@%@%@000000",rcIndexString,sceneMember.eveType,[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]]];
                                 [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
-                            }
-                            if (deviceModel.channel2Selected) {
+                                NSString *cmdString2 = [NSString stringWithFormat:@"590802%@%@%@000000",rcIndexString,sceneMember.colorTemperature,[CSRUtilities stringWithHexNumber:[sceneMember.colorGreen integerValue]]];
+                                    [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString2] success:nil failure:nil];
+                            }else if ([sMod.channel intValue] == 2) {
+                                NSString *cmdString = [NSString stringWithFormat:@"590801%@%@%@000000",rcIndexString,sceneMember.eveType,[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]]];
+                                [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+                            }else if ([sMod.channel intValue] == 3) {
                                 NSString *cmdString = [NSString stringWithFormat:@"590802%@%@%@000000",rcIndexString,sceneMember.colorTemperature,[CSRUtilities stringWithHexNumber:[sceneMember.colorGreen integerValue]]];
                                 [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
                             }
@@ -1181,14 +1235,11 @@
                     NSString *cmdString = [NSString stringWithFormat:@"9307%@%@%@%@",rcIndexString,sceneMember.eveType,[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]],ddd];
                     [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
                 }
-                
                 [NSThread sleepForTimeInterval:0.1f];
-                
-            }];
+            }
             
-            [weakSelf.sceneSettingHud hideAnimated:YES];
-            weakSelf.sceneSettingHud = nil;
-            
+            [_sceneSettingHud hideAnimated:YES];
+            _sceneSettingHud = nil;
         }];
         
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
@@ -1381,7 +1432,7 @@
     MainCollectionViewCell *mainCell = (MainCollectionViewCell *)cell;
     if ([mainCell.groupId isEqualToNumber:@1000]) {
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
-        if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBNoLevelDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBCWNoLevelDevice:deviceEntity.shortName]) {
+        if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
             
             RGBDeviceViewController *RGBDVC = [[RGBDeviceViewController alloc] init];
             RGBDVC.deviceId = mainCell.deviceId;
@@ -1403,11 +1454,7 @@
                     [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
                     [[UIApplication sharedApplication].keyWindow addSubview:self.curtainKindView];
                     [self.curtainKindView autoCenterInSuperview];
-                    if ([CSRUtilities belongToOneChannelCurtainController:deviceEntity.shortName]) {
-                        [self.curtainKindView autoSetDimensionsToSize:CGSizeMake(271, 166)];
-                    }else if ([CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName]) {
-                        [self.curtainKindView autoSetDimensionsToSize:CGSizeMake(271, 302)];
-                    }
+                    [self.curtainKindView autoSetDimensionsToSize:CGSizeMake(271, 166)];
                 });
             }else {
                 CurtainViewController *curtainVC = [[CurtainViewController alloc] init];
@@ -1467,6 +1514,17 @@
                 [self getMainDataArray];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:tsvc];
+            nav.modalPresentationStyle = UIModalPresentationPopover;
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
+        }else if ([CSRUtilities belongToRGBCWRemote:deviceEntity.shortName] || [CSRUtilities belongToSceneRemote:deviceEntity.shortName]) {
+            RemoteMainVC *rmvc = [[RemoteMainVC alloc] init];
+            rmvc.deviceId = mainCell.deviceId;
+            rmvc.reloadDataHandle = ^{
+                [self getMainDataArray];
+            };
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:rmvc];
             nav.modalPresentationStyle = UIModalPresentationPopover;
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
@@ -1711,11 +1769,7 @@
         [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
         [[UIApplication sharedApplication].keyWindow addSubview:self.curtainKindView];
         [self.curtainKindView autoCenterInSuperview];
-        if ([CSRUtilities belongToOneChannelCurtainController:deviceEntity.shortName]) {
-            [self.curtainKindView autoSetDimensionsToSize:CGSizeMake(271, 166)];
-        }else if ([CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName]) {
-            [self.curtainKindView autoSetDimensionsToSize:CGSizeMake(271, 302)];
-        }
+        [self.curtainKindView autoSetDimensionsToSize:CGSizeMake(271, 166)];
     });
 }
 
@@ -1729,10 +1783,6 @@
         _selectedCurtainDeviceEntity.remoteBranch = @"chh";
     }else if (sender.tag == 44) {
         _selectedCurtainDeviceEntity.remoteBranch = @"cvv";
-    }else if (sender.tag == 55) {
-        _selectedCurtainDeviceEntity.remoteBranch = @"chv";
-    }else if (sender.tag == 66) {
-        _selectedCurtainDeviceEntity.remoteBranch = @"cvh";
     }
     [[CSRDatabaseManager sharedInstance] saveContext];
     
@@ -1911,54 +1961,28 @@
         line.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
         [_curtainKindView addSubview:line];
         
+        UIButton *horizontalBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 31, 135, 135)];
+        [horizontalBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
+        [_curtainKindView addSubview:horizontalBtn];
+        
+        UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(135, 31, 1, 135)];
+        line1.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+        [_curtainKindView addSubview:line1];
+        
+        UIButton *verticalBtn = [[UIButton alloc] initWithFrame:CGRectMake(136, 31, 135, 135)];
+        [verticalBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
+        [_curtainKindView addSubview:verticalBtn];
+        
         if ([CSRUtilities belongToOneChannelCurtainController:_selectedCurtainDeviceEntity.shortName]) {
-            UIButton *horizontalBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 31, 135, 135)];
             horizontalBtn.tag = 11;
             [horizontalBtn setImage:[UIImage imageNamed:@"curtainHImage"] forState:UIControlStateNormal];
-            [horizontalBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
-            [_curtainKindView addSubview:horizontalBtn];
-            
-            UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(135, 31, 1, 135)];
-            line1.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
-            [_curtainKindView addSubview:line1];
-            
-            UIButton *verticalBtn = [[UIButton alloc] initWithFrame:CGRectMake(136, 31, 135, 135)];
             verticalBtn.tag = 22;
             [verticalBtn setImage:[UIImage imageNamed:@"curtainVImage"] forState:UIControlStateNormal];
-            [verticalBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
-            [_curtainKindView addSubview:verticalBtn];
-        } else if ([CSRUtilities belongToTwoChannelCurtainController:_selectedCurtainDeviceEntity.shortName]) {
-            UIButton *hhBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 31, 135, 135)];
-            hhBtn.tag = 33;
-            [hhBtn setImage:[UIImage imageNamed:@"curtainHHImage"] forState:UIControlStateNormal];
-            [hhBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
-            [_curtainKindView addSubview:hhBtn];
-            
-            UIButton *vvBtn = [[UIButton alloc] initWithFrame:CGRectMake(136, 31, 135, 135)];
-            vvBtn.tag = 44;
-            [vvBtn setImage:[UIImage imageNamed:@"curtainVVImage"] forState:UIControlStateNormal];
-            [vvBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
-            [_curtainKindView addSubview:vvBtn];
-            
-            UIButton *hvBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 168, 135, 135)];
-            hvBtn.tag = 55;
-            [hvBtn setImage:[UIImage imageNamed:@"curtainHVImage"] forState:UIControlStateNormal];
-            [hvBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
-            [_curtainKindView addSubview:hvBtn];
-            
-            UIButton *vhBtn = [[UIButton alloc] initWithFrame:CGRectMake(136, 168, 135, 135)];
-            vhBtn.tag = 66;
-            [vhBtn setImage:[UIImage imageNamed:@"curtainVHImage"] forState:UIControlStateNormal];
-            [vhBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
-            [_curtainKindView addSubview:vhBtn];
-            
-            UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(135, 31, 1, 271)];
-            line1.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
-            [_curtainKindView addSubview:line1];
-            
-            UIView *line2 = [[UIView alloc] initWithFrame:CGRectMake(0, 167, 271, 1)];
-            line2.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
-            [_curtainKindView addSubview:line2];
+        }else if ([CSRUtilities belongToTwoChannelCurtainController:_selectedCurtainDeviceEntity.shortName]) {
+            horizontalBtn.tag = 33;
+            [horizontalBtn setImage:[UIImage imageNamed:@"curtainHHImage"] forState:UIControlStateNormal];
+            verticalBtn.tag = 44;
+            [verticalBtn setImage:[UIImage imageNamed:@"curtainVVImage"] forState:UIControlStateNormal];
         }
     }
     return _curtainKindView;
@@ -2114,10 +2138,16 @@
     NSDictionary *dic = notification.userInfo;
     CBPeripheral *per = dic[@"peripheral"];
     _connectedPLable.text = [NSString stringWithFormat:@"%@ %@",per.name,per.uuidString];
+    _connectedPLable.textColor = [UIColor whiteColor];
+    [DeviceModelManager sharedInstance].bleDisconnected = NO;
+    [_mainCollectionView reloadData];
 }
 
 - (void)bridgeDisconnectedNotification:(NSNotification *)notification {
-    _connectedPLable.text = @"";
+    _connectedPLable.text = @"Bluetooth is not connected! ";
+    _connectedPLable.textColor = DARKORAGE;
+    [DeviceModelManager sharedInstance].bleDisconnected = YES;
+    [_mainCollectionView reloadData];
 }
 
 @end

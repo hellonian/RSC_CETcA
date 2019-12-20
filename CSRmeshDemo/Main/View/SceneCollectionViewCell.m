@@ -38,7 +38,7 @@
         NSString *iconString = kSceneIcons[[sceneEntity.iconID integerValue]];
         self.iconView.image = [UIImage imageNamed:[NSString stringWithFormat:@"Scene_%@_gray",iconString]];
         self.iconView.highlightedImage = [UIImage imageNamed:[NSString stringWithFormat:@"Scene_%@_orange",iconString]];
-        if ([sceneEntity.sceneName isEqualToString:@"Home"] || [sceneEntity.sceneName isEqualToString:@"Away"] || [sceneEntity.sceneName isEqualToString:@"Scene1"] || [sceneEntity.sceneName isEqualToString:@"Scene2"]) {
+        if ([sceneEntity.sceneName isEqualToString:@"Home"] || [sceneEntity.sceneName isEqualToString:@"Away"] || [sceneEntity.sceneName isEqualToString:@"Scene1"] || [sceneEntity.sceneName isEqualToString:@"Scene2"] || [sceneEntity.sceneName isEqualToString:@"Scene3"] || [sceneEntity.sceneName isEqualToString:@"Scene4"]) {
             self.nameLabel.text = AcTECLocalizedStringFromTable(sceneEntity.sceneName, @"Localizable");
         }else {
             self.nameLabel.text = sceneEntity.sceneName;

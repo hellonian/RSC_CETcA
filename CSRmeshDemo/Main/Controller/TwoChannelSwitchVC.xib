@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -12,12 +12,6 @@
             <connections>
                 <outlet property="channel1Switch" destination="6fP-Ti-1Ys" id="IvK-4L-HEM"/>
                 <outlet property="channel2Switch" destination="InM-au-1CS" id="ZUD-nb-r33"/>
-                <outlet property="channelSelected1Btn" destination="8Ob-Ea-DEi" id="kJE-p4-Tqd"/>
-                <outlet property="channelSelected1ImageView" destination="fn1-xE-QM2" id="h4N-g0-pPw"/>
-                <outlet property="channelSelected2Btn" destination="kXL-9h-MBi" id="i8O-1k-RPz"/>
-                <outlet property="channelSelected2ImageView" destination="60K-Al-1ky" id="HWr-WN-gKi"/>
-                <outlet property="left1Constaint" destination="bAH-1S-oXX" id="1IW-Iq-3XG"/>
-                <outlet property="left2Constaint" destination="KbH-CK-aDX" id="avP-yO-v8O"/>
                 <outlet property="macAddressLabel" destination="IhX-8Q-EnA" id="Rc6-7U-9LT"/>
                 <outlet property="nameTf" destination="pcm-6J-qph" id="gBa-eo-osz"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -137,13 +131,6 @@
                                 <constraint firstAttribute="height" constant="1" id="EPI-Df-Uc7"/>
                             </constraints>
                         </view>
-                        <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="To_select" translatesAutoresizingMaskIntoConstraints="NO" id="fn1-xE-QM2">
-                            <rect key="frame" x="11" y="12" width="22" height="22"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="22" id="A78-9R-KN9"/>
-                                <constraint firstAttribute="width" secondItem="fn1-xE-QM2" secondAttribute="height" multiplier="1:1" id="nXj-b7-9QD"/>
-                            </constraints>
-                        </imageView>
                         <switch opaque="NO" tag="1" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6fP-Ti-1Ys">
                             <rect key="frame" x="345" y="7.5" width="51" height="31"/>
                             <color key="onTintColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -151,35 +138,24 @@
                                 <action selector="turnOnOff:" destination="-1" eventType="valueChanged" id="dGK-CB-Hfu"/>
                             </connections>
                         </switch>
-                        <button hidden="YES" opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Ob-Ea-DEi">
-                            <rect key="frame" x="0.0" y="1" width="325" height="34"/>
-                            <connections>
-                                <action selector="channelSeleteBtn:" destination="-1" eventType="touchUpInside" id="VkB-zU-py0"/>
-                            </connections>
-                        </button>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstItem="6fP-Ti-1Ys" firstAttribute="centerY" secondItem="2s6-sc-USN" secondAttribute="centerY" id="1Xx-DS-Gly"/>
-                        <constraint firstItem="6fP-Ti-1Ys" firstAttribute="leading" secondItem="8Ob-Ea-DEi" secondAttribute="trailing" constant="20" id="1Zw-bd-0O5"/>
-                        <constraint firstItem="fn1-xE-QM2" firstAttribute="leading" secondItem="IkM-45-RK4" secondAttribute="leading" constant="11" id="A2x-lZ-vaU"/>
                         <constraint firstAttribute="bottom" secondItem="WZy-AK-EOA" secondAttribute="bottom" id="ADx-nV-yGz"/>
                         <constraint firstItem="4jd-DI-EhR" firstAttribute="top" secondItem="IkM-45-RK4" secondAttribute="top" id="E7p-Lx-wXo"/>
-                        <constraint firstItem="8Ob-Ea-DEi" firstAttribute="top" secondItem="4jd-DI-EhR" secondAttribute="bottom" id="FnT-BY-rlo"/>
                         <constraint firstAttribute="height" constant="46" id="NRm-uN-EB4"/>
                         <constraint firstItem="4jd-DI-EhR" firstAttribute="leading" secondItem="IkM-45-RK4" secondAttribute="leading" id="SSq-bT-dE5"/>
                         <constraint firstItem="2s6-sc-USN" firstAttribute="leading" secondItem="IkM-45-RK4" secondAttribute="leading" constant="20" id="bAH-1S-oXX"/>
                         <constraint firstAttribute="trailing" secondItem="4jd-DI-EhR" secondAttribute="trailing" id="dZm-h9-ndl"/>
-                        <constraint firstItem="fn1-xE-QM2" firstAttribute="top" secondItem="4jd-DI-EhR" secondAttribute="bottom" constant="11" id="mL3-QK-sRk"/>
                         <constraint firstItem="2s6-sc-USN" firstAttribute="top" secondItem="4jd-DI-EhR" secondAttribute="bottom" constant="12" id="nqg-mr-Jbg"/>
                         <constraint firstItem="WZy-AK-EOA" firstAttribute="leading" secondItem="IkM-45-RK4" secondAttribute="leading" id="qnt-q3-fsN"/>
                         <constraint firstAttribute="trailing" secondItem="6fP-Ti-1Ys" secondAttribute="trailing" constant="20" id="rJK-1O-fqK"/>
                         <constraint firstAttribute="trailing" secondItem="WZy-AK-EOA" secondAttribute="trailing" id="rK6-k5-1qB"/>
-                        <constraint firstItem="8Ob-Ea-DEi" firstAttribute="leading" secondItem="IkM-45-RK4" secondAttribute="leading" id="umS-hq-hw7"/>
                     </constraints>
                     <viewLayoutGuide key="safeArea" id="zhW-qV-T0Q"/>
                 </view>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Dimmer 2" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="51M-WL-r5U">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Switch 2" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="51M-WL-r5U">
                     <rect key="frame" x="20" y="225" width="200" height="20"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="20" id="9iv-sF-2kk"/>
@@ -223,36 +199,18 @@
                                 <action selector="turnOnOff:" destination="-1" eventType="valueChanged" id="e0D-K1-12p"/>
                             </connections>
                         </switch>
-                        <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="To_select" translatesAutoresizingMaskIntoConstraints="NO" id="60K-Al-1ky">
-                            <rect key="frame" x="11" y="12" width="22" height="22"/>
-                            <constraints>
-                                <constraint firstAttribute="width" secondItem="60K-Al-1ky" secondAttribute="height" multiplier="1:1" id="2lB-tc-J9i"/>
-                                <constraint firstAttribute="width" constant="22" id="I6N-rF-rDD"/>
-                            </constraints>
-                        </imageView>
-                        <button hidden="YES" opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kXL-9h-MBi">
-                            <rect key="frame" x="0.0" y="0.0" width="325" height="34"/>
-                            <connections>
-                                <action selector="channelSeleteBtn:" destination="-1" eventType="touchUpInside" id="J61-IJ-UtF"/>
-                            </connections>
-                        </button>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstItem="kXL-9h-MBi" firstAttribute="leading" secondItem="aKr-Fb-FIU" secondAttribute="leading" id="1C7-6i-Jrd"/>
                         <constraint firstItem="Yxg-mS-HJX" firstAttribute="leading" secondItem="aKr-Fb-FIU" secondAttribute="leading" id="1Kl-iT-E1s"/>
                         <constraint firstAttribute="height" constant="46" id="3nM-78-Nms"/>
                         <constraint firstItem="da8-qY-CCm" firstAttribute="leading" secondItem="aKr-Fb-FIU" secondAttribute="leading" id="4Bv-Qx-Spa"/>
-                        <constraint firstItem="60K-Al-1ky" firstAttribute="leading" secondItem="aKr-Fb-FIU" secondAttribute="leading" constant="11" id="5GB-Lz-LVx"/>
-                        <constraint firstItem="60K-Al-1ky" firstAttribute="top" secondItem="da8-qY-CCm" secondAttribute="bottom" constant="11" id="DwQ-Ib-yR0"/>
                         <constraint firstItem="FuP-M2-qx6" firstAttribute="leading" secondItem="aKr-Fb-FIU" secondAttribute="leading" constant="20" id="KbH-CK-aDX"/>
-                        <constraint firstItem="InM-au-1CS" firstAttribute="leading" secondItem="kXL-9h-MBi" secondAttribute="trailing" constant="20" id="Kpa-s2-Bv6"/>
                         <constraint firstAttribute="trailing" secondItem="InM-au-1CS" secondAttribute="trailing" constant="20" id="MCO-rM-iB2"/>
                         <constraint firstItem="da8-qY-CCm" firstAttribute="top" secondItem="aKr-Fb-FIU" secondAttribute="top" id="XcN-Mn-bEO"/>
                         <constraint firstAttribute="bottom" secondItem="Yxg-mS-HJX" secondAttribute="bottom" id="ZLp-2L-DJ0"/>
                         <constraint firstItem="InM-au-1CS" firstAttribute="centerY" secondItem="FuP-M2-qx6" secondAttribute="centerY" id="czE-sc-kch"/>
                         <constraint firstAttribute="trailing" secondItem="Yxg-mS-HJX" secondAttribute="trailing" id="gn6-F8-uhf"/>
-                        <constraint firstItem="kXL-9h-MBi" firstAttribute="top" secondItem="aKr-Fb-FIU" secondAttribute="top" id="klz-Sy-OQ9"/>
                         <constraint firstAttribute="trailing" secondItem="da8-qY-CCm" secondAttribute="trailing" id="tQb-qA-m5J"/>
                         <constraint firstItem="FuP-M2-qx6" firstAttribute="top" secondItem="da8-qY-CCm" secondAttribute="bottom" constant="12" id="zUR-FA-i6C"/>
                     </constraints>
@@ -279,7 +237,4 @@
             <point key="canvasLocation" x="131.8840579710145" y="152.67857142857142"/>
         </view>
     </objects>
-    <resources>
-        <image name="To_select" width="22" height="22"/>
-    </resources>
 </document>

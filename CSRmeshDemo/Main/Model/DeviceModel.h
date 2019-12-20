@@ -29,15 +29,10 @@
 @property (nonatomic, assign) BOOL lampState;
 @property (nonatomic, assign) BOOL channel1PowerState;
 @property (nonatomic, assign) BOOL channel2PowerState;
-@property (nonatomic, assign) BOOL channel1Selected;
-@property (nonatomic, assign) BOOL channel2Selected;
 @property (nonatomic, assign) BOOL childrenState1;
 @property (nonatomic, assign) BOOL childrenState2;
 @property (nonatomic, assign) NSInteger channel1Level;
 @property (nonatomic, assign) NSInteger channel2Level;
-@property (nonatomic, strong) NSMutableDictionary *buttonnumAndChannel;
-
-- (void)addValue:(id)obj forKey:(NSString *)key;
 
 @end
 

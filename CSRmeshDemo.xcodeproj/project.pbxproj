@@ -68,6 +68,8 @@
 		2E2E70B21FF5DE60002D1C1D /* PCM.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70721FF5DE60002D1C1D /* PCM.m */; };
 		2E2E70B31FF5DE60002D1C1D /* ErrorCodes.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E70731FF5DE60002D1C1D /* ErrorCodes.strings */; };
 		2E2E70B51FF5DE60002D1C1D /* UpdateDeviceModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70771FF5DE60002D1C1D /* UpdateDeviceModel.m */; };
+		2E3417BE23A7276A000D1A52 /* RemoteMainVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3417BC23A7276A000D1A52 /* RemoteMainVC.m */; };
+		2E3417BF23A7276A000D1A52 /* RemoteMainVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E3417BD23A7276A000D1A52 /* RemoteMainVC.xib */; };
 		2E35F74C222A7E41001D9342 /* GroupControlView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E35F74B222A7E41001D9342 /* GroupControlView.m */; };
 		2E3630FB2199666F00EF22DD /* FanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3630F92199666F00EF22DD /* FanViewController.m */; };
 		2E37074E20CE4C16000AF696 /* DeviceViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E37075020CE4C16000AF696 /* DeviceViewController.xib */; };
@@ -93,7 +95,6 @@
 		2E4BC03D227051BF000719EA /* SoundListenTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E4BC03C227051BF000719EA /* SoundListenTool.m */; };
 		2E4DDCEB21F9680900B2ACF3 /* FanViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E4DDCED21F9680900B2ACF3 /* FanViewController.xib */; };
 		2E4DDCF221F968FF00B2ACF3 /* SocketViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E4DDCF421F968FF00B2ACF3 /* SocketViewController.xib */; };
-		2E4DDCF921F969B900B2ACF3 /* SocketForSceneVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E4DDCFB21F969B900B2ACF3 /* SocketForSceneVC.xib */; };
 		2E4DDD0021F969F200B2ACF3 /* TwoChannelDimmerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E4DDD0221F969F200B2ACF3 /* TwoChannelDimmerVC.xib */; };
 		2E500B741FD8D6B9008303CE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D6E44EF1B3C4059000A44DD /* CoreGraphics.framework */; };
 		2E500B761FD8D6F3008303CE /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E500B751FD8D6F0008303CE /* MediaPlayer.framework */; };
@@ -116,8 +117,8 @@
 		2E706CFF212A7278008D0EC4 /* GalleryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E706D01212A7278008D0EC4 /* GalleryViewController.xib */; };
 		2E712CFD235015E5003DBA72 /* TwoChannelSwitchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E712CFB235015E5003DBA72 /* TwoChannelSwitchVC.m */; };
 		2E712CFE235015E5003DBA72 /* TwoChannelSwitchVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E712CFC235015E5003DBA72 /* TwoChannelSwitchVC.xib */; };
-		2E80C46D21DC62CE0024584C /* SocketForSceneVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E80C46B21DC62CE0024584C /* SocketForSceneVC.m */; };
 		2E8623492019DB28004EF0E0 /* DeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8623472019DB28004EF0E0 /* DeviceViewController.m */; };
+		2E8ECC2E239DFA210031367F /* SelectModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8ECC2D239DFA210031367F /* SelectModel.m */; };
 		2E9622BF20C913530097C617 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E9622C120C913530097C617 /* Localizable.strings */; };
 		2E9622C720C917EC0097C617 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E9622C920C917EC0097C617 /* InfoPlist.strings */; };
 		2EA101B720E0BBE500D2C88F /* SceneListSModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EA101B620E0BBE500D2C88F /* SceneListSModel.m */; };
@@ -300,6 +301,9 @@
 		2E2E70731FF5DE60002D1C1D /* ErrorCodes.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = ErrorCodes.strings; sourceTree = "<group>"; };
 		2E2E70761FF5DE60002D1C1D /* UpdateDeviceModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateDeviceModel.h; sourceTree = "<group>"; };
 		2E2E70771FF5DE60002D1C1D /* UpdateDeviceModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateDeviceModel.m; sourceTree = "<group>"; };
+		2E3417BB23A7276A000D1A52 /* RemoteMainVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteMainVC.h; sourceTree = "<group>"; };
+		2E3417BC23A7276A000D1A52 /* RemoteMainVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteMainVC.m; sourceTree = "<group>"; };
+		2E3417BD23A7276A000D1A52 /* RemoteMainVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RemoteMainVC.xib; sourceTree = "<group>"; };
 		2E35F74A222A7E41001D9342 /* GroupControlView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GroupControlView.h; sourceTree = "<group>"; };
 		2E35F74B222A7E41001D9342 /* GroupControlView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GroupControlView.m; sourceTree = "<group>"; };
 		2E3630F82199666F00EF22DD /* FanViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FanViewController.h; sourceTree = "<group>"; };
@@ -345,7 +349,6 @@
 		2E48A7FC221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
 		2E48A7FD221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2E48A7FE221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/SocketViewController.strings; sourceTree = "<group>"; };
-		2E48A7FF221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/SocketForSceneVC.strings; sourceTree = "<group>"; };
 		2E48A800221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
 		2E48A801221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2E48A802221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
@@ -369,9 +372,6 @@
 		2E4DDCEF21F9680E00B2ACF3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2E4DDCF121F9681000B2ACF3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/FanViewController.strings"; sourceTree = "<group>"; };
 		2E4DDCF321F968FF00B2ACF3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/SocketViewController.xib; sourceTree = "<group>"; };
-		2E4DDCFA21F969B900B2ACF3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/SocketForSceneVC.xib; sourceTree = "<group>"; };
-		2E4DDCFD21F969BE00B2ACF3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SocketForSceneVC.strings; sourceTree = "<group>"; };
-		2E4DDCFF21F969BF00B2ACF3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SocketForSceneVC.strings"; sourceTree = "<group>"; };
 		2E4DDD0121F969F200B2ACF3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/TwoChannelDimmerVC.xib; sourceTree = "<group>"; };
 		2E4DDD0421F969F700B2ACF3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
 		2E4DDD0621F969F800B2ACF3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/TwoChannelDimmerVC.strings"; sourceTree = "<group>"; };
@@ -420,7 +420,6 @@
 		2E747FD5221CE2AA00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
 		2E747FD6221CE2AA00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2E747FD7221CE2AA00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/SocketViewController.strings; sourceTree = "<group>"; };
-		2E747FD8221CE2AA00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/SocketForSceneVC.strings; sourceTree = "<group>"; };
 		2E747FD9221CE2AB00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
 		2E747FDA221CE2AB00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2E747FDB221CE2AB00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
@@ -438,7 +437,6 @@
 		2E747FE8221CF68D00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
 		2E747FE9221CF68D00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2E747FEA221CF68E00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/SocketViewController.strings; sourceTree = "<group>"; };
-		2E747FEB221CF68E00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/SocketForSceneVC.strings; sourceTree = "<group>"; };
 		2E747FEC221CF68E00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
 		2E747FED221CF68E00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2E747FEE221CF68F00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
@@ -447,10 +445,10 @@
 		2E747FF2221CF69000FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/AboutViewController.strings; sourceTree = "<group>"; };
 		2E747FF3221CF69000FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; wrapsLines = 0; };
 		2E747FF4221CF69100FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		2E80C46A21DC62CE0024584C /* SocketForSceneVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SocketForSceneVC.h; sourceTree = "<group>"; };
-		2E80C46B21DC62CE0024584C /* SocketForSceneVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SocketForSceneVC.m; sourceTree = "<group>"; };
 		2E8623462019DB28004EF0E0 /* DeviceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceViewController.h; sourceTree = "<group>"; };
 		2E8623472019DB28004EF0E0 /* DeviceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeviceViewController.m; sourceTree = "<group>"; };
+		2E8ECC2C239DFA210031367F /* SelectModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelectModel.h; sourceTree = "<group>"; };
+		2E8ECC2D239DFA210031367F /* SelectModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelectModel.m; sourceTree = "<group>"; };
 		2E9622C320C9137E0097C617 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		2E9622C420C913C10097C617 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2E9622C820C917EC0097C617 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -488,7 +486,6 @@
 		2EC18BCA221D2260008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
 		2EC18BCB221D2260008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2EC18BCC221D2261008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/SocketViewController.strings; sourceTree = "<group>"; };
-		2EC18BCD221D2261008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/SocketForSceneVC.strings; sourceTree = "<group>"; };
 		2EC18BCE221D2261008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
 		2EC18BCF221D2261008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2EC18BD0221D2261008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
@@ -506,7 +503,6 @@
 		2EC18BDD221D2278008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
 		2EC18BDE221D2278008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2EC18BDF221D2278008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/SocketViewController.strings; sourceTree = "<group>"; };
-		2EC18BE0221D2278008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/SocketForSceneVC.strings; sourceTree = "<group>"; };
 		2EC18BE1221D2279008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
 		2EC18BE2221D2279008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2EC18BE3221D2279008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
@@ -524,7 +520,6 @@
 		2EC18BF0221D2289008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
 		2EC18BF1221D2289008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2EC18BF2221D2289008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/SocketViewController.strings; sourceTree = "<group>"; };
-		2EC18BF3221D2289008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/SocketForSceneVC.strings; sourceTree = "<group>"; };
 		2EC18BF4221D228A008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
 		2EC18BF5221D228A008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2EC18BF6221D228A008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
@@ -542,7 +537,6 @@
 		2EC18C03221D22A0008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
 		2EC18C04221D22A0008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2EC18C05221D22A0008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/SocketViewController.strings; sourceTree = "<group>"; };
-		2EC18C06221D22A1008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/SocketForSceneVC.strings; sourceTree = "<group>"; };
 		2EC18C07221D22A1008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
 		2EC18C08221D22A1008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2EC18C09221D22A1008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
@@ -560,7 +554,6 @@
 		2EC18C16221D22B8008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/CurtainViewController.strings"; sourceTree = "<group>"; };
 		2EC18C17221D22B8008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/FanViewController.strings"; sourceTree = "<group>"; };
 		2EC18C18221D22B8008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/SocketViewController.strings"; sourceTree = "<group>"; };
-		2EC18C19221D22B8008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/SocketForSceneVC.strings"; sourceTree = "<group>"; };
 		2EC18C1A221D22B9008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/TwoChannelDimmerVC.strings"; sourceTree = "<group>"; };
 		2EC18C1B221D22B9008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/GalleryViewController.strings"; sourceTree = "<group>"; };
 		2EC18C1C221D22B9008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/PlaceDetailsViewController.strings"; sourceTree = "<group>"; };
@@ -578,7 +571,6 @@
 		2EC18C29221D22E8008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/CurtainViewController.strings"; sourceTree = "<group>"; };
 		2EC18C2A221D22E9008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/FanViewController.strings"; sourceTree = "<group>"; };
 		2EC18C2B221D22E9008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/SocketViewController.strings"; sourceTree = "<group>"; };
-		2EC18C2C221D22E9008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/SocketForSceneVC.strings"; sourceTree = "<group>"; };
 		2EC18C2D221D22E9008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/TwoChannelDimmerVC.strings"; sourceTree = "<group>"; };
 		2EC18C2E221D22EA008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/GalleryViewController.strings"; sourceTree = "<group>"; };
 		2EC18C2F221D22EA008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/PlaceDetailsViewController.strings"; sourceTree = "<group>"; };
@@ -605,7 +597,6 @@
 		2EC4205722179F2B00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
 		2EC4205822179F2B00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2EC4205922179F2B00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/SocketViewController.strings; sourceTree = "<group>"; };
-		2EC4205A22179F2B00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/SocketForSceneVC.strings; sourceTree = "<group>"; };
 		2EC4205B22179F2C00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
 		2EC4205C22179F2C00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2EC4205D22179F2C00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
@@ -894,6 +885,7 @@
 		0DE95D2F1B298FB7006D0397 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				2E42363323AB5153003DAE8E /* DataModelManger */,
 				0D5E38351B501D45001B7ED5 /* CSRmeshManager */,
 				CEADA8F31B3AF57000D18D56 /* LoadShareManager */,
 				0D9CF7E11B55390E00451332 /* AppStateManager */,
@@ -919,6 +911,8 @@
 			children = (
 				CE96B52A1B57AE98009BAF5A /* CSRUtilities.h */,
 				CE96B52B1B57AE98009BAF5A /* CSRUtilities.m */,
+				2E2533EC20219850002A6EC3 /* DeviceListViewController.h */,
+				2E2533ED20219850002A6EC3 /* DeviceListViewController.m */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -957,7 +951,6 @@
 			isa = PBXGroup;
 			children = (
 				2EF7182F1FFB2B9D00901918 /* Controller */,
-				2EF7182D1FFB2B9C00901918 /* Model */,
 				2EF7182E1FFB2B9C00901918 /* View */,
 			);
 			path = Gallery;
@@ -1036,8 +1029,6 @@
 				2EC3893C204939CE004D822D /* TimerDetailViewController.h */,
 				2EC3893D204939CE004D822D /* TimerDetailViewController.m */,
 				2E6BD7FF20D09B3200036CA2 /* TimerDetailViewController.xib */,
-				2E2E70591FF5DE60002D1C1D /* DataModelManager.h */,
-				2E2E705A1FF5DE60002D1C1D /* DataModelManager.m */,
 				2E2E70651FF5DE60002D1C1D /* TimeSchedule.h */,
 				2E2E70661FF5DE60002D1C1D /* TimeSchedule.m */,
 			);
@@ -1126,15 +1117,15 @@
 				2E3BED3621DF329100E7078C /* PowerViewController.h */,
 				2E3BED3721DF329100E7078C /* PowerViewController.m */,
 				2E3BED3821DF329100E7078C /* PowerViewController.xib */,
-				2E80C46A21DC62CE0024584C /* SocketForSceneVC.h */,
-				2E80C46B21DC62CE0024584C /* SocketForSceneVC.m */,
-				2E4DDCFB21F969B900B2ACF3 /* SocketForSceneVC.xib */,
 				2EA18F0521E5EFD200E4D35B /* TwoChannelDimmerVC.h */,
 				2EA18F0621E5EFD200E4D35B /* TwoChannelDimmerVC.m */,
 				2E4DDD0221F969F200B2ACF3 /* TwoChannelDimmerVC.xib */,
 				2E712CFA235015E5003DBA72 /* TwoChannelSwitchVC.h */,
 				2E712CFB235015E5003DBA72 /* TwoChannelSwitchVC.m */,
 				2E712CFC235015E5003DBA72 /* TwoChannelSwitchVC.xib */,
+				2E3417BB23A7276A000D1A52 /* RemoteMainVC.h */,
+				2E3417BC23A7276A000D1A52 /* RemoteMainVC.m */,
+				2E3417BD23A7276A000D1A52 /* RemoteMainVC.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1160,6 +1151,8 @@
 				2E4BC03C227051BF000719EA /* SoundListenTool.m */,
 				2EE5E8C6227194A500EFE8B9 /* MCUUpdateTool.h */,
 				2EE5E8C7227194A500EFE8B9 /* MCUUpdateTool.m */,
+				2E8ECC2C239DFA210031367F /* SelectModel.h */,
+				2E8ECC2D239DFA210031367F /* SelectModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1207,6 +1200,15 @@
 				2E35F74B222A7E41001D9342 /* GroupControlView.m */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		2E42363323AB5153003DAE8E /* DataModelManger */ = {
+			isa = PBXGroup;
+			children = (
+				2E2E70591FF5DE60002D1C1D /* DataModelManager.h */,
+				2E2E705A1FF5DE60002D1C1D /* DataModelManager.m */,
+			);
+			path = DataModelManger;
 			sourceTree = "<group>";
 		};
 		2E48BBDD20D239B100401CDD /* LightSensor */ = {
@@ -1298,15 +1300,6 @@
 			path = Language;
 			sourceTree = "<group>";
 		};
-		2EF7182D1FFB2B9C00901918 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				2EF2DB58200DA6CF00A1B236 /* DeviceModelManager.h */,
-				2EF2DB59200DA6CF00A1B236 /* DeviceModelManager.m */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
 		2EF7182E1FFB2B9C00901918 /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -1328,8 +1321,6 @@
 				2E706D01212A7278008D0EC4 /* GalleryViewController.xib */,
 				2EF718731FFB6C4D00901918 /* GalleryDetailViewController.h */,
 				2EF718741FFB6C4D00901918 /* GalleryDetailViewController.m */,
-				2E2533EC20219850002A6EC3 /* DeviceListViewController.h */,
-				2E2533ED20219850002A6EC3 /* DeviceListViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1363,6 +1354,8 @@
 		CE80334C1B39997100A7E3F0 /* DevicesManager */ = {
 			isa = PBXGroup;
 			children = (
+				2EF2DB58200DA6CF00A1B236 /* DeviceModelManager.h */,
+				2EF2DB59200DA6CF00A1B236 /* DeviceModelManager.m */,
 				CE80334D1B39997100A7E3F0 /* CSRDevicesManager.h */,
 				CE80334E1B39997100A7E3F0 /* CSRDevicesManager.m */,
 				CE80334F1B39997100A7E3F0 /* CSRmeshDevice.h */,
@@ -1524,7 +1517,6 @@
 				2E3B9680200F3847000BD086 /* MainViewController.xib in Resources */,
 				2EF332512045030100565374 /* LanguageViewController.xib in Resources */,
 				2E2E708D1FF5DE60002D1C1D /* PlacesViewController.xib in Resources */,
-				2E4DDCF921F969B900B2ACF3 /* SocketForSceneVC.xib in Resources */,
 				2E9622BF20C913530097C617 /* Localizable.strings in Resources */,
 				2E3BED3A21DF329100E7078C /* PowerViewController.xib in Resources */,
 				2EE757D72010B23100FB75C5 /* SceneCollectionViewCell.xib in Resources */,
@@ -1553,6 +1545,7 @@
 				2E5EA0D7217F123700554825 /* LaunchScreen.storyboard in Resources */,
 				2E2E70921FF5DE60002D1C1D /* PlaceIconCollectionViewCell.xib in Resources */,
 				2ED23F6E215DCCCA0040A922 /* CurtainViewController.xib in Resources */,
+				2E3417BF23A7276A000D1A52 /* RemoteMainVC.xib in Resources */,
 				2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */,
 				2E4DDCEB21F9680900B2ACF3 /* FanViewController.xib in Resources */,
 				2E4902AF224233F5003B901A /* cskey_db.json in Resources */,
@@ -1626,6 +1619,7 @@
 				2E5A587D21378B6800E416F9 /* MusicViewController.m in Sources */,
 				2E06A4FF20205B0E007B8BEA /* GroupViewController.m in Sources */,
 				2EB246B92282CEB500DFF5D3 /* CSRBLEUtil.m in Sources */,
+				2E8ECC2E239DFA210031367F /* SelectModel.m in Sources */,
 				2E2A016821425F7F00B2EFAF /* GetDataTools.m in Sources */,
 				F4F11C131D00408C0080F3BB /* CSRGatewayEntity.m in Sources */,
 				2E37075720CE647A000AF696 /* NSBundle+AppLanguageSwitch.m in Sources */,
@@ -1649,6 +1643,7 @@
 				2E5A5873213788F900E416F9 /* FavoriteViewController.m in Sources */,
 				0D835B3C1B9749E600FF4376 /* CSRUtilities.m in Sources */,
 				0D835B3D1B9749E600FF4376 /* CSRmeshManager.m in Sources */,
+				2E3417BE23A7276A000D1A52 /* RemoteMainVC.m in Sources */,
 				0D835B3F1B9749E600FF4376 /* CSRParseAndLoad.m in Sources */,
 				2E6FBD9620E1D43F0045DDAC /* GroupListSModel.m in Sources */,
 				2E48BBE020D239E500401CDD /* LightSensorViewController.m in Sources */,
@@ -1733,7 +1728,6 @@
 				CED2FE4E1BF25CF4004957C8 /* CSRmeshStyleKit.m in Sources */,
 				0D835B7C1B9749E700FF4376 /* CSRBridgeRoaming.m in Sources */,
 				0D835B7D1B9749E700FF4376 /* CSRBluetoothLE.m in Sources */,
-				2E80C46D21DC62CE0024584C /* SocketForSceneVC.m in Sources */,
 				0D835B7E1B9749E700FF4376 /* CSRmeshSettings.m in Sources */,
 				2EDF04DB213D14CA00B9E92F /* SRGBSceneDetailViewController.m in Sources */,
 				2E2E707D1FF5DE60002D1C1D /* MasterViewController.m in Sources */,
@@ -1950,26 +1944,6 @@
 				2EF4D11722E592B90058484E /* zh-Hans */,
 			);
 			name = SocketViewController.xib;
-			sourceTree = "<group>";
-		};
-		2E4DDCFB21F969B900B2ACF3 /* SocketForSceneVC.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2E4DDCFA21F969B900B2ACF3 /* Base */,
-				2E4DDCFD21F969BE00B2ACF3 /* en */,
-				2E4DDCFF21F969BF00B2ACF3 /* zh-Hans */,
-				2EC4205A22179F2B00E1717F /* de */,
-				2E48A7FF221BAEC00052A617 /* sv */,
-				2E747FD8221CE2AA00FBEB14 /* nb */,
-				2E747FEB221CF68E00FBEB14 /* es */,
-				2EC18BCD221D2261008B33DC /* da */,
-				2EC18BE0221D2278008B33DC /* it */,
-				2EC18BF3221D2289008B33DC /* nl */,
-				2EC18C06221D22A1008B33DC /* fr */,
-				2EC18C19221D22B8008B33DC /* pt-PT */,
-				2EC18C2C221D22E9008B33DC /* fi-FI */,
-			);
-			name = SocketForSceneVC.xib;
 			sourceTree = "<group>";
 		};
 		2E4DDD0221F969F200B2ACF3 /* TwoChannelDimmerVC.xib */ = {
@@ -2258,7 +2232,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 10;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2318,7 +2292,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 10;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;

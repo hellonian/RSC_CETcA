@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15400" systemVersion="18E226" minimumToolsVersion="Xcode 4.3" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="1">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15508" systemVersion="19B88" minimumToolsVersion="Xcode 4.3" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="1">
     <entity name="CSRAreaEntity" representedClassName="CSRAreaEntity" syncable="YES">
         <attribute name="androidId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="areaIconNum" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
@@ -129,6 +129,7 @@
         <attribute name="boundRatio" optional="YES" attributeType="Float" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="centerXRatio" optional="YES" attributeType="Float" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="centerYRatio" optional="YES" attributeType="Float" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="channel" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="deviceID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="dropID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="galleryID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
@@ -174,6 +175,7 @@
         <relationship name="place" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CSRPlaceEntity" inverseName="scenes" inverseEntity="CSRPlaceEntity" syncable="YES"/>
     </entity>
     <entity name="SceneMemberEntity" syncable="YES">
+        <attribute name="channel" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="colorBlue" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="colorGreen" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="colorRed" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
@@ -216,11 +218,11 @@
         <element name="CSRPlaceEntity" positionX="-99" positionY="-63" width="128" height="315"/>
         <element name="CSRSettingsEntity" positionX="-317" positionY="27" width="128" height="180"/>
         <element name="CSRUserEntity" positionX="-308" positionY="-279" width="128" height="120"/>
-        <element name="DropEntity" positionX="-414" positionY="-126" width="128" height="165"/>
+        <element name="DropEntity" positionX="-414" positionY="-126" width="128" height="178"/>
         <element name="GalleryEntity" positionX="-423" positionY="-135" width="128" height="150"/>
         <element name="RGBSceneEntity" positionX="-423" positionY="-135" width="128" height="313"/>
         <element name="SceneEntity" positionX="-423" positionY="-135" width="128" height="150"/>
-        <element name="SceneMemberEntity" positionX="-414" positionY="-126" width="128" height="225"/>
+        <element name="SceneMemberEntity" positionX="-414" positionY="-126" width="128" height="238"/>
         <element name="TimerDeviceEntity" positionX="-414" positionY="-126" width="128" height="135"/>
         <element name="TimerEntity" positionX="-423" positionY="-135" width="128" height="180"/>
     </elements>

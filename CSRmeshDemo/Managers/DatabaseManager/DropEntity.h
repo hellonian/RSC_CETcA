@@ -18,5 +18,6 @@
 @property (nonatomic, retain) NSNumber * galleryID;
 @property (nonatomic, retain) NSNumber * deviceID;
 @property (nonatomic, retain) NSString * kindName;
+@property (nonatomic, retain) NSNumber * channel;
 
 @end

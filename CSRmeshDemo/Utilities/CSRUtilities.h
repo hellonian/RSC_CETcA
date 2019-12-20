@@ -110,9 +110,6 @@
 + (BOOL)belongToCWDevice:(NSString *)shortName;
 + (BOOL)belongToRGBDevice:(NSString *)shortName;
 + (BOOL)belongToRGBCWDevice:(NSString *)shortName;
-+ (BOOL)belongToCWNoLevelDevice:(NSString *)shortName;
-+ (BOOL)belongToRGBNoLevelDevice:(NSString *)shortName;
-+ (BOOL)belongToRGBCWNoLevelDevice:(NSString *)shortName;
 + (BOOL)belongToCurtainController:(NSString *)shortName;
 + (BOOL)belongToOneChannelCurtainController:(NSString *)shortName;
 + (BOOL)belongToTwoChannelCurtainController:(NSString *)shortName;
@@ -124,6 +121,11 @@
 + (BOOL)belongToSocketTwoChannel:(NSString *)shortName;
 + (BOOL)belongToTwoChannelSwitch:(NSString *)shortName;
 + (BOOL)belongToDALDevice:(NSString *)shortName;
++ (BOOL)belongToSceneRemote:(NSString *)shortName;
++ (BOOL)belongToCWRemote:(NSString *)shortName;
++ (BOOL)belongToRGBRemote:(NSString *)shortName;
++ (BOOL)belongToRGBCWRemote:(NSString *)shortName;
++ (BOOL)belongToOneChannelSwitch:(NSString *)shortName;
 
 +(NSString *)convertToJsonData:(NSDictionary *)dict;
 + (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString;

@@ -22,5 +22,6 @@
 @property (nonatomic, retain) NSNumber *colorTemperature;
 @property (nonatomic, retain) NSNumber *eveType;
 @property (nonatomic, retain) NSNumber *sortID;
+@property (nonatomic, retain) NSNumber *channel;
 
 @end

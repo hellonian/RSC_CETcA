@@ -10,16 +10,5 @@
 
 @implementation DeviceModel
 
-- (void)addValue:(id)obj forKey:(NSString *)key {
-    [self.buttonnumAndChannel setObject:obj forKey:key];
-}
-
-- (NSMutableDictionary *)buttonnumAndChannel {
-    if (!_buttonnumAndChannel) {
-        _buttonnumAndChannel = [[NSMutableDictionary alloc] init];
-    }
-    return _buttonnumAndChannel;
-}
-
 @end
 

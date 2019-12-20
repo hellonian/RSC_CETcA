@@ -1091,7 +1091,7 @@
 
 #pragma mark - Drop Methods
 
-- (DropEntity *)saveNewDrop:(NSNumber *)dropId device:(CSRDeviceEntity *)device dropBoundRatio:(NSNumber *)boundRatio centerXRatio:(NSNumber *)centerXRatio centerYRatio:(NSNumber *)centerYRatio galleryId:(NSNumber *)gelleryId {
+- (DropEntity *)saveNewDrop:(NSNumber *)dropId device:(CSRDeviceEntity *)device dropBoundRatio:(NSNumber *)boundRatio centerXRatio:(NSNumber *)centerXRatio centerYRatio:(NSNumber *)centerYRatio galleryId:(NSNumber *)gelleryId channel:(NSNumber *)channel {
     __block GalleryEntity *currentGalleryEntity;
     [[CSRAppStateManager sharedInstance].selectedPlace.gallerys enumerateObjectsUsingBlock:^(GalleryEntity * _Nonnull obj, BOOL * _Nonnull stop) {
         if ([obj.galleryID isEqualToNumber:gelleryId]) {
@@ -1118,6 +1118,7 @@
         newDropEntity.boundRatio = boundRatio;
         newDropEntity.centerXRatio = centerXRatio;
         newDropEntity.centerYRatio = centerYRatio;
+        newDropEntity.channel = channel;
 
         [currentGalleryEntity addDropsObject:newDropEntity];
         [self saveContext];

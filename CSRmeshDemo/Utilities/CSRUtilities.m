@@ -1138,7 +1138,7 @@
 }
 
 + (BOOL)belongToMainVCDevice: (NSString *)shortName {
-    if ([kDimmers containsObject:shortName] || [kSwitchs containsObject:shortName] || [kCWDevices containsObject:shortName] || [kRGBDevices containsObject:shortName] || [kRGBCWDevices containsObject:shortName] || [kOneChannelCurtainController containsObject:shortName] || [kTwoChannelCurtainController containsObject:shortName] || [kFanController containsObject:shortName] || [kSockets containsObject:shortName] || [kTwoChannelDimmers containsObject:shortName] || [kTwoChannelSwitchs containsObject:shortName]) {
+    if ([kDimmers containsObject:shortName] || [kSwitchs containsObject:shortName] || [kCWDevices containsObject:shortName] || [kRGBDevices containsObject:shortName] || [kRGBCWDevices containsObject:shortName] || [kOneChannelCurtainController containsObject:shortName] || [kTwoChannelCurtainController containsObject:shortName] || [kFanController containsObject:shortName] || [kSockets containsObject:shortName] || [kTwoChannelDimmers containsObject:shortName] || [kTwoChannelSwitchs containsObject:shortName] || [kSceneRemotes containsObject:shortName] || [kCWDevices containsObject:shortName] || [kRGBRemotes containsObject:shortName] || [kRGBCWRemotes containsObject:shortName]) {
         return YES;
     }
     return NO;
@@ -1160,27 +1160,6 @@
 
 + (BOOL)belongToRGBCWDevice:(NSString *)shortName {
     if ([kRGBCWDevices containsObject:shortName]) {
-        return YES;
-    }
-    return NO;
-}
-
-+ (BOOL)belongToCWNoLevelDevice:(NSString *)shortName {
-    if ([kCWNoLevelDevice containsObject:shortName]) {
-        return YES;
-    }
-    return NO;
-}
-
-+ (BOOL)belongToRGBNoLevelDevice:(NSString *)shortName {
-    if ([kRGBNoLevelDevices containsObject:shortName]) {
-        return YES;
-    }
-    return NO;
-}
-
-+ (BOOL)belongToRGBCWNoLevelDevice:(NSString *)shortName {
-    if ([kRGBCWNoLevelDevices containsObject:shortName]) {
         return YES;
     }
     return NO;
@@ -1256,8 +1235,43 @@
     return NO;
 }
 
-+ (BOOL)belongToOneChannelDimmer:(NSString *)shortName{
++ (BOOL)belongToOneChannelDimmer:(NSString *)shortName {
     if ([kOneChannelDimmers containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToOneChannelSwitch:(NSString *)shortName {
+    if ([kOneChannelSwitchs containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToSceneRemote:(NSString *)shortName {
+    if ([kSceneRemotes containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToCWRemote:(NSString *)shortName {
+    if ([kCWRemotes containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToRGBRemote:(NSString *)shortName {
+    if ([kRGBRemotes containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToRGBCWRemote:(NSString *)shortName {
+    if ([kRGBCWRemotes containsObject:shortName]) {
         return YES;
     }
     return NO;

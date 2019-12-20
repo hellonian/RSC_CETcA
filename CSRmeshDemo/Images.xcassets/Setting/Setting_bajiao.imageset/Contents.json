@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "Setting_bajiao.png",
+      "filename" : "画板 21.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "Setting_bajiao@2x.png",
+      "filename" : "画板 21@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "Setting_bajiao@3x.png",
+      "filename" : "画板 21@3x.png",
       "scale" : "3x"
     }
   ],

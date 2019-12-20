@@ -75,10 +75,6 @@
                                                  name:@"setPowerStateSuccess"
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(setMultichannelStateSuccess:)
-                                                 name:@"setMultichannelStateSuccess"
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(clearSocketPower:)
                                                  name:@"clearSocketPower"
                                                object:nil];
@@ -134,7 +130,7 @@
             [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"ea4801"] success:nil failure:nil];
         }
         
-        [self changeUI:_deviceId];
+        [self changeUI:_deviceId channel:3];
         if ([curtainEntity.hwVersion integerValue]==2) {
             NSMutableString *mutStr = [NSMutableString stringWithString:curtainEntity.shortName];
             NSRange range = {0,curtainEntity.shortName.length};
@@ -301,14 +297,6 @@
 - (void)setPowerStateSuccess:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
-    if ([deviceId isEqualToNumber:_deviceId]) {
-        [self changeUI:deviceId];
-    }
-}
-
-- (void)setMultichannelStateSuccess: (NSNotification *)notification {
-    NSDictionary *userInfo = notification.userInfo;
-    NSNumber *deviceId = userInfo[@"deviceId"];
     NSInteger channel = [userInfo[@"channel"] integerValue];
     if ([deviceId isEqualToNumber:_deviceId]) {
         [self changeUI:deviceId channel:channel];
@@ -355,51 +343,46 @@
                 [_channel2Switch setEnabled:YES];
                 _socket2Btn.hidden = YES;
             }
+        }else if (channel == 3) {
+            [_channel1Switch setOn:deviceModel.channel1PowerState];
+            if (deviceModel.channel1PowerState && !deviceModel.childrenState1) {
+                [_childSwitch1 setEnabled:NO];
+                _child1Btn.hidden = NO;
+            }else {
+                [_childSwitch1 setEnabled:YES];
+                _child1Btn.hidden = YES;
+            }
+            
+            [_channel2Switch setOn:deviceModel.channel2PowerState];
+            if (deviceModel.channel2PowerState && !deviceModel.childrenState2) {
+                [_childSwitch2 setEnabled:NO];
+                _child2Btn.hidden = NO;
+            }else {
+                [_childSwitch2 setEnabled:YES];
+                _child2Btn.hidden = YES;
+            }
+            
+            [_childSwitch1 setOn:deviceModel.childrenState1];
+            if (deviceModel.childrenState1) {
+                [_channel1Switch setEnabled:NO];
+                _socket1Btn.hidden = NO;
+            }else {
+                [_channel1Switch setEnabled:YES];
+                _socket1Btn.hidden = YES;
+            }
+            
+            [_childSwitch2 setOn:deviceModel.childrenState2];
+            if (deviceModel.childrenState2) {
+                [_channel2Switch setEnabled:NO];
+                _socket2Btn.hidden = NO;
+            }else {
+                [_channel2Switch setEnabled:YES];
+                _socket2Btn.hidden = YES;
+            }
         }
     }
 }
 
-- (void)changeUI:(NSNumber *)deviceId {
-    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:deviceId];
-    if (deviceModel) {
-        [_channel1Switch setOn:deviceModel.channel1PowerState];
-        if (deviceModel.channel1PowerState && !deviceModel.childrenState1) {
-            [_childSwitch1 setEnabled:NO];
-            _child1Btn.hidden = NO;
-        }else {
-            [_childSwitch1 setEnabled:YES];
-            _child1Btn.hidden = YES;
-        }
-        
-        [_channel2Switch setOn:deviceModel.channel2PowerState];
-        if (deviceModel.channel2PowerState && !deviceModel.childrenState2) {
-            [_childSwitch2 setEnabled:NO];
-            _child2Btn.hidden = NO;
-        }else {
-            [_childSwitch2 setEnabled:YES];
-            _child2Btn.hidden = YES;
-        }
-        
-        [_childSwitch1 setOn:deviceModel.childrenState1];
-        if (deviceModel.childrenState1) {
-            [_channel1Switch setEnabled:NO];
-            _socket1Btn.hidden = NO;
-        }else {
-            [_channel1Switch setEnabled:YES];
-            _socket1Btn.hidden = YES;
-        }
-        
-        [_childSwitch2 setOn:deviceModel.childrenState2];
-        if (deviceModel.childrenState2) {
-            [_channel2Switch setEnabled:NO];
-            _socket2Btn.hidden = NO;
-        }else {
-            [_channel2Switch setEnabled:YES];
-            _socket2Btn.hidden = YES;
-        }
-
-    }
-}
 - (IBAction)closeChildrenModeAlert:(UIButton *)sender {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:AcTECLocalizedStringFromTable(@"closeChildrenModeAlert", @"Localizable") message:nil preferredStyle:UIAlertControllerStyleAlert];
     [alert.view setTintColor:DARKORAGE];
@@ -419,9 +402,8 @@
 
 - (IBAction)childrenMode:(UISwitch *)sender {
     [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea410%ld0%d",(long)sender.tag,sender.on]] success:nil failure:nil];
-    __block SocketViewController *weakself = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [weakself changeUI:_deviceId];
+        [self changeUI:_deviceId channel:sender.tag];
     });
 }
 

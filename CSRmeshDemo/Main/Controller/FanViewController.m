@@ -34,12 +34,6 @@
 @property (weak, nonatomic) IBOutlet UISlider *fanSpeedSlider;
 @property (nonatomic,strong) MBProgressHUD *updatingHud;
 @property (nonatomic,strong) UIView *translucentBgView;
-@property (weak, nonatomic) IBOutlet UIImageView *lampSelectedImageView;
-@property (weak, nonatomic) IBOutlet UIImageView *fanSelectedImageView;
-@property (weak, nonatomic) IBOutlet UIButton *lampSelectedBtn;
-@property (weak, nonatomic) IBOutlet UIButton *fanSelectedBtn;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *lampLeftConstaint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *fanLeftConstaint;
 
 @end
 
@@ -79,15 +73,6 @@
             }
         }
         self.macAddressLabel.text = doneTitle;
-        
-        if (_forSelected) {
-            _lampSelectedImageView.hidden = NO;
-            _fanSelectedImageView.hidden = NO;
-            _lampSelectedBtn.hidden = NO;
-            _fanSelectedBtn.hidden = NO;
-            _lampLeftConstaint.constant = 44;
-            _fanLeftConstaint.constant = 44;
-        }
         
         [self changeUI:_deviceId];
         if ([curtainEntity.hwVersion integerValue]==2) {
@@ -213,36 +198,6 @@
         }else {
             _fanSpeedSlider.enabled = NO;
         }
-        
-        if (_buttonNum && [deviceModel.buttonnumAndChannel count]>0 && [deviceModel.buttonnumAndChannel objectForKey:[NSString stringWithFormat:@"%@",_buttonNum]]) {
-            NSNumber *obj = [deviceModel.buttonnumAndChannel objectForKey:[NSString stringWithFormat:@"%@",_buttonNum]];
-            if ([obj isEqualToNumber:@4]) {
-                _lampSelectedImageView.image = [UIImage imageNamed:@"Be_selected"];
-                _fanSelectedImageView.image = [UIImage imageNamed:@"Be_selected"];
-                _lampSelectedBtn.selected = YES;
-                _fanSelectedBtn.selected = YES;
-            }else if ([obj isEqualToNumber:@3]){
-                _lampSelectedImageView.image = [UIImage imageNamed:@"Be_selected"];
-                _fanSelectedImageView.image = [UIImage imageNamed:@"To_select"];
-                _lampSelectedBtn.selected = YES;
-                _fanSelectedBtn.selected = NO;
-            }else if ([obj isEqualToNumber:@2]) {
-                _lampSelectedImageView.image = [UIImage imageNamed:@"To_select"];
-                _fanSelectedImageView.image = [UIImage imageNamed:@"Be_selected"];
-                _lampSelectedBtn.selected = NO;
-                _fanSelectedBtn.selected = YES;
-            }else {
-                _lampSelectedImageView.image = [UIImage imageNamed:@"To_select"];
-                _fanSelectedImageView.image = [UIImage imageNamed:@"To_select"];
-                _lampSelectedBtn.selected = NO;
-                _fanSelectedBtn.selected = NO;
-            }
-        }else {
-            _lampSelectedImageView.image = [UIImage imageNamed:@"To_select"];
-            _fanSelectedImageView.image = [UIImage imageNamed:@"To_select"];
-            _lampSelectedBtn.selected = NO;
-            _fanSelectedBtn.selected = NO;
-        }
     }
 }
 
@@ -295,57 +250,5 @@
     }
     return _translucentBgView;
 }
-
-- (IBAction)channelSelectBtn:(UIButton *)sender {
-    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:_deviceId];
-    if ((deviceModel.channel1Selected && !deviceModel.channel2Selected && sender.tag == 1) || (!deviceModel.channel1Selected && deviceModel.channel2Selected && sender.tag == 2)) {
-        return;
-    }
-    sender.selected = !sender.selected;
-    UIImage *image = sender.selected? [UIImage imageNamed:@"Be_selected"]:[UIImage imageNamed:@"To_select"];
-    switch (sender.tag) {
-        case 1:
-            _lampSelectedImageView.image = image;
-            deviceModel.channel1Selected = sender.selected;
-            if (_buttonNum) {
-                NSNumber *obj = [deviceModel.buttonnumAndChannel objectForKey:[NSString stringWithFormat:@"%@",_buttonNum]];
-                
-                if (sender.selected) {
-                    if (obj && [obj isEqualToNumber:@2]) {
-                        [deviceModel addValue:@4 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
-                    }else {
-                        [deviceModel addValue:@3 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
-                    }
-                }else {
-                    if (obj && [obj isEqualToNumber:@4]) {
-                        [deviceModel addValue:@2 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
-                    }
-                }
-            }
-            break;
-        case 2:
-            _fanSelectedImageView.image = image;
-            deviceModel.channel2Selected = sender.selected;
-            if (_buttonNum) {
-                NSNumber *obj = [deviceModel.buttonnumAndChannel objectForKey:[NSString stringWithFormat:@"%@",_buttonNum]];
-                
-                if (sender.selected) {
-                    if (obj && [obj isEqualToNumber:@3]) {
-                        [deviceModel addValue:@4 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
-                    }else {
-                        [deviceModel addValue:@2 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
-                    }
-                }else {
-                    if (obj && [obj isEqualToNumber:@4]) {
-                        [deviceModel addValue:@3 forKey:[NSString stringWithFormat:@"%@",_buttonNum]];
-                    }
-                }
-            }
-            break;
-        default:
-            break;
-    }
-}
-
 
 @end

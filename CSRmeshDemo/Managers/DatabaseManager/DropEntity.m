@@ -17,5 +17,6 @@
 @dynamic galleryID;
 @dynamic deviceID;
 @dynamic kindName;
+@dynamic channel;
 
 @end

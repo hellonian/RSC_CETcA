@@ -706,19 +706,19 @@
 
 #pragma mark - GalleryDropViewDelegate
 
-- (void)galleryDropViewPanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId withPanState:(UIGestureRecognizerState)state {
+- (void)galleryDropViewPanBrightnessWithTouchPoint:(CGPoint)touchPoint withOrigin:(CGPoint)origin toLight:(NSNumber *)deviceId channel:(NSNumber *)channel withPanState:(UIGestureRecognizerState)state {
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
     if (state == UIGestureRecognizerStateBegan) {
         self.originalLevel = model.level;
         [self.improver beginImproving];
-        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:self.originalLevel withState:state direction:PanGestureMoveDirectionHorizontal];
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId channel:channel withLevel:self.originalLevel withState:state direction:PanGestureMoveDirectionHorizontal];
         return;
     }
     if (state == UIGestureRecognizerStateChanged || state == UIGestureRecognizerStateEnded) {
         NSInteger updateLevel = [self.improver improveTouching:touchPoint referencePoint:origin primaryBrightness:[self.originalLevel integerValue]];
         CGFloat percentage = updateLevel/255.0*100;
         [self showControlMaskLayerWithAlpha:updateLevel/255.0 text:[NSString stringWithFormat:@"%.f",percentage]];
-        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId withLevel:@(updateLevel) withState:state direction:PanGestureMoveDirectionHorizontal];
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:deviceId channel:channel withLevel:@(updateLevel) withState:state direction:PanGestureMoveDirectionHorizontal];
         
         if (state == UIGestureRecognizerStateEnded) {
             [self hideControlMaskLayer];

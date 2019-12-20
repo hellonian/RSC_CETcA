@@ -9,6 +9,7 @@
 #import "GalleryDropView.h"
 #import "DeviceModelManager.h"
 #import "CSRUtilities.h"
+#import "DataModelManager.h"
 
 @implementation GalleryDropView
 
@@ -46,8 +47,14 @@
     
     switch (sender.state) {
         case UIGestureRecognizerStateBegan:
-            if (!_isEditing && ([CSRUtilities belongToDimmer:self.kindName] || [CSRUtilities belongToCWDevice:self.kindName] || [CSRUtilities belongToRGBDevice:self.kindName] || [CSRUtilities belongToRGBCWDevice:self.kindName]) && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
-                [self.delegate galleryDropViewPanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId withPanState:sender.state];
+            if (!_isEditing && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:channel:withPanState:)]) {
+                if ([CSRUtilities belongToDimmer:self.kindName]
+                    || [CSRUtilities belongToCWDevice:self.kindName]
+                    || [CSRUtilities belongToRGBDevice:self.kindName]
+                    || [CSRUtilities belongToRGBCWDevice:self.kindName]
+                    || [CSRUtilities belongToTwoChannelDimmer:_kindName]) {
+                    [self.delegate galleryDropViewPanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId channel:_channel withPanState:sender.state];
+                }
             }
             
             break;
@@ -70,8 +77,14 @@
                 self.center = touchPoint;
             }
             
-            if (!_isEditing && ([CSRUtilities belongToDimmer:self.kindName] || [CSRUtilities belongToCWDevice:self.kindName] || [CSRUtilities belongToRGBDevice:self.kindName] || [CSRUtilities belongToRGBCWDevice:self.kindName]) && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
-                [self.delegate galleryDropViewPanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId withPanState:sender.state];
+            if (!_isEditing && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:channel:withPanState:)]) {
+                if ([CSRUtilities belongToDimmer:self.kindName]
+                    || [CSRUtilities belongToCWDevice:self.kindName]
+                    || [CSRUtilities belongToRGBDevice:self.kindName]
+                    || [CSRUtilities belongToRGBCWDevice:self.kindName]
+                    || [CSRUtilities belongToTwoChannelDimmer:_kindName]) {
+                    [self.delegate galleryDropViewPanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId channel:_channel withPanState:sender.state];
+                }
             }
             
             break;
@@ -79,8 +92,14 @@
             if (_isEditing && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanLocationAction:)]) {
                 [self.delegate galleryDropViewPanLocationAction:@(YES)];
             }
-            if (!_isEditing && ([CSRUtilities belongToDimmer:self.kindName] || [CSRUtilities belongToCWDevice:self.kindName] || [CSRUtilities belongToRGBDevice:self.kindName] || [CSRUtilities belongToRGBCWDevice:self.kindName]) && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:withPanState:)]) {
-                [self.delegate galleryDropViewPanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId withPanState:sender.state];
+            if (!_isEditing && self.delegate && [self.delegate respondsToSelector:@selector(galleryDropViewPanBrightnessWithTouchPoint:withOrigin:toLight:channel:withPanState:)]) {
+                if ([CSRUtilities belongToDimmer:self.kindName]
+                    || [CSRUtilities belongToCWDevice:self.kindName]
+                    || [CSRUtilities belongToRGBDevice:self.kindName]
+                    || [CSRUtilities belongToRGBCWDevice:self.kindName]
+                    || [CSRUtilities belongToTwoChannelDimmer:_kindName]) {
+                    [self.delegate galleryDropViewPanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId channel:_channel withPanState:sender.state];
+                }
             }
             
             break;
@@ -94,7 +113,13 @@
 - (void)tapGestureAction:(UITapGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateEnded) {
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(![model.powerState boolValue])]; 
+        if ([self.channel integerValue] == 1) {
+            [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(![model.powerState boolValue])];
+        }else if ([self.channel integerValue] == 2) {
+            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"51050100010%d00",!model.channel1PowerState] toDeviceId:_deviceId];
+        }else if ([self.channel integerValue] == 3) {
+            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"51050200010%d00",!model.channel2PowerState] toDeviceId:_deviceId];
+        }
     }
 }
 
@@ -112,23 +137,55 @@
     if (![model.powerState boolValue]) {
         self.backgroundColor = [UIColor clearColor];
         self.layer.borderColor = [UIColor darkGrayColor].CGColor;
-    }else if ([CSRUtilities belongToSwitch:self.kindName]) {
+    }else if ([CSRUtilities belongToSwitch:_kindName] || [CSRUtilities belongToSocketOneChannel:_kindName]) {
         self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.9];
         self.layer.borderColor = DARKORAGE.CGColor;
-    }else if ([CSRUtilities belongToDimmer:self.kindName] || [CSRUtilities belongToCWDevice:self.kindName] || [CSRUtilities belongToRGBDevice:self.kindName] || [CSRUtilities belongToRGBCWDevice:self.kindName] || [CSRUtilities belongToCWNoLevelDevice:self.kindName] || [CSRUtilities belongToRGBNoLevelDevice:self.kindName] || [CSRUtilities belongToRGBCWNoLevelDevice:self.kindName]){
+    }else if ([CSRUtilities belongToDimmer:self.kindName] || [CSRUtilities belongToCWDevice:self.kindName] || [CSRUtilities belongToRGBDevice:self.kindName] || [CSRUtilities belongToRGBCWDevice:self.kindName]){
         self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:[model.level floatValue]/255.0*0.9];
         self.layer.borderColor = DARKORAGE.CGColor;
+    }else if ([CSRUtilities belongToTwoChannelSwitch:_kindName] || [CSRUtilities belongToSocketTwoChannel:_kindName]) {
+        if ([_channel integerValue] == 1) {
+            self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.9];
+            self.layer.borderColor = DARKORAGE.CGColor;
+        }else if ([_channel integerValue] == 2) {
+            if (model.channel1PowerState) {
+                self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.9];
+                self.layer.borderColor = DARKORAGE.CGColor;
+            }else {
+                self.backgroundColor = [UIColor clearColor];
+                self.layer.borderColor = [UIColor darkGrayColor].CGColor;
+            }
+        }else if ([_channel integerValue] == 3) {
+            if (model.channel2PowerState) {
+                self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.9];
+                self.layer.borderColor = DARKORAGE.CGColor;
+            }else {
+                self.backgroundColor = [UIColor clearColor];
+                self.layer.borderColor = [UIColor darkGrayColor].CGColor;
+            }
+        }
+    }else if ([CSRUtilities belongToTwoChannelDimmer:_kindName]) {
+        if ([_channel integerValue] == 1) {
+            self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:[model.level floatValue]/255.0*0.9];
+            self.layer.borderColor = DARKORAGE.CGColor;
+        }else if ([_channel integerValue] == 2) {
+            if (model.channel1PowerState) {
+                self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:model.channel1Level/255.0*0.9];
+                self.layer.borderColor = DARKORAGE.CGColor;
+            }else {
+                self.backgroundColor = [UIColor clearColor];
+                self.layer.borderColor = [UIColor darkGrayColor].CGColor;
+            }
+        }else if ([_channel integerValue] == 3) {
+            if (model.channel2PowerState) {
+                self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:model.channel2Level/255.0*0.9];
+                self.layer.borderColor = DARKORAGE.CGColor;
+            }else {
+                self.backgroundColor = [UIColor clearColor];
+                self.layer.borderColor = [UIColor darkGrayColor].CGColor;
+            }
+        }
     }
 }
-
-
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end

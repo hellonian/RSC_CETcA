@@ -14,9 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic,strong)NSNumber *deviceId;
 @property (nonatomic,copy) void (^reloadDataHandle)(void);
-@property (nonatomic,assign)BOOL forSelected;
-@property (nonatomic,strong)NSNumber *buttonNum;
-@property (nonatomic,strong)NSString *remoteBrach;
 
 @end
 

@@ -21,5 +21,6 @@
 @dynamic colorTemperature;
 @dynamic eveType;
 @dynamic sortID;
+@dynamic channel;
 
 @end

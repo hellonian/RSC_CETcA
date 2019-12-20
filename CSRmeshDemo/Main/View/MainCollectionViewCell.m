@@ -24,6 +24,7 @@
 {
     CGFloat distanceX;
     CGFloat distanceY;
+    BOOL tapLimite;
 }
 
 @property (weak, nonatomic) IBOutlet UIImageView *iconView;
@@ -44,10 +45,6 @@
     [super awakeFromNib];
     // Initialization code
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setPowerStateSuccess:) name:@"setPowerStateSuccess" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(setPowerStateSuccess:)
-                                                 name:@"setMultichannelStateSuccess"
-                                               object:nil];
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mainCellTapGestureAction:)];
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(mainCellPanGestureAction:)];
     panGesture.delegate = self;
@@ -192,13 +189,7 @@
         self.bottomView.hidden = NO;
         if (model.isForList) {
             self.seleteButton.hidden = NO;
-            if (model.isSelected) {
-                self.selected = YES;
-                [self.seleteButton setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
-            }else {
-                self.selected = NO;
-                [self.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-            }
+            self.seleteButton.selected = model.isSelected;
         }
         
         return;
@@ -233,12 +224,10 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = YES;
         }else if ([CSRUtilities belongToOneChannelCurtainController:deviceEntity.shortName]) {
-            if ([deviceEntity.remoteBranch isEqualToString:@"ch"]) {
-                self.iconView.image = [UIImage imageNamed:@"curtainHorizontal"];
-            }else if ([deviceEntity.remoteBranch isEqualToString:@"cv"]) {
+            if ([deviceEntity.remoteBranch isEqualToString:@"cv"]) {
                 self.iconView.image = [UIImage imageNamed:@"curtainVertical"];
             }else {
-                self.iconView.image = [UIImage imageNamed:@"curtainsingle"];
+                self.iconView.image = [UIImage imageNamed:@"curtainHorizontal"];
             }
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = NO;
@@ -246,14 +235,8 @@
         }else if ([CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName]) {
             if ([deviceEntity.remoteBranch isEqualToString:@"cvv"]) {
                 self.iconView.image = [UIImage imageNamed:@"curtainVV"];
-            }else if ([deviceEntity.remoteBranch isEqualToString:@"chh"]) {
-                self.iconView.image = [UIImage imageNamed:@"curtainHH"];
-            }else if ([deviceEntity.remoteBranch isEqualToString:@"chv"]) {
-                self.iconView.image = [UIImage imageNamed:@"curtainHV"];
-            }else if ([deviceEntity.remoteBranch isEqualToString:@"cvh"]) {
-                self.iconView.image = [UIImage imageNamed:@"curtainVH"];
             }else {
-                self.iconView.image = [UIImage imageNamed:@"curtainsingle"];
+                self.iconView.image = [UIImage imageNamed:@"curtainHH"];
             }
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = NO;
@@ -283,6 +266,14 @@
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Switch", @"Localizable");
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = NO;
+        }else if ([CSRUtilities belongToSceneRemote:deviceEntity.shortName]
+                  || [CSRUtilities belongToCWRemote:deviceEntity.shortName]
+                  || [CSRUtilities belongToRGBRemote:deviceEntity.shortName]
+                  || [CSRUtilities belongToRGBCWRemote:deviceEntity.shortName]) {
+            self.iconView.image = [UIImage imageNamed:@"mainremoteroom"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
+            self.levelLabel.hidden = YES;
+            self.level2Label.hidden = YES;
         }
         
         self.cellIndexPath = indexPath;
@@ -321,12 +312,10 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = YES;
         }else if ([CSRUtilities belongToOneChannelCurtainController:device.deviceShortName]) {
-            if ([device.curtainDirection isEqualToString:@"ch"]) {
-                self.iconView.image = [UIImage imageNamed:@"Device_CurtainH"];
-            }else if ([device.curtainDirection isEqualToString:@"cv"]) {
+            if ([device.curtainDirection isEqualToString:@"cv"]) {
                 self.iconView.image = [UIImage imageNamed:@"Device_CurtainV"];
             }else {
-                self.iconView.image = [UIImage imageNamed:@"Device_Curtain"];
+                self.iconView.image = [UIImage imageNamed:@"Device_CurtainH"];
             }
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = NO;
@@ -334,14 +323,8 @@
         }else if ([CSRUtilities belongToTwoChannelCurtainController:device.deviceShortName]) {
             if ([device.curtainDirection isEqualToString:@"cvv"]) {
                 self.iconView.image = [UIImage imageNamed:@"Device_CurtainVV"];
-            }else if ([device.curtainDirection isEqualToString:@"chh"]) {
-                self.iconView.image = [UIImage imageNamed:@"Device_CurtainHH"];
-            }else if ([device.curtainDirection isEqualToString:@"cvh"]) {
-                self.iconView.image = [UIImage imageNamed:@"Device_CurtainVH"];
-            }else if ([device.curtainDirection isEqualToString:@"chv"]) {
-                self.iconView.image = [UIImage imageNamed:@"Device_CurtainHV"];
             }else {
-                self.iconView.image = [UIImage imageNamed:@"Device_Curtain"];
+                self.iconView.image = [UIImage imageNamed:@"Device_CurtainHH"];
             }
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = NO;
@@ -377,15 +360,8 @@
         [self adjustCellBgcolorAndLevelLabelWithDeviceId:device.deviceId];
         if (device.isForList) {
             self.seleteButton.hidden = NO;
-            if (device.isSelected) {
-                self.selected = YES;
-                [self.seleteButton setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
-            }else {
-                self.selected = NO;
-                [self.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-            }
+            self.seleteButton.selected = device.isSelected;
         }
-        
         return;
     }
     
@@ -441,10 +417,12 @@
             self.iconView.image = [UIImage imageNamed:@"Device_rb05"];
         }else if ([CSRUtilities belongToLightSensor:appearanceShortname]){
             self.iconView.image = [UIImage imageNamed:@"Device_Sensor"];
-        }else if ([CSRUtilities belongToCWDevice:appearanceShortname] || [CSRUtilities belongToRGBDevice:appearanceShortname] || [CSRUtilities belongToRGBCWDevice:appearanceShortname] || [CSRUtilities belongToCWNoLevelDevice:appearanceShortname] || [CSRUtilities belongToRGBNoLevelDevice:appearanceShortname] || [CSRUtilities belongToRGBCWNoLevelDevice:appearanceShortname]) {
+        }else if ([CSRUtilities belongToCWDevice:appearanceShortname] || [CSRUtilities belongToRGBDevice:appearanceShortname] || [CSRUtilities belongToRGBCWDevice:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Controller"];
-        }else if ([CSRUtilities belongToCurtainController:appearanceShortname]) {
-            self.iconView.image = [UIImage imageNamed:@"Device_Curtain"];
+        }else if ([CSRUtilities belongToOneChannelCurtainController:appearanceShortname]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_CurtainH"];
+        }else if ([CSRUtilities belongToTwoChannelCurtainController:appearanceShortname]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_CurtainHH"];
         }else if ([CSRUtilities belongToFanController:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_fan"];
         }else if ([CSRUtilities belongToSocketTwoChannel:appearanceShortname]) {
@@ -453,18 +431,15 @@
             self.iconView.image = [UIImage imageNamed:@"Device_dimmer2"];
         }else if ([CSRUtilities belongToSocketOneChannel:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_socket1"];
-        }else if ([appearanceShortname containsString:@"RB08"] || [appearanceShortname containsString:@"GR10B"] || [appearanceShortname containsString:@"6BWS"] || [appearanceShortname containsString:@"1BWS"] || [appearanceShortname containsString:@"2BWS"] || [appearanceShortname containsString:@"3BWS"]) {
-            self.iconView.image = [UIImage imageNamed:@"Device_rb08"];
         }else if ([appearanceShortname containsString:@"RB09"]||[appearanceShortname containsString:@"5RSIBH"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_bajiao"];
-        }else if ([appearanceShortname containsString:@"GR15B"]) {
-            self.iconView.image = [UIImage imageNamed:@"Device_gr15b"];
-        }else if ([appearanceShortname containsString:@"GR13B"]) {
-            self.iconView.image = [UIImage imageNamed:@"Device_gr13b"];
-        }else if ([appearanceShortname containsString:@"GR12B"]) {
-            self.iconView.image = [UIImage imageNamed:@"Device_gr12b"];
         }else if ([CSRUtilities belongToTwoChannelSwitch:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_switch2"];
+        }else if ([CSRUtilities belongToSceneRemote:appearanceShortname]
+                  || [CSRUtilities belongToCWRemote:appearanceShortname]
+                  || [CSRUtilities belongToRGBRemote:appearanceShortname]
+                  || [CSRUtilities belongToRGBCWRemote:appearanceShortname]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_mainremote"];
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
@@ -483,18 +458,11 @@
         NSString *iconString = kSceneIcons[[model.iconId integerValue]];
         self.iconView.image = [UIImage imageNamed:[NSString stringWithFormat:@"Scene_%@_select",iconString]];
         self.nameLabel.text = model.sceneName;
-        self.sceneId = model.rcIndex;
+        self.rcIndex = model.rcIndex;
         self.groupId = @2000;
         self.deviceId = @1000;
         self.seleteButton.hidden = NO;
-        self.seleteButton.hidden = NO;
-        if (model.isSelected) {
-            self.selected = YES;
-            [self.seleteButton setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
-        }else {
-            self.selected = NO;
-            [self.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-        }
+        self.seleteButton.selected = model.isSelected;
         return;
     }
     
@@ -503,7 +471,7 @@
 - (void)adjustCellBgcolorAndLevelLabelWithDeviceId:(NSNumber *)deviceId {
     DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
 //    NSLog(@"~~~> %@ ; %@ ; %@",model.shortName,model.powerState,model.level);
-    if (!model.isleave) {
+    if (!model.isleave && [DeviceModelManager sharedInstance].bleDisconnected == NO) {
         if ([CSRUtilities belongToSocketTwoChannel:model.shortName] || [CSRUtilities belongToTwoChannelCurtainController:model.shortName] || [CSRUtilities belongToTwoChannelSwitch:model.shortName]) {
             if ([model.powerState boolValue]) {
                 self.nameLabel.textColor = DARKORAGE;
@@ -527,13 +495,10 @@
         }else if ([CSRUtilities belongToSocketOneChannel:model.shortName] || [CSRUtilities belongToOneChannelCurtainController:model.shortName]) {
             if ([model.powerState boolValue]) {
                 self.nameLabel.textColor = DARKORAGE;
-            }else {
-                self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
-            }
-            if (model.channel1PowerState) {
                 self.levelLabel.text = @"ON";
                 self.levelLabel.textColor = DARKORAGE;
             }else {
+                self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
                 self.levelLabel.text = @"OFF";
                 self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
             }
@@ -673,77 +638,82 @@
 }
 
 - (void)mainCellTapGestureAction:(UITapGestureRecognizer *)sender {
-    if (sender.state == UIGestureRecognizerStateEnded) {
-        if (self.kindLabel.text.length > 0) {
-            if ([self.deviceId isEqualToNumber:@1000] || [self.deviceId isEqualToNumber:@3000] || [self.deviceId isEqualToNumber:@4000]) {
-                if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateAddDeviceAction:cellIndexPath:)]) {
-                    [self.superCellDelegate superCollectionViewCellDelegateAddDeviceAction:self.deviceId cellIndexPath:self.cellIndexPath];
-                }
-            }else if ([self.deviceId isEqualToNumber:@2000]) {
-                if ([SoundListenTool sharedInstance].audioRecorder.recording) {
-                    [[SoundListenTool sharedInstance] stopRecord:_groupId];
-                }
-                [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_groupId];
-                if (_groupPower) {
-                    [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:self.groupId withPowerState:@(0)];
-                }else {
-                    __block NSInteger brightest = 0;
-                    __block BOOL containD;
-                    [self.groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *entity, NSUInteger idx, BOOL * _Nonnull stop) {
-                        if (![CSRUtilities belongToSwitch:entity.shortName]) {
-                            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:entity.deviceId];
-                            if ([model.level integerValue]>brightest) {
-                                brightest = [model.level integerValue];
+    if (!tapLimite) {
+        tapLimite = YES;
+        if (sender.state == UIGestureRecognizerStateEnded) {
+            if (self.kindLabel.text.length > 0) {
+                if ([self.deviceId isEqualToNumber:@1000] || [self.deviceId isEqualToNumber:@3000] || [self.deviceId isEqualToNumber:@4000]) {
+                    if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateAddDeviceAction:cellIndexPath:)]) {
+                        [self.superCellDelegate superCollectionViewCellDelegateAddDeviceAction:self.deviceId cellIndexPath:self.cellIndexPath];
+                    }
+                }else if ([self.deviceId isEqualToNumber:@2000]) {
+                    if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+                        [[SoundListenTool sharedInstance] stopRecord:_groupId];
+                    }
+                    [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_groupId];
+                    if (_groupPower) {
+                        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:self.groupId withPowerState:@(0)];
+                    }else {
+                        __block NSInteger brightest = 0;
+                        __block BOOL containD;
+                        [self.groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *entity, NSUInteger idx, BOOL * _Nonnull stop) {
+                            if (![CSRUtilities belongToSwitch:entity.shortName]) {
+                                DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:entity.deviceId];
+                                if ([model.level integerValue]>brightest) {
+                                    brightest = [model.level integerValue];
+                                }
+                                containD = YES;
                             }
-                            containD = YES;
+                            
+                        }];
+                        if (containD) {
+                            if (brightest==0) {
+                                brightest = 3;
+                            }
+                            [[LightModelApi sharedInstance] setLevel:self.groupId level:@(brightest) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                                
+                            } failure:^(NSError * _Nullable error) {
+                                NSLog(@"error : %@",error);
+                            }];
+                        }else {
+                            [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:self.groupId withPowerState:@(1)];
                         }
                         
-                    }];
-                    if (containD) {
-                        if (brightest==0) {
-                            brightest = 3;
-                        }
-                        [[LightModelApi sharedInstance] setLevel:self.groupId level:@(brightest) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-                            
-                        } failure:^(NSError * _Nullable error) {
-                            NSLog(@"error : %@",error);
-                        }];
-                    }else {
-                        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:self.groupId withPowerState:@(1)];
                     }
-                    
-                }
-                _groupPower = !_groupPower;
-            }else {
-                if ([SoundListenTool sharedInstance].audioRecorder.recording) {
-                    [[SoundListenTool sharedInstance] stopRecord:_deviceId];
-                }
-                [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
-                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-                if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
-                    if (!deviceEntity.remoteBranch || deviceEntity.remoteBranch.length == 0) {
-                        if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateCurtainTapAction:)]) {
-                            [self.superCellDelegate superCollectionViewCellDelegateCurtainTapAction:deviceEntity];
+                    _groupPower = !_groupPower;
+                }else {
+                    if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+                        [[SoundListenTool sharedInstance] stopRecord:_deviceId];
+                    }
+                    [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
+                    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                    if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
+                        if (!deviceEntity.remoteBranch || deviceEntity.remoteBranch.length == 0) {
+                            if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateCurtainTapAction:)]) {
+                                [self.superCellDelegate superCollectionViewCellDelegateCurtainTapAction:deviceEntity];
+                            }
+                        }else {
+                            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+                            [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(![model.powerState boolValue])];
                         }
                     }else {
                         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
                         [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(![model.powerState boolValue])];
                     }
-                }else {
-                    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-                    [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(![model.powerState boolValue])];
                 }
-            }
-        }else {
-            if ([self.deviceId isEqualToNumber:@2000]) {
-                if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateClickEmptyGroupCellAction:)]) {
-                    [self.superCellDelegate superCollectionViewCellDelegateClickEmptyGroupCellAction:self.cellIndexPath];
+            }else {
+                if ([self.deviceId isEqualToNumber:@2000]) {
+                    if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateClickEmptyGroupCellAction:)]) {
+                        [self.superCellDelegate superCollectionViewCellDelegateClickEmptyGroupCellAction:self.cellIndexPath];
+                    }
                 }
             }
         }
-        
-        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            tapLimite = NO;
+        });
     }
+    
 }
 
 - (void)mainCellPanGestureAction:(UIPanGestureRecognizer *)sender {
@@ -866,21 +836,11 @@
 
 - (IBAction)selectAction:(UIButton *)sender {
     
-    self.selected = !self.selected;
-    if (self.selected) {
-        [self.seleteButton setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
-    }else {
-        [self.seleteButton setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-    }
+    sender.selected = !sender.selected;
     
     if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateSelectAction:)]) {
         [self.superCellDelegate superCollectionViewCellDelegateSelectAction:self];
     }
-    /*
-    if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateSelectAction:cellGroupId:cellSceneId:)]) {
-        [self.superCellDelegate superCollectionViewCellDelegateSelectAction:self.deviceId cellGroupId:self.groupId cellSceneId:self.sceneId];
-    }
-    */
 }
 
 @end
