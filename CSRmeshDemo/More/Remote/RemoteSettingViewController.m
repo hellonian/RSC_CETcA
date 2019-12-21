@@ -33,6 +33,8 @@
     NSString *downloadAddress;
     NSInteger latestMCUSVersion;
     UIButton *updateMCUBtn;
+    
+    NSInteger keyCount;
 }
 
 @property (weak, nonatomic) IBOutlet UIView *customContentView;
@@ -100,6 +102,21 @@
 @property (weak, nonatomic) IBOutlet UILabel *R9BSBHSelectEightLabel;
 @property (weak, nonatomic) IBOutlet UILabel *R9BSBHControlNineLabel;
 @property (weak, nonatomic) IBOutlet UILabel *R9BSBHSelectNineLabel;
+
+@property (strong, nonatomic) IBOutlet UIView *sixKeyView;
+@property (weak, nonatomic) IBOutlet UILabel *sixKeyControlOneLabel;
+@property (weak, nonatomic) IBOutlet UILabel *sixKeySelectOneLabel;
+@property (weak, nonatomic) IBOutlet UILabel *sixKeyControlTwoLabel;
+@property (weak, nonatomic) IBOutlet UILabel *sixKeySelectTwoLabel;
+@property (weak, nonatomic) IBOutlet UILabel *sixKeyControlThreeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *sixKeySelectThreeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *sixKeyControlFourLabel;
+@property (weak, nonatomic) IBOutlet UILabel *sixKeySelectFourLabel;
+@property (weak, nonatomic) IBOutlet UILabel *sixKeyControlFiveLabel;
+@property (weak, nonatomic) IBOutlet UILabel *sixKeySelectFiveLabel;
+@property (weak, nonatomic) IBOutlet UILabel *sixKeyControlSixLabel;
+@property (weak, nonatomic) IBOutlet UILabel *sixKeySelectSixLabel;
+
 @property (weak, nonatomic) IBOutlet UITextField *passwordTF;
 @property (weak, nonatomic) IBOutlet UISwitch *passwordEnableSwitch;
 @property (nonatomic, strong) NSString *resendCmd;
@@ -324,12 +341,16 @@
             _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
         }
         
-    }else if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"] || [self.remoteEntity.shortName isEqualToString:@"RB09"] || [self.remoteEntity.shortName isEqualToString:@"5RSIBH"] || [self.remoteEntity.shortName isEqualToString:@"5BCBH"]) {
+    }else if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"]
+              || [self.remoteEntity.shortName isEqualToString:@"RB09"]
+              || [self.remoteEntity.shortName isEqualToString:@"5RSIBH"]
+              || [self.remoteEntity.shortName isEqualToString:@"5BCBH"]) {
         if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"] || [self.remoteEntity.shortName isEqualToString:@"5BCBH"]) {
             _practicalityImageView.image = [UIImage imageNamed:@"rb01"];
         }else {
             _practicalityImageView.image = [UIImage imageNamed:@"bajiao"];
             if ([self.remoteEntity.shortName isEqualToString:@"5RSIBH"]) {
+                keyCount = 5;
                 UIButton *btn = [[UIButton alloc] initWithFrame:CGRectZero];
                 [btn setTitle:@"Set Key Type" forState:UIControlStateNormal];
                 [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
@@ -556,6 +577,79 @@
                 _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
             }
         }
+    }else if ([self.remoteEntity.shortName isEqualToString:@"6RSIBH"]) {
+        _practicalityImageView.image = [UIImage imageNamed:@"bajiao"];
+        keyCount = 6;
+        UIButton *btn = [[UIButton alloc] initWithFrame:CGRectZero];
+        [btn setTitle:@"Set Key Type" forState:UIControlStateNormal];
+        [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+        [btn.titleLabel setFont:[UIFont systemFontOfSize:12.0]];
+        btn.backgroundColor = [UIColor whiteColor];
+        btn.layer.cornerRadius = 5.0;
+        btn.clipsToBounds = YES;
+        [btn addTarget:self action:@selector(keyTypeSettingAction) forControlEvents:UIControlEventTouchUpInside];
+        [self.customContentView addSubview:btn];
+        [btn autoSetDimensionsToSize:CGSizeMake(100, 30)];
+        [btn autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:20.0];
+        [btn autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.nameBgView withOffset:-10.0];
+        
+        [self.customContentView addSubview:_sixKeyView];
+        [_sixKeyView autoSetDimension:ALDimensionHeight toSize:269.0f];
+        [_sixKeyView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+        [_sixKeyView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+        [_sixKeyView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_nameBgView withOffset:30.0f];
+        
+        _settingSelectMutArray = [[NSMutableArray alloc] initWithCapacity:6];
+        
+        if (_remoteEntity.remoteBranch.length >= 66) {
+            for (int i=0; i<6; i++) {
+                NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
+                SelectModel *mod = [[SelectModel alloc] init];
+                mod.sourceID = @([CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]]);
+                NSInteger channelInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]];
+                mod.channel = @(channelInt);
+                NSInteger deviceIDInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(6, 4)]];
+                mod.deviceID = @(deviceIDInt);
+                [_settingSelectMutArray insertObject:mod atIndex:i];
+                
+                switch (i) {
+                    case 0:
+                        [self fillControlLabel:_sixKeyControlOneLabel selectedLabel:_sixKeySelectOneLabel selectModel:mod];
+                        break;
+                    case 1:
+                        [self fillControlLabel:_sixKeyControlTwoLabel selectedLabel:_sixKeySelectTwoLabel selectModel:mod];
+                        break;
+                    case 2:
+                        [self fillControlLabel:_sixKeyControlThreeLabel selectedLabel:_sixKeySelectThreeLabel selectModel:mod];
+                        break;
+                    case 3:
+                        [self fillControlLabel:_sixKeyControlFourLabel selectedLabel:_sixKeySelectFourLabel selectModel:mod];
+                        break;
+                    case 4:
+                        [self fillControlLabel:_sixKeyControlFiveLabel selectedLabel:_sixKeySelectFiveLabel selectModel:mod];
+                        break;
+                    case 5:
+                        [self fillControlLabel:_sixKeyControlSixLabel selectedLabel:_sixKeySelectSixLabel selectModel:mod];
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }else {
+            for (int i=0; i<6; i++) {
+                SelectModel *mod = [[SelectModel alloc] init];
+                mod.sourceID = @(i+1);
+                mod.channel = @(0);
+                mod.deviceID = @(0);
+                [_settingSelectMutArray insertObject:mod atIndex:i];
+            }
+            _sixKeyControlOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _sixKeyControlTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _sixKeyControlThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _sixKeyControlFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _sixKeyControlFiveLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _sixKeyControlSixLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        }
     }
     
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
@@ -702,15 +796,24 @@
             }else {
                 _contentViewHeight.constant = safeHeight;
             }
-        }else if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"]||[self.remoteEntity.shortName isEqualToString:@"RB09"]||[self.remoteEntity.shortName isEqualToString:@"5RSIBH"]||[self.remoteEntity.shortName isEqualToString:@"5BCBH"]) {
-            if (safeHeight <= 551.5) {
-                _contentViewHeight.constant = 551.5;
+        }else if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"]
+                  ||[self.remoteEntity.shortName isEqualToString:@"RB09"]
+                  ||[self.remoteEntity.shortName isEqualToString:@"5RSIBH"]
+                  ||[self.remoteEntity.shortName isEqualToString:@"5BCBH"]) {
+            if (safeHeight <= 535) {
+                _contentViewHeight.constant = 535;
             }else {
                 _contentViewHeight.constant = safeHeight;
             }
         }else if ([self.remoteEntity.shortName isEqualToString:@"R9BSBH"]) {
             if (safeHeight <= 850.5) {
                 _contentViewHeight.constant = 850.5;
+            }else {
+                _contentViewHeight.constant = safeHeight;
+            }
+        }else if ([self.remoteEntity.shortName isEqualToString:@"6RSIBH"]) {
+            if (safeHeight <= 580) {
+                _contentViewHeight.constant = 580;
             }else {
                 _contentViewHeight.constant = safeHeight;
             }
@@ -907,6 +1010,23 @@
                 case 608:
                     [self fillControlLabel:_R9BSBHControlNineLabel selectedLabel:_R9BSBHSelectNineLabel selectModel:mod];
                     break;
+                case 700:
+                    [self fillControlLabel:_sixKeyControlOneLabel selectedLabel:_sixKeySelectOneLabel selectModel:mod];
+                    break;
+                case 701:
+                    [self fillControlLabel:_sixKeyControlTwoLabel selectedLabel:_sixKeySelectTwoLabel selectModel:mod];
+                    break;
+                case 702:
+                    [self fillControlLabel:_sixKeyControlThreeLabel selectedLabel:_sixKeySelectThreeLabel selectModel:mod];
+                    break;
+                case 703:
+                    [self fillControlLabel:_sixKeyControlFourLabel selectedLabel:_sixKeySelectFourLabel selectModel:mod];
+                    break;
+                case 704:
+                    [self fillControlLabel:_sixKeyControlFiveLabel selectedLabel:_sixKeySelectFiveLabel selectModel:mod];
+                    break;
+                case 705:
+                    [self fillControlLabel:_sixKeyControlSixLabel selectedLabel:_sixKeySelectSixLabel selectModel:mod];
                     break;
                 default:
                     break;
@@ -1028,6 +1148,36 @@
         _R9BSBHSelectNineLabel.text = @"";
         return;
     }
+    if (button.tag == 700) {
+        _sixKeyControlOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _sixKeySelectOneLabel.text = @"";
+        return;
+    }
+    if (button.tag == 701) {
+        _sixKeyControlTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _sixKeySelectTwoLabel.text = @"";
+        return;
+    }
+    if (button.tag == 702) {
+        _sixKeyControlThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _sixKeySelectThreeLabel.text = @"";
+        return;
+    }
+    if (button.tag == 703) {
+        _sixKeyControlFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _sixKeySelectFourLabel.text = @"";
+        return;
+    }
+    if (button.tag == 704) {
+        _sixKeyControlFiveLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _sixKeySelectFiveLabel.text = @"";
+        return;
+    }
+    if (button.tag == 705) {
+        _sixKeyControlSixLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _sixKeySelectSixLabel.text = @"";
+        return;
+    }
 }
 
 - (NSString *)cmdStringWithSceneRcIndex:(NSInteger)rcIndex swIndex:(NSInteger)swIndex {
@@ -1146,7 +1296,26 @@
         } failure:^(NSError * _Nonnull error) {
             
         }];
+    }else if ([_remoteEntity.shortName isEqualToString:@"6RSIBH"]) {
+        NSString *cmd = @"9b1f06";
+        for (SelectModel *mod in _settingSelectMutArray) {
+            NSString *sw = [CSRUtilities stringWithHexNumber:[mod.sourceID integerValue]];
+            NSString *rc = [CSRUtilities exchangePositionOfDeviceId:[mod.channel integerValue]];
+            NSString *dst = [CSRUtilities exchangePositionOfDeviceId:[mod.deviceID integerValue]];
+            cmd = [NSString stringWithFormat:@"%@%@%@%@",cmd,sw,rc,dst];
+        }
         
+        [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+            _remoteEntity.remoteBranch = cmd;
+            [[CSRDatabaseManager sharedInstance] saveContext];
+            _setSuccess = YES;
+            [_hub hideAnimated:YES];
+            [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+            [timer invalidate];
+            timer = nil;
+        } failure:^(NSError * _Nonnull error) {
+            
+        }];
     }else {
         if (![[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]) {
             if ([_remoteEntity.shortName isEqualToString:@"RB01"]||[_remoteEntity.shortName isEqualToString:@"RB05"]) {
@@ -1169,7 +1338,6 @@
                 } failure:^(NSError * _Nonnull error) {
 
                 }];
-                
             }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"S10IB-H2"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]||[_remoteEntity.shortName isEqualToString:@"1BMBH"]) {
                 
                 NSString *cmd = @"9b0601";
@@ -1567,9 +1735,17 @@
     _hub = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     _hub.mode = MBProgressHUDModeIndeterminate;
     _hub.delegate = self;
-    _hub.label.text = AcTECLocalizedStringFromTable(@"RemoteOpenAlert", @"Localizable");
     _hub.label.font = [UIFont systemFontOfSize:13];
     _hub.label.numberOfLines = 0;
+    if ([_remoteEntity.shortName isEqualToString:@"RB01"]
+        || [_remoteEntity.shortName isEqualToString:@"RB02"]
+        || [_remoteEntity.shortName isEqualToString:@"RB03"]
+        || [_remoteEntity.shortName isEqualToString:@"R9BSBH"]
+        || [_remoteEntity.shortName isEqualToString:@"R5BSBH"]
+        || [_remoteEntity.shortName isEqualToString:@"5BCBH"]
+        || [_remoteEntity.shortName isEqualToString:@"RB05"]) {
+        _hub.label.text = AcTECLocalizedStringFromTable(@"RemoteOpenAlert", @"Localizable");
+    }
     timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerOutWaiting) userInfo:nil repeats:YES];
 }
 
@@ -1894,7 +2070,7 @@
         [_keyTypeSettingView addSubview:line];
         
         NSArray *array = [NSArray arrayWithObjects:@"TOG",@"MOM", nil];
-        for (int i=0; i<5; i++) {
+        for (int i=0; i<keyCount; i++) {
             UISegmentedControl *segment = [[UISegmentedControl alloc] initWithItems:array];
             segment.frame = CGRectMake(50, 51+i*45, 100, 30);
             segment.tag = i+100;
@@ -1902,11 +2078,11 @@
             [_keyTypeSettingView addSubview:segment];
         }
         
-        UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(0, 271, 200, 1)];
+        UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(0, 91+45*(keyCount-1), 200, 1)];
         line1.backgroundColor = DARKORAGE;
         [_keyTypeSettingView addSubview:line1];
         
-        UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 272, 200, 40)];
+        UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 92+45*(keyCount-1), 200, 40)];
         [btn setTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") forState:UIControlStateNormal];
         [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(keyTypeSettingCommandSendingAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -1918,7 +2094,7 @@
 - (void)keyTypeSettingAction {
     [self.view addSubview:self.keyTypeSettingView];
     [self.keyTypeSettingView autoCenterInSuperview];
-    [self.keyTypeSettingView autoSetDimensionsToSize:CGSizeMake(200, 312)];
+    [self.keyTypeSettingView autoSetDimensionsToSize:CGSizeMake(200, 132+45*(keyCount-1))];
     
     [[DataModelManager shareInstance] sendCmdData:@"ea54" toDeviceId:_remoteEntity.deviceId];
     
@@ -1927,7 +2103,7 @@
 - (void)keyTypeSettingCommandSendingAction:(UIButton *)button {
     NSString *cmd=@"";
     UIView *supView = button.superview;
-    for (int i=0; i<5; i++) {
+    for (int i=0; i<keyCount; i++) {
         UISegmentedControl *segment = (UISegmentedControl *)[supView viewWithTag:100+i];
         if (segment.selectedSegmentIndex == 1) {
             cmd = [NSString stringWithFormat:@"%@%@",cmd,@"01"];
@@ -1935,7 +2111,7 @@
             cmd = [NSString stringWithFormat:@"%@%@",cmd,@"00"];
         }
     }
-    [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea53%@000000",cmd] toDeviceId:_remoteEntity.deviceId];
+    [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea53%@",cmd] toDeviceId:_remoteEntity.deviceId];
 }
 
 - (void)remoteKeyTypeCall:(NSNotification *)notification {
@@ -1943,7 +2119,7 @@
     NSNumber *deviceId = info[@"deviceId"];
     if ([deviceId isEqualToNumber:_remoteEntity.deviceId]) {
         NSString *dataStr = info[@"remoteKeyTypeCall"];
-        for (int i=0; i<5; i++) {
+        for (int i=0; i<keyCount; i++) {
             NSString *type = [dataStr substringWithRange:NSMakeRange(1+i*2, 2)];
             UISegmentedControl *segment = (UISegmentedControl *)[self.keyTypeSettingView viewWithTag:100+i];
             [type isEqualToString:@"00"]? [segment setSelectedSegmentIndex:0]:[segment setSelectedSegmentIndex:1];

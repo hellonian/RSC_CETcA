@@ -470,7 +470,6 @@
 
 - (void)adjustCellBgcolorAndLevelLabelWithDeviceId:(NSNumber *)deviceId {
     DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
-//    NSLog(@"~~~> %@ ; %@ ; %@",model.shortName,model.powerState,model.level);
     if (!model.isleave && [DeviceModelManager sharedInstance].bleDisconnected == NO) {
         if ([CSRUtilities belongToSocketTwoChannel:model.shortName] || [CSRUtilities belongToTwoChannelCurtainController:model.shortName] || [CSRUtilities belongToTwoChannelSwitch:model.shortName]) {
             if ([model.powerState boolValue]) {
@@ -687,18 +686,23 @@
                     }
                     [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
                     CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-                    if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
-                        if (!deviceEntity.remoteBranch || deviceEntity.remoteBranch.length == 0) {
-                            if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateCurtainTapAction:)]) {
-                                [self.superCellDelegate superCollectionViewCellDelegateCurtainTapAction:deviceEntity];
+                    if (![CSRUtilities belongToRGBCWRemote:deviceEntity.shortName]
+                        &&![CSRUtilities belongToRGBRemote:deviceEntity.shortName]
+                        &&![CSRUtilities belongToCWRemote:deviceEntity.shortName]
+                        &&![CSRUtilities belongToSceneRemote:deviceEntity.shortName]) {
+                        if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
+                            if (!deviceEntity.remoteBranch || deviceEntity.remoteBranch.length == 0) {
+                                if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateCurtainTapAction:)]) {
+                                    [self.superCellDelegate superCollectionViewCellDelegateCurtainTapAction:deviceEntity];
+                                }
+                            }else {
+                                DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+                                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(![model.powerState boolValue])];
                             }
                         }else {
                             DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
                             [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(![model.powerState boolValue])];
                         }
-                    }else {
-                        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-                        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(![model.powerState boolValue])];
                     }
                 }
             }else {

@@ -347,7 +347,6 @@
                 NSDictionary *dic = (NSDictionary *)responseObject;
                 latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
                 downloadAddress = dic[@"Download_address"];
-                NSLog(@"%@  %ld",deviceEntity.mcuSVersion,(long)latestMCUSVersion);
                 if ([deviceEntity.mcuSVersion integerValue]<latestMCUSVersion) {
                     updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
                     [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];

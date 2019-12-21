@@ -257,6 +257,8 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
     
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureAction:)];
     [self.circleImageView addGestureRecognizer:panGesture];
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureAction:)];
+    [self.circleImageView addGestureRecognizer:tapGesture];
 }
 
 - (void)prepare2:(CSRDeviceEntity *)deviceEntity {
@@ -633,11 +635,29 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
 }
 
 - (void)timerMethord:(NSTimer *)mTimer {
-    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"b605120a03%@",[CSRUtilities exchangePositionOfDeviceId:currentAngle]]] success:nil failure:nil];
+    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"b605120b03%@",[CSRUtilities exchangePositionOfDeviceId:currentAngle]]] success:nil failure:nil];
     if (currentState == UIGestureRecognizerStateEnded) {
         if (timer) {
             [timer invalidate];
             timer = nil;
+        }
+    }
+}
+
+- (void)tapGestureAction:(UITapGestureRecognizer *)gesture {
+    if (gesture.state == UIGestureRecognizerStateEnded) {
+        CGPoint touchPoint = [gesture locationInView:self.sceneView1];
+        CGPoint center = self.circleImageView.center;
+        if (!editing) {
+            CGFloat a = touchPoint.x-center.x;
+            CGFloat b = touchPoint.y-center.y;
+            CGFloat d = -center.y;
+            CGFloat rads = acos((b*d) / ((sqrt(a*a + b*b)) * (sqrt(d*d))));
+            if (touchPoint.x<center.x) {
+                rads = 2*pi-rads;
+            }
+            NSInteger ang = 180*rads/pi;
+            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"b605120b03%@",[CSRUtilities exchangePositionOfDeviceId:ang]]] success:nil failure:nil];
         }
     }
 }

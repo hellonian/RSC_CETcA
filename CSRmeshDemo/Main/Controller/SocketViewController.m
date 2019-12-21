@@ -141,8 +141,6 @@
             sessionManager.requestSerializer.cachePolicy = NSURLRequestReloadIgnoringCacheData;
             [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
                 NSDictionary *dic = (NSDictionary *)responseObject;
-//                NSLog(@"mcuSVersion> %@",curtainEntity.mcuSVersion);
-//                NSLog(@"dic> %@",dic);
                 latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
                 downloadAddress = dic[@"Download_address"];
                 if ([curtainEntity.mcuSVersion integerValue]<latestMCUSVersion) {

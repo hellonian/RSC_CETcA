@@ -59,11 +59,6 @@
     NSUInteger sceneIconId;
     CSRmeshDevice *meshDevice;
     CSRDeviceEntity *deleteDeviceEntity;
-    
-//    CLLocationManager *locationManager;
-//    NSString *currentCity;
-//    NSString *strlatitude;
-//    NSString *strlongitude;
 }
 
 @property (nonatomic,strong) MainCollectionView *mainCollectionView;
@@ -79,13 +74,6 @@
 
 @property (nonatomic,strong) UIView *curtainKindView;
 @property (nonatomic,strong) CSRDeviceEntity *selectedCurtainDeviceEntity;
-
-//@property (weak, nonatomic) IBOutlet UIImageView *weatherImageView;
-//@property (weak, nonatomic) IBOutlet UILabel *tempLabel;
-//@property (weak, nonatomic) IBOutlet UILabel *tempRangeLabel;
-//@property (weak, nonatomic) IBOutlet UILabel *weekLabel;
-//@property (weak, nonatomic) IBOutlet UILabel *tempUnit;
-//@property (weak, nonatomic) IBOutlet UILabel *dayLabel;
 
 @property (nonatomic,strong) MBProgressHUD *sceneSettingHud;
 @property (nonatomic,strong) UIAlertController *sceneSetfailureAlert;
@@ -2025,114 +2013,6 @@
     sceneFlowLayout.itemSize = CGSizeMake(WIDTH*3/16.0, (_mainCollectionView.bounds.size.height)/4.0);
     _sceneCollectionView.collectionViewLayout = sceneFlowLayout;
 }
-
-/*
-#pragma mark - 获取位置
-
-- (void)getLocation {
-    if ([CLLocationManager locationServicesEnabled]) {
-        locationManager = [[CLLocationManager alloc] init];
-        locationManager.delegate = self;
-        [locationManager requestAlwaysAuthorization];
-        [locationManager requestWhenInUseAuthorization];
-        
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-        locationManager.distanceFilter = 1000.0;
-        [locationManager startUpdatingLocation];
-    }
-}
-
-- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
-    NSLog(@"定位关闭，提醒用户打开定位");
-}
-
-- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations {
-    [locationManager stopUpdatingHeading];
-    
-    CLLocation *currentLocation = [locations lastObject];
-    
-    NSTimeInterval locationAge = -[currentLocation.timestamp timeIntervalSinceNow];
-
-    if (locationAge > 1.0) {
-        return;
-    }
-    
-    CLGeocoder *geoCoder = [[CLGeocoder alloc] init];
-    
-    [geoCoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
-        if (placemarks.count>0) {
-            CLPlacemark *placeMark = placemarks[0];
-            currentCity = placeMark.locality;
-            if (!currentCity) {
-                NSLog(@"无法定位当前城市");
-            }else {
-                
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    
-                    NSString *urlStr = [NSString stringWithFormat:@"https://query.yahooapis.com/v1/public/yql?q=select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='%@')&format=json&env=store://datatables.org/alltableswithkeys",currentCity];
-                    NSLog(@"%@",urlStr);
-                    AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
-                    sessionManager.responseSerializer.acceptableContentTypes = nil;
-                    [sessionManager GET:[urlStr stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]] parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
-                        NSDictionary *dic = (NSDictionary *)responseObject;
-//                        NSLog(@"%@",dic);
-                        NSDictionary *condition = dic[@"query"][@"results"][@"channel"][@"item"][@"condition"];
-                        
-                        NSInteger temp = [condition[@"temp"] integerValue];
-                        _tempLabel.text = [NSString stringWithFormat:@"%ld",(temp-32)*5/9];
-                        
-                        NSString *date = condition[@"date"];
-                        if (date) {
-                            NSString *week = [date substringToIndex:3];
-                            if ([week isEqualToString:@"Mon"]) {
-                                _weekLabel.text = @"Monday";
-                            }else if ([week isEqualToString:@"Tue"]) {
-                                _weekLabel.text = @"Tuesday";
-                            }else if ([week isEqualToString:@"Wed"]) {
-                                _weekLabel.text = @"Wednesday";
-                            }else if ([week isEqualToString:@"Thu"]) {
-                                _weekLabel.text = @"Thursday";
-                            }else if ([week isEqualToString:@"Fri"]) {
-                                _weekLabel.text = @"Friday";
-                            }else if ([week isEqualToString:@"Sat"]) {
-                                _weekLabel.text = @"Saturday";
-                            }else if ([week isEqualToString:@"Sun"]) {
-                                _weekLabel.text = @"Sunday";
-                            }
-                            
-                            NSString *day = [date substringWithRange:NSMakeRange(5, 11)];
-                            _dayLabel.text = day;
-                            
-                        }
-                        
-                        NSNumber *code = [NSNumber numberWithInteger:[condition[@"code"] integerValue]];
-                        NSString *urlString = kWeatherImageDic[code];
-                        if (urlStr) {
-                            [_weatherImageView sd_setImageWithURL:[NSURL URLWithString:urlString]];
-                        }
-                        
-                        NSArray *forecast = dic[@"query"][@"results"][@"channel"][@"item"][@"forecast"];
-                        NSInteger low = [forecast[0][@"low"] integerValue];
-                        NSInteger high = [forecast[0][@"high"] integerValue];
-                        _tempRangeLabel.text = [NSString stringWithFormat:@"%ld~%ld",(low-32)*5/9,(high-32)*5/9];
-                        _tempUnit.text = @"℃";
-                    } failure:^(NSURLSessionDataTask *task, NSError *error) {
-                        NSLog(@"%@",error);
-                    }];
-                    
-                });
-            }
-            
-        }
-        
-    }];
-     
-}
-
-- (IBAction)refreshWeatherUI:(id)sender {
-    [self getLocation];
-}
-*/
 
 - (void)bridgeConnectedNotification:(NSNotification *)notification {
     NSDictionary *dic = notification.userInfo;

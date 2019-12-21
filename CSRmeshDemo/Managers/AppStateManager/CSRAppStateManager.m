@@ -78,7 +78,7 @@
         case CSRSelectedBearerType_Bluetooth: {
             
             [[CSRBluetoothLE sharedInstance] powerOnCentralManager];
-            [[CSRmeshSettings sharedInstance] setBleConnectMode:(BleAutoConnectMode)1];
+//            [[CSRmeshSettings sharedInstance] setBleConnectMode:(BleAutoConnectMode)1];
             [[MeshServiceApi sharedInstance] setBluetoothBearerEnabled];
             [[CSRBluetoothLE sharedInstance] setBleDelegate:self];
             
@@ -89,7 +89,7 @@
         case CSRSelectedBearerType_Cloud: {
             
             [[CSRBluetoothLE sharedInstance] powerOffCentralManager];
-            [[CSRmeshSettings sharedInstance] setBleConnectMode:(BleAutoConnectMode)0];
+//            [[CSRmeshSettings sharedInstance] setBleConnectMode:(BleAutoConnectMode)0];
             [[MeshServiceApi sharedInstance] setRestBearerEnabled];
             [[CSRBluetoothLE sharedInstance] setBleDelegate:nil];
             [self setupCloudWithEndpoint:CSRMeshRestEndpoint_Cloud withMode:CSRMeshRestMode_CNC];
@@ -101,7 +101,7 @@
         case CSRSelectedBearerType_Gateway: {
             
             [[CSRBluetoothLE sharedInstance] powerOffCentralManager];
-            [[CSRmeshSettings sharedInstance] setBleConnectMode:(BleAutoConnectMode)0];
+//            [[CSRmeshSettings sharedInstance] setBleConnectMode:(BleAutoConnectMode)0];
             [[MeshServiceApi sharedInstance] setRestBearerEnabled];
             [[CSRBluetoothLE sharedInstance] setBleDelegate:nil];
             [self setupCloudWithEndpoint:CSRMeshRestEndpoint_Gateway withMode:CSRMeshRestMode_CNC];
