@@ -351,14 +351,6 @@
                     model.isleave = YES;
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(3)}];
                 }];
-                
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [[LightModelApi sharedInstance] getState:deviceId success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-                        
-                    } failure:^(NSError * _Nullable error) {
-                        
-                    }];
-                });
             }
         }
         

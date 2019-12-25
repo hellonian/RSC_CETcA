@@ -604,10 +604,12 @@
         self.nameLabel.textColor = DARKORAGE;
         self.levelLabel.textColor = DARKORAGE;
         self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
-        if ([model.level floatValue]/255.0*100>0 && [model.level floatValue]/255.0*100 < 1.0) {
-            self.levelLabel.text = @"1%";
-        }else {
-            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
+        if ([CSRUtilities belongToDimmer:model.shortName]) {
+            if ([model.level floatValue]/255.0*100>0 && [model.level floatValue]/255.0*100 < 1.0) {
+                self.levelLabel.text = @"1%";
+            }else {
+                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
+            }
         }
     }else {
         self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];

@@ -30,6 +30,8 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
     NSInteger currentAngle;
     UIGestureRecognizerState currentState;
     NSTimer *timer;
+    int tapCount;
+    NSInteger tapTag;
 }
 
 @property (weak, nonatomic) IBOutlet UITextField *nameTf;
@@ -192,6 +194,18 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [_remoteBtn22 setImage:[UIImage imageNamed:@"remotebtn20_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn23 setImage:[UIImage imageNamed:@"remotebtn21_default"] forState:UIControlStateNormal];
             [_remoteBtn23 setImage:[UIImage imageNamed:@"remotebtn21_highlighted"] forState:UIControlStateHighlighted];
+            UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn18 addGestureRecognizer:gesture17];
+            UILongPressGestureRecognizer *gesture18 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn19 addGestureRecognizer:gesture18];
+            UILongPressGestureRecognizer *gesture19 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn20 addGestureRecognizer:gesture19];
+            UILongPressGestureRecognizer *gesture20 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn21 addGestureRecognizer:gesture20];
+            UILongPressGestureRecognizer *gesture21 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn22 addGestureRecognizer:gesture21];
+            UILongPressGestureRecognizer *gesture22 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn23 addGestureRecognizer:gesture22];
         }
     }
 }
@@ -419,66 +433,79 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [self presentViewController:alert animated:YES completion:nil];
         }
     }else {
-        NSString *sw;
-        switch (sender.tag) {
-            case 7:
-                sw = @"07";
-                break;
-            case 8:
-                sw = @"08";
-                break;
-            case 9:
-                sw = @"09";
-                break;
-            case 10:
-                sw = @"0a";
-                break;
-            case 11:
-                sw = @"00";
-                break;
-            case 12:
-                sw = @"01";
-                break;
-            case 13:
-                sw = @"02";
-                break;
-            case 14:
-                sw = @"03";
-                break;
-            case 15:
-                sw = @"04";
-                break;
-            case 16:
-                sw = @"06";
-                break;
-            case 17:
-                sw = @"05";
-                break;
-            case 1:
-                sw = @"01";
-                break;
-            case 2:
-                sw = @"02";
-                break;
-            case 3:
-                sw = @"03";
-                break;
-            case 4:
-                sw = @"04";
-                break;
-            case 5:
-                sw = @"05";
-                break;
-            case 6:
-                sw = @"06";
-                break;
-            default:
-                break;
-        }
-        if (sw) {
-            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"b60512%@000100",sw]] success:nil failure:nil];
+        if (tapTag == sender.tag || tapTag == 0) {
+            if (tapTag==0) {
+                tapTag = sender.tag;
+            }
+            tapCount++;
+            [NSObject cancelPreviousPerformRequestsWithTarget:self];
+            [self performSelector:@selector(detalyTapAction) withObject:nil afterDelay:0.6f];
         }
     }
+}
+
+- (void)detalyTapAction {
+    NSString *sw;
+    switch (tapTag) {
+        case 7:
+            sw = @"07";
+            break;
+        case 8:
+            sw = @"08";
+            break;
+        case 9:
+            sw = @"09";
+            break;
+        case 10:
+            sw = @"0a";
+            break;
+        case 11:
+            sw = @"00";
+            break;
+        case 12:
+            sw = @"01";
+            break;
+        case 13:
+            sw = @"02";
+            break;
+        case 14:
+            sw = @"03";
+            break;
+        case 15:
+            sw = @"04";
+            break;
+        case 16:
+            sw = @"06";
+            break;
+        case 17:
+            sw = @"05";
+            break;
+        case 1:
+            sw = @"01";
+            break;
+        case 2:
+            sw = @"02";
+            break;
+        case 3:
+            sw = @"03";
+            break;
+        case 4:
+            sw = @"04";
+            break;
+        case 5:
+            sw = @"05";
+            break;
+        case 6:
+            sw = @"06";
+            break;
+        default:
+            break;
+    }
+    if (sw) {
+        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"b60512%@00%@",sw,[CSRUtilities exchangePositionOfDeviceId:tapCount]]] success:nil failure:nil];
+    }
+    tapCount = 0;
+    tapTag = 0;
 }
 
 - (void)selectDevice:(UIButton *)sender {
@@ -567,6 +594,24 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             sw = @"04";
             break;
         case 16:
+            sw = @"06";
+            break;
+        case 1:
+            sw = @"01";
+            break;
+        case 2:
+            sw = @"02";
+            break;
+        case 3:
+            sw = @"03";
+            break;
+        case 4:
+            sw = @"04";
+            break;
+        case 5:
+            sw = @"05";
+            break;
+        case 6:
             sw = @"06";
             break;
         default:

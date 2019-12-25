@@ -290,7 +290,9 @@
             }
         }
         
-    }else if ([self.remoteEntity.shortName isEqualToString:@"RB04"] || [self.remoteEntity.shortName isEqualToString:@"RSIBH"] || [self.remoteEntity.shortName isEqualToString:@"S10IB-H2"]) {
+    }else if ([self.remoteEntity.shortName isEqualToString:@"RB04"]
+              || [self.remoteEntity.shortName isEqualToString:@"RSIBH"]
+              || [self.remoteEntity.shortName isEqualToString:@"S10IB-H2"]) {
         _practicalityImageView.image = [UIImage imageNamed:@"bajiao"];
         [self.customContentView addSubview:self.twoRemoteView];
         [self.twoRemoteView autoSetDimension:ALDimensionHeight toSize:89.0f];
