@@ -43,20 +43,22 @@
 #define kSwitchs @[@"S350BT",@"S350B",@"S2400IB",@"S350B-H",@"S2400IB-H",@"S2400IB-T4",@"S10IB",@"S10IB-H2",@"S10IBH",@"S2400IB-Q",@"GS10B",@"ES350B",@"S6AB"]
 #define kRemotes @[@"RB01",@"RB02",@"S10IB-H2",@"RB04",@"RSIBH",@"R5BSBH",@"R9BSBH",@"RB07",@"RB06",@"RSBH",@"RB05",@"RB09",@"1BMBH",@"5RSIBH",@"5BCBH",@"6RSIBH"]
 
-#define kSceneRemotes @[@"GR10B",@"RB08",@"H1CSB-RD",@"H2CSB-BU",@"H3CSB-BU",@"H4CSB-BK",@"H6CSB-WH",@"6BWS",@"1BWS",@"2BWS",@"3BWS"]
+#define kSceneRemotes @[@"GR10B",@"RB08",@"H1CSB-RD",@"H2CSB-BU",@"H3CSB-BU",@"H4CSB-BK",@"H6CSB-WH",@"6BWS",@"1BWS",@"2BWS",@"3BWS",@"TR10B",@"H1CSWB",@"H2CSWB",@"H3CSWB",@"H4CSWB",@"H6CSWB"]
 #define kCWRemotes @[@"GR12B"]
 #define kRGBRemotes @[@"GR13B"]
 #define kRGBCWRemotes @[@"GR15B"]
 
-#define kSockets @[@"P2400B-H",@"P2400B-H2",@"P2400B",@"PS2400B",@"SR2400",@"SSR1200",@"GP10B",@"P2400"]
-#define kSocketsOneChannel @[@"PS2400B",@"SR2400",@"SSR1200",@"GP10B",@"P2400"]
-#define kSocketsTwoChannel @[@"P2400B-H",@"P2400B-H2",@"P2400B"]
+#define kLCDRemote @[@"GR1000B"]
+
+#define kSockets @[@"P2400B-H",@"P2400B-H2",@"P2400B",@"PS2400B",@"SR2400",@"SSR1200",@"GP10B",@"P2400",@"H2PPHB-WH",@"K2PPHB",@"K2PPHBX",@"H2PPWHB",@"H1PPWVBX"]
+#define kSocketsOneChannel @[@"PS2400B",@"SR2400",@"SSR1200",@"GP10B",@"P2400",@"H1PPWVBX"]
+#define kSocketsTwoChannel @[@"P2400B-H",@"P2400B-H2",@"P2400B",@"H2PPHB-WH",@"K2PPHB",@"K2PPHBX",@"H2PPWHB"]
 
 #define kTwoChannelSwitchs @[@"GS20B-2G",@"ES500B-2G"]
 
 #define kOneChannelSwitchs @[@"S6AB"]//实体按键控制反馈使用52开头协议，区别于普通单路调光器的87开头协议
 #define kOneChannelDimmers @[@"GD400B"]//实体按键控制反馈使用52开头协议，区别于普通单路调光器的87开头协议
-#define kTwoChannelDimmers @[@"D200IB-2G",@"D200GB-2G",@"GD400B-2G",@"ED500B-2G",@"D300IB-2G"]
+#define kTwoChannelDimmers @[@"D200IB-2G",@"D200GB-2G",@"GD400B-2G",@"ED500B-2G",@"D300IB-2G",@"TD400B-2G"]
 
 #define kThreeSpeedColorTemperaturesDevices @[@"D350SB",@"D300IB",@"D350B",@"S350B",@"D350B-B",@"D350B-L",@"D300IB-L",@"D300SB"]
 

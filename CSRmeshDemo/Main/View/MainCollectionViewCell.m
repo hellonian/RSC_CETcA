@@ -274,6 +274,11 @@
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
+        }else if ([CSRUtilities belongToLCDRemote:deviceEntity.shortName]) {
+            self.iconView.image = [UIImage imageNamed:@"lcdremoteroom"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
+            self.levelLabel.hidden = YES;
+            self.level2Label.hidden = YES;
         }
         
         self.cellIndexPath = indexPath;
@@ -440,6 +445,8 @@
                   || [CSRUtilities belongToRGBRemote:appearanceShortname]
                   || [CSRUtilities belongToRGBCWRemote:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_mainremote"];
+        }else if ([CSRUtilities belongToLCDRemote:appearanceShortname]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_lcdremote"];
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
@@ -655,30 +662,30 @@
                     if (_groupPower) {
                         [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:self.groupId withPowerState:@(0)];
                     }else {
-                        __block NSInteger brightest = 0;
-                        __block BOOL containD;
-                        [self.groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *entity, NSUInteger idx, BOOL * _Nonnull stop) {
-                            if (![CSRUtilities belongToSwitch:entity.shortName]) {
-                                DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:entity.deviceId];
-                                if ([model.level integerValue]>brightest) {
-                                    brightest = [model.level integerValue];
-                                }
-                                containD = YES;
-                            }
-                            
-                        }];
-                        if (containD) {
-                            if (brightest==0) {
-                                brightest = 3;
-                            }
-                            [[LightModelApi sharedInstance] setLevel:self.groupId level:@(brightest) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-                                
-                            } failure:^(NSError * _Nullable error) {
-                                NSLog(@"error : %@",error);
-                            }];
-                        }else {
+//                        __block NSInteger brightest = 0;
+//                        __block BOOL containD;
+//                        [self.groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *entity, NSUInteger idx, BOOL * _Nonnull stop) {
+//                            if (![CSRUtilities belongToSwitch:entity.shortName]) {
+//                                DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:entity.deviceId];
+//                                if ([model.level integerValue]>brightest) {
+//                                    brightest = [model.level integerValue];
+//                                }
+//                                containD = YES;
+//                            }
+//
+//                        }];
+//                        if (containD) {
+//                            if (brightest==0) {
+//                                brightest = 3;
+//                            }
+//                            [[LightModelApi sharedInstance] setLevel:self.groupId level:@(brightest) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+//
+//                            } failure:^(NSError * _Nullable error) {
+//                                NSLog(@"error : %@",error);
+//                            }];
+//                        }else {
                             [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:self.groupId withPowerState:@(1)];
-                        }
+//                        }
                         
                     }
                     _groupPower = !_groupPower;
@@ -691,7 +698,8 @@
                     if (![CSRUtilities belongToRGBCWRemote:deviceEntity.shortName]
                         &&![CSRUtilities belongToRGBRemote:deviceEntity.shortName]
                         &&![CSRUtilities belongToCWRemote:deviceEntity.shortName]
-                        &&![CSRUtilities belongToSceneRemote:deviceEntity.shortName]) {
+                        &&![CSRUtilities belongToSceneRemote:deviceEntity.shortName]
+                        &&![CSRUtilities belongToLCDRemote:deviceEntity.shortName]) {
                         if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
                             if (!deviceEntity.remoteBranch || deviceEntity.remoteBranch.length == 0) {
                                 if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateCurtainTapAction:)]) {

@@ -537,10 +537,14 @@
         NSInteger objValue;
         for (; ; ) {
             objValue = arc4random()%32752+32769;
+            BOOL oldId = NO;
             if ([allDeviceIds containsObject:[NSNumber numberWithInteger:objValue]]) {
-                continue;
+                oldId = YES;
+                break;
             }
-            return [NSNumber numberWithInteger:objValue];
+            if (!oldId) {
+                return [NSNumber numberWithInteger:objValue];
+            }
         }
         
         
@@ -605,10 +609,14 @@
         NSInteger objValue;
         for (; ; ) {
             objValue = arc4random()%32758+10;
+            BOOL oldId = NO;
             if ([allIdsArray containsObject:[NSNumber numberWithInteger:objValue]]) {
-                continue;
+                oldId = YES;
+                break;
             }
-            return [NSNumber numberWithInteger:objValue];
+            if (!oldId) {
+                return [NSNumber numberWithInteger:objValue];
+            }
         }
         
     } else if ([typeString isEqualToString:@"GalleryEntity"]) {

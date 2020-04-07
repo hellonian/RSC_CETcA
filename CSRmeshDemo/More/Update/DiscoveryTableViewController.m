@@ -118,7 +118,6 @@
         [[CSRBluetoothLE sharedInstance] setIsUpdateFW:YES];
         [[CSRBluetoothLE sharedInstance] setBleDelegate:self];
         [[CSRBluetoothLE sharedInstance] startScan];
-        NSLog(@"%@",_latestDic);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"%@",error);
     }];
@@ -242,6 +241,8 @@
     cell.detailTextLabel.text = [NSString stringWithFormat:@"V%@.%@.%@.%@",[CSRUtilities stringWithHexNumber:[model.bleHwVersion integerValue]],bleFString,model.hVersion,model.fVersion];
     if (model.needUpdate) {
         cell.textLabel.textColor = DARKORAGE;
+    }else {
+        cell.textLabel.textColor = [UIColor blackColor];
     }
     
     return cell;

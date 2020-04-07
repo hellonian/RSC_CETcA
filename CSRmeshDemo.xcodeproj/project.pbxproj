@@ -103,7 +103,12 @@
 		2E5A5874213788F900E416F9 /* FavoriteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E5A5872213788F900E416F9 /* FavoriteViewController.xib */; };
 		2E5A58782137896500E416F9 /* RGBDeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E5A58762137896500E416F9 /* RGBDeviceViewController.m */; };
 		2E5A587D21378B6800E416F9 /* MusicViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E5A587B21378B6800E416F9 /* MusicViewController.m */; };
+		2E5C130C23C05EC200A13994 /* LCDSelectModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C130B23C05EC200A13994 /* LCDSelectModel.m */; };
 		2E5EA0D7217F123700554825 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E5EA0D6217F123700554825 /* LaunchScreen.storyboard */; };
+		2E5F120823BD954A0018EF16 /* RemoteLCDVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E5F120623BD954A0018EF16 /* RemoteLCDVC.m */; };
+		2E5F120923BD954A0018EF16 /* RemoteLCDVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E5F120723BD954A0018EF16 /* RemoteLCDVC.xib */; };
+		2E5F120D23BDD22F0018EF16 /* LCDRemoteMemberCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E5F120B23BDD22F0018EF16 /* LCDRemoteMemberCell.m */; };
+		2E5F120E23BDD22F0018EF16 /* LCDRemoteMemberCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E5F120C23BDD22F0018EF16 /* LCDRemoteMemberCell.xib */; };
 		2E63A54321E328B800FCE49D /* SocketPowerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E63A54121E328B800FCE49D /* SocketPowerCell.m */; };
 		2E63A54421E328B800FCE49D /* SocketPowerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E63A54221E328B800FCE49D /* SocketPowerCell.xib */; };
 		2E6A02131F39884500111312 /* TabBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A020E1F39884500111312 /* TabBarButton.m */; };
@@ -384,9 +389,17 @@
 		2E5A58762137896500E416F9 /* RGBDeviceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RGBDeviceViewController.m; sourceTree = "<group>"; };
 		2E5A587A21378B6800E416F9 /* MusicViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MusicViewController.h; sourceTree = "<group>"; };
 		2E5A587B21378B6800E416F9 /* MusicViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicViewController.m; sourceTree = "<group>"; };
+		2E5C130A23C05EC200A13994 /* LCDSelectModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LCDSelectModel.h; sourceTree = "<group>"; };
+		2E5C130B23C05EC200A13994 /* LCDSelectModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LCDSelectModel.m; sourceTree = "<group>"; };
 		2E5EA0D6217F123700554825 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2E5EA85423263DAB00EC1921 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/DeviceViewController.strings"; sourceTree = "<group>"; };
 		2E5EA85623263F8200EC1921 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
+		2E5F120523BD954A0018EF16 /* RemoteLCDVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteLCDVC.h; sourceTree = "<group>"; };
+		2E5F120623BD954A0018EF16 /* RemoteLCDVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteLCDVC.m; sourceTree = "<group>"; };
+		2E5F120723BD954A0018EF16 /* RemoteLCDVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RemoteLCDVC.xib; sourceTree = "<group>"; };
+		2E5F120A23BDD22F0018EF16 /* LCDRemoteMemberCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LCDRemoteMemberCell.h; sourceTree = "<group>"; };
+		2E5F120B23BDD22F0018EF16 /* LCDRemoteMemberCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LCDRemoteMemberCell.m; sourceTree = "<group>"; };
+		2E5F120C23BDD22F0018EF16 /* LCDRemoteMemberCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LCDRemoteMemberCell.xib; sourceTree = "<group>"; };
 		2E63A54021E328B800FCE49D /* SocketPowerCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SocketPowerCell.h; sourceTree = "<group>"; };
 		2E63A54121E328B800FCE49D /* SocketPowerCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SocketPowerCell.m; sourceTree = "<group>"; };
 		2E63A54221E328B800FCE49D /* SocketPowerCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SocketPowerCell.xib; sourceTree = "<group>"; };
@@ -1126,6 +1139,9 @@
 				2E3417BB23A7276A000D1A52 /* RemoteMainVC.h */,
 				2E3417BC23A7276A000D1A52 /* RemoteMainVC.m */,
 				2E3417BD23A7276A000D1A52 /* RemoteMainVC.xib */,
+				2E5F120523BD954A0018EF16 /* RemoteLCDVC.h */,
+				2E5F120623BD954A0018EF16 /* RemoteLCDVC.m */,
+				2E5F120723BD954A0018EF16 /* RemoteLCDVC.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1153,6 +1169,8 @@
 				2EE5E8C7227194A500EFE8B9 /* MCUUpdateTool.m */,
 				2E8ECC2C239DFA210031367F /* SelectModel.h */,
 				2E8ECC2D239DFA210031367F /* SelectModel.m */,
+				2E5C130A23C05EC200A13994 /* LCDSelectModel.h */,
+				2E5C130B23C05EC200A13994 /* LCDSelectModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1198,6 +1216,9 @@
 				2E63A54221E328B800FCE49D /* SocketPowerCell.xib */,
 				2E35F74A222A7E41001D9342 /* GroupControlView.h */,
 				2E35F74B222A7E41001D9342 /* GroupControlView.m */,
+				2E5F120A23BDD22F0018EF16 /* LCDRemoteMemberCell.h */,
+				2E5F120B23BDD22F0018EF16 /* LCDRemoteMemberCell.m */,
+				2E5F120C23BDD22F0018EF16 /* LCDRemoteMemberCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1523,6 +1544,7 @@
 				2E63A54421E328B800FCE49D /* SocketPowerCell.xib in Resources */,
 				2E388A7D214BAB2100CBF73C /* MRGBSceneDetailViewController.xib in Resources */,
 				2E37074E20CE4C16000AF696 /* DeviceViewController.xib in Resources */,
+				2E5F120E23BDD22F0018EF16 /* LCDRemoteMemberCell.xib in Resources */,
 				2E6BD7FD20D09B3200036CA2 /* TimerDetailViewController.xib in Resources */,
 				2E388A74214BA91C00CBF73C /* SRGBSceneDetailViewController.xib in Resources */,
 				2E4DDCF221F968FF00B2ACF3 /* SocketViewController.xib in Resources */,
@@ -1543,6 +1565,7 @@
 				2EE50F2D20DA3E3D00B484F7 /* LightSensorSettingViewController.xib in Resources */,
 				2E712CFE235015E5003DBA72 /* TwoChannelSwitchVC.xib in Resources */,
 				2E5EA0D7217F123700554825 /* LaunchScreen.storyboard in Resources */,
+				2E5F120923BD954A0018EF16 /* RemoteLCDVC.xib in Resources */,
 				2E2E70921FF5DE60002D1C1D /* PlaceIconCollectionViewCell.xib in Resources */,
 				2ED23F6E215DCCCA0040A922 /* CurtainViewController.xib in Resources */,
 				2E3417BF23A7276A000D1A52 /* RemoteMainVC.xib in Resources */,
@@ -1679,12 +1702,14 @@
 				2E2E708C1FF5DE60002D1C1D /* PlacesViewController.m in Sources */,
 				2EBBA91D21D7442E00D2E7DA /* SocketViewController.m in Sources */,
 				2EF7182C1FFB265A00901918 /* DropEntity.m in Sources */,
+				2E5C130C23C05EC200A13994 /* LCDSelectModel.m in Sources */,
 				F4658A201C99747A00C284F4 /* CSRDeviceEventsEntity.m in Sources */,
 				2E2E70AD1FF5DE60002D1C1D /* TimeSchedule.m in Sources */,
 				2E3BED3921DF329100E7078C /* PowerViewController.m in Sources */,
 				2E2533EE20219850002A6EC3 /* DeviceListViewController.m in Sources */,
 				2EA708C32011C31300782209 /* AddDevcieViewController.m in Sources */,
 				2E2E70A61FF5DE60002D1C1D /* DataModelManager.m in Sources */,
+				2E5F120D23BDD22F0018EF16 /* LCDRemoteMemberCell.m in Sources */,
 				F4C85EA71CB3EE0E003E1FF3 /* CSRControllerEntity+CoreDataProperties.m in Sources */,
 				2EAD479C1FFC76F3007D45E9 /* GallreyDropView.m in Sources */,
 				2E4BBD4F22811FC7005650F8 /* CSRGaiaGattCommand.m in Sources */,
@@ -1699,6 +1724,7 @@
 				2E2E708A1FF5DE60002D1C1D /* PlaceDetailsViewController.m in Sources */,
 				2E2E707E1FF5DE60002D1C1D /* MoreViewController.m in Sources */,
 				2EF332552045031300565374 /* HelpViewController.m in Sources */,
+				2E5F120823BD954A0018EF16 /* RemoteLCDVC.m in Sources */,
 				2E3B967F200F3847000BD086 /* MainViewController.m in Sources */,
 				2EB246B32282A82600DFF5D3 /* QTIRWCPSegment.m in Sources */,
 				2E63A54321E328B800FCE49D /* SocketPowerCell.m in Sources */,
@@ -2232,7 +2258,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2292,7 +2318,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;

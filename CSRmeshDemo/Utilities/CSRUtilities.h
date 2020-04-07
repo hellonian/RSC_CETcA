@@ -126,6 +126,7 @@
 + (BOOL)belongToRGBRemote:(NSString *)shortName;
 + (BOOL)belongToRGBCWRemote:(NSString *)shortName;
 + (BOOL)belongToOneChannelSwitch:(NSString *)shortName;
++ (BOOL)belongToLCDRemote:(NSString *)shortName;
 
 +(NSString *)convertToJsonData:(NSDictionary *)dict;
 + (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString;

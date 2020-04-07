@@ -165,6 +165,12 @@
     if (self.placesArray != nil || [self.placesArray count] != 0 ) {
         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
         [_placesArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+        [_placesArray enumerateObjectsUsingBlock:^(CSRPlaceEntity *placeEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([CSRAppStateManager sharedInstance].selectedPlace && [[placeEntity objectID] isEqual:[[CSRAppStateManager sharedInstance].selectedPlace objectID]]) {
+                _selectedRow = idx;
+                *stop = YES;
+            }
+        }];
     }
     [self.tableView reloadData];
     
@@ -219,6 +225,7 @@
 #pragma mark - table view delegate
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"%ld, %ld",indexPath.row, _selectedRow);
     if (indexPath.row == _selectedRow) {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }

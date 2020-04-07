@@ -152,9 +152,8 @@
 - (void)resendea32 {
     if (!eb32Back) {
         if (resendea32Num<3) {
-            __block NSInteger block_resendea32Num = resendea32Num;
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                block_resendea32Num++;
+                resendea32Num++;
                 [[DataModelManager shareInstance] sendCmdData:@"ea32" toDeviceId:_deviceId];
                 [self resendea32];
             });
@@ -169,9 +168,8 @@
 - (void)sendReadMCUVersionCmd {
     if (!eb35Back) {
         if (resendea35Num<3) {
-            __block NSInteger block_resendea35Num = resendea35Num;
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                block_resendea35Num++;
+                resendea35Num++;
                 [[DataModelManager shareInstance] sendCmdData:@"ea35" toDeviceId:_deviceId];
                 [self sendReadMCUVersionCmd];
             });
@@ -274,20 +272,22 @@
 }
 
 - (void)resendData:(NSInteger)binPage {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSLog(@"再次准备查询~~ %ld | %d",(long)binPage,[[_updateSuccessDic objectForKey:@(binPage)] boolValue]);
-        if (![[_updateSuccessDic objectForKey:@(binPage)] boolValue] && _resendQueryNumber<6) {
-            _resendQueryNumber++;
-            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea33%@",[CSRUtilities stringWithHexNumber:binPage]] toDeviceId:_deviceId];
-            [self resendData:binPage];
-        }else {
-            if (self.toolDelegate && [self respondsToSelector:@selector(updateSuccess:)]) {
-                [self.toolDelegate updateSuccess:NO];
+    if (_resendQueryNumber < 6) {
+        __block typeof(self)weakSelf = self;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            if (![[_updateSuccessDic objectForKey:@(binPage)] boolValue]) {
+                [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea33%@",[CSRUtilities stringWithHexNumber:binPage]] toDeviceId:_deviceId];
+                _resendQueryNumber++;
+                [weakSelf resendData:binPage];
             }
-            [UIApplication sharedApplication].idleTimerDisabled = NO;
-            _startedUpdate = NO;
+        });
+    }else {
+        if (self.toolDelegate && [self.toolDelegate respondsToSelector:@selector(updateSuccess:)]) {
+            [self.toolDelegate updateSuccess:NO];
         }
-    });
+        [UIApplication sharedApplication].idleTimerDisabled = NO;
+        _startedUpdate = NO;
+    }
 }
 
 @end

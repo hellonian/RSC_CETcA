@@ -42,10 +42,7 @@
 #import "TwoChannelDimmerVC.h"
 #import "TwoChannelSwitchVC.h"
 #import "RemoteMainVC.h"
-
-//#import <CoreLocation/CoreLocation.h>
-//#import "AFHTTPSessionManager.h"
-//#import <SDWebImage/UIImageView+WebCache.h>
+#import "RemoteLCDVC.h"
 
 #import <CSRmesh/DataModelApi.h>
 
@@ -1506,13 +1503,27 @@
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
-        }else if ([CSRUtilities belongToRGBCWRemote:deviceEntity.shortName] || [CSRUtilities belongToSceneRemote:deviceEntity.shortName]) {
+        }else if ([CSRUtilities belongToRGBCWRemote:deviceEntity.shortName]
+                  || [CSRUtilities belongToCWRemote:deviceEntity.shortName]
+                  || [CSRUtilities belongToRGBRemote:deviceEntity.shortName]
+                  || [CSRUtilities belongToSceneRemote:deviceEntity.shortName]) {
             RemoteMainVC *rmvc = [[RemoteMainVC alloc] init];
             rmvc.deviceId = mainCell.deviceId;
             rmvc.reloadDataHandle = ^{
                 [self getMainDataArray];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:rmvc];
+            nav.modalPresentationStyle = UIModalPresentationPopover;
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
+        }else if ([CSRUtilities belongToLCDRemote:deviceEntity.shortName]) {
+            RemoteLCDVC *lcdvc = [[RemoteLCDVC alloc] init];
+            lcdvc.deviceId = mainCell.deviceId;
+            lcdvc.reloadDataHandle = ^{
+                [self getMainDataArray];
+            };
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:lcdvc];
             nav.modalPresentationStyle = UIModalPresentationPopover;
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;

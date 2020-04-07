@@ -78,7 +78,6 @@
     }
     
     _selectedDevices = [[NSMutableArray alloc] init];
-    
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
     flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
     flowLayout.minimumLineSpacing = WIDTH*8.0/640.0;

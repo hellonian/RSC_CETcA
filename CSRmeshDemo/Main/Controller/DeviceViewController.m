@@ -1314,7 +1314,7 @@
     if (!_ganjiedianCustomView.superview) {
         _ganjiedianCustomView.layer.borderWidth = 2;
         _ganjiedianCustomView.layer.borderColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1.0].CGColor;
-        _ganjiedianCustomView.frame = CGRectMake(WIDTH-179.0, _ganjiedianRowView.frame.origin.y-134.0, 200.0, 179.0);
+        _ganjiedianCustomView.frame = CGRectMake(WIDTH-200.0, _ganjiedianRowView.frame.origin.y-134.0, 200.0, 179.0);
         [_scrollView addSubview:_ganjiedianCustomView];
         [_scrollView sendSubviewToBack:_ganjiedianCustomView];
         

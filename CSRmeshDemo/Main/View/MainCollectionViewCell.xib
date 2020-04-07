@@ -11,24 +11,24 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="MainCollectionViewCell">
-            <rect key="frame" x="0.0" y="0.0" width="147" height="101"/>
+            <rect key="frame" x="0.0" y="0.0" width="240" height="161"/>
             <autoresizingMask key="autoresizingMask"/>
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                <rect key="frame" x="0.0" y="0.0" width="147" height="101"/>
+                <rect key="frame" x="0.0" y="0.0" width="240" height="161"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="livingroom" translatesAutoresizingMaskIntoConstraints="NO" id="HJS-BX-HjA">
-                        <rect key="frame" x="0.0" y="0.0" width="147" height="101"/>
+                        <rect key="frame" x="0.0" y="0.0" width="240" height="161"/>
                     </imageView>
                     <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Fgg-20-apY">
-                        <rect key="frame" x="0.0" y="73" width="147" height="28"/>
+                        <rect key="frame" x="0.0" y="133" width="240" height="28"/>
                         <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.94901960784313721" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="28" id="fsY-cL-2nb"/>
                         </constraints>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ghm-qb-6Mx">
-                        <rect key="frame" x="8" y="75" width="101" height="14"/>
+                        <rect key="frame" x="8" y="135" width="194" height="14"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="14" id="3oT-zN-cv4"/>
                         </constraints>
@@ -37,7 +37,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rFB-ER-6RS">
-                        <rect key="frame" x="8" y="89" width="101" height="9"/>
+                        <rect key="frame" x="8" y="149" width="194" height="9"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="9" id="7cU-e9-rzL"/>
                         </constraints>
@@ -46,7 +46,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cWD-U5-f2w">
-                        <rect key="frame" x="109" y="73" width="30" height="14"/>
+                        <rect key="frame" x="202" y="133" width="30" height="14"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="30" id="7sr-P1-tci"/>
                             <constraint firstAttribute="height" constant="14" id="fso-mf-Giz"/>
@@ -56,7 +56,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <imageView hidden="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Btn_Move" translatesAutoresizingMaskIntoConstraints="NO" id="sTH-Bv-SEZ">
-                        <rect key="frame" x="115" y="0.0" width="32" height="32"/>
+                        <rect key="frame" x="208" y="0.0" width="32" height="32"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="32" id="BgJ-0E-nN2"/>
                             <constraint firstAttribute="width" constant="32" id="nSq-17-xSZ"/>
@@ -86,7 +86,7 @@
                         </connections>
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gf7-HU-gu5">
-                        <rect key="frame" x="109" y="87" width="30" height="14"/>
+                        <rect key="frame" x="202" y="147" width="30" height="14"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="30" id="IJR-Ll-SlU"/>
                             <constraint firstAttribute="height" constant="14" id="rcY-1n-1LF"/>
@@ -126,7 +126,7 @@
                 <constraint firstItem="cWD-U5-f2w" firstAttribute="top" secondItem="Fgg-20-apY" secondAttribute="top" id="vUn-4t-iQC"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="SEy-5g-ep8"/>
-            <size key="customSize" width="147" height="101"/>
+            <size key="customSize" width="240" height="161"/>
             <connections>
                 <outlet property="bottomView" destination="Fgg-20-apY" id="wmg-el-wWa"/>
                 <outlet property="deleteBtn" destination="KpC-8R-RDV" id="rGC-SB-ji9"/>
@@ -138,7 +138,7 @@
                 <outlet property="nameLabel" destination="Ghm-qb-6Mx" id="Ad3-ZR-Xxc"/>
                 <outlet property="seleteButton" destination="mn2-go-13h" id="ehV-3j-Ne5"/>
             </connections>
-            <point key="canvasLocation" x="33.5" y="61.5"/>
+            <point key="canvasLocation" x="107.2" y="33.733133433283363"/>
         </collectionViewCell>
     </objects>
     <resources>

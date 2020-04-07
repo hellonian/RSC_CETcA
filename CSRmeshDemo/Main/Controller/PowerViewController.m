@@ -28,7 +28,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *monthBtn;
 @property (weak, nonatomic) IBOutlet UIButton *hourBtn;
 @property (nonatomic, assign) NSInteger selectedTag;
-//@property (weak, nonatomic) IBOutlet UICollectionView *powerList;
 @property (nonatomic, strong) UICollectionView *powerList;
 @property (nonatomic, strong)NSMutableArray *dataMutableArray;
 @property (weak, nonatomic) IBOutlet UILabel *middleLabel;
