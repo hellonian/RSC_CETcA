@@ -1138,7 +1138,7 @@
 }
 
 + (BOOL)belongToMainVCDevice: (NSString *)shortName {
-    if ([kDimmers containsObject:shortName] || [kSwitchs containsObject:shortName] || [kCWDevices containsObject:shortName] || [kRGBDevices containsObject:shortName] || [kRGBCWDevices containsObject:shortName] || [kOneChannelCurtainController containsObject:shortName] || [kTwoChannelCurtainController containsObject:shortName] || [kFanController containsObject:shortName] || [kSockets containsObject:shortName] || [kTwoChannelDimmers containsObject:shortName] || [kTwoChannelSwitchs containsObject:shortName] || [kSceneRemotes containsObject:shortName] || [kCWRemotes containsObject:shortName] || [kRGBRemotes containsObject:shortName] || [kRGBCWRemotes containsObject:shortName] || [kLCDRemote containsObject:shortName]) {
+    if ([kDimmers containsObject:shortName] || [kSwitchs containsObject:shortName] || [kCWDevices containsObject:shortName] || [kRGBDevices containsObject:shortName] || [kRGBCWDevices containsObject:shortName] || [kOneChannelCurtainController containsObject:shortName] || [kTwoChannelCurtainController containsObject:shortName] || [kFanController containsObject:shortName] || [kSockets containsObject:shortName] || [kTwoChannelDimmers containsObject:shortName] || [kTwoChannelSwitchs containsObject:shortName] || [kSceneRemotes containsObject:shortName] || [kCWRemotes containsObject:shortName] || [kRGBRemotes containsObject:shortName] || [kRGBCWRemotes containsObject:shortName] || [kLCDRemote containsObject:shortName] || [kThreeChannelSwitchs containsObject:shortName]) {
         return YES;
     }
     return NO;
@@ -1279,6 +1279,13 @@
 
 + (BOOL)belongToLCDRemote:(NSString *)shortName {
     if ([kLCDRemote containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToThreeChannelSwitch:(NSString *)shortName {
+    if ([kThreeChannelSwitchs containsObject:shortName]) {
         return YES;
     }
     return NO;

@@ -33,6 +33,8 @@
 @property (nonatomic, assign) BOOL childrenState2;
 @property (nonatomic, assign) NSInteger channel1Level;
 @property (nonatomic, assign) NSInteger channel2Level;
+@property (nonatomic, assign) BOOL channel3PowerState;
+@property (nonatomic, assign) NSInteger channel3Level;
 
 @end
 

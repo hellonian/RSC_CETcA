@@ -39,8 +39,8 @@
 #define kRGBSceneDefaultHue @[@(0.17),@(0.17),@(0),@(0.17),@(0.9),@(0.6),@(0.3),@(0.67),@(0.04),@[@(0.15),@(0.36),@(0.5),@(0.6),@(0.8),@(0.95)],@[@(0.18),@(0.35),@(0.4),@(0.5),@(0.67),@(1)],@[@(0),@(0.08),@(0.17),@(0.33),@(0.67),@(0.83)]]
 #define kRGBSceneDefaultColorSat @[@(0.27),@(0.4),@(0),@(0.4),@(0.85),@(1),@(0.4),@(0.3),@(1),@(1),@(1),@(1)]
 
-#define kDimmers @[@"D350BT",@"D350B-H",@"D350SB",@"D350B",@"D300IB",@"D300SB-T3",@"D350SB-T1",@"D300IB-H",@"D300IB-T2",@"D350B-B",@"D350B-L",@"D300IB-L",@"D0-10IB",@"D0/1-10IB",@"D350SB-Q2",@"D300SB",@"D350STB-Q",@"D350SB-Q",@"D1-10VIBH",@"D300IB",@"DDSB",@"D300IB-Q",@"D300B",@"D300B-H",@"DDSB",@"DAL-IBH",@"D300BH",@"D0/1-10B",@"PD350B",@"SD350",@"D350GB",@"SSD150",@"GD400B",@"ED350B",@"ED350SB"]
-#define kSwitchs @[@"S350BT",@"S350B",@"S2400IB",@"S350B-H",@"S2400IB-H",@"S2400IB-T4",@"S10IB",@"S10IB-H2",@"S10IBH",@"S2400IB-Q",@"GS10B",@"ES350B",@"S6AB"]
+#define kDimmers @[@"D350BT",@"D350B-H",@"D350SB",@"D350B",@"D300IB",@"D300SB-T3",@"D350SB-T1",@"D300IB-H",@"D300IB-T2",@"D350B-B",@"D350B-L",@"D300IB-L",@"D0-10IB",@"D0/1-10IB",@"D350SB-Q2",@"D300SB",@"D350STB-Q",@"D350SB-Q",@"D1-10VIBH",@"D300IB",@"DDSB",@"D300IB-Q",@"D300B",@"D300B-H",@"DDSB",@"DAL-IBH",@"D300BH",@"D0/1-10B",@"PD350B",@"SD350",@"D350GB",@"SSD150",@"GD400B",@"ED350B",@"ED350SB",@"TD400B"]
+#define kSwitchs @[@"S350BT",@"S350B",@"S2400IB",@"S350B-H",@"S2400IB-H",@"S2400IB-T4",@"S10IB",@"S10IB-H2",@"S10IBH",@"S2400IB-Q",@"GS10B",@"ES350B",@"S6AB",@"TS10B-1G",@"RM300BH"]
 #define kRemotes @[@"RB01",@"RB02",@"S10IB-H2",@"RB04",@"RSIBH",@"R5BSBH",@"R9BSBH",@"RB07",@"RB06",@"RSBH",@"RB05",@"RB09",@"1BMBH",@"5RSIBH",@"5BCBH",@"6RSIBH"]
 
 #define kSceneRemotes @[@"GR10B",@"RB08",@"H1CSB-RD",@"H2CSB-BU",@"H3CSB-BU",@"H4CSB-BK",@"H6CSB-WH",@"6BWS",@"1BWS",@"2BWS",@"3BWS",@"TR10B",@"H1CSWB",@"H2CSWB",@"H3CSWB",@"H4CSWB",@"H6CSWB"]
@@ -56,9 +56,11 @@
 
 #define kTwoChannelSwitchs @[@"GS20B-2G",@"ES500B-2G"]
 
-#define kOneChannelSwitchs @[@"S6AB"]//实体按键控制反馈使用52开头协议，区别于普通单路调光器的87开头协议
-#define kOneChannelDimmers @[@"GD400B"]//实体按键控制反馈使用52开头协议，区别于普通单路调光器的87开头协议
+#define kOneChannelSwitchs @[@"S6AB",@"TS10B-1G"]//实体按键控制反馈使用52开头协议，区别于普通单路调光器的87开头协议
+#define kOneChannelDimmers @[@"GD400B",@"TD400B"]//实体按键控制反馈使用52开头协议，区别于普通单路调光器的87开头协议
 #define kTwoChannelDimmers @[@"D200IB-2G",@"D200GB-2G",@"GD400B-2G",@"ED500B-2G",@"D300IB-2G",@"TD400B-2G"]
+
+#define kThreeChannelSwitchs @[@"TS10B-3G"]
 
 #define kThreeSpeedColorTemperaturesDevices @[@"D350SB",@"D300IB",@"D350B",@"S350B",@"D350B-B",@"D350B-L",@"D300IB-L",@"D300SB"]
 

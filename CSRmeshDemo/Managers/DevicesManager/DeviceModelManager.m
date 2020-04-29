@@ -154,6 +154,14 @@
             }else if ([CSRUtilities belongToSocketOneChannel:model.shortName] || [CSRUtilities belongToOneChannelCurtainController:model.shortName]) {
                 model.channel1PowerState = [powerState boolValue];
                 model.channel1Level = [level integerValue];
+            }else if ([CSRUtilities belongToThreeChannelSwitch:model.shortName]) {
+                model.channel1PowerState = [powerState boolValue];
+                model.channel1Level = [level integerValue];
+                model.channel2PowerState = [red boolValue];
+                model.channel2Level = [green integerValue];
+                model.channel3PowerState = [blue boolValue];
+                model.channel3Level = [colorTemperature integerValue];
+                model.powerState = @([powerState boolValue] || [red boolValue] || [blue boolValue]);
             }
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(3)}];
@@ -221,6 +229,10 @@
                 model.channel2PowerState = [state boolValue];
             }else if ([CSRUtilities belongToSocketOneChannel:model.shortName]) {
                 model.channel1PowerState = [state boolValue];
+            }else if ([CSRUtilities belongToThreeChannelSwitch:model.shortName]) {
+                model.channel1PowerState = [state boolValue];
+                model.channel2PowerState = [state boolValue];
+                model.channel3PowerState = [state boolValue];
             }
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId,@"channel":@(3)}];
             
@@ -244,6 +256,10 @@
             model.channel2PowerState = [state boolValue];
         }else if ([CSRUtilities belongToSocketOneChannel:model.shortName]) {
             model.channel1PowerState = [state boolValue];
+        }else if ([CSRUtilities belongToThreeChannelSwitch:model.shortName]) {
+            model.channel1PowerState = [state boolValue];
+            model.channel2PowerState = [state boolValue];
+            model.channel3PowerState = [state boolValue];
         }
         [_allDevices addObject:model];
     }
@@ -538,6 +554,25 @@
                 }
                 model.powerState = (model.channel1PowerState || model.channel2PowerState)? @1:@0;
                 model.level = model.channel1Level>model.channel2Level? @(model.channel1Level):@(model.channel2Level);
+            }else if ([CSRUtilities belongToThreeChannelSwitch:model.shortName]) {
+                if (channel == 1) {
+                    model.channel1PowerState = state;
+                    if (state) {
+                        model.channel1Level = position;
+                    }
+                }else if (channel == 2) {
+                    model.channel2PowerState = state;
+                    if (state) {
+                        model.channel2Level = position;
+                    }
+                }else if (channel == 4) {
+                    model.channel3PowerState = state;
+                    if (state) {
+                        model.channel3Level = position;
+                    }
+                }
+                model.powerState = @(model.channel1PowerState || model.channel2PowerState || model.channel3PowerState);
+                model.level = @((model.channel1Level > model.channel2Level? model.channel1Level : model.channel2Level) > model.channel3Level ? (model.channel1Level > model.channel2Level? model.channel1Level : model.channel2Level) : model.channel3Level);
             }else {
                 if (channel == 1) {
                     model.powerState = @(state);
@@ -564,7 +599,7 @@
         if ([model.deviceId isEqualToNumber:deviceId]) {
             model.childrenState1 = [state1 boolValue];
             model.childrenState2 = [state2 boolValue];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId}];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@3}];
             *stop = YES;
         }
     }];

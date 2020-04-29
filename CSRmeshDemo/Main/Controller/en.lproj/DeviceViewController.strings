@@ -24,7 +24,7 @@
 "LaI-r3-tNR.normalTitle" = "Clear Data";
 
 /* Class = "UILabel"; text = "group  (0~15)"; ObjectID = "LpE-ya-LiW"; */
-"LpE-ya-LiW.text" = "group  (0~15)";
+"LpE-ya-LiW.text" = "group  (0~15) :";
 
 /* Class = "UILabel"; text = "pulse width"; ObjectID = "NqI-o9-19F"; */
 "NqI-o9-19F.text" = "pulse width";
@@ -78,7 +78,7 @@
 "lRs-Jl-CfF.text" = "pulse width 9s";
 
 /* Class = "UILabel"; text = "address (0~63)"; ObjectID = "oe0-qN-HUY"; */
-"oe0-qN-HUY.text" = "address (0~63)";
+"oe0-qN-HUY.text" = "device (0~63) :";
 
 /* Class = "UIButton"; normalTitle = "pulse width 1s"; ObjectID = "pLf-su-PzH"; */
 "pLf-su-PzH.normalTitle" = "pulse width 1s";

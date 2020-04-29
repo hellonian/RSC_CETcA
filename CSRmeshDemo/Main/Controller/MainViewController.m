@@ -817,8 +817,15 @@
                 //colorTemperature--两路设备中的第二路事件类型；colorRed--两路设备中的第二路power状态；colorGreen--两路设备中的第二路亮度值
                     sceneMember.powerState = [NSNumber numberWithBool:deviceModel.channel1PowerState];
                     sceneMember.level = [NSNumber numberWithInteger:deviceModel.channel1Level];
-                    sceneMember.colorRed = [NSNumber numberWithBool:deviceModel.channel2PowerState];
-                    sceneMember.colorGreen = [NSNumber numberWithInteger:deviceModel.channel2Level];
+                    sceneMember.powerState2 = [NSNumber numberWithBool:deviceModel.channel2PowerState];
+                    sceneMember.level2 = [NSNumber numberWithInteger:deviceModel.channel2Level];
+                }else if ([CSRUtilities belongToThreeChannelSwitch:deviceModel.shortName]) {
+                    sceneMember.powerState = [NSNumber numberWithBool:deviceModel.channel1PowerState];
+                    sceneMember.level = [NSNumber numberWithInteger:deviceModel.channel1Level];
+                    sceneMember.powerState2 = [NSNumber numberWithBool:deviceModel.channel2PowerState];
+                    sceneMember.level2 = [NSNumber numberWithInteger:deviceModel.channel2Level];
+                    sceneMember.powerState3 = [NSNumber numberWithBool:deviceModel.channel3PowerState];
+                    sceneMember.level3 = [NSNumber numberWithInteger:deviceModel.channel3Level];
                 }else {
                     sceneMember.level = [deviceModel.powerState boolValue]? deviceModel.level:@0;
                     sceneMember.colorRed = deviceModel.red;
@@ -829,7 +836,8 @@
                     && ![CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]
                     && ![CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]
                     && ![CSRUtilities belongToTwoChannelCurtainController:deviceModel.shortName]
-                    && ![CSRUtilities belongToSocketTwoChannel:deviceModel.shortName]) {
+                    && ![CSRUtilities belongToSocketTwoChannel:deviceModel.shortName]
+                    && ![CSRUtilities belongToThreeChannelSwitch:deviceModel.shortName]) {
                     sceneMember.eveType = @(11);
                 }else if ([CSRUtilities belongToSwitch:deviceModel.shortName]
                           || [CSRUtilities belongToSocketOneChannel:deviceModel.shortName]) {
@@ -860,9 +868,9 @@
                             sceneMember.eveType = @(11);
                         }
                         if (deviceModel.channel2PowerState) {
-                            sceneMember.colorTemperature = @(10);
+                            sceneMember.eveType2 = @(10);
                         }else {
-                            sceneMember.colorTemperature = @(11);
+                            sceneMember.eveType2 = @(11);
                         }
                     }else if ([sMod.channel integerValue] == 2) {
                         if (deviceModel.channel1PowerState) {
@@ -872,9 +880,9 @@
                         }
                     }else if ([sMod.channel integerValue] == 3) {
                         if (deviceModel.channel2PowerState) {
-                            sceneMember.colorTemperature = @(10);
+                            sceneMember.eveType2 = @(10);
                         }else {
-                            sceneMember.colorTemperature = @(11);
+                            sceneMember.eveType2 = @(11);
                         }
                     }
                 }else if ([CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
@@ -885,9 +893,9 @@
                             sceneMember.eveType = @(11);
                         }
                         if (deviceModel.channel2PowerState) {
-                            sceneMember.colorTemperature = @(12);
+                            sceneMember.eveType2 = @(12);
                         }else {
-                            sceneMember.colorTemperature = @(11);
+                            sceneMember.eveType2 = @(11);
                         }
                     }else if ([sMod.channel integerValue] == 2) {
                         if (deviceModel.channel1PowerState) {
@@ -897,9 +905,9 @@
                         }
                     }else if ([sMod.channel integerValue] == 3) {
                         if (deviceModel.channel2PowerState) {
-                            sceneMember.colorTemperature = @(12);
+                            sceneMember.eveType2 = @(12);
                         }else {
-                            sceneMember.colorTemperature = @(11);
+                            sceneMember.eveType2 = @(11);
                         }
                     }
                 }else if ([CSRUtilities belongToTwoChannelCurtainController:deviceModel.shortName]) {
@@ -910,9 +918,9 @@
                             sceneMember.eveType = @(12);
                         }
                         if (!deviceModel.channel2PowerState) {
-                            sceneMember.colorTemperature = @(11);
+                            sceneMember.eveType2 = @(11);
                         }else {
-                            sceneMember.colorTemperature = @(12);
+                            sceneMember.eveType2 = @(12);
                         }
                     }else if ([sMod.channel integerValue] == 2) {
                         if (!deviceModel.channel1PowerState) {
@@ -922,9 +930,9 @@
                         }
                     }else if ([sMod.channel integerValue] == 3) {
                         if (!deviceModel.channel2PowerState) {
-                            sceneMember.colorTemperature = @(11);
+                            sceneMember.eveType2 = @(11);
                         }else {
-                            sceneMember.colorTemperature = @(12);
+                            sceneMember.eveType2 = @(12);
                         }
                     }
                 }else if ([CSRUtilities belongToOneChannelCurtainController:deviceModel.shortName]) {
@@ -932,6 +940,75 @@
                         sceneMember.eveType = @(11);
                     }else {
                         sceneMember.eveType = @(12);
+                    }
+                }else if ([CSRUtilities belongToThreeChannelSwitch:deviceModel.shortName]) {
+                    if ([sMod.channel integerValue] == 8) {
+                        if (deviceModel.channel1PowerState) {
+                            sceneMember.eveType = @(10);
+                        }else {
+                            sceneMember.eveType = @(11);
+                        }
+                        if (deviceModel.channel2PowerState) {
+                            sceneMember.eveType2 = @(10);
+                        }else {
+                            sceneMember.eveType2 = @(11);
+                        }
+                        if (deviceModel.channel3PowerState) {
+                            sceneMember.eveType3 = @(10);
+                        }else {
+                            sceneMember.eveType3 = @(11);
+                        }
+                    }if ([sMod.channel integerValue] == 4) {
+                        if (deviceModel.channel1PowerState) {
+                            sceneMember.eveType = @(10);
+                        }else {
+                            sceneMember.eveType = @(11);
+                        }
+                        if (deviceModel.channel2PowerState) {
+                            sceneMember.eveType2 = @(10);
+                        }else {
+                            sceneMember.eveType2 = @(11);
+                        }
+                    }if ([sMod.channel integerValue] == 6) {
+                        if (deviceModel.channel1PowerState) {
+                            sceneMember.eveType = @(10);
+                        }else {
+                            sceneMember.eveType = @(11);
+                        }
+                        if (deviceModel.channel3PowerState) {
+                            sceneMember.eveType3 = @(10);
+                        }else {
+                            sceneMember.eveType3 = @(11);
+                        }
+                    }if ([sMod.channel integerValue] == 7) {
+                        if (deviceModel.channel2PowerState) {
+                            sceneMember.eveType2 = @(10);
+                        }else {
+                            sceneMember.eveType2 = @(11);
+                        }
+                        if (deviceModel.channel3PowerState) {
+                            sceneMember.eveType3 = @(10);
+                        }else {
+                            sceneMember.eveType3 = @(11);
+                        }
+                    }if ([sMod.channel integerValue] == 2) {
+                        if (deviceModel.channel1PowerState) {
+                            sceneMember.eveType = @(10);
+                        }else {
+                            sceneMember.eveType = @(11);
+                        }
+                    }if ([sMod.channel integerValue] == 3) {
+                        if (deviceModel.channel2PowerState) {
+                            sceneMember.eveType2 = @(10);
+                        }else {
+                            sceneMember.eveType2 = @(11);
+                        }
+                    }if ([sMod.channel integerValue] == 5) {
+                        if (deviceModel.channel3PowerState) {
+                            sceneMember.eveType3 = @(10);
+                        }else {
+                            sceneMember.eveType3 = @(11);
+                        }
                     }
                 }
                 [sceneEntity addMembersObject:sceneMember];
@@ -977,27 +1054,36 @@
             if ([sceneEntity.members count]>0) {
                 for (SceneMemberEntity *sceneMember in members) {
                     
-                    __block BOOL exist = NO;
-                    [devices enumerateObjectsUsingBlock:^(SelectModel *sMod, NSUInteger idx, BOOL * _Nonnull stop) {
-                        if ([sMod.deviceID isEqualToNumber:sceneMember.deviceID]) {
-                            exist = YES;
-                            *stop = YES;
-                        }
-                    }];
-                    if (!exist) {
-                        if ([CSRUtilities belongToTwoChannelSwitch:sceneMember.kindString]
-                            || [CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString]
-                            || [CSRUtilities belongToTwoChannelCurtainController:sceneMember.kindString]
-                            || [CSRUtilities belongToSocketTwoChannel:sceneMember.kindString]) {
-                            NSString *cmdString = [NSString stringWithFormat:@"5d0303%@",[CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]]];
-                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
-                        }else {
-                            NSString *cmdString = [NSString stringWithFormat:@"9802%@",[CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]]];
-                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
-                        }
+                    if ([CSRUtilities belongToThreeChannelSwitch:sceneMember.kindString]) {
+                        NSString *cmdString = [NSString stringWithFormat:@"5d0307%@",[CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]]];
+                        [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
                         [sceneEntity removeMembersObject:sceneMember];
                         [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:sceneMember];
+                        [NSThread sleepForTimeInterval:0.1f];
+                    }else {
+                        __block BOOL exist = NO;
+                        [devices enumerateObjectsUsingBlock:^(SelectModel *sMod, NSUInteger idx, BOOL * _Nonnull stop) {
+                            if ([sMod.deviceID isEqualToNumber:sceneMember.deviceID]) {
+                                exist = YES;
+                                *stop = YES;
+                            }
+                        }];
+                        if (!exist) {
+                            if ([CSRUtilities belongToTwoChannelSwitch:sceneMember.kindString]
+                                || [CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString]
+                                || [CSRUtilities belongToTwoChannelCurtainController:sceneMember.kindString]
+                                || [CSRUtilities belongToSocketTwoChannel:sceneMember.kindString]) {
+                                NSString *cmdString = [NSString stringWithFormat:@"5d0303%@",[CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]]];
+                                [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+                            }else {
+                                NSString *cmdString = [NSString stringWithFormat:@"9802%@",[CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]]];
+                                [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+                            }
+                            [sceneEntity removeMembersObject:sceneMember];
+                            [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:sceneMember];
+                        }
                     }
+                    
                 }
                 [[CSRDatabaseManager sharedInstance] saveContext];
             }
@@ -1025,8 +1111,8 @@
                 //colorTemperature--两路设备中的第二路事件类型；colorRed--两路设备中的第二路power状态；colorGreen--两路设备中的第二路亮度值
                     sceneMember.powerState = [NSNumber numberWithBool:deviceModel.channel1PowerState];
                     sceneMember.level = [NSNumber numberWithInteger:deviceModel.channel1Level];
-                    sceneMember.colorRed = [NSNumber numberWithBool:deviceModel.channel2PowerState];
-                    sceneMember.colorGreen = [NSNumber numberWithInteger:deviceModel.channel2Level];
+                    sceneMember.powerState2 = [NSNumber numberWithBool:deviceModel.channel2PowerState];
+                    sceneMember.level2 = [NSNumber numberWithInteger:deviceModel.channel2Level];
                 }else {
                     sceneMember.level = [deviceModel.powerState boolValue]? deviceModel.level:@0;
                     sceneMember.colorRed = deviceModel.red;
@@ -1037,7 +1123,8 @@
                     && ![CSRUtilities belongToTwoChannelSwitch:deviceModel.shortName]
                     && ![CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]
                     && ![CSRUtilities belongToTwoChannelCurtainController:deviceModel.shortName]
-                    && ![CSRUtilities belongToSocketTwoChannel:deviceModel.shortName]) {
+                    && ![CSRUtilities belongToSocketTwoChannel:deviceModel.shortName]
+                    && ![CSRUtilities belongToThreeChannelSwitch:deviceModel.shortName]) {
                     sceneMember.eveType = @(11);
                 }else if ([CSRUtilities belongToSwitch:deviceModel.shortName]
                           || [CSRUtilities belongToSocketOneChannel:deviceModel.shortName]) {
@@ -1068,9 +1155,9 @@
                             sceneMember.eveType = @(11);
                         }
                         if (deviceModel.channel2PowerState) {
-                            sceneMember.colorTemperature = @(10);
+                            sceneMember.eveType2 = @(10);
                         }else {
-                            sceneMember.colorTemperature = @(11);
+                            sceneMember.eveType2 = @(11);
                         }
                     }else if ([sMod.channel integerValue] == 2) {
                         if (deviceModel.channel1PowerState) {
@@ -1080,9 +1167,9 @@
                         }
                     }else if ([sMod.channel integerValue] == 3) {
                         if (deviceModel.channel2PowerState) {
-                            sceneMember.colorTemperature = @(10);
+                            sceneMember.eveType2 = @(10);
                         }else {
-                            sceneMember.colorTemperature = @(11);
+                            sceneMember.eveType2 = @(11);
                         }
                     }
                 }else if ([CSRUtilities belongToTwoChannelDimmer:deviceModel.shortName]) {
@@ -1093,9 +1180,9 @@
                             sceneMember.eveType = @(11);
                         }
                         if (deviceModel.channel2PowerState) {
-                            sceneMember.colorTemperature = @(12);
+                            sceneMember.eveType2 = @(12);
                         }else {
-                            sceneMember.colorTemperature = @(11);
+                            sceneMember.eveType2 = @(11);
                         }
                     }else if ([sMod.channel integerValue] == 2) {
                         if (deviceModel.channel1PowerState) {
@@ -1105,9 +1192,9 @@
                         }
                     }else if ([sMod.channel integerValue] == 3) {
                         if (deviceModel.channel2PowerState) {
-                            sceneMember.colorTemperature = @(12);
+                            sceneMember.eveType2 = @(12);
                         }else {
-                            sceneMember.colorTemperature = @(11);
+                            sceneMember.eveType2 = @(11);
                         }
                     }
                 }else if ([CSRUtilities belongToTwoChannelCurtainController:deviceModel.shortName]) {
@@ -1118,9 +1205,9 @@
                             sceneMember.eveType = @(12);
                         }
                         if (!deviceModel.channel2PowerState) {
-                            sceneMember.colorTemperature = @(11);
+                            sceneMember.eveType2 = @(11);
                         }else {
-                            sceneMember.colorTemperature = @(12);
+                            sceneMember.eveType2 = @(12);
                         }
                     }else if ([sMod.channel integerValue] == 2) {
                         if (!deviceModel.channel1PowerState) {
@@ -1130,9 +1217,9 @@
                         }
                     }else if ([sMod.channel integerValue] == 3) {
                         if (!deviceModel.channel2PowerState) {
-                            sceneMember.colorTemperature = @(11);
+                            sceneMember.eveType2 = @(11);
                         }else {
-                            sceneMember.colorTemperature = @(12);
+                            sceneMember.eveType2 = @(12);
                         }
                     }
                 }else if ([CSRUtilities belongToOneChannelCurtainController:deviceModel.shortName]) {
@@ -1140,6 +1227,75 @@
                         sceneMember.eveType = @(11);
                     }else {
                         sceneMember.eveType = @(12);
+                    }
+                }else if ([CSRUtilities belongToThreeChannelSwitch:deviceModel.shortName]) {
+                    if ([sMod.channel integerValue] == 8) {
+                        if (deviceModel.channel1PowerState) {
+                            sceneMember.eveType = @(10);
+                        }else {
+                            sceneMember.eveType = @(11);
+                        }
+                        if (deviceModel.channel2PowerState) {
+                            sceneMember.eveType2 = @(10);
+                        }else {
+                            sceneMember.eveType2 = @(11);
+                        }
+                        if (deviceModel.channel3PowerState) {
+                            sceneMember.eveType3 = @(10);
+                        }else {
+                            sceneMember.eveType3 = @(11);
+                        }
+                    }if ([sMod.channel integerValue] == 4) {
+                        if (deviceModel.channel1PowerState) {
+                            sceneMember.eveType = @(10);
+                        }else {
+                            sceneMember.eveType = @(11);
+                        }
+                        if (deviceModel.channel2PowerState) {
+                            sceneMember.eveType2 = @(10);
+                        }else {
+                            sceneMember.eveType2 = @(11);
+                        }
+                    }if ([sMod.channel integerValue] == 6) {
+                        if (deviceModel.channel1PowerState) {
+                            sceneMember.eveType = @(10);
+                        }else {
+                            sceneMember.eveType = @(11);
+                        }
+                        if (deviceModel.channel3PowerState) {
+                            sceneMember.eveType3 = @(10);
+                        }else {
+                            sceneMember.eveType3 = @(11);
+                        }
+                    }if ([sMod.channel integerValue] == 7) {
+                        if (deviceModel.channel2PowerState) {
+                            sceneMember.eveType2 = @(10);
+                        }else {
+                            sceneMember.eveType2 = @(11);
+                        }
+                        if (deviceModel.channel3PowerState) {
+                            sceneMember.eveType3 = @(10);
+                        }else {
+                            sceneMember.eveType3 = @(11);
+                        }
+                    }if ([sMod.channel integerValue] == 2) {
+                        if (deviceModel.channel1PowerState) {
+                            sceneMember.eveType = @(10);
+                        }else {
+                            sceneMember.eveType = @(11);
+                        }
+                    }if ([sMod.channel integerValue] == 3) {
+                        if (deviceModel.channel2PowerState) {
+                            sceneMember.eveType2 = @(10);
+                        }else {
+                            sceneMember.eveType2 = @(11);
+                        }
+                    }if ([sMod.channel integerValue] == 5) {
+                        if (deviceModel.channel3PowerState) {
+                            sceneMember.eveType3 = @(10);
+                        }else {
+                            sceneMember.eveType3 = @(11);
+                        }
                     }
                 }
                 [sceneEntity addMembersObject:sceneMember];
@@ -1175,7 +1331,7 @@
                         dispatch_async(queue, ^{
                             dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
                             dispatch_async(dispatch_get_main_queue(), ^{
-                                NSString *cmdString = [NSString stringWithFormat:@"590802%@%@%@000000",rcIndexString,sceneMember.colorTemperature,[CSRUtilities stringWithHexNumber:[sceneMember.colorGreen integerValue]]];
+                                NSString *cmdString = [NSString stringWithFormat:@"590802%@%@%@000000",rcIndexString,sceneMember.eveType2,[CSRUtilities stringWithHexNumber:[sceneMember.level2 integerValue]]];
                                 [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
                             });
                         });
@@ -1189,13 +1345,13 @@
                                     if ([sMod.channel intValue] == 1) {
                                         NSString *cmdString = [NSString stringWithFormat:@"590801%@%@%@000000",rcIndexString,sceneMember.eveType,[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]]];
                                         [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
-                                        NSString *cmdString2 = [NSString stringWithFormat:@"590802%@%@%@000000",rcIndexString,sceneMember.colorTemperature,[CSRUtilities stringWithHexNumber:[sceneMember.colorGreen integerValue]]];
+                                        NSString *cmdString2 = [NSString stringWithFormat:@"590802%@%@%@000000",rcIndexString,sceneMember.eveType2,[CSRUtilities stringWithHexNumber:[sceneMember.level2 integerValue]]];
                                         [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString2] success:nil failure:nil];
                                     }else if ([sMod.channel intValue] == 2) {
                                         NSString *cmdString = [NSString stringWithFormat:@"590801%@%@%@000000",rcIndexString,sceneMember.eveType,[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]]];
                                         [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
                                     }else if ([sMod.channel intValue] == 3) {
-                                        NSString *cmdString = [NSString stringWithFormat:@"590802%@%@%@000000",rcIndexString,sceneMember.colorTemperature,[CSRUtilities stringWithHexNumber:[sceneMember.colorGreen integerValue]]];
+                                        NSString *cmdString = [NSString stringWithFormat:@"590802%@%@%@000000",rcIndexString,sceneMember.eveType2,[CSRUtilities stringWithHexNumber:[sceneMember.level2 integerValue]]];
                                         [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
                                     }
                                 });
@@ -1204,16 +1360,159 @@
                             if ([sMod.channel intValue] == 1) {
                                 NSString *cmdString = [NSString stringWithFormat:@"590801%@%@%@000000",rcIndexString,sceneMember.eveType,[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]]];
                                 [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
-                                NSString *cmdString2 = [NSString stringWithFormat:@"590802%@%@%@000000",rcIndexString,sceneMember.colorTemperature,[CSRUtilities stringWithHexNumber:[sceneMember.colorGreen integerValue]]];
+                                NSString *cmdString2 = [NSString stringWithFormat:@"590802%@%@%@000000",rcIndexString,sceneMember.eveType2,[CSRUtilities stringWithHexNumber:[sceneMember.level2 integerValue]]];
                                     [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString2] success:nil failure:nil];
                             }else if ([sMod.channel intValue] == 2) {
                                 NSString *cmdString = [NSString stringWithFormat:@"590801%@%@%@000000",rcIndexString,sceneMember.eveType,[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]]];
                                 [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
                             }else if ([sMod.channel intValue] == 3) {
-                                NSString *cmdString = [NSString stringWithFormat:@"590802%@%@%@000000",rcIndexString,sceneMember.colorTemperature,[CSRUtilities stringWithHexNumber:[sceneMember.colorGreen integerValue]]];
+                                NSString *cmdString = [NSString stringWithFormat:@"590802%@%@%@000000",rcIndexString,sceneMember.eveType2,[CSRUtilities stringWithHexNumber:[sceneMember.level2 integerValue]]];
                                 [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
                             }
                         }
+                    }
+                }else if ([CSRUtilities belongToThreeChannelSwitch:deviceModel.shortName]) {
+                    
+                    dispatch_queue_t queue = dispatch_queue_create("串行", NULL);
+                    
+                    if ([sMod.channel integerValue] == 8) {
+                        
+                        NSMutableDictionary *semaphoresdic = [self.semaphores objectForKey:deviceModel.deviceId];
+                        __block dispatch_semaphore_t semaphore;
+                        if (semaphoresdic) {
+                            dispatch_async(queue, ^{
+                                semaphore = semaphoresdic[@"semaphore"];
+                                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    NSString *cmdString = [NSString stringWithFormat:@"590801%@%@%@000000",rcIndexString,sceneMember.eveType,[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]]];
+                                    [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+                                });
+                            });
+                        }else {
+                            NSString *cmdString = [NSString stringWithFormat:@"590801%@%@%@000000",rcIndexString,sceneMember.eveType,[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]]];
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+                            semaphore = dispatch_semaphore_create(0);
+                            NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithObjectsAndKeys:semaphore, @"semaphore", @(1), @"channel", sceneEntity.rcIndex, @"index", @(0), @"deleteNum", nil];
+                            [self.semaphores setObject:dic forKey:sceneMember.deviceID];
+                        }
+                        
+                        dispatch_async(queue, ^{
+                            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                NSString *cmdString2 = [NSString stringWithFormat:@"590802%@%@%@000000",rcIndexString,sceneMember.eveType2,[CSRUtilities stringWithHexNumber:[sceneMember.level2 integerValue]]];
+                                [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString2] success:nil failure:nil];
+                                NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithObjectsAndKeys:semaphore, @"semaphore", @(2), @"channel", sceneEntity.rcIndex, @"index", @(0), @"deleteNum", nil];
+                                [self.semaphores setObject:dic forKey:sceneMember.deviceID];
+                            });
+                        });
+                        
+                        dispatch_async(queue, ^{
+                            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                NSString *cmdString3 = [NSString stringWithFormat:@"590804%@%@%@000000",rcIndexString,sceneMember.eveType3,[CSRUtilities stringWithHexNumber:[sceneMember.level3 integerValue]]];
+                                [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString3] success:nil failure:nil];
+                            });
+                        });
+                        
+                    }else if ([sMod.channel integerValue] == 4) {
+                        
+                        NSMutableDictionary *semaphoresdic = [self.semaphores objectForKey:deviceModel.deviceId];
+                        __block dispatch_semaphore_t semaphore;
+                        if (semaphoresdic) {
+                            dispatch_async(queue, ^{
+                                semaphore = semaphoresdic[@"semaphore"];
+                                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    NSString *cmdString = [NSString stringWithFormat:@"590801%@%@%@000000",rcIndexString,sceneMember.eveType,[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]]];
+                                    [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+                                });
+                            });
+                        }else {
+                            NSString *cmdString = [NSString stringWithFormat:@"590801%@%@%@000000",rcIndexString,sceneMember.eveType,[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]]];
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+                            semaphore = dispatch_semaphore_create(0);
+                            NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithObjectsAndKeys:semaphore, @"semaphore", @(1), @"channel", sceneEntity.rcIndex, @"index", @(0), @"deleteNum", nil];
+                            [self.semaphores setObject:dic forKey:sceneMember.deviceID];
+                        }
+                        
+                        dispatch_async(queue, ^{
+                            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                NSString *cmdString2 = [NSString stringWithFormat:@"590802%@%@%@000000",rcIndexString,sceneMember.eveType2,[CSRUtilities stringWithHexNumber:[sceneMember.level2 integerValue]]];
+                                [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString2] success:nil failure:nil];
+                            });
+                        });
+                        
+                    }else if ([sMod.channel integerValue] == 6) {
+                        
+                        NSMutableDictionary *semaphoresdic = [self.semaphores objectForKey:deviceModel.deviceId];
+                        __block dispatch_semaphore_t semaphore;
+                        if (semaphoresdic) {
+                            dispatch_async(queue, ^{
+                                semaphore = semaphoresdic[@"semaphore"];
+                                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    NSString *cmdString = [NSString stringWithFormat:@"590801%@%@%@000000",rcIndexString,sceneMember.eveType,[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]]];
+                                    [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+                                });
+                            });
+                        }else {
+                            NSString *cmdString = [NSString stringWithFormat:@"590801%@%@%@000000",rcIndexString,sceneMember.eveType,[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]]];
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+                            semaphore = dispatch_semaphore_create(0);
+                            NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithObjectsAndKeys:semaphore, @"semaphore", @(1), @"channel", sceneEntity.rcIndex, @"index", @(0), @"deleteNum", nil];
+                            [self.semaphores setObject:dic forKey:sceneMember.deviceID];
+                        }
+                        
+                        dispatch_async(queue, ^{
+                            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                NSString *cmdString3 = [NSString stringWithFormat:@"590804%@%@%@000000",rcIndexString,sceneMember.eveType3,[CSRUtilities stringWithHexNumber:[sceneMember.level3 integerValue]]];
+                                [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString3] success:nil failure:nil];
+                            });
+                        });
+                        
+                    }else if ([sMod.channel integerValue] == 7) {
+                        
+                        NSMutableDictionary *semaphoresdic = [self.semaphores objectForKey:deviceModel.deviceId];
+                        __block dispatch_semaphore_t semaphore;
+                        if (semaphoresdic) {
+                            dispatch_async(queue, ^{
+                                semaphore = semaphoresdic[@"semaphore"];
+                                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    NSString *cmdString2 = [NSString stringWithFormat:@"590802%@%@%@000000",rcIndexString,sceneMember.eveType2,[CSRUtilities stringWithHexNumber:[sceneMember.level2 integerValue]]];
+                                    [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString2] success:nil failure:nil];
+                                });
+                            });
+                        }else {
+                            NSString *cmdString2 = [NSString stringWithFormat:@"590802%@%@%@000000",rcIndexString,sceneMember.eveType2,[CSRUtilities stringWithHexNumber:[sceneMember.level2 integerValue]]];
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString2] success:nil failure:nil];
+                            semaphore = dispatch_semaphore_create(0);
+                            NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithObjectsAndKeys:semaphore, @"semaphore", @(2), @"channel", sceneEntity.rcIndex, @"index", @(0), @"deleteNum", nil];
+                            [self.semaphores setObject:dic forKey:sceneMember.deviceID];
+                        }
+                        
+                        dispatch_async(queue, ^{
+                            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                NSString *cmdString3 = [NSString stringWithFormat:@"590804%@%@%@000000",rcIndexString,sceneMember.eveType3,[CSRUtilities stringWithHexNumber:[sceneMember.level3 integerValue]]];
+                                [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString3] success:nil failure:nil];
+                            });
+                        });
+                        
+                    }else if ([sMod.channel integerValue] == 2) {
+                        NSString *cmdString = [NSString stringWithFormat:@"590801%@%@%@000000",rcIndexString,sceneMember.eveType,[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]]];
+                        [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+                        [NSThread sleepForTimeInterval:0.1f];
+                    }else if ([sMod.channel integerValue] == 3) {
+                        NSString *cmdString = [NSString stringWithFormat:@"590802%@%@%@000000",rcIndexString,sceneMember.eveType2,[CSRUtilities stringWithHexNumber:[sceneMember.level2 integerValue]]];
+                        [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+                        [NSThread sleepForTimeInterval:0.1f];
+                    }else if ([sMod.channel integerValue] == 5) {
+                        NSString *cmdString = [NSString stringWithFormat:@"590804%@%@%@000000",rcIndexString,sceneMember.eveType3,[CSRUtilities stringWithHexNumber:[sceneMember.level3 integerValue]]];
+                        [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+                        [NSThread sleepForTimeInterval:0.1f];
                     }
                 }else {
                     NSString *ddd = [NSString stringWithFormat:@"%@%@%@",[CSRUtilities stringWithHexNumber:[sceneMember.colorRed integerValue]],[CSRUtilities stringWithHexNumber:[sceneMember.colorGreen integerValue]],[CSRUtilities stringWithHexNumber:[sceneMember.colorBlue integerValue]]];
@@ -1246,7 +1545,7 @@
                 if ([CSRUtilities belongToSocket:sceneMember.kindString] || [CSRUtilities belongToTwoChannelSwitch:sceneMember.kindString]) {
                     if (sceneMember.eveType && sceneMember.colorTemperature && [sceneMember.eveType isEqualToNumber:@(11)] && [sceneMember.colorTemperature isEqualToNumber:@(11)]) {
                         [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:@(0)];
-                    }else if (sceneMember.eveType && sceneMember.colorTemperature && [sceneMember.eveType isEqualToNumber:@(10)] && [sceneMember.colorTemperature isEqualToNumber:@(10)]) {
+                    }else if (sceneMember.eveType && sceneMember.eveType2 && [sceneMember.eveType isEqualToNumber:@(10)] && [sceneMember.eveType2 isEqualToNumber:@(10)]) {
                         [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:@(1)];
                     }else {
                         if ([sceneMember.eveType isEqualToNumber:@(11)]) {
@@ -1256,16 +1555,16 @@
                             [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"510501000101ff"] success:nil failure:nil];
                             [NSThread sleepForTimeInterval:0.05];
                         }
-                        if ([sceneMember.colorTemperature isEqualToNumber:@(11)]) {
+                        if ([sceneMember.eveType2 isEqualToNumber:@(11)]) {
                             [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"51050200010000"] success:nil failure:nil];
-                        }else if ([sceneMember.colorTemperature isEqualToNumber:@(10)]) {
+                        }else if ([sceneMember.eveType2 isEqualToNumber:@(10)]) {
                             [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"510502000101ff"] success:nil failure:nil];
                         }
                     }
                 }else if ([CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString]) {
-                    if (sceneMember.eveType && sceneMember.colorTemperature && [sceneMember.eveType isEqualToNumber:@(11)] && [sceneMember.colorTemperature isEqualToNumber:@(11)]) {
+                    if (sceneMember.eveType && sceneMember.eveType2 && [sceneMember.eveType isEqualToNumber:@(11)] && [sceneMember.eveType2 isEqualToNumber:@(11)]) {
                         [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:@(0)];
-                    }else if (sceneMember.eveType && sceneMember.colorTemperature && [sceneMember.eveType isEqualToNumber:@(12)] && [sceneMember.colorTemperature isEqualToNumber:@(12)] && sceneMember.level && sceneMember.colorGreen && [sceneMember.level isEqualToNumber:sceneMember.colorGreen]) {
+                    }else if (sceneMember.eveType && sceneMember.eveType2 && [sceneMember.eveType isEqualToNumber:@(12)] && [sceneMember.eveType2 isEqualToNumber:@(12)] && sceneMember.level && sceneMember.level2 && [sceneMember.level isEqualToNumber:sceneMember.level2]) {
                         [[LightModelApi sharedInstance] setLevel:sceneMember.deviceID level:sceneMember.level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
                             
                         } failure:^(NSError * _Nullable error) {
@@ -1285,13 +1584,13 @@
                         if ([sceneMember.colorTemperature isEqualToNumber:@(11)]) {
                             [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"51050200010000"] success:nil failure:nil];
                         }else if ([sceneMember.colorTemperature isEqualToNumber:@(12)]) {
-                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"510502000301%@",[CSRUtilities stringWithHexNumber:[sceneMember.colorGreen integerValue]]]] success:nil failure:nil];
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"510502000301%@",[CSRUtilities stringWithHexNumber:[sceneMember.level2 integerValue]]]] success:nil failure:nil];
                         }
                     }
                 }else if ([CSRUtilities belongToCurtainController:sceneMember.kindString]) {
-                    if (sceneMember.eveType && sceneMember.colorTemperature && [sceneMember.eveType isEqualToNumber:@(11)] && [sceneMember.colorTemperature isEqualToNumber:@(11)]) {
+                    if (sceneMember.eveType && sceneMember.eveType2 && [sceneMember.eveType isEqualToNumber:@(11)] && [sceneMember.eveType2 isEqualToNumber:@(11)]) {
                         [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:@(0)];
-                    }else if (sceneMember.eveType && sceneMember.colorTemperature && [sceneMember.eveType isEqualToNumber:@(12)] && [sceneMember.colorTemperature isEqualToNumber:@(12)] && sceneMember.level && sceneMember.colorGreen && [sceneMember.level isEqualToNumber:sceneMember.colorGreen]) {
+                    }else if (sceneMember.eveType && sceneMember.eveType2 && [sceneMember.eveType isEqualToNumber:@(12)] && [sceneMember.eveType2 isEqualToNumber:@(12)] && sceneMember.level && sceneMember.level2 && [sceneMember.level isEqualToNumber:sceneMember.level2]) {
                         [[LightModelApi sharedInstance] setLevel:sceneMember.deviceID level:sceneMember.level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
                             
                         } failure:^(NSError * _Nullable error) {
@@ -1308,10 +1607,38 @@
                             [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"79060601000301%@",[CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]]]] success:nil failure:nil];
                             [NSThread sleepForTimeInterval:0.05];
                         }
-                        if ([sceneMember.colorTemperature isEqualToNumber:@(11)]) {
+                        if ([sceneMember.eveType2 isEqualToNumber:@(11)]) {
                             [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"79020102"] success:nil failure:nil];
-                        }else if ([sceneMember.colorTemperature isEqualToNumber:@(12)]) {
-                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"79060602000301%@",[CSRUtilities stringWithHexNumber:[sceneMember.colorGreen integerValue]]]] success:nil failure:nil];
+                        }else if ([sceneMember.eveType2 isEqualToNumber:@(12)]) {
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"79060602000301%@",[CSRUtilities stringWithHexNumber:[sceneMember.level2 integerValue]]]] success:nil failure:nil];
+                        }
+                    }
+                }else if ([CSRUtilities belongToThreeChannelSwitch:sceneMember.kindString]) {
+                    if (sceneMember.eveType && sceneMember.eveType2 && sceneMember.eveType3 && [sceneMember.eveType isEqualToNumber:@(11)] && [sceneMember.eveType2 isEqualToNumber:@(11)] && [sceneMember.eveType3 isEqualToNumber:@(11)]) {
+                        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:@(0)];
+                    }else if (sceneMember.eveType && sceneMember.eveType2 && sceneMember.eveType3 && [sceneMember.eveType isEqualToNumber:@(10)] && [sceneMember.eveType2 isEqualToNumber:@(10)] && [sceneMember.eveType3 isEqualToNumber:@(10)]) {
+                        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:sceneMember.deviceID withPowerState:@(1)];
+                    }else {
+                        if ([sceneMember.eveType isEqualToNumber:@(11)]) {
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"51050100010000"] success:nil failure:nil];
+                            [NSThread sleepForTimeInterval:0.05];
+                        }else if ([sceneMember.eveType isEqualToNumber:@(10)]) {
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"510501000101ff"] success:nil failure:nil];
+                            [NSThread sleepForTimeInterval:0.05];
+                        }
+                        if ([sceneMember.eveType2 isEqualToNumber:@(11)]) {
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"51050200010000"] success:nil failure:nil];
+                            [NSThread sleepForTimeInterval:0.05];
+                        }else if ([sceneMember.eveType2 isEqualToNumber:@(10)]) {
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"510502000101ff"] success:nil failure:nil];
+                            [NSThread sleepForTimeInterval:0.05];
+                        }
+                        if ([sceneMember.eveType3 isEqualToNumber:@(11)]) {
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"51050400010000"] success:nil failure:nil];
+                            [NSThread sleepForTimeInterval:0.05];
+                        }else if ([sceneMember.eveType3 isEqualToNumber:@(10)]) {
+                            [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:@"510504000101ff"] success:nil failure:nil];
+                            [NSThread sleepForTimeInterval:0.05];
                         }
                     }
                 }else {

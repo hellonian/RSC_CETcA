@@ -22,5 +22,11 @@
 @dynamic eveType;
 @dynamic sortID;
 @dynamic channel;
+@dynamic powerState2;
+@dynamic powerState3;
+@dynamic level2;
+@dynamic level3;
+@dynamic eveType2;
+@dynamic eveType3;
 
 @end

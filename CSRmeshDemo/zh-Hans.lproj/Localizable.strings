@@ -170,6 +170,7 @@
 "ChannelAll"="两路一起";
 "Channel1"="第 1 路";
 "Channel2"="第 2 路";
+"Channel3"="第 3 路";
 "alert"="提示！";
 "cantsetoff"="儿童模式开启的状态下无法设置关闭状态。";
 "OK" = "OK";

@@ -70,9 +70,9 @@
 @property (weak, nonatomic) IBOutlet UIButton *daliGroupSelectBtn;
 @property (weak, nonatomic) IBOutlet UIButton *daliAddressBtn;
 @property (weak, nonatomic) IBOutlet UIButton *daliSceneSelectBtn;
-@property (weak, nonatomic) IBOutlet UITextField *daliGroupTF;
-@property (weak, nonatomic) IBOutlet UITextField *daliAddressTF;
-@property (weak, nonatomic) IBOutlet UITextField *daliSceneTF;
+@property (weak, nonatomic) IBOutlet UILabel *daliDeviceLab;
+@property (weak, nonatomic) IBOutlet UILabel *daliGroupLab;
+@property (weak, nonatomic) IBOutlet UILabel *daliSceneLab;
 @property (nonatomic,strong) UIView *translucentBgView;
 
 @property (strong, nonatomic) IBOutlet UIView *ganjiedianView;
@@ -93,6 +93,12 @@
 
 @property (strong, nonatomic) IBOutlet UIView *RGBGroupControllSwitchView;
 @property (weak, nonatomic) IBOutlet UISwitch *RGBGroupControllSwitch;
+
+@property (strong, nonatomic) MBProgressHUD *waitingHud;
+@property (strong, nonatomic) IBOutlet UIView *powerSwitchChannelTwoView;
+@property (strong, nonatomic) IBOutlet UIView *powerSwitchChannelThreeView;
+@property (weak, nonatomic) IBOutlet UISwitch *powerSwitchChannelTwo;
+@property (weak, nonatomic) IBOutlet UISwitch *powerSwitchChannelThree;
 
 @end
 
@@ -176,7 +182,7 @@
     if ([_deviceId integerValue] > 32768/*单设备*/) {
         
         [_scrollView addSubview:_topView];
-        [_topView autoSetDimension:ALDimensionHeight toSize:134];
+        [_topView autoSetDimension:ALDimensionHeight toSize:153];
         [_topView autoPinEdgeToSuperviewEdge:ALEdgeTop];
         [_topView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
         [_topView autoAlignAxisToSuperviewAxis:ALAxisVertical];
@@ -208,10 +214,10 @@
 //                [self addSubviewGanjiedianView];
 //                _scrollView.contentSize = CGSizeMake(1, 253+20+20+128);
                 [self addSubviewGanjiedianRowView];
-                _scrollView.contentSize = CGSizeMake(1, 253+20+45);
+                _scrollView.contentSize = CGSizeMake(1, 253+20+45+20);
                 
             }else {
-                _scrollView.contentSize = CGSizeMake(1, 134+20);
+                _scrollView.contentSize = CGSizeMake(1, 134+20+20);
             }
         }
         
@@ -231,7 +237,7 @@
                 [_threeSpeedcolorTemperatureView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
                 [_threeSpeedcolorTemperatureView autoAlignAxisToSuperviewAxis:ALAxisVertical];
                 
-                _scrollView.contentSize = CGSizeMake(1, 327+20);
+                _scrollView.contentSize = CGSizeMake(1, 327+20+20);
             }else if ([CSRUtilities belongToDALDevice:_device.shortName]) {
                 [[NSNotificationCenter defaultCenter] addObserver:self
                                                          selector:@selector(getDaliAdress:)
@@ -239,7 +245,7 @@
                                                            object:nil];
                 [[DataModelManager shareInstance] sendCmdData:@"ea520102" toDeviceId:_deviceId];
                 [self addSubviewDalinView];
-                _scrollView.contentSize = CGSizeMake(1, 208+20+20+220+82);
+                _scrollView.contentSize = CGSizeMake(1, 427+20);
                 CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
                 if (deviceEntity.remoteBranch && [deviceEntity.remoteBranch length]>0) {
                     [self configDaliAppearance:[CSRUtilities numberWithHexString:deviceEntity.remoteBranch]];
@@ -266,19 +272,19 @@
                 [_powerView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
                 [_powerView autoAlignAxisToSuperviewAxis:ALAxisVertical];
                 [_powerView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_brightnessView withOffset:20.0];
-                _scrollView.contentSize = CGSizeMake(1, 535);
+                _scrollView.contentSize = CGSizeMake(1, 535+20);
                 
                 [[DataModelManager shareInstance] sendCmdData:@"ea4801" toDeviceId:_deviceId];
                 
             }else {
-                _scrollView.contentSize = CGSizeMake(1, 208+20);
+                _scrollView.contentSize = CGSizeMake(1, 208+20+20);
             }
         }
         
         else if ([CSRUtilities belongToCWDevice:_device.shortName]) {
             [self addSubviewBrightnessView];
             [self addSubViewColorTemperatuteView];
-            _scrollView.contentSize = CGSizeMake(1, 282+20);
+            _scrollView.contentSize = CGSizeMake(1, 282+20+20);
         }
         
         else if ([CSRUtilities belongToRGBDevice:_device.shortName]) {
@@ -292,7 +298,7 @@
             
             [self addSubViewColorView];
             
-            _scrollView.contentSize = CGSizeMake(1, 616);
+            _scrollView.contentSize = CGSizeMake(1, 616+20);
         }
         
         else if ([CSRUtilities belongToRGBCWDevice:_device.shortName]) {
@@ -308,7 +314,13 @@
             [_colorTitle autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
             
             [self addSubViewColorView];
-            _scrollView.contentSize = CGSizeMake(1, 650);
+            _scrollView.contentSize = CGSizeMake(1, 650+20);
+        }
+        
+        else if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName]) {
+            [self addSubViewPowerSwitchChannelTwoView];
+            [self addSubViewPowerSwitchChannelThreeView];
+            _scrollView.contentSize = CGSizeMake(1, 301);
         }
         
         self.navigationItem.title = _device.name;
@@ -466,12 +478,9 @@
 }
 
 - (void)addSubviewDalinView {
-    _daliGroupTF.delegate = self;
-    _daliAddressTF.delegate = self;
-    _daliSceneTF.delegate = self;
     [_scrollView addSubview:_dalinView];
     [_dalinView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_brightnessView withOffset:20.0];
-    [_dalinView autoSetDimension:ALDimensionHeight toSize:302.0];
+    [_dalinView autoSetDimension:ALDimensionHeight toSize:179.0];
     [_dalinView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
     [_dalinView autoAlignAxisToSuperviewAxis:ALAxisVertical];
 }
@@ -539,10 +548,23 @@
     [_colorSquareView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
     [_colorSquareView autoAlignAxisToSuperviewAxis:ALAxisVertical];
     [_colorSquareView autoSetDimension:ALDimensionHeight toSize:180];
-    
 }
 
+- (void)addSubViewPowerSwitchChannelTwoView {
+    [_scrollView addSubview:_powerSwitchChannelTwoView];
+    [_powerSwitchChannelTwoView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_topView withOffset:20.0];
+    [_powerSwitchChannelTwoView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [_powerSwitchChannelTwoView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+    [_powerSwitchChannelTwoView autoSetDimension:ALDimensionHeight toSize:44.0];
+}
 
+- (void)addSubViewPowerSwitchChannelThreeView {
+    [_scrollView addSubview:_powerSwitchChannelThreeView];
+    [_powerSwitchChannelThreeView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_powerSwitchChannelTwoView withOffset:20.0];
+    [_powerSwitchChannelThreeView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [_powerSwitchChannelThreeView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+    [_powerSwitchChannelThreeView autoSetDimension:ALDimensionHeight toSize:44.0];
+}
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -589,8 +611,7 @@
             [self.powerStateSwitch setOn:NO];
         }
         return;
-    }
-    if ([CSRUtilities belongToDimmer:_device.shortName]) {
+    }else if ([CSRUtilities belongToDimmer:_device.shortName]) {
         if ([_device.powerState boolValue]) {
             [self.powerStateSwitch setOn:YES];
             if (!_sliderIsMoving) {
@@ -603,9 +624,7 @@
             self.levelLabel.text = @"0%";
         }
         return;
-    }
-    
-    if ([CSRUtilities belongToCWDevice:_device.shortName]) {
+    }else if ([CSRUtilities belongToCWDevice:_device.shortName]) {
         if ([_device.powerState boolValue]) {
             [self.powerStateSwitch setOn:YES];
             if (!_sliderIsMoving) {
@@ -622,9 +641,7 @@
         }
         _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[_device.colorTemperature integerValue]];
         return;
-    }
-    
-    if ([CSRUtilities belongToRGBDevice:_device.shortName]) {
+    }else if ([CSRUtilities belongToRGBDevice:_device.shortName]) {
         if ([_device.powerState boolValue]) {
             [self.powerStateSwitch setOn:YES];
             if (!_sliderIsMoving) {
@@ -652,9 +669,7 @@
             }
         }
         return;
-    }
-    
-    if ([CSRUtilities belongToRGBCWDevice:_device.shortName]) {
+    }else if ([CSRUtilities belongToRGBCWDevice:_device.shortName]) {
         if ([_device.powerState boolValue]) {
             [self.powerStateSwitch setOn:YES];
             if (!_sliderIsMoving) {
@@ -691,6 +706,10 @@
 //        }
         
         return;
+    }else if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName]) {
+        [self.powerStateSwitch setOn:_device.channel1PowerState];
+        [self.powerSwitchChannelTwo setOn:_device.channel2PowerState];
+        [self.powerSwitchChannelThree setOn:_device.channel3PowerState];
     }
 }
 
@@ -711,20 +730,38 @@
             }
         }];
         if (exist) {
-            [self forRGBGroupControllAdustInterface];
+            [self forRGBGroupControllAdustInterface:deviceId];
+//            [self forRGBGroupControllAdustInterface];
         }
     }
 }
 //开关
 - (IBAction)powerStateSwitch:(UISwitch *)sender {
-    if (musicBehavior) {
-        if ([SoundListenTool sharedInstance].audioRecorder.recording) {
-            [[SoundListenTool sharedInstance] stopRecord:_deviceId];
+    if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName] || [CSRUtilities belongToTwoChannelSwitch:_device.shortName]) {
+        [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"51050100010%d00",sender.on] toDeviceId:_deviceId];
+    }else {
+        if (musicBehavior) {
+            if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+                [[SoundListenTool sharedInstance] stopRecord:_deviceId];
+            }
         }
+        [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
+        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(sender.on)];
     }
-    [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
-    [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(sender.on)];
 }
+
+- (IBAction)powerSwitchChannelTwo:(UISwitch *)sender {
+    if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName] || [CSRUtilities belongToTwoChannelSwitch:_device.shortName]) {
+        [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"51050200010%d00",sender.on] toDeviceId:_deviceId];
+    }
+}
+
+- (IBAction)powerStateSwitchChannelThree:(UISwitch *)sender {
+    if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName]) {
+        [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"51050400010%d00",sender.on] toDeviceId:_deviceId];
+    }
+}
+
 //调光
 - (IBAction)levelSliderTouchUpInSide:(UISlider *)sender {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -849,21 +886,6 @@
         case 11:
             [self saveNickName];
             break;
-        case 12:
-            if ([textField.text length]>0 && [textField.text integerValue]<=15) {
-                [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea520101%@",[CSRUtilities stringWithHexNumber:[textField.text integerValue] + 64]] toDeviceId:_deviceId];
-            }
-            break;
-        case 13:
-            if ([textField.text length]>0 && [textField.text integerValue]<=63) {
-                [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea520101%@",[CSRUtilities stringWithHexNumber:[textField.text integerValue]]] toDeviceId:_deviceId];
-            }
-            break;
-        case 14:
-            if ([textField.text length]>0 && [textField.text integerValue]<=15) {
-                [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea520101%@",[CSRUtilities stringWithHexNumber:[textField.text integerValue] + 80]] toDeviceId:_deviceId];
-            }
-            break;
         default:
             break;
     }
@@ -876,47 +898,46 @@
     }else {
         switch (textField.tag) {
             case 12:
-            {
-                NSString *aString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-                if ([self validateNumber:string]) {
-                    if ([aString integerValue]>15) {
-                        return NO;
+                {
+                    NSString *aString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+                    if ([self validateNumber:string]) {
+                        if ([aString integerValue]>63) {
+                            return NO;
+                        }else {
+                            return YES;
+                        }
                     }else {
-                        return YES;
+                        return NO;
                     }
-                }else {
-                    return NO;
                 }
-            }
                 break;
             case 13:
-            {
-                
-                NSString *aString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-                if ([self validateNumber:string]) {
-                    if ([aString integerValue]>63) {
-                        return NO;
+                {
+                    NSString *aString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+                    if ([self validateNumber:string]) {
+                        if ([aString integerValue]>15) {
+                            return NO;
+                        }else {
+                            return YES;
+                        }
                     }else {
-                        return YES;
+                        return NO;
                     }
-                }else {
-                    return NO;
                 }
-            }
                 break;
             case 14:
-            {
-                NSString *aString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-                if ([self validateNumber:string]) {
-                    if ([aString integerValue]>15) {
-                        return NO;
+                {
+                    NSString *aString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+                    if ([self validateNumber:string]) {
+                        if ([aString integerValue]>15) {
+                            return NO;
+                        }else {
+                            return YES;
+                        }
                     }else {
-                        return YES;
+                        return NO;
                     }
-                }else {
-                    return NO;
                 }
-            }
                 break;
             default:
                 break;
@@ -1053,139 +1074,180 @@
 }
 
 - (IBAction)daliAdressSelectAction:(UIButton *)sender {
-    sender.selected = !sender.selected;
-    UIImage *image = sender.selected? [UIImage imageNamed:@"Be_selected"]:[UIImage imageNamed:@"To_select"];
-    [sender setImage:image forState:UIControlStateNormal];
+    sender.selected = YES;
     switch (sender.tag) {
         case 1:
-            if (sender.selected) {
-                if (_daliGroupSelectBtn.selected) {
-                    _daliGroupSelectBtn.selected = NO;
-                    [_daliGroupSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-                    [_daliGroupTF resignFirstResponder];
-                }else if (_daliAddressBtn.selected) {
-                    _daliAddressBtn.selected = NO;
-                    [_daliAddressBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-                    [_daliAddressTF resignFirstResponder];
-                }else if (_daliSceneSelectBtn.selected) {
-                    _daliSceneSelectBtn.selected = NO;
-                    [_daliSceneSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-                    [_daliSceneTF resignFirstResponder];
-                }
-                [[DataModelManager shareInstance] sendCmdData:@"ea520101ff" toDeviceId:_deviceId];
+            if (_daliGroupSelectBtn.selected) {
+                _daliGroupSelectBtn.selected = NO;
+            }else if (_daliAddressBtn.selected) {
+                _daliAddressBtn.selected = NO;
+            }else if (_daliSceneSelectBtn.selected) {
+                _daliSceneSelectBtn.selected = NO;
             }
+            [self showWaitingHud];
+            [self performSelector:@selector(hideWaitingHudDelayMethod) withObject:nil afterDelay:10.0];
+            [[DataModelManager shareInstance] sendCmdData:@"ea520101ff" toDeviceId:_deviceId];
             break;
         case 2:
-            if (sender.selected) {
-                if (_daliAllSelectBtn.selected) {
-                    _daliAllSelectBtn.selected = NO;
-                    [_daliAllSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-                }else if (_daliAddressBtn.selected) {
-                    _daliAddressBtn.selected = NO;
-                    [_daliAddressBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-                    [_daliAddressTF resignFirstResponder];
-                }else if (_daliSceneSelectBtn.selected) {
-                    _daliSceneSelectBtn.selected = NO;
-                    [_daliSceneSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-                    [_daliSceneTF resignFirstResponder];
-                }
-                [_daliGroupTF becomeFirstResponder];
+            if (_daliAllSelectBtn.selected) {
+                _daliAllSelectBtn.selected = NO;
+            }else if (_daliGroupSelectBtn.selected) {
+                _daliGroupSelectBtn.selected = NO;
+            }else if (_daliSceneSelectBtn.selected) {
+                _daliSceneSelectBtn.selected = NO;
             }
+            [self showDaliAdressInputAlert:sender.tag];
             break;
         case 3:
-            if (sender.selected) {
-                if (_daliGroupSelectBtn.selected) {
-                    _daliGroupSelectBtn.selected = NO;
-                    [_daliGroupSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-                    [_daliGroupTF resignFirstResponder];
-                }else if (_daliAllSelectBtn.selected) {
-                    _daliAllSelectBtn.selected = NO;
-                    [_daliAllSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-                }else if (_daliSceneSelectBtn.selected) {
-                    _daliSceneSelectBtn.selected = NO;
-                    [_daliSceneSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-                    [_daliSceneTF resignFirstResponder];
-                }
-                [_daliAddressTF becomeFirstResponder];
+            if (_daliAddressBtn.selected) {
+                _daliAddressBtn.selected = NO;
+            }else if (_daliAllSelectBtn.selected) {
+                _daliAllSelectBtn.selected = NO;
+            }else if (_daliSceneSelectBtn.selected) {
+                _daliSceneSelectBtn.selected = NO;
             }
+            [self showDaliAdressInputAlert:sender.tag];
             break;
         case 4:
-            if (sender.selected) {
-                if (_daliAllSelectBtn.selected) {
-                    _daliAllSelectBtn.selected = NO;
-                    [_daliAllSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-                }else if (_daliAddressBtn.selected) {
-                    _daliAddressBtn.selected = NO;
-                    [_daliAddressBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-                    [_daliAddressTF resignFirstResponder];
-                }else if (_daliGroupSelectBtn.selected) {
-                    _daliGroupSelectBtn.selected = NO;
-                    [_daliGroupSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-                    [_daliGroupTF resignFirstResponder];
-                }
-                [_daliSceneTF becomeFirstResponder];
+            if (_daliAllSelectBtn.selected) {
+                _daliAllSelectBtn.selected = NO;
+            }else if (_daliAddressBtn.selected) {
+                _daliAddressBtn.selected = NO;
+            }else if (_daliGroupSelectBtn.selected) {
+                _daliGroupSelectBtn.selected = NO;
             }
+            [self showDaliAdressInputAlert:sender.tag];
             break;
         default:
             break;
     }
+    
+}
+
+- (void)showDaliAdressInputAlert:(NSInteger)type {
+    NSString *message = @"";
+    if (type == 2) {
+        message = @"Please enter the address(0~63) of the device.";
+    }else if (type == 3) {
+        message = @"Please enter the address(0~15) of the group.";
+    }else if (type == 4) {
+        message = @"Please enter the number(0~15) of the scene.";
+    }
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alert.view setTintColor:DARKORAGE];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+        if (deviceEntity.remoteBranch && [deviceEntity.remoteBranch length]>0) {
+            [self configDaliAppearance:[CSRUtilities numberWithHexString:deviceEntity.remoteBranch]];
+        }
+    }];
+    UIAlertAction *confirm = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Save", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UITextField *tf = alert.textFields.firstObject;
+        if (tf.tag == 12) {
+            if ([tf.text length]>0 && [tf.text integerValue]<=63) {
+                [self showWaitingHud];
+                [self performSelector:@selector(hideWaitingHudDelayMethod) withObject:nil afterDelay:10.0];
+                [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea520101%@",[CSRUtilities stringWithHexNumber:[tf.text integerValue]]] toDeviceId:_deviceId];
+            }
+        }else if (tf.tag == 13) {
+            if ([tf.text length]>0 && [tf.text integerValue]<=15) {
+                [self showWaitingHud];
+                [self performSelector:@selector(hideWaitingHudDelayMethod) withObject:nil afterDelay:10.0];
+                [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea520101%@",[CSRUtilities stringWithHexNumber:[tf.text integerValue] + 64]] toDeviceId:_deviceId];
+            }
+        }else if (tf.tag == 14) {
+            if ([tf.text length]>0 && [tf.text integerValue]<=15) {
+                [self showWaitingHud];
+                [self performSelector:@selector(hideWaitingHudDelayMethod) withObject:nil afterDelay:10.0];
+                [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"ea520101%@",[CSRUtilities stringWithHexNumber:[tf.text integerValue] + 80]] toDeviceId:_deviceId];
+            }
+        }
+    }];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.delegate = self;
+        textField.textAlignment = NSTextAlignmentCenter;
+        if (type == 2) {
+            textField.tag = 12;
+        }else if (type == 3) {
+            textField.tag = 13;
+        }else if (type == 4) {
+            textField.tag = 14;
+        }
+    }];
+    [alert addAction:cancel];
+    [alert addAction:confirm];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)getDaliAdress:(NSNotification *)notification {
     NSDictionary *userDic = notification.userInfo;
-    NSInteger address = [CSRUtilities numberWithHexString:userDic[@"addressStr"]];
-    [self configDaliAppearance:address];
+    NSNumber *infoDeviceId = userDic[@"deviceId"];
+    if ([infoDeviceId isEqualToNumber:_deviceId]) {
+        NSInteger address = [CSRUtilities numberWithHexString:userDic[@"addressStr"]];
+        [self configDaliAppearance:address];
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideWaitingHudDelayMethod) object:nil];
+        [self hideWaitingHud];
+    }
 }
 
 - (void)configDaliAppearance:(NSInteger)address {
     if (address == 255) {
         _daliAllSelectBtn.selected = YES;
-        [_daliAllSelectBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
         _daliGroupSelectBtn.selected = NO;
-        [_daliGroupSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-        _daliGroupTF.text = nil;
+        _daliGroupLab.text = nil;
         _daliAddressBtn.selected = NO;
-        [_daliAddressBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-        _daliAddressTF.text = nil;
+        _daliDeviceLab.text = nil;
         _daliSceneSelectBtn.selected = NO;
-        [_daliSceneSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-        _daliSceneTF.text = nil;
+        _daliSceneLab.text = nil;
     }else if (address >= 64 && address <= 79) {
         _daliAllSelectBtn.selected = NO;
-        [_daliAllSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
         _daliGroupSelectBtn.selected = YES;
-        [_daliGroupSelectBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
-        _daliGroupTF.text = [NSString stringWithFormat:@"%d",address-64];
+        _daliGroupLab.text = [NSString stringWithFormat:@"%ld",address-64];
         _daliAddressBtn.selected = NO;
-        [_daliAddressBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-        _daliAddressTF.text = nil;
+        _daliDeviceLab.text = nil;
         _daliSceneSelectBtn.selected = NO;
-        [_daliSceneSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-        _daliSceneTF.text = nil;
+        _daliSceneLab.text = nil;
     }else if (address < 64){
         _daliAllSelectBtn.selected = NO;
-        [_daliAllSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
         _daliGroupSelectBtn.selected = NO;
-        [_daliGroupSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-        _daliGroupTF.text = nil;
+        _daliGroupLab.text = nil;
         _daliAddressBtn.selected = YES;
-        [_daliAddressBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
-        _daliAddressTF.text = [NSString stringWithFormat:@"%ld",(long)address];
+        _daliDeviceLab.text = [NSString stringWithFormat:@"%ld",(long)address];
         _daliSceneSelectBtn.selected = NO;
-        [_daliSceneSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-        _daliSceneTF.text = nil;
+        _daliSceneLab.text = nil;
     }else if (address > 79 && address <= 95) {
         _daliAllSelectBtn.selected = NO;
-        [_daliAllSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
         _daliGroupSelectBtn.selected = NO;
-        [_daliGroupSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-        _daliGroupTF.text = nil;
+        _daliGroupLab.text = nil;
         _daliAddressBtn.selected = NO;
-        [_daliAddressBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-        _daliAddressTF.text = nil;
+        _daliDeviceLab.text = nil;
         _daliSceneSelectBtn.selected = YES;
-        [_daliSceneSelectBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
-        _daliSceneTF.text = [NSString stringWithFormat:@"%ld",address-80];
+        _daliSceneLab.text = [NSString stringWithFormat:@"%ld",address-80];
+    }
+}
+
+- (void)showWaitingHud {
+    if (self.waitingHud) {
+        self.waitingHud = nil;
+    }
+    self.waitingHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [self.waitingHud showAnimated:YES];
+    self.waitingHud.delegate = self;
+}
+
+-(void)hideWaitingHudDelayMethod {
+    if (self.waitingHud) {
+        [self.waitingHud hideAnimated:YES];
+        self.waitingHud = nil;
+        [self showTextHud:@"Time out"];
+    }
+}
+
+- (void)hideWaitingHud {
+    if (self.waitingHud) {
+        [self.waitingHud hideAnimated:YES];
+        self.waitingHud = nil;
+        [self showTextHud:@"SUCCESS"];
     }
 }
 
@@ -1555,6 +1617,72 @@
             [self.colorSquareView locationPickView:hue colorSaturation:saturation];
         }
     }
+}
+
+- (void)forRGBGroupControllAdustInterface:(NSNumber *)deviceID {
+    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceID];
+    if ([CSRUtilities belongToRGBDevice:deviceModel.shortName]) {
+            if ([deviceModel.powerState boolValue]) {
+                [self.powerStateSwitch setOn:YES];
+                if (!_sliderIsMoving) {
+                    [self.levelSlider setValue:(CGFloat)[deviceModel.level integerValue] animated:YES];
+                }
+                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[deviceModel.level integerValue]/255.0*100];
+            }else {
+                [self.powerStateSwitch setOn:NO];
+                [self.levelSlider setValue:0 animated:YES];
+                self.levelLabel.text = @"0%";
+            }
+            UIColor *color = [UIColor colorWithRed:[deviceModel.red integerValue]/255.0 green:[deviceModel.green integerValue]/255.0 blue:[deviceModel.blue integerValue]/255.0 alpha:1.0];
+            CGFloat hue,saturation,brightness,alpha;
+            if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
+                if (!_colorSliderIsMoving) {
+                    [self.colorSlider sliderMyValue:hue];
+                }
+                self.colorLabel.text = [NSString stringWithFormat:@"%.f",hue*360];
+                if (!_colorSaturationSliderIsMoving) {
+                    [self.colorSaturationSlider setValue:saturation animated:YES];
+                }
+                self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",saturation*100];
+                if (!_colorSquareIsMoving) {
+                    [self.colorSquareView locationPickView:hue colorSaturation:saturation];
+                }
+            }
+            return;
+        }else if ([CSRUtilities belongToRGBCWDevice:deviceModel.shortName]) {
+            if ([deviceModel.powerState boolValue]) {
+                [self.powerStateSwitch setOn:YES];
+                if (!_sliderIsMoving) {
+                    [self.levelSlider setValue:(CGFloat)[deviceModel.level integerValue] animated:YES];
+                }
+                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[deviceModel.level integerValue]/255.0*100];
+            }else {
+                [self.powerStateSwitch setOn:NO];
+                [self.levelSlider setValue:0 animated:YES];
+                self.levelLabel.text = @"0%";
+            }
+
+            if (!_colorTemperatureSliderIsMoving) {
+                    [_colorTemperatureSlider setValue:(CGFloat)[deviceModel.colorTemperature integerValue] animated:YES];
+                }
+            _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[deviceModel.colorTemperature integerValue]];
+            UIColor *color = [UIColor colorWithRed:[deviceModel.red integerValue]/255.0 green:[deviceModel.green integerValue]/255.0 blue:[deviceModel.blue integerValue]/255.0 alpha:1.0];
+            CGFloat hue,saturation,brightness,alpha;
+            if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
+                if (!_colorSliderIsMoving) {
+                    [self.colorSlider sliderMyValue:hue];
+                }
+                self.colorLabel.text = [NSString stringWithFormat:@"%.f",hue*360];
+                if (!_colorSaturationSliderIsMoving) {
+                    [self.colorSaturationSlider setValue:saturation animated:YES];
+                }
+                self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",saturation*100];
+                if (!_colorSquareIsMoving) {
+                    [self.colorSquareView locationPickView:hue colorSaturation:saturation];
+                }
+            }
+            return;
+        }
 }
 
 @end

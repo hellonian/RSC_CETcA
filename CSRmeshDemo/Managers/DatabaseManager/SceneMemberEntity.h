@@ -23,5 +23,11 @@
 @property (nonatomic, retain) NSNumber *eveType;
 @property (nonatomic, retain) NSNumber *sortID;
 @property (nonatomic, retain) NSNumber *channel;
+@property (nonatomic, retain) NSNumber *powerState2;
+@property (nonatomic, retain) NSNumber *powerState3;
+@property (nonatomic, retain) NSNumber *level2;
+@property (nonatomic, retain) NSNumber *level3;
+@property (nonatomic, retain) NSNumber *eveType2;
+@property (nonatomic, retain) NSNumber *eveType3;
 
 @end

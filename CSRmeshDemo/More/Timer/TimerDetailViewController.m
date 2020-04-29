@@ -23,7 +23,7 @@
 {
     NSNumber *timerIdNumber;
     NSString *name;
-    NSNumber *enabled;
+    BOOL enabled;
     NSDate *time;
     NSDate *date;
     NSString *repeatStr;
@@ -615,7 +615,7 @@
         name = [NSString stringWithFormat:@"timer %@",timerIdNumber];
     }
     
-    enabled = @(_enabledSwitch.on);
+    enabled = _enabledSwitch.on;
     
     NSDateFormatter *dateFormate_time = [[NSDateFormatter alloc] init];
     [dateFormate_time setDateFormat:@"HHmm"];
@@ -758,7 +758,7 @@
 
     if ([resultStr boolValue]) {
         [self.backs addObject:deviceId];
-        _timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:enabled fireTime:time fireDate:date repeatStr:repeatStr sceneID:_selectedScene.sceneID];
+        _timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:@(enabled) fireTime:time fireDate:date repeatStr:repeatStr sceneID:_selectedScene.sceneID];
         NSNumber *index = [self.deviceIdsAndIndexs objectForKey:[NSString stringWithFormat:@"%@",deviceId]];
         __block TimerDeviceEntity *newTimerDeviceEntity;
         [_timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timerDevice, BOOL * _Nonnull stop) {
@@ -818,7 +818,7 @@
 
     NSLog(@"%@,%@,%@,%@,%@,%@,%@",deviceId,channel,index,state,sceneMembering.deviceID,channeling,indexing);
     if ([state boolValue] && [deviceId isEqualToNumber:sceneMembering.deviceID] && [channel isEqualToNumber:channeling] && [index isEqualToNumber:indexing]) {
-        _timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:enabled fireTime:time fireDate:date repeatStr:repeatStr sceneID:_selectedScene.sceneID];
+        _timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:@(enabled) fireTime:time fireDate:date repeatStr:repeatStr sceneID:_selectedScene.sceneID];
         NSNumber *index = [self.deviceIdsAndIndexs objectForKey:[NSString stringWithFormat:@"%@",deviceId]];
         __block TimerDeviceEntity *newTimerDeviceEntity;
         [_timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timerDevice, BOOL * _Nonnull stop) {

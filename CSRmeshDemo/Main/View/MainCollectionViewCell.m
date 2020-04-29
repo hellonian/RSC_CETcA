@@ -83,7 +83,7 @@
                 dimmerNum ++;
             }else if ([CSRUtilities belongToCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
                 dimmerNum ++;
-            }else if ([CSRUtilities belongToSwitch:deviceEntity.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName]) {
+            }else if ([CSRUtilities belongToSwitch:deviceEntity.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName] || [CSRUtilities belongToThreeChannelSwitch:deviceEntity.shortName]) {
                 switchNum ++;
             }else {
                 controllerNum ++;
@@ -146,7 +146,7 @@
                 dimmerNum ++;
             }else if ([CSRUtilities belongToCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
                 dimmerNum ++;
-            }else if ([CSRUtilities belongToSwitch:deviceEntity.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName]) {
+            }else if ([CSRUtilities belongToSwitch:deviceEntity.shortName] || [CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName] || [CSRUtilities belongToThreeChannelSwitch:deviceEntity.shortName]) {
                 switchNum ++;
             }else {
                 controllerNum ++;
@@ -279,6 +279,11 @@
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
+        }else if ([CSRUtilities belongToThreeChannelSwitch:deviceEntity.shortName]) {
+            self.iconView.image = [UIImage imageNamed:@"switchsingle3"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Switch", @"Localizable");
+            self.levelLabel.hidden = NO;
+            self.level2Label.hidden = YES;
         }
         
         self.cellIndexPath = indexPath;
@@ -359,6 +364,11 @@
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Switch", @"Localizable");
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = NO;
+        }else if ([CSRUtilities belongToThreeChannelSwitch:device.deviceShortName]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_switch3"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Switch", @"Localizable");
+            self.levelLabel.hidden = NO;
+            self.level2Label.hidden = YES;
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
@@ -447,6 +457,8 @@
             self.iconView.image = [UIImage imageNamed:@"Device_mainremote"];
         }else if ([CSRUtilities belongToLCDRemote:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_lcdremote"];
+        }else if ([CSRUtilities belongToThreeChannelSwitch:appearanceShortname]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_switch3"];
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
@@ -536,6 +548,16 @@
             }else {
                 self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
             }
+        }else if ([CSRUtilities belongToThreeChannelSwitch:model.shortName]) {
+            if ([model.powerState boolValue]) {
+                self.nameLabel.textColor = DARKORAGE;
+                self.levelLabel.text = @"ON";
+                self.levelLabel.textColor = DARKORAGE;
+            }else {
+                self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+                self.levelLabel.text = @"OFF";
+                self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+            }
         }else {
             if (![model.powerState boolValue]) {
                 if ([_groupId isEqualToNumber:@1000]) {
@@ -611,7 +633,7 @@
         self.nameLabel.textColor = DARKORAGE;
         self.levelLabel.textColor = DARKORAGE;
         self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
-        if ([CSRUtilities belongToDimmer:model.shortName]) {
+        if ([CSRUtilities belongToDimmer:model.shortName] || [CSRUtilities belongToTwoChannelDimmer:model.shortName] || [CSRUtilities belongToRGBDevice:model.shortName] || [CSRUtilities belongToCWDevice:model.shortName] || [CSRUtilities belongToRGBCWDevice:model.shortName]) {
             if ([model.level floatValue]/255.0*100>0 && [model.level floatValue]/255.0*100 < 1.0) {
                 self.levelLabel.text = @"1%";
             }else {

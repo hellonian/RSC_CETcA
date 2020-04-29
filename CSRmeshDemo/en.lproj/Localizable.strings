@@ -170,6 +170,7 @@
 "ChannelAll"="Channel all";
 "Channel1"="Channel 1";
 "Channel2"="Channel 2";
+"Channel3"="Channel 3";
 "alert"="Alert!";
 "cantsetoff"="Can't set off state when children mode is on.";
 "OK" = "OK";

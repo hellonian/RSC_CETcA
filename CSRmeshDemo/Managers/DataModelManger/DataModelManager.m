@@ -110,7 +110,7 @@ static DataModelManager *manager = nil;
 }
 
 - (void)addAlarmForDevice:(NSNumber *)deviceId alarmIndex:(NSInteger)index enabled:(BOOL)enabled fireDate:(NSDate *)fireDate fireTime:(NSDate *)fireTime repeat:(NSString *)repeat eveType:(NSNumber *)alarnActionType level:(NSInteger)level eveD1:(NSString *)eveD1 eveD2:(NSString *)eveD2 eveD3:(NSString *)eveD3 channel:(NSString *)chanel {
-    
+    NSLog(@"~>~>~>~>~>~> %d", enabled);
     NSString *datalen;
     CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
     NSString *indexStr = [CSRUtilities stringWithHexNumber:index];
