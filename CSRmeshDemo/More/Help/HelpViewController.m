@@ -11,6 +11,8 @@
 
 @interface HelpViewController ()
 
+@property(nonatomic, strong)UIWebView *webView;
+
 @end
 
 @implementation HelpViewController
@@ -29,12 +31,13 @@
         UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
         self.navigationItem.leftBarButtonItem = back;
     }
-    UIWebView *webView=[[UIWebView alloc]initWithFrame:CGRectZero];
-    NSURL *url = [NSURL URLWithString:@"http://39.108.152.134/help.html"];
+    _webView=[[UIWebView alloc]initWithFrame:CGRectZero];
+    NSString *s = [NSString stringWithFormat:@"http://39.108.152.134/%@.html",AcTECLocalizedStringFromTable(@"help", @"Localizable")];
+    NSURL *url = [NSURL URLWithString:s];
     NSURLRequest *request=[NSURLRequest requestWithURL:url];
-    [webView loadRequest:request];
-    [self.view addSubview:webView];
-    [webView autoPinEdgesToSuperviewEdges];
+    [_webView loadRequest:request];
+    [self.view addSubview:_webView];
+    [_webView autoPinEdgesToSuperviewEdges];
 }
 
 - (void)backSetting{
@@ -57,21 +60,10 @@
         UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
         self.navigationItem.leftBarButtonItem = back;
     }
+    NSString *s = [NSString stringWithFormat:@"http://39.108.152.134/%@.html",AcTECLocalizedStringFromTable(@"help", @"Localizable")];
+    NSURL *url = [NSURL URLWithString:s];
+    NSURLRequest *request=[NSURLRequest requestWithURL:url];
+    [_webView loadRequest:request];
 }
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

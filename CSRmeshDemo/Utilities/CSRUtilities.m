@@ -8,6 +8,9 @@
 #import <CommonCrypto/CommonDigest.h>
 #import <CommonCrypto/CommonCrypto.h>
 #import <zlib.h>
+#include <ifaddrs.h>
+#include <arpa/inet.h>
+#import <SystemConfiguration/CaptiveNetwork.h>
 
 @implementation CSRUtilities
 
@@ -1344,8 +1347,46 @@
     
     //去掉字符串中的空格
     
-    [mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range];
+//    [mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range];
+//
+//    NSRange range2 = {0,mutStr.length};
     
+    //去掉字符串中的换行符
+    
+    [mutStr replaceOccurrencesOfString:@"\n" withString:@"" options:NSLiteralSearch range:range];
+    
+    return mutStr;
+    
+}
+
++(NSString *)convertToJsonData2:(NSDictionary *)dict
+
+{
+    
+    NSError *error;
+    
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
+    
+    NSString *jsonString;
+    
+    if (!jsonData) {
+        
+        NSLog(@"%@",error);
+        
+    }else{
+        
+        jsonString = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
+        
+    }
+    
+    NSMutableString *mutStr = [NSMutableString stringWithString:jsonString];
+    
+    NSRange range = {0,jsonString.length};
+    
+    //去掉字符串中的空格
+    
+    [mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range];
+
     NSRange range2 = {0,mutStr.length};
     
     //去掉字符串中的换行符
@@ -1353,7 +1394,6 @@
     [mutStr replaceOccurrencesOfString:@"\n" withString:@"" options:NSLiteralSearch range:range2];
     
     return mutStr;
-    
 }
 
 + (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString
@@ -1450,6 +1490,25 @@
     
     return binaryString;
     
+}
+
+//获取本机wifi名称
++ (NSString *)getWifiName {
+    NSArray *ifs = (__bridge_transfer NSArray *)CNCopySupportedInterfaces();
+    if (!ifs) {
+        return nil;
+    }
+    NSString *WiFiName = nil;
+    for (NSString *ifnam in ifs) {
+        NSDictionary *info = (__bridge_transfer NSDictionary *)CNCopyCurrentNetworkInfo((__bridge CFStringRef)ifnam);
+        if (info && [info count]) {
+            // 这里其实对应的有三个key:kCNNetworkInfoKeySSID、kCNNetworkInfoKeyBSSID、kCNNetworkInfoKeySSIDData，
+            // 不过它们都是CFStringRef类型的
+            WiFiName = [info objectForKey:(__bridge NSString *)kCNNetworkInfoKeySSID];
+            break;
+        }
+    }
+    return WiFiName;
 }
 
 @end

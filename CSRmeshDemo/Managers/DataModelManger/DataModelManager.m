@@ -58,6 +58,12 @@ static DataModelManager *manager = nil;
     
 }
 
+- (void)sendDataByBlockDataTransfer:(NSNumber *)deviceId data:(NSData *)data {
+    if (deviceId) {
+        [_manager sendData:deviceId data:data success:nil failure:nil];
+    }
+}
+
 //添加闹钟
 - (void)addAlarmForDevice:(NSNumber *)deviceId alarmIndex:(NSInteger)index enabled:(BOOL)enabled fireDate:(NSDate *)fireDate fireTime:(NSDate *)fireTime repeat:(NSString *)repeat eveType:(NSNumber *)alarnActionType level:(NSInteger)level eveD1:(NSString *)eveD1 eveD2:(NSString *)eveD2 eveD3:(NSString *)eveD3 {
     
@@ -634,6 +640,42 @@ static DataModelManager *manager = nil;
     if ([dataStr hasPrefix:@"eb53"] || [dataStr hasPrefix:@"eb54"]) {
         if ([dataStr length]>=20) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"remoteKeyTypeCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"remoteKeyTypeCall":[dataStr substringFromIndex:3]}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"b6030d"]) {
+        if ([dataStr length]>=10) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"LCDRemoteAddCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"sourceID":[dataStr substringWithRange:NSMakeRange(6, 2)],@"state":[dataStr substringWithRange:NSMakeRange(8, 2)]}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"eb7d"]) {
+        if ([dataStr length]>=10) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"LCDRemoteNameCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"sourceID":[dataStr substringWithRange:NSMakeRange(4, 2)],@"packet":[dataStr substringWithRange:NSMakeRange(6, 2)],@"index":[dataStr substringWithRange:NSMakeRange(8, 2)]}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"eb7f"]) {
+        if ([dataStr length]>6) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"LCDRemoteKeyIndexCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"keyIndex":[dataStr substringFromIndex:4]}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"eb78"] || [dataStr hasPrefix:@"eb79"]) {
+        if ([dataStr length]>8) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"LCDRemoteSSIDCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"packet":[dataStr substringWithRange:NSMakeRange(4, 2)],@"index":[dataStr substringWithRange:NSMakeRange(6, 2)],@"sort":[dataStr substringWithRange:NSMakeRange(2, 2)]}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"eb7701"]) {
+        if ([dataStr length]>=14) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"LCDRemoteIPAdressCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"IPAdress":[dataStr substringFromIndex:6]}];
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"eb7b"]) {
+        if ([dataStr length]>=8) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"LCDRemotePortCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"port":[dataStr substringFromIndex:4]}];
         }
     }
 }

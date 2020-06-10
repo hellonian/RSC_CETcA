@@ -43,7 +43,7 @@
         point.x = self.bounds.size.width - 14;
     }
     _thumbButton.center = point;
-    self.myValue = (point.x-14)/(self.bounds.size.width - 27.8);
+    self.myValue = (point.x-14)/(self.bounds.size.width - 27.5);
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(colorSliderValueChanged:withState:)]) {
         [self.delegate colorSliderValueChanged:self.myValue withState:sender.state];
@@ -51,11 +51,11 @@
 }
 
 - (void)sliderMyValue:(CGFloat)hue {
+    self.myValue = hue;
     CGFloat x = hue * (self.bounds.size.width - 28.0) + 14;
     [UIView animateWithDuration:0.2 animations:^{
         _thumbButton.center = CGPointMake(x, self.bounds.size.height/2);
     }];
-    NSLog(@">>>> %f",hue);
 }
 
 

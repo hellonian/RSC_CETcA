@@ -212,7 +212,6 @@
 
     [self getMainDataArray];
     [self getSceneDataArray];
-//    [self getLocation];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -608,14 +607,17 @@
 
 - (void)mainCollectionViewCellDelegateTwoFingersTapAction:(NSNumber *)groupId {
     CSRAreaEntity *areaEntity = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:groupId];
-    __block BOOL exist = NO;
+    __block BOOL unRGBExist = NO;
+    __block BOOL unCWExist = NO;
     [areaEntity.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, BOOL * _Nonnull stop) {
-        if ([CSRUtilities belongToRGBCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBDevice:deviceEntity.shortName]) {
-            exist = YES;
-            *stop = YES;
+        if (![CSRUtilities belongToRGBCWDevice:deviceEntity.shortName] && ![CSRUtilities belongToRGBDevice:deviceEntity.shortName]) {
+            unRGBExist = YES;
+        }
+        if (![CSRUtilities belongToRGBCWDevice:deviceEntity.shortName] && ![CSRUtilities belongToCWDevice:deviceEntity.shortName]) {
+            unCWExist = YES;
         }
     }];
-    if (exist) {
+    if (!unRGBExist) {
         
         if ([areaEntity.rgbScenes count] == 0) {
             NSArray *names = kRGBSceneDefaultName;
@@ -659,6 +661,22 @@
             [self getMainDataArray];
         };
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:rgbgroupVC];
+        nav.modalPresentationStyle = UIModalPresentationPopover;
+        [self presentViewController:nav animated:YES completion:nil];
+        [self.mainCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell *cell, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([cell.groupId isEqualToNumber:groupId]) {
+                nav.popoverPresentationController.sourceRect = cell.bounds;
+                nav.popoverPresentationController.sourceView = cell;
+                *stop = YES;
+            }
+        }];
+    }else if (!unCWExist) {
+        DeviceViewController *dvc = [[DeviceViewController alloc] init];
+        dvc.deviceId = groupId;
+        dvc.reloadDataHandle = ^{
+            [self getMainDataArray];
+        };
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
         nav.modalPresentationStyle = UIModalPresentationPopover;
         [self presentViewController:nav animated:YES completion:nil];
         [self.mainCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell *cell, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -1057,35 +1075,28 @@
                     if ([CSRUtilities belongToThreeChannelSwitch:sceneMember.kindString]) {
                         NSString *cmdString = [NSString stringWithFormat:@"5d0307%@",[CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]]];
                         [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
-                        [sceneEntity removeMembersObject:sceneMember];
-                        [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:sceneMember];
-                        [NSThread sleepForTimeInterval:0.1f];
+                        
+                    }else if ([CSRUtilities belongToTwoChannelSwitch:sceneMember.kindString]
+                        || [CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString]
+                        || [CSRUtilities belongToTwoChannelCurtainController:sceneMember.kindString]
+                        || [CSRUtilities belongToSocketTwoChannel:sceneMember.kindString]) {
+                        
+                        NSString *cmdString = [NSString stringWithFormat:@"5d0303%@",[CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]]];
+                        [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+                        
                     }else {
-                        __block BOOL exist = NO;
-                        [devices enumerateObjectsUsingBlock:^(SelectModel *sMod, NSUInteger idx, BOOL * _Nonnull stop) {
-                            if ([sMod.deviceID isEqualToNumber:sceneMember.deviceID]) {
-                                exist = YES;
-                                *stop = YES;
-                            }
-                        }];
-                        if (!exist) {
-                            if ([CSRUtilities belongToTwoChannelSwitch:sceneMember.kindString]
-                                || [CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString]
-                                || [CSRUtilities belongToTwoChannelCurtainController:sceneMember.kindString]
-                                || [CSRUtilities belongToSocketTwoChannel:sceneMember.kindString]) {
-                                NSString *cmdString = [NSString stringWithFormat:@"5d0303%@",[CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]]];
-                                [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
-                            }else {
-                                NSString *cmdString = [NSString stringWithFormat:@"9802%@",[CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]]];
-                                [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
-                            }
-                            [sceneEntity removeMembersObject:sceneMember];
-                            [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:sceneMember];
-                        }
+                        
+                        NSString *cmdString = [NSString stringWithFormat:@"9802%@",[CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]]];
+                        [[DataModelApi sharedInstance] sendData:sceneMember.deviceID data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+                        
                     }
+                    [sceneEntity removeMembersObject:sceneMember];
+                    [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:sceneMember];
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                    
+                    [NSThread sleepForTimeInterval:0.1f];
                     
                 }
-                [[CSRDatabaseManager sharedInstance] saveContext];
             }
 
             for (SelectModel *sMod in devices) {
@@ -1521,6 +1532,10 @@
                 }
                 [NSThread sleepForTimeInterval:0.1f];
             }
+            
+            
+            
+//            [self updateTimerAfterEditScene];
             
             [_sceneSettingHud hideAnimated:YES];
             _sceneSettingHud = nil;
@@ -2366,6 +2381,82 @@
     _connectedPLable.textColor = DARKORAGE;
     [DeviceModelManager sharedInstance].bleDisconnected = YES;
     [_mainCollectionView reloadData];
+}
+
+- (void)updateTimerAfterEditScene {
+    NSArray *timers = [[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"TimerEntity" withPredicate:@"sceneID == %@", selectedSceneId];
+    if (timers && timers.count>0) {
+        for (TimerEntity *timer in timers) {
+            SceneEntity *scene = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:selectedSceneId];
+            for (TimerDeviceEntity *tMemer in timer.timerDevices) {
+                BOOL exist = NO;
+                for (SceneMemberEntity *sMember in scene.members) {
+                    if ([sMember.deviceID isEqualToNumber:tMemer.deviceID]) {
+                        exist = YES;
+                        break;
+                    }
+                }
+                if (!exist) {
+                    if ([tMemer.channel isEqualToNumber:@(10)]) {
+                        [[DataModelManager shareInstance] deleteAlarmForDevice:tMemer.deviceID index:[tMemer.timerIndex intValue]];
+                    }else {
+                        [[DataModelManager shareInstance] deleteAlarmForDevice:tMemer.deviceID channel:[tMemer.channel integerValue] index:[tMemer.timerIndex integerValue]];
+                    }
+                    [NSThread sleepForTimeInterval:0.1f];
+                    [timer removeTimerDevicesObject:tMemer];
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                }
+            }
+            
+            BOOL enable = [timer.enabled boolValue];
+            NSDate *time = timer.fireDate;
+            NSDate *date = timer.fireDate;
+            NSString *repeat = timer.repeat;
+            for (SceneMemberEntity *sMember in scene.members) {
+                NSNumber *index = nil;
+                for (TimerDeviceEntity *tMemer in timer.timerDevices) {
+                    if ([tMemer.deviceID isEqualToNumber:sMember.deviceID]) {
+                        index = tMemer.timerIndex;
+                        break;
+                    }
+                }
+                if (index == nil) {
+                    index = [[CSRDatabaseManager sharedInstance] getNextFreeTimerIDOfDeivice:sMember.deviceID];
+                }
+                
+                NSString *eveD1 = @"00";
+                NSString *eveD2 = @"00";
+                NSString *eveD3 = @"00";
+                if ([sMember.eveType isEqualToNumber:@(13)] || [sMember.eveType isEqualToNumber:@(14)] || [sMember.eveType isEqualToNumber:@(20)]) {
+                    eveD1 = [NSString stringWithFormat:@"%@",sMember.colorRed];
+                    eveD2 = [NSString stringWithFormat:@"%@",sMember.colorGreen];
+                    eveD3 = [NSString stringWithFormat:@"%@",sMember.colorBlue];
+                }else if ([sMember.eveType isEqualToNumber:@(18)] || [sMember.eveType isEqualToNumber:@(19)]) {
+                    NSString *colorTemperatureStr = [CSRUtilities stringWithHexNumber:[sMember.colorTemperature integerValue]];
+                    eveD1 = [colorTemperatureStr substringToIndex:2];
+                    eveD2 = [colorTemperatureStr substringFromIndex:2];
+                }
+                
+                if ([CSRUtilities belongToTwoChannelDimmer:sMember.kindString] || [CSRUtilities belongToSocket:sMember.kindString] || [CSRUtilities belongToTwoChannelSwitch:sMember.kindString]) {
+                    if (sMember.eveType && [sMember.eveType integerValue]>0 && sMember.colorTemperature && [sMember.colorTemperature integerValue]>0) {
+                        [[DataModelManager shareInstance] addAlarmForDevice:sMember.deviceID alarmIndex:[index integerValue] enabled:enable fireDate:date fireTime:time repeat:repeat eveType:sMember.eveType level:[sMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"01"];
+                        [NSThread sleepForTimeInterval:0.1f];
+                        [[DataModelManager shareInstance] addAlarmForDevice:sMember.deviceID alarmIndex:[index integerValue] enabled:enable fireDate:date fireTime:time repeat:repeat eveType:sMember.colorTemperature level:[sMember.colorGreen integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"02"];
+                    }else {
+                        if (sMember.eveType && [sMember.eveType integerValue]>0) {
+                            [[DataModelManager shareInstance] addAlarmForDevice:sMember.deviceID alarmIndex:[index integerValue] enabled:enable fireDate:date fireTime:time repeat:repeat eveType:sMember.eveType level:[sMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"01"];
+                        }
+                        if (sMember.colorTemperature && [sMember.colorTemperature integerValue]>0) {
+                            [[DataModelManager shareInstance] addAlarmForDevice:sMember.deviceID alarmIndex:[index integerValue] enabled:enable fireDate:date fireTime:time repeat:repeat eveType:sMember.colorTemperature level:[sMember.colorGreen integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"02"];
+                        }
+                    }
+                }else {
+                    [[DataModelManager shareInstance] addAlarmForDevice:sMember.deviceID alarmIndex:[index integerValue] enabled:enable fireDate:date fireTime:time repeat:repeat eveType:sMember.eveType level:[sMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3];
+                }
+                [NSThread sleepForTimeInterval:0.1f];
+            }
+        }
+    }
 }
 
 @end

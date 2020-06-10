@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol LCDRemoteMemberCellDelgate <NSObject>
 
 - (void)LCDRemoteMemberCellLongPressItemAtIndexPath:(NSIndexPath *)indexPath;
+- (void)LCDRemoteMemberCellMoveItem:(UIPanGestureRecognizer *)gesture;
 
 @end
 

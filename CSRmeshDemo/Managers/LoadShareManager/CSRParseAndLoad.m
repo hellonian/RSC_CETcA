@@ -216,6 +216,7 @@
             deviceEntity.mcuSVersion = deviceDict[@"mcuSVersion"];
             deviceEntity.bleFirVersion = deviceDict[@"bleFirVersion"];
             deviceEntity.bleHwVersion = deviceDict[@"bleHwVersion"];
+            deviceEntity.hwVersion = deviceDict[@"hwVersion"];
             
             NSMutableArray *rgbScenes = [NSMutableArray new];
             if (parsingDictionary[@"rgbScene_list"]) {
@@ -342,6 +343,7 @@
             timerObj.fireTime = [matter dateFromString:timerDict[@"fireTime"]];
             timerObj.fireDate = [matter dateFromString:timerDict[@"fireDate"]];
             timerObj.repeat = timerDict[@"repeat"];
+            timerObj.sceneID = timerDict[@"sceneID"];
             NSArray *timerDevices = [[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"TimerDeviceEntity" withPredicate:@"timerID == %@",timerDict[@"timerID"]];
             [timerObj addTimerDevices:[NSSet setWithArray:timerDevices]];
             if (self.sharePlace) {
@@ -488,7 +490,8 @@
                                           @"mcuHVersion":(device.mcuHVersion)?(device.mcuHVersion):@0,
                                           @"mcuSVersion":(device.mcuSVersion)?(device.mcuSVersion):@0,
                                           @"bleFirVersion":(device.bleFirVersion)?(device.bleFirVersion):@0,
-                                          @"bleHwVersion":(device.bleHwVersion)?(device.bleHwVersion):@0
+                                          @"bleHwVersion":(device.bleHwVersion)?(device.bleHwVersion):@0,
+                                          @"hwVersion":(device.hwVersion)?(device.hwVersion):@0
                                           }];
                 
                 if (device.rgbScenes && [device.rgbScenes count]>0) {
@@ -614,8 +617,8 @@
                                  @"enabled":(timer.enabled)?(timer.enabled):@0,
                                  @"fireTime":fireTimeStr?fireTimeStr:@"20180101000000",
                                  @"fireDate":fireDateStr?fireDateStr:@"20180101000000",
-                                 @"repeat":timer.repeat?timer.repeat:@""
-                                 }];
+                                 @"repeat":timer.repeat?timer.repeat:@"",
+                                 @"sceneID":timer.sceneID?timer.sceneID:@0}];
         for (TimerDeviceEntity *timerDevice in timer.timerDevices) {
             [timerDevicesArray addObject:@{@"timerID":(timer.timerID)?(timer.timerID):@0,
                                            @"deviceID":(timerDevice.deviceID)?(timerDevice.deviceID):@0,
@@ -739,7 +742,9 @@
                     deviceEntity.dhmKey = [CSRUtilities dataForHexString:deviceDict[@"`c_dmkey`"]];
                     deviceEntity.sortId = deviceDict[@"`c_orderIndex`"];
                     deviceEntity.androidId = deviceDict[@"`_id`"];
-                    deviceEntity.cvVersion = @(17);
+                    deviceEntity.cvVersion = deviceDict[@"`c_user_version`"];
+                    deviceEntity.hwVersion = deviceDict[@"`c_hardware_version`"];
+                    deviceEntity.mcuSVersion = deviceDict[@"`c_mcu_s_version`"];
                     
                     __block NSMutableData *groups = [NSMutableData data];
                     if (parsingDictionary[@"KEY_PARENTDEVICE_LIST"]) {
@@ -810,6 +815,103 @@
                     }
                     [deviceEntity addRgbScenes:[NSSet setWithArray:rgbScenes]];
                     
+                    if ([CSRUtilities belongToRemote:deviceDict[@"`c_shortName`"]]
+                        || [CSRUtilities belongToCWRemote:deviceDict[@"`c_shortName`"]]
+                        || [CSRUtilities belongToRGBDevice:deviceDict[@"`c_shortName`"]]
+                        || [CSRUtilities belongToRGBCWDevice:deviceDict[@"`c_shortName`"]]
+                        || [CSRUtilities belongToSceneRemote:deviceDict[@"`c_shortName`"]]) {
+                        NSString *shortname = deviceDict[@"`c_shortName`"];
+                        if ([shortname isEqualToString:@"RB01"]
+                            || [shortname isEqualToString:@"RB05"]
+                            || [CSRUtilities belongToCWRemote:deviceDict[@"`c_shortName`"]]
+                            || [CSRUtilities belongToRGBDevice:deviceDict[@"`c_shortName`"]]
+                            || [CSRUtilities belongToRGBCWDevice:deviceDict[@"`c_shortName`"]]) {
+                            
+                            NSInteger t1 = [deviceDict[@"`c_deviceType1`"] integerValue];
+                            NSInteger i1 = [deviceDict[@"`c_deviceid_1`"] integerValue];
+                            NSString *s1 = [self type:t1 deviceID:i1];
+                            NSInteger t2 = [deviceDict[@"`c_deviceType2`"] integerValue];
+                            NSInteger i2 = [deviceDict[@"`c_deviceid_2`"] integerValue];
+                            NSString *s2 = [self type:t2 deviceID:i2];
+                            NSInteger t3 = [deviceDict[@"`c_deviceType3`"] integerValue];
+                            NSInteger i3 = [deviceDict[@"`c_deviceid_3`"] integerValue];
+                            NSString *s3 = [self type:t3 deviceID:i3];
+                            NSInteger t4 = [deviceDict[@"`c_deviceType4`"] integerValue];
+                            NSInteger i4 = [deviceDict[@"`c_deviceid_4`"] integerValue];
+                            NSString *s4 = [self type:t4 deviceID:i4];
+                            deviceEntity.remoteBranch = [NSString stringWithFormat:@"9b150401%@02%@03%@04%@",s1,s2,s3,s4];
+                            
+                        }else if ([shortname isEqualToString:@"RB02"]
+                                  ||[shortname isEqualToString:@"RB06"]
+                                  ||[shortname isEqualToString:@"RSBH"]
+                                  ||[shortname isEqualToString:@"1BMBH"]) {
+                            
+                            NSInteger t1 = [deviceDict[@"`c_deviceType1`"] integerValue];
+                            NSInteger i1 = [deviceDict[@"`c_deviceid_1`"] integerValue];
+                            NSString *s1 = [self type:t1 deviceID:i1];
+                            deviceEntity.remoteBranch = [NSString stringWithFormat:@"9b060101%@",s1];
+                            
+                        }else if ([shortname isEqualToString:@"RB04"]
+                                  || [shortname isEqualToString:@"RSIBH"]
+                                  || [shortname isEqualToString:@"S10IB-H2"]
+                                  || [shortname isEqualToString:@"RB07"]) {
+                            
+                            NSInteger t1 = [deviceDict[@"`c_deviceType1`"] integerValue];
+                            NSInteger i1 = [deviceDict[@"`c_deviceid_1`"] integerValue];
+                            NSString *s1 = [self type:t1 deviceID:i1];
+                            NSInteger t2 = [deviceDict[@"`c_deviceType2`"] integerValue];
+                            NSInteger i2 = [deviceDict[@"`c_deviceid_2`"] integerValue];
+                            NSString *s2 = [self type:t2 deviceID:i2];
+                            deviceEntity.remoteBranch = [NSString stringWithFormat:@"9b0b0201%@02%@",s1,s2];
+                            
+                        }else if ([shortname isEqualToString:@"R5BSBH"]
+                                  || [shortname isEqualToString:@"RB09"]
+                                  || [shortname isEqualToString:@"5RSIBH"]
+                                  || [shortname isEqualToString:@"5BCBH"]) {
+                            
+                            NSInteger t1 = [deviceDict[@"`c_deviceType1`"] integerValue];
+                            NSInteger i1 = [deviceDict[@"`c_deviceid_1`"] integerValue];
+                            NSString *s1 = [self type:t1 deviceID:i1];
+                            NSInteger t2 = [deviceDict[@"`c_deviceType2`"] integerValue];
+                            NSInteger i2 = [deviceDict[@"`c_deviceid_2`"] integerValue];
+                            NSString *s2 = [self type:t2 deviceID:i2];
+                            NSInteger t3 = [deviceDict[@"`c_deviceType3`"] integerValue];
+                            NSInteger i3 = [deviceDict[@"`c_deviceid_3`"] integerValue];
+                            NSString *s3 = [self type:t3 deviceID:i3];
+                            NSInteger t4 = [deviceDict[@"`c_deviceType4`"] integerValue];
+                            NSInteger i4 = [deviceDict[@"`c_deviceid_4`"] integerValue];
+                            NSString *s4 = [self type:t4 deviceID:i4];
+                            NSInteger t5 = [deviceDict[@"`c_deviceType5`"] integerValue];
+                            NSInteger i5 = [deviceDict[@"`c_deviceid_5`"] integerValue];
+                            NSString *s5 = [self type:t5 deviceID:i5];
+                            deviceEntity.remoteBranch = [NSString stringWithFormat:@"9b1a0501%@02%@03%@04%@05%@",s1,s2,s3,s4,s5];
+                            
+                        }else if ([shortname isEqualToString:@"6RSIBH"]
+                                  || [CSRUtilities belongToSceneRemote:deviceDict[@"`c_shortName`"]]) {
+                            
+                            NSInteger t1 = [deviceDict[@"`c_deviceType1`"] integerValue];
+                            NSInteger i1 = [deviceDict[@"`c_deviceid_1`"] integerValue];
+                            NSString *s1 = [self type:t1 deviceID:i1];
+                            NSInteger t2 = [deviceDict[@"`c_deviceType2`"] integerValue];
+                            NSInteger i2 = [deviceDict[@"`c_deviceid_2`"] integerValue];
+                            NSString *s2 = [self type:t2 deviceID:i2];
+                            NSInteger t3 = [deviceDict[@"`c_deviceType3`"] integerValue];
+                            NSInteger i3 = [deviceDict[@"`c_deviceid_3`"] integerValue];
+                            NSString *s3 = [self type:t3 deviceID:i3];
+                            NSInteger t4 = [deviceDict[@"`c_deviceType4`"] integerValue];
+                            NSInteger i4 = [deviceDict[@"`c_deviceid_4`"] integerValue];
+                            NSString *s4 = [self type:t4 deviceID:i4];
+                            NSInteger t5 = [deviceDict[@"`c_deviceType5`"] integerValue];
+                            NSInteger i5 = [deviceDict[@"`c_deviceid_5`"] integerValue];
+                            NSString *s5 = [self type:t5 deviceID:i5];
+                            NSInteger t6 = [deviceDict[@"`c_deviceType6`"] integerValue];
+                            NSInteger i6 = [deviceDict[@"`c_deviceid_6`"] integerValue];
+                            NSString *s6 = [self type:t6 deviceID:i6];
+                            deviceEntity.remoteBranch = [NSString stringWithFormat:@"9b1a0501%@02%@03%@04%@05%@06%@",s1,s2,s3,s4,s5,s6];
+                            
+                        }
+                    }
+                    
                     if (self.sharePlace) {
                         [self.sharePlace addDevicesObject:deviceEntity];
                     }
@@ -820,7 +922,17 @@
         if (parsingDictionary[@"KEY_SCENE_LIST"]) {
             for (NSDictionary * sceneDict in parsingDictionary[@"KEY_SCENE_LIST"]) {
                 SceneEntity *sceneObj = [NSEntityDescription insertNewObjectForEntityForName:@"SceneEntity" inManagedObjectContext:managedObjectContext];
-                sceneObj.sceneID = @([sceneDict[@"`_id`"] integerValue] - 5);
+                if (![sceneDict[@"`c_isCustom`"] boolValue]) {
+                    if ([sceneDict[@"`c_resIndex`"] intValue] == 0) {
+                        sceneObj.sceneID = @0;
+                    }else if ([sceneDict[@"`c_resIndex`"] intValue] == 1) {
+                        sceneObj.sceneID = @1;
+                    }else {
+                        sceneObj.sceneID = sceneDict[@"`_id`"];
+                    }
+                }else {
+                    sceneObj.sceneID = sceneDict[@"`_id`"];
+                }
                 sceneObj.iconID = sceneDict[@"`c_resIndex`"];
                 sceneObj.sceneName = sceneDict[@"`c_name`"];
                 sceneObj.rcIndex = sceneDict[@"`c_csrsceneid`"];
@@ -836,7 +948,7 @@
                                 for (NSDictionary * deviceDict in parsingDictionary[@"KEY_DEVICES_LIST"]) {
                                     if ([(NSNumber *)deviceDict[@"`_id`"] isEqualToNumber:(NSNumber *)parentDict[@"`c_device_id`"]]) {
                                         SceneMemberEntity *sceneMemberObj = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:managedObjectContext];
-                                        sceneMemberObj.sceneID = @([sceneDict[@"`_id`"] integerValue] - 5);
+                                        sceneMemberObj.sceneID = sceneDict[@"`_id`"];
                                         sceneMemberObj.deviceID = deviceDict[@"`c_csr_deviceId`"];
                                         sceneMemberObj.powerState = parentDict[@"`c_bOnOff`"];
                                         sceneMemberObj.level = [NSNumber numberWithFloat:[parentDict[@"`c_bright`"] floatValue] * 2.55f];
@@ -913,6 +1025,59 @@
             }
         }
         
+        if (parsingDictionary[@"KEY_TIMER_LIST"]) {
+            for (NSDictionary *timerDict in parsingDictionary[@"KEY_TIMER_LIST"]) {
+                TimerEntity *timerObj = [NSEntityDescription insertNewObjectForEntityForName:@"TimerEntity" inManagedObjectContext:managedObjectContext];
+                timerObj.timerID = timerDict[@"`_id`"];
+                timerObj.name = timerDict[@"`c_name`"];
+                timerObj.enabled = timerDict[@"`c_enabled`"];
+                if (timerDict[@"`c_repeat`"]) {
+                    NSString *s = [timerDict[@"`c_repeat`"] lowercaseString];
+                    timerObj.repeat = [NSString stringWithFormat:@"%@%@",[CSRUtilities getBinaryByhex:[s substringToIndex:1]], [CSRUtilities getBinaryByhex:[s substringFromIndex:1]]];
+                }
+                NSDateFormatter *matter = [[NSDateFormatter alloc] init];
+                matter.dateFormat = @"YYYYMMddHHmmss";
+                NSString *M = [NSString stringWithFormat:@"%@",timerDict[@"`c_month`"]];
+                if ([M length]<2) {
+                    M = [NSString stringWithFormat:@"0%@",M];
+                }
+                NSString *d = [NSString stringWithFormat:@"%@",timerDict[@"`c_day`"]];
+                if ([d length]<2) {
+                    d = [NSString stringWithFormat:@"0%@",d];
+                }
+                NSString *h = [NSString stringWithFormat:@"%@",timerDict[@"`c_hour`"]];
+                if ([h length]<2) {
+                    h = [NSString stringWithFormat:@"0%@",h];
+                }
+                NSString *m = [NSString stringWithFormat:@"%@",timerDict[@"`c_minute`"]];
+                if ([m length]<2) {
+                    m = [NSString stringWithFormat:@"0%@",m];
+                }
+                NSString *t = [NSString stringWithFormat:@"%@%@%@%@%@00", timerDict[@"`c_year`"], M, d, h, m];
+                timerObj.fireTime = [matter dateFromString:t];
+                timerObj.fireDate = [matter dateFromString:t];
+                timerObj.sceneID = timerDict[@"`c_sceneid`"];
+                if (parsingDictionary[@"KEY_SCENE_LIST"]) {
+                    for (NSDictionary * sceneDict in parsingDictionary[@"KEY_SCENE_LIST"]) {
+                        if (![sceneDict[@"`c_isCustom`"] boolValue]) {
+                            if ([sceneDict[@"`c_resIndex`"] intValue] == 0) {
+                                if ([timerDict[@"`c_sceneid`"] intValue] == [sceneDict[@"`_id`"] intValue]) {
+                                    timerObj.sceneID = @0;
+                                }
+                            }else if ([sceneDict[@"`c_resIndex`"] intValue] == 1) {
+                                if ([timerDict[@"`c_sceneid`"] intValue] == [sceneDict[@"`_id`"] intValue]) {
+                                    timerObj.sceneID = @1;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (self.sharePlace) {
+                    [self.sharePlace addTimersObject:timerObj];
+                }
+            }
+        }
+        
         [[CSRDatabaseManager sharedInstance] saveContext];
     }
     
@@ -926,6 +1091,18 @@
         return [NSNumber numberWithFloat:hue];
     }
     return nil;
+}
+
+- (NSString *)type:(NSInteger)t deviceID:(NSInteger)deviceId {
+    NSString *s = @"";
+    if (t == 0) {
+        s = [NSString stringWithFormat:@"0100%@",[CSRUtilities exchangePositionOfDeviceId:deviceId]];
+    }else if (t == 1) {
+        s = [NSString stringWithFormat:@"2000%@",[CSRUtilities exchangePositionOfDeviceId:deviceId]];
+    }else if (t == 2) {
+        s = [NSString stringWithFormat:@"%@0000",[CSRUtilities exchangePositionOfDeviceId:deviceId]];
+    }
+    return s;
 }
 
 @end

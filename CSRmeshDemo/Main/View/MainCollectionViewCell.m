@@ -318,7 +318,7 @@
             self.level2Label.hidden = YES;
         }else if ([CSRUtilities belongToCWDevice:device.deviceShortName] || [CSRUtilities belongToRGBDevice:device.deviceShortName] || [CSRUtilities belongToRGBCWDevice:device.deviceShortName]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Controller"];
-            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable");
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = YES;
         }else if ([CSRUtilities belongToOneChannelCurtainController:device.deviceShortName]) {

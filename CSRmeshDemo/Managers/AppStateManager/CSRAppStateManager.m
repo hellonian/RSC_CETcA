@@ -45,6 +45,7 @@
     }
     
     [[MeshServiceApi sharedInstance] addDelegate:self];
+    [[MeshServiceApi sharedInstance] setTTL:@10];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleDataModelChange:)

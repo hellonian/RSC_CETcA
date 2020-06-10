@@ -128,8 +128,18 @@
     if (@available(iOS 13.0, *)) {
         //用户明确拒绝，可以弹窗提示用户到设置中手动打开权限
         if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
-            //使用下面接口可以打开当前应用的设置页面
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@""
+                                                                                     message:AcTECLocalizedStringFromTable(@"gotosetting", @"Localizable")
+                                                                              preferredStyle:UIAlertControllerStyleAlert];
+            [alertController.view setTintColor:DARKORAGE];
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable")
+                                                               style:UIAlertActionStyleDefault
+                                                             handler:^(UIAlertAction *action) {
+//                                                                 //使用下面接口可以打开当前应用的设置页面
+//                                                                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                                                             }];
+            [alertController addAction:okAction];
+            [self presentViewController:alertController animated:YES completion:nil];
         }
         
         self.locManager = [[CLLocationManager alloc] init];

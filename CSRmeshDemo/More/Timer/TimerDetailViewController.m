@@ -298,7 +298,11 @@
         titleLabel.frame = CGRectMake(20, 12, 150, 20);
         titleLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
         titleLabel.font = [UIFont systemFontOfSize:14];
-        titleLabel.text = sceneEntity.sceneName;
+        if ([sceneEntity.sceneName isEqualToString:@"Home"] || [sceneEntity.sceneName isEqualToString:@"Away"] || [sceneEntity.sceneName isEqualToString:@"Scene1"] || [sceneEntity.sceneName isEqualToString:@"Scene2"] || [sceneEntity.sceneName isEqualToString:@"Scene3"] || [sceneEntity.sceneName isEqualToString:@"Scene4"]) {
+            titleLabel.text = AcTECLocalizedStringFromTable(sceneEntity.sceneName, @"Localizable");
+        }else {
+            titleLabel.text = sceneEntity.sceneName;
+        }
         [btn addSubview:titleLabel];
         UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"To_select"]];
         [btn addSubview:imageView];
@@ -398,7 +402,11 @@
     selectedTitleLabel.frame = CGRectMake(20, 12, 150, 20);
     selectedTitleLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
     selectedTitleLabel.font = [UIFont systemFontOfSize:14];
-    selectedTitleLabel.text = scene.sceneName;
+    if ([scene.sceneName isEqualToString:@"Home"] || [scene.sceneName isEqualToString:@"Away"] || [scene.sceneName isEqualToString:@"Scene1"] || [scene.sceneName isEqualToString:@"Scene2"] || [scene.sceneName isEqualToString:@"Scene3"] || [scene.sceneName isEqualToString:@"Scene4"]) {
+        selectedTitleLabel.text = AcTECLocalizedStringFromTable(scene.sceneName, @"Localizable");
+    }else {
+        selectedTitleLabel.text = scene.sceneName;
+    }
     [selectedBgView addSubview:selectedTitleLabel];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Be_selected"]];
     [selectedBgView addSubview:imageView];

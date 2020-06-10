@@ -135,4 +135,7 @@
 
 + (NSString *)getBinaryByhex:(NSString *)hex;
 
++ (NSString *)getWifiName;
+
++(NSString *)convertToJsonData2:(NSDictionary *)dict;
 @end

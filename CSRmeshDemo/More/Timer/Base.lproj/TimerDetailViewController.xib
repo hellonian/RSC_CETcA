@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -30,7 +28,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <color key="backgroundColor" red="0.86274509799999999" green="0.86274509799999999" blue="0.86274509799999999" alpha="1" colorSpace="calibratedRGB"/>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
-            <point key="canvasLocation" x="316" y="-125"/>
+            <point key="canvasLocation" x="268" y="-613"/>
         </view>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="Akz-NI-7zN">
             <rect key="frame" x="0.0" y="0.0" width="479" height="136"/>
@@ -144,12 +142,9 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="-452" y="69"/>
         </view>
-        <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" id="w3K-Zg-65E">
+        <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" id="w3K-Zg-65E">
             <rect key="frame" x="0.0" y="0.0" width="454" height="257"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-            <date key="date" timeIntervalSinceReferenceDate="541675504.02285695">
-                <!--2018-03-02 09:25:04 +0000-->
-            </date>
             <point key="canvasLocation" x="-453" y="350.5"/>
         </datePicker>
         <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="time" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="ZG8-9S-pgV">
@@ -159,9 +154,6 @@
                 <constraint firstAttribute="width" constant="300" id="A8l-wB-jWt"/>
                 <constraint firstAttribute="height" constant="160" id="gwO-jH-a9m"/>
             </constraints>
-            <date key="date" timeIntervalSinceReferenceDate="541673101.68923199">
-                <!--2018-03-02 08:45:01 +0000-->
-            </date>
             <point key="canvasLocation" x="-471" y="-346"/>
         </datePicker>
         <segmentedControl opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="wdX-Ff-gEZ">
@@ -249,7 +241,7 @@
             <fontDescription key="fontDescription" type="system" pointSize="14"/>
             <color key="textColor" red="0.58823529409999997" green="0.58823529409999997" blue="0.58823529409999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
             <nil key="highlightedColor"/>
-            <point key="canvasLocation" x="446" y="-76"/>
+            <point key="canvasLocation" x="210" y="-57"/>
         </label>
         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d4f-vi-gnE">
             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -267,7 +259,7 @@
         </button>
     </objects>
     <resources>
-        <image name="trashcan" width="21" height="21"/>
+        <image name="trashcan" width="21.5" height="21.5"/>
         <image name="weekBtnSelected" width="43" height="43"/>
     </resources>
 </document>

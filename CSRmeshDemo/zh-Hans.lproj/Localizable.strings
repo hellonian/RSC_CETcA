@@ -147,7 +147,7 @@
 "bubble_left_words" = "长按开机按钮，待窗帘完全打开时松开。";
 "bubble_right_words" = "长按关闭按钮，待窗帘完全关闭时松开。";
 "bubble_mid_words" = "正在进入校准模式";
-"noWifiAlert" = "可连接WIFI将场所数据分享给其他设备。";
+"noWifiAlert" = "可连接WIFI将场所数据分享给其他设备。\n\n当前手机未连接WIFI。";
 "today" = "今天";
 "thisWeek" = "当前周";
 "thisMonth" = "当前月";
@@ -173,6 +173,13 @@
 "Channel3"="第 3 路";
 "alert"="提示！";
 "cantsetoff"="儿童模式开启的状态下无法设置关闭状态。";
-"OK" = "OK";
+"OK" = "确定";
 "Scene3" = "场景3";
 "Scene4" = "场景4";
+"mustSelectScene" = "必须选择一个场景";
+"place_exists" = "场所已经存在。";
+"send" = "发送";
+"enter_wifi_password" = "请输入无限局域网的密码";
+"set_lcdremote_wifi" = "设置液晶情景面板的无线局域网连接";
+"help" = "help";
+"gotosetting" = "分享数据需要使用位置信息，位置信息不会上传网络，请到手机系统的【设置】->【隐私】->【定位服务】中打开定位服务，并允许AcTEC BLE使用定位服务";

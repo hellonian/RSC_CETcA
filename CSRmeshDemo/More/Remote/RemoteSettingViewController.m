@@ -167,8 +167,13 @@
                     NSString *rcIndex = [brach substringWithRange:NSMakeRange(2, 4)];
                     SelectModel *mod = [[SelectModel alloc] init];
                     mod.sourceID = @([CSRUtilities numberWithHexString:swIndex]);
-                    mod.channel = @([self exchangePositionOfDeviceIdString:rcIndex]);
-                    mod.deviceID = @([self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(12, 4)]]);
+                    if ([brach length]>15) {
+                        mod.channel = @([self exchangePositionOfDeviceIdString:rcIndex]);
+                        mod.deviceID = @([self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(12, 4)]]);
+                    }else {
+                        mod.channel = @(0);
+                        mod.deviceID = @(0);
+                    }
                     [_settingSelectMutArray insertObject:mod atIndex:idx];
                     
                     switch (idx) {
@@ -246,7 +251,12 @@
         }
         
     }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]||[_remoteEntity.shortName isEqualToString:@"1BMBH"]) {
-        _practicalityImageView.image = [UIImage imageNamed:@"rb02"];
+        if ([self.remoteEntity.shortName isEqualToString:@"RB02"]) {
+            _practicalityImageView.image = [UIImage imageNamed:@"rb02"];
+        }else {
+            _practicalityImageView.image = [UIImage imageNamed:@"rb06"];
+        }
+        
         [self.customContentView addSubview:self.singleRemoteView];
         [self.singleRemoteView autoSetDimension:ALDimensionHeight toSize:44.0f];
         [self.singleRemoteView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
@@ -779,7 +789,7 @@
 -(void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     if (@available(iOS 11.0, *)) {
-        CGFloat safeHeight = HEIGHT - self.view.safeAreaInsets.bottom - self.view.safeAreaInsets.top;
+        CGFloat safeHeight = self.view.bounds.size.height - self.view.safeAreaInsets.bottom - self.view.safeAreaInsets.top;
         if ([self.remoteEntity.shortName isEqualToString:@"RB01"]||[self.remoteEntity.shortName isEqualToString:@"RB05"]) {
             if (safeHeight <= 506.5) {
                 _contentViewHeight.constant = 506.5;

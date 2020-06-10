@@ -15,14 +15,28 @@
 #import <AVFoundation/AVFoundation.h>
 #import "DataModelManager.h"
 #import <MBProgressHUD.h>
+#import <CSRmesh/DataModelApi.h>
+#import <CoreLocation/CLLocationManager.h>
+#import "GCDAsyncSocket.h"
 
-@interface RemoteLCDVC ()<UITextFieldDelegate,UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UINavigationControllerDelegate,UIImagePickerControllerDelegate,LCDRemoteMemberCellDelgate>
+@interface RemoteLCDVC ()<UITextFieldDelegate,UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UINavigationControllerDelegate,UIImagePickerControllerDelegate,LCDRemoteMemberCellDelgate,CLLocationManagerDelegate,GCDAsyncSocketDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *wallpaper;
 @property (weak, nonatomic) IBOutlet UITextField *nameTf;
 @property (nonatomic, copy) NSString *originalName;
 @property (weak, nonatomic) IBOutlet UICollectionView *memberList;
 @property (nonatomic, strong) NSMutableArray *dataAry;
+@property (nonatomic, strong) CSRDeviceEntity *applyDevice;
+@property (nonatomic, assign) NSInteger applySourceID;
+@property (nonatomic, assign) NSInteger applyIndex;
+@property (nonatomic, strong) NSData *applyData;
+@property (nonatomic, strong) NSString *wifiPassword;
+@property (nonatomic, strong) NSString *IPAdress;
+@property (nonatomic, assign) NSInteger port;
+@property (nonatomic, strong) GCDAsyncSocket *tcpSocketManager;
+@property (weak, nonatomic) IBOutlet UIButton *uConfigBtn;
+@property (weak, nonatomic) IBOutlet UIButton *uIconBtn;
+@property (nonatomic, assign) NSInteger applyCmdType;
 
 @end
 
@@ -45,12 +59,44 @@
         }
     }
     
+    UIButton *wifiBtn = [[UIButton alloc] init];
+    [wifiBtn setTitle:@"WIFI" forState:UIControlStateNormal];
+    [wifiBtn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+    [wifiBtn addTarget:self action:@selector(wifiAction) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithCustomView:wifiBtn];
+    self.navigationItem.rightBarButtonItem = right;
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(LCDRemoteAddCall:)
+                                                 name:@"LCDRemoteAddCall"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(LCDRemoteNameCall:)
+                                                 name:@"LCDRemoteNameCall"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(LCDRemoteSSIDCall:)
+                                                 name:@"LCDRemoteSSIDCall"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(LCDRemoteIPAdressCall:)
+                                                 name:@"LCDRemoteIPAdressCall"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(LCDRemotePortCall:)
+                                                 name:@"LCDRemotePortCall"
+                                               object:nil];
+    
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(wallpaperTapAction:)];
     [_wallpaper addGestureRecognizer:tap];
     
     _memberList.dataSource = self;
     _memberList.delegate = self;
     [_memberList registerNib:[UINib nibWithNibName:@"LCDRemoteMemberCell" bundle:nil] forCellWithReuseIdentifier:@"lcdcell"];
+    
+//    UIPanGestureRecognizer *movePanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(movePanGestureAction:)];
+//    [_memberList addGestureRecognizer:movePanGesture];
     
     if (_deviceId) {
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
@@ -61,8 +107,8 @@
         
         _dataAry = [[NSMutableArray alloc] init];
         [_dataAry addObject:@0];
-        if ([deviceEntity.remoteBranch length]>=14) {
-            NSInteger num = [deviceEntity.remoteBranch length]/12;
+        if ([deviceEntity.remoteBranch length] >= 14) {
+            NSInteger num = [deviceEntity.remoteBranch length]/14;
             for (int i=0; i<num; i++) {
                 NSString *str = [deviceEntity.remoteBranch substringWithRange:NSMakeRange(14*i, 14)];
                 SelectModel *mod = [[SelectModel alloc] init];
@@ -70,16 +116,22 @@
                 mod.channel = @([self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(4, 4)]]);
                 mod.deviceID = @([self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(8, 4)]]);
                 LCDSelectModel *lMod = [self configLCDSelectModelFromSelectModel:mod];
+                lMod.sortID = @(i+1);
                 [_dataAry insertObject:lMod atIndex:i];
             }
             [_memberList reloadData];
         }
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(LCDRemoteKeyIndexCall:)
+                                                     name:@"LCDRemoteKeyIndexCall"
+                                                   object:nil];
+        
+        Byte byte[3] = {0xea, 0x7f, 0x00};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
     }
-    
-    
-    
 }
-
 
 - (NSInteger)exchangePositionOfDeviceIdString:(NSString *)deviceIdString {
     NSString *str11 = [deviceIdString substringToIndex:2];
@@ -164,7 +216,7 @@
         [alert.view setTintColor:DARKORAGE];
         UIAlertAction *lamp = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"ControlLamp", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
-            [self selectMember:DeviceListSelectMode_Single];
+            [self selectMember:DeviceListSelectMode_SingleRegardlessChannel];
             
         }];
         UIAlertAction *group = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"ControlGroup", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
@@ -228,17 +280,20 @@
         if ([devices count] > 0) {
             SelectModel *mod = devices[0];
             LCDSelectModel *lMod = [self configLCDSelectModelFromSelectModel:mod];
+            lMod.sortID = @([_dataAry count]);
             [_dataAry insertObject:lMod atIndex:[_dataAry count]-1];
             [_memberList reloadData];
-            
             
             NSString *infoStr = [NSString stringWithFormat:@"%@%@%@%@%@",[CSRUtilities stringWithHexNumber:[lMod.sourceID integerValue]],[CSRUtilities stringWithHexNumber:[lMod.typeID integerValue]],[CSRUtilities exchangePositionOfDeviceId:[lMod.channel integerValue]],[CSRUtilities exchangePositionOfDeviceId:[lMod.deviceID integerValue]],[CSRUtilities stringWithHexNumber:[lMod.iconID integerValue]]];
             [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"b6070c%@",infoStr] toDeviceId:_deviceId];
             
-            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-            NSString *a = [deviceEntity.remoteBranch length]>0? deviceEntity.remoteBranch:@"";
-            deviceEntity.remoteBranch = [NSString stringWithFormat:@"%@%@",a,infoStr];
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+            NSString *a = [device.remoteBranch length]>0? device.remoteBranch:@"";
+            device.remoteBranch = [NSString stringWithFormat:@"%@%@",a,infoStr];
             [[CSRDatabaseManager sharedInstance] saveContext];
+            
+            _applyDevice = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mod.deviceID];
+            _applySourceID = [lMod.sourceID intValue];
         }
     }];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
@@ -247,7 +302,7 @@
 }
 
 - (NSNumber *)findNextSourceID {
-    NSInteger nextSourceID = 0;
+    NSInteger nextSourceID = 1;
     NSMutableArray *mutableAry = [_dataAry mutableCopy];
     if ([mutableAry count]>1) {
         [mutableAry removeLastObject];
@@ -258,7 +313,7 @@
             NSInteger source = [mod.sourceID integerValue];
             NSInteger preSource;
             if (i==0) {
-                preSource = -1;
+                preSource = 0;
             }else {
                 SelectModel *preMod = mutableAry[i-1];
                 preSource = [preMod.sourceID integerValue];
@@ -301,6 +356,9 @@
             }else if ([CSRUtilities belongToTwoChannelSwitch:device.shortName]) {
                 lMod.typeID = @(1);
                 lMod.iconID = @(2);
+            }else if ([CSRUtilities belongToThreeChannelSwitch:device.shortName]) {
+                lMod.typeID = @(1);
+                lMod.iconID = @(3);
             }else if ([CSRUtilities belongToOneChannelCurtainController:device.shortName]) {
                 lMod.typeID = @(4);
                 if ([device.remoteBranch isEqualToString:@"cv"]) {
@@ -451,5 +509,598 @@
     _wallpaper.image = [info objectForKey:UIImagePickerControllerOriginalImage];
 }
 
+- (void)LCDRemoteAddCall:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    NSInteger sourceID = [CSRUtilities numberWithHexString:userInfo[@"sourceID"]];
+    if ([deviceId isEqualToNumber:_deviceId] && sourceID == _applySourceID) {
+        BOOL state = [userInfo[@"state"] boolValue];
+        if (state) {
+            NSData *nameData = [_applyDevice.name dataUsingEncoding:NSUTF8StringEncoding];
+            NSInteger packet = nameData.length / 5 + 1;
+            if (nameData.length % 5 == 0) {
+                packet = nameData.length / 5;
+            }
+            if (nameData.length >= 5) {
+                _applyIndex = 1;
+                NSData *data_0 = [nameData subdataWithRange:NSMakeRange(0, 5)];
+                Byte byte[] = {0xea, 0x7d, sourceID, packet, 0x01};
+                NSData *head = [[NSData alloc] initWithBytes:byte length:5];
+                NSMutableData *cmd = [[NSMutableData alloc] init];
+                [cmd appendData:head];
+                [cmd appendData:data_0];
+                [[DataModelApi sharedInstance] sendData:_deviceId data:cmd success:nil failure:nil];
+            }
+        }
+    }
+}
+
+- (void)LCDRemoteNameCall:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    NSInteger sourceID = [CSRUtilities numberWithHexString:userInfo[@"sourceID"]];
+    NSInteger index = [CSRUtilities numberWithHexString:userInfo[@"index"]];
+    if ([deviceId isEqualToNumber:_deviceId] && sourceID == _applySourceID && index == _applyIndex) {
+        NSData *nameData = [_applyDevice.name dataUsingEncoding:NSUTF8StringEncoding];
+        NSInteger packet = nameData.length / 5 + 1;
+        if (nameData.length % 5 == 0) {
+            packet = nameData.length / 5;
+        }
+        
+        if (index == packet) {
+            
+        }else if (index == (packet -1)) {
+            _applyIndex = index + 1;
+            NSData *data_0 = [nameData subdataWithRange:NSMakeRange(5*index, nameData.length-5*index)];
+            Byte byte[] = {0xea, 0x7d, sourceID, packet, _applyIndex};
+            NSData *head = [[NSData alloc] initWithBytes:byte length:5];
+            NSMutableData *cmd = [[NSMutableData alloc] init];
+            [cmd appendData:head];
+            [cmd appendData:data_0];
+            [[DataModelApi sharedInstance] sendData:_deviceId data:cmd success:nil failure:nil];
+        }else {
+            _applyIndex = index + 1;
+            NSData *data_0 = [nameData subdataWithRange:NSMakeRange(5*index, 5)];
+            Byte byte[] = {0xea, 0x7d, sourceID, packet, _applyIndex};
+            NSData *head = [[NSData alloc] initWithBytes:byte length:5];
+            NSMutableData *cmd = [[NSMutableData alloc] init];
+            [cmd appendData:head];
+            [cmd appendData:data_0];
+            [[DataModelApi sharedInstance] sendData:_deviceId data:cmd success:nil failure:nil];
+        }
+    }
+}
+
+- (void)LCDRemoteMemberCellMoveItem:(UIPanGestureRecognizer *)gesture {
+    switch (gesture.state) {
+        case UIGestureRecognizerStateBegan:
+        {
+            NSIndexPath *indexPath = [_memberList indexPathForItemAtPoint:[gesture locationInView:_memberList]];
+            if (indexPath == nil) {
+                break;
+            }
+            
+            if (indexPath.row == _dataAry.count - 1) {
+                break;
+            }
+            
+            [_memberList beginInteractiveMovementForItemAtIndexPath:indexPath];
+        }
+            break;
+        case UIGestureRecognizerStateChanged:
+        {
+            [_memberList updateInteractiveMovementTargetPosition:[gesture locationInView:_memberList]];
+        }
+            break;
+        case UIGestureRecognizerStateEnded:
+        {
+            [_memberList endInteractiveMovement];
+        }
+            break;
+        default:
+            [_memberList cancelInteractiveMovement];
+            break;
+    }
+}
+
+- (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView moveItemAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
+    
+    LCDSelectModel *sourceM = [_dataAry objectAtIndex:sourceIndexPath.row];
+    
+    int s = [sourceM.sortID intValue];
+    
+    Byte byte[4] = {0xea, 0x7e, s, destinationIndexPath.row+1};
+    NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+    [[DataModelApi sharedInstance] sendData:_deviceId data:cmd success:nil failure:nil];
+    
+    id obj = [_dataAry objectAtIndex:sourceIndexPath.row];
+    [_dataAry removeObject:obj];
+    [_dataAry insertObject:obj atIndex:destinationIndexPath.row];
+    
+    [self reorderStoreData];
+}
+
+- (void)LCDRemoteKeyIndexCall:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        NSString *keyIndex = userInfo[@"keyIndex"];
+        NSInteger offset = [CSRUtilities numberWithHexString:[keyIndex substringToIndex:2]];
+        [_dataAry removeObject:@0];
+        for (int i=0; i<(keyIndex.length-2)/2; i++) {
+            NSInteger sourceID = [CSRUtilities numberWithHexString:[keyIndex substringWithRange:NSMakeRange(2+i*2, 2)]];
+            for (LCDSelectModel *m in _dataAry) {
+                if ([m.sourceID integerValue] == sourceID) {
+                    m.sortID = [NSNumber numberWithInteger:(offset + i)];
+                    break;
+                }
+            }
+        }
+        if ([_dataAry count] != 0) {
+            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sourceID" ascending:YES];
+            [_dataAry sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+            [_memberList reloadData];
+            
+            [self reorderStoreData];
+        }
+        [_dataAry addObject:@0];
+    }
+}
+
+- (void)reorderStoreData {
+    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+    NSMutableArray *a = [[NSMutableArray alloc] init];
+    for (int i=0; i<[deviceEntity.remoteBranch length]/14; i++) {
+        NSString *s = [deviceEntity.remoteBranch substringWithRange:NSMakeRange(14*i, 14)];
+        [a addObject:s];
+    }
+    
+    NSString *n = @"";
+    for (NSObject *obj in _dataAry) {
+        if ([obj isKindOfClass:[LCDSelectModel class]]) {
+            LCDSelectModel *m = (LCDSelectModel *)obj;
+            for (NSString *t in a) {
+                NSInteger souceid = [CSRUtilities numberWithHexString:[t substringWithRange:NSMakeRange(0, 2)]];
+                if (souceid == [m.sourceID integerValue]) {
+                    n = [NSString stringWithFormat:@"%@%@",n,t];
+                }
+            }
+        }
+    }
+    deviceEntity.remoteBranch = n;
+    [[CSRDatabaseManager sharedInstance] saveContext];
+}
+
+- (void)wifiAction {
+    if (@available(iOS 13.0, *)) {
+        [self getcurrentLocation];
+    }else {
+        [self getWifiInfo];
+    }
+}
+
+- (void)getcurrentLocation {
+    if (@available(iOS 13.0, *)) {
+        //用户明确拒绝，可以弹窗提示用户到设置中手动打开权限
+        if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
+            //使用下面接口可以打开当前应用的设置页面
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+        }
+        
+        CLLocationManager *locManager = [[CLLocationManager alloc] init];
+        locManager.delegate = self;
+        if(![CLLocationManager locationServicesEnabled] || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
+            //弹框提示用户是否开启位置权限
+            [locManager requestWhenInUseAuthorization];
+        }
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    [self getWifiInfo];
+}
+
+- (void)getWifiInfo {
+    NSString *name = [CSRUtilities getWifiName];
+    if (name) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:AcTECLocalizedStringFromTable(@"set_lcdremote_wifi", @"Localizable") message:name preferredStyle:UIAlertControllerStyleAlert];
+        [alert.view setTintColor:DARKORAGE];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+        
+        UIAlertAction *confirm = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"send", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            UITextField *textField = alert.textFields.firstObject;
+            
+            [self sendWifiName:name wifiPassword:textField.text];
+            
+        }];
+        [alert addAction:cancel];
+        [alert addAction:confirm];
+        [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+            textField.placeholder = AcTECLocalizedStringFromTable(@"enter_wifi_password", @"Localizable");
+        }];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+    }
+}
+
+- (void)sendWifiName:(NSString *)name wifiPassword:(NSString *)password {
+    _wifiPassword = password;
+    _applyData = [name dataUsingEncoding:NSUTF8StringEncoding];
+    NSInteger packet = _applyData.length / 6 + 1;
+    if (_applyData.length % 6 == 0) {
+        packet = _applyData.length / 6;
+    }
+    NSInteger l = 6;
+    if (_applyData.length < 6) {
+        l = _applyData.length;
+    }
+    _applyIndex = 1;
+    NSData *data_0 = [_applyData subdataWithRange:NSMakeRange(0, l)];
+    Byte byte[4] = {0xea, 0x78, packet, 0x01};
+    NSData *head = [[NSData alloc] initWithBytes:byte length:4];
+    NSMutableData *cmd = [[NSMutableData alloc] init];
+    [cmd appendData:head];
+    [cmd appendData:data_0];
+    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+}
+
+- (void)LCDRemoteSSIDCall:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    NSInteger index = [CSRUtilities numberWithHexString:userInfo[@"index"]];
+    NSInteger sort = [CSRUtilities numberWithHexString:userInfo[@"sort"]];
+    
+    if ([deviceId isEqualToNumber:_deviceId] && index == _applyIndex) {
+        NSInteger packet = _applyData.length / 6 + 1;
+        if (_applyData.length % 6 == 0) {
+            packet = _applyData.length / 6;
+        }
+        
+        if (index == packet) {
+            
+            if (sort == 120) {
+                _applyData = [_wifiPassword dataUsingEncoding:NSUTF8StringEncoding];
+                NSInteger packet = _applyData.length / 6 + 1;
+                if (_applyData.length % 6 == 0) {
+                    packet = _applyData.length / 6;
+                }
+                NSInteger l = 6;
+                if (_applyData.length < 6) {
+                    l = _applyData.length;
+                }
+                _applyIndex = 1;
+                NSData *data_0 = [_applyData subdataWithRange:NSMakeRange(0, l)];
+                Byte byte[4] = {0xea, 0x79, packet, 0x01};
+                NSData *head = [[NSData alloc] initWithBytes:byte length:4];
+                NSMutableData *cmd = [[NSMutableData alloc] init];
+                [cmd appendData:head];
+                [cmd appendData:data_0];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+            }
+            
+        }else if (index == (packet - 1)) {
+            _applyIndex = index + 1;
+            NSData *data_0 = [_applyData subdataWithRange:NSMakeRange(6*index, _applyData.length - 6*index)];
+            Byte byte[4] = {0xea, sort, packet, _applyIndex};
+            NSData *head = [[NSData alloc] initWithBytes:byte length:4];
+            NSMutableData *cmd = [[NSMutableData alloc] init];
+            [cmd appendData:head];
+            [cmd appendData:data_0];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+        }else {
+            _applyIndex = index + 1;
+            NSData *data_0 = [_applyData subdataWithRange:NSMakeRange(6*index, 6)];
+            Byte byte[4] = {0xea, sort, packet, _applyIndex};
+            NSData *head = [[NSData alloc] initWithBytes:byte length:4];
+            NSMutableData *cmd = [[NSMutableData alloc] init];
+            [cmd appendData:head];
+            [cmd appendData:data_0];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+        }
+    }
+}
+
+- (void)LCDRemoteIPAdressCall:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        NSString *s = userInfo[@"IPAdress"];
+        for (int i = 0; i < s.length/2; i ++) {
+            NSInteger a = [CSRUtilities numberWithHexString:[s substringWithRange:NSMakeRange(2*i, 2)]];
+            if (i == 0) {
+                _IPAdress = [NSString stringWithFormat:@"%ld",(long)a];
+            }else {
+                _IPAdress = [NSString stringWithFormat:@"%@.%ld",_IPAdress,(long)a];
+            }
+        }
+        if (_port != -1) {
+            [self connentHost:_IPAdress prot:_port];
+        }
+    }
+}
+
+- (void)LCDRemotePortCall:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        NSString *p = userInfo[@"port"];
+        _port = [CSRUtilities numberWithHexString:p];
+        if ([_IPAdress length]>0) {
+            [self connentHost:_IPAdress prot:_port];
+        }
+    }
+}
+
+- (void)connentHost:(NSString *)host prot:(uint16_t)port{
+    if (host==nil || host.length <= 0) {
+        NSAssert(host != nil, @"host must be not nil");
+    }
+    
+    [self.tcpSocketManager disconnect];
+    if (self.tcpSocketManager == nil) {
+        self.tcpSocketManager = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+    }
+    NSError *connectError = nil;
+    BOOL isConnected = [self.tcpSocketManager isConnected];
+    NSLog(@"isConnected: %d",isConnected);
+    if (!isConnected) {
+        if (![self.tcpSocketManager connectToHost:host onPort:port error:&connectError]) {
+            NSLog(@"Connect Error: %@", connectError);
+        }else {
+            NSLog(@"Connect success!");
+            
+            self.uConfigBtn.hidden = NO;
+            self.uIconBtn.hidden = NO;
+            
+            /*
+            //测试
+            NSDictionary *dic = @{@"libVersion":@3,@"imgCount":@3,@"imgList":@[@{@"imgAppType":@145,@"imgIndex":@1,@"imgName":@"面板主页",@"imgSize":@500}]};
+            NSString *json = [CSRUtilities convertToJsonData:dic];
+            NSData *data = [json dataUsingEncoding:NSUTF8StringEncoding];
+            
+            NSInteger l = data.length;
+            
+            NSInteger packet = l/2000 + 1;
+            if (l%2000 == 0) {
+                packet = l/2000;
+            }
+            
+            Byte byte_p[4] = {};
+            byte_p[0] = (Byte)((packet & 0xFF000000)>>24);
+            byte_p[1] = (Byte)((packet & 0x00FF0000)>>16);
+            byte_p[2] = (Byte)((packet & 0x0000FF00)>>8);
+            byte_p[3] = (Byte)((packet & 0x000000FF));
+            
+            NSInteger lp = 2000;
+            if (l < 2000) {
+                 lp = l;
+            }
+            
+            Byte byte_lp[4] = {};
+            byte_lp[0] = (Byte)((lp & 0xFF000000)>>24);
+            byte_lp[1] = (Byte)((lp & 0x00FF0000)>>16);
+            byte_lp[2] = (Byte)((lp & 0x0000FF00)>>8);
+            byte_lp[3] = (Byte)((lp & 0x000000FF));
+            
+            Byte byte[] = {0xA5, 0xA6, 0xA7, 0xA8, byte_p[0], byte_p[1], byte_p[2], byte_p[3], 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, byte_lp[0], byte_lp[1], byte_lp[2], byte_lp[3]};
+            NSData *head = [[NSData alloc] initWithBytes:byte length:20];
+            NSMutableData *mutableData = [[NSMutableData alloc] init];
+            [mutableData appendData:head];
+            [mutableData appendData:data];
+            
+            int lm = (int)mutableData.length;
+            Byte *bytes = (unsigned char *)[mutableData bytes];
+            
+            int sumT = 0;
+            int sumC = 0;
+            for (int i = 0; i < lm; i++) {
+                sumT += bytes[i];
+                sumC ^= bytes[i];
+            }
+            int at = sumT%256;
+            printf("校验和：%d\n",at);
+            printf("累加和：%d\n",sumT);
+            printf("异或和：%d\n",sumC);
+            
+            Byte bytesum[] = {at, sumC};
+            NSData *end = [[NSData alloc] initWithBytes:bytesum length:2];
+            [mutableData appendData:end];
+            
+            NSLog(@"DATA2：%@ \n",mutableData);
+            
+            [self.tcpSocketManager writeData:mutableData withTimeout:-1 tag:0];
+            */
+            [self.tcpSocketManager readDataWithTimeout:-1 tag:0];
+        }
+    }
+}
+
+- (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
+    NSLog(@"DATA3：%@ \n",data);
+    /*
+    NSData *data_a = [data subdataWithRange:NSMakeRange(0, data.length-2)];
+//    NSData *data_b = [data subdataWithRange:NSMakeRange(data.length-2, 1)];
+//    NSData *data_c = [data subdataWithRange:NSMakeRange(data.length-1, 1)];
+    
+    int lm = (int)data_a.length;
+    Byte *bytes = (unsigned char *)[data_a bytes];
+    
+    int sumT = 0;
+    int sumC = 0;
+    for (int i = 0; i < lm; i++) {
+        sumT += bytes[i];
+        sumC ^= bytes[i];
+    }
+    int at = sumT%256;
+    printf("校验和>：%d\n",at);
+    printf("累加和>：%d\n",sumT);
+    printf("异或和>：%d\n",sumC);
+    
+    Byte byte_b[] = {at};
+    NSData *b = [[NSData alloc] initWithBytes:byte_b length:1];
+    
+    Byte byte_c[] = {sumC};
+    NSData *c = [[NSData alloc] initWithBytes:byte_c length:1];
+    
+    NSLog(@"b: %@ \n c: %@",b,c);
+     */
+    
+    if (data.length >= 22) {
+        NSData *data_a = [data subdataWithRange:NSMakeRange(0, data.length-2)];
+        int at = [self atFromData:data_a];
+        int sumC = [self sumCFromData:data_a];
+        
+        Byte *bytes = (unsigned char *)[data bytes];
+        if (at == bytes[20] && sumC == bytes[21]) {
+            NSData *d_k = [data subdataWithRange:NSMakeRange(12, 2)];
+            int k = -1;
+            [d_k getBytes:&k length:sizeof(k)];
+            
+            NSData *d_t = [data subdataWithRange:NSMakeRange(14, 2)];
+            int t = -1;
+            [d_t getBytes:&t length:sizeof(t)];
+        
+            NSData *d_p = [data subdataWithRange:NSMakeRange(8, 4)];
+            int p = -1;
+            [d_p getBytes:&p length:sizeof(p)];
+            
+            if (k == 1 && t == _applyCmdType && p == _applyIndex) {
+                
+                NSInteger l = _applyData.length;
+                
+                NSInteger l_packet = l/2000 + 1;
+                if (l%2000 == 0) {
+                    l_packet = l/2000;
+                }
+                
+                if (_applyIndex == l_packet) {
+                    
+                }else if (_applyIndex < l_packet) {
+                    Byte byte_packet[4] = {};
+                    byte_packet[0] = (Byte)((l_packet & 0xFF000000)>>24);
+                    byte_packet[1] = (Byte)((l_packet & 0x00FF0000)>>16);
+                    byte_packet[2] = (Byte)((l_packet & 0x0000FF00)>>8);
+                    byte_packet[3] = (Byte)((l_packet & 0x000000FF));
+                    
+                    NSInteger l_per = 2000;
+                    if (l-(2000*_applyIndex) < 2000) {
+                        l_per = l-(2000*_applyIndex);
+                    }
+                    Byte byte_per[4] = {};
+                    byte_per[0] = (Byte)((l_per & 0xFF000000)>>24);
+                    byte_per[1] = (Byte)((l_per & 0x00FF0000)>>16);
+                    byte_per[2] = (Byte)((l_per & 0x0000FF00)>>8);
+                    byte_per[3] = (Byte)((l_per & 0x000000FF));
+                    
+                    _applyIndex ++;
+                    Byte byte_index[4] = {};
+                    byte_index[0] = (Byte)((_applyIndex & 0xFF000000)>>24);
+                    byte_index[1] = (Byte)((_applyIndex & 0x00FF0000)>>16);
+                    byte_index[2] = (Byte)((_applyIndex & 0x0000FF00)>>8);
+                    byte_index[3] = (Byte)((_applyIndex & 0x000000FF));
+                    
+                    
+                    Byte byte[] = {0xA5, 0xA6, 0xA7, 0xA8, byte_packet[0], byte_packet[1], byte_packet[2], byte_packet[3], byte_index[0], byte_index[1], byte_index[2], byte_index[3], 0x00, 0x00, 0x00 ,0x01, byte_per[0], byte_per[1], byte_per[2], byte_per[3]};
+                    NSData *head = [[NSData alloc] initWithBytes:byte length:20];
+                    NSMutableData *mutableData = [[NSMutableData alloc] init];
+                    [mutableData appendData:head];
+                    [mutableData appendData:[_applyData subdataWithRange:NSMakeRange(2000*(_applyIndex-1), l_per)]];
+                    
+                    Byte bytesum[] = {[self atFromData:mutableData], [self sumCFromData:mutableData]};
+                    NSData *end = [[NSData alloc] initWithBytes:bytesum length:2];
+                    [mutableData appendData:end];
+                    
+                    [sock writeData:mutableData withTimeout:-1 tag:0];
+                }
+                
+            }
+        }
+    }
+    
+    
+    [sock readDataWithTimeout:-1 tag:0];
+}
+
+- (IBAction)updateConfiguration:(UIButton *)sender {
+    
+    NSMutableArray *a = [[NSMutableArray alloc] init];
+    for (NSObject *obj in _dataAry) {
+        if ([obj isKindOfClass:[LCDSelectModel class]]) {
+            LCDSelectModel *m = (LCDSelectModel *)obj;
+            NSDictionary *d = @{@"displayName":m.name,@"arrangeIndex":m.sortID,@"keyIndex":m.sourceID,@"imgIndex":m.iconID,@"bindType":m.typeID,@"bindBtAddress":m.deviceID,@"channelSet":m.channel};
+            [a addObject:d];
+        }
+    }
+    NSDictionary *jd = @{@"buttonCount":[NSNumber numberWithInteger:[a count]],@"buttonList":a};
+    NSString *j = [CSRUtilities convertToJsonData2:jd];
+    _applyData = [j dataUsingEncoding:NSUTF8StringEncoding];
+    
+    _applyIndex = 1;
+    _applyCmdType = 1;
+    
+    NSInteger l = _applyData.length;
+    
+    NSInteger l_packet = l/2000 + 1;
+    if (l%2000 == 0) {
+        l_packet = l/2000;
+    }
+    Byte byte_packet[4] = {};
+    byte_packet[0] = (Byte)((l_packet & 0xFF000000)>>24);
+    byte_packet[1] = (Byte)((l_packet & 0x00FF0000)>>16);
+    byte_packet[2] = (Byte)((l_packet & 0x0000FF00)>>8);
+    byte_packet[3] = (Byte)((l_packet & 0x000000FF));
+    
+    NSInteger l_per = 2000;
+    if (l < 2000) {
+        l_per = l;
+    }
+    Byte byte_per[4] = {};
+    byte_per[0] = (Byte)((l_per & 0xFF000000)>>24);
+    byte_per[1] = (Byte)((l_per & 0x00FF0000)>>16);
+    byte_per[2] = (Byte)((l_per & 0x0000FF00)>>8);
+    byte_per[3] = (Byte)((l_per & 0x000000FF));
+    
+    Byte byte[] = {0xA5, 0xA6, 0xA7, 0xA8, byte_packet[0], byte_packet[1], byte_packet[2], byte_packet[3], 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00 ,0x01, byte_per[0], byte_per[1], byte_per[2], byte_per[3]};
+    NSData *head = [[NSData alloc] initWithBytes:byte length:20];
+    NSMutableData *mutableData = [[NSMutableData alloc] init];
+    [mutableData appendData:head];
+    [mutableData appendData:[_applyData subdataWithRange:NSMakeRange(0, l_per)]];
+    
+    Byte bytesum[] = {[self atFromData:mutableData], [self sumCFromData:mutableData]};
+    NSData *end = [[NSData alloc] initWithBytes:bytesum length:2];
+    [mutableData appendData:end];
+    
+    [self.tcpSocketManager writeData:mutableData withTimeout:-1 tag:0];
+    
+    [self.tcpSocketManager readDataWithTimeout:-1 tag:0];
+}
+
+- (IBAction)updateIconLibrary:(UIButton *)sender {
+}
+
+- (int)atFromData:(NSData *)data {
+    int lm = (int)data.length;
+    Byte *bytes = (unsigned char *)[data bytes];
+    int sumT = 0;
+    for (int i = 0; i < lm; i++) {
+        sumT += bytes[i];
+    }
+    int at = sumT % 256;
+    return at;
+}
+
+- (int)sumCFromData:(NSData *)data {
+    int lm = (int)data.length;
+    Byte *bytes = (unsigned char *)[data bytes];
+    int sumC = 0;
+    for (int i = 0; i < lm; i++) {
+        sumC ^= bytes[i];
+    }
+    return sumC;
+}
 
 @end

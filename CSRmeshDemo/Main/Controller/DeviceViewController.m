@@ -379,14 +379,20 @@
         [self forRGBGroupControllerAddSwitchView];
         [self forRGBGroupControllerAddBrightnessView];
         CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
-        __block BOOL exist = NO;
+        __block BOOL RGBCWExist = NO;
+        __block BOOL RGBExist = NO;
+        __block BOOL CWExist = NO;
         [area.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, BOOL * _Nonnull stop) {
             if ([CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
-                exist = YES;
-                *stop = YES;
+                RGBCWExist = YES;
+            }else if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName]) {
+                RGBExist = YES;
+            }else if ([CSRUtilities belongToCWDevice:deviceEntity.shortName]) {
+                CWExist = YES;
             }
         }];
-        if (exist) {
+        
+        if (RGBCWExist && !RGBExist && !CWExist) {
             [self addSubViewColorTemperatuteView];
             [_scrollView addSubview:_colorTitle];
             [_colorTitle autoSetDimension:ALDimensionHeight toSize:20];
@@ -395,15 +401,28 @@
             [_colorTitle autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
             [self addSubViewColorView];
             _scrollView.contentSize = CGSizeMake(1, 560);
-        }else {
+        }else if ((RGBCWExist || RGBExist) && !CWExist) {
             [_scrollView addSubview:_colorTitle];
             [_colorTitle autoSetDimension:ALDimensionHeight toSize:20];
             [_colorTitle autoSetDimension:ALDimensionWidth toSize:80];
             [_colorTitle autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_brightnessView withOffset:5];
             [_colorTitle autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
             [self addSubViewColorView];
-            _scrollView.contentSize = CGSizeMake(1, 526);
+            _scrollView.contentSize = CGSizeMake(1, 486);
+        }else if ((RGBCWExist || CWExist) && !RGBExist) {
+            self.navigationItem.title = area.areaName;
+            [self addSubViewColorTemperatuteView];
+            _scrollView.contentSize = CGSizeMake(1, 192);
         }
+    }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if ([_deviceId integerValue] > 32768/*单设备*/) {
+        [self adjustInterface];
+    }else {
+        [self forRGBGroupControllAdustInterface];
     }
 }
 
@@ -450,16 +469,6 @@
         UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
         [alert addAction:cancel];
         [self presentViewController:alert animated:YES completion:nil];
-    }
-}
-
-- (void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
-    [self.view layoutIfNeeded];
-    if ([_deviceId integerValue] > 32768/*单设备*/) {
-        [self adjustInterface];
-    }else {
-        [self forRGBGroupControllAdustInterface];
     }
 }
 
@@ -616,8 +625,8 @@
             [self.powerStateSwitch setOn:YES];
             if (!_sliderIsMoving) {
                 [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
+                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
             }
-            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
         }else {
             [self.powerStateSwitch setOn:NO];
             [self.levelSlider setValue:0 animated:YES];
@@ -629,8 +638,8 @@
             [self.powerStateSwitch setOn:YES];
             if (!_sliderIsMoving) {
                 [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
+                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
             }
-            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
         }else {
             [self.powerStateSwitch setOn:NO];
             [self.levelSlider setValue:0 animated:YES];
@@ -638,16 +647,17 @@
         }
         if (!_colorTemperatureSliderIsMoving) {
             [_colorTemperatureSlider setValue:(CGFloat)[_device.colorTemperature integerValue] animated:YES];
+            _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[_device.colorTemperature integerValue]];
         }
-        _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[_device.colorTemperature integerValue]];
+        
         return;
     }else if ([CSRUtilities belongToRGBDevice:_device.shortName]) {
         if ([_device.powerState boolValue]) {
             [self.powerStateSwitch setOn:YES];
             if (!_sliderIsMoving) {
                 [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
+                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
             }
-            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
         }else {
             [self.powerStateSwitch setOn:NO];
             [self.levelSlider setValue:0 animated:YES];
@@ -656,15 +666,11 @@
         UIColor *color = [UIColor colorWithRed:[_device.red integerValue]/255.0 green:[_device.green integerValue]/255.0 blue:[_device.blue integerValue]/255.0 alpha:1.0];
         CGFloat hue,saturation,brightness,alpha;
         if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
-            if (!_colorSliderIsMoving) {
+            if (!_colorSliderIsMoving && !_colorSaturationSliderIsMoving && !_colorSquareIsMoving) {
                 [self.colorSlider sliderMyValue:hue];
-            }
-            self.colorLabel.text = [NSString stringWithFormat:@"%.f",hue*360];
-            if (!_colorSaturationSliderIsMoving) {
+                self.colorLabel.text = [NSString stringWithFormat:@"%.f",hue*360];
                 [self.colorSaturationSlider setValue:saturation animated:YES];
-            }
-            self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",saturation*100];
-            if (!_colorSquareIsMoving) {
+                self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",saturation*100];
                 [self.colorSquareView locationPickView:hue colorSaturation:saturation];
             }
         }
@@ -674,36 +680,29 @@
             [self.powerStateSwitch setOn:YES];
             if (!_sliderIsMoving) {
                 [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
+                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
             }
-            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
         }else {
             [self.powerStateSwitch setOn:NO];
             [self.levelSlider setValue:0 animated:YES];
             self.levelLabel.text = @"0%";
         }
-//        if ([_device.supports integerValue]==1) {
-            if (!_colorTemperatureSliderIsMoving) {
-                [_colorTemperatureSlider setValue:(CGFloat)[_device.colorTemperature integerValue] animated:YES];
-            }
-        _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[_device.colorTemperature integerValue]];
-//        }
-//        if ([_device.supports integerValue]==0) {
-            UIColor *color = [UIColor colorWithRed:[_device.red integerValue]/255.0 green:[_device.green integerValue]/255.0 blue:[_device.blue integerValue]/255.0 alpha:1.0];
-            CGFloat hue,saturation,brightness,alpha;
-            if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
-                if (!_colorSliderIsMoving) {
-                    [self.colorSlider sliderMyValue:hue];
-                }
+
+        if (!_colorTemperatureSliderIsMoving) {
+            [_colorTemperatureSlider setValue:(CGFloat)[_device.colorTemperature integerValue] animated:YES];
+            _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[_device.colorTemperature integerValue]];
+        }
+        UIColor *color = [UIColor colorWithRed:[_device.red integerValue]/255.0 green:[_device.green integerValue]/255.0 blue:[_device.blue integerValue]/255.0 alpha:1.0];
+        CGFloat hue,saturation,brightness,alpha;
+        if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
+            if (!_colorSliderIsMoving && !_colorSaturationSliderIsMoving && !_colorSquareIsMoving) {
+                [self.colorSlider sliderMyValue:hue];
                 self.colorLabel.text = [NSString stringWithFormat:@"%.f",hue*360];
-                if (!_colorSaturationSliderIsMoving) {
-                    [self.colorSaturationSlider setValue:saturation animated:YES];
-                }
+                [self.colorSaturationSlider setValue:saturation animated:YES];
                 self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",saturation*100];
-                if (!_colorSquareIsMoving) {
-                    [self.colorSquareView locationPickView:hue colorSaturation:saturation];
-                }
+                [self.colorSquareView locationPickView:hue colorSaturation:saturation];
             }
-//        }
+        }
         
         return;
     }else if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName]) {
@@ -720,19 +719,6 @@
         if ([deviceId isEqualToNumber:_deviceId]) {
             [self adjustInterface];
         }
-    }else {
-        CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
-        __block BOOL exist = NO;
-        [area.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, BOOL * _Nonnull stop) {
-            if ([deviceEntity.deviceId isEqualToNumber:deviceId]) {
-                exist = YES;
-                *stop = YES;
-            }
-        }];
-        if (exist) {
-            [self forRGBGroupControllAdustInterface:deviceId];
-//            [self forRGBGroupControllAdustInterface];
-        }
     }
 }
 //开关
@@ -747,6 +733,21 @@
         }
         [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
         [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(sender.on)];
+    }
+    
+    if ([_deviceId integerValue] < 32768/*分组*/) {
+        if (sender.on) {
+            CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+            NSArray *ds = [area.devices allObjects];
+            CSRDeviceEntity *d = ds[0];
+            DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
+            [self.levelSlider setValue:(CGFloat)[deviceModel.level integerValue] animated:YES];
+            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[deviceModel.level integerValue]/255.0*100];
+        }else {
+            [self.RGBGroupControllSwitch setOn:NO];
+            [self.levelSlider setValue:0 animated:YES];
+            self.levelLabel.text = @"0%";
+        }
     }
 }
 
@@ -763,17 +764,6 @@
 }
 
 //调光
-- (IBAction)levelSliderTouchUpInSide:(UISlider *)sender {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        _sliderIsMoving = NO;
-    });
-    [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
-}
-
-- (IBAction)leveSliderValueChanged:(UISlider *)sender {
-    [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateChanged direction:PanGestureMoveDirectionHorizontal];
-}
-
 - (IBAction)levelSliderTouchDown:(UISlider *)sender {
     if (musicBehavior) {
         if ([SoundListenTool sharedInstance].audioRecorder.recording) {
@@ -781,16 +771,52 @@
         }
     }
     [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
+    
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayMethodEndLevelMoving) object:nil];
     _sliderIsMoving = YES;
     [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateBegan direction:PanGestureMoveDirectionHorizontal];
 }
 
-- (IBAction)levelSliderTouchUpOutSide:(UISlider *)sender {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        _sliderIsMoving = NO;
-    });
-    [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
+- (IBAction)leveSliderValueChanged:(UISlider *)sender {
+    [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateChanged direction:PanGestureMoveDirectionHorizontal];
+    
+    self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",sender.value/255.0*100];
+    if (sender.value == 0) {
+        [_RGBGroupControllSwitch setOn:NO];
+    }else {
+        [_RGBGroupControllSwitch setOn:YES];
+    }
 }
+
+- (IBAction)levelSliderTouchUpInSide:(UISlider *)sender {
+    [self performSelector:@selector(delayMethodEndLevelMoving) withObject:nil afterDelay:4.0];
+    
+    [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
+    
+    self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",sender.value/255.0*100];
+    if (sender.value == 0) {
+        [_RGBGroupControllSwitch setOn:NO];
+    }else {
+        [_RGBGroupControllSwitch setOn:YES];
+    }
+}
+
+- (IBAction)levelSliderTouchUpOutSide:(UISlider *)sender {
+    [self performSelector:@selector(delayMethodEndLevelMoving) withObject:nil afterDelay:4.0];
+    [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
+    
+    self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",sender.value/255.0*100];
+    if (sender.value == 0) {
+        [_RGBGroupControllSwitch setOn:NO];
+    }else {
+        [_RGBGroupControllSwitch setOn:YES];
+    }
+}
+
+- (void)delayMethodEndLevelMoving {
+    _sliderIsMoving = NO;
+}
+
 //调色温
 - (IBAction)colorTemperatureSliderTouchDown:(UISlider *)sender {
     if (musicBehavior) {
@@ -799,26 +825,45 @@
         }
     }
     [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayMethodEndColorTemperatureMoving) object:nil];
     _colorTemperatureSliderIsMoving = YES;
     [[DeviceModelManager sharedInstance] setColorTemperatureWithDeviceId:_deviceId withColorTemperature:@(sender.value) withState:UIGestureRecognizerStateBegan];
 }
 
 - (IBAction)colorTemperatureSliderValueChanged:(UISlider *)sender {
     [[DeviceModelManager sharedInstance] setColorTemperatureWithDeviceId:_deviceId withColorTemperature:@(sender.value) withState:UIGestureRecognizerStateChanged];
+    
+    _colorTemperatureLabel.text = [NSString stringWithFormat:@"%.fK",sender.value];
+    
+    if (!_RGBGroupControllSwitch.on && [_deviceId integerValue] < 32768) {
+        [_RGBGroupControllSwitch setOn:YES];
+        CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+        CSRDeviceEntity *d = [[area.devices allObjects] objectAtIndex:0];
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
+        [_levelSlider setValue:[model.level integerValue] animated:YES];
+        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
+    }
+    
 }
 
 - (IBAction)colorTemperatureSliderTouchUpInSide:(UISlider *)sender {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        _colorTemperatureSliderIsMoving = NO;
-    });
+    [self performSelector:@selector(delayMethodEndColorTemperatureMoving) withObject:nil afterDelay:4.0];
     [[DeviceModelManager sharedInstance] setColorTemperatureWithDeviceId:_deviceId withColorTemperature:@(sender.value) withState:UIGestureRecognizerStateEnded];
+    
+    _colorTemperatureLabel.text = [NSString stringWithFormat:@"%.fK",sender.value];
+    
 }
 
 - (IBAction)colorTemperatureSliderTouchUpOutSide:(UISlider *)sender {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        _colorTemperatureSliderIsMoving = NO;
-    });
+    [self performSelector:@selector(delayMethodEndColorTemperatureMoving) withObject:nil afterDelay:4.0];
     [[DeviceModelManager sharedInstance] setColorTemperatureWithDeviceId:_deviceId withColorTemperature:@(sender.value) withState:UIGestureRecognizerStateEnded];
+    
+    _colorTemperatureLabel.text = [NSString stringWithFormat:@"%.fK",sender.value];
+    
+}
+
+- (void)delayMethodEndColorTemperatureMoving {
+    _colorTemperatureSliderIsMoving = NO;
 }
 
 //饱和度
@@ -829,6 +874,7 @@
         }
     }
     [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayMethodEndColorSaturationMoving) object:nil];
     _colorSaturationSliderIsMoving = YES;
     UIColor *color = [UIColor colorWithHue:_colorSlider.myValue saturation:sender.value brightness:1.0 alpha:1.0];
     [[DeviceModelManager sharedInstance] setColorWithDeviceId:_deviceId withColor:color withState:UIGestureRecognizerStateBegan];
@@ -837,22 +883,42 @@
 - (IBAction)colorSaturationSliderValueChanged:(UISlider *)sender {
     UIColor *color = [UIColor colorWithHue:_colorSlider.myValue saturation:sender.value brightness:1.0 alpha:1.0];
     [[DeviceModelManager sharedInstance] setColorWithDeviceId:_deviceId withColor:color withState:UIGestureRecognizerStateChanged];
+    
+    self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",sender.value*100];
+    [self.colorSquareView locationPickView:_colorSlider.myValue colorSaturation:sender.value];
+    
+    if (!_RGBGroupControllSwitch.on && [_deviceId integerValue] < 32768) {
+        [_RGBGroupControllSwitch setOn:YES];
+        CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+        CSRDeviceEntity *d = [[area.devices allObjects] objectAtIndex:0];
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
+        [_levelSlider setValue:[model.level integerValue] animated:YES];
+        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
+    }
 }
 
 - (IBAction)colorSaturationSliderTouchUpInSide:(UISlider *)sender {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        _colorSaturationSliderIsMoving = NO;
-    });
+    [self performSelector:@selector(delayMethodEndColorSaturationMoving) withObject:nil afterDelay:4.0];
     UIColor *color = [UIColor colorWithHue:_colorSlider.myValue saturation:sender.value brightness:1.0 alpha:1.0];
     [[DeviceModelManager sharedInstance] setColorWithDeviceId:_deviceId withColor:color withState:UIGestureRecognizerStateEnded];
+    
+    self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",sender.value*100];
+    [self.colorSquareView locationPickView:_colorSlider.myValue colorSaturation:sender.value];
+    
 }
 
 - (IBAction)colorSaturationSliderTouchUpOutSide:(UISlider *)sender {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        _colorSaturationSliderIsMoving = NO;
-    });
+    [self performSelector:@selector(delayMethodEndColorSaturationMoving) withObject:nil afterDelay:4.0];
     UIColor *color = [UIColor colorWithHue:_colorSlider.myValue saturation:sender.value brightness:1.0 alpha:1.0];
     [[DeviceModelManager sharedInstance] setColorWithDeviceId:_deviceId withColor:color withState:UIGestureRecognizerStateEnded];
+    
+    self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",sender.value*100];
+    [self.colorSquareView locationPickView:_colorSlider.myValue colorSaturation:sender.value];
+    
+}
+
+- (void)delayMethodEndColorSaturationMoving {
+    _colorSaturationSliderIsMoving = NO;
 }
     
 #pragma mark - UITextFieldDelegate
@@ -1016,14 +1082,30 @@
             }
         }
         [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayMethodEndColorSliderMoving) object:nil];
         _colorSliderIsMoving = YES;
     }else if (state == UIGestureRecognizerStateEnded) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            _colorSliderIsMoving = NO;
-        });
+        [self performSelector:@selector(delayMethodEndColorSliderMoving) withObject:nil afterDelay:4.0f];
     }
     UIColor *color = [UIColor colorWithHue:myValue saturation:_colorSaturationSlider.value brightness:1.0 alpha:1.0];
     [[DeviceModelManager sharedInstance] setColorWithDeviceId:_deviceId withColor:color withState:state];
+    
+    self.colorLabel.text = [NSString stringWithFormat:@"%.f",myValue*360];
+    [self.colorSquareView locationPickView:myValue colorSaturation:_colorSaturationSlider.value];
+    
+    if (!_RGBGroupControllSwitch.on && [_deviceId integerValue] < 32768) {
+        [_RGBGroupControllSwitch setOn:YES];
+        CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+        CSRDeviceEntity *d = [[area.devices allObjects] objectAtIndex:0];
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
+        [_levelSlider setValue:[model.level integerValue] animated:YES];
+        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
+    }
+    
+}
+
+- (void)delayMethodEndColorSliderMoving {
+    _colorSliderIsMoving = NO;
 }
 
 //设置颜色，颜色图的代理方法
@@ -1042,6 +1124,20 @@
         model.isleave = YES;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":_deviceId}];
     }];
+    
+    self.colorLabel.text = [NSString stringWithFormat:@"%.f",hue*360];
+    [self.colorSlider sliderMyValue:hue];
+    self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",colorSatutation*100];
+    [self.colorSaturationSlider setValue:colorSatutation animated:YES];
+    
+    if (!_RGBGroupControllSwitch.on && [_deviceId integerValue] < 32768) {
+        [_RGBGroupControllSwitch setOn:YES];
+        CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+        CSRDeviceEntity *d = [[area.devices allObjects] objectAtIndex:0];
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
+        [_levelSlider setValue:[model.level integerValue] animated:YES];
+        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
+    }
 }
 
 - (void)panColorChangeWithHue:(CGFloat)hue colorSaturation:(CGFloat)colorSatutation state:(UIGestureRecognizerState)state {
@@ -1052,14 +1148,31 @@
             }
         }
         [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayMethodEndColorSquareMoving) object:nil];
         _colorSquareIsMoving = YES;
     }else if (state == UIGestureRecognizerStateEnded) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            _colorSquareIsMoving = NO;
-        });
+        [self performSelector:@selector(delayMethodEndColorSquareMoving) withObject:nil afterDelay:4.0];
     }
     UIColor *color = [UIColor colorWithHue:hue saturation:colorSatutation brightness:1.0 alpha:1.0];
     [[DeviceModelManager sharedInstance] setColorWithDeviceId:_deviceId withColor:color withState:state];
+    
+    self.colorLabel.text = [NSString stringWithFormat:@"%.f",hue*360];
+    [self.colorSlider sliderMyValue:hue];
+    self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",colorSatutation*100];
+    [self.colorSaturationSlider setValue:colorSatutation animated:YES];
+    
+    if (!_RGBGroupControllSwitch.on && [_deviceId integerValue] < 32768) {
+        [_RGBGroupControllSwitch setOn:YES];
+        CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+        CSRDeviceEntity *d = [[area.devices allObjects] objectAtIndex:0];
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
+        [_levelSlider setValue:[model.level integerValue] animated:YES];
+        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
+    }
+}
+
+- (void)delayMethodEndColorSquareMoving {
+    _colorSquareIsMoving = NO;
 }
 
 - (void)languageChange:(id)sender {
@@ -1589,8 +1702,9 @@
         [_RGBGroupControllSwitch setOn:YES];
         if (!_sliderIsMoving) {
             [_levelSlider setValue:brightness animated:YES];
+            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",brightness/255.0*100];
         }
-        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",brightness/255.0*100];
+        
     }else {
         [_RGBGroupControllSwitch setOn:NO];
         [_levelSlider setValue:0 animated:YES];
@@ -1599,9 +1713,9 @@
     CSRDeviceEntity *lastDevice = [[area.devices allObjects] lastObject];
     DeviceModel *lastModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:lastDevice.deviceId];
     if (!_colorTemperatureSliderIsMoving) {
-                   [_colorTemperatureSlider setValue:(CGFloat)[lastModel.colorTemperature integerValue] animated:YES];
-               }
-           _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[lastModel.colorTemperature integerValue]];
+        [_colorTemperatureSlider setValue:(CGFloat)[lastModel.colorTemperature integerValue] animated:YES];
+    }
+    _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[lastModel.colorTemperature integerValue]];
     UIColor *color = [UIColor colorWithRed:[lastModel.red integerValue]/255.0 green:[lastModel.green integerValue]/255.0 blue:[lastModel.blue integerValue]/255.0 alpha:1.0];
     CGFloat hue,saturation,level,alpha;
     if ([color getHue:&hue saturation:&saturation brightness:&level alpha:&alpha]) {
@@ -1617,72 +1731,6 @@
             [self.colorSquareView locationPickView:hue colorSaturation:saturation];
         }
     }
-}
-
-- (void)forRGBGroupControllAdustInterface:(NSNumber *)deviceID {
-    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceID];
-    if ([CSRUtilities belongToRGBDevice:deviceModel.shortName]) {
-            if ([deviceModel.powerState boolValue]) {
-                [self.powerStateSwitch setOn:YES];
-                if (!_sliderIsMoving) {
-                    [self.levelSlider setValue:(CGFloat)[deviceModel.level integerValue] animated:YES];
-                }
-                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[deviceModel.level integerValue]/255.0*100];
-            }else {
-                [self.powerStateSwitch setOn:NO];
-                [self.levelSlider setValue:0 animated:YES];
-                self.levelLabel.text = @"0%";
-            }
-            UIColor *color = [UIColor colorWithRed:[deviceModel.red integerValue]/255.0 green:[deviceModel.green integerValue]/255.0 blue:[deviceModel.blue integerValue]/255.0 alpha:1.0];
-            CGFloat hue,saturation,brightness,alpha;
-            if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
-                if (!_colorSliderIsMoving) {
-                    [self.colorSlider sliderMyValue:hue];
-                }
-                self.colorLabel.text = [NSString stringWithFormat:@"%.f",hue*360];
-                if (!_colorSaturationSliderIsMoving) {
-                    [self.colorSaturationSlider setValue:saturation animated:YES];
-                }
-                self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",saturation*100];
-                if (!_colorSquareIsMoving) {
-                    [self.colorSquareView locationPickView:hue colorSaturation:saturation];
-                }
-            }
-            return;
-        }else if ([CSRUtilities belongToRGBCWDevice:deviceModel.shortName]) {
-            if ([deviceModel.powerState boolValue]) {
-                [self.powerStateSwitch setOn:YES];
-                if (!_sliderIsMoving) {
-                    [self.levelSlider setValue:(CGFloat)[deviceModel.level integerValue] animated:YES];
-                }
-                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[deviceModel.level integerValue]/255.0*100];
-            }else {
-                [self.powerStateSwitch setOn:NO];
-                [self.levelSlider setValue:0 animated:YES];
-                self.levelLabel.text = @"0%";
-            }
-
-            if (!_colorTemperatureSliderIsMoving) {
-                    [_colorTemperatureSlider setValue:(CGFloat)[deviceModel.colorTemperature integerValue] animated:YES];
-                }
-            _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[deviceModel.colorTemperature integerValue]];
-            UIColor *color = [UIColor colorWithRed:[deviceModel.red integerValue]/255.0 green:[deviceModel.green integerValue]/255.0 blue:[deviceModel.blue integerValue]/255.0 alpha:1.0];
-            CGFloat hue,saturation,brightness,alpha;
-            if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
-                if (!_colorSliderIsMoving) {
-                    [self.colorSlider sliderMyValue:hue];
-                }
-                self.colorLabel.text = [NSString stringWithFormat:@"%.f",hue*360];
-                if (!_colorSaturationSliderIsMoving) {
-                    [self.colorSaturationSlider setValue:saturation animated:YES];
-                }
-                self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",saturation*100];
-                if (!_colorSquareIsMoving) {
-                    [self.colorSquareView locationPickView:hue colorSaturation:saturation];
-                }
-            }
-            return;
-        }
 }
 
 @end

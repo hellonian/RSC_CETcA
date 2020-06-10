@@ -111,8 +111,19 @@
     if (@available(iOS 13.0, *)) {
         //用户明确拒绝，可以弹窗提示用户到设置中手动打开权限
         if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
-            //使用下面接口可以打开当前应用的设置页面
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@""
+                                                                                     message:AcTECLocalizedStringFromTable(@"gotosetting", @"Localizable")
+                                                                              preferredStyle:UIAlertControllerStyleAlert];
+            [alertController.view setTintColor:DARKORAGE];
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable")
+                                                               style:UIAlertActionStyleDefault
+                                                             handler:^(UIAlertAction *action) {
+//                                                                 //使用下面接口可以打开当前应用的设置页面
+//                                                                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                                                             }];
+            
+            [alertController addAction:okAction];
+            [self presentViewController:alertController animated:YES completion:nil];
         }
         
         self.locManager = [[CLLocationManager alloc] init];
@@ -172,81 +183,97 @@
     } else if (!_placeEntity) { //new place
         NSLog(@">>>222");
         if (![CSRUtilities isStringEmpty:_placeNameTF.text] && ![CSRUtilities isStringEmpty:_placeNetworkKeyTF.text]) {
-            _placeEntity = [NSEntityDescription insertNewObjectForEntityForName:@"CSRPlaceEntity"
-                                                         inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
-            
-            _placeEntity.name = _placeNameTF.text;
-            _placeEntity.passPhrase = _placeNetworkKeyTF.text;
-//            _placeEntity.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
-            _placeEntity.iconID = @(8);
-            _placeEntity.owner = @"My place";
-            _placeEntity.networkKey = nil;
-            
-            [self checkForSettings];
-            [[CSRDatabaseManager sharedInstance] saveContext];
-            
-            for (int i=0; i<6; i++) {
-                SceneEntity *defaultScene = [NSEntityDescription insertNewObjectForEntityForName:@"SceneEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
-                
-                defaultScene.rcIndex = @(arc4random()%65471+64);
-                defaultScene.sceneID = @(i);
-                if (i==0) {
-                    defaultScene.iconID = @0;
-                    defaultScene.sceneName = @"Home";
-                }
-                if (i==1) {
-                    defaultScene.iconID = @1;
-                    defaultScene.sceneName = @"Away";
-                }
-                if (i==2) {
-                    defaultScene.iconID = @8;
-                    defaultScene.sceneName = @"Scene1";
-                }
-                if (i==3) {
-                    defaultScene.iconID = @8;
-                    defaultScene.sceneName = @"Scene2";
-                }
-                if (i==4) {
-                    defaultScene.iconID = @8;
-                    defaultScene.sceneName = @"Scene3";
-                }
-                if (i==5) {
-                    defaultScene.iconID = @8;
-                    defaultScene.sceneName = @"Scene4";
-                }
-                
-                [_placeEntity addScenesObject:defaultScene];
-                [[CSRDatabaseManager sharedInstance] saveContext];
+            NSArray *placesArray = [[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"CSRPlaceEntity" withPredicate:@"passPhrase == %@ and name == %@",_placeNetworkKeyTF.text,_placeNameTF.text];
+            if (placesArray && placesArray.count>0) {
+                 UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@""
+                                                                                             message:AcTECLocalizedStringFromTable(@"place_exists", @"Localizable")
+                                                                                      preferredStyle:UIAlertControllerStyleAlert];
+                    [alertController.view setTintColor:DARKORAGE];
+                    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK"
+                                                                       style:UIAlertActionStyleDefault
+                                                                     handler:^(UIAlertAction *action) {
+                                                                         
+                                                                     }];
+                    
+                    [alertController addAction:okAction];
+                    [self presentViewController:alertController animated:YES completion:nil];
+            }else {
+                _placeEntity = [NSEntityDescription insertNewObjectForEntityForName:@"CSRPlaceEntity"
+                                                                         inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+                            
+                            _placeEntity.name = _placeNameTF.text;
+                            _placeEntity.passPhrase = _placeNetworkKeyTF.text;
+                //            _placeEntity.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
+                            _placeEntity.iconID = @(8);
+                            _placeEntity.owner = @"My place";
+                            _placeEntity.networkKey = nil;
+                            
+                            [self checkForSettings];
+                            [[CSRDatabaseManager sharedInstance] saveContext];
+                            
+                            for (int i=0; i<6; i++) {
+                                SceneEntity *defaultScene = [NSEntityDescription insertNewObjectForEntityForName:@"SceneEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+                                
+                                defaultScene.rcIndex = @(arc4random()%65471+64);
+                                defaultScene.sceneID = @(i);
+                                if (i==0) {
+                                    defaultScene.iconID = @0;
+                                    defaultScene.sceneName = @"Home";
+                                }
+                                if (i==1) {
+                                    defaultScene.iconID = @1;
+                                    defaultScene.sceneName = @"Away";
+                                }
+                                if (i==2) {
+                                    defaultScene.iconID = @8;
+                                    defaultScene.sceneName = @"Scene1";
+                                }
+                                if (i==3) {
+                                    defaultScene.iconID = @8;
+                                    defaultScene.sceneName = @"Scene2";
+                                }
+                                if (i==4) {
+                                    defaultScene.iconID = @8;
+                                    defaultScene.sceneName = @"Scene3";
+                                }
+                                if (i==5) {
+                                    defaultScene.iconID = @8;
+                                    defaultScene.sceneName = @"Scene4";
+                                }
+                                
+                                [_placeEntity addScenesObject:defaultScene];
+                                [[CSRDatabaseManager sharedInstance] saveContext];
+                            }
+                            
+                            NSArray *defaultAreaNames = @[@"Living room",@"Bed room",@"Dining room",@"Toilet",@"Kitchen"];
+                            for (int i=0; i<5; i++) {
+                                CSRAreaEntity *defaultArea = [NSEntityDescription insertNewObjectForEntityForName:@"CSRAreaEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+                                
+                                defaultArea.areaID = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRAreaEntity"];
+                                defaultArea.areaName = AcTECLocalizedStringFromTable(defaultAreaNames[i], @"Localizable");
+                                defaultArea.areaIconNum = @(i);
+                                defaultArea.sortId = @(i);
+                                
+                                [_placeEntity addAreasObject:defaultArea];
+                                [[CSRDatabaseManager sharedInstance] saveContext];
+                            }
+                            
+                            [CSRAppStateManager sharedInstance].selectedPlace = _placeEntity;
+                            if (![[CSRUtilities getValueFromDefaultsForKey:@"kCSRLastSelectedPlaceID"] isEqualToString:[[[[CSRAppStateManager sharedInstance].selectedPlace objectID] URIRepresentation] absoluteString]]) {
+                                
+                                [CSRUtilities saveObject:[[[[CSRAppStateManager sharedInstance].selectedPlace objectID] URIRepresentation] absoluteString] toDefaultsWithKey:@"kCSRLastSelectedPlaceID"];
+                                
+                            }
+                            
+                            [[CSRAppStateManager sharedInstance] setupPlace];
+                            if (self.placeDetailVCHandle) {
+                                self.placeDetailVCHandle();
+                            }
+                            
+                            [[NSNotificationCenter defaultCenter] postNotificationName:@"reGetDataForPlaceChanged" object:nil];
+                            
+                            [self.navigationController popViewControllerAnimated:YES];
             }
-            
-            NSArray *defaultAreaNames = @[@"Living room",@"Bed room",@"Dining room",@"Toilet",@"Kitchen"];
-            for (int i=0; i<5; i++) {
-                CSRAreaEntity *defaultArea = [NSEntityDescription insertNewObjectForEntityForName:@"CSRAreaEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
-                
-                defaultArea.areaID = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRAreaEntity"];
-                defaultArea.areaName = AcTECLocalizedStringFromTable(defaultAreaNames[i], @"Localizable");
-                defaultArea.areaIconNum = @(i);
-                defaultArea.sortId = @(i);
-                
-                [_placeEntity addAreasObject:defaultArea];
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            }
-            
-            [CSRAppStateManager sharedInstance].selectedPlace = _placeEntity;
-            if (![[CSRUtilities getValueFromDefaultsForKey:@"kCSRLastSelectedPlaceID"] isEqualToString:[[[[CSRAppStateManager sharedInstance].selectedPlace objectID] URIRepresentation] absoluteString]]) {
-                
-                [CSRUtilities saveObject:[[[[CSRAppStateManager sharedInstance].selectedPlace objectID] URIRepresentation] absoluteString] toDefaultsWithKey:@"kCSRLastSelectedPlaceID"];
-                
-            }
-            
-            [[CSRAppStateManager sharedInstance] setupPlace];
-            if (self.placeDetailVCHandle) {
-                self.placeDetailVCHandle();
-            }
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reGetDataForPlaceChanged" object:nil];
-            
-            [self.navigationController popViewControllerAnimated:YES];
             
         } else {
             [self showAlert];

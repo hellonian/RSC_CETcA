@@ -776,6 +776,25 @@
                     }
                 }];
                 
+            }else if (_selectMode == DeviceListSelectMode_SingleRegardlessChannel) {
+                SelectModel *mod = [[SelectModel alloc] init];
+                mod.deviceID = mainCell.deviceId;
+                mod.channel = @1;
+                mod.sourceID = _sourceID;
+                
+                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
+                if ([CSRUtilities belongToSocketTwoChannel:deviceEntity.shortName]
+                || [CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName]
+                || [CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName]
+                || [CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName]
+                    || [CSRUtilities belongToFanController:deviceEntity.shortName]) {
+                    mod.channel = @4;
+                }else if ([CSRUtilities belongToThreeChannelSwitch:deviceEntity.shortName]) {
+                    mod.channel = @8;
+                }
+                
+                [_selectedDevices addObject:mod];
+                [self removeOtherSeletedDevice:mainCell.deviceId];
             }else {
                 CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
                 if ([CSRUtilities belongToSocketTwoChannel:deviceEntity.shortName]

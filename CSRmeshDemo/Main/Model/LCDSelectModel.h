@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong)NSNumber *typeID;
 @property (nonatomic, strong)NSNumber *iconID;
 @property (nonatomic, strong)NSString *name;
+@property (nonatomic, strong)NSNumber *sortID;
 
 @end
 

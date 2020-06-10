@@ -39,6 +39,8 @@
 		0DE95D161B297FFB006D0397 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0DE95D151B297FFB006D0397 /* Images.xcassets */; };
 		2E06A4FF20205B0E007B8BEA /* GroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E06A4FD20205B0E007B8BEA /* GroupViewController.m */; };
 		2E0AA21F2126761900DB45EB /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E0AA2212126761900DB45EB /* AboutViewController.xib */; };
+		2E159F30248643D6001E126C /* RemoteMainVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E159F32248643D6001E126C /* RemoteMainVC.xib */; };
+		2E159F372486442A001E126C /* RemoteLCDVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E159F392486442A001E126C /* RemoteLCDVC.xib */; };
 		2E1C839E20CFD782009BCC6D /* PlaceDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E1C83A020CFD782009BCC6D /* PlaceDetailsViewController.xib */; };
 		2E2000A920182260000AD8C3 /* SceneEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2000A820182260000AD8C3 /* SceneEntity.m */; };
 		2E2000AC2018227E000AD8C3 /* SceneMemberEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2000AB2018227E000AD8C3 /* SceneMemberEntity.m */; };
@@ -69,7 +71,6 @@
 		2E2E70B31FF5DE60002D1C1D /* ErrorCodes.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E70731FF5DE60002D1C1D /* ErrorCodes.strings */; };
 		2E2E70B51FF5DE60002D1C1D /* UpdateDeviceModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70771FF5DE60002D1C1D /* UpdateDeviceModel.m */; };
 		2E3417BE23A7276A000D1A52 /* RemoteMainVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3417BC23A7276A000D1A52 /* RemoteMainVC.m */; };
-		2E3417BF23A7276A000D1A52 /* RemoteMainVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E3417BD23A7276A000D1A52 /* RemoteMainVC.xib */; };
 		2E35F74C222A7E41001D9342 /* GroupControlView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E35F74B222A7E41001D9342 /* GroupControlView.m */; };
 		2E3630FB2199666F00EF22DD /* FanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3630F92199666F00EF22DD /* FanViewController.m */; };
 		2E37074E20CE4C16000AF696 /* DeviceViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E37075020CE4C16000AF696 /* DeviceViewController.xib */; };
@@ -106,7 +107,6 @@
 		2E5C130C23C05EC200A13994 /* LCDSelectModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C130B23C05EC200A13994 /* LCDSelectModel.m */; };
 		2E5EA0D7217F123700554825 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E5EA0D6217F123700554825 /* LaunchScreen.storyboard */; };
 		2E5F120823BD954A0018EF16 /* RemoteLCDVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E5F120623BD954A0018EF16 /* RemoteLCDVC.m */; };
-		2E5F120923BD954A0018EF16 /* RemoteLCDVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E5F120723BD954A0018EF16 /* RemoteLCDVC.xib */; };
 		2E5F120D23BDD22F0018EF16 /* LCDRemoteMemberCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E5F120B23BDD22F0018EF16 /* LCDRemoteMemberCell.m */; };
 		2E5F120E23BDD22F0018EF16 /* LCDRemoteMemberCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E5F120C23BDD22F0018EF16 /* LCDRemoteMemberCell.xib */; };
 		2E63A54321E328B800FCE49D /* SocketPowerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E63A54121E328B800FCE49D /* SocketPowerCell.m */; };
@@ -252,6 +252,12 @@
 		2E0AA2202126761900DB45EB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/AboutViewController.xib; sourceTree = "<group>"; };
 		2E0AA2232126762100DB45EB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/AboutViewController.strings; sourceTree = "<group>"; };
 		2E0AA2252126762300DB45EB /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/AboutViewController.strings"; sourceTree = "<group>"; };
+		2E159F31248643D6001E126C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/RemoteMainVC.xib; sourceTree = "<group>"; };
+		2E159F34248643E6001E126C /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/RemoteMainVC.strings; sourceTree = "<group>"; };
+		2E159F36248643E8001E126C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/RemoteMainVC.strings"; sourceTree = "<group>"; };
+		2E159F382486442A001E126C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/RemoteLCDVC.xib; sourceTree = "<group>"; };
+		2E159F3B24864439001E126C /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/RemoteLCDVC.strings; sourceTree = "<group>"; };
+		2E159F3D2486443E001E126C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/RemoteLCDVC.strings"; sourceTree = "<group>"; };
 		2E1C839F20CFD782009BCC6D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PlaceDetailsViewController.xib; sourceTree = "<group>"; };
 		2E1F6FC321C9F61C00915FFF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
 		2E1F6FC521C9F64E00915FFF /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/PlaceDetailsViewController.strings"; sourceTree = "<group>"; };
@@ -308,7 +314,6 @@
 		2E2E70771FF5DE60002D1C1D /* UpdateDeviceModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateDeviceModel.m; sourceTree = "<group>"; };
 		2E3417BB23A7276A000D1A52 /* RemoteMainVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteMainVC.h; sourceTree = "<group>"; };
 		2E3417BC23A7276A000D1A52 /* RemoteMainVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteMainVC.m; sourceTree = "<group>"; };
-		2E3417BD23A7276A000D1A52 /* RemoteMainVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RemoteMainVC.xib; sourceTree = "<group>"; };
 		2E35F74A222A7E41001D9342 /* GroupControlView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GroupControlView.h; sourceTree = "<group>"; };
 		2E35F74B222A7E41001D9342 /* GroupControlView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GroupControlView.m; sourceTree = "<group>"; };
 		2E3630F82199666F00EF22DD /* FanViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FanViewController.h; sourceTree = "<group>"; };
@@ -392,11 +397,8 @@
 		2E5C130A23C05EC200A13994 /* LCDSelectModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LCDSelectModel.h; sourceTree = "<group>"; };
 		2E5C130B23C05EC200A13994 /* LCDSelectModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LCDSelectModel.m; sourceTree = "<group>"; };
 		2E5EA0D6217F123700554825 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
-		2E5EA85423263DAB00EC1921 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/DeviceViewController.strings"; sourceTree = "<group>"; };
-		2E5EA85623263F8200EC1921 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
 		2E5F120523BD954A0018EF16 /* RemoteLCDVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteLCDVC.h; sourceTree = "<group>"; };
 		2E5F120623BD954A0018EF16 /* RemoteLCDVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteLCDVC.m; sourceTree = "<group>"; };
-		2E5F120723BD954A0018EF16 /* RemoteLCDVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RemoteLCDVC.xib; sourceTree = "<group>"; };
 		2E5F120A23BDD22F0018EF16 /* LCDRemoteMemberCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LCDRemoteMemberCell.h; sourceTree = "<group>"; };
 		2E5F120B23BDD22F0018EF16 /* LCDRemoteMemberCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LCDRemoteMemberCell.m; sourceTree = "<group>"; };
 		2E5F120C23BDD22F0018EF16 /* LCDRemoteMemberCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LCDRemoteMemberCell.xib; sourceTree = "<group>"; };
@@ -458,6 +460,9 @@
 		2E747FF2221CF69000FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/AboutViewController.strings; sourceTree = "<group>"; };
 		2E747FF3221CF69000FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; wrapsLines = 0; };
 		2E747FF4221CF69100FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2E78257A246FB86B00F78CE5 /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
+		2E78257C246FB96A00F78CE5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
+		2E78257F246FBA6500F78CE5 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/DeviceViewController.strings"; sourceTree = "<group>"; };
 		2E8623462019DB28004EF0E0 /* DeviceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceViewController.h; sourceTree = "<group>"; };
 		2E8623472019DB28004EF0E0 /* DeviceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeviceViewController.m; sourceTree = "<group>"; };
 		2E8ECC2C239DFA210031367F /* SelectModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelectModel.h; sourceTree = "<group>"; };
@@ -1138,10 +1143,10 @@
 				2E712CFC235015E5003DBA72 /* TwoChannelSwitchVC.xib */,
 				2E3417BB23A7276A000D1A52 /* RemoteMainVC.h */,
 				2E3417BC23A7276A000D1A52 /* RemoteMainVC.m */,
-				2E3417BD23A7276A000D1A52 /* RemoteMainVC.xib */,
+				2E159F32248643D6001E126C /* RemoteMainVC.xib */,
 				2E5F120523BD954A0018EF16 /* RemoteLCDVC.h */,
 				2E5F120623BD954A0018EF16 /* RemoteLCDVC.m */,
-				2E5F120723BD954A0018EF16 /* RemoteLCDVC.xib */,
+				2E159F392486442A001E126C /* RemoteLCDVC.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1565,10 +1570,10 @@
 				2EE50F2D20DA3E3D00B484F7 /* LightSensorSettingViewController.xib in Resources */,
 				2E712CFE235015E5003DBA72 /* TwoChannelSwitchVC.xib in Resources */,
 				2E5EA0D7217F123700554825 /* LaunchScreen.storyboard in Resources */,
-				2E5F120923BD954A0018EF16 /* RemoteLCDVC.xib in Resources */,
+				2E159F372486442A001E126C /* RemoteLCDVC.xib in Resources */,
 				2E2E70921FF5DE60002D1C1D /* PlaceIconCollectionViewCell.xib in Resources */,
 				2ED23F6E215DCCCA0040A922 /* CurtainViewController.xib in Resources */,
-				2E3417BF23A7276A000D1A52 /* RemoteMainVC.xib in Resources */,
+				2E159F30248643D6001E126C /* RemoteMainVC.xib in Resources */,
 				2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */,
 				2E4DDCEB21F9680900B2ACF3 /* FanViewController.xib in Resources */,
 				2E4902AF224233F5003B901A /* cskey_db.json in Resources */,
@@ -1792,6 +1797,26 @@
 			name = AboutViewController.xib;
 			sourceTree = "<group>";
 		};
+		2E159F32248643D6001E126C /* RemoteMainVC.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E159F31248643D6001E126C /* Base */,
+				2E159F34248643E6001E126C /* English */,
+				2E159F36248643E8001E126C /* zh-Hans */,
+			);
+			name = RemoteMainVC.xib;
+			sourceTree = "<group>";
+		};
+		2E159F392486442A001E126C /* RemoteLCDVC.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E159F382486442A001E126C /* Base */,
+				2E159F3B24864439001E126C /* English */,
+				2E159F3D2486443E001E126C /* zh-Hans */,
+			);
+			name = RemoteLCDVC.xib;
+			sourceTree = "<group>";
+		};
 		2E1C83A020CFD782009BCC6D /* PlaceDetailsViewController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -1826,8 +1851,9 @@
 				2EC18BFD221D229E008B33DC /* fr */,
 				2EC18C10221D22B6008B33DC /* pt-PT */,
 				2EC18C23221D22E7008B33DC /* fi-FI */,
-				2E5EA85423263DAB00EC1921 /* zh-Hans */,
-				2E5EA85623263F8200EC1921 /* en */,
+				2E78257A246FB86B00F78CE5 /* English */,
+				2E78257C246FB96A00F78CE5 /* en */,
+				2E78257F246FBA6500F78CE5 /* zh-Hans */,
 			);
 			name = DeviceViewController.xib;
 			sourceTree = "<group>";
@@ -2258,7 +2284,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 17;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2318,7 +2344,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 17;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;

@@ -28,6 +28,7 @@ extern NSString * const kTimerProfile;
 
 + (instancetype)shareInstance;
 - (void)sendCmdData:(NSString *)hexStrCmd  toDeviceId:(NSNumber *)deviceId;
+- (void)sendDataByBlockDataTransfer:(NSNumber *)deviceId data:(NSData *)data;
 - (void)readAlarmMessageByDeviceId:(NSNumber *)deviceId;
 - (void)setDeviceTime;
 - (void)readDeviceTime:(NSNumber *)deviceId;

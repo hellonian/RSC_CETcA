@@ -272,6 +272,7 @@
     [NSThread sleepForTimeInterval:1.0];
     [self getVersion:deviceId];
     
+    
 }
 
 - (void)getVersion: (NSNumber *)deviceId {
@@ -395,16 +396,16 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:kCSRmeshManagerDidGetDeviceInfoNotification object:self userInfo:objects];
     }
     
-//    [[ConfigModelApi sharedInstance] getMessageParameters:deviceId success:^(NSNumber * _Nullable deviceId, NSNumber * _Nullable txQueueSize, NSNumber * _Nullable relayRepeatCount, NSNumber * _Nullable deviceRepeatCount) {
+    [[ConfigModelApi sharedInstance] getMessageParameters:deviceId success:^(NSNumber * _Nullable deviceId, NSNumber * _Nullable txQueueSize, NSNumber * _Nullable relayRepeatCount, NSNumber * _Nullable deviceRepeatCount) {
 //        NSLog(@"~~>> %@  %@  %@  %@",txQueueSize,relayRepeatCount,deviceRepeatCount,meshRequestId);
-//        [[ConfigModelApi sharedInstance] setMessageParameters:deviceId txQueueSize:txQueueSize relayRepeatCount:@1 deviceRepeatCount:deviceRepeatCount success:^(NSNumber * _Nullable deviceId, NSNumber * _Nullable txQueueSize, NSNumber * _Nullable relayRepeatCount, NSNumber * _Nullable deviceRepeatCount) {
-//
-//        } failure:^(NSError * _Nullable error) {
-//
-//        }];
-//    } failure:^(NSError * _Nullable error) {
-//        
-//    }];
+        [[ConfigModelApi sharedInstance] setMessageParameters:deviceId txQueueSize:txQueueSize relayRepeatCount:@1 deviceRepeatCount:deviceRepeatCount success:^(NSNumber * _Nullable deviceId, NSNumber * _Nullable txQueueSize, NSNumber * _Nullable relayRepeatCount, NSNumber * _Nullable deviceRepeatCount) {
+
+        } failure:^(NSError * _Nullable error) {
+
+        }];
+    } failure:^(NSError * _Nullable error) {
+        
+    }];
     
     
 }

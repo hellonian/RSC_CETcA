@@ -182,18 +182,20 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         }else if ([CSRUtilities belongToSceneRemote:deviceEntity.shortName]) {
             _mType = MainRemoteType_Scene;
             [self prepare2:deviceEntity];
-            [_remoteBtn18 setImage:[UIImage imageNamed:@"remotebtn16_default"] forState:UIControlStateNormal];
-            [_remoteBtn18 setImage:[UIImage imageNamed:@"remotebtn16_highlighted"] forState:UIControlStateHighlighted];
-            [_remoteBtn19 setImage:[UIImage imageNamed:@"remotebtn17_default"] forState:UIControlStateNormal];
-            [_remoteBtn19 setImage:[UIImage imageNamed:@"remotebtn17_highlighted"] forState:UIControlStateHighlighted];
-            [_remoteBtn20 setImage:[UIImage imageNamed:@"remotebtn18_default"] forState:UIControlStateNormal];
-            [_remoteBtn20 setImage:[UIImage imageNamed:@"remotebtn18_highlighted"] forState:UIControlStateHighlighted];
-            [_remoteBtn21 setImage:[UIImage imageNamed:@"remotebtn19_default"] forState:UIControlStateNormal];
-            [_remoteBtn21 setImage:[UIImage imageNamed:@"remotebtn19_highlighted"] forState:UIControlStateHighlighted];
-            [_remoteBtn22 setImage:[UIImage imageNamed:@"remotebtn20_default"] forState:UIControlStateNormal];
-            [_remoteBtn22 setImage:[UIImage imageNamed:@"remotebtn20_highlighted"] forState:UIControlStateHighlighted];
-            [_remoteBtn23 setImage:[UIImage imageNamed:@"remotebtn21_default"] forState:UIControlStateNormal];
-            [_remoteBtn23 setImage:[UIImage imageNamed:@"remotebtn21_highlighted"] forState:UIControlStateHighlighted];
+
+            _remoteBtn18.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn18.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn19.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn19.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn20.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn20.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn21.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn21.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn22.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn22.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn23.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn23.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            
             UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn18 addGestureRecognizer:gesture17];
             UILongPressGestureRecognizer *gesture18 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
@@ -398,16 +400,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         }else if (sender.tag == 1 || sender.tag == 2 || sender.tag == 3 || sender.tag == 4 || sender.tag == 5 || sender.tag == 6) {
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
             [alert.view setTintColor:DARKORAGE];
-            UIAlertAction *lamp = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"ControlLamp", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                
-                [self selectDevice:sender deviceListSelectMode:DeviceListSelectMode_Single];
-                
-            }];
-            UIAlertAction *group = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"ControlGroup", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                
-                [self selectDevice:sender deviceListSelectMode:DeviceListSelectMode_SelectGroup];
-                
-            }];
             UIAlertAction *scene = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"ControlScene", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 
                 [self selectDevice:sender deviceListSelectMode:DeviceListSelectMode_SelectScene];
@@ -421,8 +413,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
                 
             }];
-            [alert addAction:lamp];
-            [alert addAction:group];
             [alert addAction:scene];
             [alert addAction:clear];
             [alert addAction:cancel];

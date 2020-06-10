@@ -225,7 +225,6 @@
 #pragma mark - table view delegate
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"%ld, %ld",indexPath.row, _selectedRow);
     if (indexPath.row == _selectedRow) {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }

@@ -147,7 +147,7 @@
 "bubble_left_words" = "Long press the open button until the curtain is fully open.";
 "bubble_right_words" = "Long press the close button until the curtain is fully closed.";
 "bubble_mid_words" = "Entering calibration mode.";
-"noWifiAlert" = "Connect WIFI and share place data to other devcies.";
+"noWifiAlert" = "Connect WIFI and share place data to other devcies.\n\nThe phone is currently not connected to WIFI.";
 "today" = "Today";
 "thisWeek" = "This Week";
 "thisMonth" = "This Month";
@@ -176,3 +176,10 @@
 "OK" = "OK";
 "Scene3" = "Scene3";
 "Scene4" = "Scene4";
+"mustSelectScene" = "Must Select a scene.";
+"place_exists" = "Place already exists.";
+"send" = "Send";
+"enter_wifi_password" = "Enter wifi password";
+"set_lcdremote_wifi" = "Set up the wifi connection of LCD pannel";
+"help" = "help_e";
+"gotosetting" = "App need to use location information to share data. Location information will not be uploaded to the network. Please enable location service in \"Setting\"->\"Privacy\"->\"Location Servies\" and allow AcTEC BLE to get your location data.";

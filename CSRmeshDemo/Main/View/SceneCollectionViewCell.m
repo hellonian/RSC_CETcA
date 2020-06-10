@@ -17,6 +17,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *iconView;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 //@property (nonatomic,strong) NSArray *iconArray;
+@property(nonatomic, strong) NSString *sceneName;
 
 
 @end
@@ -46,6 +47,7 @@
         
         self.nameLabel.highlightedTextColor = DARKORAGE;
         self.sceneId = sceneEntity.sceneID;
+        self.sceneName = sceneEntity.sceneName;
         [self addGestureRecognizer:[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(sceneCellLongTap:)]];
         [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(sceneCellTap:)]];
         
