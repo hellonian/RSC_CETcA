@@ -46,8 +46,9 @@
 @property (nonatomic,strong) NSNumber *selectedCurtainDeviceId;
 @property (nonatomic,strong) UIView *translucentBgView;
 
-@property (nonatomic,strong) UIView *channelsSelectedView;
 @property (nonatomic,strong) NSNumber *channelCurrentDeviceID;
+
+@property (nonatomic, strong) UIView *twoChannelSelectedView;
 
 @property (nonatomic, strong) UIView *threeChannelSelectedView;
 
@@ -121,7 +122,7 @@
             [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             
             for (CSRDeviceEntity *device in mutableArray) {
-                if (([kDimmers containsObject:device.shortName] || [kSwitchs containsObject:device.shortName] || [kCWDevices containsObject:device.shortName] || [kRGBDevices containsObject:device.shortName] || [kRGBCWDevices containsObject:device.shortName] || [kOneChannelCurtainController containsObject:device.shortName] || [kTwoChannelCurtainController containsObject:device.shortName] || [kFanController containsObject:device.shortName] || [kSockets containsObject:device.shortName] || [kTwoChannelDimmers containsObject:device.shortName] || [kTwoChannelSwitchs containsObject:device.shortName]) && ![deviceIds containsObject:device.deviceId]) {
+                if (([kDimmers containsObject:device.shortName] || [kSwitchs containsObject:device.shortName] || [kCWDevices containsObject:device.shortName] || [kRGBDevices containsObject:device.shortName] || [kRGBCWDevices containsObject:device.shortName] || [kOneChannelCurtainController containsObject:device.shortName] || [kTwoChannelCurtainController containsObject:device.shortName] || [kFanController containsObject:device.shortName] || [kSockets containsObject:device.shortName] || [kTwoChannelDimmers containsObject:device.shortName] || [kTwoChannelSwitchs containsObject:device.shortName] || [kThreeChannelSwitchs containsObject:device.shortName]) && ![deviceIds containsObject:device.deviceId]) {
                     SingleDeviceModel *model = [[SingleDeviceModel alloc] init];
                     model.deviceId = device.deviceId;
                     model.deviceName = device.name;
@@ -537,6 +538,53 @@
                 }
             }];
         }
+    }else if (self.selectMode == DeviceListSelectMode_Multiple) {
+        NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
+        if ([mutableArray count] > 0) {
+            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
+            [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+            
+            for (CSRDeviceEntity *device in mutableArray) {
+                if ([kDimmers containsObject:device.shortName] || [kSwitchs containsObject:device.shortName] || [kCWDevices containsObject:device.shortName] || [kRGBDevices containsObject:device.shortName] || [kRGBCWDevices containsObject:device.shortName] || [kOneChannelCurtainController containsObject:device.shortName] || [kTwoChannelCurtainController containsObject:device.shortName] || [kFanController containsObject:device.shortName] || [kSockets containsObject:device.shortName] || [kTwoChannelDimmers containsObject:device.shortName] || [kTwoChannelSwitchs containsObject:device.shortName] || [kThreeChannelSwitchs containsObject:device.shortName]) {
+                    
+                    BOOL exist = NO;
+                    for (SceneMemberEntity *m in self.originalMembers) {
+                        if ([m.deviceID isEqualToNumber:device.deviceId]) {
+                            exist = YES;
+                            break;
+                        }
+                    }
+                    
+                    if (!exist) {
+                        SingleDeviceModel *model = [[SingleDeviceModel alloc] init];
+                        model.deviceId = device.deviceId;
+                        model.deviceName = device.name;
+                        model.deviceShortName = device.shortName;
+                        model.isForList = YES;
+                        if ([_originalMembers count]>0) {
+                            __block BOOL exist = NO;
+                            [_originalMembers enumerateObjectsUsingBlock:^(SelectModel  *sMod, NSUInteger idx, BOOL * _Nonnull stop) {
+                                if ([sMod.deviceID isEqualToNumber:device.deviceId]) {
+                                    exist = YES;
+                                    [_selectedDevices addObject:sMod];
+                                    *stop = YES;
+                                }
+                            }];
+                            if (exist) {
+                                model.isSelected = YES;
+                            }else {
+                                model.isSelected = NO;
+                            }
+                        }else {
+                            model.isSelected = NO;
+                        }
+                        
+                        [_devicesCollectionView.dataArray addObject:model];
+                    }
+                    
+                }
+            }
+        }
     }else {
         NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
         if ([mutableArray count] > 0) {
@@ -740,41 +788,47 @@
                 mod.sourceID = _sourceID;
                 [_selectedDevices addObject:mod];
                 
-                [_devicesCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell * enCell, NSUInteger idx, BOOL * _Nonnull stop) {
+                for (MainCollectionViewCell *eCell in _devicesCollectionView.visibleCells) {
                     if ([mainCell.deviceId isEqualToNumber:@2000]) {
-                        if (![enCell.groupId isEqualToNumber:mainCell.groupId] && enCell.seleteButton.selected) {
-                            enCell.seleteButton.selected = NO;
-                            [_devicesCollectionView.dataArray enumerateObjectsUsingBlock:^(GroupListSModel  *gMod, NSUInteger idx, BOOL * _Nonnull stop) {
-                                if ([gMod.areaID isEqualToNumber:enCell.groupId]) {
-                                    gMod.isSelected = NO;
-                                    *stop = YES;
+                        if (![eCell.groupId isEqualToNumber:mainCell.groupId] && eCell.seleteButton.selected) {
+                            eCell.seleteButton.selected = NO;
+                            for (id obj in _devicesCollectionView.dataArray) {
+                                if ([obj isKindOfClass:[GroupListSModel class]]) {
+                                    GroupListSModel *gMod = (GroupListSModel *)obj;
+                                    if ([gMod.areaID isEqualToNumber:eCell.groupId]) {
+                                        gMod.isSelected = NO;
+                                        break;
+                                    }
                                 }
-                            }];
-                            [_selectedDevices enumerateObjectsUsingBlock:^(SelectModel *mod, NSUInteger idx, BOOL * _Nonnull stop) {
-                                if ([mod.deviceID isEqualToNumber:enCell.groupId]) {
+                            }
+                            for (SelectModel *mod in _selectedDevices) {
+                                if ([mod.deviceID isEqualToNumber:eCell.groupId]) {
                                     [_selectedDevices removeObject:mod];
-                                    *stop = YES;
+                                    break;
                                 }
-                            }];
+                            }
                         }
                     }else {
-                        if (![enCell.deviceId isEqualToNumber:mainCell.deviceId] && enCell.seleteButton.selected) {
-                            enCell.seleteButton.selected = NO;
-                            [_devicesCollectionView.dataArray enumerateObjectsUsingBlock:^(SingleDeviceModel  *device, NSUInteger idx, BOOL * _Nonnull stop) {
-                                if ([device.deviceId isEqualToNumber:enCell.deviceId]) {
-                                    device.isSelected = NO;
-                                    *stop = YES;
+                        if (![eCell.deviceId isEqualToNumber:mainCell.deviceId] && eCell.seleteButton.selected) {
+                            eCell.seleteButton.selected = NO;
+                            for (id obj in _devicesCollectionView.dataArray) {
+                                if ([obj isKindOfClass:[SingleDeviceModel class]]) {
+                                    SingleDeviceModel *device = (SingleDeviceModel *)obj;
+                                    if ([device.deviceId isEqualToNumber:eCell.deviceId]) {
+                                        device.isSelected = NO;
+                                        break;
+                                    }
                                 }
-                            }];
-                            [_selectedDevices enumerateObjectsUsingBlock:^(SelectModel *mod, NSUInteger idx, BOOL * _Nonnull stop) {
-                                if ([mod.deviceID isEqualToNumber:enCell.deviceId]) {
+                            }
+                            for (SelectModel *mod in _selectedDevices) {
+                                if ([mod.deviceID isEqualToNumber:eCell.deviceId]) {
                                     [_selectedDevices removeObject:mod];
-                                    *stop = YES;
+                                    break;
                                 }
-                            }];
+                            }
                         }
                     }
-                }];
+                }
                 
             }else if (_selectMode == DeviceListSelectMode_SingleRegardlessChannel) {
                 SelectModel *mod = [[SelectModel alloc] init];
@@ -804,9 +858,9 @@
                     || [CSRUtilities belongToFanController:deviceEntity.shortName]) {
                     _channelCurrentDeviceID = mainCell.deviceId;
                     [self.view addSubview:self.translucentBgView];
-                    [self.view addSubview:self.channelsSelectedView];
-                    [self.channelsSelectedView autoCenterInSuperview];
-                    [self.channelsSelectedView autoSetDimensionsToSize:CGSizeMake(271, 166)];
+                    [self.view addSubview:self.twoChannelSelectedView];
+                    [self.twoChannelSelectedView autoCenterInSuperview];
+                    [self.twoChannelSelectedView autoSetDimensionsToSize:CGSizeMake(271, 166)];
                     if (_selectMode == DeviceListSelectMode_Single || _selectMode == DeviceListSelectMode_ForDrop) {
                         [self removeOtherSeletedDevice:mainCell.deviceId];
                     }
@@ -1012,80 +1066,6 @@
     return _translucentBgView;
 }
 
-- (UIView *)channelsSelectedView {
-    if (!_channelsSelectedView) {
-        _channelsSelectedView = [[UIView alloc] initWithFrame:CGRectZero];
-        _channelsSelectedView.backgroundColor = [UIColor whiteColor];
-        _channelsSelectedView.alpha = 0.9;
-        _channelsSelectedView.layer.cornerRadius = 14;
-        _channelsSelectedView.layer.masksToBounds = YES;
-        
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 271, 30)];
-        titleLabel.text = AcTECLocalizedStringFromTable(@"Select", @"Localizable");
-        titleLabel.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
-        titleLabel.textAlignment = NSTextAlignmentCenter;
-        [_channelsSelectedView addSubview:titleLabel];
-        
-        UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 30, 271, 1)];
-        line.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
-        [_channelsSelectedView addSubview:line];
-        
-        UIButton *allSelectBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 31, 271, 44)];
-        [allSelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-        [allSelectBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateSelected];
-        [allSelectBtn setTitle:AcTECLocalizedStringFromTable(@"ChannelAll", @"Localizable") forState:UIControlStateNormal];
-        [allSelectBtn setTitleColor:[UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1] forState:UIControlStateNormal];
-        allSelectBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-        allSelectBtn.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        allSelectBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, -20);
-        allSelectBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 40, 0, -40);
-        allSelectBtn.tag = 1;
-        [allSelectBtn addTarget:self action:@selector(channelsSelectedViewTouchDownAction:) forControlEvents:UIControlEventTouchDown];
-        [allSelectBtn addTarget:self action:@selector(channelsSelectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpInside];
-        [allSelectBtn addTarget:self action:@selector(channelsSelectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpOutside];
-        [_channelsSelectedView addSubview:allSelectBtn];
-        
-        UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(60, 75, 211, 1)];
-        line1.backgroundColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1];
-        [_channelsSelectedView addSubview:line1];
-        
-        UIButton *channel1SelectBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 76, 271, 44)];
-        [channel1SelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-        [channel1SelectBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateSelected];
-        [channel1SelectBtn setTitle:AcTECLocalizedStringFromTable(@"Channel1", @"Localizable") forState:UIControlStateNormal];
-        [channel1SelectBtn setTitleColor:[UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1] forState:UIControlStateNormal];
-        channel1SelectBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-        channel1SelectBtn.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        channel1SelectBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, -20);
-        channel1SelectBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 40, 0, -40);
-        channel1SelectBtn.tag = 2;
-        [channel1SelectBtn addTarget:self action:@selector(channelsSelectedViewTouchDownAction:) forControlEvents:UIControlEventTouchDown];
-        [channel1SelectBtn addTarget:self action:@selector(channelsSelectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpInside];
-        [channel1SelectBtn addTarget:self action:@selector(channelsSelectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpOutside];
-        [_channelsSelectedView addSubview:channel1SelectBtn];
-        
-        UIView *line2 = [[UIView alloc] initWithFrame:CGRectMake(60, 120, 221, 1)];
-        line2.backgroundColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1];
-        [_channelsSelectedView addSubview:line2];
-        
-        UIButton *channel2SelectBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 121, 271, 44)];
-        [channel2SelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
-        [channel2SelectBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateSelected];
-        [channel2SelectBtn setTitle:AcTECLocalizedStringFromTable(@"Channel2", @"Localizable") forState:UIControlStateNormal];
-        [channel2SelectBtn setTitleColor:[UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1] forState:UIControlStateNormal];
-        channel2SelectBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-        channel2SelectBtn.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        channel2SelectBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, -20);
-        channel2SelectBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 40, 0, -40);
-        channel2SelectBtn.tag = 3;
-        [channel2SelectBtn addTarget:self action:@selector(channelsSelectedViewTouchDownAction:) forControlEvents:UIControlEventTouchDown];
-        [channel2SelectBtn addTarget:self action:@selector(channelsSelectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpInside];
-        [channel2SelectBtn addTarget:self action:@selector(channelsSelectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpOutside];
-        [_channelsSelectedView addSubview:channel2SelectBtn];
-    }
-    return _channelsSelectedView;
-}
-
 - (void)channelsSelecteAction:(NSNumber *)channel {
     __block BOOL exist= NO;
     [_selectedDevices enumerateObjectsUsingBlock:^(SelectModel *mod, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -1102,57 +1082,6 @@
         mod.sourceID = _sourceID;
         [_selectedDevices addObject:mod];
     }
-}
-
-- (void)channelsSelectedViewTouchDownAction:(UIButton *)button {
-    button.selected = YES;
-    switch (button.tag) {
-        case 1:
-            {
-                UIButton *channel1SelectBtn = (UIButton *)[button.superview viewWithTag:2];
-                channel1SelectBtn.selected = NO;
-                UIButton *channel2SelectBtn = (UIButton *)[button.superview viewWithTag:3];
-                channel2SelectBtn.selected = NO;
-                [self channelsSelecteAction:@(1)];
-            }
-            break;
-        case 2:
-            {
-                UIButton *allSelectBtn = (UIButton *)[button.superview viewWithTag:1];
-                allSelectBtn.selected = NO;
-                UIButton *channel2SelectBtn = (UIButton *)[button.superview viewWithTag:3];
-                channel2SelectBtn.selected = NO;
-                [self channelsSelecteAction:@(2)];
-            }
-            break;
-        case 3:
-            {
-                UIButton *allSelectBtn = (UIButton *)[button.superview viewWithTag:1];
-                allSelectBtn.selected = NO;
-                UIButton *channel1SelectBtn = (UIButton *)[button.superview viewWithTag:2];
-                channel1SelectBtn.selected = NO;
-                [self channelsSelecteAction:@(3)];
-            }
-            break;
-        default:
-            break;
-    }
-}
-
-- (void)channelsSelectedViewTouchInsideAction:(UIButton *)button {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.channelsSelectedView removeFromSuperview];
-        self.channelsSelectedView = nil;
-        [self.translucentBgView removeFromSuperview];
-        self.translucentBgView = nil;
-        if (self.selectMode == DeviceListSelectMode_ForDrop) {
-            if ([self.selectedDevices count]>0) {
-                self.navigationItem.rightBarButtonItem.enabled = YES;
-            }else {
-                self.navigationItem.rightBarButtonItem.enabled = NO;
-            }
-        }
-    });
 }
 
 - (UIView *)threeChannelSelectedView {
@@ -1183,8 +1112,8 @@
         channel1SelectBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, -20);
         channel1SelectBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 40, 0, -40);
         channel1SelectBtn.tag = 2;
-        [channel1SelectBtn addTarget:self action:@selector(threeChannelsSelectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpInside];
-        [channel1SelectBtn addTarget:self action:@selector(threeChannelsSelectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpOutside];
+        [channel1SelectBtn addTarget:self action:@selector(selectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpInside];
+        [channel1SelectBtn addTarget:self action:@selector(selectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpOutside];
         [_threeChannelSelectedView addSubview:channel1SelectBtn];
         
         UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(60, 75, 211, 1)];
@@ -1201,8 +1130,8 @@
         channel2SelectBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, -20);
         channel2SelectBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 40, 0, -40);
         channel2SelectBtn.tag = 3;
-        [channel2SelectBtn addTarget:self action:@selector(threeChannelsSelectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpInside];
-        [channel2SelectBtn addTarget:self action:@selector(threeChannelsSelectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpOutside];
+        [channel2SelectBtn addTarget:self action:@selector(selectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpInside];
+        [channel2SelectBtn addTarget:self action:@selector(selectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpOutside];
         [_threeChannelSelectedView addSubview:channel2SelectBtn];
         
         UIView *line2 = [[UIView alloc] initWithFrame:CGRectMake(60, 120, 211, 1)];
@@ -1219,8 +1148,8 @@
         channel3SelectBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, -20);
         channel3SelectBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 40, 0, -40);
         channel3SelectBtn.tag = 5;
-        [channel3SelectBtn addTarget:self action:@selector(threeChannelsSelectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpInside];
-        [channel3SelectBtn addTarget:self action:@selector(threeChannelsSelectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpOutside];
+        [channel3SelectBtn addTarget:self action:@selector(selectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpInside];
+        [channel3SelectBtn addTarget:self action:@selector(selectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpOutside];
         [_threeChannelSelectedView addSubview:channel3SelectBtn];
         
         UIView *line3 = [[UIView alloc] initWithFrame:CGRectMake(0, 165, 271, 1)];
@@ -1228,6 +1157,7 @@
         [_threeChannelSelectedView addSubview:line3];
         
         UIButton *cancel = [[UIButton alloc] initWithFrame:CGRectMake(0, 166, 135, 44)];
+        cancel.tag = 31;
         [cancel setTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") forState:UIControlStateNormal];
         [cancel setTitleColor:DARKORAGE forState:UIControlStateNormal];
         [cancel addTarget:self action:@selector(channelViewCancelAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -1240,10 +1170,11 @@
         [_threeChannelSelectedView addSubview:line4];
         
         UIButton *save = [UIButton buttonWithType:UIButtonTypeCustom];
+        save.tag = 32;
         [save setFrame:CGRectMake(136, 166, 135, 44)];
         [save setTitle:AcTECLocalizedStringFromTable(@"Save", @"Localizable") forState:UIControlStateNormal];
         [save setTitleColor:DARKORAGE forState:UIControlStateNormal];
-        [save addTarget:self action:@selector(channelViewSaveAction:) forControlEvents:UIControlEventTouchUpInside];
+        [save addTarget:self action:@selector(threeChannelViewSaveAction:) forControlEvents:UIControlEventTouchUpInside];
         [save addTarget:self action:@selector(channelViewTouchDown:) forControlEvents:UIControlEventTouchDown];
         [save addTarget:self action:@selector(channelViewTouchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
         [_threeChannelSelectedView addSubview:save];
@@ -1257,11 +1188,31 @@
 - (void)channelViewCancelAction:(UIButton *) button {
     [button setBackgroundColor:[UIColor whiteColor]];
     
+    for (MainCollectionViewCell *mainCell in _devicesCollectionView.visibleCells) {
+        if ([mainCell.deviceId isEqualToNumber:_channelCurrentDeviceID]) {
+            mainCell.seleteButton.selected = NO;
+            break;
+        }
+    }
+    for (SelectModel *mod in _selectedDevices) {
+        if ([mod.deviceID isEqualToNumber:_channelCurrentDeviceID]) {
+            [_selectedDevices removeObject:mod];
+            break;;
+        }
+    }
+    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.threeChannelSelectedView removeFromSuperview];
-        self.threeChannelSelectedView = nil;
+        if (button.tag == 31) {
+            [self.threeChannelSelectedView removeFromSuperview];
+            self.threeChannelSelectedView = nil;
+        }else if (button.tag == 21) {
+            [self.twoChannelSelectedView removeFromSuperview];
+            self.twoChannelSelectedView = nil;
+        }
+        
         [self.translucentBgView removeFromSuperview];
         self.translucentBgView = nil;
+        
         if (self.selectMode == DeviceListSelectMode_ForDrop) {
             if ([self.selectedDevices count]>0) {
                 self.navigationItem.rightBarButtonItem.enabled = YES;
@@ -1272,7 +1223,7 @@
     });
 }
 
-- (void)channelViewSaveAction:(UIButton *) button {
+- (void)threeChannelViewSaveAction:(UIButton *) button {
     [button setBackgroundColor:[UIColor whiteColor]];
     UIButton *channel1SelectBtn = (UIButton *)[button.superview viewWithTag:2];
     UIButton *channel2SelectBtn = (UIButton *)[button.superview viewWithTag:3];
@@ -1322,6 +1273,45 @@
     });
 }
 
+- (void)twoChannelViewSaveAction:(UIButton *) button {
+    [button setBackgroundColor:[UIColor whiteColor]];
+    UIButton *channel1SelectBtn = (UIButton *)[button.superview viewWithTag:2];
+    UIButton *channel2SelectBtn = (UIButton *)[button.superview viewWithTag:3];
+    if (channel1SelectBtn.selected && channel2SelectBtn.selected) {
+        [self channelsSelecteAction:@(4)];
+    }else if (channel1SelectBtn.selected && !channel2SelectBtn.selected) {
+        [self channelsSelecteAction:@(2)];
+    }else if (!channel1SelectBtn.selected && channel2SelectBtn.selected) {
+        [self channelsSelecteAction:@(3)];
+    }else if (!channel1SelectBtn.selected && !channel2SelectBtn.selected) {
+        for (MainCollectionViewCell *mainCell in _devicesCollectionView.visibleCells) {
+            if ([mainCell.deviceId isEqualToNumber:_channelCurrentDeviceID]) {
+                mainCell.seleteButton.selected = NO;
+                break;
+            }
+        }
+        for (SelectModel *mod in _selectedDevices) {
+            if ([mod.deviceID isEqualToNumber:_channelCurrentDeviceID]) {
+                [_selectedDevices removeObject:mod];
+                break;;
+            }
+        }
+    }
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.twoChannelSelectedView removeFromSuperview];
+        self.twoChannelSelectedView = nil;
+        [self.translucentBgView removeFromSuperview];
+        self.translucentBgView = nil;
+        if (self.selectMode == DeviceListSelectMode_ForDrop) {
+            if ([self.selectedDevices count]>0) {
+                self.navigationItem.rightBarButtonItem.enabled = YES;
+            }else {
+                self.navigationItem.rightBarButtonItem.enabled = NO;
+            }
+        }
+    });
+}
+
 - (void)channelViewTouchDown:(UIButton *) button {
     [button setBackgroundColor:[UIColor colorWithRed:235/255.0 green:235/255.0 blue:235/255.0 alpha:1]];
 }
@@ -1330,9 +1320,91 @@
     [button setBackgroundColor:[UIColor whiteColor]];
 }
 
-- (void)threeChannelsSelectedViewTouchInsideAction:(UIButton *)button {
+- (void)selectedViewTouchInsideAction:(UIButton *)button {
     
     button.selected = !button.selected;
     
 }
+
+- (UIView *)twoChannelSelectedView {
+    if (!_twoChannelSelectedView) {
+        _twoChannelSelectedView = [[UIView alloc] initWithFrame:CGRectZero];
+        _twoChannelSelectedView.backgroundColor = [UIColor whiteColor];
+        _twoChannelSelectedView.alpha = 0.9;
+        _twoChannelSelectedView.layer.cornerRadius = 14;
+        _twoChannelSelectedView.layer.masksToBounds = YES;
+        
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 271, 30)];
+        titleLabel.text = AcTECLocalizedStringFromTable(@"Select", @"Localizable");
+        titleLabel.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+        titleLabel.textAlignment = NSTextAlignmentCenter;
+        [_twoChannelSelectedView addSubview:titleLabel];
+        
+        UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 30, 271, 1)];
+        line.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+        [_twoChannelSelectedView addSubview:line];
+        
+        UIButton *channel1SelectBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 31, 271, 44)];
+        [channel1SelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        [channel1SelectBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateSelected];
+        [channel1SelectBtn setTitle:AcTECLocalizedStringFromTable(@"Channel1", @"Localizable") forState:UIControlStateNormal];
+        [channel1SelectBtn setTitleColor:[UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1] forState:UIControlStateNormal];
+        channel1SelectBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        channel1SelectBtn.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        channel1SelectBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, -20);
+        channel1SelectBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 40, 0, -40);
+        channel1SelectBtn.tag = 2;
+        [channel1SelectBtn addTarget:self action:@selector(selectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpInside];
+        [channel1SelectBtn addTarget:self action:@selector(selectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpOutside];
+        [_twoChannelSelectedView addSubview:channel1SelectBtn];
+        
+        UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(60, 75, 211, 1)];
+        line1.backgroundColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1];
+        [_twoChannelSelectedView addSubview:line1];
+        
+        UIButton *channel2SelectBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 76, 271, 44)];
+        [channel2SelectBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+        [channel2SelectBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateSelected];
+        [channel2SelectBtn setTitle:AcTECLocalizedStringFromTable(@"Channel2", @"Localizable") forState:UIControlStateNormal];
+        [channel2SelectBtn setTitleColor:[UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1] forState:UIControlStateNormal];
+        channel2SelectBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        channel2SelectBtn.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        channel2SelectBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, -20);
+        channel2SelectBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 40, 0, -40);
+        channel2SelectBtn.tag = 3;
+        [channel2SelectBtn addTarget:self action:@selector(selectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpInside];
+        [channel2SelectBtn addTarget:self action:@selector(selectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpOutside];
+        [_twoChannelSelectedView addSubview:channel2SelectBtn];
+        
+        UIView *line2 = [[UIView alloc] initWithFrame:CGRectMake(0, 120, 271, 1)];
+        line2.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+        [_twoChannelSelectedView addSubview:line2];
+        
+        UIButton *cancel = [[UIButton alloc] initWithFrame:CGRectMake(0, 121, 135, 44)];
+        cancel.tag = 21;
+        [cancel setTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") forState:UIControlStateNormal];
+        [cancel setTitleColor:DARKORAGE forState:UIControlStateNormal];
+        [cancel addTarget:self action:@selector(channelViewCancelAction:) forControlEvents:UIControlEventTouchUpInside];
+        [cancel addTarget:self action:@selector(channelViewTouchDown:) forControlEvents:UIControlEventTouchDown];
+        [cancel addTarget:self action:@selector(channelViewTouchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
+        [_twoChannelSelectedView addSubview:cancel];
+        
+        UIView *line4 = [[UIView alloc] initWithFrame:CGRectMake(135, 121, 1, 44)];
+        line4.backgroundColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1];
+        [_twoChannelSelectedView addSubview:line4];
+        
+        UIButton *save = [UIButton buttonWithType:UIButtonTypeCustom];
+        save.tag = 22;
+        [save setFrame:CGRectMake(136, 121, 135, 44)];
+        [save setTitle:AcTECLocalizedStringFromTable(@"Save", @"Localizable") forState:UIControlStateNormal];
+        [save setTitleColor:DARKORAGE forState:UIControlStateNormal];
+        [save addTarget:self action:@selector(twoChannelViewSaveAction:) forControlEvents:UIControlEventTouchUpInside];
+        [save addTarget:self action:@selector(channelViewTouchDown:) forControlEvents:UIControlEventTouchDown];
+        [save addTarget:self action:@selector(channelViewTouchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
+        [_twoChannelSelectedView addSubview:save];
+    }
+    return _twoChannelSelectedView;
+}
+
+
 @end

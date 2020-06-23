@@ -1139,42 +1139,6 @@
 
 #pragma mark - timer
 
-- (TimerEntity *)saveNewTimer:(NSNumber *)timerID timerName:(NSString *)name enabled:(NSNumber *)enabled fireTime:(NSDate *)time fireDate:(NSDate *)date repeatStr:(NSString *)repeatStr sceneID:(NSNumber *)sceneID {
-    __block TimerEntity *newTimerEntity;
-    [[CSRAppStateManager sharedInstance].selectedPlace.timers enumerateObjectsUsingBlock:^(TimerEntity * _Nonnull obj, BOOL * _Nonnull stop) {
-        if ([obj.timerID isEqualToNumber:timerID]) {
-            newTimerEntity = obj;
-            *stop = YES;
-        }
-    }];
-    if (!newTimerEntity) {
-        newTimerEntity = [NSEntityDescription insertNewObjectForEntityForName:@"TimerEntity" inManagedObjectContext:self.managedObjectContext];
-    }
-    
-    newTimerEntity.timerID = timerID;
-    newTimerEntity.name = name;
-    newTimerEntity.enabled = enabled;
-    newTimerEntity.fireTime = time;
-    newTimerEntity.fireDate = date;
-    newTimerEntity.repeat = repeatStr;
-    newTimerEntity.sceneID = sceneID;
-    
-    [[CSRAppStateManager sharedInstance].selectedPlace addTimersObject:newTimerEntity];
-    [self saveContext];
-    
-    return newTimerEntity;
-}
-
-/*
-- (NSArray *)foundTimerDevice:(NSNumber *)deviceId timeIndex:(NSNumber *)timeImdex {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"TimerDeviceEntity"];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"deviceID == %@ && timerIndex == %@",deviceId,timeImdex]];
-    request.predicate = predicate;
-    NSArray *resArray = [_managedObjectContext executeFetchRequest:request error:nil];
-    return resArray;
-}
-*/
-
 - (void)timerDeviceEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId {
     [[CSRAppStateManager sharedInstance].selectedPlace.timers enumerateObjectsUsingBlock:^(TimerEntity * _Nonnull timer, BOOL * _Nonnull stop) {
         [timer.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity  *timerDevice, BOOL * _Nonnull stop) {

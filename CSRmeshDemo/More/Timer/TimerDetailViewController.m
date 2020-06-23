@@ -17,26 +17,20 @@
 #import "TimerDeviceEntity.h"
 #import "DataModelManager.h"
 #import "CSRAppStateManager.h"
-#import <MBProgressHUD.h>
 
-@interface TimerDetailViewController ()<UITextFieldDelegate,MBProgressHUDDelegate>
+@interface TimerDetailViewController ()<UITextFieldDelegate>
 {
     NSNumber *timerIdNumber;
     NSString *name;
     BOOL enabled;
-    NSDate *time;
-    NSDate *date;
-    NSString *repeatStr;
+    NSString *time;
+    NSString *date;
+    NSInteger repeat;
     NSLayoutConstraint *top_chooseTitle;
-    dispatch_semaphore_t semaphore;
-    BOOL reparePop;//当信号量为0时，释放semaphore会引起程序奔溃。
-    NSInteger memeberCount;
     
-    NSNumber *channeling;
-    NSNumber *indexing;
-    SceneMemberEntity *sceneMembering;
-    
-    int sendandreceive;
+    BOOL mDidSendStreamData;
+    BOOL mDidReciveSetCall;
+    BOOL mSetCallState;
 }
 
 @property (weak, nonatomic) IBOutlet UIDatePicker *timerPicker;
@@ -44,13 +38,7 @@
 @property (strong, nonatomic) IBOutlet UIView *weekView;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *repeatChooseSegment;
 @property (weak, nonatomic) IBOutlet UITextField *nameTF;
-@property (weak, nonatomic) IBOutlet UISwitch *enabledSwitch;
-@property (nonatomic,strong) NSMutableArray *deviceIds;
-@property (nonatomic,strong) NSMutableDictionary *deviceIdsAndIndexs;
 @property (weak, nonatomic) IBOutlet UIButton *deleteButton;
-@property (nonatomic,strong) NSMutableArray *deleteTimers;
-@property (nonatomic,strong) NSMutableArray *backs;
-@property (nonatomic,strong) MBProgressHUD *hud;
 @property (weak, nonatomic) IBOutlet UIView *bgView;
 @property (weak, nonatomic) IBOutlet UILabel *chooseTitle;
 
@@ -59,7 +47,12 @@
 @property (nonatomic,strong) NSMutableArray *sceneMutableArray;
 @property (nonatomic,strong) UIView *selectedView;
 @property (nonatomic,strong) UIView *sceneView;
-@property (nonatomic,strong) UIView *translucentBgView;
+
+@property (nonatomic, strong) NSMutableArray *mMembersToApply;
+@property (nonatomic, strong) NSMutableArray *fails;
+@property (nonatomic, strong) CSRDeviceEntity *mDeviceToApply;
+@property (nonatomic, strong) UIView *translucentBgView;
+@property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 
 @end
 
@@ -137,7 +130,7 @@
     [_scrollView addSubview:_bgView];
     [_bgView autoPinEdgeToSuperviewEdge:ALEdgeTop];
     [_bgView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-    [_bgView autoSetDimension:ALDimensionHeight toSize:89];
+    [_bgView autoSetDimension:ALDimensionHeight toSize:44];
     [_bgView autoAlignAxisToSuperviewAxis:ALAxisVertical];
     
     _sceneMutableArray = [[NSMutableArray alloc] init];
@@ -155,7 +148,6 @@
     if (!self.newadd && self.timerEntity) {
         self.navigationItem.title = self.timerEntity.name;
         self.nameTF.text = self.timerEntity.name;
-        [self.enabledSwitch setOn:[self.timerEntity.enabled boolValue]];
         
         _selectedScene = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:self.timerEntity.sceneID];
         _selectedView = [self addSelectedView:_selectedScene];
@@ -211,9 +203,9 @@
             [_deleteButton autoSetDimension:ALDimensionWidth toSize:WIDTH];
             
             if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPad) {
-                _scrollView.contentSize = CGSizeMake(WIDTH-321, 45*[_sceneMutableArray count]-1+618);
+                _scrollView.contentSize = CGSizeMake(WIDTH-321, 45*[_sceneMutableArray count]-1+573);
             }else {
-                _scrollView.contentSize = CGSizeMake(WIDTH, 45*[_sceneMutableArray count]-1+618);
+                _scrollView.contentSize = CGSizeMake(WIDTH, 45*[_sceneMutableArray count]-1+573);
             }
             
         }else {
@@ -242,9 +234,9 @@
             [_deleteButton autoSetDimension:ALDimensionWidth toSize:WIDTH];
             
             if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPad) {
-                _scrollView.contentSize = CGSizeMake(WIDTH-321, 45*[_sceneMutableArray count]-1+582);
+                _scrollView.contentSize = CGSizeMake(WIDTH-321, 45*[_sceneMutableArray count]-1+537);
             }else {
-                _scrollView.contentSize = CGSizeMake(WIDTH, 45*[_sceneMutableArray count]-1+582);
+                _scrollView.contentSize = CGSizeMake(WIDTH, 45*[_sceneMutableArray count]-1+537);
             }
         }
         
@@ -284,7 +276,6 @@
         }
         
     }
-    sendandreceive = 0;
 }
 
 - (UIView *)addSceneView:(NSMutableArray *)scenes {
@@ -419,23 +410,17 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addTimerToDeviceCall:) name:@"addAlarmCall" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(multichannelAddAlarmCall:) name:@"multichannelAddAlarmCall" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteTimerCall:) name:@"deleteAlarmCall" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeAlarmEnabledCall:) name:@"changeAlarmEnabledCall" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addAlarmCall:) name:@"addAlarmCall" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteAlarmCall:) name:@"deleteAlarmCall" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSendStreamData:) name:@"didSendStreamData" object:nil];
-//    [[MeshServiceApi sharedInstance] setRetryCount:@2];
 }
 
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"addAlarmCall" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"multichannelAddAlarmCall" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"deleteAlarmCall" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeAlarmEnabledCall" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"didSendStreamData" object:nil];
-//    [[MeshServiceApi sharedInstance] setRetryCount:@6];
 }
 
 #pragma mark - 修改日期选择器的字体颜色
@@ -559,598 +544,417 @@
         return;
     }
     
-    [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
-    _hud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
-    _hud.mode = MBProgressHUDModeIndeterminate;
-    _hud.delegate = self;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10*[_selectedScene.members count] * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if (_hud) {
-            [_hud hideAnimated:YES];
-            _hud = nil;
-        }
-        if (_translucentBgView) {
-            [_translucentBgView removeFromSuperview];
-            _translucentBgView = nil;
-        }
-        
-        if ([self.backs count]<[_selectedScene.members count]) {
-            NSLog(@"-->>>>> %lu %lu",(unsigned long)[self.backs count],(unsigned long)[_selectedScene.members count]);
-            NSString *addFailNames = @"";
-            for (SceneMemberEntity *sceneMember in _selectedScene.members) {
-                if (![self.backs containsObject:sceneMember.deviceID]) {
-                    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sceneMember.deviceID];
-                    addFailNames = [NSString stringWithFormat:@"%@  %@",addFailNames,deviceEntity.name];
-                }
-            }
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:[NSString stringWithFormat:@"%@ %@",addFailNames,AcTECLocalizedStringFromTable(@"notRespond", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
-            [alertController.view setTintColor:DARKORAGE];
-            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                if (self.handle) {
-                    self.handle();
-                }
-                if ([self.backs count]>0) {
-                    reparePop = YES;
-                    dispatch_semaphore_signal(semaphore);
-                    dispatch_semaphore_signal(semaphore);
-                }
-                NSLog(@"popViewControllerAnimated~>1");
-                reparePop = YES;
-                dispatch_semaphore_signal(semaphore);
-                dispatch_semaphore_signal(semaphore);
-                [self.navigationController popViewControllerAnimated:YES];
-            }];
-            [alertController addAction:cancelAction];
-            [self presentViewController:alertController animated:YES completion:nil];
-        }
-    });
-    [self.backs removeAllObjects];
+    [self showLoading];
     
-//    NSNumber *timerIdNumber;
     if (_newadd) {
+        enabled = YES;
         if (!_timerEntity) {
             timerIdNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"TimerEntity"];
+            _timerEntity = [NSEntityDescription insertNewObjectForEntityForName:@"TimerEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
         }
     }else {
         if (_timerEntity) {
             timerIdNumber = _timerEntity.timerID;
+            enabled = [_timerEntity.enabled boolValue];
+            if (![_timerEntity.sceneID isEqualToNumber:_selectedScene.sceneID]) {
+                for (TimerDeviceEntity *td in [_timerEntity.timerDevices mutableCopy]) {
+                    NSLog(@">> %@",td);
+                    [self.mMembersToApply addObject:td];
+                }
+            }
+            
         }
     }
     
-//    NSString *name;
     if (![CSRUtilities isStringEmpty:_nameTF.text]) {
         name = _nameTF.text;
     }else {
         name = [NSString stringWithFormat:@"timer %@",timerIdNumber];
     }
     
-    enabled = _enabledSwitch.on;
-    
     NSDateFormatter *dateFormate_time = [[NSDateFormatter alloc] init];
     [dateFormate_time setDateFormat:@"HHmm"];
-    NSString *timeStr = [dateFormate_time stringFromDate:_timerPicker.date];
-    time = [dateFormate_time dateFromString:timeStr];
-//    NSDate *date;
+    time = [dateFormate_time stringFromDate:_timerPicker.date];
     
-    repeatStr = @"";
+    NSString *repeatStr = @"";
+    NSDate *d = [NSDate date];
     if (_repeatChooseSegment.selectedSegmentIndex == 0) {
         for (UIButton *btn in self.weekView.subviews) {
             repeatStr = [NSString stringWithFormat:@"%d%@",btn.selected,repeatStr];
         }
         repeatStr = [NSString stringWithFormat:@"0%@",repeatStr];
-        date = nil;
     }else {
         repeatStr = @"00000000";
-        NSDateFormatter *dateFormate_date = [[NSDateFormatter alloc] init];
-        [dateFormate_date setDateFormat:@"yyyyMMdd"];
-        NSString *dateStr = [dateFormate_date stringFromDate:_datePicker.date];
-        date = [dateFormate_date dateFromString:dateStr];
+        d = _datePicker.date;
+    }
+    NSDateFormatter *dateFormate_date = [[NSDateFormatter alloc] init];
+    [dateFormate_date setDateFormat:@"yyyyMMdd"];
+    date = [dateFormate_date stringFromDate:_datePicker.date];
+    repeat = 0;
+    for (int i = 0; i < 7; i ++) {
+        repeat = repeat + [[repeatStr substringWithRange:NSMakeRange(i+1, 1)] boolValue] * pow(2, 6-i);
     }
     
-    semaphore = dispatch_semaphore_create(1);
-    dispatch_queue_t queue = dispatch_queue_create("串行", NULL);
+    _timerEntity.timerID = timerIdNumber;
+    _timerEntity.name = name;
+    _timerEntity.enabled = @(enabled);
+    _timerEntity.fireTime = [dateFormate_time dateFromString:time];
+    _timerEntity.fireDate = [dateFormate_date dateFromString:date];
+    _timerEntity.repeat = repeatStr;
+    _timerEntity.sceneID = _selectedScene.sceneID;
+    [[CSRAppStateManager sharedInstance].selectedPlace addTimersObject:_timerEntity];
+    [[CSRDatabaseManager sharedInstance] saveContext];
     
-    for (SceneMemberEntity *sceneMember in _selectedScene.members) {
-        sceneMembering = sceneMember;
-        NSNumber *timerIndex;
-        if (_newadd) {
-            timerIndex = [[CSRDatabaseManager sharedInstance] getNextFreeTimerIDOfDeivice:sceneMember.deviceID];
-        }else {
-            __block NSNumber *existTimerIndex;
-            [_timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timerDevice, BOOL * _Nonnull stop) {
-                if ([timerDevice.deviceID isEqualToNumber:sceneMember.deviceID]) {
-                    existTimerIndex = timerDevice.timerIndex;
-                    *stop = YES;
-                }
-            }];
-            if (existTimerIndex) {
-                timerIndex = existTimerIndex;
+    if ([_selectedScene.members count]>0) {
+        for (SceneMemberEntity *sm in _selectedScene.members) {
+            [self.mMembersToApply addObject:sm];
+        }
+    }
+    if (![self nextOperation]) {
+        [self hideLoading];
+        if (self.handle) {
+            self.handle();
+        }
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+}
+
+- (NSMutableArray *)mMembersToApply {
+    if (!_mMembersToApply) {
+        _mMembersToApply = [[NSMutableArray alloc] init];
+    }
+    return _mMembersToApply;
+}
+
+- (NSMutableArray *)fails {
+    if (!_fails) {
+        _fails = [[NSMutableArray alloc] init];
+    }
+    return _fails;
+}
+
+- (BOOL)nextOperation {
+    if ([self.mMembersToApply count]>0) {
+        NSLog(@"s: %@",self.mMembersToApply);
+        id obj = [_mMembersToApply firstObject];
+        if ([obj isKindOfClass:[TimerDeviceEntity class]]) {
+            NSLog(@">>>>");
+            TimerDeviceEntity *td = (TimerDeviceEntity *)obj;
+            NSLog(@">: %@  %@  %@",td.deviceID, td.timerID, td.timerIndex);
+            _mDeviceToApply = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:td.deviceID];
+            if (_mDeviceToApply == nil) {
+                [_mMembersToApply removeObject:obj];
+                return [self nextOperation];
             }else {
-                timerIndex = [[CSRDatabaseManager sharedInstance] getNextFreeTimerIDOfDeivice:sceneMember.deviceID];
-            }
-        }
-        indexing = timerIndex;
-        [self.deviceIdsAndIndexs setObject:timerIndex forKey:[NSString stringWithFormat:@"%@",sceneMember.deviceID]];
-        
-        NSString *eveD1 = @"00";
-        NSString *eveD2 = @"00";
-        NSString *eveD3 = @"00";
-        if ([sceneMember.eveType isEqualToNumber:@(13)] || [sceneMember.eveType isEqualToNumber:@(14)] || [sceneMember.eveType isEqualToNumber:@(20)]) {
-            eveD1 = [NSString stringWithFormat:@"%@",sceneMember.colorRed];
-            eveD2 = [NSString stringWithFormat:@"%@",sceneMember.colorGreen];
-            eveD3 = [NSString stringWithFormat:@"%@",sceneMember.colorBlue];
-        }else if ([sceneMember.eveType isEqualToNumber:@(18)] || [sceneMember.eveType isEqualToNumber:@(19)]) {
-            NSString *colorTemperatureStr = [CSRUtilities stringWithHexNumber:[sceneMember.colorTemperature integerValue]];
-            eveD1 = [colorTemperatureStr substringToIndex:2];
-            eveD2 = [colorTemperatureStr substringFromIndex:2];
-        }
-        if ([CSRUtilities belongToTwoChannelDimmer:sceneMember.kindString] || [CSRUtilities belongToSocket:sceneMember.kindString] || [CSRUtilities belongToTwoChannelSwitch:sceneMember.kindString]) {
-            if (sceneMember.eveType && [sceneMember.eveType integerValue]>0 && sceneMember.colorTemperature && [sceneMember.colorTemperature integerValue]>0) {
-                dispatch_async(queue, ^{
-                    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-                    if (!reparePop) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            channeling = @(1);
-                            [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.eveType level:[sceneMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"01"];
-                        });
-                    }
-                });
                 
-                dispatch_async(queue, ^{
-                    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-                    if (!reparePop) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            channeling = @(2);
-                            [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.colorTemperature level:[sceneMember.colorGreen integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"02"];
-                        });
+                Byte bIndex[]={};
+                bIndex[0] = (Byte)(([td.timerIndex integerValue] & 0xFF00)>>8);
+                bIndex[1] = (Byte)([td.timerIndex integerValue] & 0x00FF);
+                
+                [self performSelector:@selector(setTimerTimeOut) withObject:nil afterDelay:10.0];
+                
+                if ([CSRUtilities belongToTwoChannelSwitch:_mDeviceToApply.shortName]
+                    || [CSRUtilities belongToThreeChannelSwitch:_mDeviceToApply.shortName]
+                    || [CSRUtilities belongToTwoChannelDimmer:_mDeviceToApply.shortName]
+                    || [CSRUtilities belongToSocketTwoChannel:_mDeviceToApply.shortName]
+                    || [CSRUtilities belongToTwoChannelCurtainController:_mDeviceToApply.shortName]) {
+                    Byte byte[] = {0x50, 0x04, 0x07, [td.channel integerValue], bIndex[1], bIndex[0]};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:6];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:td.deviceID data:cmd];
+                }else {
+                    if ([_mDeviceToApply.cvVersion integerValue] > 18) {
+                        Byte byte[] = {0x85, 0x02, bIndex[1], bIndex[0]};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:td.deviceID data:cmd];
+                    }else {
+                        Byte byte[] = {0x85, 0x01, [td.timerIndex integerValue]};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:td.deviceID data:cmd];
                     }
-                });
+                }
+                
+                return YES;
+            }
+        }else if ([obj isKindOfClass:[SceneMemberEntity class]]) {
+            NSLog(@">>>><<<<");
+            SceneMemberEntity *sm = (SceneMemberEntity *)obj;
+            _mDeviceToApply = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sm.deviceID];
+            if (_mDeviceToApply == nil) {
+                [_mMembersToApply removeObject:obj];
+                return [self nextOperation];
             }else {
-                if (sceneMember.eveType && [sceneMember.eveType integerValue]>0) {
-                    dispatch_async(queue, ^{
-                        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-                        if (!reparePop) {
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                channeling = @(1);
-                                [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.eveType level:[sceneMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"01"];
-                            });
+                NSNumber *timerIndex;
+                TimerDeviceEntity *timerDeviceE;
+                if (_newadd) {
+                    timerIndex = [[CSRDatabaseManager sharedInstance] getNextFreeTimerIDOfDeivice:sm.deviceID];
+                    timerDeviceE = [NSEntityDescription insertNewObjectForEntityForName:@"TimerDeviceEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+                }else {
+                    for (TimerDeviceEntity *timerDevice in _timerEntity.timerDevices) {
+                        if ([timerDevice.deviceID isEqualToNumber:sm.deviceID] && [timerDevice.channel isEqualToNumber:sm.channel]) {
+                            timerIndex = timerDevice.timerIndex;
+                            timerDeviceE = timerDevice;
+                            break;
                         }
-                    });
+                    }
+                    if (!timerIndex) {
+                        timerIndex = [[CSRDatabaseManager sharedInstance] getNextFreeTimerIDOfDeivice:sm.deviceID];
+                        timerDeviceE = [NSEntityDescription insertNewObjectForEntityForName:@"TimerDeviceEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+                    }
                 }
-                if (sceneMember.colorTemperature && [sceneMember.colorTemperature integerValue]>0) {
-                    dispatch_async(queue, ^{
-                        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-                        if (!reparePop) {
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                channeling = @(2);
-                                [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.colorTemperature level:[sceneMember.colorGreen integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"02"];
-                            });
-                        }
-                    });
-                }
+                timerDeviceE.timerID = timerIdNumber;
+                timerDeviceE.deviceID = sm.deviceID;
+                timerDeviceE.timerIndex = timerIndex;
+                timerDeviceE.channel = sm.channel;
+                [_timerEntity addTimerDevicesObject:timerDeviceE];
+                [[CSRDatabaseManager sharedInstance] saveContext];
+                
+                [self addAlarm:sm index:[timerIndex integerValue]];
+                
+                return YES;
             }
         }else {
-            dispatch_async(queue, ^{
-                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-                if (!reparePop) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [[DataModelManager shareInstance] addAlarmForDevice:sceneMember.deviceID alarmIndex:[timerIndex integerValue] enabled:enabled fireDate:date fireTime:time repeat:repeatStr eveType:sceneMember.eveType level:[sceneMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3];
-                    });
-                }
-            });
+            NSLog(@">>>>~~~<<<<");
+            [_mMembersToApply removeObject:obj];
+            return [self nextOperation];
+        }
+    }
+    return NO;
+}
+
+- (void)addAlarm:(SceneMemberEntity *)member index:(NSInteger)index {
+    
+    Byte bIndex[] = {};
+    bIndex[0] = (Byte)((index & 0xFF00)>>8);
+    bIndex[1] = (Byte)(index & 0x00FF);
+    
+    NSInteger y = [[date substringWithRange:NSMakeRange(2, 2)] integerValue];
+    NSInteger M = [[date substringWithRange:NSMakeRange(4, 2)] integerValue];
+    NSInteger d = [[date substringWithRange:NSMakeRange(6, 2)] integerValue];
+    NSInteger h = [[time substringWithRange:NSMakeRange(0, 2)] integerValue];
+    NSInteger m = [[time substringWithRange:NSMakeRange(2, 2)] integerValue];
+    
+    NSDate *dt = [NSDate date];
+    NSDateFormatter *dateFormate_date = [[NSDateFormatter alloc] init];
+    [dateFormate_date setDateFormat:@"yyyyMMddHHmmss"];
+    NSString *dtstr = [dateFormate_date stringFromDate:dt];
+    NSInteger ys = [[dtstr substringWithRange:NSMakeRange(2, 2)] integerValue];
+    NSInteger Ms = [[dtstr substringWithRange:NSMakeRange(4, 2)] integerValue];
+    NSInteger ds = [[dtstr substringWithRange:NSMakeRange(6, 2)] integerValue];
+    NSInteger hs = [[dtstr substringWithRange:NSMakeRange(8, 2)] integerValue];
+    NSInteger ms = [[dtstr substringWithRange:NSMakeRange(10, 2)] integerValue];
+    NSInteger ss = [[dtstr substringWithRange:NSMakeRange(12, 2)] integerValue];
+    
+    [self performSelector:@selector(setTimerTimeOut) withObject:nil afterDelay:30.0];
+    NSLog(@"addAlarm: %@  %@",member.kindString, member.deviceID);
+    if ([CSRUtilities belongToTwoChannelSwitch:member.kindString]
+        || [CSRUtilities belongToThreeChannelSwitch:member.kindString]
+        || [CSRUtilities belongToTwoChannelDimmer:member.kindString]
+        || [CSRUtilities belongToSocketTwoChannel:member.kindString]
+        || [CSRUtilities belongToTwoChannelCurtainController:member.kindString]) {
+        
+        Byte byte[] = {0x50, 0x18, 0x01, [member.channel integerValue], bIndex[1], bIndex[0], enabled, y, M, d, h, m, 0x00, repeat, [member.eveType integerValue], [member.eveD0 integerValue], [member.eveD1 integerValue], [member.eveD2 integerValue], [member.eveD3 integerValue], 0x00, ys, Ms, ds, hs, ms, ss};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:26];
+        [[DataModelManager shareInstance] sendDataByStreamDataTransfer:member.deviceID data:cmd];
+    }else {
+        if ([_mDeviceToApply.cvVersion integerValue] > 18) {
+            Byte byte[] = {0x83, 0x16, bIndex[1], bIndex[0], enabled, y, M, d, h, m, 0x00, repeat, [member.eveType integerValue], [member.eveD0 integerValue], [member.eveD1 integerValue], [member.eveD2 integerValue], [member.eveD3 integerValue], 0x00, ys, Ms, ds, hs, ms, ss};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:24];
+            [[DataModelManager shareInstance] sendDataByStreamDataTransfer:member.deviceID data:cmd];
+        }else {
+            Byte byte[] = {0x83, 0x15, index, enabled, y, M, d, h, m, 0x00, repeat, [member.eveType integerValue], [member.eveD0 integerValue], [member.eveD1 integerValue], [member.eveD2 integerValue], [member.eveD3 integerValue], 0x00, ys, Ms, ds, hs, ms, ss};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:23];
+            [[DataModelManager shareInstance] sendDataByStreamDataTransfer:member.deviceID data:cmd];
+        }
+    }
+    
+}
+
+- (void)addAlarmCall:(NSNotification *)result {
+    NSDictionary *userInfo = result.userInfo;
+    NSNumber *sDeviceID = userInfo[@"deviceId"];
+    NSNumber *channel = userInfo[@"channel"];
+    mSetCallState = [userInfo[@"state"] boolValue];
+    id obj = [_mMembersToApply firstObject];
+    if ([obj isKindOfClass:[SceneMemberEntity class]]) {
+        SceneMemberEntity *sm = (SceneMemberEntity *)obj;
+        NSLog(@"addAlarmCall: %@ - %@ | %@ - %@",sDeviceID, sm.deviceID, channel, sm.channel);
+        if ([sDeviceID isEqualToNumber:sm.deviceID] && [channel isEqualToNumber:sm.channel]) {
+            
+            mDidReciveSetCall = YES;
+            if (mDidReciveSetCall && mDidSendStreamData) {
+                [self didSendStreamDataAndDidReciveSetCall];
+            }
         }
     }
 }
 
 - (void)didSendStreamData:(NSNotification *)result {
-//    NSDictionary *resultDic = result.userInfo;
-//    NSNumber *deviceId = [resultDic objectForKey:@"deviceId"];
-    if (sendandreceive==1) {
-        dispatch_semaphore_signal(semaphore);
-        sendandreceive = 0;
-    }else {
-        sendandreceive ++;
+    NSDictionary *userInfo = result.userInfo;
+    NSNumber *sDeviceID = userInfo[@"deviceId"];
+    NSNumber *channel = userInfo[@"channel"];
+    id obj = [_mMembersToApply firstObject];
+    if ([obj isKindOfClass:[SceneMemberEntity class]]) {
+        SceneMemberEntity *sm = (SceneMemberEntity *)obj;
+        if ([sDeviceID isEqualToNumber:sm.deviceID] && [channel isEqualToNumber:sm.channel]) {
+            mDidSendStreamData = YES;
+            if (mDidReciveSetCall && mDidSendStreamData) {
+                [self didSendStreamDataAndDidReciveSetCall];
+            }
+        }
     }
 }
 
-- (void)addTimerToDeviceCall:(NSNotification *)result {
-    NSDictionary *resultDic = result.userInfo;
-    NSString *resultStr = [resultDic objectForKey:@"addAlarmCall"];
-    NSNumber *deviceId = [resultDic objectForKey:@"deviceId"];
-    NSLog(@"---->> %@ ::: %@",deviceId,resultStr);
-    if (sendandreceive==1) {
-        dispatch_semaphore_signal(semaphore);
-        sendandreceive = 0;
-    }else {
-        sendandreceive ++;
-    }
-
-    if ([resultStr boolValue]) {
-        [self.backs addObject:deviceId];
-        _timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:@(enabled) fireTime:time fireDate:date repeatStr:repeatStr sceneID:_selectedScene.sceneID];
-        NSNumber *index = [self.deviceIdsAndIndexs objectForKey:[NSString stringWithFormat:@"%@",deviceId]];
-        __block TimerDeviceEntity *newTimerDeviceEntity;
-        [_timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timerDevice, BOOL * _Nonnull stop) {
-            if ([timerDevice.deviceID isEqualToNumber:deviceId] && [timerDevice.timerIndex isEqualToNumber:index]) {
-                newTimerDeviceEntity = timerDevice;
-                *stop = YES;
+- (void)didSendStreamDataAndDidReciveSetCall {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(setTimerTimeOut) object:nil];
+    SceneMemberEntity *sm = (SceneMemberEntity *)[_mMembersToApply firstObject];
+    [_mMembersToApply removeObject:sm];
+    if (!mSetCallState) {
+        [self.fails addObject:sm];
+        for (TimerDeviceEntity *td in _timerEntity.timerDevices) {
+            if ([td.deviceID isEqualToNumber:sm.deviceID] && [td.channel isEqualToNumber:sm.channel]) {
+                [_timerEntity removeTimerDevicesObject:td];
+                [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:td];
+                [[CSRDatabaseManager sharedInstance] saveContext];
+                break;
             }
-        }];
-        if (!newTimerDeviceEntity) {
-            newTimerDeviceEntity = [NSEntityDescription insertNewObjectForEntityForName:@"TimerDeviceEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
         }
-        newTimerDeviceEntity.timerID = _timerEntity.timerID;
-        newTimerDeviceEntity.deviceID = deviceId;
-        newTimerDeviceEntity.timerIndex = index;
-        newTimerDeviceEntity.channel = @(10);
-        [_timerEntity addTimerDevicesObject:newTimerDeviceEntity];
-        [[CSRDatabaseManager sharedInstance] saveContext];
-
-    }else {
-        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
-        [self showTextHud:[NSString stringWithFormat:@"%@:%@ set timer fail.",AcTECLocalizedStringFromTable(@"Error", @"Localizable"),deviceEntity.name]];
     }
     
-    if ([self.backs count] == [_selectedScene.members count]) {
-        if (self.handle) {
-            self.handle();
-        }
-        if (_hud) {
-            [_hud hideAnimated:YES];
-            _hud = nil;
-        }
-        if (_translucentBgView) {
-            [_translucentBgView removeFromSuperview];
-            _translucentBgView = nil;
-        }
-        NSLog(@"popViewControllerAnimated~>2");
-        reparePop = YES;
-        dispatch_semaphore_signal(semaphore);
-        dispatch_semaphore_signal(semaphore);
-        [self.navigationController popViewControllerAnimated:YES];
-    }
+    _mDeviceToApply = nil;
     
-}
-
-- (void)multichannelAddAlarmCall:(NSNotification *)result {
-    NSDictionary *resultDic = result.userInfo;
-    NSNumber *deviceId = resultDic[@"deviceId"];
-    NSNumber *channel = resultDic[@"channel"];
-    NSNumber *index = resultDic[@"index"];
-    NSNumber *state = resultDic[@"state"];
-    if (sendandreceive==1) {
-        dispatch_semaphore_signal(semaphore);
-        sendandreceive = 0;
-    }else {
-        sendandreceive ++;
-    }
-
-    NSLog(@"%@,%@,%@,%@,%@,%@,%@",deviceId,channel,index,state,sceneMembering.deviceID,channeling,indexing);
-    if ([state boolValue] && [deviceId isEqualToNumber:sceneMembering.deviceID] && [channel isEqualToNumber:channeling] && [index isEqualToNumber:indexing]) {
-        _timerEntity = [[CSRDatabaseManager sharedInstance] saveNewTimer:timerIdNumber timerName:name enabled:@(enabled) fireTime:time fireDate:date repeatStr:repeatStr sceneID:_selectedScene.sceneID];
-        NSNumber *index = [self.deviceIdsAndIndexs objectForKey:[NSString stringWithFormat:@"%@",deviceId]];
-        __block TimerDeviceEntity *newTimerDeviceEntity;
-        [_timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timerDevice, BOOL * _Nonnull stop) {
-            if ([timerDevice.deviceID isEqualToNumber:deviceId] && [timerDevice.timerIndex isEqualToNumber:index] && [timerDevice.channel isEqualToNumber:channel]) {
-                newTimerDeviceEntity = timerDevice;
-                *stop = YES;
+    mDidSendStreamData = NO;
+    mDidReciveSetCall = NO;
+    
+    if (![self nextOperation]) {
+        if ([self.fails count] > 0) {
+            [self hideLoading];
+            [self showFailAler];
+        }else {
+            [self hideLoading];
+            if (self.handle) {
+                self.handle();
             }
-        }];
-        if (!newTimerDeviceEntity) {
-            newTimerDeviceEntity = [NSEntityDescription insertNewObjectForEntityForName:@"TimerDeviceEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
-        }
-        newTimerDeviceEntity.timerID = _timerEntity.timerID;
-        newTimerDeviceEntity.deviceID = deviceId;
-        newTimerDeviceEntity.timerIndex = index;
-        newTimerDeviceEntity.channel = channel;
-        [_timerEntity addTimerDevicesObject:newTimerDeviceEntity];
-        [[CSRDatabaseManager sharedInstance] saveContext];
-    }
-    if ([sceneMembering.colorTemperature isEqualToNumber:@(10)]||[sceneMembering.colorTemperature isEqualToNumber:@(11)]||[sceneMembering.colorTemperature isEqualToNumber:@(12)]) {
-        if ([channel isEqualToNumber:@(2)]) {
-            [self.backs addObject:deviceId];
-        }
-    }else {
-        if ([channel isEqualToNumber:@(1)]) {
-            [self.backs addObject:deviceId];
-        }
-    }
-    NSLog(@"++>>>>> %lu %lu %@",(unsigned long)[self.backs count],(unsigned long)[_selectedScene.members count],sceneMembering.colorTemperature);
-    if ([self.backs count] == [_selectedScene.members count]) {
-        if (self.handle) {
-            self.handle();
-        }
-        if (_hud) {
-            [_hud hideAnimated:YES];
-            _hud = nil;
-        }
-        if (_translucentBgView) {
-            [_translucentBgView removeFromSuperview];
-            _translucentBgView = nil;
-        }
-        NSString *messge = [state boolValue]? AcTECLocalizedStringFromTable(@"timeraddsuccess", @"Localizable"):AcTECLocalizedStringFromTable(@"timeraddfail", @"Localizable");
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:messge preferredStyle:UIAlertControllerStyleAlert];
-        [alertController.view setTintColor:DARKORAGE];
-        UIAlertAction *yesAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            NSLog(@"popViewControllerAnimated~>3");
-            reparePop = YES;
-            dispatch_semaphore_signal(semaphore);
-            dispatch_semaphore_signal(semaphore);
             [self.navigationController popViewControllerAnimated:YES];
-        }];
-        [alertController addAction:yesAction];
-        [self presentViewController:alertController animated:YES completion:nil];
-        
+        }
     }
 }
 
-- (void)deleteTimerCall:(NSNotification *)result {
-    NSDictionary *resultDic = result.userInfo;
-    NSString *state = [resultDic objectForKey:@"deleteAlarmCall"];
-    NSNumber *deviceId = [resultDic objectForKey:@"deviceId"];
-    NSLog(@"---->> %@ ~~~ %@",deviceId,state);
-    if (sendandreceive==1) {
-        dispatch_semaphore_signal(semaphore);
-        sendandreceive = 0;
-    }else {
-        sendandreceive ++;
-    }
-    if ([state boolValue]) {
-        [self.backs addObject:deviceId];
-        [_timerEntity.timerDevices enumerateObjectsUsingBlock:^(TimerDeviceEntity *timeDevice, BOOL * _Nonnull stop) {
-            if ([timeDevice.deviceID isEqualToNumber:deviceId]) {
-                [_timerEntity removeTimerDevicesObject:timeDevice];
-                [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:timeDevice];
+- (void)setTimerTimeOut {
+    NSLog(@"setTimerTimeOut");
+    id obj = [_mMembersToApply firstObject];
+    [_mMembersToApply removeObject:obj];
+    [self.fails addObject:obj];
+    if ([obj isKindOfClass:[SceneMemberEntity class]]) {
+        SceneMemberEntity *sm = (SceneMemberEntity *)obj;
+        for (TimerDeviceEntity *td in _timerEntity.timerDevices) {
+            if ([td.deviceID isEqualToNumber:sm.deviceID] && [td.channel isEqualToNumber:sm.channel]) {
+                [_timerEntity removeTimerDevicesObject:td];
+                [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:td];
                 [[CSRDatabaseManager sharedInstance] saveContext];
-                *stop = YES;
+                break;
             }
-        }];
-
-    }else {
-        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
-        [self showTextHud:[NSString stringWithFormat:@"%@:%@ delete timer fail.",AcTECLocalizedStringFromTable(@"Error", @"Localizable"),deviceEntity.name]];
+        }
     }
-    if ([self.backs count] == memeberCount) {
-        [[CSRAppStateManager sharedInstance].selectedPlace removeTimersObject:self.timerEntity];
-        [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:self.timerEntity];
-        [[CSRDatabaseManager sharedInstance] saveContext];
-        if (self.handle) {
-            self.handle();
-        }
-        if (_hud) {
-            [_hud hideAnimated:YES];
-            _hud = nil;
-        }
-        if (_translucentBgView) {
-            [_translucentBgView removeFromSuperview];
-            _translucentBgView = nil;
-        }
-        NSLog(@"popViewControllerAnimated~>4");
-        reparePop = YES;
-        dispatch_semaphore_signal(semaphore);
-        dispatch_semaphore_signal(semaphore);
-        [self.navigationController popViewControllerAnimated:YES];
+    
+    _mDeviceToApply = nil;
+    mDidSendStreamData = NO;
+    mDidReciveSetCall = NO;
+    
+    if (![self nextOperation]) {
+        [self hideLoading];
+        [self showFailAler];
     }
 }
 
-- (void)changeAlarmEnabledCall:(NSNotification *)result {
-    NSDictionary *resultDic = result.userInfo;
-    NSString *state = [resultDic objectForKey:@"changeAlarmEnabledCall"];
-    NSNumber *deviceId = [resultDic objectForKey:@"deviceId"];
-    NSLog(@"---->> %@ +++ %@",deviceId,state);
-    if (sendandreceive==1) {
-        dispatch_semaphore_signal(semaphore);
-        sendandreceive = 0;
-    }else {
-        sendandreceive ++;
-    }
-    
-    if ([state boolValue]) {
-        [self.backs addObject:deviceId];
-    }else {
-        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
-        [self showTextHud:[NSString stringWithFormat:@"%@:%@ change enable fail.",AcTECLocalizedStringFromTable(@"Error", @"Localizable"),deviceEntity.name]];
-    }
-    
-    if ([self.backs count] == memeberCount) {
-        _timerEntity.enabled = @(![_timerEntity.enabled boolValue]);
-        [[CSRDatabaseManager sharedInstance] saveContext];
-        if (self.handle) {
-            self.handle();
-        }
-        if (_hud) {
-            [_hud hideAnimated:YES];
-            _hud = nil;
-        }
-        if (_translucentBgView) {
-            [_translucentBgView removeFromSuperview];
-            _translucentBgView = nil;
-        }
-        NSLog(@"popViewControllerAnimated~>5");
-        reparePop = YES;
-        dispatch_semaphore_signal(semaphore);
-        dispatch_semaphore_signal(semaphore);
-        [self.navigationController popViewControllerAnimated:YES];
-    }
-}
-
-- (IBAction)deleteTimerAction:(UIButton *)sender {
+- (void)showLoading {
     [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
-    _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    _hud.mode = MBProgressHUDModeIndeterminate;
-    _hud.delegate = self;
-    memeberCount = [_timerEntity.timerDevices count];
+    [[UIApplication sharedApplication].keyWindow addSubview:self.indicatorView];
+    [self.indicatorView autoCenterInSuperview];
+    [self.indicatorView startAnimating];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2*memeberCount * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if (_hud) {
-            [_hud hideAnimated:YES];
-            _hud = nil;
-        }
-        if (_translucentBgView) {
-            [_translucentBgView removeFromSuperview];
-            _translucentBgView = nil;
-        }
-        
-        if ([self.backs count] < memeberCount) {
-            NSString *deleteFailNames = @"";
-            for (TimerDeviceEntity *timeDevice in _timerEntity.timerDevices) {
-                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:timeDevice.deviceID];
-                deleteFailNames = [NSString stringWithFormat:@"%@  %@",deleteFailNames,deviceEntity.name];
+}
+
+- (void)hideLoading {
+    [self.indicatorView stopAnimating];
+    [self.indicatorView removeFromSuperview];
+    [self.translucentBgView removeFromSuperview];
+    self.indicatorView = nil;
+    self.translucentBgView = nil;
+}
+
+- (void)showFailAler {
+    NSString *message = @"";
+    NSString *nt = @"";
+    NSString *ns = @"";
+    for (id obj in self.fails) {
+        if ([obj isKindOfClass:[TimerDeviceEntity class]]) {
+            TimerDeviceEntity *td = (TimerDeviceEntity *)obj;
+            CSRDeviceEntity *d = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:td.deviceID];
+            if ([CSRUtilities belongToTwoChannelSwitch:d.shortName]
+                || [CSRUtilities belongToThreeChannelSwitch:d.shortName]
+                || [CSRUtilities belongToTwoChannelDimmer:d.shortName]
+                || [CSRUtilities belongToSocketTwoChannel:d.shortName]
+                || [CSRUtilities belongToTwoChannelCurtainController:d.shortName]) {
+                NSString *channelStr = @"";
+                if ([td.channel integerValue] == 1) {
+                    channelStr = AcTECLocalizedStringFromTable(@"Channel1", @"Localizable");
+                }else if ([td.channel integerValue] == 2) {
+                    channelStr = AcTECLocalizedStringFromTable(@"Channel2", @"Localizable");
+                }else if ([td.channel integerValue] == 4) {
+                    channelStr = AcTECLocalizedStringFromTable(@"Channel3", @"Localizable");
+                }
+                nt = [NSString stringWithFormat:@"%@ %@(%@)",nt, d.name,channelStr];
+            }else {
+                nt = [NSString stringWithFormat:@"%@ %@",nt, d.name];
             }
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:[NSString stringWithFormat:@"%@ %@ %@",deleteFailNames,AcTECLocalizedStringFromTable(@"notRespond", @"Localizable"),AcTECLocalizedStringFromTable(@"deletetimernow", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
-            [alertController.view setTintColor:DARKORAGE];
             
-            UIAlertAction *yesAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                [[CSRAppStateManager sharedInstance].selectedPlace removeTimersObject:self.timerEntity];
-                [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:self.timerEntity];
-                [[CSRDatabaseManager sharedInstance] saveContext];
-                if (self.handle) {
-                    self.handle();
+        }else if ([obj isKindOfClass:[SceneMemberEntity class]]) {
+            SceneMemberEntity *sm = (SceneMemberEntity *)obj;
+            CSRDeviceEntity *d = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sm.deviceID];
+            if ([CSRUtilities belongToTwoChannelSwitch:d.shortName]
+                || [CSRUtilities belongToThreeChannelSwitch:d.shortName]
+                || [CSRUtilities belongToTwoChannelDimmer:d.shortName]
+                || [CSRUtilities belongToSocketTwoChannel:d.shortName]
+                || [CSRUtilities belongToTwoChannelCurtainController:d.shortName]) {
+                NSString *channelStr = @"";
+                if ([sm.channel integerValue] == 1) {
+                    channelStr = AcTECLocalizedStringFromTable(@"Channel1", @"Localizable");
+                }else if ([sm.channel integerValue] == 2) {
+                    channelStr = AcTECLocalizedStringFromTable(@"Channel2", @"Localizable");
+                }else if ([sm.channel integerValue] == 4) {
+                    channelStr = AcTECLocalizedStringFromTable(@"Channel3", @"Localizable");
                 }
-                if ([self.backs count]>0) {
-                    reparePop = YES;
-                    dispatch_semaphore_signal(semaphore);
-                    dispatch_semaphore_signal(semaphore);
-                }
-                NSLog(@"popViewControllerAnimated~>6");
-                [self.navigationController popViewControllerAnimated:YES];
-            }];
-            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                if (self.handle) {
-                    self.handle();
-                }
-                if ([self.backs count]>0) {
-                    reparePop = YES;
-                    dispatch_semaphore_signal(semaphore);
-                    dispatch_semaphore_signal(semaphore);
-                }
-                NSLog(@"popViewControllerAnimated~>7");
-                [self.navigationController popViewControllerAnimated:YES];
-            }];
-            [alertController addAction:yesAction];
-            [alertController addAction:cancelAction];
-            [self presentViewController:alertController animated:YES completion:nil];
-        }
-        
-    });
-    
-    [self.backs removeAllObjects];
-    
-    NSLog(@"开始删除，成员个数：%lu",(unsigned long)[_timerEntity.timerDevices count]);
-    semaphore = dispatch_semaphore_create(1);
-    dispatch_queue_t queue = dispatch_queue_create("串行", NULL);
-    for (TimerDeviceEntity *timeDevice in _timerEntity.timerDevices) {
-        dispatch_async(queue, ^{
-            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-            if (!reparePop) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    NSLog(@"删除定时器：%@",timeDevice.deviceID);
-                    if ([timeDevice.channel isEqualToNumber:@(10)]) {
-                        [[DataModelManager shareInstance] deleteAlarmForDevice:timeDevice.deviceID index:[timeDevice.timerIndex integerValue]];
-                    }else {
-                        [[DataModelManager shareInstance] deleteAlarmForDevice:timeDevice.deviceID channel:[timeDevice.channel integerValue] index:[timeDevice.timerIndex integerValue]];
-                    }
-                });
+                ns = [NSString stringWithFormat:@"%@ %@(%@)",ns, d.name,channelStr];
+            }else {
+                ns = [NSString stringWithFormat:@"%@ %@",ns, d.name];
             }
-        });
-    }
-}
-
-- (IBAction)changeEnabled:(UISwitch *)sender {
-    if (!_newadd && _timerEntity) {
-        
-        [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
-        _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        _hud.mode = MBProgressHUDModeIndeterminate;
-        _hud.delegate = self;
-        memeberCount = [_timerEntity.timerDevices count];
-        [self.backs removeAllObjects];
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2*memeberCount * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            if (_hud) {
-                [_hud hideAnimated:YES];
-                _hud = nil;
-            }
-            if (_translucentBgView) {
-                [_translucentBgView removeFromSuperview];
-                _translucentBgView = nil;
-            }
-            if ([self.backs count] < memeberCount) {
-                NSString *enableFailName = @"";
-                for (TimerDeviceEntity *timerDevice in _timerEntity.timerDevices) {
-                    if (![self.backs containsObject:timerDevice.deviceID]) {
-                        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:timerDevice.deviceID];
-                        enableFailName = [NSString stringWithFormat:@"%@  %@",enableFailName,deviceEntity.name];
-                    }
-                }
-                
-                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:[NSString stringWithFormat:@"%@ %@",enableFailName,AcTECLocalizedStringFromTable(@"notRespond", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
-                [alertController.view setTintColor:DARKORAGE];
-                UIAlertAction *yesAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    _timerEntity.enabled = @(![_timerEntity.enabled boolValue]);
-                    [[CSRDatabaseManager sharedInstance] saveContext];
-                    if (self.handle) {
-                        self.handle();
-                    }
-                    if ([self.backs count]>0) {
-                        reparePop = YES;
-                        dispatch_semaphore_signal(semaphore);
-                        dispatch_semaphore_signal(semaphore);
-                    }
-                    NSLog(@"popViewControllerAnimated~>8");
-                    [self.navigationController popViewControllerAnimated:YES];
-                }];
-                [alertController addAction:yesAction];
-                [self presentViewController:alertController animated:YES completion:nil];
-            }
-        });
-        
-        NSLog(@"开始改使能，成员个数：%lu",(unsigned long)[_timerEntity.timerDevices count]);
-        semaphore = dispatch_semaphore_create(1);
-        dispatch_queue_t queue = dispatch_queue_create("串行", NULL);
-        for (TimerDeviceEntity *timerDevice in _timerEntity.timerDevices) {
-            dispatch_async(queue, ^{
-                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-                if (!reparePop) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        NSLog(@"使能定时器：%@",timerDevice.deviceID);
-                        if ([timerDevice.channel isEqualToNumber:@(10)]) {
-                            [[DataModelManager shareInstance] enAlarmForDevice:timerDevice.deviceID stata:sender.on index:[timerDevice.timerIndex integerValue]];
-                        }else {
-                            [[DataModelManager shareInstance] enAlarmForDevice:timerDevice.deviceID stata:sender.on index:[timerDevice.timerIndex integerValue] channel:[timerDevice.channel integerValue]];
-                        }
-                    });
-                }
-            });
+            
         }
     }
-}
-
-- (NSMutableDictionary *)deviceIdsAndIndexs {
-    if (!_deviceIdsAndIndexs) {
-        _deviceIdsAndIndexs = [NSMutableDictionary new];
+    NSLog(@"ns: %@",ns);
+    if ([nt length]>0) {
+        message = [NSString stringWithFormat:@"%@ %@",AcTECLocalizedStringFromTable(@"removetimerfail", @"Localizable"), nt];
     }
-    return _deviceIdsAndIndexs;
-}
-
-- (NSMutableArray *)deleteTimers {
-    if (!_deleteTimers) {
-        _deleteTimers = [NSMutableArray new];
+    if ([ns length]>0) {
+        message = [NSString stringWithFormat:@"%@ %@ %@",message,AcTECLocalizedStringFromTable(@"addtimerfail", @"Localizable"), ns];
     }
-    return _deleteTimers;
-}
-
-- (NSMutableArray *)backs {
-    if (!_backs) {
-        _backs = [NSMutableArray new];
-    }
-    return _backs;
-}
-
-- (NSMutableArray *)deviceIds {
-    if (!_deviceIds) {
-        _deviceIds = [NSMutableArray new];
-    }
-    return _deviceIds;
+    NSLog(@"message: %@",message);
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alert.view setTintColor:DARKORAGE];
+    UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self.fails removeAllObjects];
+        if (_timerEntity && [_timerEntity.timerDevices count] == 0) {
+            [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:_timerEntity];
+            [[CSRDatabaseManager sharedInstance] saveContext];
+        }
+        if (self.handle) {
+            self.handle();
+        }
+        [self.navigationController popViewControllerAnimated:YES];
+    }];
+    [alert addAction:yes];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (UIView *)translucentBgView {
@@ -1162,20 +966,75 @@
     return _translucentBgView;
 }
 
-#pragma mark - MBProgressHUDDelegate
-
-- (void)hudWasHidden:(MBProgressHUD *)hud {
-    [hud removeFromSuperview];
-    hud = nil;
+- (UIActivityIndicatorView *)indicatorView {
+    if (!_indicatorView) {
+        _indicatorView = [[UIActivityIndicatorView alloc] init];
+        _indicatorView.hidesWhenStopped = YES;
+    }
+    return _indicatorView;
 }
 
-- (void)showTextHud:(NSString *)text {
-    MBProgressHUD *successHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    successHud.mode = MBProgressHUDModeText;
-    successHud.label.text = text;
-    successHud.label.numberOfLines = 0;
-    successHud.delegate = self;
-    [successHud hideAnimated:YES afterDelay:2.0f];
+- (void)deleteAlarmCall:(NSNotification *)result {
+    NSDictionary *userInfo = result.userInfo;
+    NSNumber *dDeviceID = userInfo[@"deviceId"];
+    NSNumber *channel = userInfo[@"channel"];
+    BOOL state = [userInfo[@"state"] boolValue];
+    id obj = [_mMembersToApply firstObject];
+    if ([obj isKindOfClass:[TimerDeviceEntity class]]) {
+        TimerDeviceEntity *td = (TimerDeviceEntity *)obj;
+        if ([dDeviceID isEqualToNumber:td.deviceID] && [channel isEqualToNumber:td.channel]) {
+            
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(setTimerTimeOut) object:nil];
+            
+            if (_timerEntity) {
+                [_timerEntity removeTimerDevicesObject:td];
+            }
+            [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:td];
+            [[CSRDatabaseManager sharedInstance] saveContext];
+            [_mMembersToApply removeObject:obj];
+            if (!state) {
+                [self.fails addObject:td];
+            }
+            
+            _mDeviceToApply = nil;
+            
+            if (![self nextOperation]) {
+                if ([self.fails count] > 0) {
+                    [self hideLoading];
+                    [self showFailAler];
+                }else {
+                    [self hideLoading];
+                    if (self.handle) {
+                        self.handle();
+                    }
+                    [self.navigationController popViewControllerAnimated:YES];
+                }
+            }
+            
+        }
+    }
 }
+
+- (IBAction)deleteTimerAction:(UIButton *)sender {
+    
+    [self showLoading];
+    
+    for (TimerDeviceEntity *td in [_timerEntity.timerDevices mutableCopy]) {
+        [self.mMembersToApply addObject:td];
+    }
+    
+    [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:_timerEntity];
+    [[CSRDatabaseManager sharedInstance] saveContext];
+    
+    if (![self nextOperation]) {
+        [self hideLoading];
+        if (self.handle) {
+            self.handle();
+        }
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+}
+
+
 
 @end

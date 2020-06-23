@@ -17,12 +17,19 @@
 #import "CSRDatabaseManager.h"
 #import "CSRUtilities.h"
 
-@interface TimerViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface TimerViewController ()<UITableViewDelegate,UITableViewDataSource, TimerTableViewCellDelegate>
 
 @property (nonatomic,strong) UITableView *tableView;
 @property (nonatomic,strong) UIView *noneDataView;
 @property (nonatomic,strong) NSMutableArray *dataArray;
 
+@property (nonatomic, strong) NSMutableArray *mMembersToApply;
+@property (nonatomic, strong) NSMutableArray *fails;
+@property (nonatomic, strong) CSRDeviceEntity *mDeviceToApply;
+@property (nonatomic, strong) UIView *translucentBgView;
+@property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
+@property (nonatomic, strong) TimerEntity *sTimerEntity;
+@property (nonatomic, assign) NSInteger sRow;
 
 @end
 
@@ -36,6 +43,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteDeviceEntity) name:@"deleteDeviceEntity" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteDeviceEntity) name:@"reGetDataForPlaceChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enabledAlarmCall:) name:@"enabledAlarmCall" object:nil];
     
     if (@available(iOS 11.0, *)) {
         self.additionalSafeAreaInsets = UIEdgeInsetsMake(-35, 0, 0, 0);
@@ -145,8 +153,9 @@
 
 - (TimerTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     TimerTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TimerTableViewCell" forIndexPath:indexPath];
+    cell.cellDelegate = self;
     TimerEntity *timerEntity = [_dataArray objectAtIndex:indexPath.row];
-    [cell configureCellWithInfo:timerEntity];
+    [cell configureCellWithInfo:timerEntity row:indexPath.row];
     
     return cell;
 }
@@ -160,6 +169,7 @@
     tdvc.newadd = NO;
     __weak TimerViewController *weakSelf = self;
     tdvc.handle = ^{
+        NSLog(@"TimerViewController");
         [weakSelf getData];
         [weakSelf layoutView];
     };
@@ -168,6 +178,185 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return 0.01f;
+}
+
+- (void)timercellChangeEnabled:(BOOL)enabled row:(NSInteger)row{
+    _sTimerEntity = [_dataArray objectAtIndex:row];
+    _sRow = row;
+    
+    _sTimerEntity.enabled = @(enabled);
+    [[CSRDatabaseManager sharedInstance] saveContext];
+    
+    if ([_sTimerEntity.timerDevices count] > 0) {
+        [self showLoading];
+        for (TimerDeviceEntity *td in _sTimerEntity.timerDevices) {
+            [self.mMembersToApply addObject:td];
+        }
+        [self nextChangeEnableOpteration];
+    }else {
+        NSIndexPath *sPath = [NSIndexPath indexPathForRow:row inSection:0];
+        [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:sPath] withRowAnimation:UITableViewRowAnimationNone];
+    }
+    
+}
+
+- (BOOL)nextChangeEnableOpteration {
+    if ([self.mMembersToApply count]>0) {
+        TimerDeviceEntity *td = [self.mMembersToApply firstObject];
+        _mDeviceToApply = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:td.deviceID];
+        if (_mDeviceToApply == nil) {
+            [_mMembersToApply removeObject:td];
+            return [self nextChangeEnableOpteration];
+        }else {
+            Byte bIndex[]={};
+            bIndex[0] = (Byte)(([td.timerIndex integerValue] & 0xFF00)>>8);
+            bIndex[1] = (Byte)([td.timerIndex integerValue] & 0x00FF);
+            
+            [self performSelector:@selector(changeEnableTimeOut) withObject:nil afterDelay:10.0];
+            
+            if ([CSRUtilities belongToTwoChannelSwitch:_mDeviceToApply.shortName]
+                || [CSRUtilities belongToThreeChannelSwitch:_mDeviceToApply.shortName]
+                || [CSRUtilities belongToTwoChannelDimmer:_mDeviceToApply.shortName]
+                || [CSRUtilities belongToSocketTwoChannel:_mDeviceToApply.shortName]
+                || [CSRUtilities belongToTwoChannelCurtainController:_mDeviceToApply.shortName]) {
+                Byte byte[] = {0x50, 0x05, 0x05, [td.channel integerValue], bIndex[1], bIndex[0], [_sTimerEntity.enabled boolValue]};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:7];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:td.deviceID data:cmd];
+            }else {
+                if ([_mDeviceToApply.cvVersion integerValue] > 18) {
+                    Byte byte[] = {0x84, 0x03, bIndex[1], bIndex[0], [_sTimerEntity.enabled boolValue]};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:td.deviceID data:cmd];
+                }else {
+                    Byte byte[] = {0x84, 0x02, [td.timerIndex integerValue], [_sTimerEntity.enabled boolValue]};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:td.deviceID data:cmd];
+                }
+            }
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (void)changeEnableTimeOut {
+    TimerDeviceEntity *td = [self.mMembersToApply firstObject];
+    [self.mMembersToApply removeObject:td];
+    [self.fails addObject:td];
+    _mDeviceToApply = nil;
+    if (![self nextChangeEnableOpteration]) {
+        [self hideLoading];
+        [self showFailAler];
+    }
+}
+
+- (void)enabledAlarmCall:(NSNotification *)result {
+    NSDictionary *userInfo = result.userInfo;
+    NSNumber *dDeviceID = userInfo[@"deviceId"];
+    NSNumber *channel = userInfo[@"channel"];
+    BOOL state = [userInfo[@"state"] boolValue];
+    TimerDeviceEntity *td = [self.mMembersToApply firstObject];
+    if (td && [dDeviceID isEqualToNumber:td.deviceID] && [channel isEqualToNumber:td.channel]) {
+        
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(changeEnableTimeOut) object:nil];
+        
+        [_mMembersToApply removeObject:td];
+        if (!state) {
+            [self.fails addObject:td];
+        }
+        
+        if (![self nextChangeEnableOpteration]) {
+            if ([self.fails count] > 0) {
+                [self hideLoading];
+                [self showFailAler];
+            }else {
+                [self hideLoading];
+                NSIndexPath *sPath = [NSIndexPath indexPathForRow:_sRow inSection:0];
+                [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:sPath] withRowAnimation:UITableViewRowAnimationNone];
+            }
+        }
+    }
+}
+
+- (void)showFailAler {
+    NSString *ns = @"";
+    for (TimerDeviceEntity *td in self.fails) {
+        CSRDeviceEntity *d = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:td.deviceID];
+        if ([CSRUtilities belongToTwoChannelSwitch:d.shortName]
+            || [CSRUtilities belongToThreeChannelSwitch:d.shortName]
+            || [CSRUtilities belongToTwoChannelDimmer:d.shortName]
+            || [CSRUtilities belongToSocketTwoChannel:d.shortName]
+            || [CSRUtilities belongToTwoChannelCurtainController:d.shortName]) {
+            NSString *channelStr = @"";
+            if ([td.channel integerValue] == 1) {
+                channelStr = AcTECLocalizedStringFromTable(@"Channel1", @"Localizable");
+            }else if ([td.channel integerValue] == 2) {
+                channelStr = AcTECLocalizedStringFromTable(@"Channel2", @"Localizable");
+            }else if ([td.channel integerValue] == 4) {
+                channelStr = AcTECLocalizedStringFromTable(@"Channel3", @"Localizable");
+            }
+            ns = [NSString stringWithFormat:@"%@ %@(%@)",ns, d.name,channelStr];
+        }else {
+            ns = [NSString stringWithFormat:@"%@ %@",ns, d.name];
+        }
+    }
+    NSString *message = [NSString stringWithFormat:@"%@ %@",AcTECLocalizedStringFromTable(@"enabletimerfail", @"Localizable"),ns];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alert.view setTintColor:DARKORAGE];
+    UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self.fails removeAllObjects];
+        NSIndexPath *sPath = [NSIndexPath indexPathForRow:_sRow inSection:0];
+        [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:sPath] withRowAnimation:UITableViewRowAnimationNone];
+    }];
+    [alert addAction:yes];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)showLoading {
+    [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+    [[UIApplication sharedApplication].keyWindow addSubview:self.indicatorView];
+    [self.indicatorView autoCenterInSuperview];
+    [self.indicatorView startAnimating];
+    
+}
+
+- (void)hideLoading {
+    [self.indicatorView stopAnimating];
+    [self.indicatorView removeFromSuperview];
+    [self.translucentBgView removeFromSuperview];
+    self.indicatorView = nil;
+    self.translucentBgView = nil;
+}
+
+- (UIView *)translucentBgView {
+    if (!_translucentBgView) {
+        _translucentBgView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        _translucentBgView.backgroundColor = [UIColor blackColor];
+        _translucentBgView.alpha = 0.4;
+    }
+    return _translucentBgView;
+}
+
+- (UIActivityIndicatorView *)indicatorView {
+    if (!_indicatorView) {
+        _indicatorView = [[UIActivityIndicatorView alloc] init];
+        _indicatorView.hidesWhenStopped = YES;
+    }
+    return _indicatorView;
+}
+
+- (NSMutableArray *)mMembersToApply {
+    if (!_mMembersToApply) {
+        _mMembersToApply = [[NSMutableArray alloc] init];
+    }
+    return _mMembersToApply;
+}
+
+- (NSMutableArray *)fails {
+    if (!_fails) {
+        _fails = [[NSMutableArray alloc] init];
+    }
+    return _fails;
 }
 
 #pragma mark - Lazy

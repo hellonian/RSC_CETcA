@@ -39,6 +39,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *channel2LevelLabel;
 @property (nonatomic,strong) MBProgressHUD *updatingHud;
 @property (nonatomic,strong) UIView *translucentBgView;
+@property (nonatomic, assign) BOOL appCtring;
 
 @end
 
@@ -197,21 +198,45 @@
 }
 
 - (IBAction)turnOnOff:(UISwitch *)sender {
+    
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayMethodEndAppCtring) object:nil];
+    _appCtring = YES;
+    
     NSString *cmdString;
+    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:_deviceId];
     switch (sender.tag) {
         case 1:
             cmdString = [NSString stringWithFormat:@"51050100010%d00",sender.on];
+            if (sender.on) {
+                [_channel1Slider setValue:deviceModel.channel1Level];
+                _channel1LevelLabel.text = [NSString stringWithFormat:@"%.f%%",deviceModel.channel1Level/255.0*100];
+            }else {
+                [_channel1Slider setValue:0];
+                _channel1LevelLabel.text = @"0%";
+            }
             break;
         case 2:
             cmdString = [NSString stringWithFormat:@"51050200010%d00",sender.on];
+            if (sender.on) {
+                [_channel2Slider setValue:deviceModel.channel2Level];
+                _channel2LevelLabel.text = [NSString stringWithFormat:@"%.f%%",deviceModel.channel2Level/255.0*100];
+            }else {
+                [_channel2Slider setValue:0];
+                _channel2LevelLabel.text = @"0%";
+            }
             break;
         default:
             break;
     }
     [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
+    
+    [self performSelector:@selector(delayMethodEndAppCtring) withObject:nil afterDelay:4.0];
 }
 
 - (IBAction)touchDown:(UISlider *)sender {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayMethodEndAppCtring) object:nil];
+    _appCtring = YES;
+    
     currenState = 1;
     currentLevel=sender.value;
     if (timer) {
@@ -225,17 +250,46 @@
 - (IBAction)valueChanged:(UISlider *)sender {
     currenState = 2;
     currentLevel=sender.value;
+    if (sender.tag == 1) {
+        if (sender.value == 0) {
+            if (_channel1Switch.on) {
+                [_channel1Switch setOn:NO];
+            }
+        }else {
+            if (!_channel1Switch.on) {
+                [_channel1Switch setOn:YES];
+            }
+        }
+        _channel1LevelLabel.text = [NSString stringWithFormat:@"%.f%%",sender.value/255.0*100];
+    }else if (sender.tag == 2) {
+        if (sender.value == 0) {
+            if (_channel2Switch.on) {
+                [_channel2Switch setOn:NO];
+            }
+        }else {
+            if (!_channel2Switch.on) {
+                [_channel2Switch setOn:YES];
+            }
+        }
+        _channel2LevelLabel.text = [NSString stringWithFormat:@"%.f%%",sender.value/255.0*100];
+    }
 }
 
 - (IBAction)touchUpInSideOrTouchUpOutSide:(UISlider *)sender {
     currenState = 3;
     currentLevel=sender.value;
+    [self performSelector:@selector(delayMethodEndAppCtring) withObject:nil afterDelay:4.0];
+}
+
+- (void)delayMethodEndAppCtring {
+    _appCtring = NO;
 }
 
 - (void)timerMethod:(NSTimer *)infotimer {
     @synchronized (self) {
         NSNumber *channel = infotimer.userInfo;
-        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"5105%@000301%@",[CSRUtilities stringWithHexNumber:[channel integerValue]],[CSRUtilities stringWithHexNumber:currentLevel]]] success:nil failure:nil];
+        BOOL state = currentLevel==0?NO:YES;
+        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"5105%@00030%d%@",[CSRUtilities stringWithHexNumber:[channel integerValue]],state,[CSRUtilities stringWithHexNumber:currentLevel]]] success:nil failure:nil];
         if (currenState==3) {
             [timer invalidate];
             timer = nil;
@@ -266,51 +320,45 @@
 }
 
 - (void)changeUI:(NSNumber *)deviceId channel:(NSInteger)channel{
-    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:deviceId];
-    if (deviceModel) {
-        
-        if (channel == 1) {
-            [_channel1Switch setOn:deviceModel.channel1PowerState];
-            if (deviceModel.channel1PowerState) {
-                _channel1Slider.enabled = YES;
-                [_channel1Slider setValue:deviceModel.channel1Level];
-                _channel1LevelLabel.text = [NSString stringWithFormat:@"%.f%%",deviceModel.channel1Level/255.0*100];
-            }else {
-                _channel1Slider.enabled = NO;
-                [_channel1Slider setValue:0];
-                _channel1LevelLabel.text = @"0%";
-            }
-        }else if (channel == 2) {
-            [_channel2Switch setOn:deviceModel.channel2PowerState];
-            if (deviceModel.channel2PowerState) {
-                _channel2Slider.enabled = YES;
-                [_channel2Slider setValue:deviceModel.channel2Level];
-                _channel2LevelLabel.text = [NSString stringWithFormat:@"%.f%%",deviceModel.channel2Level/255.0*100];
-            }else {
-                _channel2Slider.enabled = NO;
-                [_channel2Slider setValue:0];
-                _channel2LevelLabel.text = @"0%";
-            }
-        }else if (channel == 3) {
-            [_channel1Switch setOn:deviceModel.channel1PowerState];
-            [_channel2Switch setOn:deviceModel.channel2PowerState];
-            if (deviceModel.channel1PowerState) {
-                _channel1Slider.enabled = YES;
-                [_channel1Slider setValue:deviceModel.channel1Level];
-                _channel1LevelLabel.text = [NSString stringWithFormat:@"%.f%%",deviceModel.channel1Level/255.0*100];
-            }else {
-                _channel1Slider.enabled = NO;
-                [_channel1Slider setValue:0];
-                _channel1LevelLabel.text = @"0%";
-            }
-            if (deviceModel.channel2PowerState) {
-                _channel2Slider.enabled = YES;
-                [_channel2Slider setValue:deviceModel.channel2Level];
-                _channel2LevelLabel.text = [NSString stringWithFormat:@"%.f%%",deviceModel.channel2Level/255.0*100];
-            }else {
-                _channel2Slider.enabled = NO;
-                [_channel2Slider setValue:0];
-                _channel2LevelLabel.text = @"0%";
+    if (!_appCtring) {
+        DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:deviceId];
+        if (deviceModel) {
+            
+            if (channel == 1) {
+                [_channel1Switch setOn:deviceModel.channel1PowerState];
+                if (deviceModel.channel1PowerState) {
+                    [_channel1Slider setValue:deviceModel.channel1Level];
+                    _channel1LevelLabel.text = [NSString stringWithFormat:@"%.f%%",deviceModel.channel1Level/255.0*100];
+                }else {
+                    [_channel1Slider setValue:0];
+                    _channel1LevelLabel.text = @"0%";
+                }
+            }else if (channel == 2) {
+                [_channel2Switch setOn:deviceModel.channel2PowerState];
+                if (deviceModel.channel2PowerState) {
+                    [_channel2Slider setValue:deviceModel.channel2Level];
+                    _channel2LevelLabel.text = [NSString stringWithFormat:@"%.f%%",deviceModel.channel2Level/255.0*100];
+                }else {
+                    [_channel2Slider setValue:0];
+                    _channel2LevelLabel.text = @"0%";
+                }
+            }else if (channel == 3) {
+                [_channel1Switch setOn:deviceModel.channel1PowerState];
+                [_channel2Switch setOn:deviceModel.channel2PowerState];
+                if (deviceModel.channel1PowerState) {
+                    [_channel1Slider setValue:deviceModel.channel1Level];
+                    _channel1LevelLabel.text = [NSString stringWithFormat:@"%.f%%",deviceModel.channel1Level/255.0*100];
+                }else {
+                    [_channel1Slider setValue:0];
+                    _channel1LevelLabel.text = @"0%";
+                }
+                if (deviceModel.channel2PowerState) {
+                    [_channel2Slider setValue:deviceModel.channel2Level];
+                    _channel2LevelLabel.text = [NSString stringWithFormat:@"%.f%%",deviceModel.channel2Level/255.0*100];
+                }else {
+                    [_channel2Slider setValue:0];
+                    _channel2LevelLabel.text = @"0%";
+                }
             }
         }
     }

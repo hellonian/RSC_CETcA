@@ -183,3 +183,11 @@
 "set_lcdremote_wifi" = "Set up the wifi connection of LCD pannel";
 "help" = "help_e";
 "gotosetting" = "App need to use location information to share data. Location information will not be uploaded to the network. Please enable location service in \"Setting\"->\"Privacy\"->\"Location Servies\" and allow AcTEC BLE to get your location data.";
+"low" = "low";
+"medium" = "medium";
+"high" = "high";
+"setscenefail" = "could not add to scene.";
+"removescenefail" = "no response. Check that the device is powered off or has been initialized. Does it force removal?";
+"addtimerfail" = "The following device could not set timer, check whether the device is cut off,initialized,or the number of timer in device exceeds the maximum number:";
+"removetimerfail" = "The following device could not remove timer, check whether the device is cut off or initialized:";
+"enabletimerfail" = "The following device could not changed the enable, check whether the device is cut off or initialized:";

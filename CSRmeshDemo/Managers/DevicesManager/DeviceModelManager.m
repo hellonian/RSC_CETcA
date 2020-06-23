@@ -123,10 +123,13 @@
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
             model.powerState = powerState;
+            model.channel1PowerState = powerState;
             if ([level integerValue]<3 && [level integerValue]!=0) {
                 model.level = @3;
+                model.channel1Level = 3;
             }else {
                 model.level = level;
+                model.channel1Level = [level integerValue];
             }
             model.isleave = NO;
             model.colorTemperature = colorTemperature;
@@ -177,10 +180,13 @@
         model.shortName = deviceEntity.shortName;
         model.name = deviceEntity.name;
         model.powerState = powerState;
+        model.channel1PowerState = [powerState boolValue];
         if ([level integerValue]<3 && [level integerValue]!=0) {
             model.level = @3;
+            model.channel1Level = 3;
         }else {
             model.level = level;
+            model.channel1Level = 3;
         }
         model.isleave = NO;
         model.colorTemperature = colorTemperature;
@@ -220,6 +226,7 @@
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
             model.powerState = state;
+            model.channel1PowerState = [state boolValue];
             model.isleave = NO;
             if ([CSRUtilities belongToFanController:model.shortName]) {
                 model.fanState = [state boolValue];
@@ -247,6 +254,7 @@
         model.shortName = deviceEntity.shortName;
         model.name = deviceEntity.name;
         model.powerState = state;
+        model.channel1PowerState = [state boolValue];
         model.isleave = NO;
         if ([CSRUtilities belongToFanController:deviceEntity.shortName]) {
             model.fanState = [state boolValue];
@@ -456,8 +464,10 @@
     [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([model.deviceId isEqualToNumber:deviceId]) {
             model.powerState = [NSNumber numberWithBool:[state boolValue]];
+            model.channel1PowerState = [state boolValue];
             model.isleave = NO;
             model.level = level;
+            model.channel1Level = [level integerValue];
             
             //特殊非正常固件
             if ([model.shortName isEqualToString:@"C300IB"] || [model.shortName isEqualToString:@"C300IBH"]) {

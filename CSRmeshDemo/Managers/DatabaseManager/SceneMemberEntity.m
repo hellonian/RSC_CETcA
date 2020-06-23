@@ -28,5 +28,9 @@
 @dynamic level3;
 @dynamic eveType2;
 @dynamic eveType3;
+@dynamic eveD0;
+@dynamic eveD1;
+@dynamic eveD2;
+@dynamic eveD3;
 
 @end

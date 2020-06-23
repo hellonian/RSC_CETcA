@@ -613,102 +613,96 @@
 }
 
 - (void)adjustInterface {
-    if ([CSRUtilities belongToSwitch:_device.shortName]) {
-        if ([_device.powerState boolValue]) {
-            [self.powerStateSwitch setOn:YES];
-        }else {
-            [self.powerStateSwitch setOn:NO];
-        }
-        return;
-    }else if ([CSRUtilities belongToDimmer:_device.shortName]) {
-        if ([_device.powerState boolValue]) {
-            [self.powerStateSwitch setOn:YES];
-            if (!_sliderIsMoving) {
+    if (!_sliderIsMoving) {
+        if ([CSRUtilities belongToSwitch:_device.shortName]) {
+            if ([_device.powerState boolValue]) {
+                [self.powerStateSwitch setOn:YES];
+            }else {
+                [self.powerStateSwitch setOn:NO];
+            }
+            return;
+        }else if ([CSRUtilities belongToDimmer:_device.shortName]) {
+            if ([_device.powerState boolValue]) {
+                [self.powerStateSwitch setOn:YES];
                 [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
                 self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
+            }else {
+                [self.powerStateSwitch setOn:NO];
+                [self.levelSlider setValue:0 animated:YES];
+                self.levelLabel.text = @"0%";
             }
-        }else {
-            [self.powerStateSwitch setOn:NO];
-            [self.levelSlider setValue:0 animated:YES];
-            self.levelLabel.text = @"0%";
-        }
-        return;
-    }else if ([CSRUtilities belongToCWDevice:_device.shortName]) {
-        if ([_device.powerState boolValue]) {
-            [self.powerStateSwitch setOn:YES];
-            if (!_sliderIsMoving) {
+            return;
+        }else if ([CSRUtilities belongToCWDevice:_device.shortName]) {
+            if ([_device.powerState boolValue]) {
+                [self.powerStateSwitch setOn:YES];
                 [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
                 self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
+            }else {
+                [self.powerStateSwitch setOn:NO];
+                [self.levelSlider setValue:0 animated:YES];
+                self.levelLabel.text = @"0%";
             }
-        }else {
-            [self.powerStateSwitch setOn:NO];
-            [self.levelSlider setValue:0 animated:YES];
-            self.levelLabel.text = @"0%";
-        }
-        if (!_colorTemperatureSliderIsMoving) {
-            [_colorTemperatureSlider setValue:(CGFloat)[_device.colorTemperature integerValue] animated:YES];
-            _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[_device.colorTemperature integerValue]];
-        }
-        
-        return;
-    }else if ([CSRUtilities belongToRGBDevice:_device.shortName]) {
-        if ([_device.powerState boolValue]) {
-            [self.powerStateSwitch setOn:YES];
-            if (!_sliderIsMoving) {
+            if (!_colorTemperatureSliderIsMoving) {
+                [_colorTemperatureSlider setValue:(CGFloat)[_device.colorTemperature integerValue] animated:YES];
+                _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[_device.colorTemperature integerValue]];
+            }
+            
+            return;
+        }else if ([CSRUtilities belongToRGBDevice:_device.shortName]) {
+            if ([_device.powerState boolValue]) {
+                [self.powerStateSwitch setOn:YES];
                 [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
                 self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
+            }else {
+                [self.powerStateSwitch setOn:NO];
+                [self.levelSlider setValue:0 animated:YES];
+                self.levelLabel.text = @"0%";
             }
-        }else {
-            [self.powerStateSwitch setOn:NO];
-            [self.levelSlider setValue:0 animated:YES];
-            self.levelLabel.text = @"0%";
-        }
-        UIColor *color = [UIColor colorWithRed:[_device.red integerValue]/255.0 green:[_device.green integerValue]/255.0 blue:[_device.blue integerValue]/255.0 alpha:1.0];
-        CGFloat hue,saturation,brightness,alpha;
-        if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
-            if (!_colorSliderIsMoving && !_colorSaturationSliderIsMoving && !_colorSquareIsMoving) {
-                [self.colorSlider sliderMyValue:hue];
-                self.colorLabel.text = [NSString stringWithFormat:@"%.f",hue*360];
-                [self.colorSaturationSlider setValue:saturation animated:YES];
-                self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",saturation*100];
-                [self.colorSquareView locationPickView:hue colorSaturation:saturation];
+            UIColor *color = [UIColor colorWithRed:[_device.red integerValue]/255.0 green:[_device.green integerValue]/255.0 blue:[_device.blue integerValue]/255.0 alpha:1.0];
+            CGFloat hue,saturation,brightness,alpha;
+            if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
+                if (!_colorSliderIsMoving && !_colorSaturationSliderIsMoving && !_colorSquareIsMoving) {
+                    [self.colorSlider sliderMyValue:hue];
+                    self.colorLabel.text = [NSString stringWithFormat:@"%.f",hue*360];
+                    [self.colorSaturationSlider setValue:saturation animated:YES];
+                    self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",saturation*100];
+                    [self.colorSquareView locationPickView:hue colorSaturation:saturation];
+                }
             }
-        }
-        return;
-    }else if ([CSRUtilities belongToRGBCWDevice:_device.shortName]) {
-        if ([_device.powerState boolValue]) {
-            [self.powerStateSwitch setOn:YES];
-            if (!_sliderIsMoving) {
+            return;
+        }else if ([CSRUtilities belongToRGBCWDevice:_device.shortName]) {
+            if ([_device.powerState boolValue]) {
+                [self.powerStateSwitch setOn:YES];
                 [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
                 self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
+            }else {
+                [self.powerStateSwitch setOn:NO];
+                [self.levelSlider setValue:0 animated:YES];
+                self.levelLabel.text = @"0%";
             }
-        }else {
-            [self.powerStateSwitch setOn:NO];
-            [self.levelSlider setValue:0 animated:YES];
-            self.levelLabel.text = @"0%";
-        }
 
-        if (!_colorTemperatureSliderIsMoving) {
-            [_colorTemperatureSlider setValue:(CGFloat)[_device.colorTemperature integerValue] animated:YES];
-            _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[_device.colorTemperature integerValue]];
-        }
-        UIColor *color = [UIColor colorWithRed:[_device.red integerValue]/255.0 green:[_device.green integerValue]/255.0 blue:[_device.blue integerValue]/255.0 alpha:1.0];
-        CGFloat hue,saturation,brightness,alpha;
-        if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
-            if (!_colorSliderIsMoving && !_colorSaturationSliderIsMoving && !_colorSquareIsMoving) {
-                [self.colorSlider sliderMyValue:hue];
-                self.colorLabel.text = [NSString stringWithFormat:@"%.f",hue*360];
-                [self.colorSaturationSlider setValue:saturation animated:YES];
-                self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",saturation*100];
-                [self.colorSquareView locationPickView:hue colorSaturation:saturation];
+            if (!_colorTemperatureSliderIsMoving) {
+                [_colorTemperatureSlider setValue:(CGFloat)[_device.colorTemperature integerValue] animated:YES];
+                _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[_device.colorTemperature integerValue]];
             }
+            UIColor *color = [UIColor colorWithRed:[_device.red integerValue]/255.0 green:[_device.green integerValue]/255.0 blue:[_device.blue integerValue]/255.0 alpha:1.0];
+            CGFloat hue,saturation,brightness,alpha;
+            if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
+                if (!_colorSliderIsMoving && !_colorSaturationSliderIsMoving && !_colorSquareIsMoving) {
+                    [self.colorSlider sliderMyValue:hue];
+                    self.colorLabel.text = [NSString stringWithFormat:@"%.f",hue*360];
+                    [self.colorSaturationSlider setValue:saturation animated:YES];
+                    self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",saturation*100];
+                    [self.colorSquareView locationPickView:hue colorSaturation:saturation];
+                }
+            }
+            
+            return;
+        }else if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName]) {
+            [self.powerStateSwitch setOn:_device.channel1PowerState];
+            [self.powerSwitchChannelTwo setOn:_device.channel2PowerState];
+            [self.powerSwitchChannelThree setOn:_device.channel3PowerState];
         }
-        
-        return;
-    }else if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName]) {
-        [self.powerStateSwitch setOn:_device.channel1PowerState];
-        [self.powerSwitchChannelTwo setOn:_device.channel2PowerState];
-        [self.powerSwitchChannelThree setOn:_device.channel3PowerState];
     }
 }
 
@@ -723,6 +717,9 @@
 }
 //开关
 - (IBAction)powerStateSwitch:(UISwitch *)sender {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayMethodEndLevelMoving) object:nil];
+    _sliderIsMoving = YES;
+    
     if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName] || [CSRUtilities belongToTwoChannelSwitch:_device.shortName]) {
         [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"51050100010%d00",sender.on] toDeviceId:_deviceId];
     }else {
@@ -733,22 +730,33 @@
         }
         [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
         [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(sender.on)];
-    }
-    
-    if ([_deviceId integerValue] < 32768/*分组*/) {
-        if (sender.on) {
-            CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
-            NSArray *ds = [area.devices allObjects];
-            CSRDeviceEntity *d = ds[0];
-            DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
-            [self.levelSlider setValue:(CGFloat)[deviceModel.level integerValue] animated:YES];
-            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[deviceModel.level integerValue]/255.0*100];
+        
+        if ([_deviceId integerValue] < 32768/*分组*/) {
+            if (sender.on) {
+                CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+                NSArray *ds = [area.devices allObjects];
+                CSRDeviceEntity *d = ds[0];
+                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
+                [self.levelSlider setValue:(CGFloat)[deviceModel.level integerValue] animated:YES];
+                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[deviceModel.level integerValue]/255.0*100];
+            }else {
+                [self.RGBGroupControllSwitch setOn:NO];
+                [self.levelSlider setValue:0 animated:YES];
+                self.levelLabel.text = @"0%";
+            }
         }else {
-            [self.RGBGroupControllSwitch setOn:NO];
-            [self.levelSlider setValue:0 animated:YES];
-            self.levelLabel.text = @"0%";
+            if (sender.on) {
+                [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
+                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
+            }else {
+                [self.levelSlider setValue:0 animated:YES];
+                self.levelLabel.text = @"0%";
+            }
         }
     }
+    
+    [self performSelector:@selector(delayMethodEndLevelMoving) withObject:nil afterDelay:4.0];
+    
 }
 
 - (IBAction)powerSwitchChannelTwo:(UISwitch *)sender {
@@ -782,9 +790,17 @@
     
     self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",sender.value/255.0*100];
     if (sender.value == 0) {
-        [_RGBGroupControllSwitch setOn:NO];
+        if ([_deviceId integerValue] < 32768/*分组*/) {
+            [_RGBGroupControllSwitch setOn:NO];
+        }else {
+            [_powerStateSwitch setOn:NO];
+        }
     }else {
-        [_RGBGroupControllSwitch setOn:YES];
+        if ([_deviceId integerValue] < 32768/*分组*/) {
+            [_RGBGroupControllSwitch setOn:YES];
+        }else {
+            [_powerStateSwitch setOn:YES];
+        }
     }
 }
 
@@ -795,9 +811,17 @@
     
     self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",sender.value/255.0*100];
     if (sender.value == 0) {
-        [_RGBGroupControllSwitch setOn:NO];
+        if ([_deviceId integerValue] < 32768/*分组*/) {
+            [_RGBGroupControllSwitch setOn:NO];
+        }else {
+            [_powerStateSwitch setOn:NO];
+        }
     }else {
-        [_RGBGroupControllSwitch setOn:YES];
+        if ([_deviceId integerValue] < 32768/*分组*/) {
+            [_RGBGroupControllSwitch setOn:YES];
+        }else {
+            [_powerStateSwitch setOn:YES];
+        }
     }
 }
 
@@ -807,9 +831,17 @@
     
     self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",sender.value/255.0*100];
     if (sender.value == 0) {
-        [_RGBGroupControllSwitch setOn:NO];
+        if ([_deviceId integerValue] < 32768/*分组*/) {
+            [_RGBGroupControllSwitch setOn:NO];
+        }else {
+            [_powerStateSwitch setOn:NO];
+        }
     }else {
-        [_RGBGroupControllSwitch setOn:YES];
+        if ([_deviceId integerValue] < 32768/*分组*/) {
+            [_RGBGroupControllSwitch setOn:YES];
+        }else {
+            [_powerStateSwitch setOn:YES];
+        }
     }
 }
 
@@ -835,13 +867,19 @@
     
     _colorTemperatureLabel.text = [NSString stringWithFormat:@"%.fK",sender.value];
     
-    if (!_RGBGroupControllSwitch.on && [_deviceId integerValue] < 32768) {
-        [_RGBGroupControllSwitch setOn:YES];
-        CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
-        CSRDeviceEntity *d = [[area.devices allObjects] objectAtIndex:0];
-        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
-        [_levelSlider setValue:[model.level integerValue] animated:YES];
-        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
+    if ([_deviceId integerValue] < 32768) {
+        if (!_RGBGroupControllSwitch.on) {
+            [_RGBGroupControllSwitch setOn:YES];
+            CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+            CSRDeviceEntity *d = [[area.devices allObjects] objectAtIndex:0];
+            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
+            [_levelSlider setValue:[model.level integerValue] animated:YES];
+            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
+        }
+    }else if (!_powerStateSwitch.on) {
+        [_powerStateSwitch setOn:YES];
+        [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
+        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
     }
     
 }
@@ -887,13 +925,19 @@
     self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",sender.value*100];
     [self.colorSquareView locationPickView:_colorSlider.myValue colorSaturation:sender.value];
     
-    if (!_RGBGroupControllSwitch.on && [_deviceId integerValue] < 32768) {
-        [_RGBGroupControllSwitch setOn:YES];
-        CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
-        CSRDeviceEntity *d = [[area.devices allObjects] objectAtIndex:0];
-        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
-        [_levelSlider setValue:[model.level integerValue] animated:YES];
-        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
+    if ([_deviceId integerValue] < 32768) {
+        if (!_RGBGroupControllSwitch.on) {
+            [_RGBGroupControllSwitch setOn:YES];
+            CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+            CSRDeviceEntity *d = [[area.devices allObjects] objectAtIndex:0];
+            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
+            [_levelSlider setValue:[model.level integerValue] animated:YES];
+            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
+        }
+    }else if (!_powerStateSwitch.on) {
+        [_powerStateSwitch setOn:YES];
+        [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
+        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
     }
 }
 
@@ -1093,13 +1137,19 @@
     self.colorLabel.text = [NSString stringWithFormat:@"%.f",myValue*360];
     [self.colorSquareView locationPickView:myValue colorSaturation:_colorSaturationSlider.value];
     
-    if (!_RGBGroupControllSwitch.on && [_deviceId integerValue] < 32768) {
-        [_RGBGroupControllSwitch setOn:YES];
-        CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
-        CSRDeviceEntity *d = [[area.devices allObjects] objectAtIndex:0];
-        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
-        [_levelSlider setValue:[model.level integerValue] animated:YES];
-        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
+    if ([_deviceId integerValue] < 32768) {
+        if (!_RGBGroupControllSwitch.on) {
+            [_RGBGroupControllSwitch setOn:YES];
+            CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+            CSRDeviceEntity *d = [[area.devices allObjects] objectAtIndex:0];
+            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
+            [_levelSlider setValue:[model.level integerValue] animated:YES];
+            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
+        }
+    }else if (!_powerStateSwitch.on) {
+        [_powerStateSwitch setOn:YES];
+        [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
+        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
     }
     
 }
@@ -1130,13 +1180,19 @@
     self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",colorSatutation*100];
     [self.colorSaturationSlider setValue:colorSatutation animated:YES];
     
-    if (!_RGBGroupControllSwitch.on && [_deviceId integerValue] < 32768) {
-        [_RGBGroupControllSwitch setOn:YES];
-        CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
-        CSRDeviceEntity *d = [[area.devices allObjects] objectAtIndex:0];
-        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
-        [_levelSlider setValue:[model.level integerValue] animated:YES];
-        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
+    if ([_deviceId integerValue] < 32768) {
+        if (!_RGBGroupControllSwitch.on) {
+            [_RGBGroupControllSwitch setOn:YES];
+            CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+            CSRDeviceEntity *d = [[area.devices allObjects] objectAtIndex:0];
+            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
+            [_levelSlider setValue:[model.level integerValue] animated:YES];
+            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
+        }
+    }else if (!_powerStateSwitch.on) {
+        [_powerStateSwitch setOn:YES];
+        [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
+        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
     }
 }
 
@@ -1161,13 +1217,19 @@
     self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",colorSatutation*100];
     [self.colorSaturationSlider setValue:colorSatutation animated:YES];
     
-    if (!_RGBGroupControllSwitch.on && [_deviceId integerValue] < 32768) {
-        [_RGBGroupControllSwitch setOn:YES];
-        CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
-        CSRDeviceEntity *d = [[area.devices allObjects] objectAtIndex:0];
-        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
-        [_levelSlider setValue:[model.level integerValue] animated:YES];
-        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
+    if ([_deviceId integerValue] < 32768) {
+        if (!_RGBGroupControllSwitch.on) {
+            [_RGBGroupControllSwitch setOn:YES];
+            CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+            CSRDeviceEntity *d = [[area.devices allObjects] objectAtIndex:0];
+            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
+            [_levelSlider setValue:[model.level integerValue] animated:YES];
+            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
+        }
+    }else if (!_powerStateSwitch.on) {
+        [_powerStateSwitch setOn:YES];
+        [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
+        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
     }
 }
 

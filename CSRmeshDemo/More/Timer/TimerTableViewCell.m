@@ -18,8 +18,9 @@
     // Initialization code
 }
 
-- (void)configureCellWithInfo:(TimerEntity *)timerEntity {
+- (void)configureCellWithInfo:(TimerEntity *)timerEntity row:(NSInteger)row{
     self.timerEntity = timerEntity;
+    _row = row;
     self.nameLabel.text = timerEntity.name;
     
     NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init];
@@ -58,6 +59,7 @@
     }
     
     BOOL enabled = [timerEntity.enabled boolValue]? YES:NO;
+    [_enableSwitch setOn:enabled];
     if (enabled) {
         self.nameLabel.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
         self.fireTimeLabel.textColor = [UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1];
@@ -68,6 +70,12 @@
         self.repeatLabel.textColor = [UIColor colorWithRed:180/255.0 green:180/255.0 blue:180/255.0 alpha:1];
     }
     
+}
+
+- (IBAction)changeEnabled:(UISwitch *)sender {
+    if (self.cellDelegate && [self.cellDelegate respondsToSelector:@selector(timercellChangeEnabled:row:)]) {
+        [self.cellDelegate timercellChangeEnabled:sender.on row:_row];
+    }
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

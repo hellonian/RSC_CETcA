@@ -29,5 +29,9 @@
 @property (nonatomic, retain) NSNumber *level3;
 @property (nonatomic, retain) NSNumber *eveType2;
 @property (nonatomic, retain) NSNumber *eveType3;
+@property (nonatomic, retain) NSNumber *eveD0;
+@property (nonatomic, retain) NSNumber *eveD1;
+@property (nonatomic, retain) NSNumber *eveD2;
+@property (nonatomic, retain) NSNumber *eveD3;
 
 @end

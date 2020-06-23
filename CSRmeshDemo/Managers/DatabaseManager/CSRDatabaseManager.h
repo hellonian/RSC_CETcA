@@ -65,11 +65,8 @@
 
 - (void) saveDeviceModel :(NSNumber *) deviceNumber modelNumber:(NSData *) modelNumber infoType:(NSNumber *) infoType;
 
-- (TimerEntity *)saveNewTimer:(NSNumber *)timerID timerName:(NSString *)name enabled:(NSNumber *)enabled fireTime:(NSDate *)time fireDate:(NSDate *)date repeatStr:(NSString *)repeatStr sceneID:(NSNumber *)sceneID;
-
 - (NSNumber *)getNextFreeTimerIDOfDeivice:(NSNumber *)deviceId;
 
-//- (NSArray *)foundTimerDevice:(NSNumber *)deviceId timeIndex:(NSNumber *)timeImdex;
 - (void)timerDeviceEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId;
 - (void)dropEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId;
 - (void)sceneMemberEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId;

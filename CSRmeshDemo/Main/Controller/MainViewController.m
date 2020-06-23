@@ -48,6 +48,7 @@
 
 #import "GroupControlView.h"
 #import "SelectModel.h"
+#import "SceneViewController.h"
 
 @interface MainViewController ()<MainCollectionViewDelegate,PlaceColorIconPickerViewDelegate,MBProgressHUDDelegate>
 {
@@ -552,8 +553,12 @@
     if ([actionName isEqualToString:@"Edit"]) {
         NSLog(@"Edit");
         
-        [self editScene];
-        
+//        [self editScene];
+        SceneViewController *svc = [[SceneViewController alloc] init];
+        SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:sceneId];
+        svc.sceneIndex = s.rcIndex;
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
+        [self presentViewController:nav animated:YES completion:nil];
         return;
     }
     if ([actionName isEqualToString:@"Icon"]) {
@@ -1737,7 +1742,12 @@
             [alertController.view setTintColor:DARKORAGE];
             UIAlertAction *okAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 selectedSceneId = sceneId;
-                [self editScene];
+//                [self editScene];
+                SceneViewController *svc = [[SceneViewController alloc] init];
+                SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:sceneId];
+                svc.sceneIndex = s.rcIndex;
+                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
+                [self presentViewController:nav animated:YES completion:nil];
                 
             }];
             UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -1887,7 +1897,10 @@
         GroupViewController *gvc = [[GroupViewController alloc] init];
         __weak MainViewController *weakSelf = self;
         gvc.handle = ^{
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [weakSelf getMainDataArray];
+            });
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [weakSelf getMainDataArray];
             });
         };
@@ -2382,7 +2395,7 @@
     [DeviceModelManager sharedInstance].bleDisconnected = YES;
     [_mainCollectionView reloadData];
 }
-
+/*
 - (void)updateTimerAfterEditScene {
     NSArray *timers = [[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"TimerEntity" withPredicate:@"sceneID == %@", selectedSceneId];
     if (timers && timers.count>0) {
@@ -2398,9 +2411,9 @@
                 }
                 if (!exist) {
                     if ([tMemer.channel isEqualToNumber:@(10)]) {
-                        [[DataModelManager shareInstance] deleteAlarmForDevice:tMemer.deviceID index:[tMemer.timerIndex intValue]];
+                        
                     }else {
-                        [[DataModelManager shareInstance] deleteAlarmForDevice:tMemer.deviceID channel:[tMemer.channel integerValue] index:[tMemer.timerIndex integerValue]];
+                        
                     }
                     [NSThread sleepForTimeInterval:0.1f];
                     [timer removeTimerDevicesObject:tMemer];
@@ -2439,24 +2452,22 @@
                 
                 if ([CSRUtilities belongToTwoChannelDimmer:sMember.kindString] || [CSRUtilities belongToSocket:sMember.kindString] || [CSRUtilities belongToTwoChannelSwitch:sMember.kindString]) {
                     if (sMember.eveType && [sMember.eveType integerValue]>0 && sMember.colorTemperature && [sMember.colorTemperature integerValue]>0) {
-                        [[DataModelManager shareInstance] addAlarmForDevice:sMember.deviceID alarmIndex:[index integerValue] enabled:enable fireDate:date fireTime:time repeat:repeat eveType:sMember.eveType level:[sMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"01"];
-                        [NSThread sleepForTimeInterval:0.1f];
-                        [[DataModelManager shareInstance] addAlarmForDevice:sMember.deviceID alarmIndex:[index integerValue] enabled:enable fireDate:date fireTime:time repeat:repeat eveType:sMember.colorTemperature level:[sMember.colorGreen integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"02"];
+                        
                     }else {
                         if (sMember.eveType && [sMember.eveType integerValue]>0) {
-                            [[DataModelManager shareInstance] addAlarmForDevice:sMember.deviceID alarmIndex:[index integerValue] enabled:enable fireDate:date fireTime:time repeat:repeat eveType:sMember.eveType level:[sMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"01"];
+                            
                         }
                         if (sMember.colorTemperature && [sMember.colorTemperature integerValue]>0) {
-                            [[DataModelManager shareInstance] addAlarmForDevice:sMember.deviceID alarmIndex:[index integerValue] enabled:enable fireDate:date fireTime:time repeat:repeat eveType:sMember.colorTemperature level:[sMember.colorGreen integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3 channel:@"02"];
+                            
                         }
                     }
                 }else {
-                    [[DataModelManager shareInstance] addAlarmForDevice:sMember.deviceID alarmIndex:[index integerValue] enabled:enable fireDate:date fireTime:time repeat:repeat eveType:sMember.eveType level:[sMember.level integerValue] eveD1:eveD1 eveD2:eveD2 eveD3:eveD3];
+                    
                 }
                 [NSThread sleepForTimeInterval:0.1f];
             }
         }
     }
-}
+}*/
 
 @end

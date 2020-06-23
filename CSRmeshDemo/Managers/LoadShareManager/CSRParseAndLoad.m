@@ -313,6 +313,11 @@
                         sceneMemberObj.colorBlue = sceneMemberDict[@"colorBlue"];
                         sceneMemberObj.colorTemperature = sceneMemberDict[@"colorTemperature"];
                         sceneMemberObj.eveType = sceneMemberDict[@"eveType"];
+                        sceneMemberObj.channel = sceneMemberDict[@"channel"];
+                        sceneMemberObj.eveD0 = sceneMemberDict[@"eveD0"];
+                        sceneMemberObj.eveD1 = sceneMemberDict[@"eveD1"];
+                        sceneMemberObj.eveD2 = sceneMemberDict[@"eveD2"];
+                        sceneMemberObj.eveD3 = sceneMemberDict[@"eveD3"];
                         [members addObject:sceneMemberObj];
                     }
                 }
@@ -597,7 +602,12 @@
                                            @"colorGreen":sceneMember.colorGreen?(sceneMember.colorGreen):@0,
                                            @"colorBlue":sceneMember.colorBlue?(sceneMember.colorBlue):@0,
                                            @"colorTemperature":sceneMember.colorTemperature?(sceneMember.colorTemperature):@0,
-                                           @"eveType":sceneMember.eveType?(sceneMember.eveType):@0
+                                           @"eveType":sceneMember.eveType?(sceneMember.eveType):@0,
+                                           @"channel":sceneMember.channel?(sceneMember.channel):@0,
+                                           @"eveD0":sceneMember.eveD0?(sceneMember.eveD0):@0,
+                                           @"eveD1":sceneMember.eveD1?(sceneMember.eveD1):@0,
+                                           @"eveD2":sceneMember.eveD2?(sceneMember.eveD2):@0,
+                                           @"eveD3":sceneMember.eveD3?(sceneMember.eveD3):@0
                                            }];
         }
         
@@ -737,7 +747,7 @@
                     deviceEntity.deviceId = (NSNumber *)deviceDict[@"`c_csr_deviceId`"];
                     deviceEntity.deviceHash = [CSRUtilities IntToNSData:[deviceDict[@"`c_uuidHash`"] unsignedLongLongValue]];
                     deviceEntity.shortName = deviceDict[@"`c_shortName`"];
-                    deviceEntity.name = deviceDict[@"`c_subName`"];
+                    deviceEntity.name = deviceDict[@"`c_name`"];
                     deviceEntity.uuid = deviceDict[@"`c_uuid`"];
                     deviceEntity.dhmKey = [CSRUtilities dataForHexString:deviceDict[@"`c_dmkey`"]];
                     deviceEntity.sortId = deviceDict[@"`c_orderIndex`"];
@@ -947,24 +957,79 @@
                             if (parsingDictionary[@"KEY_DEVICES_LIST"]) {
                                 for (NSDictionary * deviceDict in parsingDictionary[@"KEY_DEVICES_LIST"]) {
                                     if ([(NSNumber *)deviceDict[@"`_id`"] isEqualToNumber:(NSNumber *)parentDict[@"`c_device_id`"]]) {
-                                        SceneMemberEntity *sceneMemberObj = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:managedObjectContext];
-                                        sceneMemberObj.sceneID = sceneDict[@"`_id`"];
-                                        sceneMemberObj.deviceID = deviceDict[@"`c_csr_deviceId`"];
-                                        sceneMemberObj.powerState = parentDict[@"`c_bOnOff`"];
-                                        sceneMemberObj.level = [NSNumber numberWithFloat:[parentDict[@"`c_bright`"] floatValue] * 2.55f];
-                                        sceneMemberObj.kindString = deviceDict[@"`c_shortName`"];
-                                        if (![parentDict[@"`c_bOnOff`"] boolValue]) {
-                                            sceneMemberObj.eveType = @(11);
-                                        }else if ([CSRUtilities belongToSwitch:deviceDict[@"`c_shortName`"]]) {
-                                            sceneMemberObj.eveType = @(10);
-                                        }else if ([CSRUtilities belongToDimmer:deviceDict[@"`c_shortName`"]]) {
-                                            sceneMemberObj.eveType = @(12);
-                                        }else if ([CSRUtilities belongToCWDevice:deviceDict[@"`c_shortName`"]]) {
-                                            sceneMemberObj.eveType = @(19);
-                                        }else if ([CSRUtilities belongToRGBDevice:deviceDict[@"`c_shortName`"]]) {
-                                            sceneMemberObj.eveType = @(14);
+                                        if ([parentDict[@"`c_channel`"] integerValue] == 3) {
+                                            SceneMemberEntity *sceneMemberObj = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:managedObjectContext];
+                                            sceneMemberObj.sceneID = sceneDict[@"`_id`"];
+                                            sceneMemberObj.deviceID = deviceDict[@"`c_csr_deviceId`"];
+                                            sceneMemberObj.kindString = deviceDict[@"`c_shortName`"];
+                                            if (![parentDict[@"`c_chanel1_onoff`"] boolValue]) {
+                                                sceneMemberObj.eveType = @(11);
+                                            }else if ([CSRUtilities belongToSwitch:deviceDict[@"`c_shortName`"]]) {
+                                                sceneMemberObj.eveType = @(10);
+                                            }else if ([CSRUtilities belongToDimmer:deviceDict[@"`c_shortName`"]]) {
+                                                sceneMemberObj.eveType = @(12);
+                                            }else if ([CSRUtilities belongToCWDevice:deviceDict[@"`c_shortName`"]]) {
+                                                sceneMemberObj.eveType = @(19);
+                                            }else if ([CSRUtilities belongToRGBDevice:deviceDict[@"`c_shortName`"]]) {
+                                                sceneMemberObj.eveType = @(14);
+                                            }
+                                            sceneMemberObj.eveD0 = [NSNumber numberWithFloat:[parentDict[@"`c_bright`"] floatValue] * 2.55f];
+                                            [members addObject:sceneMemberObj];
+                                            
+                                            SceneMemberEntity *sceneMemberObj2 = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:managedObjectContext];
+                                            sceneMemberObj2.sceneID = sceneDict[@"`_id`"];
+                                            sceneMemberObj2.deviceID = deviceDict[@"`c_csr_deviceId`"];
+                                            sceneMemberObj2.kindString = deviceDict[@"`c_shortName`"];
+                                            if (![parentDict[@"`c_chanel2_onoff`"] boolValue]) {
+                                                sceneMemberObj2.eveType = @(11);
+                                            }else if ([CSRUtilities belongToSwitch:deviceDict[@"`c_shortName`"]]) {
+                                                sceneMemberObj2.eveType = @(10);
+                                            }else if ([CSRUtilities belongToDimmer:deviceDict[@"`c_shortName`"]]) {
+                                                sceneMemberObj2.eveType = @(12);
+                                            }else if ([CSRUtilities belongToCWDevice:deviceDict[@"`c_shortName`"]]) {
+                                                sceneMemberObj2.eveType = @(19);
+                                            }else if ([CSRUtilities belongToRGBDevice:deviceDict[@"`c_shortName`"]]) {
+                                                sceneMemberObj2.eveType = @(14);
+                                            }
+                                            sceneMemberObj2.eveD0 = [NSNumber numberWithFloat:[parentDict[@"`c_bright`"] floatValue] * 2.55f];
+                                            [members addObject:sceneMemberObj2];
+                                        }else if ([parentDict[@"`c_channel`"] integerValue] == 2) {
+                                            SceneMemberEntity *sceneMemberObj2 = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:managedObjectContext];
+                                            sceneMemberObj2.sceneID = sceneDict[@"`_id`"];
+                                            sceneMemberObj2.deviceID = deviceDict[@"`c_csr_deviceId`"];
+                                            sceneMemberObj2.kindString = deviceDict[@"`c_shortName`"];
+                                            if (![parentDict[@"`c_chanel2_onoff`"] boolValue]) {
+                                                sceneMemberObj2.eveType = @(11);
+                                            }else if ([CSRUtilities belongToSwitch:deviceDict[@"`c_shortName`"]]) {
+                                                sceneMemberObj2.eveType = @(10);
+                                            }else if ([CSRUtilities belongToDimmer:deviceDict[@"`c_shortName`"]]) {
+                                                sceneMemberObj2.eveType = @(12);
+                                            }else if ([CSRUtilities belongToCWDevice:deviceDict[@"`c_shortName`"]]) {
+                                                sceneMemberObj2.eveType = @(19);
+                                            }else if ([CSRUtilities belongToRGBDevice:deviceDict[@"`c_shortName`"]]) {
+                                                sceneMemberObj2.eveType = @(14);
+                                            }
+                                            sceneMemberObj2.eveD0 = [NSNumber numberWithFloat:[parentDict[@"`c_bright`"] floatValue] * 2.55f];
+                                            [members addObject:sceneMemberObj2];
+                                        }else {
+                                            SceneMemberEntity *sceneMemberObj = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:managedObjectContext];
+                                            sceneMemberObj.sceneID = sceneDict[@"`_id`"];
+                                            sceneMemberObj.deviceID = deviceDict[@"`c_csr_deviceId`"];
+                                            sceneMemberObj.kindString = deviceDict[@"`c_shortName`"];
+                                            if (![parentDict[@"`c_chanel1_onoff`"] boolValue]) {
+                                                sceneMemberObj.eveType = @(11);
+                                            }else if ([CSRUtilities belongToSwitch:deviceDict[@"`c_shortName`"]]) {
+                                                sceneMemberObj.eveType = @(10);
+                                            }else if ([CSRUtilities belongToDimmer:deviceDict[@"`c_shortName`"]]) {
+                                                sceneMemberObj.eveType = @(12);
+                                            }else if ([CSRUtilities belongToCWDevice:deviceDict[@"`c_shortName`"]]) {
+                                                sceneMemberObj.eveType = @(19);
+                                            }else if ([CSRUtilities belongToRGBDevice:deviceDict[@"`c_shortName`"]]) {
+                                                sceneMemberObj.eveType = @(14);
+                                            }
+                                            sceneMemberObj.eveD0 = [NSNumber numberWithFloat:[parentDict[@"`c_bright`"] floatValue] * 2.55f];
+                                            [members addObject:sceneMemberObj];
                                         }
-                                        [members addObject:sceneMemberObj];
                                     }
                                 }
                             }
@@ -1072,9 +1137,22 @@
                         }
                     }
                 }
+                NSMutableArray *tds = [NSMutableArray new];
+                if (timerDict[@"KEY_DEVICETIMER_LIST"]) {
+                    for (NSDictionary *timerDeviceDict in timerDict[@"KEY_DEVICETIMER_LIST"]) {
+                        TimerDeviceEntity *timerDeviceObj = [NSEntityDescription insertNewObjectForEntityForName:@"TimerDeviceEntity" inManagedObjectContext:managedObjectContext];
+                        timerDeviceObj.timerID = timerDeviceDict[@"`c_timer_id`"];
+                        timerDeviceObj.deviceID = timerDeviceDict[@"`c_csrdevice_id`"];
+                        timerDeviceObj.channel = [timerDeviceDict[@"`c_channel`"] length]>0 ? @([timerDeviceDict[@"`c_channel`"] integerValue]):@(1);
+                        timerDeviceObj.timerIndex = @([timerDeviceDict[@"`c_device_timer_id`"] integerValue]);
+                        [tds addObject:timerDeviceObj];
+                    }
+                }
+                [timerObj addTimerDevices:[NSSet setWithArray:tds]];
                 if (self.sharePlace) {
                     [self.sharePlace addTimersObject:timerObj];
                 }
+                
             }
         }
         

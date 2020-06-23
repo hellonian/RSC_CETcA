@@ -8,10 +8,11 @@
 
 #import "HelpViewController.h"
 #import "PureLayout.h"
+#import <WebKit/WebKit.h>
 
 @interface HelpViewController ()
 
-@property(nonatomic, strong)UIWebView *webView;
+@property(nonatomic, strong)WKWebView *webView;
 
 @end
 
@@ -31,7 +32,8 @@
         UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
         self.navigationItem.leftBarButtonItem = back;
     }
-    _webView=[[UIWebView alloc]initWithFrame:CGRectZero];
+    WKWebViewConfiguration *webConfiguration = [WKWebViewConfiguration new];
+    _webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:webConfiguration];
     NSString *s = [NSString stringWithFormat:@"http://39.108.152.134/%@.html",AcTECLocalizedStringFromTable(@"help", @"Localizable")];
     NSURL *url = [NSURL URLWithString:s];
     NSURLRequest *request=[NSURLRequest requestWithURL:url];
