@@ -96,7 +96,6 @@
 		2E4BC03D227051BF000719EA /* SoundListenTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E4BC03C227051BF000719EA /* SoundListenTool.m */; };
 		2E4DDCEB21F9680900B2ACF3 /* FanViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E4DDCED21F9680900B2ACF3 /* FanViewController.xib */; };
 		2E4DDCF221F968FF00B2ACF3 /* SocketViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E4DDCF421F968FF00B2ACF3 /* SocketViewController.xib */; };
-		2E4DDD0021F969F200B2ACF3 /* TwoChannelDimmerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E4DDD0221F969F200B2ACF3 /* TwoChannelDimmerVC.xib */; };
 		2E500B741FD8D6B9008303CE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D6E44EF1B3C4059000A44DD /* CoreGraphics.framework */; };
 		2E500B761FD8D6F3008303CE /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E500B751FD8D6F0008303CE /* MediaPlayer.framework */; };
 		2E500B781FD8D703008303CE /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E500B771FD8D6FE008303CE /* AVFoundation.framework */; };
@@ -121,14 +120,11 @@
 		2E6D543B211AB6C6003D02DB /* ColorSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6D543A211AB6C6003D02DB /* ColorSlider.m */; };
 		2E6FBD9620E1D43F0045DDAC /* GroupListSModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6FBD9520E1D43F0045DDAC /* GroupListSModel.m */; };
 		2E706CFF212A7278008D0EC4 /* GalleryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E706D01212A7278008D0EC4 /* GalleryViewController.xib */; };
-		2E712CFD235015E5003DBA72 /* TwoChannelSwitchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E712CFB235015E5003DBA72 /* TwoChannelSwitchVC.m */; };
-		2E712CFE235015E5003DBA72 /* TwoChannelSwitchVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E712CFC235015E5003DBA72 /* TwoChannelSwitchVC.xib */; };
 		2E8623492019DB28004EF0E0 /* DeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8623472019DB28004EF0E0 /* DeviceViewController.m */; };
 		2E8ECC2E239DFA210031367F /* SelectModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8ECC2D239DFA210031367F /* SelectModel.m */; };
 		2E9622BF20C913530097C617 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E9622C120C913530097C617 /* Localizable.strings */; };
 		2E9622C720C917EC0097C617 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E9622C920C917EC0097C617 /* InfoPlist.strings */; };
 		2EA101B720E0BBE500D2C88F /* SceneListSModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EA101B620E0BBE500D2C88F /* SceneListSModel.m */; };
-		2EA18F0821E5EFD200E4D35B /* TwoChannelDimmerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EA18F0621E5EFD200E4D35B /* TwoChannelDimmerVC.m */; };
 		2EA5A8992490C79100037F63 /* SceneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EA5A8972490C79100037F63 /* SceneViewController.m */; };
 		2EA708C32011C31300782209 /* AddDevcieViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EA708C22011C31300782209 /* AddDevcieViewController.m */; };
 		2EAD47991FFC6DA8007D45E9 /* GalleryControlImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EAD47981FFC6DA8007D45E9 /* GalleryControlImageView.m */; };
@@ -363,7 +359,6 @@
 		2E48A7FC221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
 		2E48A7FD221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2E48A7FE221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/SocketViewController.strings; sourceTree = "<group>"; };
-		2E48A800221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
 		2E48A801221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2E48A802221BAEC00052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
 		2E48A803221BAEC10052A617 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
@@ -386,9 +381,6 @@
 		2E4DDCEF21F9680E00B2ACF3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2E4DDCF121F9681000B2ACF3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/FanViewController.strings"; sourceTree = "<group>"; };
 		2E4DDCF321F968FF00B2ACF3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/SocketViewController.xib; sourceTree = "<group>"; };
-		2E4DDD0121F969F200B2ACF3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/TwoChannelDimmerVC.xib; sourceTree = "<group>"; };
-		2E4DDD0421F969F700B2ACF3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
-		2E4DDD0621F969F800B2ACF3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/TwoChannelDimmerVC.strings"; sourceTree = "<group>"; };
 		2E500B751FD8D6F0008303CE /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		2E500B771FD8D6FE008303CE /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		2E5A5870213788F900E416F9 /* FavoriteViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FavoriteViewController.h; sourceTree = "<group>"; };
@@ -430,9 +422,6 @@
 		2E706D00212A7278008D0EC4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/GalleryViewController.xib; sourceTree = "<group>"; };
 		2E706D03212A727E008D0EC4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2E706D05212A7282008D0EC4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/GalleryViewController.strings"; sourceTree = "<group>"; };
-		2E712CFA235015E5003DBA72 /* TwoChannelSwitchVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TwoChannelSwitchVC.h; sourceTree = "<group>"; };
-		2E712CFB235015E5003DBA72 /* TwoChannelSwitchVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TwoChannelSwitchVC.m; sourceTree = "<group>"; };
-		2E712CFC235015E5003DBA72 /* TwoChannelSwitchVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoChannelSwitchVC.xib; sourceTree = "<group>"; };
 		2E747FCF221CE2A100FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
 		2E747FD0221CE2A600FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/GroupViewController.strings; sourceTree = "<group>"; };
 		2E747FD1221CE2A700FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/RGBDeviceViewController.strings; sourceTree = "<group>"; };
@@ -442,7 +431,6 @@
 		2E747FD5221CE2AA00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
 		2E747FD6221CE2AA00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2E747FD7221CE2AA00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/SocketViewController.strings; sourceTree = "<group>"; };
-		2E747FD9221CE2AB00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
 		2E747FDA221CE2AB00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2E747FDB221CE2AB00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
 		2E747FDC221CE2AB00FBEB14 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
@@ -459,7 +447,6 @@
 		2E747FE8221CF68D00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
 		2E747FE9221CF68D00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2E747FEA221CF68E00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/SocketViewController.strings; sourceTree = "<group>"; };
-		2E747FEC221CF68E00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
 		2E747FED221CF68E00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2E747FEE221CF68F00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
 		2E747FEF221CF68F00FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
@@ -480,8 +467,6 @@
 		2E9622CA20C917EE0097C617 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		2EA101B520E0BBE400D2C88F /* SceneListSModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneListSModel.h; sourceTree = "<group>"; };
 		2EA101B620E0BBE500D2C88F /* SceneListSModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SceneListSModel.m; sourceTree = "<group>"; };
-		2EA18F0521E5EFD200E4D35B /* TwoChannelDimmerVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TwoChannelDimmerVC.h; sourceTree = "<group>"; };
-		2EA18F0621E5EFD200E4D35B /* TwoChannelDimmerVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TwoChannelDimmerVC.m; sourceTree = "<group>"; };
 		2EA5A8962490C79100037F63 /* SceneViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneViewController.h; sourceTree = "<group>"; };
 		2EA5A8972490C79100037F63 /* SceneViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneViewController.m; sourceTree = "<group>"; };
 		2EA708C12011C31300782209 /* AddDevcieViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddDevcieViewController.h; sourceTree = "<group>"; };
@@ -516,7 +501,6 @@
 		2EC18BCA221D2260008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
 		2EC18BCB221D2260008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2EC18BCC221D2261008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/SocketViewController.strings; sourceTree = "<group>"; };
-		2EC18BCE221D2261008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
 		2EC18BCF221D2261008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2EC18BD0221D2261008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
 		2EC18BD1221D2262008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
@@ -533,7 +517,6 @@
 		2EC18BDD221D2278008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
 		2EC18BDE221D2278008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2EC18BDF221D2278008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/SocketViewController.strings; sourceTree = "<group>"; };
-		2EC18BE1221D2279008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
 		2EC18BE2221D2279008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2EC18BE3221D2279008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
 		2EC18BE4221D2279008B33DC /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
@@ -550,7 +533,6 @@
 		2EC18BF0221D2289008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
 		2EC18BF1221D2289008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2EC18BF2221D2289008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/SocketViewController.strings; sourceTree = "<group>"; };
-		2EC18BF4221D228A008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
 		2EC18BF5221D228A008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2EC18BF6221D228A008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
 		2EC18BF7221D228A008B33DC /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
@@ -567,7 +549,6 @@
 		2EC18C03221D22A0008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
 		2EC18C04221D22A0008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2EC18C05221D22A0008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/SocketViewController.strings; sourceTree = "<group>"; };
-		2EC18C07221D22A1008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
 		2EC18C08221D22A1008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2EC18C09221D22A1008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
 		2EC18C0A221D22A2008B33DC /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
@@ -584,7 +565,6 @@
 		2EC18C16221D22B8008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/CurtainViewController.strings"; sourceTree = "<group>"; };
 		2EC18C17221D22B8008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/FanViewController.strings"; sourceTree = "<group>"; };
 		2EC18C18221D22B8008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/SocketViewController.strings"; sourceTree = "<group>"; };
-		2EC18C1A221D22B9008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/TwoChannelDimmerVC.strings"; sourceTree = "<group>"; };
 		2EC18C1B221D22B9008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/GalleryViewController.strings"; sourceTree = "<group>"; };
 		2EC18C1C221D22B9008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/PlaceDetailsViewController.strings"; sourceTree = "<group>"; };
 		2EC18C1D221D22B9008B33DC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/RemoteSettingViewController.strings"; sourceTree = "<group>"; };
@@ -601,7 +581,6 @@
 		2EC18C29221D22E8008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/CurtainViewController.strings"; sourceTree = "<group>"; };
 		2EC18C2A221D22E9008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/FanViewController.strings"; sourceTree = "<group>"; };
 		2EC18C2B221D22E9008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/SocketViewController.strings"; sourceTree = "<group>"; };
-		2EC18C2D221D22E9008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/TwoChannelDimmerVC.strings"; sourceTree = "<group>"; };
 		2EC18C2E221D22EA008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/GalleryViewController.strings"; sourceTree = "<group>"; };
 		2EC18C2F221D22EA008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/PlaceDetailsViewController.strings"; sourceTree = "<group>"; };
 		2EC18C30221D22EA008B33DC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/RemoteSettingViewController.strings"; sourceTree = "<group>"; };
@@ -627,7 +606,6 @@
 		2EC4205722179F2B00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
 		2EC4205822179F2B00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/FanViewController.strings; sourceTree = "<group>"; };
 		2EC4205922179F2B00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/SocketViewController.strings; sourceTree = "<group>"; };
-		2EC4205B22179F2C00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/TwoChannelDimmerVC.strings; sourceTree = "<group>"; };
 		2EC4205C22179F2C00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/GalleryViewController.strings; sourceTree = "<group>"; };
 		2EC4205D22179F2C00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
 		2EC4205E22179F2C00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
@@ -1147,12 +1125,6 @@
 				2E3BED3621DF329100E7078C /* PowerViewController.h */,
 				2E3BED3721DF329100E7078C /* PowerViewController.m */,
 				2E3BED3821DF329100E7078C /* PowerViewController.xib */,
-				2EA18F0521E5EFD200E4D35B /* TwoChannelDimmerVC.h */,
-				2EA18F0621E5EFD200E4D35B /* TwoChannelDimmerVC.m */,
-				2E4DDD0221F969F200B2ACF3 /* TwoChannelDimmerVC.xib */,
-				2E712CFA235015E5003DBA72 /* TwoChannelSwitchVC.h */,
-				2E712CFB235015E5003DBA72 /* TwoChannelSwitchVC.m */,
-				2E712CFC235015E5003DBA72 /* TwoChannelSwitchVC.xib */,
 				2E3417BB23A7276A000D1A52 /* RemoteMainVC.h */,
 				2E3417BC23A7276A000D1A52 /* RemoteMainVC.m */,
 				2E159F32248643D6001E126C /* RemoteMainVC.xib */,
@@ -1582,13 +1554,11 @@
 				2E9622C720C917EC0097C617 /* InfoPlist.strings in Resources */,
 				2EF332562045031300565374 /* HelpViewController.xib in Resources */,
 				2E0AA21F2126761900DB45EB /* AboutViewController.xib in Resources */,
-				2E4DDD0021F969F200B2ACF3 /* TwoChannelDimmerVC.xib in Resources */,
 				2E1C839E20CFD782009BCC6D /* PlaceDetailsViewController.xib in Resources */,
 				2E2E70B31FF5DE60002D1C1D /* ErrorCodes.strings in Resources */,
 				0DE95D161B297FFB006D0397 /* Images.xcassets in Resources */,
 				2E6750BC2493601C004FA52F /* SceneMemberCell.xib in Resources */,
 				2EE50F2D20DA3E3D00B484F7 /* LightSensorSettingViewController.xib in Resources */,
-				2E712CFE235015E5003DBA72 /* TwoChannelSwitchVC.xib in Resources */,
 				2E5EA0D7217F123700554825 /* LaunchScreen.storyboard in Resources */,
 				2E159F372486442A001E126C /* RemoteLCDVC.xib in Resources */,
 				2E2E70921FF5DE60002D1C1D /* PlaceIconCollectionViewCell.xib in Resources */,
@@ -1674,7 +1644,6 @@
 				0D835B951B97603600FF4376 /* CSRmesh.xcdatamodeld in Sources */,
 				2EC8BB37214653AF002ED85F /* MeterTable.mm in Sources */,
 				0D835B361B9749E600FF4376 /* AppDelegate.m in Sources */,
-				2EA18F0821E5EFD200E4D35B /* TwoChannelDimmerVC.m in Sources */,
 				2E3A65F7202BF97300B3E425 /* SingleDeviceModel.m in Sources */,
 				2EB246B22282A82600DFF5D3 /* QTIRWCP.m in Sources */,
 				2EC3893F204939CE004D822D /* TimerDetailViewController.m in Sources */,
@@ -1771,7 +1740,6 @@
 				2EA5A8992490C79100037F63 /* SceneViewController.m in Sources */,
 				2EAD4EA82004A4BB003733CA /* GalleryEditToolView.m in Sources */,
 				2E5A58782137896500E416F9 /* RGBDeviceViewController.m in Sources */,
-				2E712CFD235015E5003DBA72 /* TwoChannelSwitchVC.m in Sources */,
 				2E2E707B1FF5DE60002D1C1D /* AboutViewController.m in Sources */,
 				2EF332502045030100565374 /* LanguageViewController.m in Sources */,
 				2E4BBD4E22811FC7005650F8 /* CSRGaia.m in Sources */,
@@ -2018,26 +1986,6 @@
 				2EF4D11722E592B90058484E /* zh-Hans */,
 			);
 			name = SocketViewController.xib;
-			sourceTree = "<group>";
-		};
-		2E4DDD0221F969F200B2ACF3 /* TwoChannelDimmerVC.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2E4DDD0121F969F200B2ACF3 /* Base */,
-				2E4DDD0421F969F700B2ACF3 /* en */,
-				2E4DDD0621F969F800B2ACF3 /* zh-Hans */,
-				2EC4205B22179F2C00E1717F /* de */,
-				2E48A800221BAEC00052A617 /* sv */,
-				2E747FD9221CE2AB00FBEB14 /* nb */,
-				2E747FEC221CF68E00FBEB14 /* es */,
-				2EC18BCE221D2261008B33DC /* da */,
-				2EC18BE1221D2279008B33DC /* it */,
-				2EC18BF4221D228A008B33DC /* nl */,
-				2EC18C07221D22A1008B33DC /* fr */,
-				2EC18C1A221D22B9008B33DC /* pt-PT */,
-				2EC18C2D221D22E9008B33DC /* fi-FI */,
-			);
-			name = TwoChannelDimmerVC.xib;
 			sourceTree = "<group>";
 		};
 		2E6750BE2493601C004FA52F /* SceneMemberCell.xib */ = {
@@ -2316,7 +2264,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2376,7 +2324,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;

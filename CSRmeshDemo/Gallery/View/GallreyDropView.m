@@ -116,9 +116,41 @@
         if ([self.channel integerValue] == 1) {
             [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(![model.powerState boolValue])];
         }else if ([self.channel integerValue] == 2) {
-            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"51050100010%d00",!model.channel1PowerState] toDeviceId:_deviceId];
+            Byte byte[] = {0x51, 0x05, 0x01, 0x00, 0x01, !model.channel1PowerState, model.channel1Level};
+            NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
         }else if ([self.channel integerValue] == 3) {
-            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"51050200010%d00",!model.channel2PowerState] toDeviceId:_deviceId];
+            Byte byte[] = {0x51, 0x05, 0x02, 0x00, 0x01, !model.channel2PowerState, model.channel2Level};
+            NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+        }else if ([self.channel integerValue] == 5) {
+            Byte byte[] = {0x51, 0x05, 0x04, 0x00, 0x01, !model.channel3PowerState, model.channel3Level};
+            NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+        }else if ([self.channel integerValue] == 4) {
+            BOOL powerState = model.channel1PowerState && model.channel2PowerState;
+            NSInteger level = model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level;
+            Byte byte[] = {0x51, 0x05, 0x03, 0x00, 0x01, !powerState, level};
+            NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+        }else if ([self.channel integerValue] == 7) {
+            BOOL powerState = model.channel2PowerState && model.channel3PowerState;
+            NSInteger level = model.channel2Level > model.channel3Level ? model.channel2Level : model.channel3Level;
+            Byte byte[] = {0x51, 0x05, 0x06, 0x00, 0x01, !powerState, level};
+            NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+        }else if ([self.channel integerValue] == 6) {
+            BOOL powerState = model.channel1PowerState && model.channel3PowerState;
+            NSInteger level = model.channel1Level > model.channel3Level ? model.channel1Level : model.channel3Level;
+            Byte byte[] = {0x51, 0x05, 0x05, 0x00, 0x01, !powerState, level};
+            NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+        }else if ([self.channel integerValue] == 8) {
+            BOOL powerState = model.channel1PowerState && model.channel2PowerState && model.channel3PowerState;
+            NSInteger level = (model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level) > model.channel3Level ? (model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level) : model.channel3Level;
+            Byte byte[] = {0x51, 0x05, 0x07, 0x00, 0x01, !powerState, level};
+            NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
         }
     }
 }
@@ -140,10 +172,15 @@
     }else if ([CSRUtilities belongToSwitch:_kindName] || [CSRUtilities belongToSocketOneChannel:_kindName]) {
         self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.9];
         self.layer.borderColor = DARKORAGE.CGColor;
-    }else if ([CSRUtilities belongToDimmer:self.kindName] || [CSRUtilities belongToCWDevice:self.kindName] || [CSRUtilities belongToRGBDevice:self.kindName] || [CSRUtilities belongToRGBCWDevice:self.kindName]){
+    }else if ([CSRUtilities belongToDimmer:self.kindName]
+              || [CSRUtilities belongToCWDevice:self.kindName]
+              || [CSRUtilities belongToRGBDevice:self.kindName]
+              || [CSRUtilities belongToRGBCWDevice:self.kindName]) {
         self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:[model.level floatValue]/255.0*0.9];
         self.layer.borderColor = DARKORAGE.CGColor;
-    }else if ([CSRUtilities belongToTwoChannelSwitch:_kindName] || [CSRUtilities belongToSocketTwoChannel:_kindName]) {
+    }else if ([CSRUtilities belongToTwoChannelSwitch:_kindName]
+              || [CSRUtilities belongToSocketTwoChannel:_kindName]
+              || [CSRUtilities belongToThreeChannelSwitch:_kindName]) {
         if ([_channel integerValue] == 1) {
             self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.9];
             self.layer.borderColor = DARKORAGE.CGColor;
@@ -163,8 +200,53 @@
                 self.backgroundColor = [UIColor clearColor];
                 self.layer.borderColor = [UIColor darkGrayColor].CGColor;
             }
+        }else if ([_channel integerValue] == 5) {
+            if (model.channel3PowerState) {
+                self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.9];
+                self.layer.borderColor = DARKORAGE.CGColor;
+            }else {
+                self.backgroundColor = [UIColor clearColor];
+                self.layer.borderColor = [UIColor darkGrayColor].CGColor;
+            }
+        }else if ([_channel integerValue] == 4) {
+            BOOL powerState = model.channel1PowerState || model.channel2PowerState;
+            if (powerState) {
+                self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.9];
+                self.layer.borderColor = DARKORAGE.CGColor;
+            }else {
+                self.backgroundColor = [UIColor clearColor];
+                self.layer.borderColor = [UIColor darkGrayColor].CGColor;
+            }
+        }else if ([_channel integerValue] == 7) {
+            BOOL powerState = model.channel2PowerState || model.channel3PowerState;
+            if (powerState) {
+                self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.9];
+                self.layer.borderColor = DARKORAGE.CGColor;
+            }else {
+                self.backgroundColor = [UIColor clearColor];
+                self.layer.borderColor = [UIColor darkGrayColor].CGColor;
+            }
+        }else if ([_channel integerValue] == 6) {
+            BOOL powerState = model.channel1PowerState || model.channel3PowerState;
+            if (powerState) {
+                self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.9];
+                self.layer.borderColor = DARKORAGE.CGColor;
+            }else {
+                self.backgroundColor = [UIColor clearColor];
+                self.layer.borderColor = [UIColor darkGrayColor].CGColor;
+            }
+        }else if ([_channel integerValue] == 8) {
+            BOOL powerState = model.channel1PowerState || model.channel2PowerState || model.channel3PowerState;
+            if (powerState) {
+                self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.9];
+                self.layer.borderColor = DARKORAGE.CGColor;
+            }else {
+                self.backgroundColor = [UIColor clearColor];
+                self.layer.borderColor = [UIColor darkGrayColor].CGColor;
+            }
         }
-    }else if ([CSRUtilities belongToTwoChannelDimmer:_kindName]) {
+    }else if ([CSRUtilities belongToTwoChannelDimmer:_kindName]
+              || [CSRUtilities belongToThreeChannelDimmer:_kindName]) {
         if ([_channel integerValue] == 1) {
             self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:[model.level floatValue]/255.0*0.9];
             self.layer.borderColor = DARKORAGE.CGColor;
@@ -179,6 +261,54 @@
         }else if ([_channel integerValue] == 3) {
             if (model.channel2PowerState) {
                 self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:model.channel2Level/255.0*0.9];
+                self.layer.borderColor = DARKORAGE.CGColor;
+            }else {
+                self.backgroundColor = [UIColor clearColor];
+                self.layer.borderColor = [UIColor darkGrayColor].CGColor;
+            }
+        }else if ([_channel integerValue] == 5) {
+            if (model.channel3PowerState) {
+                self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:model.channel2Level/255.0*0.9];
+                self.layer.borderColor = DARKORAGE.CGColor;
+            }else {
+                self.backgroundColor = [UIColor clearColor];
+                self.layer.borderColor = [UIColor darkGrayColor].CGColor;
+            }
+        }else if ([_channel integerValue] == 4) {
+            BOOL powerState = model.channel1PowerState || model.channel2PowerState;
+            NSInteger level = model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level;
+            if (powerState) {
+                self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:level/255.0*0.9];
+                self.layer.borderColor = DARKORAGE.CGColor;
+            }else {
+                self.backgroundColor = [UIColor clearColor];
+                self.layer.borderColor = [UIColor darkGrayColor].CGColor;
+            }
+        }else if ([_channel integerValue] == 7) {
+            BOOL powerState = model.channel2PowerState || model.channel3PowerState;
+            NSInteger level = model.channel2Level > model.channel3Level ? model.channel2Level : model.channel3Level;
+            if (powerState) {
+                self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:level/255.0*0.9];
+                self.layer.borderColor = DARKORAGE.CGColor;
+            }else {
+                self.backgroundColor = [UIColor clearColor];
+                self.layer.borderColor = [UIColor darkGrayColor].CGColor;
+            }
+        }else if ([_channel integerValue] == 6) {
+            BOOL powerState = model.channel1PowerState || model.channel3PowerState;
+            NSInteger level = model.channel1Level > model.channel3Level ? model.channel1Level : model.channel3Level;
+            if (powerState) {
+                self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:level/255.0*0.9];
+                self.layer.borderColor = DARKORAGE.CGColor;
+            }else {
+                self.backgroundColor = [UIColor clearColor];
+                self.layer.borderColor = [UIColor darkGrayColor].CGColor;
+            }
+        }else if ([_channel integerValue] == 8) {
+            BOOL powerState = model.channel1PowerState || model.channel2PowerState || model.channel3PowerState;
+            NSInteger level = (model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level) > model.channel3Level ? (model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level) : model.channel3Level;
+            if (powerState) {
+                self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:level/255.0*0.9];
                 self.layer.borderColor = DARKORAGE.CGColor;
             }else {
                 self.backgroundColor = [UIColor clearColor];

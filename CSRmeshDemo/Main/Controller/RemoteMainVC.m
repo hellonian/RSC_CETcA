@@ -122,6 +122,20 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [_remoteBtn16 setImage:[UIImage imageNamed:@"remotebtn6_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn17 setImage:[UIImage imageNamed:@"remotebtn5_default"] forState:UIControlStateNormal];
             [_remoteBtn17 setImage:[UIImage imageNamed:@"remotebtn5_highlighted"] forState:UIControlStateHighlighted];
+            _remoteBtn11.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn11.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn12.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn12.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn13.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn13.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn14.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn14.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn15.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn15.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn16.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn16.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn17.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn17.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
             UILongPressGestureRecognizer *gesture11 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn11 addGestureRecognizer:gesture11];
             UILongPressGestureRecognizer *gesture12 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
@@ -148,6 +162,20 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [_remoteBtn16 setImage:[UIImage imageNamed:@"remotebtn0_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn17 setImage:[UIImage imageNamed:@"remotebtn5_default"] forState:UIControlStateNormal];
             [_remoteBtn17 setImage:[UIImage imageNamed:@"remotebtn5_highlighted"] forState:UIControlStateHighlighted];
+            _remoteBtn11.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn11.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn12.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn12.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn13.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn13.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn14.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn14.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn15.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn15.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn16.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn16.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn17.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn17.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
             UILongPressGestureRecognizer *gesture14 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn14 addGestureRecognizer:gesture14];
             UILongPressGestureRecognizer *gesture15 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
@@ -171,6 +199,18 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [_remoteBtn16 setImage:[UIImage imageNamed:@"remotebtn2_default"] forState:UIControlStateNormal];
             [_remoteBtn16 setImage:[UIImage imageNamed:@"remotebtn2_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn17 removeFromSuperview];
+            _remoteBtn11.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn11.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn12.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn12.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn13.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn13.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn14.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn14.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn15.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn15.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn16.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn16.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
             UILongPressGestureRecognizer *gesture12 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn12 addGestureRecognizer:gesture12];
             UILongPressGestureRecognizer *gesture13 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
@@ -266,10 +306,9 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
     }
     
     [self.view addSubview:self.sceneView1];
-    [self.sceneView1 autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-    [self.sceneView1 autoPinEdgeToSuperviewEdge:ALEdgeRight];
     [self.sceneView1 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
-    [self.sceneView1 autoMatchDimension:ALDimensionHeight toDimension:ALDimensionWidth ofView:self.sceneView1 withMultiplier:376/320.0];
+    [self.sceneView1 autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [self.sceneView1 autoSetDimensionsToSize:CGSizeMake(320, 320)];
     
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureAction:)];
     [self.circleImageView addGestureRecognizer:panGesture];

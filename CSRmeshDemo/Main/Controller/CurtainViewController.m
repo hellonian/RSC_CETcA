@@ -476,11 +476,11 @@
     NSInteger channel = [userInfo[@"channel"] integerValue];
     if ([deviceId isEqualToNumber:_deviceId]) {
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-        if (channel == 3) {
+        if (channel == 1) {
             [_curtainSlider setValue:[model.level floatValue] animated:YES];
-        }else if (channel == 1) {
+        }else if (channel == 2 && _controllChannel == 1) {
             [_curtainSlider setValue:model.channel1Level animated:YES];
-        }else if (channel == 2) {
+        }else if (channel == 3 && _controllChannel == 2) {
             [_curtainSlider setValue:model.channel2Level animated:YES];
         }
     }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -14,6 +14,7 @@
                 <outlet property="nameTf" destination="YnJ-RD-iHh" id="qER-zI-YOp"/>
                 <outlet property="uConfigBtn" destination="m6O-cE-aWz" id="xH3-8m-yMY"/>
                 <outlet property="uIconBtn" destination="EXO-AW-9a2" id="MgR-If-lX5"/>
+                <outlet property="uWallBtn" destination="IpU-rC-r1e" id="Lua-Kr-gfW"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
                 <outlet property="wallpaper" destination="YYE-CZ-qRn" id="ULb-Um-M5i"/>
             </connections>
@@ -105,10 +106,26 @@
                         <action selector="updateIconLibrary:" destination="-1" eventType="touchUpInside" id="rzF-wh-shm"/>
                     </connections>
                 </button>
+                <button hidden="YES" opaque="NO" alpha="0.64999997615814209" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IpU-rC-r1e">
+                    <rect key="frame" x="194" y="146" width="200" height="30"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="30" id="Azz-BG-vkW"/>
+                        <constraint firstAttribute="width" constant="200" id="fcm-Uq-jwG"/>
+                    </constraints>
+                    <state key="normal" title="Synchronize wallpaper">
+                        <color key="titleColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </state>
+                    <connections>
+                        <action selector="synchronizeWallpaper:" destination="-1" eventType="touchUpInside" id="rwv-Jn-BDi"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.95294117649999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="qk2-e1-GFn" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="04B-lO-i1s"/>
+                <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="IpU-rC-r1e" secondAttribute="trailing" constant="20" id="8xx-FC-P2G"/>
+                <constraint firstItem="IpU-rC-r1e" firstAttribute="top" secondItem="EXO-AW-9a2" secondAttribute="bottom" constant="14" id="ADe-wv-WaZ"/>
                 <constraint firstItem="YYE-CZ-qRn" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="EHZ-UV-MD2"/>
                 <constraint firstItem="M1g-Ww-gRT" firstAttribute="top" secondItem="YYE-CZ-qRn" secondAttribute="bottom" id="LZZ-Es-s7f"/>
                 <constraint firstItem="qk2-e1-GFn" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="Lkv-5S-bGG"/>

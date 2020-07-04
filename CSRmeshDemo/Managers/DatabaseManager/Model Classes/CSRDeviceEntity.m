@@ -38,5 +38,6 @@
 @dynamic hwVersion;
 @dynamic bleFirVersion;
 @dynamic bleHwVersion;
+@dynamic wallPaper;
 
 @end

@@ -26,8 +26,6 @@
 #import "TopImageView.h"
 #import "RGBDeviceViewController.h"
 #import "SocketViewController.h"
-#import "TwoChannelDimmerVC.h"
-#import "TwoChannelSwitchVC.h"
 #import "CurtainViewController.h"
 #import "SelectModel.h"
 
@@ -639,31 +637,6 @@
                 [_devicesCollectionView reloadData];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:socketVC];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
-            [self presentViewController:nav animated:YES completion:nil];
-            nav.popoverPresentationController.sourceRect = mainCell.bounds;
-            nav.popoverPresentationController.sourceView = mainCell;
-        }else if ([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName]) {
-            TwoChannelDimmerVC *tdvc = [[TwoChannelDimmerVC alloc] init];
-            tdvc.deviceId = mainCell.deviceId;
-            __weak GroupViewController *weakSelf = self;
-            tdvc.reloadDataHandle = ^{
-                [weakSelf loadMemberData];
-                [_devicesCollectionView reloadData];
-            };
-            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:tdvc];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
-            [self presentViewController:nav animated:YES completion:nil];
-            nav.popoverPresentationController.sourceRect = mainCell.bounds;
-            nav.popoverPresentationController.sourceView = mainCell;
-        }else if ([CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName]) {
-            TwoChannelSwitchVC *tsvc = [[TwoChannelSwitchVC alloc] init];
-            tsvc.deviceId = mainCell.deviceId;
-            tsvc.reloadDataHandle = ^{
-                [self loadMemberData];
-                [_devicesCollectionView reloadData];
-            };
-            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:tsvc];
             nav.modalPresentationStyle = UIModalPresentationPopover;
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;

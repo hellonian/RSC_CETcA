@@ -30,6 +30,8 @@
     UIButton *updateMCUBtn;
     
     NSTimer *timer;
+    
+    BOOL tapLimimte;
 }
 
 @property (weak, nonatomic) IBOutlet UITextField *nameTF;
@@ -99,6 +101,9 @@
 @property (strong, nonatomic) IBOutlet UIView *powerSwitchChannelThreeView;
 @property (weak, nonatomic) IBOutlet UISwitch *powerSwitchChannelTwo;
 @property (weak, nonatomic) IBOutlet UISwitch *powerSwitchChannelThree;
+@property (strong, nonatomic) IBOutlet UIView *levelSliderChannelTwoView;
+@property (weak, nonatomic) IBOutlet UISlider *levelSliderChannelTwo;
+@property (weak, nonatomic) IBOutlet UILabel *levelLabelChannelTwo;
 
 @end
 
@@ -317,16 +322,27 @@
             _scrollView.contentSize = CGSizeMake(1, 650+20);
         }
         
+        else if ([CSRUtilities belongToTwoChannelSwitch:_device.shortName]) {
+            [self addSubViewPowerSwitchChannelTwoView];
+            _scrollView.contentSize = CGSizeMake(1, 237);
+        }
+        
         else if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName]) {
             [self addSubViewPowerSwitchChannelTwoView];
             [self addSubViewPowerSwitchChannelThreeView];
             _scrollView.contentSize = CGSizeMake(1, 301);
         }
         
+        else if ([CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
+            NSLog(@"belongToTwoChannelDimmer");
+            [self addSubviewBrightnessView];
+            [self addSubViewChannelTwoBrightnessView];
+            _scrollView.contentSize = CGSizeMake(1, 386);
+        }
+        
         self.navigationItem.title = _device.name;
         self.nameTF.text = _device.name;
         self.originalName = _device.name;
-        self.powerStateSwitch.on = [_device.powerState boolValue];
         self.sliderIsMoving = NO;
         self.colorTemperatureSliderIsMoving = NO;
         self.colorSliderIsMoving = NO;
@@ -415,6 +431,11 @@
             _scrollView.contentSize = CGSizeMake(1, 192);
         }
     }
+    if ([_deviceId integerValue] > 32768/*单设备*/) {
+        [self adjustInterface];
+    }else {
+        [self forRGBGroupControllAdustInterface];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -473,15 +494,9 @@
 }
 
 - (void)addSubviewBrightnessView {
-    [_scrollView addSubview:_brightnessTitle];
-    [_brightnessTitle autoSetDimension:ALDimensionHeight toSize:20];
-    [_brightnessTitle autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_topView withOffset:5];
-    [_brightnessTitle autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
-    [_brightnessTitle autoSetDimension:ALDimensionWidth toSize:120];
-    
     [_scrollView addSubview:_brightnessView];
     [_brightnessView autoSetDimension:ALDimensionHeight toSize:44];
-    [_brightnessView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_brightnessTitle withOffset:5];
+    [_brightnessView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_topView withOffset:20.0];
     [_brightnessView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
     [_brightnessView autoAlignAxisToSuperviewAxis:ALAxisVertical];
 }
@@ -573,6 +588,20 @@
     [_powerSwitchChannelThreeView autoAlignAxisToSuperviewAxis:ALAxisVertical];
     [_powerSwitchChannelThreeView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
     [_powerSwitchChannelThreeView autoSetDimension:ALDimensionHeight toSize:44.0];
+}
+
+- (void)addSubViewChannelTwoBrightnessView {
+    [_scrollView addSubview:_powerSwitchChannelTwoView];
+    [_powerSwitchChannelTwoView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_brightnessView withOffset:20.0];
+    [_powerSwitchChannelTwoView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [_powerSwitchChannelTwoView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+    [_powerSwitchChannelTwoView autoSetDimension:ALDimensionHeight toSize:44.0];
+    
+    [_scrollView addSubview:_levelSliderChannelTwoView];
+    [_levelSliderChannelTwoView autoSetDimension:ALDimensionHeight toSize:44];
+    [_levelSliderChannelTwoView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_powerSwitchChannelTwoView withOffset:20.0];
+    [_levelSliderChannelTwoView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+    [_levelSliderChannelTwoView autoAlignAxisToSuperviewAxis:ALAxisVertical];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -698,10 +727,35 @@
             }
             
             return;
+        }else if ([CSRUtilities belongToTwoChannelSwitch:_device.shortName]) {
+            [self.powerStateSwitch setOn:_device.channel1PowerState];
+            [self.powerSwitchChannelTwo setOn:_device.channel2PowerState];
+            return;
         }else if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName]) {
             [self.powerStateSwitch setOn:_device.channel1PowerState];
             [self.powerSwitchChannelTwo setOn:_device.channel2PowerState];
             [self.powerSwitchChannelThree setOn:_device.channel3PowerState];
+            return;
+        }else if ([CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
+            if (_device.channel1PowerState) {
+                [self.powerStateSwitch setOn:YES];
+                [self.levelSlider setValue:_device.channel1Level animated:YES];
+                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",_device.channel1Level/255.0*100];
+            }else {
+                [self.powerStateSwitch setOn:NO];
+                [self.levelSlider setValue:0 animated:YES];
+                self.levelLabel.text = @"0%";
+            }
+            if (_device.channel2PowerState) {
+                [self.powerSwitchChannelTwo setOn:YES];
+                [self.levelSliderChannelTwo setValue:_device.channel2Level animated:YES];
+                self.levelLabelChannelTwo.text = [NSString stringWithFormat:@"%.f%%",_device.channel2Level/255.0*100];
+            }else {
+                [self.powerSwitchChannelTwo setOn:NO];
+                [self.levelSliderChannelTwo setValue:0 animated:YES];
+                self.levelLabelChannelTwo.text = @"0%";
+            }
+            return;
         }
     }
 }
@@ -717,11 +771,133 @@
 }
 //开关
 - (IBAction)powerStateSwitch:(UISwitch *)sender {
+    if (!tapLimimte) {
+        tapLimimte = YES;
+        _powerStateSwitch.enabled = NO;
+        _powerSwitchChannelTwo.enabled = NO;
+        _powerSwitchChannelThree.enabled = NO;
+        _RGBGroupControllSwitch.enabled = NO;
+        
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayMethodEndLevelMoving) object:nil];
+        _sliderIsMoving = YES;
+        
+        if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName]
+            || [CSRUtilities belongToTwoChannelSwitch:_device.shortName]
+            || [CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
+            Byte byte[] = {0x51, 0x05, 0x01, 0x00, 0x01, sender.on, _device.channel1Level};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:7];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+            if (sender.on) {
+                [self.levelSlider setValue:_device.channel1Level animated:YES];
+                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",_device.channel1Level/255.0*100];
+            }else {
+                [self.levelSlider setValue:0 animated:YES];
+                self.levelLabel.text = @"0%";
+            }
+        }else {
+            if (musicBehavior) {
+                if ([SoundListenTool sharedInstance].audioRecorder.recording) {
+                    [[SoundListenTool sharedInstance] stopRecord:_deviceId];
+                }
+            }
+            [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
+            [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(sender.on)];
+            
+            if ([_deviceId integerValue] < 32768/*分组*/) {
+                if (sender.on) {
+                    CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+                    NSArray *ds = [area.devices allObjects];
+                    CSRDeviceEntity *d = ds[0];
+                    DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
+                    NSLog(@"%@  %@",deviceModel.deviceId, deviceModel.level);
+                    [self.levelSlider setValue:(CGFloat)[deviceModel.level integerValue] animated:YES];
+                    self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[deviceModel.level integerValue]/255.0*100];
+                }else {
+                    [self.RGBGroupControllSwitch setOn:NO];
+                    [self.levelSlider setValue:0 animated:YES];
+                    self.levelLabel.text = @"0%";
+                }
+            }else {
+                if (sender.on) {
+                    [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
+                    self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
+                }else {
+                    [self.levelSlider setValue:0 animated:YES];
+                    self.levelLabel.text = @"0%";
+                }
+            }
+        }
+        
+        [self performSelector:@selector(delayMethodEndLevelMoving) withObject:nil afterDelay:4.0];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            tapLimimte = NO;
+            _powerStateSwitch.enabled = YES;
+            _powerSwitchChannelTwo.enabled = YES;
+            _powerSwitchChannelThree.enabled = YES;
+            _RGBGroupControllSwitch.enabled = YES;
+        });
+    }
+}
+
+- (IBAction)powerSwitchChannelTwo:(UISwitch *)sender {
+    if (!tapLimimte) {
+        tapLimimte = YES;
+        _powerStateSwitch.enabled = NO;
+        _powerSwitchChannelTwo.enabled = NO;
+        _powerSwitchChannelThree.enabled = NO;
+        
+        if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName]
+            || [CSRUtilities belongToTwoChannelSwitch:_device.shortName]
+            || [CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
+            Byte byte[] = {0x51, 0x05, 0x02, 0x00, 0x01, sender.on, _device.channel2Level};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:7];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+            if (sender.on) {
+                [self.levelSliderChannelTwo setValue:_device.channel2Level animated:YES];
+                self.levelLabelChannelTwo.text = [NSString stringWithFormat:@"%.f%%",_device.channel2Level/255.0*100];
+            }else {
+                [self.levelSliderChannelTwo setValue:0 animated:YES];
+                self.levelLabelChannelTwo.text = @"0%";
+            }
+        }
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            tapLimimte = NO;
+            _powerStateSwitch.enabled = YES;
+            _powerSwitchChannelTwo.enabled = YES;
+            _powerSwitchChannelThree.enabled = YES;
+        });
+    }
+}
+
+- (IBAction)powerStateSwitchChannelThree:(UISwitch *)sender {
+    if (!tapLimimte) {
+        tapLimimte = YES;
+        _powerStateSwitch.enabled = NO;
+        _powerSwitchChannelTwo.enabled = NO;
+        _powerSwitchChannelThree.enabled = NO;
+        
+        if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName]) {
+            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"51050400010%d00",sender.on] toDeviceId:_deviceId];
+        }
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            tapLimimte = NO;
+            _powerStateSwitch.enabled = YES;
+            _powerSwitchChannelTwo.enabled = YES;
+            _powerSwitchChannelThree.enabled = YES;
+        });
+    }
+}
+
+//调光
+- (IBAction)levelSliderTouchDown:(UISlider *)sender {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayMethodEndLevelMoving) object:nil];
     _sliderIsMoving = YES;
     
-    if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName] || [CSRUtilities belongToTwoChannelSwitch:_device.shortName]) {
-        [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"51050100010%d00",sender.on] toDeviceId:_deviceId];
+    if ([CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@2 withLevel:@(sender.value) withState:UIGestureRecognizerStateBegan direction:PanGestureMoveDirectionHorizontal];
     }else {
         if (musicBehavior) {
             if ([SoundListenTool sharedInstance].audioRecorder.recording) {
@@ -729,64 +905,18 @@
             }
         }
         [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
-        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(sender.on)];
         
-        if ([_deviceId integerValue] < 32768/*分组*/) {
-            if (sender.on) {
-                CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
-                NSArray *ds = [area.devices allObjects];
-                CSRDeviceEntity *d = ds[0];
-                DeviceModel *deviceModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
-                [self.levelSlider setValue:(CGFloat)[deviceModel.level integerValue] animated:YES];
-                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[deviceModel.level integerValue]/255.0*100];
-            }else {
-                [self.RGBGroupControllSwitch setOn:NO];
-                [self.levelSlider setValue:0 animated:YES];
-                self.levelLabel.text = @"0%";
-            }
-        }else {
-            if (sender.on) {
-                [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
-                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
-            }else {
-                [self.levelSlider setValue:0 animated:YES];
-                self.levelLabel.text = @"0%";
-            }
-        }
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateBegan direction:PanGestureMoveDirectionHorizontal];
     }
-    
-    [self performSelector:@selector(delayMethodEndLevelMoving) withObject:nil afterDelay:4.0];
-    
-}
-
-- (IBAction)powerSwitchChannelTwo:(UISwitch *)sender {
-    if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName] || [CSRUtilities belongToTwoChannelSwitch:_device.shortName]) {
-        [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"51050200010%d00",sender.on] toDeviceId:_deviceId];
-    }
-}
-
-- (IBAction)powerStateSwitchChannelThree:(UISwitch *)sender {
-    if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName]) {
-        [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"51050400010%d00",sender.on] toDeviceId:_deviceId];
-    }
-}
-
-//调光
-- (IBAction)levelSliderTouchDown:(UISlider *)sender {
-    if (musicBehavior) {
-        if ([SoundListenTool sharedInstance].audioRecorder.recording) {
-            [[SoundListenTool sharedInstance] stopRecord:_deviceId];
-        }
-    }
-    [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
-    
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayMethodEndLevelMoving) object:nil];
-    _sliderIsMoving = YES;
-    [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateBegan direction:PanGestureMoveDirectionHorizontal];
 }
 
 - (IBAction)leveSliderValueChanged:(UISlider *)sender {
-    [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateChanged direction:PanGestureMoveDirectionHorizontal];
+    
+    if ([CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@2 withLevel:@(sender.value) withState:UIGestureRecognizerStateChanged direction:PanGestureMoveDirectionHorizontal];
+    }else {
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateChanged direction:PanGestureMoveDirectionHorizontal];
+    }
     
     self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",sender.value/255.0*100];
     if (sender.value == 0) {
@@ -807,7 +937,11 @@
 - (IBAction)levelSliderTouchUpInSide:(UISlider *)sender {
     [self performSelector:@selector(delayMethodEndLevelMoving) withObject:nil afterDelay:4.0];
     
-    [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
+    if ([CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@2 withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
+    }else {
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
+    }
     
     self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",sender.value/255.0*100];
     if (sender.value == 0) {
@@ -825,22 +959,34 @@
     }
 }
 
-- (IBAction)levelSliderTouchUpOutSide:(UISlider *)sender {
-    [self performSelector:@selector(delayMethodEndLevelMoving) withObject:nil afterDelay:4.0];
-    [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
-    
-    self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",sender.value/255.0*100];
-    if (sender.value == 0) {
-        if ([_deviceId integerValue] < 32768/*分组*/) {
-            [_RGBGroupControllSwitch setOn:NO];
+- (IBAction)levelSliderChannelTwoTouchDown:(UISlider *)sender {
+    if ([CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayMethodEndLevelMoving) object:nil];
+        _sliderIsMoving = YES;
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@3 withLevel:@(sender.value) withState:UIGestureRecognizerStateBegan direction:PanGestureMoveDirectionHorizontal];
+    }
+}
+
+- (IBAction)levelSliderChannelTwoValueChanged:(UISlider *)sender {
+    if ([CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@3 withLevel:@(sender.value) withState:UIGestureRecognizerStateChanged direction:PanGestureMoveDirectionHorizontal];
+        self.levelLabelChannelTwo.text = [NSString stringWithFormat:@"%.f%%",sender.value/255.0*100];
+        if (sender.value == 0) {
+            [_powerSwitchChannelTwo setOn:NO];
         }else {
-            [_powerStateSwitch setOn:NO];
+            [_powerSwitchChannelTwo setOn:YES];
         }
-    }else {
-        if ([_deviceId integerValue] < 32768/*分组*/) {
-            [_RGBGroupControllSwitch setOn:YES];
+    }
+}
+
+- (IBAction)levelSliderChannelTwoTouchUpInside:(UISlider *)sender {
+    if ([CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@3 withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
+        self.levelLabelChannelTwo.text = [NSString stringWithFormat:@"%.f%%",sender.value/255.0*100];
+        if (sender.value == 0) {
+            [_powerSwitchChannelTwo setOn:NO];
         }else {
-            [_powerStateSwitch setOn:YES];
+            [_powerSwitchChannelTwo setOn:YES];
         }
     }
 }

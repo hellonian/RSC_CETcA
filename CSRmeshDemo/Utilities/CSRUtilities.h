@@ -128,6 +128,7 @@
 + (BOOL)belongToOneChannelSwitch:(NSString *)shortName;
 + (BOOL)belongToLCDRemote:(NSString *)shortName;
 + (BOOL)belongToThreeChannelSwitch:(NSString *)shortName;
++ (BOOL)belongToThreeChannelDimmer:(NSString *)shortName;
 
 +(NSString *)convertToJsonData:(NSDictionary *)dict;
 + (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString;

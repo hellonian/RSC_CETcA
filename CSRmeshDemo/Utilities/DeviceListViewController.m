@@ -26,9 +26,7 @@
 #import "PureLayout.h"
 #import "CurtainViewController.h"
 #import "FanViewController.h"
-#import "TwoChannelDimmerVC.h"
 #import "DeviceModelManager.h"
-#import "TwoChannelSwitchVC.h"
 #import "SocketViewController.h"
 
 #import "SelectModel.h"
@@ -91,6 +89,58 @@
     _devicesCollectionView = [[MainCollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout cellIdentifier:@"MainCollectionViewCell"];
     _devicesCollectionView.mainDelegate = self;
     
+    [self loadData];
+    
+    [self.view addSubview:_devicesCollectionView];
+    [_devicesCollectionView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    NSLayoutConstraint * main_top;
+    if (@available(iOS 11.0, *)) {
+        main_top = [NSLayoutConstraint constraintWithItem:_devicesCollectionView
+                                                attribute:NSLayoutAttributeTop
+                                                relatedBy:NSLayoutRelationEqual
+                                                   toItem:self.view.safeAreaLayoutGuide
+                                                attribute:NSLayoutAttributeTop
+                                               multiplier:1.0
+                                                 constant:WIDTH*3/160.0];
+    } else {
+        main_top = [NSLayoutConstraint constraintWithItem:_devicesCollectionView
+                                                attribute:NSLayoutAttributeTop
+                                                relatedBy:NSLayoutRelationEqual
+                                                   toItem:self.view
+                                                attribute:NSLayoutAttributeTop
+                                               multiplier:1.0
+                                                 constant:WIDTH*3/160.0+64.0];
+    }
+    NSLayoutConstraint * main_left = [NSLayoutConstraint constraintWithItem:_devicesCollectionView
+                                                                  attribute:NSLayoutAttributeLeft
+                                                                  relatedBy:NSLayoutRelationEqual
+                                                                     toItem:self.view
+                                                                  attribute:NSLayoutAttributeLeft
+                                                                 multiplier:1.0
+                                                                   constant:WIDTH*3/160.0];
+    NSLayoutConstraint * main_right = [NSLayoutConstraint constraintWithItem:_devicesCollectionView
+                                                                   attribute:NSLayoutAttributeRight
+                                                                   relatedBy:NSLayoutRelationEqual
+                                                                      toItem:self.view
+                                                                   attribute:NSLayoutAttributeRight
+                                                                  multiplier:1.0
+                                                                    constant:0];
+    NSLayoutConstraint * main_bottom = [NSLayoutConstraint constraintWithItem:_devicesCollectionView
+                                                                    attribute:NSLayoutAttributeBottom
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:self.view
+                                                                    attribute:NSLayoutAttributeBottom
+                                                                   multiplier:1.0
+                                                                     constant:0];
+    
+    [NSLayoutConstraint  activateConstraints:@[main_top,main_left,main_bottom,main_right]];
+    
+    
+    self.improver = [[ImproveTouchingExperience alloc] init];
+}
+
+- (void)loadData {
+    [_devicesCollectionView.dataArray removeAllObjects];
     if (self.selectMode == DeviceListSelectMode_ForGroup) {
         
         NSMutableArray *deviceIds = [[NSMutableArray alloc] init];
@@ -621,53 +671,6 @@
             }
         }
     }
-    
-    [self.view addSubview:_devicesCollectionView];
-    [_devicesCollectionView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    NSLayoutConstraint * main_top;
-    if (@available(iOS 11.0, *)) {
-        main_top = [NSLayoutConstraint constraintWithItem:_devicesCollectionView
-                                                attribute:NSLayoutAttributeTop
-                                                relatedBy:NSLayoutRelationEqual
-                                                   toItem:self.view.safeAreaLayoutGuide
-                                                attribute:NSLayoutAttributeTop
-                                               multiplier:1.0
-                                                 constant:WIDTH*3/160.0];
-    } else {
-        main_top = [NSLayoutConstraint constraintWithItem:_devicesCollectionView
-                                                attribute:NSLayoutAttributeTop
-                                                relatedBy:NSLayoutRelationEqual
-                                                   toItem:self.view
-                                                attribute:NSLayoutAttributeTop
-                                               multiplier:1.0
-                                                 constant:WIDTH*3/160.0+64.0];
-    }
-    NSLayoutConstraint * main_left = [NSLayoutConstraint constraintWithItem:_devicesCollectionView
-                                                                  attribute:NSLayoutAttributeLeft
-                                                                  relatedBy:NSLayoutRelationEqual
-                                                                     toItem:self.view
-                                                                  attribute:NSLayoutAttributeLeft
-                                                                 multiplier:1.0
-                                                                   constant:WIDTH*3/160.0];
-    NSLayoutConstraint * main_right = [NSLayoutConstraint constraintWithItem:_devicesCollectionView
-                                                                   attribute:NSLayoutAttributeRight
-                                                                   relatedBy:NSLayoutRelationEqual
-                                                                      toItem:self.view
-                                                                   attribute:NSLayoutAttributeRight
-                                                                  multiplier:1.0
-                                                                    constant:0];
-    NSLayoutConstraint * main_bottom = [NSLayoutConstraint constraintWithItem:_devicesCollectionView
-                                                                    attribute:NSLayoutAttributeBottom
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self.view
-                                                                    attribute:NSLayoutAttributeBottom
-                                                                   multiplier:1.0
-                                                                     constant:0];
-    
-    [NSLayoutConstraint  activateConstraints:@[main_top,main_left,main_bottom,main_right]];
-    
-    
-    self.improver = [[ImproveTouchingExperience alloc] init];
 }
 
 - (void)backAction {
@@ -960,16 +963,7 @@
     if ([mainCell.groupId isEqualToNumber:@2000]) {
         
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
-        if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName]||[CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
-                DeviceViewController *dvc = [[DeviceViewController alloc] init];
-                dvc.deviceId = mainCell.deviceId;
-                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
-                nav.modalPresentationStyle = UIModalPresentationPopover;
-                nav.popoverPresentationController.sourceRect = mainCell.bounds;
-                nav.popoverPresentationController.sourceView = mainCell;
-            
-                [self presentViewController:nav animated:YES completion:nil];
-        }else if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
+        if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
             
             if (!deviceEntity.remoteBranch || deviceEntity.remoteBranch.length == 0) {
                 _selectedCurtainDeviceId = mainCell.deviceId;
@@ -982,6 +976,10 @@
             }else {
                 CurtainViewController *curtainVC = [[CurtainViewController alloc] init];
                 curtainVC.deviceId = mainCell.deviceId;
+                curtainVC.reloadDataHandle = ^{
+                    [self loadData];
+                    [_devicesCollectionView reloadData];
+                };
                 UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:curtainVC];
                 nav.modalPresentationStyle = UIModalPresentationPopover;
                 [self presentViewController:nav animated:YES completion:nil];
@@ -992,31 +990,23 @@
         }else if ([CSRUtilities belongToFanController:deviceEntity.shortName]) {
             FanViewController *fanVC = [[FanViewController alloc] init];
             fanVC.deviceId = mainCell.deviceId;
+            fanVC.reloadDataHandle = ^{
+                [self loadData];
+                [_devicesCollectionView reloadData];
+            };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:fanVC];
             nav.modalPresentationStyle = UIModalPresentationPopover;
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
             
-        }else if ([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName]) {
-            TwoChannelDimmerVC *TDVC = [[TwoChannelDimmerVC alloc] init];
-            TDVC.deviceId = mainCell.deviceId;
-            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:TDVC];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
-            [self presentViewController:nav animated:YES completion:nil];
-            nav.popoverPresentationController.sourceRect = mainCell.bounds;
-            nav.popoverPresentationController.sourceView = mainCell;
-        }else if ([CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName]) {
-            TwoChannelSwitchVC *tsvc = [[TwoChannelSwitchVC alloc] init];
-            tsvc.deviceId = mainCell.deviceId;
-            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:tsvc];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
-            [self presentViewController:nav animated:YES completion:nil];
-            nav.popoverPresentationController.sourceRect = mainCell.bounds;
-            nav.popoverPresentationController.sourceView = mainCell;
         }else if ([CSRUtilities belongToSocket:deviceEntity.shortName]) {
             SocketViewController *socketVC = [[SocketViewController alloc] init];
             socketVC.deviceId = mainCell.deviceId;
+            socketVC.reloadDataHandle = ^{
+                [self loadData];
+                [_devicesCollectionView reloadData];
+            };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:socketVC];
             nav.modalPresentationStyle = UIModalPresentationPopover;
             [self presentViewController:nav animated:YES completion:nil];
@@ -1025,6 +1015,10 @@
         }else{
             DeviceViewController *dvc = [[DeviceViewController alloc] init];
             dvc.deviceId = mainCell.deviceId;
+            dvc.reloadDataHandle = ^{
+                [self loadData];
+                [_devicesCollectionView reloadData];
+            };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
             nav.modalPresentationStyle = UIModalPresentationPopover;
             [self presentViewController:nav animated:YES completion:nil];

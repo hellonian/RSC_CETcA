@@ -38,6 +38,7 @@
 @property (nonatomic, retain) NSNumber * hwVersion;
 @property (nonatomic, retain) NSNumber * bleFirVersion;
 @property (nonatomic, retain) NSNumber * bleHwVersion;
+@property (nonatomic, retain) NSData *wallPaper;
 
 @end
 

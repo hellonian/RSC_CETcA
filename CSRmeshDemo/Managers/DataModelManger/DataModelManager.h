@@ -34,7 +34,6 @@ extern NSString * const kTimerProfile;
 - (void)setDeviceTime;
 - (void)readDeviceTime:(NSNumber *)deviceId;
 
-- (NSString *)hexStringForData: (NSData *)data;
 - (void)changeColorTemperature:(NSNumber *)deviceId;
 - (void)resetColorTemperature:(NSNumber *)deviceId;
 

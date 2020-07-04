@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -146,12 +146,25 @@
                                         <action selector="deleteRemote:" destination="-1" eventType="touchUpInside" id="AKE-Qe-OUV"/>
                                     </connections>
                                 </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Cng-PJ-aue">
+                                    <rect key="frame" x="335" y="10" width="30" height="30"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="30" id="GaB-4Z-c05"/>
+                                        <constraint firstAttribute="width" constant="30" id="ttp-nB-YLz"/>
+                                    </constraints>
+                                    <state key="normal" image="fresh"/>
+                                    <connections>
+                                        <action selector="readRemoteConfig:" destination="-1" eventType="touchUpInside" id="zyC-cg-sPt"/>
+                                    </connections>
+                                </button>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
+                                <constraint firstAttribute="trailing" secondItem="Cng-PJ-aue" secondAttribute="trailing" constant="10" id="2HN-02-WVB"/>
                                 <constraint firstItem="dWc-Zh-M0f" firstAttribute="leading" secondItem="url-dh-Qlm" secondAttribute="leading" id="8cz-ZT-bWx"/>
                                 <constraint firstAttribute="height" constant="667" id="RNf-Tl-LTH"/>
                                 <constraint firstItem="CXc-gg-801" firstAttribute="centerX" secondItem="url-dh-Qlm" secondAttribute="centerX" id="W47-7r-L48"/>
+                                <constraint firstItem="Cng-PJ-aue" firstAttribute="top" secondItem="url-dh-Qlm" secondAttribute="top" constant="10" id="cPZ-mt-1wR"/>
                                 <constraint firstItem="CXc-gg-801" firstAttribute="top" secondItem="url-dh-Qlm" secondAttribute="top" id="eLX-KI-EaA"/>
                                 <constraint firstAttribute="trailing" secondItem="dWc-Zh-M0f" secondAttribute="trailing" id="i4C-gy-ofy"/>
                                 <constraint firstAttribute="trailing" secondItem="Qem-4H-tDf" secondAttribute="trailing" id="mco-5Y-ci9"/>
@@ -2118,6 +2131,7 @@
         <image name="dot3" width="28" height="26"/>
         <image name="dot4" width="28" height="26"/>
         <image name="dot5" width="28" height="26"/>
+        <image name="fresh" width="30" height="30"/>
         <image name="trashcan" width="21.5" height="21.5"/>
     </resources>
 </document>

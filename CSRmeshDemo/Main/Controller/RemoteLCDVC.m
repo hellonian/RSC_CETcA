@@ -26,7 +26,7 @@
 @property (nonatomic, copy) NSString *originalName;
 @property (weak, nonatomic) IBOutlet UICollectionView *memberList;
 @property (nonatomic, strong) NSMutableArray *dataAry;
-@property (nonatomic, strong) CSRDeviceEntity *applyDevice;
+@property (nonatomic, strong) NSString *applyName;
 @property (nonatomic, assign) NSInteger applySourceID;
 @property (nonatomic, assign) NSInteger applyIndex;
 @property (nonatomic, strong) NSData *applyData;
@@ -36,6 +36,7 @@
 @property (nonatomic, strong) GCDAsyncSocket *tcpSocketManager;
 @property (weak, nonatomic) IBOutlet UIButton *uConfigBtn;
 @property (weak, nonatomic) IBOutlet UIButton *uIconBtn;
+@property (weak, nonatomic) IBOutlet UIButton *uWallBtn;
 @property (nonatomic, assign) NSInteger applyCmdType;
 
 @end
@@ -120,6 +121,10 @@
                 [_dataAry insertObject:lMod atIndex:i];
             }
             [_memberList reloadData];
+        }
+        
+        if ([deviceEntity.wallPaper length]>0) {
+            _wallpaper.image = [UIImage imageWithData:deviceEntity.wallPaper];
         }
         
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -292,7 +297,13 @@
             device.remoteBranch = [NSString stringWithFormat:@"%@%@",a,infoStr];
             [[CSRDatabaseManager sharedInstance] saveContext];
             
-            _applyDevice = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mod.deviceID];
+            if ([mod.deviceID integerValue] < 32768) {
+                CSRAreaEntity *a = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:mod.deviceID];
+                _applyName = a.areaName;
+            }else {
+                CSRDeviceEntity *d = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mod.deviceID];
+                _applyName = d.name;
+            }
             _applySourceID = [lMod.sourceID intValue];
         }
     }];
@@ -507,6 +518,11 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey,id> *)info {
     [picker dismissViewControllerAnimated:YES completion:nil];
     _wallpaper.image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    UIImage *img = [info objectForKey:UIImagePickerControllerOriginalImage];
+    NSData *imgData = UIImagePNGRepresentation(img);
+    CSRDeviceEntity *d = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+    d.wallPaper = imgData;
+    [[CSRDatabaseManager sharedInstance] saveContext];
 }
 
 - (void)LCDRemoteAddCall:(NSNotification *)notification {
@@ -516,7 +532,7 @@
     if ([deviceId isEqualToNumber:_deviceId] && sourceID == _applySourceID) {
         BOOL state = [userInfo[@"state"] boolValue];
         if (state) {
-            NSData *nameData = [_applyDevice.name dataUsingEncoding:NSUTF8StringEncoding];
+            NSData *nameData = [_applyName dataUsingEncoding:NSUTF8StringEncoding];
             NSInteger packet = nameData.length / 5 + 1;
             if (nameData.length % 5 == 0) {
                 packet = nameData.length / 5;
@@ -541,7 +557,7 @@
     NSInteger sourceID = [CSRUtilities numberWithHexString:userInfo[@"sourceID"]];
     NSInteger index = [CSRUtilities numberWithHexString:userInfo[@"index"]];
     if ([deviceId isEqualToNumber:_deviceId] && sourceID == _applySourceID && index == _applyIndex) {
-        NSData *nameData = [_applyDevice.name dataUsingEncoding:NSUTF8StringEncoding];
+        NSData *nameData = [_applyName dataUsingEncoding:NSUTF8StringEncoding];
         NSInteger packet = nameData.length / 5 + 1;
         if (nameData.length % 5 == 0) {
             packet = nameData.length / 5;
@@ -855,6 +871,7 @@
             
             self.uConfigBtn.hidden = NO;
             self.uIconBtn.hidden = NO;
+            self.uWallBtn.hidden = NO;
             
             /*
             //测试
@@ -953,7 +970,7 @@
         NSData *data_a = [data subdataWithRange:NSMakeRange(0, data.length-2)];
         int at = [self atFromData:data_a];
         int sumC = [self sumCFromData:data_a];
-        
+        NSLog(@"2> at:%d  sumC:%d",at,sumC);
         Byte *bytes = (unsigned char *)[data bytes];
         if (at == bytes[20] && sumC == bytes[21]) {
             NSData *d_k = [data subdataWithRange:NSMakeRange(12, 2)];
@@ -1003,8 +1020,11 @@
                     byte_index[2] = (Byte)((_applyIndex & 0x0000FF00)>>8);
                     byte_index[3] = (Byte)((_applyIndex & 0x000000FF));
                     
+                    Byte byte_cmdtype[] = {};
+                    byte_cmdtype[0] = (Byte)((_applyCmdType & 0xFF00)>>8);
+                    byte_cmdtype[1] = (Byte)(_applyCmdType & 0x00FF);
                     
-                    Byte byte[] = {0xA5, 0xA6, 0xA7, 0xA8, byte_packet[0], byte_packet[1], byte_packet[2], byte_packet[3], byte_index[0], byte_index[1], byte_index[2], byte_index[3], 0x00, 0x00, 0x00 ,0x01, byte_per[0], byte_per[1], byte_per[2], byte_per[3]};
+                    Byte byte[] = {0xA5, 0xA6, 0xA7, 0xA8, byte_packet[0], byte_packet[1], byte_packet[2], byte_packet[3], byte_index[0], byte_index[1], byte_index[2], byte_index[3], 0x00, 0x00, byte_cmdtype[0] , byte_cmdtype[1], byte_per[0], byte_per[1], byte_per[2], byte_per[3]};
                     NSData *head = [[NSData alloc] initWithBytes:byte length:20];
                     NSMutableData *mutableData = [[NSMutableData alloc] init];
                     [mutableData appendData:head];
@@ -1013,7 +1033,6 @@
                     Byte bytesum[] = {[self atFromData:mutableData], [self sumCFromData:mutableData]};
                     NSData *end = [[NSData alloc] initWithBytes:bytesum length:2];
                     [mutableData appendData:end];
-                    
                     [sock writeData:mutableData withTimeout:-1 tag:0];
                 }
                 
@@ -1073,13 +1092,86 @@
     Byte bytesum[] = {[self atFromData:mutableData], [self sumCFromData:mutableData]};
     NSData *end = [[NSData alloc] initWithBytes:bytesum length:2];
     [mutableData appendData:end];
-    
     [self.tcpSocketManager writeData:mutableData withTimeout:-1 tag:0];
     
     [self.tcpSocketManager readDataWithTimeout:-1 tag:0];
 }
 
 - (IBAction)updateIconLibrary:(UIButton *)sender {
+    
+}
+
+- (IBAction)synchronizeWallpaper:(UIButton *)sender {
+    CSRDeviceEntity *d = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+    if ([d.wallPaper length] > 0) {
+        UIImage *img = [self originalImage:[UIImage imageWithData:d.wallPaper]];
+        NSData *imgData = UIImagePNGRepresentation(img);
+        
+        NSDictionary *jd = @{@"imgCount":@1,@"imgList":@[@{@"imgAppType":@145,@"imgIndex":@51,@"imgName":@"wallPaper",@"imgSize":@([imgData length]),@"imgCRC32":@([self crc32:imgData]),@"imgData":[CSRUtilities hexStringFromData:imgData]}]};
+        
+        NSString *j = [CSRUtilities convertToJsonData2:jd];
+        _applyData = [j dataUsingEncoding:NSUTF8StringEncoding];
+        _applyIndex = 1;
+        _applyCmdType = 4;
+        NSInteger l = _applyData.length;
+        
+        NSInteger l_packet = l/2000 + 1;
+        if (l%2000 == 0) {
+            l_packet = l/2000;
+        }
+        Byte byte_packet[4] = {};
+        byte_packet[0] = (Byte)((l_packet & 0xFF000000)>>24);
+        byte_packet[1] = (Byte)((l_packet & 0x00FF0000)>>16);
+        byte_packet[2] = (Byte)((l_packet & 0x0000FF00)>>8);
+        byte_packet[3] = (Byte)((l_packet & 0x000000FF));
+        
+        NSInteger l_per = 2000;
+        if (l < 2000) {
+            l_per = l;
+        }
+        Byte byte_per[4] = {};
+        byte_per[0] = (Byte)((l_per & 0xFF000000)>>24);
+        byte_per[1] = (Byte)((l_per & 0x00FF0000)>>16);
+        byte_per[2] = (Byte)((l_per & 0x0000FF00)>>8);
+        byte_per[3] = (Byte)((l_per & 0x000000FF));
+        
+        Byte byte[] = {0xA5, 0xA6, 0xA7, 0xA8, byte_packet[0], byte_packet[1], byte_packet[2], byte_packet[3], 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00 ,0x04, byte_per[0], byte_per[1], byte_per[2], byte_per[3]};
+        NSData *head = [[NSData alloc] initWithBytes:byte length:20];
+        NSMutableData *mutableData = [[NSMutableData alloc] init];
+        [mutableData appendData:head];
+        [mutableData appendData:[_applyData subdataWithRange:NSMakeRange(0, l_per)]];
+        
+        Byte bytesum[] = {[self atFromData:mutableData], [self sumCFromData:mutableData]};
+        NSData *end = [[NSData alloc] initWithBytes:bytesum length:2];
+        [mutableData appendData:end];
+        NSLog(@"wallpaper> %@",[mutableData subdataWithRange:NSMakeRange(0, 20)]);
+        [self.tcpSocketManager writeData:mutableData withTimeout:-1 tag:0];
+    }
+}
+
+- (int32_t)crc32:(NSData *)data {
+    uint32_t *table = malloc(sizeof(uint32_t) * 256);
+    uint32_t crc = 0xffffffff;
+    uint8_t *bytes = (uint8_t *)[data bytes];
+    
+    for (uint32_t i=0; i<256; i++) {
+        table[i] = i;
+        for (int j=0; j<8; j++) {
+            if (table[i] & 1) {
+                table[i] = (table[i] >>= 1) ^ 0xedb88320;
+            } else {
+                table[i] >>= 1;
+            }
+        }
+    }
+    
+    for (int i=0; i<data.length; i++) {
+        crc = (crc >> 8) ^ table[(crc & 0xff) ^ bytes[i]];
+    }
+    crc ^= 0xffffffff;
+    
+    free(table);
+    return crc;
 }
 
 - (int)atFromData:(NSData *)data {
@@ -1101,6 +1193,36 @@
         sumC ^= bytes[i];
     }
     return sumC;
+}
+
+- (UIImage *)originalImage:(UIImage *)originalImage {
+    CGFloat w = originalImage.size.width;
+    CGFloat h = originalImage.size.height;
+    CGRect r;
+    if (w >= h) {
+        r = CGRectMake(w/2-h/2, 0, h, h);
+    }else {
+        r = CGRectMake(0, h/2-w/2, w, w);
+    }
+    CGImageRef subImageRef = CGImageCreateWithImageInRect(originalImage.CGImage, r);
+    CGRect smallRect = CGRectMake(0, 0, CGImageGetWidth(subImageRef), CGImageGetHeight(subImageRef));
+    UIGraphicsBeginImageContext(smallRect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextDrawImage(context, smallRect, subImageRef);
+    UIImage *image = [UIImage imageWithCGImage:subImageRef];
+    UIGraphicsEndImageContext();
+    CGImageRelease(subImageRef);
+    
+    if (r.size.width > 720) {
+        CGSize s = CGSizeMake(720, 720);
+        UIGraphicsBeginImageContext(s);
+        [image drawInRect:CGRectMake(0, 0, s.width, s.height)];
+        UIImage *smallImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        return smallImage;
+    }else {
+        return image;
+    }
 }
 
 @end

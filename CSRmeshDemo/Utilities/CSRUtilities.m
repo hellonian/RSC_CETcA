@@ -1210,6 +1210,13 @@
     return NO;
 }
 
++ (BOOL)belongToThreeChannelDimmer:(NSString *)shortName {
+    if ([kThreeChannelDimmers containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
 + (BOOL)belongToSocketOneChannel:(NSString *)shortName {
     if ([kSocketsOneChannel containsObject:shortName]) {
         return YES;

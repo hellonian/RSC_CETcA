@@ -39,14 +39,12 @@
 #import "CurtainViewController.h"
 #import "FanViewController.h"
 #import "SocketViewController.h"
-#import "TwoChannelDimmerVC.h"
-#import "TwoChannelSwitchVC.h"
 #import "RemoteMainVC.h"
 #import "RemoteLCDVC.h"
 
 #import <CSRmesh/DataModelApi.h>
 
-#import "GroupControlView.h"
+#import "SoundListenTool.h"
 #import "SelectModel.h"
 #import "SceneViewController.h"
 
@@ -57,6 +55,7 @@
     NSUInteger sceneIconId;
     CSRmeshDevice *meshDevice;
     CSRDeviceEntity *deleteDeviceEntity;
+    BOOL sceneCtrLimit;
 }
 
 @property (nonatomic,strong) MainCollectionView *mainCollectionView;
@@ -425,7 +424,9 @@
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [weakSelf getMainDataArray];
             });
-            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [weakSelf getMainDataArray];
+            });
         };
         gvc.isCreateNewArea = YES;
         gvc.isFromEmptyGroup = NO;
@@ -692,29 +693,6 @@
             }
         }];
     }
-    /*
-    BOOL threeColorTemperature = NO;
-    BOOL colorTemperature = NO;
-    BOOL RGB = NO;
-    for (CSRDeviceEntity *deviceEntity in areaEntity.devices) {
-        if ([CSRUtilities belongToThreeSpeedColorTemperatureDevice:deviceEntity.shortName]) {
-            threeColorTemperature = YES;
-        }else if ([CSRUtilities belongToCWDevice:deviceEntity.shortName] || [CSRUtilities belongToCWNoLevelDevice:deviceEntity.shortName]) {
-            colorTemperature = YES;
-        }else if ([CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBNoLevelDevice:deviceEntity.shortName]) {
-            RGB = YES;
-        }else if ([CSRUtilities belongToRGBCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWNoLevelDevice:deviceEntity.shortName]) {
-            colorTemperature = YES;
-            RGB = YES;
-        }
-    }
-    if (threeColorTemperature || colorTemperature || RGB) {
-        GroupControlView *groupControlView = [[GroupControlView alloc] initWithFrame:self.view.frame threeColorTemperature:threeColorTemperature colorTemperature:colorTemperature RGB:RGB];
-        groupControlView.groupID = groupId;
-        [[UIApplication sharedApplication].keyWindow addSubview:groupControlView];
-        [groupControlView autoPinEdgesToSuperviewEdges];
-    }
-     */
 }
 
 - (void)settedSceneFailure:(NSNotification *)notification {
@@ -1538,10 +1516,6 @@
                 [NSThread sleepForTimeInterval:0.1f];
             }
             
-            
-            
-//            [self updateTimerAfterEditScene];
-            
             [_sceneSettingHud hideAnimated:YES];
             _sceneSettingHud = nil;
         }];
@@ -1557,6 +1531,10 @@
     SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:sceneId];
     NSMutableArray *members = [[sceneEntity.members allObjects] mutableCopy];
     if ([members count] != 0) {
+        if (sceneCtrLimit) {
+            return;
+        }
+        sceneCtrLimit = YES;
         if ([sceneEntity.enumMethod boolValue]) {
             NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortID" ascending:YES];
             [members sortUsingDescriptors:[NSArray arrayWithObject:sort]];
@@ -1732,7 +1710,9 @@
             NSString *cmdString = [NSString stringWithFormat:@"9a02%@",[CSRUtilities exchangePositionOfDeviceId:[sceneEntity.rcIndex integerValue]]];
             [[DataModelApi sharedInstance] sendData:@0 data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
         }
-        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            sceneCtrLimit = NO;
+        });
     }else {
         if ([self determineDeviceHasBeenAdded]) {
             UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:@"" preferredStyle:UIAlertControllerStyleAlert];
@@ -1828,29 +1808,6 @@
                 [weakSelf getMainDataArray];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:socketVC];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
-            [self presentViewController:nav animated:YES completion:nil];
-            nav.popoverPresentationController.sourceRect = mainCell.bounds;
-            nav.popoverPresentationController.sourceView = mainCell;
-        }else if ([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName]) {
-            TwoChannelDimmerVC *tdvc = [[TwoChannelDimmerVC alloc] init];
-            tdvc.deviceId = mainCell.deviceId;
-            __weak MainViewController *weakSelf = self;
-            tdvc.reloadDataHandle = ^{
-                [weakSelf getMainDataArray];
-            };
-            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:tdvc];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
-            [self presentViewController:nav animated:YES completion:nil];
-            nav.popoverPresentationController.sourceRect = mainCell.bounds;
-            nav.popoverPresentationController.sourceView = mainCell;
-        }else if ([CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName]) {
-            TwoChannelSwitchVC *tsvc = [[TwoChannelSwitchVC alloc] init];
-            tsvc.deviceId = mainCell.deviceId;
-            tsvc.reloadDataHandle = ^{
-                [self getMainDataArray];
-            };
-            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:tsvc];
             nav.modalPresentationStyle = UIModalPresentationPopover;
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
@@ -2395,79 +2352,5 @@
     [DeviceModelManager sharedInstance].bleDisconnected = YES;
     [_mainCollectionView reloadData];
 }
-/*
-- (void)updateTimerAfterEditScene {
-    NSArray *timers = [[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"TimerEntity" withPredicate:@"sceneID == %@", selectedSceneId];
-    if (timers && timers.count>0) {
-        for (TimerEntity *timer in timers) {
-            SceneEntity *scene = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:selectedSceneId];
-            for (TimerDeviceEntity *tMemer in timer.timerDevices) {
-                BOOL exist = NO;
-                for (SceneMemberEntity *sMember in scene.members) {
-                    if ([sMember.deviceID isEqualToNumber:tMemer.deviceID]) {
-                        exist = YES;
-                        break;
-                    }
-                }
-                if (!exist) {
-                    if ([tMemer.channel isEqualToNumber:@(10)]) {
-                        
-                    }else {
-                        
-                    }
-                    [NSThread sleepForTimeInterval:0.1f];
-                    [timer removeTimerDevicesObject:tMemer];
-                    [[CSRDatabaseManager sharedInstance] saveContext];
-                }
-            }
-            
-            BOOL enable = [timer.enabled boolValue];
-            NSDate *time = timer.fireDate;
-            NSDate *date = timer.fireDate;
-            NSString *repeat = timer.repeat;
-            for (SceneMemberEntity *sMember in scene.members) {
-                NSNumber *index = nil;
-                for (TimerDeviceEntity *tMemer in timer.timerDevices) {
-                    if ([tMemer.deviceID isEqualToNumber:sMember.deviceID]) {
-                        index = tMemer.timerIndex;
-                        break;
-                    }
-                }
-                if (index == nil) {
-                    index = [[CSRDatabaseManager sharedInstance] getNextFreeTimerIDOfDeivice:sMember.deviceID];
-                }
-                
-                NSString *eveD1 = @"00";
-                NSString *eveD2 = @"00";
-                NSString *eveD3 = @"00";
-                if ([sMember.eveType isEqualToNumber:@(13)] || [sMember.eveType isEqualToNumber:@(14)] || [sMember.eveType isEqualToNumber:@(20)]) {
-                    eveD1 = [NSString stringWithFormat:@"%@",sMember.colorRed];
-                    eveD2 = [NSString stringWithFormat:@"%@",sMember.colorGreen];
-                    eveD3 = [NSString stringWithFormat:@"%@",sMember.colorBlue];
-                }else if ([sMember.eveType isEqualToNumber:@(18)] || [sMember.eveType isEqualToNumber:@(19)]) {
-                    NSString *colorTemperatureStr = [CSRUtilities stringWithHexNumber:[sMember.colorTemperature integerValue]];
-                    eveD1 = [colorTemperatureStr substringToIndex:2];
-                    eveD2 = [colorTemperatureStr substringFromIndex:2];
-                }
-                
-                if ([CSRUtilities belongToTwoChannelDimmer:sMember.kindString] || [CSRUtilities belongToSocket:sMember.kindString] || [CSRUtilities belongToTwoChannelSwitch:sMember.kindString]) {
-                    if (sMember.eveType && [sMember.eveType integerValue]>0 && sMember.colorTemperature && [sMember.colorTemperature integerValue]>0) {
-                        
-                    }else {
-                        if (sMember.eveType && [sMember.eveType integerValue]>0) {
-                            
-                        }
-                        if (sMember.colorTemperature && [sMember.colorTemperature integerValue]>0) {
-                            
-                        }
-                    }
-                }else {
-                    
-                }
-                [NSThread sleepForTimeInterval:0.1f];
-            }
-        }
-    }
-}*/
 
 @end

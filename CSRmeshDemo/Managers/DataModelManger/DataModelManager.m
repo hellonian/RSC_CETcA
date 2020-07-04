@@ -132,7 +132,7 @@ static DataModelManager *manager = nil;
 
 - (void)didSendData:(NSNumber *)deviceId data:(NSData *)data meshRequestId:(NSNumber *)meshRequestId {
     NSLog(@"didSendData : %@",data);
-    NSString *dataStr = [self hexStringForData:data];
+    NSString *dataStr = [CSRUtilities hexStringForData:data];
     if ([dataStr hasPrefix:@"8316"]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"didSendStreamData" object:nil userInfo:@{@"deviceId":deviceId, @"channel":@1}];
     }else if ([dataStr hasPrefix:@"501801"]) {
@@ -145,7 +145,7 @@ static DataModelManager *manager = nil;
 - (void)didReceiveBlockData:(NSNumber *)destinationDeviceId sourceDeviceId:(NSNumber *)sourceDeviceId data:(NSData *)data {
     NSLog(@"didReceiveBlockData: %@ ----- %@ +++++ %@",data,destinationDeviceId,sourceDeviceId);
     
-    NSString *dataStr = [self hexStringForData:data];
+    NSString *dataStr = [CSRUtilities hexStringForData:data];
     
     //获取到设备时间
     if ([dataStr hasPrefix:@"a1"]) {
@@ -232,10 +232,9 @@ static DataModelManager *manager = nil;
         }
         model.primordial = seq;
         
-        NSString *state = [dataStr substringWithRange:NSMakeRange(6, 2)];
-        NSInteger level = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(8, 2)]];
-        NSNumber *levelNum = [NSNumber numberWithInteger:level];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"physicalButtonActionCall" object:self userInfo:@{@"powerState":state,@"level":levelNum,@"deviceId":sourceDeviceId}];
+        NSNumber *state = @([[dataStr substringWithRange:NSMakeRange(6, 2)] boolValue]);
+        NSNumber *level = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(8, 2)]]);
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"physicalButtonActionCall" object:self userInfo:@{@"powerState":state,@"level":level,@"deviceId":sourceDeviceId}];
     }
     
     if ([dataStr hasPrefix:@"8e"]) {
@@ -247,17 +246,17 @@ static DataModelManager *manager = nil;
         model.primordial = seq;
         
         NSString *stateStr = [CSRUtilities getBinaryByhex:[dataStr substringWithRange:NSMakeRange(6, 2)]];
-        NSString *state = [stateStr substringWithRange:NSMakeRange(7, 1)];
-        NSString *supports = [stateStr substringWithRange:NSMakeRange(6, 1)];
+        NSNumber *state = @([[stateStr substringWithRange:NSMakeRange(7, 1)] boolValue]);
+        NSNumber *supports = @([[stateStr substringWithRange:NSMakeRange(6, 1)] boolValue]);
         
-        NSInteger level = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(8, 2)]];
-        NSInteger red = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(10, 2)]];
-        NSInteger green = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(12, 2)]];
-        NSInteger blue = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(14, 2)]];
+        NSNumber *level = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(8, 2)]]);
+        NSNumber *red = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(10, 2)]]);
+        NSNumber *green = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(12, 2)]]);
+        NSNumber *blue = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(14, 2)]]);
         
-        NSInteger temperature = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(16, 4)]];
+        NSNumber *temperature = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(16, 4)]]);
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"RGBCWDeviceActionCall" object:self userInfo:@{@"powerState":state,@"supports":supports,@"level":[NSNumber numberWithInteger:level],@"temperature":[NSNumber numberWithInteger:temperature],@"red":[NSNumber numberWithInteger:red],@"green":[NSNumber numberWithInteger:green],@"blue":[NSNumber numberWithInteger:blue],@"deviceId":sourceDeviceId}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"RGBCWDeviceActionCall" object:self userInfo:@{@"powerState":state,@"supports":supports,@"level":level,@"temperature":temperature,@"red":red,@"green":green,@"blue":blue,@"deviceId":sourceDeviceId}];
         
     }
     
@@ -328,22 +327,51 @@ static DataModelManager *manager = nil;
     }
     
     if ([dataStr hasPrefix:@"7a"] && dataStr.length >= 14) {
-        NSString *channelStr = [dataStr substringWithRange:NSMakeRange(10, 2)];
-        NSString *levelStr = [dataStr substringWithRange:NSMakeRange(8, 2)];
-        NSString *stateStr = [dataStr substringWithRange:NSMakeRange(6, 2)];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"multichannelActionCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"channelStr":channelStr,@"levelStr":levelStr,@"stateStr":stateStr}];
+        NSInteger seq = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(12, 2)]];
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sourceDeviceId];
+        if (seq && (seq - model.primordial) < 0 && (seq - model.primordial) >-10) {
+            return;
+        }
+        model.primordial = seq;
+        
+        NSNumber *channel = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(10, 2)]] + 1);
+        NSNumber *state = @([[dataStr substringWithRange:NSMakeRange(6, 2)] boolValue]);
+        NSNumber *level = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(8, 2)]]);
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"multichannelActionCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"channel":channel,@"level":level,@"state":state}];
     }
     
     if ([dataStr hasPrefix:@"9d"] ) {
-        NSString *string = [dataStr substringFromIndex:4];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"fanControllerCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"fanControllerCall":string}];
+        NSInteger seq = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(10, 2)]];
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sourceDeviceId];
+        if (seq && (seq - model.primordial) < 0 && (seq - model.primordial) >-10) {
+            return;
+        }
+        model.primordial = seq;
+        
+        NSNumber *fanState = @([[dataStr substringWithRange:NSMakeRange(4, 2)] boolValue]);
+        NSNumber *fanSpeed = @([[dataStr substringWithRange:NSMakeRange(6, 2)] integerValue]);
+        NSNumber *lampState = @([[dataStr substringWithRange:NSMakeRange(8, 2)] boolValue]);
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"fanControllerCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"fanState":fanState,@"fanSpeed":fanSpeed,@"lampState":lampState}];
     }
     
     if ([dataStr hasPrefix:@"52"] ) {
-        NSString *channelStr = [dataStr substringWithRange:NSMakeRange(4, 2)];
-        NSString *levelStr = [dataStr substringWithRange:NSMakeRange(10, 2)];
-        NSString *stateStr = [dataStr substringWithRange:NSMakeRange(8, 2)];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"multichannelActionCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"channelStr":channelStr,@"levelStr":levelStr,@"stateStr":stateStr}];
+        NSInteger seq = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 2)]];
+        NSNumber *channel = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(4, 2)]] + 1);
+        if (seq) {
+            seq = [channel integerValue]*10+seq;
+        }
+        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sourceDeviceId];
+        if (seq && (seq - model.primordial) < 0 && (seq - model.primordial) >-10) {
+            return;
+        }
+        model.primordial = seq;
+        
+        
+        NSNumber *state = @([[dataStr substringWithRange:NSMakeRange(8, 2)] boolValue]);
+        NSNumber *level = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(10, 2)]]);
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"multichannelActionCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"channel":channel,@"level":level,@"state":state}];
     }
     
     if ([dataStr hasPrefix:@"5a"]) {
@@ -574,48 +602,17 @@ static DataModelManager *manager = nil;
         return [obj1 compare:obj2];
     }];
     NSData *data = [dic objectForKey:ary[0]];
-    NSString *firstStr = [self hexStringForData:data];
+    NSString *firstStr = [CSRUtilities hexStringForData:data];
     
-//    if ([firstStr hasPrefix:@"a2"]) {
-//        NSString *string = @"actec";
-//        for (NSNumber *key in ary) {
-//            NSData *preData = [dic objectForKey:key];
-//            string = [NSString stringWithFormat:@"%@%@",string,[self hexStringForData:preData]];
-//        }
-//        NSLog(@"%@",string);
-//        NSInteger num = [CSRUtilities numberWithHexString:[firstStr substringWithRange:NSMakeRange(4, 2)]];
-//        NSMutableArray *timersArray = [[NSMutableArray alloc] init];
-//        for (NSInteger i=0; i<num; i++) {
-//            if (string.length > (i*32+11+32-2)) {
-//                NSString *perStr = [string substringWithRange:NSMakeRange(i*32+11, 32)];////
-//                TimeSchedule *schedule = [self analyzeTimeScheduleData:perStr forLight:deviceId];
-//                [timersArray addObject:schedule];
-//            }
-//        }
-//        if ([timersArray count] > 0) {
-//            [[NSNotificationCenter defaultCenter] postNotificationName:kTimerProfile object:nil userInfo:@{kTimerProfile:timersArray,@"deviceId":deviceId}];
-//        }
-//    }
-    
-    //获取遥控器配置
-    if ([firstStr hasPrefix:@"b1"]) {
-        NSString *string = @"actec";
+    if ([firstStr hasPrefix:@"b3"]) {
+        NSMutableData *data = [[NSMutableData alloc] init];
         for (NSNumber *key in ary) {
-            NSData *preData = [dic objectForKey:key];
-            string = [NSString stringWithFormat:@"%@%@",string,[self hexStringForData:preData]];
+            NSData *d = [dic objectForKey:key];
+            [data appendData:d];
         }
-        if (string.length > 30) {
-            NSString *deviceID11 = [string substringWithRange:NSMakeRange(15, 4)];
-            NSString *deviceID1 = [self exchangeLowHight:deviceID11];
-            NSString *deviceID22 = [string substringWithRange:NSMakeRange(19, 4)];
-             NSString *deviceID2 = [self exchangeLowHight:deviceID22];
-            NSString *deviceID33 = [string substringWithRange:NSMakeRange(23, 4)];
-             NSString *deviceID3 = [self exchangeLowHight:deviceID33];
-            NSString *deviceID44 = [string substringWithRange:NSMakeRange(27, 4)];
-             NSString *deviceID4 = [self exchangeLowHight:deviceID44];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"getRemoteConfiguration" object:nil userInfo:@{@"deviceID1":deviceID1,@"deviceID2":deviceID2,@"deviceID3":deviceID3,@"deviceID4":deviceID4,@"deviceId":deviceId}];
-        }
-        
+        CSRDeviceEntity *remote = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+        remote.remoteBranch = [CSRUtilities hexStringForData:data];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"getRemoteConfiguration" object:nil userInfo:@{@"deviceId":deviceId}];
     }
     
     [self.deviceKeyDic removeObjectForKey:deviceId];
@@ -704,28 +701,6 @@ static DataModelManager *manager = nil;
 }
 
 #pragma mark - 数据类型转化
-
-//二进制数据转十六进制字符串
-- (NSString *)hexStringForData: (NSData *)data {
-    if (!data || [data length] == 0) {
-        return @"";
-    }
-    NSMutableString *string = [[NSMutableString alloc] initWithCapacity:[data length]];
-    
-    [data enumerateByteRangesUsingBlock:^(const void *bytes, NSRange byteRange, BOOL *stop) {
-        unsigned char *dataBytes = (unsigned char*)bytes;
-        for (NSInteger i = 0; i < byteRange.length; i++) {
-            NSString *hexStr = [NSString stringWithFormat:@"%x", (dataBytes[i]) & 0xff];
-            if ([hexStr length] == 2) {
-                [string appendString:hexStr];
-            } else {
-                [string appendFormat:@"0%@", hexStr];
-            }
-        }
-    }];
-    
-    return string;
-}
 
 //二进制字符串 转 十进制字符串
 - (NSString *)toDecimalSystemWithBinarySystem:(NSString *)binary

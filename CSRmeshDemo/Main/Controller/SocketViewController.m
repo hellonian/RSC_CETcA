@@ -305,7 +305,7 @@
     DeviceModel *deviceModel = [[DeviceModelManager sharedInstance]getDeviceModelByDeviceId:deviceId];
     if (deviceModel) {
         
-        if (channel == 1) {
+        if (channel == 2) {
             [_channel1Switch setOn:deviceModel.channel1PowerState];
             if (deviceModel.channel1PowerState && !deviceModel.childrenState1) {
                 [_childSwitch1 setEnabled:NO];
@@ -323,7 +323,7 @@
                 [_channel1Switch setEnabled:YES];
                 _socket1Btn.hidden = YES;
             }
-        }else if (channel == 2) {
+        }else if (channel == 3) {
             [_channel2Switch setOn:deviceModel.channel2PowerState];
             if (deviceModel.channel2PowerState && !deviceModel.childrenState2) {
                 [_childSwitch2 setEnabled:NO];
@@ -341,7 +341,7 @@
                 [_channel2Switch setEnabled:YES];
                 _socket2Btn.hidden = YES;
             }
-        }else if (channel == 3) {
+        }else if (channel == 1 || channel == 4) {
             [_channel1Switch setOn:deviceModel.channel1PowerState];
             if (deviceModel.channel1PowerState && !deviceModel.childrenState1) {
                 [_childSwitch1 setEnabled:NO];

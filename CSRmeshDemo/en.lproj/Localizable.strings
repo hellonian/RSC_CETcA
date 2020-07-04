@@ -191,3 +191,4 @@
 "addtimerfail" = "The following device could not set timer, check whether the device is cut off,initialized,or the number of timer in device exceeds the maximum number:";
 "removetimerfail" = "The following device could not remove timer, check whether the device is cut off or initialized:";
 "enabletimerfail" = "The following device could not changed the enable, check whether the device is cut off or initialized:";
+"remotereadalert" = "Press any button for six times, and click OK when the indicator light flashes.";
