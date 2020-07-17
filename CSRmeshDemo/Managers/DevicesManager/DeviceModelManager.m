@@ -33,6 +33,8 @@
     NSTimer *colorTimer;
     UIColor *currentColor;
     UIGestureRecognizerState colorCurrentState;
+    
+    BOOL appControlling;
 }
 
 @end
@@ -62,6 +64,14 @@
                                                  selector:@selector(childrenModelState:)
                                                      name:@"childrenModelState"
                                                    object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(remoteControlScene:)
+                                                     name:@"remoteControlScene"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(remoteControlGroup:)
+                                                     name:@"remoteControlGroup"
+                                                   object:nil];
         
         [DataModelManager shareInstance];
         
@@ -82,18 +92,11 @@
 }
 
 - (void)getAllDevicesState {
-    __block BOOL success = NO;
     [[MeshServiceApi sharedInstance] setRetryCount:@0];
     [[LightModelApi sharedInstance] getState:@(0) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-        success = YES;
     } failure:^(NSError * _Nullable error) {
     }];
-    [[MeshServiceApi sharedInstance] setRetryCount:@6];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if (!success) {
-            [self getAllDevicesState];
-        }
-    });
+    [[MeshServiceApi sharedInstance] setRetryCount:@3];
 }
 
 #pragma mark - LightModelApiDelegate
@@ -221,7 +224,9 @@
         [_allDevices addObject:model];
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
+    if (!appControlling) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
+    }
 }
 
 #pragma mark - PowerModelApiDelegate
@@ -255,7 +260,10 @@
         model.fanState = [state boolValue];
         model.lampState = [state boolValue];
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId,@"channel":@(1)}];
+    
+    if (!appControlling) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId,@"channel":@(1)}];
+    }
 }
 
 
@@ -272,16 +280,108 @@
     return nil;
 }
 
-- (void)setPowerStateWithDeviceId:(NSNumber *)deviceId withPowerState:(NSNumber *)powerState {
-    [[PowerModelApi sharedInstance] setPowerState:deviceId state:powerState success:^(NSNumber * _Nullable deviceId, NSNumber * _Nullable state) {
-        
-    } failure:^(NSError * _Nullable error) {
-        NSLog(@"error : %@",error);
-        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
-        model.isleave = YES;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"chennel":@(3)}];
-    }];
+- (void)setPowerStateWithDeviceId:(NSNumber *)deviceId channel:(NSNumber *)channel withPowerState:(BOOL)powerState {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(cancelAppControlling) object:nil];
+    appControlling = YES;
+    [self performSelector:@selector(cancelAppControlling) withObject:nil afterDelay:4.0];
     
+    if (timer) {
+        [timer invalidate];
+        timer = nil;
+    }
+    if ([channel integerValue] == 1) {
+        [[PowerModelApi sharedInstance] setPowerState:deviceId state:@(powerState) success:^(NSNumber * _Nullable deviceId, NSNumber * _Nullable state) {
+            
+        } failure:^(NSError * _Nullable error) {
+            NSLog(@"error : %@",error);
+            DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
+            model.isleave = YES;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"chennel":@(1)}];
+        }];
+        
+        if ([deviceId integerValue] > 32768) {
+            DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
+            model.powerState = @(powerState);
+            model.channel1PowerState = powerState;
+            model.channel2PowerState = powerState;
+            model.channel3PowerState = powerState;
+            model.fanState = powerState;
+            model.lampState = powerState;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@1}];
+        }else {
+            CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:deviceId];
+            for (CSRDeviceEntity *member in area.devices) {
+                for (DeviceModel *model in _allDevices) {
+                    if ([model.deviceId isEqualToNumber:member.deviceId]) {
+                        model.powerState = @(powerState);
+                        model.channel1PowerState = powerState;
+                        model.channel2PowerState = powerState;
+                        model.channel3PowerState = powerState;
+                        model.fanState = powerState;
+                        model.lampState = powerState;
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceId,@"channel":@1}];
+                        break;
+                    }
+                }
+            }
+        }
+        
+    }else {
+        DeviceModel *d = [self getDeviceModelByDeviceId:deviceId];
+        NSInteger l = 0;
+        if ([channel integerValue] == 2) {
+            
+            l = d.channel1Level;
+            
+            d.channel1PowerState = powerState;
+            if ([CSRUtilities belongToTwoChannelSwitch:d.shortName]
+                || [CSRUtilities belongToTwoChannelDimmer:d.shortName]
+                || [CSRUtilities belongToSocketTwoChannel:d.shortName]
+                || [CSRUtilities belongToTwoChannelCurtainController:d.shortName]) {
+                d.powerState = @(d.channel1PowerState || d.channel2PowerState);
+            }else if ([CSRUtilities belongToThreeChannelSwitch:d.shortName]
+                      || [CSRUtilities belongToThreeChannelDimmer:d.shortName]) {
+                d.powerState = @(d.channel1PowerState || d.channel2PowerState || d.channel3PowerState);
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@2}];
+            
+        }else if ([channel integerValue] == 3) {
+            
+            l = d.channel2Level;
+            
+            d.channel2PowerState = powerState;
+            if ([CSRUtilities belongToTwoChannelSwitch:d.shortName]
+                || [CSRUtilities belongToTwoChannelDimmer:d.shortName]
+                || [CSRUtilities belongToSocketTwoChannel:d.shortName]
+                || [CSRUtilities belongToTwoChannelCurtainController:d.shortName]) {
+                d.powerState = @(d.channel1PowerState || d.channel2PowerState);
+            }else if ([CSRUtilities belongToThreeChannelSwitch:d.shortName]
+                      || [CSRUtilities belongToThreeChannelDimmer:d.shortName]) {
+                d.powerState = @(d.channel1PowerState || d.channel2PowerState || d.channel3PowerState);
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@3}];
+            
+        }else if ([channel integerValue] == 5) {
+            
+            l = d.channel3Level;
+            
+            d.channel3PowerState = powerState;
+            if ([CSRUtilities belongToTwoChannelSwitch:d.shortName]
+                || [CSRUtilities belongToTwoChannelDimmer:d.shortName]
+                || [CSRUtilities belongToSocketTwoChannel:d.shortName]
+                || [CSRUtilities belongToTwoChannelCurtainController:d.shortName]) {
+                d.powerState = @(d.channel1PowerState || d.channel2PowerState);
+            }else if ([CSRUtilities belongToThreeChannelSwitch:d.shortName]
+                      || [CSRUtilities belongToThreeChannelDimmer:d.shortName]) {
+                d.powerState = @(d.channel1PowerState || d.channel2PowerState || d.channel3PowerState);
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@5}];
+            
+        }
+        Byte byte[] = {0x51, 0x05, [channel integerValue]-1, 0x00, 0x01, powerState, l};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:7];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceId data:cmd];
+    }
 }
 
 - (void)setLevelWithDeviceId:(NSNumber *)deviceId channel:(NSNumber *)channel withLevel:(NSNumber *)level withState:(UIGestureRecognizerState)state direction:(PanGestureMoveDirection)direction {
@@ -301,6 +401,10 @@
 
 - (void)timerMethod:(NSTimer *)infotimer {
     @synchronized (self) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(cancelAppControlling) object:nil];
+        appControlling = YES;
+        [self performSelector:@selector(cancelAppControlling) withObject:nil afterDelay:4.0];
+        
         NSNumber *deviceId = infotimer.userInfo;
         if (moveDirection == PanGestureMoveDirectionHorizontal) {
             if ([currentChannel integerValue] == 1) {
@@ -308,58 +412,135 @@
                     
                 } failure:^(NSError * _Nullable error) {
                     NSLog(@"error : >>>> %@",error);
-                    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+                    DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
                     model.isleave = YES;
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(3)}];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
                 }];
+                
+                if ([deviceId integerValue] > 32768) {
+                    DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
+                    if ([currentLevel integerValue] == 0) {
+                        model.powerState = @(0);
+                        model.channel1PowerState = 0;
+                        model.channel2PowerState = 0;
+                        model.channel3PowerState = 0;
+                        model.fanState = 0;
+                        model.lampState = 0;
+                    }else {
+                        model.powerState = @(1);
+                        model.channel1PowerState = 1;
+                        model.channel2PowerState = 1;
+                        model.channel3PowerState = 1;
+                        model.fanState = 1;
+                        model.lampState = 1;
+                        
+                        model.level = currentLevel;
+                        model.channel1Level = [currentLevel integerValue];
+                        model.channel2Level = [currentLevel integerValue];
+                        model.channel3Level = [currentLevel integerValue];
+                        if ([CSRUtilities belongToFanController:model.shortName]) {
+                            NSInteger l = [currentLevel integerValue];
+                            if (l > 0 && l <= 85) {
+                                model.fansSpeed = 0;
+                            }else if (l > 85 && l <= 170) {
+                                model.fansSpeed = 1;
+                            }else if (l > 170 && l <= 255) {
+                                model.fansSpeed = 2;
+                            }
+                        }
+                    }
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@1}];
+                }else {
+                    CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:deviceId];
+                    for (CSRDeviceEntity *member in area.devices) {
+                        for (DeviceModel *model in _allDevices) {
+                            if ([model.deviceId isEqualToNumber:member.deviceId]) {
+                                if ([currentLevel integerValue] == 0) {
+                                    model.powerState = @(0);
+                                    model.channel1PowerState = 0;
+                                    model.channel2PowerState = 0;
+                                    model.channel3PowerState = 0;
+                                    model.fanState = 0;
+                                    model.lampState = 0;
+                                }else {
+                                    model.powerState = @(1);
+                                    model.channel1PowerState = 1;
+                                    model.channel2PowerState = 1;
+                                    model.channel3PowerState = 1;
+                                    model.fanState = 1;
+                                    model.lampState = 1;
+                                    
+                                    model.level = currentLevel;
+                                    model.channel1Level = [currentLevel integerValue];
+                                    model.channel2Level = [currentLevel integerValue];
+                                    model.channel3Level = [currentLevel integerValue];
+                                    if ([CSRUtilities belongToFanController:model.shortName]) {
+                                        NSInteger l = [currentLevel integerValue];
+                                        if (l > 0 && l <= 85) {
+                                            model.fansSpeed = 0;
+                                        }else if (l > 85 && l <= 170) {
+                                            model.fansSpeed = 1;
+                                        }else if (l > 170 && l <= 255) {
+                                            model.fansSpeed = 2;
+                                        }
+                                    }
+                                }
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceId,@"channel":@1}];
+                                break;
+                            }
+                        }
+                    }
+                }
+                
             }else {
                 Byte byte[] = {0x51, 0x05, [currentChannel integerValue]-1, 0x00, 0x03, 01, [currentLevel integerValue]};
                 NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
                 [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceId data:cmd];
-            }
-        }
-        
-        if (currentState == UIGestureRecognizerStateEnded) {
-            NSLog(@"定时器结束！！");
-            [timer invalidate];
-            timer = nil;
-        }
-    }
-}
-
-- (void)setLevelWithGroupId:(NSNumber *)deviceId withLevel:(NSNumber *)level withState:(UIGestureRecognizerState)state direction:(PanGestureMoveDirection)direction {
-    currentState = state;
-    currentLevel = level;
-    moveDirection = direction;
-    if (state == UIGestureRecognizerStateBegan) {
-        if (timer) {
-            [timer invalidate];
-            timer = nil;
-        }
-        timer = [NSTimer timerWithTimeInterval:0.5 target:self selector:@selector(groupTimerMethod:) userInfo:deviceId repeats:YES];
-        [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
-    }
-}
-
-- (void)groupTimerMethod:(NSTimer *)infotimer {
-    @synchronized (self) {
-        NSNumber *deviceId = infotimer.userInfo;
-        if (moveDirection == PanGestureMoveDirectionHorizontal) {
-            if (currentState == UIGestureRecognizerStateBegan || currentState == UIGestureRecognizerStateChanged) {
-                [[LightModelApi sharedInstance] setLevel:deviceId level:currentLevel success:nil failure:^(NSError * _Nullable error) {
-                    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
-                    model.isleave = YES;
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(3)}];
-                }];
-            }else if (currentState == UIGestureRecognizerStateEnded) {
-                [[LightModelApi sharedInstance] setLevel:deviceId level:currentLevel success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-                    
-                } failure:^(NSError * _Nullable error) {
-                    NSLog(@"error : >>>> %@",error);
-                    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
-                    model.isleave = YES;
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(3)}];
-                }];
+                
+                DeviceModel *d = [self getDeviceModelByDeviceId:deviceId];
+                if ([currentChannel integerValue] == 2) {
+                    if ([currentLevel integerValue] == 0) {
+                        d.channel1PowerState = 0;
+                    }else {
+                        d.channel1PowerState = 1;
+                        d.channel1Level = [currentLevel integerValue];
+                    }
+                    if ([CSRUtilities belongToTwoChannelDimmer:d.shortName]) {
+                        d.powerState = @(d.channel1PowerState || d.channel2PowerState);
+                        d.level = @(d.channel1Level > d.channel2Level ? d.channel1Level : d.channel2Level);
+                    }else if ([CSRUtilities belongToThreeChannelDimmer:d.shortName]) {
+                        d.powerState = @(d.channel1PowerState || d.channel2PowerState || d.channel3PowerState);
+                        d.level = @((d.channel1Level > d.channel2Level ? d.channel1Level : d.channel2Level) > d.channel3Level ? (d.channel1Level > d.channel2Level ? d.channel1Level : d.channel2Level) : d.channel3Level);
+                    }
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@2}];
+                }else if ([currentChannel integerValue] == 3) {
+                    if ([currentLevel integerValue] == 0) {
+                        d.channel2PowerState = 0;
+                    }else {
+                        d.channel2PowerState = 1;
+                        d.channel2Level = [currentLevel integerValue];
+                    }
+                    if ([CSRUtilities belongToTwoChannelDimmer:d.shortName]) {
+                        d.powerState = @(d.channel1PowerState || d.channel2PowerState);
+                        d.level = @(d.channel1Level > d.channel2Level ? d.channel1Level : d.channel2Level);
+                    }else if ([CSRUtilities belongToThreeChannelDimmer:d.shortName]) {
+                        d.powerState = @(d.channel1PowerState || d.channel2PowerState || d.channel3PowerState);
+                        d.level = @((d.channel1Level > d.channel2Level ? d.channel1Level : d.channel2Level) > d.channel3Level ? (d.channel1Level > d.channel2Level ? d.channel1Level : d.channel2Level) : d.channel3Level);
+                    }
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@3}];
+                }else if ([currentChannel integerValue] == 5) {
+                    if ([currentLevel integerValue] == 0) {
+                        d.channel3PowerState = 0;
+                    }else {
+                        d.channel3PowerState = 1;
+                        d.channel3Level = [currentLevel integerValue];
+                    }
+                    if ([CSRUtilities belongToThreeChannelDimmer:d.shortName]) {
+                        d.powerState = @(d.channel1PowerState || d.channel2PowerState || d.channel3PowerState);
+                        d.level = @((d.channel1Level > d.channel2Level ? d.channel1Level : d.channel2Level) > d.channel3Level ? (d.channel1Level > d.channel2Level ? d.channel1Level : d.channel2Level) : d.channel3Level);
+                    }
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@5}];
+                }
             }
         }
         
@@ -386,21 +567,55 @@
 
 - (void)CTTimerMethod:(NSTimer *)infotimer {
     @synchronized (self) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(cancelAppControlling) object:nil];
+        appControlling = YES;
+        [self performSelector:@selector(cancelAppControlling) withObject:nil afterDelay:4.0];
+        
         NSNumber *deviceId = infotimer.userInfo;
         [[LightModelApi sharedInstance] setColorTemperature:deviceId temperature:CTCurrentCT duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
             
         } failure:^(NSError * _Nullable error) {
-            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+            DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
             model.isleave = YES;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(3)}];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
         }];
         
+        DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
+        model.powerState = @1;
+        model.colorTemperature = CTCurrentCT;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@1}];
+        
         if (CTCurrentState == UIGestureRecognizerStateEnded) {
-            NSLog(@"~~~~~~~~~~~~~~~~色温定时器结束！！😇😇😇😇😇");
+            NSLog(@"色温定时器结束");
             [CTTimer invalidate];
             CTTimer = nil;
         }
     }
+}
+
+-(void)setColorWithDeviceId:(NSNumber *)deviceId withColor:(UIColor *)color {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(cancelAppControlling) object:nil];
+    appControlling = YES;
+    [self performSelector:@selector(cancelAppControlling) withObject:nil afterDelay:4.0];
+    
+    [[LightModelApi sharedInstance] setColor:deviceId color:color duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+        
+    } failure:^(NSError * _Nullable error) {
+        DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
+        model.isleave = YES;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
+    }];
+    
+    DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
+    model.powerState = @1;
+    CGFloat red,green,blue,alpha;
+    if ([color getRed:&red green:&green blue:&blue alpha:&alpha]) {
+        model.red = @(red * 255);
+        model.green = @(green * 255);
+        model.blue = @(blue * 255);
+        NSLog(@">> %f  %f  %f  %f",red,green,blue,alpha);
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@1}];
 }
 
 -(void)setColorWithDeviceId:(NSNumber *)deviceId withColor:(UIColor *)color withState:(UIGestureRecognizerState)state {
@@ -420,17 +635,31 @@
 
 - (void)colorTimerMethod:(NSTimer *)infoTimer {
     @synchronized (self) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(cancelAppControlling) object:nil];
+        appControlling = YES;
+        [self performSelector:@selector(cancelAppControlling) withObject:nil afterDelay:4.0];
+        
         NSNumber *deviceId = infoTimer.userInfo;
         [[LightModelApi sharedInstance] setColor:deviceId color:currentColor duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
             
         } failure:^(NSError * _Nullable error) {
-            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+            DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
             model.isleave = YES;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(3)}];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
         }];
         
+        DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
+        model.powerState = @1;
+        CGFloat red,green,blue,alpha;
+        if ([currentColor getRed:&red green:&green blue:&blue alpha:&alpha]) {
+            model.red = @(red * 255);
+            model.green = @(green * 255);
+            model.blue = @(blue * 255);
+        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@1}];
+        
         if (colorCurrentState == UIGestureRecognizerStateEnded) {
-            NSLog(@"################ 颜色定时器结束 👀👀👀👀👀👀👀👀👀👀👀👀");
+            NSLog(@"颜色定时器结束");
             [colorTimer invalidate];
             colorTimer = nil;
         }
@@ -454,7 +683,9 @@
             if ([model.shortName isEqualToString:@"C300IB"] || [model.shortName isEqualToString:@"C300IBH"]) {
                 model.powerState = [level integerValue] == 255? @(0):@(1);
             }
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
+            if (!appControlling) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
+            }
             return;
         }
     }
@@ -482,7 +713,9 @@
             model.red = red;
             model.green = green;
             model.blue = blue;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
+            if (!appControlling) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
+            }
             return;
         }
     }
@@ -501,7 +734,9 @@
             model.fansSpeed = [fanSpeed intValue];
             model.lampState = [lampState boolValue];
             model.powerState = @([fanState boolValue] || [lampState boolValue]);
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
+            if (!appControlling) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
+            }
             return;
         }
     }
@@ -583,7 +818,9 @@
                 model.powerState = @(model.channel1PowerState);
                 model.level = @(model.channel1Level > 3 ? model.channel1Level : 3);
             }
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":channel}];
+            if (!appControlling) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":channel}];
+            }
             return;
         }
     }
@@ -598,7 +835,9 @@
         if ([model.deviceId isEqualToNumber:deviceId]) {
             model.childrenState1 = [state1 boolValue];
             model.childrenState2 = [state2 boolValue];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@4}];
+            if (!appControlling) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@4}];
+            }
             *stop = YES;
         }
     }];
@@ -723,5 +962,234 @@
     return  _allTimerColorfulNums;
 }
 
+- (void)controlScene:(NSNumber *)sceneId {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(cancelAppControlling) object:nil];
+    appControlling = YES;
+    [self performSelector:@selector(cancelAppControlling) withObject:nil afterDelay:4.0];
+    
+    SceneEntity *scene = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:sceneId];
+    for (SceneMemberEntity *member in scene.members) {
+        for (DeviceModel *model in _allDevices) {
+            if ([model.deviceId isEqualToNumber:member.deviceID]) {
+                if ([CSRUtilities belongToSwitch:model.shortName]) {
+                    if ([member.eveType integerValue] == 17) {
+                        model.channel1PowerState = NO;
+                        model.powerState = @0;
+                    }else if ([member.eveType integerValue] == 16) {
+                        model.channel1PowerState = YES;
+                        model.powerState = @1;
+                    }
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@1}];
+                }else if ([CSRUtilities belongToTwoChannelSwitch:model.shortName]) {
+                    if ([member.channel integerValue] == 1) {
+                        if ([member.eveType integerValue] == 17) {
+                            model.channel1PowerState = NO;
+                        }else if ([member.eveType integerValue] == 16) {
+                            model.channel1PowerState = YES;
+                        }
+                    }else if ([member.channel integerValue] == 2) {
+                        if ([member.eveType integerValue] == 17) {
+                            model.channel2PowerState = NO;
+                        }else if ([member.eveType integerValue] == 16) {
+                            model.channel2PowerState = YES;
+                        }
+                    }
+                    model.powerState = @(model.channel1PowerState || model.channel2PowerState);
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@([member.channel integerValue]+1)}];
+                }else if ([CSRUtilities belongToThreeChannelSwitch:model.shortName]) {
+                    if ([member.channel integerValue] == 1) {
+                        if ([member.eveType integerValue] == 17) {
+                            model.channel1PowerState = NO;
+                        }else if ([member.eveType integerValue] == 16) {
+                            model.channel1PowerState = YES;
+                        }
+                    }else if ([member.channel integerValue] == 2) {
+                        if ([member.eveType integerValue] == 17) {
+                            model.channel2PowerState = NO;
+                        }else if ([member.eveType integerValue] == 16) {
+                            model.channel2PowerState = YES;
+                        }
+                    }else if ([member.channel integerValue] == 4) {
+                        if ([member.eveType integerValue] == 17) {
+                            model.channel3PowerState = NO;
+                        }else if ([member.eveType integerValue] == 16) {
+                            model.channel3PowerState = YES;
+                        }
+                    }
+                    model.powerState = @(model.channel1PowerState || model.channel2PowerState || model.channel3PowerState);
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@([member.channel integerValue]+1)}];
+                }else if ([CSRUtilities belongToDimmer:model.shortName]) {
+                    if ([member.eveType integerValue] == 17) {
+                        model.channel1PowerState = NO;
+                        model.powerState = @0;
+                    }else if ([member.eveType integerValue] == 18) {
+                        model.channel1PowerState = YES;
+                        model.channel1Level = [member.eveD0 integerValue];
+                        model.powerState = @1;
+                        model.level = member.eveD0;
+                    }
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@1}];
+                }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName]) {
+                    if ([member.channel integerValue] == 1) {
+                        if ([member.eveType integerValue] == 17) {
+                            model.channel1PowerState = NO;
+                        }else if ([member.eveType integerValue] == 18) {
+                            model.channel1PowerState = YES;
+                            model.channel1Level = [member.eveD0 integerValue];
+                        }
+                    }else if ([member.channel integerValue] == 2) {
+                        if ([member.eveType integerValue] == 17) {
+                            model.channel2PowerState = NO;
+                        }else if ([member.eveType integerValue] == 18) {
+                            model.channel2PowerState = YES;
+                            model.channel2Level = [member.eveD0 integerValue];
+                        }
+                    }
+                    model.powerState = @(model.channel1PowerState || model.channel2PowerState);
+                    model.level = @(model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level);
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@([member.channel integerValue]+1)}];
+                }else if ([CSRUtilities belongToCWDevice:model.shortName]) {
+                    if ([member.eveType integerValue] == 17) {
+                        model.channel1PowerState = NO;
+                        model.powerState = @0;
+                    }else if ([member.eveType integerValue] == 25) {
+                        model.channel1PowerState = YES;
+                        model.channel1Level = [member.eveD0 integerValue];
+                        model.colorTemperature = @([member.eveD1 integerValue] * 256 + [member.eveD2 integerValue]);
+                        model.level = member.eveD0;
+                    }
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@1}];
+                }else if ([CSRUtilities belongToRGBDevice:model.shortName]) {
+                    if ([member.eveType integerValue] == 17) {
+                        model.channel1PowerState = NO;
+                        model.powerState = @0;
+                    }else if ([member.eveType integerValue] == 20) {
+                        model.channel1PowerState = YES;
+                        model.channel1Level = [member.eveD0 integerValue];
+                        model.red = member.eveD1;
+                        model.green = member.eveD2;
+                        model.blue = member.eveD3;
+                        model.powerState = @1;
+                        model.level = member.eveD0;
+                    }
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@1}];
+                }else if ([CSRUtilities belongToRGBCWDevice:model.shortName]) {
+                    if ([member.eveType integerValue] == 17) {
+                        model.channel1PowerState = NO;
+                        model.powerState = @0;
+                    }else if ([member.eveType integerValue] == 20) {
+                        model.channel1PowerState = YES;
+                        model.channel1Level = [member.eveD0 integerValue];
+                        model.red = member.eveD1;
+                        model.green = member.eveD2;
+                        model.blue = member.eveD3;
+                        model.supports = @0;
+                        model.powerState = @1;
+                        model.level = member.eveD0;
+                    }else if ([member.eveType integerValue] == 25) {
+                        model.channel1PowerState = YES;
+                        model.channel1Level = [member.eveD0 integerValue];
+                        model.colorTemperature = @([member.eveD1 integerValue] * 256 + [member.eveD2 integerValue]);
+                        model.supports = @1;
+                        model.powerState = @1;
+                        model.level = member.eveD0;
+                    }
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@1}];
+                }else if ([CSRUtilities belongToSocketOneChannel:model.shortName]) {
+                    model.channel1PowerState = [member.eveD0 boolValue];
+                    model.childrenState1 = [member.eveD1 boolValue];
+                    model.powerState = member.eveD0;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@1}];
+                }else if ([CSRUtilities belongToSocketTwoChannel:model.shortName]) {
+                    if ([member.channel integerValue] == 1) {
+                        model.channel1PowerState = [member.eveD0 boolValue];
+                        model.childrenState1 = [member.eveD1 boolValue];
+                    }else if ([member.channel integerValue] == 2) {
+                        model.channel2PowerState = [member.eveD0 boolValue];
+                        model.childrenState2 = [member.eveD1 boolValue];
+                    }
+                    model.powerState = @(model.channel1PowerState || model.channel2PowerState);
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@([member.channel integerValue]+1)}];
+                }else if ([CSRUtilities belongToOneChannelCurtainController:model.shortName]) {
+                    if ([member.eveType integerValue] == 17) {
+                        model.channel1PowerState = NO;
+                        model.powerState = @0;
+                    }else if ([member.eveType integerValue] == 18) {
+                        model.channel1PowerState = YES;
+                        model.channel1Level = [member.eveD0 integerValue];
+                        model.powerState = @1;
+                        model.level = member.eveD0;
+                    }
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@1}];
+                }else if ([CSRUtilities belongToTwoChannelCurtainController:model.shortName]) {
+                    if ([member.channel integerValue] == 1) {
+                        if ([member.eveType integerValue] == 17) {
+                            model.channel1PowerState = NO;
+                        }else if ([member.eveType integerValue] == 18) {
+                            model.channel1PowerState = YES;
+                            model.channel1Level = [member.eveD0 integerValue];
+                        }
+                    }else if ([member.channel integerValue] == 2) {
+                        if ([member.eveType integerValue] == 17) {
+                            model.channel2PowerState = NO;
+                        }else if ([member.eveType integerValue] == 18) {
+                            model.channel2PowerState = YES;
+                            model.channel2Level = [member.eveD0 integerValue];
+                        }
+                    }
+                    model.powerState = @(model.channel1PowerState || model.channel2PowerState);
+                    model.level = @(model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level);
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@([member.channel integerValue]+1)}];
+                }else if ([CSRUtilities belongToFanController:model.shortName]) {
+                    model.fanState = [member.eveD0 boolValue];
+                    model.fansSpeed = [member.eveD1 intValue];
+                    model.lampState = [member.eveD2 boolValue];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@1}];
+                }
+                break;
+            }
+        }
+    }
+}
+
+- (void)cancelAppControlling {
+    appControlling = NO;
+}
+
+- (void)remoteControlScene: (NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *sceneIndex = userInfo[@"sceneIndex"];
+    SceneEntity *scene = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:sceneIndex];
+    if (scene) {
+        [self controlScene:scene.sceneID];
+    }
+}
+
+- (void)remoteControlGroup: (NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *grouId = userInfo[@"groupId"];
+    NSNumber *powerState = userInfo[@"powerState"];
+    CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:grouId];
+    if (area && [area.devices count]>0) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(cancelAppControlling) object:nil];
+        appControlling = YES;
+        [self performSelector:@selector(cancelAppControlling) withObject:nil afterDelay:4.0];
+        
+        for (CSRDeviceEntity *member in area.devices) {
+            for (DeviceModel *model in _allDevices) {
+                if ([model.deviceId isEqualToNumber:member.deviceId]) {
+                    model.powerState = powerState;
+                    model.channel1PowerState = [powerState boolValue];
+                    model.channel2PowerState = [powerState boolValue];
+                    model.channel3PowerState = [powerState boolValue];
+                    model.fanState = [powerState boolValue];
+                    model.lampState = [powerState boolValue];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceId,@"channel":@1}];
+                    break;
+                }
+            }
+        }
+    }
+}
 
 @end

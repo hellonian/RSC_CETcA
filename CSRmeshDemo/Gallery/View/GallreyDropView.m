@@ -114,7 +114,7 @@
     if (sender.state == UIGestureRecognizerStateEnded) {
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
         if ([self.channel integerValue] == 1) {
-            [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(![model.powerState boolValue])];
+            [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@1 withPowerState:!model.powerState];
         }else if ([self.channel integerValue] == 2) {
             Byte byte[] = {0x51, 0x05, 0x01, 0x00, 0x01, !model.channel1PowerState, model.channel1Level};
             NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];

@@ -1141,7 +1141,7 @@
 }
 
 + (BOOL)belongToMainVCDevice: (NSString *)shortName {
-    if ([kDimmers containsObject:shortName] || [kSwitchs containsObject:shortName] || [kCWDevices containsObject:shortName] || [kRGBDevices containsObject:shortName] || [kRGBCWDevices containsObject:shortName] || [kOneChannelCurtainController containsObject:shortName] || [kTwoChannelCurtainController containsObject:shortName] || [kFanController containsObject:shortName] || [kSockets containsObject:shortName] || [kTwoChannelDimmers containsObject:shortName] || [kTwoChannelSwitchs containsObject:shortName] || [kSceneRemotes containsObject:shortName] || [kCWRemotes containsObject:shortName] || [kRGBRemotes containsObject:shortName] || [kRGBCWRemotes containsObject:shortName] || [kLCDRemote containsObject:shortName] || [kThreeChannelSwitchs containsObject:shortName]) {
+    if ([kDimmers containsObject:shortName] || [kSwitchs containsObject:shortName] || [kCWDevices containsObject:shortName] || [kRGBDevices containsObject:shortName] || [kRGBCWDevices containsObject:shortName] || [kOneChannelCurtainController containsObject:shortName] || [kTwoChannelCurtainController containsObject:shortName] || [kFanController containsObject:shortName] || [kSockets containsObject:shortName] || [kTwoChannelDimmers containsObject:shortName] || [kTwoChannelSwitchs containsObject:shortName] || [kCWRemotes containsObject:shortName] || [kRGBRemotes containsObject:shortName] || [kRGBCWRemotes containsObject:shortName] || [kSceneRemotesSixKeys containsObject:shortName] || [kSceneRemotesFourKeys containsObject:shortName] || [kSceneRemotesThreeKeys containsObject:shortName] || [kSceneRemotesTwoKeys containsObject:shortName] || [kSceneRemotesOneKey containsObject:shortName] || [kLCDRemote containsObject:shortName] || [kThreeChannelSwitchs containsObject:shortName]) {
         return YES;
     }
     return NO;
@@ -1259,13 +1259,6 @@
     return NO;
 }
 
-+ (BOOL)belongToSceneRemote:(NSString *)shortName {
-    if ([kSceneRemotes containsObject:shortName]) {
-        return YES;
-    }
-    return NO;
-}
-
 + (BOOL)belongToCWRemote:(NSString *)shortName {
     if ([kCWRemotes containsObject:shortName]) {
         return YES;
@@ -1296,6 +1289,47 @@
 
 + (BOOL)belongToThreeChannelSwitch:(NSString *)shortName {
     if ([kThreeChannelSwitchs containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToSceneRemoteSixKeys:(NSString *)shortName {
+    if ([kSceneRemotesSixKeys containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToSceneRemoteFourKeys:(NSString *)shortName {
+    if ([kSceneRemotesFourKeys containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToSceneRemoteThreeKeys:(NSString *)shortName {
+    if ([kSceneRemotesThreeKeys containsObject:shortName]) {
+        return YES;
+    }
+    return NO;;
+}
+
++ (BOOL)belongToSceneRemoteTwoKeys:(NSString *)shortName {
+    if ([kSceneRemotesTwoKeys containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
++ (BOOL)belongToSceneRemoteOneKey:(NSString *)shortName {
+    if ([kSceneRemotesOneKey containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToFadeDevice:(NSString *)shortName {
+    if ([kFadeDevice containsObject:shortName]) {
         return YES;
     }
     return NO;

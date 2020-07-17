@@ -121,7 +121,6 @@
 + (BOOL)belongToSocketTwoChannel:(NSString *)shortName;
 + (BOOL)belongToTwoChannelSwitch:(NSString *)shortName;
 + (BOOL)belongToDALDevice:(NSString *)shortName;
-+ (BOOL)belongToSceneRemote:(NSString *)shortName;
 + (BOOL)belongToCWRemote:(NSString *)shortName;
 + (BOOL)belongToRGBRemote:(NSString *)shortName;
 + (BOOL)belongToRGBCWRemote:(NSString *)shortName;
@@ -129,8 +128,14 @@
 + (BOOL)belongToLCDRemote:(NSString *)shortName;
 + (BOOL)belongToThreeChannelSwitch:(NSString *)shortName;
 + (BOOL)belongToThreeChannelDimmer:(NSString *)shortName;
++ (BOOL)belongToSceneRemoteSixKeys:(NSString *)shortName;
++ (BOOL)belongToSceneRemoteFourKeys:(NSString *)shortName;
++ (BOOL)belongToSceneRemoteThreeKeys:(NSString *)shortName;
++ (BOOL)belongToSceneRemoteTwoKeys:(NSString *)shortName;
++ (BOOL)belongToSceneRemoteOneKey:(NSString *)shortName;
++ (BOOL)belongToFadeDevice:(NSString *)shortName;
 
-+(NSString *)convertToJsonData:(NSDictionary *)dict;
++ (NSString *)convertToJsonData:(NSDictionary *)dict;
 + (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString;
 + (NSString *)exchangePositionOfDeviceId:(NSInteger)deviceId;
 

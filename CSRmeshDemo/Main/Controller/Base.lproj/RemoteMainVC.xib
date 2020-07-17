@@ -11,6 +11,14 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RemoteMainVC">
             <connections>
                 <outlet property="circleImageView" destination="nZm-tl-ybY" id="wwS-kl-cfs"/>
+                <outlet property="keyFourRightConstraint" destination="0VJ-Uw-tPH" id="ijo-sa-OA4"/>
+                <outlet property="keyFourTopConstraint" destination="Zd0-Lq-hTC" id="6NU-JW-NZo"/>
+                <outlet property="keyOneLeftConstraint" destination="rta-EV-pLc" id="dOB-ba-GjE"/>
+                <outlet property="keyOneTopConstraint" destination="eCd-cq-QHr" id="bY6-Un-vHz"/>
+                <outlet property="keyThreeLeftConstraint" destination="DVo-aw-1xN" id="205-wc-dkV"/>
+                <outlet property="keyThreeTopConstraint" destination="4ea-aP-kSf" id="tBJ-Ds-WCK"/>
+                <outlet property="keyTwoRightConstraint" destination="KU9-0h-Luh" id="yXo-a7-aCD"/>
+                <outlet property="keyTwoTopConstraint" destination="E5X-6R-WlG" id="eNi-wi-29N"/>
                 <outlet property="macAddressLabel" destination="AGj-iT-LR1" id="VKG-YQ-5Oz"/>
                 <outlet property="nameTf" destination="UuL-In-9bd" id="IbN-wL-jK2"/>
                 <outlet property="nameView" destination="8Fw-EQ-Xc4" id="X6U-Jl-X18"/>
@@ -300,16 +308,17 @@
             <point key="canvasLocation" x="-518.84057971014499" y="-15.401785714285714"/>
         </view>
         <view contentMode="scaleToFill" id="mEz-d0-cpB">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="376"/>
+            <rect key="frame" x="0.0" y="0.0" width="320" height="320"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="remotescenebg" translatesAutoresizingMaskIntoConstraints="NO" id="nwn-Zd-fva">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="376"/>
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="320"/>
                 </imageView>
                 <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qWD-88-Gch">
-                    <rect key="frame" x="89.5" y="96.5" width="60" height="46"/>
+                    <rect key="frame" x="79" y="56" width="67" height="52"/>
                     <constraints>
-                        <constraint firstAttribute="width" secondItem="qWD-88-Gch" secondAttribute="height" multiplier="30:23" id="oUv-Vu-sEW"/>
+                        <constraint firstAttribute="width" constant="67" id="0Lo-cS-66I"/>
+                        <constraint firstAttribute="height" constant="52" id="Ya7-XP-kXf"/>
                     </constraints>
                     <state key="normal" image="remotescenebtn_default"/>
                     <state key="highlighted" image="remotescenebtn_highlighted"/>
@@ -317,21 +326,11 @@
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="nwL-CO-dYJ"/>
                     </connections>
                 </button>
-                <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ECh-R7-G6c">
-                    <rect key="frame" x="170.5" y="96.5" width="60" height="46"/>
-                    <constraints>
-                        <constraint firstAttribute="width" secondItem="ECh-R7-G6c" secondAttribute="height" multiplier="30:23" id="ucb-VH-vjS"/>
-                    </constraints>
-                    <state key="normal" image="remotescenebtn_default"/>
-                    <state key="highlighted" image="remotescenebtn_highlighted"/>
-                    <connections>
-                        <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="9E2-uD-gqU"/>
-                    </connections>
-                </button>
                 <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="azG-zw-7yb">
-                    <rect key="frame" x="89.5" y="165" width="60" height="46"/>
+                    <rect key="frame" x="79" y="133" width="67" height="52"/>
                     <constraints>
-                        <constraint firstAttribute="width" secondItem="azG-zw-7yb" secondAttribute="height" multiplier="30:23" id="1Hm-fR-zOc"/>
+                        <constraint firstAttribute="width" constant="67" id="9JE-YM-KKL"/>
+                        <constraint firstAttribute="height" constant="52" id="lzv-qf-2xc"/>
                     </constraints>
                     <state key="normal" image="remotescenebtn_default"/>
                     <state key="highlighted" image="remotescenebtn_highlighted"/>
@@ -340,9 +339,10 @@
                     </connections>
                 </button>
                 <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kKM-1c-QF1">
-                    <rect key="frame" x="170.5" y="165" width="60" height="46"/>
+                    <rect key="frame" x="174" y="133" width="67" height="52"/>
                     <constraints>
-                        <constraint firstAttribute="width" secondItem="kKM-1c-QF1" secondAttribute="height" multiplier="30:23" id="Ssw-SH-QPG"/>
+                        <constraint firstAttribute="height" constant="52" id="Bfr-oJ-xLe"/>
+                        <constraint firstAttribute="width" constant="67" id="KYw-jy-cpo"/>
                     </constraints>
                     <state key="normal" image="remotescenebtn_default"/>
                     <state key="highlighted" image="remotescenebtn_highlighted"/>
@@ -351,9 +351,10 @@
                     </connections>
                 </button>
                 <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8T7-IW-tfl">
-                    <rect key="frame" x="89.5" y="233.5" width="60" height="46"/>
+                    <rect key="frame" x="79" y="212" width="67" height="52"/>
                     <constraints>
-                        <constraint firstAttribute="width" secondItem="8T7-IW-tfl" secondAttribute="height" multiplier="30:23" id="IsF-Yw-0SU"/>
+                        <constraint firstAttribute="width" constant="67" id="LZJ-rJ-wSk"/>
+                        <constraint firstAttribute="height" constant="52" id="Xpf-yh-qlY"/>
                     </constraints>
                     <state key="normal" image="remotescenebtn_default"/>
                     <state key="highlighted" image="remotescenebtn_highlighted"/>
@@ -362,9 +363,10 @@
                     </connections>
                 </button>
                 <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZPn-Fo-B4N">
-                    <rect key="frame" x="170.5" y="233.5" width="60" height="46"/>
+                    <rect key="frame" x="174" y="212" width="67" height="52"/>
                     <constraints>
-                        <constraint firstAttribute="width" secondItem="ZPn-Fo-B4N" secondAttribute="height" multiplier="30:23" id="IaN-Vh-lgj"/>
+                        <constraint firstAttribute="height" constant="52" id="27e-T9-coe"/>
+                        <constraint firstAttribute="width" constant="67" id="kQ3-Aq-Ida"/>
                     </constraints>
                     <state key="normal" image="remotescenebtn_default"/>
                     <state key="highlighted" image="remotescenebtn_highlighted"/>
@@ -372,35 +374,41 @@
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="tfz-Ef-YvS"/>
                     </connections>
                 </button>
+                <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ECh-R7-G6c">
+                    <rect key="frame" x="174" y="56" width="67" height="52"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="67" id="2lD-li-0we"/>
+                        <constraint firstAttribute="height" constant="52" id="md9-4n-K2P"/>
+                    </constraints>
+                    <state key="normal" image="remotescenebtn_default"/>
+                    <state key="highlighted" image="remotescenebtn_highlighted"/>
+                    <connections>
+                        <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="9E2-uD-gqU"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
             <constraints>
-                <constraint firstItem="8T7-IW-tfl" firstAttribute="centerY" secondItem="mEz-d0-cpB" secondAttribute="centerY" multiplier="769:564" id="0Yw-wT-MSg"/>
-                <constraint firstItem="azG-zw-7yb" firstAttribute="centerX" secondItem="mEz-d0-cpB" secondAttribute="centerX" multiplier="179:240" id="8K6-fD-jta"/>
-                <constraint firstItem="8T7-IW-tfl" firstAttribute="width" secondItem="mEz-d0-cpB" secondAttribute="width" multiplier="3:16" id="AS5-9p-w69"/>
+                <constraint firstAttribute="trailing" secondItem="kKM-1c-QF1" secondAttribute="trailing" constant="79" id="0VJ-Uw-tPH"/>
+                <constraint firstItem="azG-zw-7yb" firstAttribute="top" secondItem="mEz-d0-cpB" secondAttribute="top" constant="133" id="4ea-aP-kSf"/>
+                <constraint firstAttribute="bottom" secondItem="8T7-IW-tfl" secondAttribute="bottom" constant="56" id="6s6-ed-HkY"/>
+                <constraint firstAttribute="bottom" secondItem="ZPn-Fo-B4N" secondAttribute="bottom" constant="56" id="949-8T-lpL"/>
                 <constraint firstItem="nwn-Zd-fva" firstAttribute="top" secondItem="mEz-d0-cpB" secondAttribute="top" id="Abq-yf-SmH"/>
-                <constraint firstItem="ECh-R7-G6c" firstAttribute="centerX" secondItem="mEz-d0-cpB" secondAttribute="centerX" multiplier="301:240" id="CYU-7E-akD"/>
-                <constraint firstItem="azG-zw-7yb" firstAttribute="width" secondItem="mEz-d0-cpB" secondAttribute="width" multiplier="3:16" id="FdD-AI-MeB"/>
-                <constraint firstItem="ZPn-Fo-B4N" firstAttribute="centerY" secondItem="mEz-d0-cpB" secondAttribute="centerY" multiplier="769:564" id="H4I-nr-NFD"/>
-                <constraint firstItem="qWD-88-Gch" firstAttribute="centerY" secondItem="mEz-d0-cpB" secondAttribute="centerY" multiplier="359:564" id="Hmr-rn-0Kn"/>
+                <constraint firstItem="azG-zw-7yb" firstAttribute="leading" secondItem="mEz-d0-cpB" secondAttribute="leading" constant="79" id="DVo-aw-1xN"/>
+                <constraint firstItem="ECh-R7-G6c" firstAttribute="top" secondItem="mEz-d0-cpB" secondAttribute="top" constant="56" id="E5X-6R-WlG"/>
+                <constraint firstAttribute="trailing" secondItem="ECh-R7-G6c" secondAttribute="trailing" constant="79" id="KU9-0h-Luh"/>
                 <constraint firstItem="nwn-Zd-fva" firstAttribute="bottom" secondItem="7dv-PH-Zdt" secondAttribute="bottom" id="LDR-iK-Rpf"/>
                 <constraint firstItem="nwn-Zd-fva" firstAttribute="trailing" secondItem="7dv-PH-Zdt" secondAttribute="trailing" id="PLP-Vu-Ahd"/>
-                <constraint firstItem="qWD-88-Gch" firstAttribute="width" secondItem="mEz-d0-cpB" secondAttribute="width" multiplier="3:16" id="VdX-aM-BHz"/>
-                <constraint firstItem="ZPn-Fo-B4N" firstAttribute="centerX" secondItem="mEz-d0-cpB" secondAttribute="centerX" multiplier="301:240" id="Vqh-B6-VDy"/>
-                <constraint firstItem="8T7-IW-tfl" firstAttribute="centerX" secondItem="mEz-d0-cpB" secondAttribute="centerX" multiplier="179:240" id="Z5N-n6-7vK"/>
-                <constraint firstItem="qWD-88-Gch" firstAttribute="centerX" secondItem="mEz-d0-cpB" secondAttribute="centerX" multiplier="179:240" id="cmf-lF-VJg"/>
-                <constraint firstItem="ECh-R7-G6c" firstAttribute="width" secondItem="mEz-d0-cpB" secondAttribute="width" multiplier="3:16" id="cz0-ex-tK2"/>
-                <constraint firstItem="kKM-1c-QF1" firstAttribute="centerX" secondItem="mEz-d0-cpB" secondAttribute="centerX" multiplier="301:240" id="ffh-OK-s9b"/>
-                <constraint firstItem="kKM-1c-QF1" firstAttribute="centerY" secondItem="mEz-d0-cpB" secondAttribute="centerY" id="lJ9-31-3ce"/>
+                <constraint firstItem="kKM-1c-QF1" firstAttribute="top" secondItem="mEz-d0-cpB" secondAttribute="top" constant="133" id="Zd0-Lq-hTC"/>
+                <constraint firstItem="qWD-88-Gch" firstAttribute="top" secondItem="mEz-d0-cpB" secondAttribute="top" constant="56" id="eCd-cq-QHr"/>
                 <constraint firstItem="nwn-Zd-fva" firstAttribute="leading" secondItem="7dv-PH-Zdt" secondAttribute="leading" id="puV-Fm-aIe"/>
-                <constraint firstItem="azG-zw-7yb" firstAttribute="centerY" secondItem="mEz-d0-cpB" secondAttribute="centerY" id="qcu-vl-Ucq"/>
-                <constraint firstItem="kKM-1c-QF1" firstAttribute="width" secondItem="mEz-d0-cpB" secondAttribute="width" multiplier="3:16" id="qg1-Vy-dPJ"/>
-                <constraint firstItem="ECh-R7-G6c" firstAttribute="centerY" secondItem="mEz-d0-cpB" secondAttribute="centerY" multiplier="359:564" id="t3m-EJ-bxQ"/>
-                <constraint firstItem="ZPn-Fo-B4N" firstAttribute="width" secondItem="mEz-d0-cpB" secondAttribute="width" multiplier="3:16" id="yJu-v9-EBr"/>
+                <constraint firstItem="qWD-88-Gch" firstAttribute="leading" secondItem="mEz-d0-cpB" secondAttribute="leading" constant="79" id="rta-EV-pLc"/>
+                <constraint firstAttribute="trailing" secondItem="ZPn-Fo-B4N" secondAttribute="trailing" constant="79" id="xBj-cR-nWd"/>
+                <constraint firstItem="8T7-IW-tfl" firstAttribute="leading" secondItem="mEz-d0-cpB" secondAttribute="leading" constant="79" id="yEQ-Sr-c4b"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="7dv-PH-Zdt"/>
-            <point key="canvasLocation" x="-519" y="256"/>
+            <point key="canvasLocation" x="-519" y="251"/>
         </view>
     </objects>
     <resources>
@@ -413,7 +421,7 @@
         <image name="remotebtn9_default" width="66.666664123535156" height="66.666664123535156"/>
         <image name="remotebtn9_highlighted" width="66.666664123535156" height="66.666664123535156"/>
         <image name="remotemainbg" width="738.66668701171875" height="738.66668701171875"/>
-        <image name="remotescenebg" width="320" height="376"/>
+        <image name="remotescenebg" width="280" height="280"/>
         <image name="remotescenebtn_default" width="60" height="46"/>
         <image name="remotescenebtn_highlighted" width="60" height="46"/>
     </resources>

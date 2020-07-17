@@ -673,6 +673,10 @@
                 for (UpdateDeviceModel *model in _dataArray) {
                     if ([model.deviceId isEqualToNumber:deviceId]) {
                         model.needUpdate = NO;
+                        model.bleHwVersion = deviceEntity.bleHwVersion;
+                        model.bleFVersion = deviceEntity.bleFirVersion;
+                        model.fVersion = deviceEntity.firVersion;
+                        model.hVersion = deviceEntity.hwVersion;
                         [self.tableView reloadData];
                         break;
                     }

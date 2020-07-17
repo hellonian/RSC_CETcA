@@ -192,3 +192,6 @@
 "removetimerfail" = "以下设备无法移除定时，检查设备是否断电，或已被初始化:";
 "enabletimerfail" = "以下设备无法更改使能，检查设备是否断电，或已被初始化:";
 "remotereadalert" = "连按六下任意一个按钮，指示灯闪烁时点击确定。";
+"fadeintime" = "淡入时间：";
+"fadetime" = "淡出时间：";
+"channel" = "通道：";

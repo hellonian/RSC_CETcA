@@ -318,9 +318,6 @@
             [peripheral setUuidString:adString];
         }
     }
-//    if ([peripheral.name isEqualToString:@"DNLT11W"]||[peripheral.name isEqualToString:@"IERGBCW"]) {
-//        NSLog(@"ble:%@  %@  %d",peripheral.name,peripheral.uuidString,self.isUpdateFW);
-//    }
     if (self.isUpdateFW && peripheral.name != nil) {
         if (![_foundPeripherals containsObject:peripheral]) {
             [_foundPeripherals addObject:peripheral];
@@ -342,6 +339,7 @@
 #ifdef BRIDGE_ROAMING_ENABLE
             
             [[CSRBridgeRoaming sharedInstance] didDiscoverBridgeDevice:central peripheral:peripheral advertisment:advertisementData RSSI:RSSI];
+            
 #endif
             
             if (![discoveredBridges containsObject:peripheral]) {

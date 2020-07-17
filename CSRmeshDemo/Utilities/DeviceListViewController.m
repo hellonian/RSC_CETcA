@@ -141,6 +141,7 @@
 
 - (void)loadData {
     [_devicesCollectionView.dataArray removeAllObjects];
+    [_selectedDevices removeAllObjects];
     if (self.selectMode == DeviceListSelectMode_ForGroup) {
         
         NSMutableArray *deviceIds = [[NSMutableArray alloc] init];
@@ -776,6 +777,7 @@
                 mod.channel = @(1);
                 mod.sourceID = _sourceID;
                 [_selectedDevices addObject:mod];
+                _originalMembers = [NSArray arrayWithArray:_selectedDevices];
             }else if (_selectMode == DeviceListSelectMode_ForLightSensor
                       || _selectMode == DeviceListSelectMode_SelectRGBCWDevice
                       || _selectMode == DeviceListSelectMode_SelectRGBDevice

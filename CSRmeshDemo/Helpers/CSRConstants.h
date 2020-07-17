@@ -43,10 +43,14 @@
 #define kSwitchs @[@"S350BT",@"S350B",@"S2400IB",@"S350B-H",@"S2400IB-H",@"S2400IB-T4",@"S10IB",@"S10IB-H2",@"S10IBH",@"S2400IB-Q",@"GS10B",@"ES350B",@"S6AB",@"TS10B-1G",@"RM300BH",@"TS10B"]
 #define kRemotes @[@"RB01",@"RB02",@"S10IB-H2",@"RB04",@"RSIBH",@"R5BSBH",@"R9BSBH",@"RB07",@"RB06",@"RSBH",@"RB05",@"RB09",@"1BMBH",@"5RSIBH",@"5BCBH",@"6RSIBH",@"H1CSWB",@"H2CSWB",@"H3CSWB",@"H4CSWB",@"H6CSWB"]
 
-#define kSceneRemotes @[@"GR10B",@"RB08",@"H1CSB-RD",@"H2CSB-BU",@"H3CSB-BU",@"H4CSB-BK",@"H6CSB-WH",@"6BWS",@"1BWS",@"2BWS",@"3BWS",@"TR10B",@"TR6B"]
 #define kCWRemotes @[@"GR12B", @"TR12B"]
 #define kRGBRemotes @[@"GR13B", @"TR13B"]
 #define kRGBCWRemotes @[@"GR15B", @"TR15B"]
+#define kSceneRemotesSixKeys @[@"TR6B", @"PR6B"]
+#define kSceneRemotesFourKeys @[@"TR4B"]
+#define kSceneRemotesThreeKeys @[@"TR3B"]
+#define kSceneRemotesTwoKeys @[@"TR2B"]
+#define kSceneRemotesOneKey @[@"TR1B"]
 
 #define kLCDRemote @[@"GR1000B"]
 
@@ -59,7 +63,7 @@
 #define kOneChannelSwitchs @[@"S6AB",@"TS10B-1G"]//实体按键控制反馈使用52开头协议，区别于普通单路调光器的87开头协议
 #define kOneChannelDimmers @[@"GD400B",@"TD400B",@"DM300BH",@"TD300B"]//实体按键控制反馈使用52开头协议，区别于普通单路调光器的87开头协议
 #define kTwoChannelDimmers @[@"D200IB-2G",@"D200GB-2G",@"GD400B-2G",@"ED500B-2G",@"D300IB-2G",@"TD400B-2G"]
-#define kThreeChannelDimmers @[]
+#define kThreeChannelDimmers @[@"TD400B-3G"]
 
 #define kThreeChannelSwitchs @[@"TS10B-3G",@"TS18B-3G"]
 
@@ -79,6 +83,8 @@
 #define kFanController @[@"F350B-H",@"F350IBH",@"F150IBH",@"FC150A"]
 
 #define kDALDevice @[@"DDSB",@"DAL-IBH",@"DDAL"]
+
+#define kFadeDevice @[@"TD300B", @"TD400B-2G", @"TD400B-3G"]
 
 #pragma mark - Notifications
 

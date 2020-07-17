@@ -21,7 +21,11 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
     MainRemoteType_RGB = 0,
     MainRemoteType_RGBCW,
     MainRemoteType_CW,
-    MainRemoteType_Scene
+    MainRemoteType_SceneSix,
+    MainRemoteType_SceneFour,
+    MainRemoteType_SceneThree,
+    MainRemoteType_SceneTwo,
+    MainRemoteType_SceneOne
 };
 
 @interface RemoteMainVC ()<UITextFieldDelegate>
@@ -59,6 +63,14 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
 @property (weak, nonatomic) IBOutlet UIButton *remoteBtn22;
 @property (weak, nonatomic) IBOutlet UIButton *remoteBtn23;
 @property (nonatomic, strong) NSMutableArray *beganLongpressGestures;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *keyOneTopConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *keyOneLeftConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *keyTwoTopConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *keyTwoRightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *keyThreeTopConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *keyThreeLeftConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *keyFourTopConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *keyFourRightConstraint;
 
 @end
 
@@ -219,35 +231,47 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [_remoteBtn15 addGestureRecognizer:gesture15];
             UILongPressGestureRecognizer *gesture16 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn16 addGestureRecognizer:gesture16];
-        }else if ([CSRUtilities belongToSceneRemote:deviceEntity.shortName]) {
-            _mType = MainRemoteType_Scene;
-            [self prepare2:deviceEntity];
-
-            _remoteBtn18.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn18.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn19.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn19.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn20.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn20.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn21.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn21.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn22.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn22.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn23.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn23.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            
-            UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
-            [_remoteBtn18 addGestureRecognizer:gesture17];
-            UILongPressGestureRecognizer *gesture18 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
-            [_remoteBtn19 addGestureRecognizer:gesture18];
-            UILongPressGestureRecognizer *gesture19 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
-            [_remoteBtn20 addGestureRecognizer:gesture19];
-            UILongPressGestureRecognizer *gesture20 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
-            [_remoteBtn21 addGestureRecognizer:gesture20];
-            UILongPressGestureRecognizer *gesture21 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
-            [_remoteBtn22 addGestureRecognizer:gesture21];
-            UILongPressGestureRecognizer *gesture22 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
-            [_remoteBtn23 addGestureRecognizer:gesture22];
+        }else if ([CSRUtilities belongToSceneRemoteSixKeys:deviceEntity.shortName]) {
+            _mType = MainRemoteType_SceneSix;
+            [self prepare2:deviceEntity.remoteBranch keyCount:6];
+        }else if ([CSRUtilities belongToSceneRemoteFourKeys:deviceEntity.shortName]) {
+            _mType = MainRemoteType_SceneFour;
+            [self prepare2:deviceEntity.remoteBranch keyCount:4];
+            _remoteBtn22.hidden = YES;
+            _remoteBtn23.hidden = YES;
+            _keyThreeTopConstraint.constant = 212;
+            _keyFourTopConstraint.constant = 212;
+        }else if ([CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]) {
+            _mType = MainRemoteType_SceneThree;
+            [self prepare2:deviceEntity.remoteBranch keyCount:3];
+            _remoteBtn21.hidden = YES;
+            _remoteBtn22.hidden = YES;
+            _remoteBtn23.hidden = YES;
+            _keyOneLeftConstraint.constant = 127;
+            _keyTwoTopConstraint.constant = 133;
+            _keyTwoRightConstraint.constant = 127;
+            _keyThreeTopConstraint.constant = 212;
+            _keyThreeLeftConstraint.constant = 127;
+        }else if ([CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]) {
+            _mType = MainRemoteType_SceneTwo;
+            [self prepare2:deviceEntity.remoteBranch keyCount:2];
+            _remoteBtn20.hidden = YES;
+            _remoteBtn21.hidden = YES;
+            _remoteBtn22.hidden = YES;
+            _remoteBtn23.hidden = YES;
+            _keyOneLeftConstraint.constant = 127;
+            _keyTwoTopConstraint.constant = 212;
+            _keyTwoRightConstraint.constant = 127;
+        }else if ([CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]) {
+            _mType = MainRemoteType_SceneOne;
+            [self prepare2:deviceEntity.remoteBranch keyCount:1];
+            _remoteBtn19.hidden = YES;
+            _remoteBtn20.hidden = YES;
+            _remoteBtn21.hidden = YES;
+            _remoteBtn22.hidden = YES;
+            _remoteBtn23.hidden = YES;
+            _keyOneTopConstraint.constant = 133;
+            _keyOneLeftConstraint.constant = 127;
         }
     }
 }
@@ -316,11 +340,11 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
     [self.circleImageView addGestureRecognizer:tapGesture];
 }
 
-- (void)prepare2:(CSRDeviceEntity *)deviceEntity {
+- (void)prepare2:(NSString *)branch keyCount:(NSInteger)count {
     _settingSelectMutArray = [[NSMutableArray alloc] initWithCapacity:6];
-    if ([deviceEntity.remoteBranch length] >= 66) {
-        for (int i=0; i<6; i++) {
-            NSString *str = [deviceEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
+    if ([branch length] >= (count * 5 + 2) * 2) {
+        for (int i = 0; i < count; i ++) {
+            NSString *str = [branch substringWithRange:NSMakeRange(10*i+6, 10)];
             SelectModel *mod = [[SelectModel alloc] init];
             mod.sourceID = @([CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]]);
             mod.channel = @([self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]]);
@@ -328,7 +352,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [_settingSelectMutArray insertObject:mod atIndex:i];
         }
     }else {
-        for (int i=0; i<6; i++) {
+        for (int i = 0; i < count; i ++) {
             SelectModel *mod = [[SelectModel alloc] init];
             mod.sourceID = @(i+1);
             mod.channel = @(0);
@@ -338,10 +362,35 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
     }
     
     [self.view addSubview:self.sceneView2];
-    [self.sceneView2 autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-    [self.sceneView2 autoPinEdgeToSuperviewEdge:ALEdgeRight];
     [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
-    [self.sceneView2 autoMatchDimension:ALDimensionHeight toDimension:ALDimensionWidth ofView:self.sceneView2 withMultiplier:376/320.0];
+    [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
+    
+    _remoteBtn18.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+    _remoteBtn18.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+    _remoteBtn19.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+    _remoteBtn19.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+    _remoteBtn20.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+    _remoteBtn20.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+    _remoteBtn21.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+    _remoteBtn21.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+    _remoteBtn22.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+    _remoteBtn22.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+    _remoteBtn23.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+    _remoteBtn23.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+    
+    UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+    [_remoteBtn18 addGestureRecognizer:gesture17];
+    UILongPressGestureRecognizer *gesture18 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+    [_remoteBtn19 addGestureRecognizer:gesture18];
+    UILongPressGestureRecognizer *gesture19 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+    [_remoteBtn20 addGestureRecognizer:gesture19];
+    UILongPressGestureRecognizer *gesture20 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+    [_remoteBtn21 addGestureRecognizer:gesture20];
+    UILongPressGestureRecognizer *gesture21 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+    [_remoteBtn22 addGestureRecognizer:gesture21];
+    UILongPressGestureRecognizer *gesture22 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+    [_remoteBtn23 addGestureRecognizer:gesture22];
 }
 
 - (NSInteger)exchangePositionOfDeviceIdString:(NSString *)deviceIdString {
@@ -374,10 +423,17 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
     NSString *cmd;
     if (_mType == MainRemoteType_RGBCW
         || _mType == MainRemoteType_RGB
-        || _mType == MainRemoteType_CW) {
+        || _mType == MainRemoteType_CW
+        || _mType == MainRemoteType_SceneFour) {
         cmd = @"9b1504";
-    }else if (_mType == MainRemoteType_Scene) {
+    }else if (_mType == MainRemoteType_SceneSix) {
         cmd = @"9b1f06";
+    }else if (_mType == MainRemoteType_SceneThree) {
+        cmd = @"9b1f03";
+    }else if (_mType == MainRemoteType_SceneTwo) {
+        cmd = @"9b1f02";
+    }else if (_mType == MainRemoteType_SceneOne) {
+        cmd = @"9b1f01";
     }
     for (SelectModel *mod in _settingSelectMutArray) {
         NSString *sw = [CSRUtilities stringWithHexNumber:[mod.sourceID integerValue]];
@@ -580,7 +636,11 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         SelectModel *mod = [_settingSelectMutArray objectAtIndex:sender.tag-7];
         mod.deviceID = @(0);
         mod.channel = @(0);
-    }else if (_mType == MainRemoteType_Scene) {
+    }else if (_mType == MainRemoteType_SceneSix
+              || _mType == MainRemoteType_SceneFour
+              || _mType == MainRemoteType_SceneThree
+              || _mType == MainRemoteType_SceneTwo
+              || _mType == MainRemoteType_SceneOne) {
         SelectModel *mod = [_settingSelectMutArray objectAtIndex:sender.tag-1];
         mod.deviceID = @(0);
         mod.channel = @(0);

@@ -20,7 +20,7 @@
 + (DeviceModelManager *)sharedInstance;
 - (void)getAllDevicesState;
 - (DeviceModel *)getDeviceModelByDeviceId:(NSNumber *)deviceId;
-- (void)setPowerStateWithDeviceId:(NSNumber *)deviceId withPowerState:(NSNumber *)powerState;
+- (void)setPowerStateWithDeviceId:(NSNumber *)deviceId channel:(NSNumber *)channel withPowerState:(BOOL)powerState;
 - (void)setLevelWithDeviceId:(NSNumber *)deviceId channel:(NSNumber *)channel withLevel:(NSNumber *)level withState:(UIGestureRecognizerState)state direction:(PanGestureMoveDirection)direction;
 -(void)setColorTemperatureWithDeviceId:(NSNumber *)deviceId withColorTemperature:(NSNumber *)colorTemperature withState:(UIGestureRecognizerState)state;
 -(void)setColorWithDeviceId:(NSNumber *)deviceId withColor:(UIColor *)color withState:(UIGestureRecognizerState)state;
@@ -30,7 +30,7 @@
 - (void)regetHues:(NSArray *)huesAry deviceId:(NSNumber *)deviceId sceneId:(NSNumber *)sceneId;
 - (void)regetColorSaturation:(float)sat deviceId:(NSNumber *)deviceId sceneId:(NSNumber *)sceneId;
 - (void)regetColofulTimerInterval:(NSTimeInterval)interval deviceId:(NSNumber *)deviceId sceneId:(NSNumber *)sceneId;
-
-- (void)setLevelWithGroupId:(NSNumber *)deviceId withLevel:(NSNumber *)level withState:(UIGestureRecognizerState)state direction:(PanGestureMoveDirection)direction;
+- (void)setColorWithDeviceId:(NSNumber *)deviceId withColor:(UIColor *)color;
+- (void)controlScene:(NSNumber *)sceneId;
 
 @end

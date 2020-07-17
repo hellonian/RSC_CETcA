@@ -14,17 +14,9 @@ typedef enum : NSInteger {
     Day
 }AlarmRepeatType;
 
-@protocol DataModelManagerDelegate <NSObject>
-
-- (void)addAlarmSuccessCall:(TimeSchedule *)schedule;
-
-@end
-
 @interface DataModelManager : NSObject
 
 extern NSString * const kTimerProfile;
-
-@property (nonatomic,weak) id<DataModelManagerDelegate> delegate;
 
 + (instancetype)shareInstance;
 - (void)sendCmdData:(NSString *)hexStrCmd  toDeviceId:(NSNumber *)deviceId;

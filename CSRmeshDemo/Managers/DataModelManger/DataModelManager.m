@@ -166,9 +166,6 @@ static DataModelManager *manager = nil;
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:@"addAlarmCall" object:nil userInfo:@{@"state":suffixStr, @"deviceId":sourceDeviceId, @"channel":
         @1}];
-//        if ([suffixStr boolValue]&&self.delegate&&[self.delegate respondsToSelector:@selector(addAlarmSuccessCall:)]) {
-//            [self.delegate addAlarmSuccessCall:_schedule];
-//        }
     }
     
     if ([dataStr hasPrefix:@"500502"]) {
@@ -576,6 +573,26 @@ static DataModelManager *manager = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"LCDRemotePortCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"port":[dataStr substringFromIndex:4]}];
         }
     }
+    
+    if ([dataStr hasPrefix:@"600411"]) {
+        if ([dataStr length] >= 12) {
+            NSString *ff = [dataStr substringWithRange:NSMakeRange(10, 2)];
+            if ([ff isEqualToString:@"ff"]) {
+                NSString *s1 = [dataStr substringWithRange:NSMakeRange(6, 2)];
+                NSString *s2 = [dataStr substringWithRange:NSMakeRange(8, 2)];
+                NSInteger sceneIndex = [CSRUtilities numberWithHexString:[NSString stringWithFormat:@"%@%@",s2,s1]];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"remoteControlScene" object:nil userInfo:@{@"sceneIndex":@(sceneIndex)}];
+            }
+        }
+    }
+    
+    if ([dataStr hasPrefix:@"600480"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"remoteControlGroup" object:nil userInfo:@{@"groupId":destinationDeviceId, @"powerState":@(0)}];
+    }
+    
+    if ([dataStr hasPrefix:@"600481"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"remoteControlGroup" object:nil userInfo:@{@"groupId":destinationDeviceId, @"powerState":@(1)}];
+    }
 }
 
 - (void)didReceiveStreamData:(NSNumber *)deviceId streamNumber:(NSNumber *)streamNumber data:(NSData *)data {
@@ -616,39 +633,6 @@ static DataModelManager *manager = nil;
     }
     
     [self.deviceKeyDic removeObjectForKey:deviceId];
-}
-
-- (NSString *)exchangeLowHight:(NSString *)string {
-    NSString *str1 = [string substringToIndex:2];
-    NSString *str2 = [string substringFromIndex:2];
-    NSString *newString = [NSString stringWithFormat:@"%@%@",str2,str1];
-    return newString;
-}
-
-- (TimeSchedule *)analyzeTimeScheduleData:(NSString *)dataString forLight:(NSNumber *)deviceId {
-    
-    NSInteger index = [CSRUtilities numberWithHexString:[dataString substringWithRange:NSMakeRange(0, 2)]];
-    BOOL state = [[dataString substringWithRange:NSMakeRange(2, 2)] boolValue];
-    NSString *repeat = [CSRUtilities getBinaryByhex:[dataString substringWithRange:NSMakeRange(16, 2)]];
-    NSString *eveType = [dataString substringWithRange:NSMakeRange(18, 2)];
-    NSInteger level = [CSRUtilities numberWithHexString:[dataString substringWithRange:NSMakeRange(20, 2)]];
-    
-    NSString *dateStrInData = [dataString substringWithRange:NSMakeRange(4, 12)];
-    NSDate *fireDate = [self dateForString:dateStrInData];
-    
-    CSRmeshDevice *device = [[CSRDevicesManager sharedInstance] getDeviceFromDeviceId:deviceId];
-    
-    TimeSchedule *profile = [[TimeSchedule alloc]init];
-    profile.deviceId = deviceId;
-    profile.timerIndex = index;
-    profile.level = level;
-    profile.state = state;
-    profile.eveType = eveType;
-    profile.repeat = repeat;
-    profile.fireDate = fireDate;
-    profile.lightNickname = device.name;
-    
-    return profile;
 }
 
 - (NSDate *)dateForString:(NSString *)dateStrInData {

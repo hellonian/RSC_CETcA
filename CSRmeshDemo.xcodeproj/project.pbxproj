@@ -91,6 +91,7 @@
 		2E48BBE020D239E500401CDD /* LightSensorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E48BBDF20D239E500401CDD /* LightSensorViewController.m */; };
 		2E48BBE420D25C7800401CDD /* LightSensorSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E48BBE220D25C7800401CDD /* LightSensorSettingViewController.m */; };
 		2E4902AF224233F5003B901A /* cskey_db.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E4902AE224233F5003B901A /* cskey_db.json */; };
+		2E4AD1A324C024FC008E8B67 /* FadeSettingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E4AD1A224C024FC008E8B67 /* FadeSettingView.m */; };
 		2E4BBD4E22811FC7005650F8 /* CSRGaia.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E4BBD4922811FC7005650F8 /* CSRGaia.m */; };
 		2E4BBD4F22811FC7005650F8 /* CSRGaiaGattCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E4BBD4A22811FC7005650F8 /* CSRGaiaGattCommand.m */; };
 		2E4BC03D227051BF000719EA /* SoundListenTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E4BC03C227051BF000719EA /* SoundListenTool.m */; };
@@ -371,6 +372,8 @@
 		2E48BBE120D25C7800401CDD /* LightSensorSettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LightSensorSettingViewController.h; sourceTree = "<group>"; };
 		2E48BBE220D25C7800401CDD /* LightSensorSettingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LightSensorSettingViewController.m; sourceTree = "<group>"; };
 		2E4902AE224233F5003B901A /* cskey_db.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = cskey_db.json; sourceTree = "<group>"; };
+		2E4AD1A124C024FC008E8B67 /* FadeSettingView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FadeSettingView.h; sourceTree = "<group>"; };
+		2E4AD1A224C024FC008E8B67 /* FadeSettingView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FadeSettingView.m; sourceTree = "<group>"; };
 		2E4BBD4822811FC7005650F8 /* CSRGaiaGattCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRGaiaGattCommand.h; sourceTree = "<group>"; };
 		2E4BBD4922811FC7005650F8 /* CSRGaia.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSRGaia.m; sourceTree = "<group>"; };
 		2E4BBD4A22811FC7005650F8 /* CSRGaiaGattCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSRGaiaGattCommand.m; sourceTree = "<group>"; };
@@ -1214,6 +1217,8 @@
 				2EBB39922490D5B000243D5F /* SceneMemberCell.h */,
 				2EBB39932490D5B000243D5F /* SceneMemberCell.m */,
 				2E6750BE2493601C004FA52F /* SceneMemberCell.xib */,
+				2E4AD1A124C024FC008E8B67 /* FadeSettingView.h */,
+				2E4AD1A224C024FC008E8B67 /* FadeSettingView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1711,6 +1716,7 @@
 				2EC7D0DE21E6F549007F44C1 /* PowerModel.m in Sources */,
 				2E2E70971FF5DE60002D1C1D /* RemoteViewController.m in Sources */,
 				2E2E708E1FF5DE60002D1C1D /* PlaceColorCollectionViewCell.m in Sources */,
+				2E4AD1A324C024FC008E8B67 /* FadeSettingView.m in Sources */,
 				2EF2DB5A200DA6CF00A1B236 /* DeviceModelManager.m in Sources */,
 				2EEA6E361F453B1300895CE2 /* ControlMaskView.m in Sources */,
 				2EB246B62282CD8B00DFF5D3 /* CSRCallbacks.m in Sources */,
@@ -2264,7 +2270,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 9;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2324,7 +2330,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 9;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;

@@ -1221,26 +1221,9 @@
         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortID" ascending:YES];
         [mutableMemebers sortUsingDescriptors:[NSArray arrayWithObject:sort]];
         for (SceneMemberEntity *sceneMember in mutableMemebers) {
-            NSString *eveType = [NSString stringWithFormat:@"%@",sceneMember.eveType];
-            NSString *level = [CSRUtilities stringWithHexNumber:[sceneMember.level integerValue]];
-            NSString *red;
-            NSString *green;
-            NSString *blue;
-            if ([sceneMember.eveType integerValue] == 18 || [sceneMember.eveType integerValue] == 19) {
-                NSString *temperature = [self exchangePositionOfDeviceId:[sceneMember.colorTemperature integerValue]];
-                red = [temperature substringToIndex:2];
-                green = [temperature substringFromIndex:2];
-                blue = @"00";
-            }else {
-                red = [CSRUtilities stringWithHexNumber:[sceneMember.colorRed integerValue]];
-                green = [CSRUtilities stringWithHexNumber:[sceneMember.colorGreen integerValue]];
-                blue = [CSRUtilities stringWithHexNumber:[sceneMember.colorBlue integerValue]];
-            }
-            
-            dstAddrLevel = [NSString stringWithFormat:@"%@%@%@%@%@%@%@",dstAddrLevel,[self exchangePositionOfDeviceId:[sceneMember.deviceID integerValue]],eveType,level,red,green,blue];
+            dstAddrLevel = [NSString stringWithFormat:@"%@%@%@%@%@%@%@",dstAddrLevel,[self exchangePositionOfDeviceId:[sceneMember.deviceID integerValue]],[CSRUtilities stringWithHexNumber:[sceneMember.eveType integerValue]], [CSRUtilities stringWithHexNumber:[sceneMember.eveD0 integerValue]], [CSRUtilities stringWithHexNumber:[sceneMember.eveD1 integerValue]], [CSRUtilities stringWithHexNumber:[sceneMember.eveD2 integerValue]], [CSRUtilities stringWithHexNumber:[sceneMember.eveD3 integerValue]]];
         }
     }
-    
     NSString *nLength = [CSRUtilities stringWithHexNumber:dstAddrLevel.length/2+7];
     if ((dstAddrLevel.length/2+7)<250) {
         NSString *cmdStr = [NSString stringWithFormat:@"73%@010%ld%@%@%@%@%@",nLength,(long)swIndex,rcIndexStr,ligCnt,startLigIdx,endLigIdx,dstAddrLevel];

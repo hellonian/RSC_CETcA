@@ -25,7 +25,7 @@
 
 - (void)configureCellWithSceneMember:(SceneMemberEntity *)member{
     _mSceneMember = member;
-    if ([member.colorBlue boolValue]) {
+    if ([member.editing boolValue]) {
         _removeBtn.hidden = NO;
     }else {
         _removeBtn.hidden = YES;
@@ -229,9 +229,9 @@
         _imgv3.hidden = YES;
         _label3.hidden = YES;
         if ([member.channel integerValue] == 1) {
-            _label1.text = AcTECLocalizedStringFromTable(@"Channel1", @"Localizable");
+            _channelLabel.text = AcTECLocalizedStringFromTable(@"Channel1", @"Localizable");
         }else if ([member.channel integerValue] == 2) {
-            _label1.text = AcTECLocalizedStringFromTable(@"Channel2", @"Localizable");
+            _channelLabel.text = AcTECLocalizedStringFromTable(@"Channel2", @"Localizable");
         }
         _imgv1.image = [UIImage imageNamed:@"Ico_power"];
         if ([member.eveD0 boolValue]) {
@@ -300,9 +300,9 @@
         _imgv2.image = [UIImage imageNamed:@"Ico_fengli"];
         if ([member.eveD1 integerValue] == 0) {
             _label2.text = AcTECLocalizedStringFromTable(@"low", @"Localizable");
-        }else if ([member.level integerValue] == 1) {
+        }else if ([member.eveD1 integerValue] == 1) {
             _label2.text = AcTECLocalizedStringFromTable(@"medium", @"Localizable");
-        }else if ([member.level integerValue] == 2) {
+        }else if ([member.eveD1 integerValue] == 2) {
             _label2.text = AcTECLocalizedStringFromTable(@"high", @"Localizable");
         }
         _imgv3.image = [UIImage imageNamed:@"Ico_lamp"];

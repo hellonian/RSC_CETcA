@@ -292,10 +292,14 @@
             self.level2Label.hidden = NO;
             self.level3Label.hidden = YES;
             self.levelTextTopCon.constant = 0;
-        }else if ([CSRUtilities belongToSceneRemote:deviceEntity.shortName]
-                  || [CSRUtilities belongToCWRemote:deviceEntity.shortName]
+        }else if ([CSRUtilities belongToCWRemote:deviceEntity.shortName]
                   || [CSRUtilities belongToRGBRemote:deviceEntity.shortName]
-                  || [CSRUtilities belongToRGBCWRemote:deviceEntity.shortName]) {
+                  || [CSRUtilities belongToRGBCWRemote:deviceEntity.shortName]
+                  || [CSRUtilities belongToSceneRemoteSixKeys:deviceEntity.shortName]
+                  || [CSRUtilities belongToSceneRemoteFourKeys:deviceEntity.shortName]
+                  || [CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]
+                  || [CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
+                  || [CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"mainremoteroom"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = YES;
@@ -508,10 +512,14 @@
             self.iconView.image = [UIImage imageNamed:@"Device_bajiao"];
         }else if ([CSRUtilities belongToTwoChannelSwitch:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_switch2"];
-        }else if ([CSRUtilities belongToSceneRemote:appearanceShortname]
-                  || [CSRUtilities belongToCWRemote:appearanceShortname]
+        }else if ([CSRUtilities belongToCWRemote:appearanceShortname]
                   || [CSRUtilities belongToRGBRemote:appearanceShortname]
-                  || [CSRUtilities belongToRGBCWRemote:appearanceShortname]) {
+                  || [CSRUtilities belongToRGBCWRemote:appearanceShortname]
+                  || [CSRUtilities belongToSceneRemoteSixKeys:appearanceShortname]
+                  || [CSRUtilities belongToSceneRemoteFourKeys:appearanceShortname]
+                  || [CSRUtilities belongToSceneRemoteThreeKeys:appearanceShortname]
+                  || [CSRUtilities belongToSceneRemoteTwoKeys:appearanceShortname]
+                  || [CSRUtilities belongToSceneRemoteOneKey:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_mainremote"];
         }else if ([CSRUtilities belongToLCDRemote:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_lcdremote"];
@@ -775,36 +783,17 @@
                         [[SoundListenTool sharedInstance] stopRecord:_groupId];
                     }
                     [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_groupId];
-                    if (_groupPower) {
-                        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:self.groupId withPowerState:@(0)];
-                    }else {
-//                        __block NSInteger brightest = 0;
-//                        __block BOOL containD;
-//                        [self.groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *entity, NSUInteger idx, BOOL * _Nonnull stop) {
-//                            if (![CSRUtilities belongToSwitch:entity.shortName]) {
-//                                DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:entity.deviceId];
-//                                if ([model.level integerValue]>brightest) {
-//                                    brightest = [model.level integerValue];
-//                                }
-//                                containD = YES;
-//                            }
-//
-//                        }];
-//                        if (containD) {
-//                            if (brightest==0) {
-//                                brightest = 3;
-//                            }
-//                            [[LightModelApi sharedInstance] setLevel:self.groupId level:@(brightest) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-//
-//                            } failure:^(NSError * _Nullable error) {
-//                                NSLog(@"error : %@",error);
-//                            }];
-//                        }else {
-                            [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:self.groupId withPowerState:@(1)];
-//                        }
-                        
+                    
+                    BOOL powerState = NO;
+                    for (CSRDeviceEntity *d in _groupMembers) {
+                        DeviceModel *m = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
+                        if ([m.powerState boolValue]) {
+                            powerState = YES;
+                            break;
+                        }
                     }
-                    _groupPower = !_groupPower;
+                    [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_groupId channel:@1 withPowerState:!powerState];
+                    
                 }else {
                     if ([SoundListenTool sharedInstance].audioRecorder.recording) {
                         [[SoundListenTool sharedInstance] stopRecord:_deviceId];
@@ -814,7 +803,11 @@
                     if (![CSRUtilities belongToRGBCWRemote:deviceEntity.shortName]
                         &&![CSRUtilities belongToRGBRemote:deviceEntity.shortName]
                         &&![CSRUtilities belongToCWRemote:deviceEntity.shortName]
-                        &&![CSRUtilities belongToSceneRemote:deviceEntity.shortName]
+                        &&![CSRUtilities belongToSceneRemoteSixKeys:deviceEntity.shortName]
+                        &&![CSRUtilities belongToSceneRemoteFourKeys:deviceEntity.shortName]
+                        &&![CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]
+                        &&![CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
+                        &&![CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]
                         &&![CSRUtilities belongToLCDRemote:deviceEntity.shortName]) {
                         if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
                             if (!deviceEntity.remoteBranch || deviceEntity.remoteBranch.length == 0) {
@@ -823,11 +816,11 @@
                                 }
                             }else {
                                 DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-                                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(![model.powerState boolValue])];
+                                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@1 withPowerState:![model.powerState boolValue]];
                             }
                         }else {
                             DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-                            [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId withPowerState:@(![model.powerState boolValue])];
+                            [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@1 withPowerState:![model.powerState boolValue]];
                         }
                     }
                 }

@@ -192,3 +192,6 @@
 "removetimerfail" = "The following device could not remove timer, check whether the device is cut off or initialized:";
 "enabletimerfail" = "The following device could not changed the enable, check whether the device is cut off or initialized:";
 "remotereadalert" = "Press any button for six times, and click OK when the indicator light flashes.";
+"fadeintime" = "Fade in time:";
+"fadetime" = "Fade time:";
+"channel" = "Channel:";

@@ -248,11 +248,6 @@
         [[CSRDevicesManager sharedInstance] createDeviceFromProperties:deviceDictionary];
         
         [[DataModelManager shareInstance] setDeviceTime];
-        [[LightModelApi sharedInstance] getState:deviceId success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-            
-        } failure:^(NSError * _Nullable error) {
-            
-        }];
         
     } else {
         
@@ -298,7 +293,7 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         static int i = 0;
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
-        if ([deviceEntity.mcuBootVersion integerValue]==0) {
+        if ([deviceEntity.mcuSVersion integerValue]==0) {
             if (i < 10) {
                 i++;
                 [weakself getMcuSVersion:deviceId];

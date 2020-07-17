@@ -278,18 +278,11 @@
 }
 
 - (IBAction)turnOnOFF:(UISwitch *)sender {
-    NSString *cmdString;
-    switch (sender.tag) {
-        case 1:
-            cmdString = [NSString stringWithFormat:@"51050100010%d%@",sender.on,[CSRUtilities stringWithHexNumber:sender.on*255]];
-            break;
-        case 2:
-            cmdString = [NSString stringWithFormat:@"51050200010%d%@",sender.on,[CSRUtilities stringWithHexNumber:sender.on*255]];
-            break;
-        default:
-            break;
+    if (sender.tag == 1) {
+        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@2 withPowerState:sender.on];
+    }else if (sender.tag == 2) {
+        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@3 withPowerState:sender.on];
     }
-    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:cmdString] success:nil failure:nil];
 }
 
 - (void)setPowerStateSuccess:(NSNotification *)notification {

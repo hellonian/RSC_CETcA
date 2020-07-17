@@ -93,6 +93,22 @@
     return 0.01f;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    SceneMemberEntity *member = [_members objectAtIndex:indexPath.row];
+    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:member.deviceID];
+    if (model) {
+        BOOL p = NO;
+        if ([member.channel integerValue] == 1) {
+            p = model.channel1PowerState;
+        }else if ([member.channel integerValue] == 2) {
+            p = model.channel2PowerState;
+        }else if ([member.channel integerValue] == 4) {
+            p = model.channel3PowerState;
+        }
+        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:member.deviceID channel:@([member.channel integerValue]+1) withPowerState:!p];
+    }
+}
+
 - (void)closeAction {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -104,7 +120,7 @@
     self.navigationItem.rightBarButtonItem = done;
     
     for (SceneMemberEntity *m in _members) {
-        m.colorBlue = @1;
+        m.editing = @1;
     }
     [_sceneMemberList reloadData];
 }
@@ -121,7 +137,7 @@
     self.navigationItem.rightBarButtonItem = edit;
     
     for (SceneMemberEntity *m in _members) {
-        m.colorBlue = @0;
+        m.editing = @0;
     }
     [_sceneMemberList reloadData];
 }
@@ -489,6 +505,7 @@
     m.kindString = device.shortName;
     m.deviceID = device.deviceId;
     m.channel = @1;
+    m.eveType = @32;
     m.eveD0 = @(device.fanState);
     m.eveD1 = @(device.fansSpeed);
     m.eveD2 = @(device.lampState);
@@ -509,10 +526,11 @@
         SceneMemberEntity *m = [self.selects firstObject];
         [self.selects removeObject:m];
         if ([userInfo[@"state"] boolValue]) {
+            m.editing = @1;
             [_members addObject:m];
             [_sceneMemberList reloadData];
         }else {
-            [self.fails addObject:m];
+            [self.fails addObject:[m.deviceID copy]];
             SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
             [s removeMembersObject:m];
             [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:m];
@@ -535,7 +553,7 @@
 - (void)setSceneIDTimerOut {
     SceneMemberEntity *m = [self.selects firstObject];
     [self.selects removeObject:m];
-    [self.fails addObject:m];
+    [self.fails addObject:[m.deviceID copy]];
     SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
     [s removeMembersObject:m];
     [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:m];
@@ -567,14 +585,14 @@
 
 - (void)showFailAler {
     NSString *s = @"";
-    for (SceneMemberEntity *m in self.fails) {
-        CSRDeviceEntity *d = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:m.deviceID];
+    for (NSNumber *i in self.fails) {
+        CSRDeviceEntity *d = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:i];
         s = [NSString stringWithFormat:@"%@ %@",s,d.name];
     }
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:[NSString stringWithFormat:@"%@ %@",s,AcTECLocalizedStringFromTable(@"setscenefail", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
     [alert.view setTintColor:DARKORAGE];
     UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        
+        [self.fails removeAllObjects];
     }];
     [alert addAction:yes];
     [self presentViewController:alert animated:YES completion:nil];
@@ -593,6 +611,7 @@
     if (!_indicatorView) {
         _indicatorView = [[UIActivityIndicatorView alloc] init];
         _indicatorView.hidesWhenStopped = YES;
+        _indicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
     }
     return _indicatorView;
 }

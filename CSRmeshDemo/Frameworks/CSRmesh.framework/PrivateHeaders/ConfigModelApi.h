@@ -162,8 +162,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)resetDevice:(NSNumber *)deviceId
      withDeviceHash:(NSData *)deviceHash
           andDHMKey:(NSData * _Nullable)dhmKey
-            failure:(void (^ _Nullable)(NSError * _Nullable error))failure
-;
+            failure:(void (^ _Nullable)(NSError * _Nullable error))failure;
 
 
 /*!

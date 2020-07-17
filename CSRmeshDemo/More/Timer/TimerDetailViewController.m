@@ -606,7 +606,7 @@
     [[CSRDatabaseManager sharedInstance] saveContext];
     
     if ([_selectedScene.members count]>0) {
-        for (SceneMemberEntity *sm in _selectedScene.members) {
+        for (SceneMemberEntity *sm in [_selectedScene.members mutableCopy]) {
             [self.mMembersToApply addObject:sm];
         }
     }
@@ -640,7 +640,6 @@
         if ([obj isKindOfClass:[TimerDeviceEntity class]]) {
             NSLog(@">>>>");
             TimerDeviceEntity *td = (TimerDeviceEntity *)obj;
-            NSLog(@">: %@  %@  %@",td.deviceID, td.timerID, td.timerIndex);
             _mDeviceToApply = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:td.deviceID];
             if (_mDeviceToApply == nil) {
                 [_mMembersToApply removeObject:obj];
@@ -970,6 +969,7 @@
     if (!_indicatorView) {
         _indicatorView = [[UIActivityIndicatorView alloc] init];
         _indicatorView.hidesWhenStopped = YES;
+        _indicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
     }
     return _indicatorView;
 }
