@@ -290,16 +290,15 @@
         timer = nil;
     }
     if ([channel integerValue] == 1) {
-        [[PowerModelApi sharedInstance] setPowerState:deviceId state:@(powerState) success:^(NSNumber * _Nullable deviceId, NSNumber * _Nullable state) {
-            
-        } failure:^(NSError * _Nullable error) {
-            NSLog(@"error : %@",error);
-            DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
-            model.isleave = YES;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"chennel":@(1)}];
-        }];
-        
         if ([deviceId integerValue] > 32768) {
+            [[PowerModelApi sharedInstance] setPowerState:deviceId state:@(powerState) success:^(NSNumber * _Nullable deviceId, NSNumber * _Nullable state) {
+                
+            } failure:^(NSError * _Nullable error) {
+                NSLog(@"error : %@",error);
+                DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
+                model.isleave = YES;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"chennel":@(1)}];
+            }];
             DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
             model.powerState = @(powerState);
             model.channel1PowerState = powerState;
@@ -309,6 +308,9 @@
             model.lampState = powerState;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@1}];
         }else {
+            [[PowerModelApi sharedInstance] setPowerState:deviceId state:@(powerState) success:nil failure:^(NSError * _Nullable error) {
+                
+            }];
             CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:deviceId];
             for (CSRDeviceEntity *member in area.devices) {
                 for (DeviceModel *model in _allDevices) {

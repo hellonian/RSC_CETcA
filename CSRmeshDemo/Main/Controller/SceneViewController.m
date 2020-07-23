@@ -18,6 +18,11 @@
 #import "PureLayout.h"
 
 @interface SceneViewController ()<UITableViewDelegate,UITableViewDataSource,SceneMemberCellDelegate>
+{
+    NSInteger retryCount;
+    NSData *retryCmd;
+    NSNumber *retryDeviceId;
+}
 
 @property (weak, nonatomic) IBOutlet UITableView *sceneMemberList;
 @property (nonatomic, strong) NSMutableArray *members;
@@ -257,10 +262,16 @@
                 || [CSRUtilities belongToTwoChannelCurtainController:m.kindString]) {
                 Byte byte[] = {0x59, 0x08, [m.channel integerValue], b[1], b[0], e, d0, d1, d2, d3};
                 NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                retryCount = 0;
+                retryCmd = cmd;
+                retryDeviceId = m.deviceID;
                 [[DataModelManager shareInstance] sendDataByBlockDataTransfer:m.deviceID data:cmd];
             }else {
                 Byte byte[] = {0x93, 0x07, b[1], b[0], e, d0, d1, d2, d3};
                 NSData *cmd = [[NSData alloc] initWithBytes:byte length:9];
+                retryCount = 0;
+                retryCmd = cmd;
+                retryDeviceId = m.deviceID;
                 [[DataModelManager shareInstance] sendDataByBlockDataTransfer:m.deviceID data:cmd];
             }
             return YES;
@@ -551,19 +562,25 @@
 }
 
 - (void)setSceneIDTimerOut {
-    SceneMemberEntity *m = [self.selects firstObject];
-    [self.selects removeObject:m];
-    [self.fails addObject:[m.deviceID copy]];
-    SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
-    [s removeMembersObject:m];
-    [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:m];
-    [[CSRDatabaseManager sharedInstance] saveContext];
-    
-    _mDeviceToApplay = nil;
-    
-    if (![self nextOperation]) {
-        [self hideLoading];
-        [self showFailAler];
+    if (retryCount < 1) {
+        [self performSelector:@selector(setSceneIDTimerOut) withObject:nil afterDelay:10];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:retryDeviceId data:retryCmd];
+        retryCount ++;
+    }else {
+        SceneMemberEntity *m = [self.selects firstObject];
+        [self.selects removeObject:m];
+        [self.fails addObject:[m.deviceID copy]];
+        SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+        [s removeMembersObject:m];
+        [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:m];
+        [[CSRDatabaseManager sharedInstance] saveContext];
+        
+        _mDeviceToApplay = nil;
+        
+        if (![self nextOperation]) {
+            [self hideLoading];
+            [self showFailAler];
+        }
     }
 }
 
@@ -634,33 +651,45 @@
         || [CSRUtilities belongToTwoChannelCurtainController:mSceneMember.kindString]) {
         Byte byte[] = {0x5d, 0x03, [mSceneMember.channel integerValue], b[1], b[0]};
         NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+        retryCount = 0;
+        retryCmd = cmd;
+        retryDeviceId = mSceneMember.deviceID;
         [[DataModelManager shareInstance] sendDataByBlockDataTransfer:mSceneMember.deviceID data:cmd];
     }else {
         Byte byte[] = {0x98, 0x02, b[1], b[0]};
         NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+        retryCount = 0;
+        retryCmd = cmd;
+        retryDeviceId = mSceneMember.deviceID;
         [[DataModelManager shareInstance] sendDataByBlockDataTransfer:mSceneMember.deviceID data:cmd];
     }
 }
 
 - (void)removeSceneIDTimerOut {
-    [self hideLoading];
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:[NSString stringWithFormat:@"%@ %@",_mDeviceToApplay.name,AcTECLocalizedStringFromTable(@"removescenefail", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
-    [alert.view setTintColor:DARKORAGE];
-    UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
-        [s removeMembersObject:_mMemberToApply];
-        [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:_mMemberToApply];
-        [[CSRDatabaseManager sharedInstance] saveContext];
-        
-        [_members removeObject:_mMemberToApply];
-        [_sceneMemberList reloadData];
-    }];
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        
-    }];
-    [alert addAction:yes];
-    [alert addAction:cancel];
-    [self presentViewController:alert animated:YES completion:nil];
+    if (retryCount < 1) {
+        [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:retryDeviceId data:retryCmd];
+        retryCount ++;
+    }else {
+        [self hideLoading];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:[NSString stringWithFormat:@"%@ %@",_mDeviceToApplay.name,AcTECLocalizedStringFromTable(@"removescenefail", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
+        [alert.view setTintColor:DARKORAGE];
+        UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+            [s removeMembersObject:_mMemberToApply];
+            [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:_mMemberToApply];
+            [[CSRDatabaseManager sharedInstance] saveContext];
+            
+            [_members removeObject:_mMemberToApply];
+            [_sceneMemberList reloadData];
+        }];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        [alert addAction:yes];
+        [alert addAction:cancel];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
 }
 
 - (void)removeSceneCall:(NSNotification *)notification {

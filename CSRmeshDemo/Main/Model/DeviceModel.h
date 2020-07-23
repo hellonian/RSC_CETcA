@@ -35,6 +35,8 @@
 @property (nonatomic, assign) NSInteger channel2Level;
 @property (nonatomic, assign) BOOL channel3PowerState;
 @property (nonatomic, assign) NSInteger channel3Level;
+@property (nonatomic, assign) NSInteger cDirection1;//1——正转（关） 2——正转停 3——反转（开） 0——反转（停）
+@property (nonatomic, assign) NSInteger cDirection2;
 
 @end
 

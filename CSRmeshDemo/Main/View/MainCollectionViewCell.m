@@ -724,37 +724,37 @@
     
 }
 
-- (void)adjustGroupCellBgcolorAndLevelLabel:(NSNumber *)deviceId {
-    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
-    
-    if ([model.powerState boolValue]) {
-        self.nameLabel.textColor = DARKORAGE;
-        self.levelLabel.textColor = DARKORAGE;
-        self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
-        if ([CSRUtilities belongToDimmer:model.shortName]
-            || [CSRUtilities belongToTwoChannelDimmer:model.shortName]
-            || [CSRUtilities belongToRGBDevice:model.shortName]
-            || [CSRUtilities belongToCWDevice:model.shortName]
-            || [CSRUtilities belongToRGBCWDevice:model.shortName]) {
-            if ([model.level floatValue]/255.0*100>0 && [model.level floatValue]/255.0*100 < 1.0) {
-                self.levelLabel.text = @"1%";
-            }else {
-                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
-            }
-        }
-    }else {
-        self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
-        self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
-        self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
-        self.levelLabel.text = @"0%";
-    }
-}
+    //- (void)adjustGroupCellBgcolorAndLevelLabel:(NSNumber *)deviceId {
+    //    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
+    //    
+    //    if ([model.powerState boolValue]) {
+    //        self.nameLabel.textColor = DARKORAGE;
+    //        self.levelLabel.textColor = DARKORAGE;
+    //        self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
+    //        if ([CSRUtilities belongToDimmer:model.shortName]
+    //            || [CSRUtilities belongToTwoChannelDimmer:model.shortName]
+    //            || [CSRUtilities belongToRGBDevice:model.shortName]
+    //            || [CSRUtilities belongToCWDevice:model.shortName]
+    //            || [CSRUtilities belongToRGBCWDevice:model.shortName]) {
+    //            if ([model.level floatValue]/255.0*100>0 && [model.level floatValue]/255.0*100 < 1.0) {
+    //                self.levelLabel.text = @"1%";
+    //            }else {
+    //                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
+    //            }
+    //        }
+    //    }else {
+    //        self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+    //        self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+    //        self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
+    //        self.levelLabel.text = @"0%";
+    //    }
+    //}
 
 - (void)setPowerStateSuccess:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
     if ([_deviceId isEqualToNumber:@2000]) {
-        __block BOOL exist=0; 
+        __block BOOL exist=0;
         [_groupMembers enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([deviceEntity.deviceId isEqualToNumber:deviceId]) {
                 exist = YES;
@@ -762,7 +762,7 @@
             }
         }];
         if (exist) {
-            [self adjustGroupCellBgcolorAndLevelLabel:deviceId];
+            [self adjustGroupCellBgcolorAndLevelLabel];
         }
     }else if ([deviceId isEqualToNumber:_deviceId]) {
         [self adjustCellBgcolorAndLevelLabelWithDeviceId:deviceId];

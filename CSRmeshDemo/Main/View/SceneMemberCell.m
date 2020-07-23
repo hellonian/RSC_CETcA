@@ -260,7 +260,7 @@
             _imgv2.hidden = NO;
             _label2.hidden = NO;
             _imgv2.image = [UIImage imageNamed:@"Ico_cur"];
-            _label2.text = [NSString stringWithFormat:@"%.f %%",[member.eveD0 integerValue]/255.0*100];
+            _label2.text = [NSString stringWithFormat:@"%.f %%",(255 - [member.eveD0 integerValue])/255.0*100];
         }
     }else if ([CSRUtilities belongToTwoChannelCurtainController:member.kindString]) {
         _icon.image = [UIImage imageNamed:@"icon_curtain"];
@@ -282,7 +282,7 @@
             _imgv2.hidden = NO;
             _label2.hidden = NO;
             _imgv2.image = [UIImage imageNamed:@"Ico_cur"];
-            _label2.text = [NSString stringWithFormat:@"%.f %%",[member.eveD0 integerValue]/255.0*100];
+            _label2.text = [NSString stringWithFormat:@"%.f %%",(255 - [member.eveD0 integerValue])/255.0*100];
         }
     }else if ([CSRUtilities belongToFanController:member.kindString]) {
         _icon.image = [UIImage imageNamed:@"icon_fan"];

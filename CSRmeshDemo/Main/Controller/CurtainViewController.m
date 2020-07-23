@@ -32,8 +32,7 @@
 @property (nonatomic,copy) NSString *originalName;
 @property (nonatomic,assign) BOOL calibrating;
 @property (weak, nonatomic) IBOutlet UIImageView *calibrateImageView;
-@property (nonatomic,assign) BOOL calibrateReady;
-@property (weak, nonatomic) IBOutlet UIButton *PauseBtn;
+@property (weak, nonatomic) IBOutlet UIButton *pauseBtn;
 @property (weak, nonatomic) IBOutlet UISlider *curtainSlider;
 @property (weak, nonatomic) IBOutlet UILabel *bubbleLabel;
 @property (nonatomic,strong) MBProgressHUD *updatingHud;
@@ -195,21 +194,33 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(calibrateCall:) name:@"calibrateCall" object:nil];
     
-//    _curtainTypeImageView.hidden = YES;
-//    _PauseBtn.hidden = YES;
+    _channelSelectSeg.enabled = NO;
+    _pauseBtn.enabled = NO;
     _curtainSlider.hidden = YES;
     _calibrateImageView.hidden = NO;
     _bubbleLabel.hidden = NO;
+    _calibrateImageView.image = [UIImage imageNamed:@"bubble_mid"];
+    _bubbleLabel.text = AcTECLocalizedStringFromTable(@"bubble_mid_words", @"Localizable");
+    _openBtn.enabled = NO;
+    _closeBtn.enabled = NO;
     
     if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
         if ([_curtainEntity.shortName isEqualToString:@"C300IB"] || [_curtainEntity.shortName isEqualToString:@"C300IBH"]/*旧设备*/) {
-            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"79020401"] success:nil failure:nil];
+            Byte byte[] = {0x79, 0x02, 0x04, 0x01};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
         }else {
-            [[DataModelManager shareInstance] sendCmdData:@"7903040101" toDeviceId:_deviceId];
+            Byte byte[] = {0x79, 0x03, 0x04, 0x01, 0x01};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
         }
     }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
-        [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"790304010%ld",(long)_controllChannel] toDeviceId:_deviceId];
+        Byte byte[] = {0x79, 0x03, 0x04, 0x01, _controllChannel};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
     }
+    
+    [self performSelector:@selector(failBeginCalibrate) withObject:nil afterDelay:10.0];
 }
 
 - (void)doneCalibrateAction {
@@ -219,24 +230,49 @@
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"calibrateCall" object:nil];
     
-//    _curtainTypeImageView.hidden = NO;
-//    _PauseBtn.hidden = NO;
+    _channelSelectSeg.enabled = YES;
+    _pauseBtn.enabled = YES;
     _curtainSlider.hidden = NO;
     _calibrateImageView.hidden = YES;
     _bubbleLabel.hidden = YES;
-//    _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_mid", @"Localizable")];
-    _calibrateImageView.image = [UIImage imageNamed:@"bubble_mid"];
-    _bubbleLabel.text = AcTECLocalizedStringFromTable(@"bubble_mid_words", @"Localizable");
+    _openBtn.enabled = YES;
+    _closeBtn.enabled = YES;
     
     if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
         if ([_curtainEntity.shortName isEqualToString:@"C300IB"] || [_curtainEntity.shortName isEqualToString:@"C300IBH"]/*旧设备*/) {
-            [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"79020400"] success:nil failure:nil];
+            Byte byte[] = {0x79, 0x02, 0x04, 0x00};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
         }else {
-            [[DataModelManager shareInstance] sendCmdData:@"7903040001" toDeviceId:_deviceId];
+            Byte byte[] = {0x79, 0x03, 0x04, 0x00, 0x01};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
         }
     }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
-        [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"790304000%ld",(long)_controllChannel] toDeviceId:_deviceId];
+        Byte byte[] = {0x79, 0x03, 0x04, 0x00, _controllChannel};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
     }
+}
+
+- (void)failBeginCalibrate {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"Calibrationfailure", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+    [alert.view setTintColor:DARKORAGE];
+    UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIBarButtonItem *calibrate = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"calibrate", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(calibrateAction)];
+        self.navigationItem.rightBarButtonItem = calibrate;
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"calibrateCall" object:nil];
+        _calibrating = NO;
+        _channelSelectSeg.enabled = YES;
+        _pauseBtn.enabled = YES;
+        _curtainSlider.hidden = NO;
+        _calibrateImageView.hidden = YES;
+        _bubbleLabel.hidden = YES;
+        _openBtn.enabled = YES;
+        _closeBtn.enabled = YES;
+    }];
+    [alert addAction:yes];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark - UITextFieldDelegate
@@ -274,56 +310,26 @@
 
 - (void)calibrateCall:(NSNotification *)result {
     NSDictionary *resultDic = result.userInfo;
-    NSString *correctionStep = resultDic[@"correctionStep"];
     NSNumber *sourceDeviceId = resultDic[@"deviceId"];
-    if ([sourceDeviceId isEqualToNumber:_deviceId]) {
-        NSString *stepStr = [correctionStep substringWithRange:NSMakeRange(0, 2)];
-        NSInteger channel;
-        if ([correctionStep length] == 4) {
-            channel = [CSRUtilities numberWithHexString:[correctionStep substringWithRange:NSMakeRange(2, 2)]];
-        }
-        
-        if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
-            if ([correctionStep length] == 4) {
-                NSInteger channel = [CSRUtilities numberWithHexString:[correctionStep substringWithRange:NSMakeRange(2, 2)]];
-                if (channel != _controllChannel) {
-                    return;
-                }
-            }
-        }
-        
-        if ([stepStr isEqualToString:@"01"]) {
-            _calibrateReady = YES;
-//            _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_left", @"Localizable")];
+    NSInteger step = [resultDic[@"step"] integerValue];
+    NSInteger channel = [resultDic[@"channel"] integerValue];
+    if ([sourceDeviceId isEqualToNumber:_deviceId] && channel == _controllChannel) {
+        if (step == 1) {
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(failBeginCalibrate) object:nil];
+            _openBtn.enabled = YES;
+            _closeBtn.enabled = YES;
             _calibrateImageView.image = [UIImage imageNamed:@"bubble_left"];
             _bubbleLabel.text = AcTECLocalizedStringFromTable(@"bubble_left_words", @"Localizable");
-        }else if ([stepStr isEqualToString:@"02"]) {
-//            _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_right", @"Localizable")];
+        }else if (step == 2) {
             _calibrateImageView.image = [UIImage imageNamed:@"bubble_right"];
             _bubbleLabel.text = AcTECLocalizedStringFromTable(@"bubble_right_words", @"Localizable");
-        }else if ([stepStr isEqualToString:@"03"]) {
-//            _calibrateImageView.image = [UIImage imageNamed:AcTECLocalizedStringFromTable(@"bubble_left", @"Localizable")];
+        }else if (step == 3) {
             _calibrateImageView.image = [UIImage imageNamed:@"bubble_left"];
             _bubbleLabel.text = AcTECLocalizedStringFromTable(@"bubble_left_words", @"Localizable");
-        }else if ([stepStr isEqualToString:@"ff"]) {
-            _calibrateReady = NO;
+        }else if (step == 255) {
             [self doneCalibrateAction];
-        }else if ([stepStr isEqualToString:@"00"]) {
-            _calibrateReady = NO;
-            UIBarButtonItem *calibrate = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"calibrate", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(calibrateAction)];
-            self.navigationItem.rightBarButtonItem = calibrate;
-            _calibrating = NO;
-            [[NSNotificationCenter defaultCenter] removeObserver:self name:@"calibrateCall" object:nil];
-            _curtainSlider.hidden = NO;
-            _calibrateImageView.hidden = YES;
-            _bubbleLabel.hidden = YES;
-            _calibrateImageView.image = [UIImage imageNamed:@"bubble_mid"];
-            _bubbleLabel.text = AcTECLocalizedStringFromTable(@"bubble_mid_words", @"Localizable");
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"Calibrationfailure", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
-            [alert.view setTintColor:DARKORAGE];
-            UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
-            [alert addAction:cancel];
-            [self presentViewController:alert animated:YES completion:nil];
+        }else if (step == 0) {
+            [self failBeginCalibrate];
         }
     }
 }
@@ -331,29 +337,41 @@
 #pragma mark - 校准
 
 - (IBAction)curtainOpenTouchDown:(UIButton *)sender {
-    if (_calibrating && _calibrateReady) {
+    if (_calibrating) {
         if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
             if ([_curtainEntity.shortName isEqualToString:@"C300IB"] || [_curtainEntity.shortName isEqualToString:@"C300IBH"]/*旧设备*/) {
-                [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790303ff00"] success:nil failure:nil];
+                Byte byte[] = {0x79, 0x03, 0x03, 0xff, 0x00};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
             }else {
-                [[DataModelManager shareInstance] sendCmdData:@"790403ff0001" toDeviceId:_deviceId];
+                Byte byte[] = {0x79, 0x04, 0x03, 0xff, 0x00, 0x01};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:6];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
             }
         }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
-            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"790403ff000%ld",(long)_controllChannel] toDeviceId:_deviceId];
+            Byte byte[] = {0x79, 0x04, 0x03, 0xff, 0x00, _controllChannel};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:6];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
         }
     }
 }
 
 - (IBAction)curtainCloseTouchDown:(UIButton *)sender {
-    if (_calibrating && _calibrateReady) {
+    if (_calibrating) {
         if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
             if ([_curtainEntity.shortName isEqualToString:@"C300IB"] || [_curtainEntity.shortName isEqualToString:@"C300IBH"]/*旧设备*/) {
-                [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790303ff00"] success:nil failure:nil];
+                Byte byte[] = {0x79, 0x03, 0x03, 0xff, 0x00};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
             }else {
-                [[DataModelManager shareInstance] sendCmdData:@"790403ff0001" toDeviceId:_deviceId];
+                Byte byte[] = {0x79, 0x04, 0x03, 0xff, 0x00, 0x01};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:6];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
             }
         }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
-            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"790403ff000%ld",(long)_controllChannel] toDeviceId:_deviceId];
+            Byte byte[] = {0x79, 0x04, 0x03, 0xff, 0x00, _controllChannel};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:6];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
         }
     }
 }
@@ -382,41 +400,74 @@
 }
 
 - (IBAction)curtainOpenAction:(UIButton *)sender {
-    if (!_calibrating) {
-//        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790102"] success:nil failure:nil];
-        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"7902020%ld",(long)_controllChannel]] success:nil failure:nil];
-    }else if (_calibrateReady) {
+    if (_calibrating) {
         if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
             if ([_curtainEntity.shortName isEqualToString:@"C300IB"] || [_curtainEntity.shortName isEqualToString:@"C300IBH"]/*旧设备*/) {
-                [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"7903030000"] success:nil failure:nil];
+                Byte byte[] = {0x79, 0x03, 0x03, 0x00, 0x00};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
             }else {
-                [[DataModelManager shareInstance] sendCmdData:@"790403000001" toDeviceId:_deviceId];
+                Byte byte[] = {0x79, 0x04, 0x03, 0x00, 0x00, 0x01};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:6];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
             }
         }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
-            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"79040300000%ld",(long)_controllChannel] toDeviceId:_deviceId];
+            Byte byte[] = {0x79, 0x04, 0x03, 0x00, 0x00, _controllChannel};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:6];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
         }
+    }else {
+        Byte byte[] = {0x79, 0x02, 0x02, _controllChannel};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
     }
 }
 - (IBAction)curtainPauseAction:(UIButton *)sender {
     if (!_calibrating) {
-//        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790100"] success:nil failure:nil];
         [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"7902000%ld",(long)_controllChannel]] success:nil failure:nil];
     }
     
 }
 - (IBAction)crutainClose:(UIButton *)sender {
-    if (!_calibrating) {
-//        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"790101"] success:nil failure:nil];
-        [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"7902010%ld",(long)_controllChannel]] success:nil failure:nil];
-    }else if (_calibrateReady) {
+    if (_calibrating) {
         if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
             if ([_curtainEntity.shortName isEqualToString:@"C300IB"] || [_curtainEntity.shortName isEqualToString:@"C300IBH"]/*旧设备*/) {
-                [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"7903030000"] success:nil failure:nil];
+                Byte byte[] = {0x79, 0x03, 0x03, 0x00, 0x00};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
             }else {
-                [[DataModelManager shareInstance] sendCmdData:@"790403000001" toDeviceId:_deviceId];
+                Byte byte[] = {0x79, 0x04, 0x03, 0x00, 0x00, 0x01};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:6];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
             }
         }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
-            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"79040300000%ld",(long)_controllChannel] toDeviceId:_deviceId];
+            Byte byte[] = {0x79, 0x04, 0x03, 0x00, 0x00, _controllChannel};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:6];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+        }
+    }else {
+        Byte byte[] = {0x79, 0x02, 0x01, _controllChannel};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+    }
+}
+
+- (IBAction)curtainOpenAndCloseTouchUpOutside:(id)sender {
+    if (_calibrating) {
+        if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
+            if ([_curtainEntity.shortName isEqualToString:@"C300IB"] || [_curtainEntity.shortName isEqualToString:@"C300IBH"]/*旧设备*/) {
+                Byte byte[] = {0x79, 0x03, 0x03, 0x00, 0x00};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+            }else {
+                Byte byte[] = {0x79, 0x04, 0x03, 0x00, 0x00, 0x01};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:6];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+            }
+        }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
+            Byte byte[] = {0x79, 0x04, 0x03, 0x00, 0x00, _controllChannel};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:6];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
         }
     }
 }

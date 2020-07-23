@@ -908,6 +908,16 @@
                             deviceEntity.remoteBranch = [NSString stringWithFormat:@"9b1a0501%@02%@03%@04%@05%@06%@",s1,s2,s3,s4,s5,s6];
                             
                         }
+                    }else if ([CSRUtilities belongToCurtainController:deviceDict[@"`c_shortName`"]]) {
+                        if ([deviceDict[@"`c_curtain_type`"] integerValue] == 1) {
+                            deviceEntity.remoteBranch = @"ch";
+                        }else if ([deviceDict[@"`c_curtain_type`"] integerValue] == 2) {
+                            deviceEntity.remoteBranch = @"cv";
+                        }else if ([deviceDict[@"`c_curtain_type`"] integerValue] == 3) {
+                            deviceEntity.remoteBranch = @"chh";
+                        }else if ([deviceDict[@"`c_curtain_type`"] integerValue] == 4) {
+                            deviceEntity.remoteBranch = @"cvv";
+                        }
                     }
                     
                     if (self.sharePlace) {
@@ -1105,7 +1115,7 @@
                                                 }
                                                 [members addObject:sceneMemberObj];
                                             }else if ([parentDict[@"`c_channel`"] integerValue] == 2) {
-                                                SceneMemberEntity *sceneMemberObj2 = [self creatSceneMemberObj:sceneDict[@"`_id`"] parentDict:parentDict deviceDic:deviceDict channel:@1];
+                                                SceneMemberEntity *sceneMemberObj2 = [self creatSceneMemberObj:sceneDict[@"`_id`"] parentDict:parentDict deviceDic:deviceDict channel:@2];
                                                 if (![parentDict[@"`c_chanel2_onoff`"] boolValue]) {
                                                     sceneMemberObj2.eveType = @(17);
                                                 }else {
@@ -1113,7 +1123,7 @@
                                                     sceneMemberObj2.eveD0 = @([parentDict[@"`c_chanel2_bright`"] integerValue] * 2.55);
                                                 }
                                                 [members addObject:sceneMemberObj2];
-                                            }else if ([parentDict[@"`c_channel`"] integerValue] == 4) {
+                                            }else if ([parentDict[@"`c_channel`"] integerValue] == 3) {
                                                 SceneMemberEntity *sceneMemberObj = [self creatSceneMemberObj:sceneDict[@"`_id`"] parentDict:parentDict deviceDic:deviceDict channel:@1];
                                                 if (![parentDict[@"`c_chanel1_onoff`"] boolValue]) {
                                                     sceneMemberObj.eveType = @(17);
@@ -1123,7 +1133,7 @@
                                                 }
                                                 [members addObject:sceneMemberObj];
                                                 
-                                                SceneMemberEntity *sceneMemberObj2 = [self creatSceneMemberObj:sceneDict[@"`_id`"] parentDict:parentDict deviceDic:deviceDict channel:@1];
+                                                SceneMemberEntity *sceneMemberObj2 = [self creatSceneMemberObj:sceneDict[@"`_id`"] parentDict:parentDict deviceDic:deviceDict channel:@2];
                                                 if (![parentDict[@"`c_chanel2_onoff`"] boolValue]) {
                                                     sceneMemberObj2.eveType = @(17);
                                                 }else {
@@ -1224,23 +1234,43 @@
                                             }
                                             [members addObject:sceneMemberObj];
                                         }else if ([CSRUtilities belongToTwoChannelCurtainController:deviceDict[@"`c_shortName`"]]) {
-                                            SceneMemberEntity *sceneMemberObj = [self creatSceneMemberObj:sceneDict[@"`_id`"] parentDict:parentDict deviceDic:deviceDict channel:@1];
-                                            if (![parentDict[@"`c_chanel1_onoff`"] boolValue]) {
-                                                sceneMemberObj.eveType = @(17);
-                                            }else {
-                                                sceneMemberObj.eveType = @(18);
-                                                sceneMemberObj.eveD0 = @([parentDict[@"`c_bright`"] integerValue] * 2.55);
+                                            if ([parentDict[@"`c_channel`"] integerValue] == 1) {
+                                                SceneMemberEntity *sceneMemberObj = [self creatSceneMemberObj:sceneDict[@"`_id`"] parentDict:parentDict deviceDic:deviceDict channel:@1];
+                                                if (![parentDict[@"`c_chanel1_onoff`"] boolValue]) {
+                                                    sceneMemberObj.eveType = @(17);
+                                                }else {
+                                                    sceneMemberObj.eveType = @(18);
+                                                    sceneMemberObj.eveD0 = @([parentDict[@"`c_bright`"] integerValue] * 2.55);
+                                                }
+                                                [members addObject:sceneMemberObj];
+                                            }else if ([parentDict[@"`c_channel`"] integerValue] == 2) {
+                                                SceneMemberEntity *sceneMemberObj2 = [self creatSceneMemberObj:sceneDict[@"`_id`"] parentDict:parentDict deviceDic:deviceDict channel:@2];
+                                                if (![parentDict[@"`c_chanel2_onoff`"] boolValue]) {
+                                                    sceneMemberObj2.eveType = @(17);
+                                                }else {
+                                                    sceneMemberObj2.eveType = @(18);
+                                                    sceneMemberObj2.eveD0 = @([parentDict[@"`c_chanel2_bright`"] integerValue] * 2.55);
+                                                }
+                                                [members addObject:sceneMemberObj2];
+                                            }else if ([parentDict[@"`c_channel`"] integerValue] == 3) {
+                                                SceneMemberEntity *sceneMemberObj = [self creatSceneMemberObj:sceneDict[@"`_id`"] parentDict:parentDict deviceDic:deviceDict channel:@1];
+                                                if (![parentDict[@"`c_chanel1_onoff`"] boolValue]) {
+                                                    sceneMemberObj.eveType = @(17);
+                                                }else {
+                                                    sceneMemberObj.eveType = @(18);
+                                                    sceneMemberObj.eveD0 = @([parentDict[@"`c_bright`"] integerValue] * 2.55);
+                                                }
+                                                [members addObject:sceneMemberObj];
+                                                
+                                                SceneMemberEntity *sceneMemberObj2 = [self creatSceneMemberObj:sceneDict[@"`_id`"] parentDict:parentDict deviceDic:deviceDict channel:@2];
+                                                if (![parentDict[@"`c_chanel2_onoff`"] boolValue]) {
+                                                    sceneMemberObj2.eveType = @(17);
+                                                }else {
+                                                    sceneMemberObj2.eveType = @(18);
+                                                    sceneMemberObj2.eveD0 = @([parentDict[@"`c_chanel2_bright`"] integerValue] * 2.55);
+                                                }
+                                                [members addObject:sceneMemberObj2];
                                             }
-                                            [members addObject:sceneMemberObj];
-                                            
-                                            SceneMemberEntity *sceneMemberObj2 = [self creatSceneMemberObj:sceneDict[@"`_id`"] parentDict:parentDict deviceDic:deviceDict channel:@2];
-                                            if (![parentDict[@"`c_chanel2_onoff`"] boolValue]) {
-                                                sceneMemberObj2.eveType = @(17);
-                                            }else {
-                                                sceneMemberObj2.eveType = @(18);
-                                                sceneMemberObj2.eveD0 = @([parentDict[@"`c_chanel2_onoff`"] integerValue] * 2.55);
-                                            }
-                                            [members addObject:sceneMemberObj];
                                         }else if ([CSRUtilities belongToFanController:deviceDict[@"`c_shortName`"]]) {
                                             SceneMemberEntity *sceneMemberObj = [self creatSceneMemberObj:sceneDict[@"`_id`"] parentDict:parentDict deviceDic:deviceDict channel:@1];
                                             sceneMemberObj.eveType = @32;

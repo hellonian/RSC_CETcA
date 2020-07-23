@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CurtainViewController">
             <connections>
-                <outlet property="PauseBtn" destination="irT-NK-eAB" id="YNb-Ku-uPD"/>
                 <outlet property="bubbleLabel" destination="YZK-da-iY4" id="Xsf-6f-qE9"/>
                 <outlet property="calibrateImageView" destination="4S6-Ro-7nR" id="eJW-R5-BAf"/>
                 <outlet property="channelSelectSeg" destination="tvx-hh-vue" id="16a-a5-egK"/>
@@ -20,6 +19,7 @@
                 <outlet property="macAddressLabel" destination="DQs-CU-B2z" id="m2U-SE-tEt"/>
                 <outlet property="nameTf" destination="uTd-PY-DzK" id="8UO-bA-rBw"/>
                 <outlet property="openBtn" destination="lsN-aN-5EW" id="Hpv-0T-81W"/>
+                <outlet property="pauseBtn" destination="irT-NK-eAB" id="PQg-uA-cSW"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -56,6 +56,7 @@
                     <connections>
                         <action selector="crutainClose:" destination="-1" eventType="touchUpInside" id="oEP-go-Wk1"/>
                         <action selector="curtainCloseTouchDown:" destination="-1" eventType="touchDown" id="xIH-yI-EFw"/>
+                        <action selector="curtainOpenAndCloseTouchUpOutside:" destination="-1" eventType="touchUpOutside" id="6al-jW-akW"/>
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lsN-aN-5EW">
@@ -67,6 +68,7 @@
                     <state key="normal" image="curtainHOpen"/>
                     <connections>
                         <action selector="curtainOpenAction:" destination="-1" eventType="touchUpInside" id="2Dd-U6-12a"/>
+                        <action selector="curtainOpenAndCloseTouchUpOutside:" destination="-1" eventType="touchUpOutside" id="80G-IY-aGT"/>
                         <action selector="curtainOpenTouchDown:" destination="-1" eventType="touchDown" id="eY9-kF-PhI"/>
                     </connections>
                 </button>

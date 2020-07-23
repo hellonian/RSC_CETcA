@@ -49,11 +49,6 @@ static DataModelManager *manager = nil;
 - (void)sendCmdData:(NSString *)hexStrCmd  toDeviceId:(NSNumber *)deviceId {
     if (deviceId) {
         [_manager sendData:deviceId data:[CSRUtilities dataForHexString:hexStrCmd] success:nil failure:nil];
-//        [_manager sendData:deviceId data:[CSRUtilities dataForHexString:hexStrCmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-//
-//        } failure:^(NSError * _Nonnull error) {
-//
-//        }];
     }
     
 }
@@ -318,20 +313,29 @@ static DataModelManager *manager = nil;
         }
     }
     
-    if ([dataStr hasPrefix:@"79"] && dataStr.length >= 8) {
-        NSString *correctionStep = [dataStr substringFromIndex:6];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"calibrateCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"correctionStep":correctionStep}];
+    if ([dataStr hasPrefix:@"790305"]) {
+        if ([dataStr length] == 8) {
+            NSInteger step = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 2)]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"calibrateCall" object:nil userInfo:@{@"deviceId":sourceDeviceId, @"step":@(step), @"channel":@1}];
+        }else if ([dataStr length] == 10) {
+            NSInteger step = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 2)]];
+            NSInteger channel = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(8, 2)]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"calibrateCall" object:nil userInfo:@{@"deviceId":sourceDeviceId, @"step":@(step), @"channel":@(channel)}];
+        }
     }
     
     if ([dataStr hasPrefix:@"7a"] && dataStr.length >= 14) {
         NSInteger seq = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(12, 2)]];
+        NSNumber *channel = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(10, 2)]] + 1);
+        if (seq) {
+            seq = [channel integerValue]*10+seq;
+        }
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sourceDeviceId];
         if (seq && (seq - model.primordial) < 0 && (seq - model.primordial) >-10) {
             return;
         }
         model.primordial = seq;
         
-        NSNumber *channel = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(10, 2)]] + 1);
         NSNumber *state = @([[dataStr substringWithRange:NSMakeRange(6, 2)] boolValue]);
         NSNumber *level = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(8, 2)]]);
         
@@ -363,7 +367,6 @@ static DataModelManager *manager = nil;
             return;
         }
         model.primordial = seq;
-        
         
         NSNumber *state = @([[dataStr substringWithRange:NSMakeRange(8, 2)] boolValue]);
         NSNumber *level = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(10, 2)]]);

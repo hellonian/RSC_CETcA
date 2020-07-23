@@ -473,23 +473,25 @@
 
 - (CSRDeviceEntity *)getDeviceEntityWithId:(NSNumber *)deviceId
 {
-    
-    __block CSRDeviceEntity *foundDeviceEntity = nil;
-    
-    [[CSRAppStateManager sharedInstance].selectedPlace.devices enumerateObjectsUsingBlock:^(id  _Nonnull obj, BOOL * _Nonnull stop) {
+    if (deviceId) {
+        __block CSRDeviceEntity *foundDeviceEntity = nil;
         
-        CSRDeviceEntity *deviceEntity = (CSRDeviceEntity *)obj;
-        
-        if ([deviceEntity.deviceId isEqualToNumber:deviceId]) {
+        [[CSRAppStateManager sharedInstance].selectedPlace.devices enumerateObjectsUsingBlock:^(id  _Nonnull obj, BOOL * _Nonnull stop) {
             
-            foundDeviceEntity = deviceEntity;
-            *stop = YES;
+            CSRDeviceEntity *deviceEntity = (CSRDeviceEntity *)obj;
             
-        }
+            if ([deviceEntity.deviceId isEqualToNumber:deviceId]) {
+                
+                foundDeviceEntity = deviceEntity;
+                *stop = YES;
+                
+            }
+            
+        }];
         
-    }];
-    
-    return foundDeviceEntity;
+        return foundDeviceEntity;
+    }
+    return nil;
 }
 
 - (SceneEntity *)getSceneEntityWithId:(NSNumber *)sceneId{

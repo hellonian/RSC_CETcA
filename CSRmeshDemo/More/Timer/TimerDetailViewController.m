@@ -31,6 +31,10 @@
     BOOL mDidSendStreamData;
     BOOL mDidReciveSetCall;
     BOOL mSetCallState;
+    
+    NSInteger retryCount;
+    NSData *retryCmd;
+    NSNumber *retryDeviceId;
 }
 
 @property (weak, nonatomic) IBOutlet UIDatePicker *timerPicker;
@@ -558,7 +562,6 @@
             enabled = [_timerEntity.enabled boolValue];
             if (![_timerEntity.sceneID isEqualToNumber:_selectedScene.sceneID]) {
                 for (TimerDeviceEntity *td in [_timerEntity.timerDevices mutableCopy]) {
-                    NSLog(@">> %@",td);
                     [self.mMembersToApply addObject:td];
                 }
             }
@@ -635,10 +638,8 @@
 
 - (BOOL)nextOperation {
     if ([self.mMembersToApply count]>0) {
-        NSLog(@"s: %@",self.mMembersToApply);
         id obj = [_mMembersToApply firstObject];
         if ([obj isKindOfClass:[TimerDeviceEntity class]]) {
-            NSLog(@">>>>");
             TimerDeviceEntity *td = (TimerDeviceEntity *)obj;
             _mDeviceToApply = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:td.deviceID];
             if (_mDeviceToApply == nil) {
@@ -659,15 +660,24 @@
                     || [CSRUtilities belongToTwoChannelCurtainController:_mDeviceToApply.shortName]) {
                     Byte byte[] = {0x50, 0x04, 0x07, [td.channel integerValue], bIndex[1], bIndex[0]};
                     NSData *cmd = [[NSData alloc] initWithBytes:byte length:6];
+                    retryCount = 0;
+                    retryCmd = cmd;
+                    retryDeviceId = td.deviceID;
                     [[DataModelManager shareInstance] sendDataByBlockDataTransfer:td.deviceID data:cmd];
                 }else {
                     if ([_mDeviceToApply.cvVersion integerValue] > 18) {
                         Byte byte[] = {0x85, 0x02, bIndex[1], bIndex[0]};
                         NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                        retryCount = 0;
+                        retryCmd = cmd;
+                        retryDeviceId = td.deviceID;
                         [[DataModelManager shareInstance] sendDataByBlockDataTransfer:td.deviceID data:cmd];
                     }else {
                         Byte byte[] = {0x85, 0x01, [td.timerIndex integerValue]};
                         NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+                        retryCount = 0;
+                        retryCmd = cmd;
+                        retryDeviceId = td.deviceID;
                         [[DataModelManager shareInstance] sendDataByBlockDataTransfer:td.deviceID data:cmd];
                     }
                 }
@@ -675,7 +685,6 @@
                 return YES;
             }
         }else if ([obj isKindOfClass:[SceneMemberEntity class]]) {
-            NSLog(@">>>><<<<");
             SceneMemberEntity *sm = (SceneMemberEntity *)obj;
             _mDeviceToApply = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sm.deviceID];
             if (_mDeviceToApply == nil) {
@@ -712,7 +721,6 @@
                 return YES;
             }
         }else {
-            NSLog(@">>>>~~~<<<<");
             [_mMembersToApply removeObject:obj];
             return [self nextOperation];
         }
@@ -744,7 +752,6 @@
     NSInteger ss = [[dtstr substringWithRange:NSMakeRange(12, 2)] integerValue];
     
     [self performSelector:@selector(setTimerTimeOut) withObject:nil afterDelay:30.0];
-    NSLog(@"addAlarm: %@  %@",member.kindString, member.deviceID);
     if ([CSRUtilities belongToTwoChannelSwitch:member.kindString]
         || [CSRUtilities belongToThreeChannelSwitch:member.kindString]
         || [CSRUtilities belongToTwoChannelDimmer:member.kindString]
@@ -776,7 +783,6 @@
     id obj = [_mMembersToApply firstObject];
     if ([obj isKindOfClass:[SceneMemberEntity class]]) {
         SceneMemberEntity *sm = (SceneMemberEntity *)obj;
-        NSLog(@"addAlarmCall: %@ - %@ | %@ - %@",sDeviceID, sm.deviceID, channel, sm.channel);
         if ([sDeviceID isEqualToNumber:sm.deviceID] && [channel isEqualToNumber:sm.channel]) {
             
             mDidReciveSetCall = YES;
@@ -839,29 +845,34 @@
 }
 
 - (void)setTimerTimeOut {
-    NSLog(@"setTimerTimeOut");
     id obj = [_mMembersToApply firstObject];
-    [_mMembersToApply removeObject:obj];
-    [self.fails addObject:obj];
-    if ([obj isKindOfClass:[SceneMemberEntity class]]) {
-        SceneMemberEntity *sm = (SceneMemberEntity *)obj;
-        for (TimerDeviceEntity *td in _timerEntity.timerDevices) {
-            if ([td.deviceID isEqualToNumber:sm.deviceID] && [td.channel isEqualToNumber:sm.channel]) {
-                [_timerEntity removeTimerDevicesObject:td];
-                [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:td];
-                [[CSRDatabaseManager sharedInstance] saveContext];
-                break;
+    if ([obj isKindOfClass:[TimerDeviceEntity class]] && retryCount < 1) {
+        [self performSelector:@selector(setTimerTimeOut) withObject:nil afterDelay:10];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:retryDeviceId data:retryCmd];
+        retryCount ++;
+    }else {
+        [_mMembersToApply removeObject:obj];
+        [self.fails addObject:obj];
+        if ([obj isKindOfClass:[SceneMemberEntity class]]) {
+            SceneMemberEntity *sm = (SceneMemberEntity *)obj;
+            for (TimerDeviceEntity *td in _timerEntity.timerDevices) {
+                if ([td.deviceID isEqualToNumber:sm.deviceID] && [td.channel isEqualToNumber:sm.channel]) {
+                    [_timerEntity removeTimerDevicesObject:td];
+                    [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:td];
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                    break;
+                }
             }
         }
-    }
-    
-    _mDeviceToApply = nil;
-    mDidSendStreamData = NO;
-    mDidReciveSetCall = NO;
-    
-    if (![self nextOperation]) {
-        [self hideLoading];
-        [self showFailAler];
+        
+        _mDeviceToApply = nil;
+        mDidSendStreamData = NO;
+        mDidReciveSetCall = NO;
+        
+        if (![self nextOperation]) {
+            [self hideLoading];
+            [self showFailAler];
+        }
     }
 }
 
@@ -882,6 +893,9 @@
 }
 
 - (void)showFailAler {
+    if ([self.fails count]==0) {
+        return;
+    }
     NSString *message = @"";
     NSString *nt = @"";
     NSString *ns = @"";
@@ -930,14 +944,12 @@
             
         }
     }
-    NSLog(@"ns: %@",ns);
     if ([nt length]>0) {
         message = [NSString stringWithFormat:@"%@ %@",AcTECLocalizedStringFromTable(@"removetimerfail", @"Localizable"), nt];
     }
     if ([ns length]>0) {
         message = [NSString stringWithFormat:@"%@ %@ %@",message,AcTECLocalizedStringFromTable(@"addtimerfail", @"Localizable"), ns];
     }
-    NSLog(@"message: %@",message);
     
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:message preferredStyle:UIAlertControllerStyleAlert];
     [alert.view setTintColor:DARKORAGE];

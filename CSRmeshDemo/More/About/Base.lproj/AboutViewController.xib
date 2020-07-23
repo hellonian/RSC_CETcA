@@ -10,6 +10,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AboutViewController">
             <connections>
                 <outlet property="copyrightLabel" destination="3ZH-AO-cbj" id="58G-jX-6zJ"/>
+                <outlet property="logo" destination="yBi-Ea-ROH" id="Y0J-EP-Jjz"/>
                 <outlet property="view" destination="fje-Ql-qU2" id="QnM-nu-xq8"/>
                 <outlet property="wwwLabel" destination="Mlt-PY-ElI" id="pzp-mK-WOH"/>
             </connections>
@@ -19,7 +20,7 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="yBi-Ea-ROH">
+                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="yBi-Ea-ROH">
                     <rect key="frame" x="124" y="156.5" width="127" height="47"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="127" id="2SY-bb-TH5"/>
@@ -77,6 +78,16 @@
                     <color key="textColor" red="0.47058823529999999" green="0.47058823529999999" blue="0.47058823529999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Build 10" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Gg-ZC-h38">
+                    <rect key="frame" x="20" y="308.5" width="335" height="21"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="21" id="1Gi-Rt-OBg"/>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="21" id="pO4-Ln-ONe"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <color key="textColor" red="0.47058823529999999" green="0.47058823529999999" blue="0.47058823529999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
@@ -85,7 +96,9 @@
                 <constraint firstItem="fR3-yP-Qst" firstAttribute="top" secondItem="H0d-dU-mRL" secondAttribute="bottom" constant="12" id="I3C-0H-tma"/>
                 <constraint firstItem="dX0-Eh-hFf" firstAttribute="top" secondItem="fR3-yP-Qst" secondAttribute="bottom" id="J7S-Bg-o4b"/>
                 <constraint firstItem="fR3-yP-Qst" firstAttribute="centerX" secondItem="yBi-Ea-ROH" secondAttribute="centerX" id="MIv-N4-Meq"/>
+                <constraint firstItem="8Gg-ZC-h38" firstAttribute="top" secondItem="dX0-Eh-hFf" secondAttribute="bottom" id="NYW-uZ-lL7"/>
                 <constraint firstItem="H0d-dU-mRL" firstAttribute="leading" secondItem="fje-Ql-qU2" secondAttribute="leading" constant="20" id="UK3-hz-k8t"/>
+                <constraint firstItem="8Gg-ZC-h38" firstAttribute="centerX" secondItem="fje-Ql-qU2" secondAttribute="centerX" id="VnA-MN-BNv"/>
                 <constraint firstItem="dX0-Eh-hFf" firstAttribute="leading" secondItem="fje-Ql-qU2" secondAttribute="leading" constant="20" id="WZB-K7-pc8"/>
                 <constraint firstItem="8PH-vm-dr3" firstAttribute="top" secondItem="yBi-Ea-ROH" secondAttribute="bottom" constant="10" id="Xot-z5-nJx"/>
                 <constraint firstItem="H0d-dU-mRL" firstAttribute="centerX" secondItem="yBi-Ea-ROH" secondAttribute="centerX" id="ZgO-JZ-9xf"/>
@@ -94,6 +107,7 @@
                 <constraint firstItem="8PH-vm-dr3" firstAttribute="leading" secondItem="fje-Ql-qU2" secondAttribute="leading" constant="20" id="kbc-1y-d9c"/>
                 <constraint firstItem="yBi-Ea-ROH" firstAttribute="centerX" secondItem="fje-Ql-qU2" secondAttribute="centerX" id="nms-Sy-OOP"/>
                 <constraint firstItem="fR3-yP-Qst" firstAttribute="leading" secondItem="fje-Ql-qU2" secondAttribute="leading" constant="20" id="sCP-sE-UHP"/>
+                <constraint firstItem="8Gg-ZC-h38" firstAttribute="leading" secondItem="fje-Ql-qU2" secondAttribute="leading" constant="20" id="x2o-7a-jeq"/>
             </constraints>
             <point key="canvasLocation" x="-18" y="-173"/>
         </view>

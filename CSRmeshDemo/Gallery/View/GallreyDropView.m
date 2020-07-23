@@ -113,44 +113,211 @@
 - (void)tapGestureAction:(UITapGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateEnded) {
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-        if ([self.channel integerValue] == 1) {
-            [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@1 withPowerState:!model.powerState];
-        }else if ([self.channel integerValue] == 2) {
-            Byte byte[] = {0x51, 0x05, 0x01, 0x00, 0x01, !model.channel1PowerState, model.channel1Level};
-            NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
-            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-        }else if ([self.channel integerValue] == 3) {
-            Byte byte[] = {0x51, 0x05, 0x02, 0x00, 0x01, !model.channel2PowerState, model.channel2Level};
-            NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
-            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-        }else if ([self.channel integerValue] == 5) {
-            Byte byte[] = {0x51, 0x05, 0x04, 0x00, 0x01, !model.channel3PowerState, model.channel3Level};
-            NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
-            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-        }else if ([self.channel integerValue] == 4) {
-            BOOL powerState = model.channel1PowerState && model.channel2PowerState;
-            NSInteger level = model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level;
-            Byte byte[] = {0x51, 0x05, 0x03, 0x00, 0x01, !powerState, level};
-            NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
-            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-        }else if ([self.channel integerValue] == 7) {
-            BOOL powerState = model.channel2PowerState && model.channel3PowerState;
-            NSInteger level = model.channel2Level > model.channel3Level ? model.channel2Level : model.channel3Level;
-            Byte byte[] = {0x51, 0x05, 0x06, 0x00, 0x01, !powerState, level};
-            NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
-            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-        }else if ([self.channel integerValue] == 6) {
-            BOOL powerState = model.channel1PowerState && model.channel3PowerState;
-            NSInteger level = model.channel1Level > model.channel3Level ? model.channel1Level : model.channel3Level;
-            Byte byte[] = {0x51, 0x05, 0x05, 0x00, 0x01, !powerState, level};
-            NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
-            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-        }else if ([self.channel integerValue] == 8) {
-            BOOL powerState = model.channel1PowerState && model.channel2PowerState && model.channel3PowerState;
-            NSInteger level = (model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level) > model.channel3Level ? (model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level) : model.channel3Level;
-            Byte byte[] = {0x51, 0x05, 0x07, 0x00, 0x01, !powerState, level};
-            NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
-            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+        if ([CSRUtilities belongToOneChannelCurtainController:model.shortName]) {
+            if (model.channel1Level == 0) {
+                Byte byte[] = {0x79, 0x02, 0x01, 0x01};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                model.cDirection1 = 1;
+            }else if (model.channel1Level == 255) {
+                Byte byte[] = {0x79, 0x02, 0x02, 0x01};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                model.cDirection1 = 2;
+            }else {
+                if (model.cDirection1 == 0) {
+                    Byte byte[] = {0x79, 0x02, 0x01, 0x01};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    model.cDirection1 = 1;
+                }else if (model.cDirection1 == 1) {
+                    Byte byte[] = {0x79, 0x02, 0x00, 0x01};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    model.cDirection1 = 2;
+                }else if (model.cDirection1 == 2) {
+                    Byte byte[] = {0x79, 0x02, 0x02, 0x01};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    model.cDirection1 = 3;
+                }else if (model.cDirection1 == 3) {
+                    Byte byte[] = {0x79, 0x02, 0x00, 0x01};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    model.cDirection1 = 0;
+                }else {
+                    Byte byte[] = {0x79, 0x02, 0x01, 0x01};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    model.cDirection1 = 1;
+                }
+            }
+        }else if ([CSRUtilities belongToTwoChannelCurtainController:model.shortName]) {
+            if ([self.channel integerValue] == 2) {
+                if (model.channel1Level == 0) {
+                    Byte byte[] = {0x79, 0x02, 0x01, 0x01};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    model.cDirection1 = 1;
+                }else if (model.channel1Level == 255) {
+                    Byte byte[] = {0x79, 0x02, 0x02, 0x01};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    model.cDirection1 = 3;
+                }else {
+                    if (model.cDirection1 == 0) {
+                        Byte byte[] = {0x79, 0x02, 0x01, 0x01};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                        model.cDirection1 = 1;
+                    }else if (model.cDirection1 == 1) {
+                        Byte byte[] = {0x79, 0x02, 0x00, 0x01};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                        model.cDirection1 = 2;
+                    }else if (model.cDirection1 == 2) {
+                        Byte byte[] = {0x79, 0x02, 0x02, 0x01};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                        model.cDirection1 = 3;
+                    }else if (model.cDirection1 == 3) {
+                        Byte byte[] = {0x79, 0x02, 0x00, 0x01};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                        model.cDirection1 = 0;
+                    }else {
+                        Byte byte[] = {0x79, 0x02, 0x01, 0x01};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                        model.cDirection1 = 1;
+                    }
+                }
+            }else if ([self.channel integerValue] == 3) {
+                if (model.channel2Level == 0) {
+                    Byte byte[] = {0x79, 0x02, 0x01, 0x02};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    model.cDirection2 = 1;
+                }else if (model.channel2Level == 255) {
+                    Byte byte[] = {0x79, 0x02, 0x02, 0x02};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    model.cDirection2 = 3;
+                }else {
+                    if (model.cDirection2 == 0) {
+                        Byte byte[] = {0x79, 0x02, 0x01, 0x02};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                        model.cDirection2 = 1;
+                    }else if (model.cDirection2 == 1) {
+                        Byte byte[] = {0x79, 0x02, 0x00, 0x02};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                        model.cDirection2 = 2;
+                    }else if (model.cDirection2 == 2) {
+                        Byte byte[] = {0x79, 0x02, 0x02, 0x02};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                        model.cDirection2 = 3;
+                    }else if (model.cDirection2 == 3) {
+                        Byte byte[] = {0x79, 0x02, 0x00, 0x02};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                        model.cDirection2 = 0;
+                    }else {
+                        Byte byte[] = {0x79, 0x02, 0x01, 0x02};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                        model.cDirection2 = 1;
+                    }
+                }
+            }else if ([self.channel integerValue] == 4) {
+                if ([model.level integerValue] == 0) {
+                    Byte byte[] = {0x79, 0x02, 0x01, 0x03};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    model.cDirection1 = 1;
+                    model.cDirection2 = 1;
+                }else if ([model.level integerValue] == 255) {
+                    Byte byte[] = {0x79, 0x02, 0x02, 0x03};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    model.cDirection1 = 3;
+                    model.cDirection2 = 3;
+                }else {
+                    if (model.cDirection1 == 0 && model.cDirection2 == 0) {
+                        Byte byte[] = {0x79, 0x02, 0x01, 0x03};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                        model.cDirection1 = 1;
+                        model.cDirection2 = 1;
+                    }else if (model.cDirection1 == 1 && model.cDirection2 == 1) {
+                        Byte byte[] = {0x79, 0x02, 0x00, 0x03};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                        model.cDirection1 = 2;
+                        model.cDirection2 = 2;
+                    }else if (model.cDirection1 == 2 && model.cDirection2 == 2) {
+                        Byte byte[] = {0x79, 0x02, 0x02, 0x03};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                        model.cDirection1 = 3;
+                        model.cDirection2 = 3;
+                    }else if (model.cDirection1 == 3 && model.cDirection2 == 3) {
+                        Byte byte[] = {0x79, 0x02, 0x00, 0x03};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                        model.cDirection1 = 0;
+                        model.cDirection2 = 0;
+                    }else {
+                        Byte byte[] = {0x79, 0x02, 0x01, 0x03};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                        model.cDirection1 = 1;
+                        model.cDirection2 = 1;
+                    }
+                }
+            }
+        }else {
+            if ([self.channel integerValue] == 1) {
+                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@1 withPowerState:!model.powerState];
+            }else if ([self.channel integerValue] == 2) {
+                Byte byte[] = {0x51, 0x05, 0x01, 0x00, 0x01, !model.channel1PowerState, model.channel1Level};
+                NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+            }else if ([self.channel integerValue] == 3) {
+                Byte byte[] = {0x51, 0x05, 0x02, 0x00, 0x01, !model.channel2PowerState, model.channel2Level};
+                NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+            }else if ([self.channel integerValue] == 5) {
+                Byte byte[] = {0x51, 0x05, 0x04, 0x00, 0x01, !model.channel3PowerState, model.channel3Level};
+                NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+            }else if ([self.channel integerValue] == 4) {
+                BOOL powerState = model.channel1PowerState && model.channel2PowerState;
+                NSInteger level = model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level;
+                Byte byte[] = {0x51, 0x05, 0x03, 0x00, 0x01, !powerState, level};
+                NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+            }else if ([self.channel integerValue] == 7) {
+                BOOL powerState = model.channel2PowerState && model.channel3PowerState;
+                NSInteger level = model.channel2Level > model.channel3Level ? model.channel2Level : model.channel3Level;
+                Byte byte[] = {0x51, 0x05, 0x06, 0x00, 0x01, !powerState, level};
+                NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+            }else if ([self.channel integerValue] == 6) {
+                BOOL powerState = model.channel1PowerState && model.channel3PowerState;
+                NSInteger level = model.channel1Level > model.channel3Level ? model.channel1Level : model.channel3Level;
+                Byte byte[] = {0x51, 0x05, 0x05, 0x00, 0x01, !powerState, level};
+                NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+            }else if ([self.channel integerValue] == 8) {
+                BOOL powerState = model.channel1PowerState && model.channel2PowerState && model.channel3PowerState;
+                NSInteger level = (model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level) > model.channel3Level ? (model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level) : model.channel3Level;
+                Byte byte[] = {0x51, 0x05, 0x07, 0x00, 0x01, !powerState, level};
+                NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+            }
         }
     }
 }
@@ -314,6 +481,30 @@
                 self.backgroundColor = [UIColor clearColor];
                 self.layer.borderColor = [UIColor darkGrayColor].CGColor;
             }
+        }
+    }else if ([CSRUtilities belongToOneChannelCurtainController:_kindName]) {
+        self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:(255 - [model.level floatValue])/255.0*0.9];
+        self.layer.borderColor = DARKORAGE.CGColor;
+    }else if ([CSRUtilities belongToTwoChannelCurtainController:_kindName]) {
+        if ([self.channel integerValue] == 2) {
+            if (model.channel1PowerState) {
+                self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:(255 - model.channel1Level)/255.0*0.9];
+                self.layer.borderColor = DARKORAGE.CGColor;
+            }else {
+                self.backgroundColor = [UIColor clearColor];
+                self.layer.borderColor = [UIColor darkGrayColor].CGColor;
+            }
+        }else if ([self.channel integerValue] == 3) {
+            if (model.channel2PowerState) {
+                self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:(255 - model.channel2Level)/255.0*0.9];
+                self.layer.borderColor = DARKORAGE.CGColor;
+            }else {
+                self.backgroundColor = [UIColor clearColor];
+                self.layer.borderColor = [UIColor darkGrayColor].CGColor;
+            }
+        }else if ([self.channel integerValue] == 4) {
+            self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:(255 - [model.level floatValue])/255.0*0.9];
+            self.layer.borderColor = DARKORAGE.CGColor;
         }
     }
 }

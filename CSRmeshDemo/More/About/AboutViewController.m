@@ -11,9 +11,13 @@
 #import "DataModelManager.h"
 #import "PureLayout.h"
 
+#import "MyUncaughtExceptionHandler.h"
+#import "ShowExceptionLogVC.h"
+
 @interface AboutViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *copyrightLabel;
 @property (weak, nonatomic) IBOutlet UILabel *wwwLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *logo;
 
 @end
 
@@ -45,6 +49,10 @@
     [self.wwwLabel autoSetDimension:ALDimensionHeight toSize:21.0];
     [self.wwwLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20.0];
     [self.wwwLabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.copyrightLabel];
+    
+    UITapGestureRecognizer *showExceptionTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showExceptionLog)];
+    showExceptionTap.numberOfTapsRequired = 5;
+    [_logo addGestureRecognizer:showExceptionTap];
 }
 
 - (void)backSetting{
@@ -64,6 +72,18 @@
 //    }
     if (self.isViewLoaded && !self.view.window) {
         self.view = nil;
+    }
+}
+
+- (void)showExceptionLog {
+    [MyUncaughtExceptionHandler setDefaultHandler];
+    NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    NSString *dataPath = [path stringByAppendingPathComponent:@"Exception.txt"];
+    NSData *data = [NSData dataWithContentsOfFile:dataPath];
+    if (data != nil) {
+        ShowExceptionLogVC *svc = [[ShowExceptionLogVC alloc] init];
+        svc.path = dataPath;
+        [self.navigationController pushViewController:svc animated:YES];
     }
 }
 

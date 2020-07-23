@@ -102,10 +102,9 @@
     
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
     flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
-    flowLayout.minimumLineSpacing = WIDTH*8.0/640.0;
-    flowLayout.minimumInteritemSpacing = WIDTH*8.0/640.0;
-    flowLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, floor(WIDTH*3/160.0));
-    flowLayout.itemSize = CGSizeMake(WIDTH*5/16.0, WIDTH*9/32.0);
+    flowLayout.minimumLineSpacing = 0;
+    flowLayout.minimumInteritemSpacing = 0;
+    flowLayout.itemSize = CGSizeZero;
     
     _devicesCollectionView = [[MainCollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout cellIdentifier:@"MainCollectionViewCell"];
     _devicesCollectionView.mainDelegate = self;
@@ -152,6 +151,17 @@
     }
 }
 
+- (void)viewDidLayoutSubviews {
+    UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
+    CGFloat w = self.view.bounds.size.width;
+    flowLayout.minimumLineSpacing = floor(w*8.0/640.0);
+    flowLayout.minimumInteritemSpacing = floor(w*8.0/640.0);
+    flowLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, floor(w*3/160.0));
+    flowLayout.itemSize = CGSizeMake(w*5/16.0, w*9/32.0);
+    _devicesCollectionView.collectionViewLayout = flowLayout;
+}
+
 - (void)loadMemberData {
     [_devicesCollectionView.dataArray removeAllObjects];
     [_areaEntity.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity *device, BOOL * _Nonnull stop) {
@@ -159,6 +169,7 @@
         deviceModel.deviceId = device.deviceId;
         deviceModel.deviceName = device.name;
         deviceModel.deviceShortName = device.shortName;
+        deviceModel.curtainDirection = device.remoteBranch;
         [_devicesCollectionView.dataArray addObject:deviceModel];
     }];
 }

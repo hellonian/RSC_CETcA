@@ -18,6 +18,11 @@
 #import "CSRUtilities.h"
 
 @interface TimerViewController ()<UITableViewDelegate,UITableViewDataSource, TimerTableViewCellDelegate>
+{
+    NSInteger retryCount;
+    NSData *retryCmd;
+    NSNumber *retryDeviceId;
+}
 
 @property (nonatomic,strong) UITableView *tableView;
 @property (nonatomic,strong) UIView *noneDataView;
@@ -169,7 +174,6 @@
     tdvc.newadd = NO;
     __weak TimerViewController *weakSelf = self;
     tdvc.handle = ^{
-        NSLog(@"TimerViewController");
         [weakSelf getData];
         [weakSelf layoutView];
     };
@@ -221,15 +225,24 @@
                 || [CSRUtilities belongToTwoChannelCurtainController:_mDeviceToApply.shortName]) {
                 Byte byte[] = {0x50, 0x05, 0x05, [td.channel integerValue], bIndex[1], bIndex[0], [_sTimerEntity.enabled boolValue]};
                 NSData *cmd = [[NSData alloc] initWithBytes:byte length:7];
+                retryCount = 0;
+                retryCmd = cmd;
+                retryDeviceId = td.deviceID;
                 [[DataModelManager shareInstance] sendDataByBlockDataTransfer:td.deviceID data:cmd];
             }else {
                 if ([_mDeviceToApply.cvVersion integerValue] > 18) {
                     Byte byte[] = {0x84, 0x03, bIndex[1], bIndex[0], [_sTimerEntity.enabled boolValue]};
                     NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+                    retryCount = 0;
+                    retryCmd = cmd;
+                    retryDeviceId = td.deviceID;
                     [[DataModelManager shareInstance] sendDataByBlockDataTransfer:td.deviceID data:cmd];
                 }else {
                     Byte byte[] = {0x84, 0x02, [td.timerIndex integerValue], [_sTimerEntity.enabled boolValue]};
                     NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                    retryCount = 0;
+                    retryCmd = cmd;
+                    retryDeviceId = td.deviceID;
                     [[DataModelManager shareInstance] sendDataByBlockDataTransfer:td.deviceID data:cmd];
                 }
             }
@@ -240,13 +253,19 @@
 }
 
 - (void)changeEnableTimeOut {
-    TimerDeviceEntity *td = [self.mMembersToApply firstObject];
-    [self.mMembersToApply removeObject:td];
-    [self.fails addObject:td];
-    _mDeviceToApply = nil;
-    if (![self nextChangeEnableOpteration]) {
-        [self hideLoading];
-        [self showFailAler];
+    if (retryCount < 1) {
+        [self performSelector:@selector(changeEnableTimeOut) withObject:nil afterDelay:10];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:retryDeviceId data:retryCmd];
+        retryCount ++;
+    }else {
+        TimerDeviceEntity *td = [self.mMembersToApply firstObject];
+        [self.mMembersToApply removeObject:td];
+        [self.fails addObject:td];
+        _mDeviceToApply = nil;
+        if (![self nextChangeEnableOpteration]) {
+            [self hideLoading];
+            [self showFailAler];
+        }
     }
 }
 
@@ -341,6 +360,7 @@
     if (!_indicatorView) {
         _indicatorView = [[UIActivityIndicatorView alloc] init];
         _indicatorView.hidesWhenStopped = YES;
+        _indicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
     }
     return _indicatorView;
 }

@@ -338,6 +338,9 @@
         if ([messageStatus integerValue] == IS_BRIDGE || [messageStatus integerValue] == IS_BRIDGE_DISCOVERED_SERVICE) {
 #ifdef BRIDGE_ROAMING_ENABLE
             
+//            if ([peripheral.uuidString length]>11 && [[peripheral.uuidString substringToIndex:12] isEqualToString:@"002006060223"]) {
+//                [[CSRBridgeRoaming sharedInstance] didDiscoverBridgeDevice:central peripheral:peripheral advertisment:advertisementData RSSI:RSSI];
+//            }
             [[CSRBridgeRoaming sharedInstance] didDiscoverBridgeDevice:central peripheral:peripheral advertisment:advertisementData RSSI:RSSI];
             
 #endif

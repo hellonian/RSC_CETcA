@@ -148,6 +148,9 @@
 		2EC7D0DE21E6F549007F44C1 /* PowerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC7D0DD21E6F549007F44C1 /* PowerModel.m */; };
 		2EC8BB3421460F0E002ED85F /* MusicPlayTools.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2EC8BB3221460F0D002ED85F /* MusicPlayTools.mm */; };
 		2EC8BB37214653AF002ED85F /* MeterTable.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2EC8BB35214653AF002ED85F /* MeterTable.mm */; };
+		2EC92CE524C8304000AD53CF /* MyUncaughtExceptionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC92CE424C8304000AD53CF /* MyUncaughtExceptionHandler.m */; };
+		2EC92CE924C833CE00AD53CF /* ShowExceptionLogVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC92CE724C833CE00AD53CF /* ShowExceptionLogVC.m */; };
+		2EC92CEA24C833CE00AD53CF /* ShowExceptionLogVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EC92CE824C833CE00AD53CF /* ShowExceptionLogVC.xib */; };
 		2ED23F6E215DCCCA0040A922 /* CurtainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2ED23F70215DCCCA0040A922 /* CurtainViewController.xib */; };
 		2ED3963C204D09A00068B666 /* TimerEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963B204D09A00068B666 /* TimerEntity.m */; };
 		2ED3963F204D09D20068B666 /* TimerDeviceEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */; };
@@ -636,6 +639,11 @@
 		2EC8BB3321460F0E002ED85F /* MusicPlayTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicPlayTools.h; sourceTree = "<group>"; };
 		2EC8BB35214653AF002ED85F /* MeterTable.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MeterTable.mm; sourceTree = "<group>"; };
 		2EC8BB36214653AF002ED85F /* MeterTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeterTable.h; sourceTree = "<group>"; };
+		2EC92CE324C8304000AD53CF /* MyUncaughtExceptionHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyUncaughtExceptionHandler.h; sourceTree = "<group>"; };
+		2EC92CE424C8304000AD53CF /* MyUncaughtExceptionHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyUncaughtExceptionHandler.m; sourceTree = "<group>"; };
+		2EC92CE624C833CE00AD53CF /* ShowExceptionLogVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShowExceptionLogVC.h; sourceTree = "<group>"; };
+		2EC92CE724C833CE00AD53CF /* ShowExceptionLogVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShowExceptionLogVC.m; sourceTree = "<group>"; };
+		2EC92CE824C833CE00AD53CF /* ShowExceptionLogVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShowExceptionLogVC.xib; sourceTree = "<group>"; };
 		2ED20A5E217467EC000DFFAC /* CSRmesh 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "CSRmesh 2.xcdatamodel"; sourceTree = "<group>"; };
 		2ED23F6F215DCCCA0040A922 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CurtainViewController.xib; sourceTree = "<group>"; };
 		2ED23F72215DCCCE0040A922 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
@@ -992,6 +1000,11 @@
 				2E2E70041FF5DE60002D1C1D /* AboutViewController.h */,
 				2E2E70051FF5DE60002D1C1D /* AboutViewController.m */,
 				2E0AA2212126761900DB45EB /* AboutViewController.xib */,
+				2EC92CE324C8304000AD53CF /* MyUncaughtExceptionHandler.h */,
+				2EC92CE424C8304000AD53CF /* MyUncaughtExceptionHandler.m */,
+				2EC92CE624C833CE00AD53CF /* ShowExceptionLogVC.h */,
+				2EC92CE724C833CE00AD53CF /* ShowExceptionLogVC.m */,
+				2EC92CE824C833CE00AD53CF /* ShowExceptionLogVC.xib */,
 			);
 			path = About;
 			sourceTree = "<group>";
@@ -1558,6 +1571,7 @@
 				2E706CFF212A7278008D0EC4 /* GalleryViewController.xib in Resources */,
 				2E9622C720C917EC0097C617 /* InfoPlist.strings in Resources */,
 				2EF332562045031300565374 /* HelpViewController.xib in Resources */,
+				2EC92CEA24C833CE00AD53CF /* ShowExceptionLogVC.xib in Resources */,
 				2E0AA21F2126761900DB45EB /* AboutViewController.xib in Resources */,
 				2E1C839E20CFD782009BCC6D /* PlaceDetailsViewController.xib in Resources */,
 				2E2E70B31FF5DE60002D1C1D /* ErrorCodes.strings in Resources */,
@@ -1659,6 +1673,7 @@
 				2E3630FB2199666F00EF22DD /* FanViewController.m in Sources */,
 				2E8623492019DB28004EF0E0 /* DeviceViewController.m in Sources */,
 				0D835B851B975E8700FF4376 /* CSRSettingsEntity.m in Sources */,
+				2EC92CE924C833CE00AD53CF /* ShowExceptionLogVC.m in Sources */,
 				2EBB39952490D5B000243D5F /* SceneMemberCell.m in Sources */,
 				2E2000A920182260000AD8C3 /* SceneEntity.m in Sources */,
 				0D835B941B975E8800FF4376 /* CSRAreaEntity.m in Sources */,
@@ -1706,6 +1721,7 @@
 				F4658A201C99747A00C284F4 /* CSRDeviceEventsEntity.m in Sources */,
 				2E2E70AD1FF5DE60002D1C1D /* TimeSchedule.m in Sources */,
 				2E3BED3921DF329100E7078C /* PowerViewController.m in Sources */,
+				2EC92CE524C8304000AD53CF /* MyUncaughtExceptionHandler.m in Sources */,
 				2E2533EE20219850002A6EC3 /* DeviceListViewController.m in Sources */,
 				2EA708C32011C31300782209 /* AddDevcieViewController.m in Sources */,
 				2E2E70A61FF5DE60002D1C1D /* DataModelManager.m in Sources */,
@@ -2270,7 +2286,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2330,7 +2346,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
