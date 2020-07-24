@@ -368,6 +368,18 @@
             l = d.channel3Level;
             
             d.channel3PowerState = powerState;
+            if ([CSRUtilities belongToThreeChannelSwitch:d.shortName]
+                || [CSRUtilities belongToThreeChannelDimmer:d.shortName]) {
+                d.powerState = @(d.channel1PowerState || d.channel2PowerState || d.channel3PowerState);
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@5}];
+            
+        }else if ([channel integerValue] == 4) {
+            
+            l =  d.channel1Level > d.channel2Level ? d.channel1Level : d.channel2Level;
+            
+            d.channel1PowerState = powerState;
+            d.channel2PowerState = powerState;
             if ([CSRUtilities belongToTwoChannelSwitch:d.shortName]
                 || [CSRUtilities belongToTwoChannelDimmer:d.shortName]
                 || [CSRUtilities belongToSocketTwoChannel:d.shortName]
@@ -377,7 +389,39 @@
                       || [CSRUtilities belongToThreeChannelDimmer:d.shortName]) {
                 d.powerState = @(d.channel1PowerState || d.channel2PowerState || d.channel3PowerState);
             }
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@5}];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@4}];
+            
+        }else if ([channel integerValue] == 7) {
+            
+            l = d.channel2Level > d.channel3Level ? d.channel2Level : d.channel3Level;
+            
+            d.channel2PowerState = powerState;
+            d.channel3PowerState = powerState;
+            if ([CSRUtilities belongToThreeChannelSwitch:d.shortName]
+                || [CSRUtilities belongToThreeChannelDimmer:d.shortName]) {
+                d.powerState = @(d.channel1PowerState || d.channel2PowerState || d.channel3PowerState);
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@7}];
+            
+        }else if ([channel integerValue] == 6) {
+            
+            l = d.channel1Level > d.channel3Level ? d.channel1Level : d.channel3Level;
+            d.channel1PowerState = powerState;
+            d.channel3PowerState = powerState;
+            if ([CSRUtilities belongToThreeChannelSwitch:d.shortName]
+                || [CSRUtilities belongToThreeChannelDimmer:d.shortName]) {
+                d.powerState = @(d.channel1PowerState || d.channel2PowerState || d.channel3PowerState);
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@6}];
+            
+        }else if ([channel integerValue] == 8) {
+            
+            l = (d.channel1Level > d.channel2Level ? d.channel1Level : d.channel2Level) > d.channel3Level ? (d.channel1Level > d.channel2Level ? d.channel1Level : d.channel2Level) : d.channel3Level;
+            if ([CSRUtilities belongToThreeChannelSwitch:d.shortName]
+                || [CSRUtilities belongToThreeChannelDimmer:d.shortName]) {
+                d.powerState = @(d.channel1PowerState || d.channel2PowerState || d.channel3PowerState);
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@8}];
             
         }
         Byte byte[] = {0x51, 0x05, [channel integerValue]-1, 0x00, 0x01, powerState, l};

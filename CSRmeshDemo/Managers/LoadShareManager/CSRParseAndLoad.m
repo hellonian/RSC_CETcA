@@ -276,6 +276,7 @@
                         dropObj.centerXRatio = dropDict[@"centerXRatio"];
                         dropObj.deviceID = dropDict[@"deviceID"];
                         dropObj.kindName = dropDict[@"kindName"];
+                        dropObj.channel = dropDict[@"channel"];
                         [drops addObject:dropObj];
                     }
                 }
@@ -566,7 +567,8 @@
                                     @"centerXRatio":(drop.centerXRatio)?(drop.centerXRatio):@0,
                                     @"centerYRatio":(drop.centerYRatio)?(drop.centerYRatio):@0,
                                     @"deviceID":(drop.deviceID)?(drop.deviceID):@0,
-                                    @"kindName":(drop.kindName)?(drop.kindName):@""
+                                    @"kindName":(drop.kindName)?(drop.kindName):@"",
+                                    @"channel":(drop.channel)?(drop.channel):@0
                                     }];
         }
         

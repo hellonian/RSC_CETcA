@@ -282,41 +282,23 @@
             if ([self.channel integerValue] == 1) {
                 [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@1 withPowerState:!model.powerState];
             }else if ([self.channel integerValue] == 2) {
-                Byte byte[] = {0x51, 0x05, 0x01, 0x00, 0x01, !model.channel1PowerState, model.channel1Level};
-                NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
-                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@2 withPowerState:!model.channel1PowerState];
             }else if ([self.channel integerValue] == 3) {
-                Byte byte[] = {0x51, 0x05, 0x02, 0x00, 0x01, !model.channel2PowerState, model.channel2Level};
-                NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
-                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@3 withPowerState:!model.channel2PowerState];
             }else if ([self.channel integerValue] == 5) {
-                Byte byte[] = {0x51, 0x05, 0x04, 0x00, 0x01, !model.channel3PowerState, model.channel3Level};
-                NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
-                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@5 withPowerState:!model.channel3PowerState];
             }else if ([self.channel integerValue] == 4) {
                 BOOL powerState = model.channel1PowerState && model.channel2PowerState;
-                NSInteger level = model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level;
-                Byte byte[] = {0x51, 0x05, 0x03, 0x00, 0x01, !powerState, level};
-                NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
-                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@4 withPowerState:!powerState];
             }else if ([self.channel integerValue] == 7) {
                 BOOL powerState = model.channel2PowerState && model.channel3PowerState;
-                NSInteger level = model.channel2Level > model.channel3Level ? model.channel2Level : model.channel3Level;
-                Byte byte[] = {0x51, 0x05, 0x06, 0x00, 0x01, !powerState, level};
-                NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
-                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@7 withPowerState:!powerState];
             }else if ([self.channel integerValue] == 6) {
                 BOOL powerState = model.channel1PowerState && model.channel3PowerState;
-                NSInteger level = model.channel1Level > model.channel3Level ? model.channel1Level : model.channel3Level;
-                Byte byte[] = {0x51, 0x05, 0x05, 0x00, 0x01, !powerState, level};
-                NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
-                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@6 withPowerState:!powerState];
             }else if ([self.channel integerValue] == 8) {
                 BOOL powerState = model.channel1PowerState && model.channel2PowerState && model.channel3PowerState;
-                NSInteger level = (model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level) > model.channel3Level ? (model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level) : model.channel3Level;
-                Byte byte[] = {0x51, 0x05, 0x07, 0x00, 0x01, !powerState, level};
-                NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
-                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@8 withPowerState:!powerState];
             }
         }
     }
