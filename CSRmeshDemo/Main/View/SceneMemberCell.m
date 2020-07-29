@@ -25,11 +25,6 @@
 
 - (void)configureCellWithSceneMember:(SceneMemberEntity *)member{
     _mSceneMember = member;
-    if ([member.editing boolValue]) {
-        _removeBtn.hidden = NO;
-    }else {
-        _removeBtn.hidden = YES;
-    }
     CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
     _nameLabel.text = deviceEntity.name;
     _label3.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];

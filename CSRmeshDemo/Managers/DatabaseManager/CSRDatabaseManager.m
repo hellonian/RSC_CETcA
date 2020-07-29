@@ -685,6 +685,25 @@
         }
         
         return [self getFreeIdFromArray:[allIdsArray copy]];
+    }else if ([typeString isEqualToString:@"SceneEntity_sceneID"]) {
+        NSMutableArray *allIdsArray = [NSMutableArray new];
+        for (SceneEntity *scene in [CSRAppStateManager sharedInstance].selectedPlace.scenes) {
+            [allIdsArray addObject:scene.sceneID];
+        }
+        return [self getFreeIdFromArray:[allIdsArray copy]];
+    }else if ([typeString isEqualToString:@"SceneEntity_sceneIndex"]) {
+        NSMutableArray *allIdsArray = [NSMutableArray new];
+        for (SceneEntity *scene in [CSRAppStateManager sharedInstance].selectedPlace.scenes) {
+            [allIdsArray addObject:scene.rcIndex];
+        }
+        for (; ; ) {
+            NSInteger index = arc4random()%65471+64;
+            if ([allIdsArray containsObject:@(index)]) {
+                break;
+            }else {
+                return @(index);
+            }
+        }
     }
     return @(-1);
 }

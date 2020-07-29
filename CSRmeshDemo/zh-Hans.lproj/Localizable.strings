@@ -195,3 +195,4 @@
 "fadeintime" = "淡入时间：";
 "fadetime" = "淡出时间：";
 "channel" = "通道：";
+"removeSceneMemberAlert" = "确定将该设备从场景中移除吗？";

@@ -35,6 +35,7 @@
                 <outlet property="remoteBtn21" destination="kKM-1c-QF1" id="aiC-Pw-4AS"/>
                 <outlet property="remoteBtn22" destination="8T7-IW-tfl" id="yTX-x2-zsS"/>
                 <outlet property="remoteBtn23" destination="ZPn-Fo-B4N" id="bSK-O4-rXa"/>
+                <outlet property="sceneRemoteBgImageView" destination="nwn-Zd-fva" id="fA6-T9-6DZ"/>
                 <outlet property="sceneView1" destination="t1S-gb-fEa" id="EnX-yD-gw4"/>
                 <outlet property="sceneView2" destination="mEz-d0-cpB" id="wNK-YO-weh"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>

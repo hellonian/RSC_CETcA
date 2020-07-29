@@ -13,6 +13,7 @@
 #import "SelectModel.h"
 #import "DeviceListViewController.h"
 #import <CSRmesh/DataModelApi.h>
+#import "SceneViewController.h"
 
 #define pi 3.14159265358979323846
 
@@ -45,6 +46,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
 @property (strong, nonatomic) IBOutlet UIView *nameView;
 @property (strong, nonatomic) IBOutlet UIView *sceneView1;
 @property (strong, nonatomic) IBOutlet UIView *sceneView2;
+@property (weak, nonatomic) IBOutlet UIImageView *sceneRemoteBgImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *circleImageView;
 @property (weak, nonatomic) IBOutlet UIButton *remoteBtn11;
 @property (weak, nonatomic) IBOutlet UIButton *remoteBtn12;
@@ -233,17 +235,100 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [_remoteBtn16 addGestureRecognizer:gesture16];
         }else if ([CSRUtilities belongToSceneRemoteSixKeys:deviceEntity.shortName]) {
             _mType = MainRemoteType_SceneSix;
-            [self prepare2:deviceEntity.remoteBranch keyCount:6];
+            if ([deviceEntity.remoteBranch length] != 36) {
+                deviceEntity.remoteBranch = @"010000020000030000040000050000060000";
+                [[CSRDatabaseManager sharedInstance] saveContext];
+            }
+            [self.view addSubview:self.sceneView2];
+            [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
+            [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
+            [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
+            
+            _remoteBtn18.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn18.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn19.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn19.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn20.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn20.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn21.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn21.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn22.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn22.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn23.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn23.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            
+            UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn18 addGestureRecognizer:gesture17];
+            UILongPressGestureRecognizer *gesture18 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn19 addGestureRecognizer:gesture18];
+            UILongPressGestureRecognizer *gesture19 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn20 addGestureRecognizer:gesture19];
+            UILongPressGestureRecognizer *gesture20 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn21 addGestureRecognizer:gesture20];
+            UILongPressGestureRecognizer *gesture21 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn22 addGestureRecognizer:gesture21];
+            UILongPressGestureRecognizer *gesture22 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn23 addGestureRecognizer:gesture22];
+            
+            
         }else if ([CSRUtilities belongToSceneRemoteFourKeys:deviceEntity.shortName]) {
             _mType = MainRemoteType_SceneFour;
-            [self prepare2:deviceEntity.remoteBranch keyCount:4];
+            if ([deviceEntity.remoteBranch length] != 24) {
+                deviceEntity.remoteBranch = @"010000020000030000040000";
+                [[CSRDatabaseManager sharedInstance] saveContext];
+            }
+            [self.view addSubview:self.sceneView2];
+            [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
+            [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
+            [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
+            
+            _remoteBtn18.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn18.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn19.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn19.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn20.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn20.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn21.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn21.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            
+            UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn18 addGestureRecognizer:gesture17];
+            UILongPressGestureRecognizer *gesture18 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn19 addGestureRecognizer:gesture18];
+            UILongPressGestureRecognizer *gesture19 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn20 addGestureRecognizer:gesture19];
+            UILongPressGestureRecognizer *gesture20 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn21 addGestureRecognizer:gesture20];
+            
             _remoteBtn22.hidden = YES;
             _remoteBtn23.hidden = YES;
             _keyThreeTopConstraint.constant = 212;
             _keyFourTopConstraint.constant = 212;
         }else if ([CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]) {
             _mType = MainRemoteType_SceneThree;
-            [self prepare2:deviceEntity.remoteBranch keyCount:3];
+            if ([deviceEntity.remoteBranch length] != 18) {
+                deviceEntity.remoteBranch = @"010000020000030000";
+                [[CSRDatabaseManager sharedInstance] saveContext];
+            }
+            [self.view addSubview:self.sceneView2];
+            [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
+            [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
+            [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
+            
+            _remoteBtn18.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn18.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn19.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn19.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn20.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn20.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            
+            UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn18 addGestureRecognizer:gesture17];
+            UILongPressGestureRecognizer *gesture18 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn19 addGestureRecognizer:gesture18];
+            UILongPressGestureRecognizer *gesture19 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn20 addGestureRecognizer:gesture19];
+            
             _remoteBtn21.hidden = YES;
             _remoteBtn22.hidden = YES;
             _remoteBtn23.hidden = YES;
@@ -254,7 +339,25 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             _keyThreeLeftConstraint.constant = 127;
         }else if ([CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]) {
             _mType = MainRemoteType_SceneTwo;
-            [self prepare2:deviceEntity.remoteBranch keyCount:2];
+            if ([deviceEntity.remoteBranch length] != 12) {
+                deviceEntity.remoteBranch = @"010000020000";
+                [[CSRDatabaseManager sharedInstance] saveContext];
+            }
+            [self.view addSubview:self.sceneView2];
+            [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
+            [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
+            [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
+            
+            _remoteBtn18.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn18.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            _remoteBtn19.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn19.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            
+            UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn18 addGestureRecognizer:gesture17];
+            UILongPressGestureRecognizer *gesture18 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn19 addGestureRecognizer:gesture18];
+            
             _remoteBtn20.hidden = YES;
             _remoteBtn21.hidden = YES;
             _remoteBtn22.hidden = YES;
@@ -264,7 +367,21 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             _keyTwoRightConstraint.constant = 127;
         }else if ([CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]) {
             _mType = MainRemoteType_SceneOne;
-            [self prepare2:deviceEntity.remoteBranch keyCount:1];
+            if ([deviceEntity.remoteBranch length] != 6) {
+                deviceEntity.remoteBranch = @"010000";
+                [[CSRDatabaseManager sharedInstance] saveContext];
+            }
+            [self.view addSubview:self.sceneView2];
+            [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
+            [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
+            [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
+            
+            _remoteBtn18.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+            _remoteBtn18.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            
+            UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
+            [_remoteBtn18 addGestureRecognizer:gesture17];
+            
             _remoteBtn19.hidden = YES;
             _remoteBtn20.hidden = YES;
             _remoteBtn21.hidden = YES;
@@ -310,9 +427,9 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
 
 - (void)prepare1:(CSRDeviceEntity *)deviceEntity {
     _settingSelectMutArray = [[NSMutableArray alloc] initWithCapacity:4];
-    if ([deviceEntity.remoteBranch length] >= 46) {
+    if ([deviceEntity.remoteBranch length] == 40) {
         for (int i=0; i<4; i++) {
-            NSString *str = [deviceEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
+            NSString *str = [deviceEntity.remoteBranch substringWithRange:NSMakeRange(10*i, 10)];
             SelectModel *mod = [[SelectModel alloc] init];
             mod.sourceID = @([CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]]);
             mod.channel = @([self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]]);
@@ -327,6 +444,8 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             mod.deviceID = @(0);
             [_settingSelectMutArray insertObject:mod atIndex:i];
         }
+        deviceEntity.remoteBranch = @"0100000000020000000003000000000400000000";
+        [[CSRDatabaseManager sharedInstance] saveContext];
     }
     
     [self.view addSubview:self.sceneView1];
@@ -338,59 +457,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
     [self.circleImageView addGestureRecognizer:panGesture];
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureAction:)];
     [self.circleImageView addGestureRecognizer:tapGesture];
-}
-
-- (void)prepare2:(NSString *)branch keyCount:(NSInteger)count {
-    _settingSelectMutArray = [[NSMutableArray alloc] initWithCapacity:6];
-    if ([branch length] >= (count * 5 + 2) * 2) {
-        for (int i = 0; i < count; i ++) {
-            NSString *str = [branch substringWithRange:NSMakeRange(10*i+6, 10)];
-            SelectModel *mod = [[SelectModel alloc] init];
-            mod.sourceID = @([CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]]);
-            mod.channel = @([self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]]);
-            mod.deviceID = @([self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(6, 4)]]);
-            [_settingSelectMutArray insertObject:mod atIndex:i];
-        }
-    }else {
-        for (int i = 0; i < count; i ++) {
-            SelectModel *mod = [[SelectModel alloc] init];
-            mod.sourceID = @(i+1);
-            mod.channel = @(0);
-            mod.deviceID = @(0);
-            [_settingSelectMutArray insertObject:mod atIndex:i];
-        }
-    }
-    
-    [self.view addSubview:self.sceneView2];
-    [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
-    [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
-    
-    _remoteBtn18.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-    _remoteBtn18.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-    _remoteBtn19.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-    _remoteBtn19.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-    _remoteBtn20.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-    _remoteBtn20.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-    _remoteBtn21.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-    _remoteBtn21.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-    _remoteBtn22.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-    _remoteBtn22.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-    _remoteBtn23.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-    _remoteBtn23.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-    
-    UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
-    [_remoteBtn18 addGestureRecognizer:gesture17];
-    UILongPressGestureRecognizer *gesture18 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
-    [_remoteBtn19 addGestureRecognizer:gesture18];
-    UILongPressGestureRecognizer *gesture19 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
-    [_remoteBtn20 addGestureRecognizer:gesture19];
-    UILongPressGestureRecognizer *gesture20 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
-    [_remoteBtn21 addGestureRecognizer:gesture20];
-    UILongPressGestureRecognizer *gesture21 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
-    [_remoteBtn22 addGestureRecognizer:gesture21];
-    UILongPressGestureRecognizer *gesture22 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
-    [_remoteBtn23 addGestureRecognizer:gesture22];
 }
 
 - (NSInteger)exchangePositionOfDeviceIdString:(NSString *)deviceIdString {
@@ -405,69 +471,28 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
     self.navigationItem.rightBarButtonItem = done;
     editing = YES;
+    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+    if ([CSRUtilities belongToSceneRemoteSixKeys:deviceEntity.shortName]
+        || [CSRUtilities belongToSceneRemoteFourKeys:deviceEntity.shortName]
+        || [CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]
+        || [CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
+        || [CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]) {
+        _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotesceneeditbg"];
+    }
 }
 
 - (void)doneAction {
-    if (!_activityIndicator) {
-        [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
-        _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        [[UIApplication sharedApplication].keyWindow addSubview:_activityIndicator];
-        [_activityIndicator autoCenterInSuperview];
-        [_activityIndicator startAnimating];
-    }
-    
     UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Edit", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(editAction)];
     self.navigationItem.rightBarButtonItem = edit;
     editing = NO;
-    
-    NSString *cmd;
-    if (_mType == MainRemoteType_RGBCW
-        || _mType == MainRemoteType_RGB
-        || _mType == MainRemoteType_CW
-        || _mType == MainRemoteType_SceneFour) {
-        cmd = @"9b1504";
-    }else if (_mType == MainRemoteType_SceneSix) {
-        cmd = @"9b1f06";
-    }else if (_mType == MainRemoteType_SceneThree) {
-        cmd = @"9b1f03";
-    }else if (_mType == MainRemoteType_SceneTwo) {
-        cmd = @"9b1f02";
-    }else if (_mType == MainRemoteType_SceneOne) {
-        cmd = @"9b1f01";
+    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+    if ([CSRUtilities belongToSceneRemoteSixKeys:deviceEntity.shortName]
+        || [CSRUtilities belongToSceneRemoteFourKeys:deviceEntity.shortName]
+        || [CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]
+        || [CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
+        || [CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]) {
+        _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg"];
     }
-    for (SelectModel *mod in _settingSelectMutArray) {
-        NSString *sw = [CSRUtilities stringWithHexNumber:[mod.sourceID integerValue]];
-        NSString *rc = [CSRUtilities exchangePositionOfDeviceId:[mod.channel integerValue]];
-        NSString *dst = [CSRUtilities exchangePositionOfDeviceId:[mod.deviceID integerValue]];
-        cmd = [NSString stringWithFormat:@"%@%@%@%@",cmd,sw,rc,dst];
-    }
-    
-    [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-        deviceEntity.remoteBranch = cmd;
-        [[CSRDatabaseManager sharedInstance] saveContext];
-        
-        if (_activityIndicator) {
-            [_activityIndicator stopAnimating];
-            [_activityIndicator removeFromSuperview];
-            _activityIndicator = nil;
-            [self.translucentBgView removeFromSuperview];
-            self.translucentBgView = nil;
-        }
-    } failure:^(NSError * _Nonnull error) {
-        if (_activityIndicator) {
-            [_activityIndicator stopAnimating];
-            [_activityIndicator removeFromSuperview];
-            _activityIndicator = nil;
-            [self.translucentBgView removeFromSuperview];
-            self.translucentBgView = nil;
-        }
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"%@: %@",AcTECLocalizedStringFromTable(@"Error", @"Localizable"),AcTECLocalizedStringFromTable(@"notRespond", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
-        [alert.view setTintColor:DARKORAGE];
-        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
-        [alert addAction:cancel];
-        [self presentViewController:alert animated:YES completion:nil];
-    }];
 }
 
 - (IBAction)btnTouchUpInside:(UIButton *)sender {
@@ -493,29 +518,63 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                     
                     [self presentViewController:alert animated:YES completion:nil];
         }else if (sender.tag == 1 || sender.tag == 2 || sender.tag == 3 || sender.tag == 4 || sender.tag == 5 || sender.tag == 6) {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-            [alert.view setTintColor:DARKORAGE];
-            UIAlertAction *scene = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"ControlScene", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                
-                [self selectDevice:sender deviceListSelectMode:DeviceListSelectMode_SelectScene];
-                
-            }];
-            UIAlertAction *clear = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Clear", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                
-                [self cleanRemoteButton:sender];
-                
-            }];
-            UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-                
-            }];
-            [alert addAction:scene];
-            [alert addAction:clear];
-            [alert addAction:cancel];
+            SceneViewController *svc = [[SceneViewController alloc] init];
+            svc.forSceneRemote = YES;
+            svc.keyNumber = sender.tag;
+            svc.srDeviceId = _deviceId;
+            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+            if (deviceEntity.remoteBranch > 0) {
+                svc.sceneIndex = @([self exchangePositionOfDeviceIdString:[deviceEntity.remoteBranch substringWithRange:NSMakeRange((sender.tag-1)*6+2, 4)]]);
+            }else {
+                svc.sceneIndex = @0;
+            }
             
-            alert.popoverPresentationController.sourceRect = sender.bounds;
-            alert.popoverPresentationController.sourceView = sender;
-            
-            [self presentViewController:alert animated:YES completion:nil];
+            svc.sceneRemoteHandle = ^(NSInteger keyNumber, NSInteger sceneIndex) {
+                if (!_activityIndicator) {
+                    [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+                    _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+                    [[UIApplication sharedApplication].keyWindow addSubview:_activityIndicator];
+                    [_activityIndicator autoCenterInSuperview];
+                    [_activityIndicator startAnimating];
+                }
+                
+                Byte b[] = {};
+                b[0] = (Byte)((sceneIndex & 0xFF00) >> 8);
+                b[1] = (Byte)(sceneIndex & 0x00FF);
+                Byte byte[] = {0x9b, 0x06, 0x01, keyNumber, b[1], b[0], 0x00, 0x00};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:8];
+                [[DataModelApi sharedInstance] sendData:_deviceId data:cmd success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                    NSString *br = [CSRUtilities hexStringForData:[data subdataWithRange:NSMakeRange(3, 3)]];
+                    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                    if ([deviceEntity.remoteBranch length] > 0) {
+                        deviceEntity.remoteBranch = [deviceEntity.remoteBranch stringByReplacingCharactersInRange:NSMakeRange(6*(keyNumber-1), 6) withString:br];
+                        [[CSRDatabaseManager sharedInstance] saveContext];
+                    }
+                    
+                    if (_activityIndicator) {
+                        [_activityIndicator stopAnimating];
+                        [_activityIndicator removeFromSuperview];
+                        _activityIndicator = nil;
+                        [self.translucentBgView removeFromSuperview];
+                        self.translucentBgView = nil;
+                    }
+                } failure:^(NSError * _Nonnull error) {
+                    if (_activityIndicator) {
+                        [_activityIndicator stopAnimating];
+                        [_activityIndicator removeFromSuperview];
+                        _activityIndicator = nil;
+                        [self.translucentBgView removeFromSuperview];
+                        self.translucentBgView = nil;
+                    }
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"%@: %@",AcTECLocalizedStringFromTable(@"Error", @"Localizable"),AcTECLocalizedStringFromTable(@"notRespond", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
+                    [alert.view setTintColor:DARKORAGE];
+                    UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+                    [alert addAction:cancel];
+                    [self presentViewController:alert animated:YES completion:nil];
+                }];
+                
+            };
+            [self.navigationController pushViewController:svc animated:YES];
         }
     }else {
         if (tapTag == sender.tag || tapTag == 0) {
@@ -606,23 +665,58 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
     list.originalMembers = [NSMutableArray arrayWithObject:[_settingSelectMutArray objectAtIndex:sender.tag-7]];
     [list getSelectedDevices:^(NSArray *devices) {
         if ([devices count]>0) {
+            if (!_activityIndicator) {
+                [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+                _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+                [[UIApplication sharedApplication].keyWindow addSubview:_activityIndicator];
+                [_activityIndicator autoCenterInSuperview];
+                [_activityIndicator startAnimating];
+            }
+            
             SelectModel *mod = devices[0];
             [_settingSelectMutArray replaceObjectAtIndex:([mod.sourceID integerValue]-7) withObject:mod];
-        }
-    }];
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
-    [self presentViewController:nav animated:YES completion:nil];
-}
-
-- (void)selectDevice:(UIButton *)sender deviceListSelectMode:(DeviceListSelectMode)selectMode {
-    DeviceListViewController *list = [[DeviceListViewController alloc] init];
-    list.selectMode = selectMode;
-    list.sourceID = @(sender.tag);
-    list.originalMembers = [NSArray arrayWithObject:[_settingSelectMutArray objectAtIndex:sender.tag-1]];
-    [list getSelectedDevices:^(NSArray *devices) {
-        if ([devices count]>0) {
-            SelectModel *mod = devices[0];
-            [_settingSelectMutArray replaceObjectAtIndex:([mod.sourceID integerValue]-1) withObject:mod];
+            
+            Byte b_index[] = {};
+            NSInteger i_index = [mod.channel integerValue];
+            b_index[0] = (Byte)((i_index & 0xFF00) >> 8);
+            b_index[1] = (Byte)(i_index & 0x00FF);
+            
+            Byte b_deviceId[] = {};
+            NSInteger i_deviceId = [mod.channel integerValue];
+            b_deviceId[0] = (Byte)((i_deviceId & 0xFF00) >> 8);
+            b_deviceId[1] = (Byte)(i_deviceId & 0x00FF);
+            
+            Byte byte[] = {0x9b, 0x06, 0x01, [mod.sourceID integerValue], b_index[1], b_index[0], b_deviceId[1], b_deviceId[0]};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:8];
+            [[DataModelApi sharedInstance] sendData:_deviceId data:cmd success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                NSString *br = [CSRUtilities hexStringForData:[data subdataWithRange:NSMakeRange(3, 5)]];
+                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                if ([deviceEntity.remoteBranch length] == 40) {
+                    deviceEntity.remoteBranch = [deviceEntity.remoteBranch stringByReplacingCharactersInRange:NSMakeRange(([mod.sourceID integerValue]-1)*5, 5) withString:br];
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                }
+                
+                if (_activityIndicator) {
+                    [_activityIndicator stopAnimating];
+                    [_activityIndicator removeFromSuperview];
+                    _activityIndicator = nil;
+                    [self.translucentBgView removeFromSuperview];
+                    self.translucentBgView = nil;
+                }
+            } failure:^(NSError * _Nonnull error) {
+                if (_activityIndicator) {
+                    [_activityIndicator stopAnimating];
+                    [_activityIndicator removeFromSuperview];
+                    _activityIndicator = nil;
+                    [self.translucentBgView removeFromSuperview];
+                    self.translucentBgView = nil;
+                }
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"%@: %@",AcTECLocalizedStringFromTable(@"Error", @"Localizable"),AcTECLocalizedStringFromTable(@"notRespond", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
+                [alert.view setTintColor:DARKORAGE];
+                UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+                [alert addAction:cancel];
+                [self presentViewController:alert animated:YES completion:nil];
+            }];
         }
     }];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
@@ -636,15 +730,43 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         SelectModel *mod = [_settingSelectMutArray objectAtIndex:sender.tag-7];
         mod.deviceID = @(0);
         mod.channel = @(0);
-    }else if (_mType == MainRemoteType_SceneSix
-              || _mType == MainRemoteType_SceneFour
-              || _mType == MainRemoteType_SceneThree
-              || _mType == MainRemoteType_SceneTwo
-              || _mType == MainRemoteType_SceneOne) {
-        SelectModel *mod = [_settingSelectMutArray objectAtIndex:sender.tag-1];
-        mod.deviceID = @(0);
-        mod.channel = @(0);
+        [self cleanRemote:mod];
     }
+}
+
+- (void)cleanRemote:(SelectModel *)mod {
+    Byte byte[] = {0x9b, 0x06, 0x01, [mod.sourceID integerValue], 0x00, 0x00, 0x00, 0x00};
+    NSData *cmd = [[NSData alloc] initWithBytes:byte length:8];
+    
+    [[DataModelApi sharedInstance] sendData:_deviceId data:cmd success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+        NSString *br = [CSRUtilities hexStringForData:[data subdataWithRange:NSMakeRange(3, 5)]];
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+        if ([deviceEntity.remoteBranch length] == 40) {
+            deviceEntity.remoteBranch = [deviceEntity.remoteBranch stringByReplacingCharactersInRange:NSMakeRange(([mod.sourceID integerValue]-1)*10, 10) withString:br];
+            [[CSRDatabaseManager sharedInstance] saveContext];
+        }
+
+        if (_activityIndicator) {
+            [_activityIndicator stopAnimating];
+            [_activityIndicator removeFromSuperview];
+            _activityIndicator = nil;
+            [self.translucentBgView removeFromSuperview];
+            self.translucentBgView = nil;
+        }
+    } failure:^(NSError * _Nonnull error) {
+        if (_activityIndicator) {
+            [_activityIndicator stopAnimating];
+            [_activityIndicator removeFromSuperview];
+            _activityIndicator = nil;
+            [self.translucentBgView removeFromSuperview];
+            self.translucentBgView = nil;
+        }
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"%@: %@",AcTECLocalizedStringFromTable(@"Error", @"Localizable"),AcTECLocalizedStringFromTable(@"notRespond", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
+        [alert.view setTintColor:DARKORAGE];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+        [alert addAction:cancel];
+        [self presentViewController:alert animated:YES completion:nil];
+    }];
 }
 
 - (UIView *)translucentBgView {

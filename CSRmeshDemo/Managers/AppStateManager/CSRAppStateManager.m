@@ -239,7 +239,7 @@
         CSRPlaceEntity *defaultPlace = [NSEntityDescription insertNewObjectForEntityForName:@"CSRPlaceEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
         
         defaultPlace.name = @"iOSHouse";
-        defaultPlace.passPhrase = @"actec";
+        defaultPlace.passPhrase = [self getRandomStringWithNum:5];
 //        defaultPlace.color = @([CSRUtilities rgbFromColor:[CSRUtilities colorFromHex:@"#2196f3"]]);
         defaultPlace.iconID = @(8);
         defaultPlace.owner = @"My place";
@@ -249,8 +249,9 @@
         for (int i=0; i<6; i++) {
             SceneEntity *defaultScene = [NSEntityDescription insertNewObjectForEntityForName:@"SceneEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
             
-            defaultScene.rcIndex = @(arc4random()%65471+64);
+            defaultScene.rcIndex = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"SceneEntity_sceneIndex"];
             defaultScene.sceneID = @(i);
+            defaultScene.srDeviceId = @(-1);
             if (i==0) {
                 defaultScene.iconID = @0;
                 defaultScene.sceneName = @"Home";
@@ -547,5 +548,23 @@
 }
 
 
+- (NSString *)getRandomStringWithNum:(NSInteger)num
+{
+    NSString *string = [[NSString alloc]init];
+    for (int i = 0; i < num; i++) {
+        int number = arc4random() % 36;
+        if (number < 10) {
+            int figure = arc4random() % 10;
+            NSString *tempString = [NSString stringWithFormat:@"%d", figure];
+            string = [string stringByAppendingString:tempString];
+        }else {
+            int figure = (arc4random() % 26) + 97;
+            char character = figure;
+            NSString *tempString = [NSString stringWithFormat:@"%c", character];
+            string = [string stringByAppendingString:tempString];
+        }
+    }
+    return string;
+}
 
 @end

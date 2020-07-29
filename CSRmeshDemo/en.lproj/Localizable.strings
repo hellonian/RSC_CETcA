@@ -195,3 +195,4 @@
 "fadeintime" = "Fade in time:";
 "fadetime" = "Fade time:";
 "channel" = "Channel:";
+"removeSceneMemberAlert" = "Are you sure remove the scene member？";

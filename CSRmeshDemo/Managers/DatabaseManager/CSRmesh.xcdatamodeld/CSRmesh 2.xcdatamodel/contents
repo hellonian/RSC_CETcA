@@ -172,6 +172,7 @@
         <attribute name="rcIndex" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="sceneID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="sceneName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="srDeviceId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <relationship name="members" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SceneMemberEntity" inverseName="scene" inverseEntity="SceneMemberEntity" syncable="YES"/>
         <relationship name="place" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CSRPlaceEntity" inverseName="scenes" inverseEntity="CSRPlaceEntity" syncable="YES"/>
     </entity>
@@ -221,7 +222,7 @@
         <element name="DropEntity" positionX="-414" positionY="-126" width="128" height="178"/>
         <element name="GalleryEntity" positionX="-423" positionY="-135" width="128" height="150"/>
         <element name="RGBSceneEntity" positionX="-423" positionY="-135" width="128" height="313"/>
-        <element name="SceneEntity" positionX="-423" positionY="-135" width="128" height="150"/>
+        <element name="SceneEntity" positionX="-423" positionY="-135" width="128" height="163"/>
         <element name="SceneMemberEntity" positionX="-414" positionY="-126" width="128" height="223"/>
         <element name="TimerDeviceEntity" positionX="-414" positionY="-126" width="128" height="133"/>
         <element name="TimerEntity" positionX="-423" positionY="-135" width="128" height="178"/>

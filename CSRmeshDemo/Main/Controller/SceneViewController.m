@@ -16,6 +16,7 @@
 #import "DeviceModelManager.h"
 #import "DataModelManager.h"
 #import "PureLayout.h"
+#import "CSRAppStateManager.h"
 
 @interface SceneViewController ()<UITableViewDelegate,UITableViewDataSource,SceneMemberCellDelegate>
 {
@@ -47,8 +48,8 @@
     [btn addTarget:self action:@selector(closeAction) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
     self.navigationItem.leftBarButtonItem = back;
-    UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Edit", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(editClick)];
-    self.navigationItem.rightBarButtonItem = edit;
+    UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addClick)];
+    self.navigationItem.rightBarButtonItem = add;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(sceneAddedSuccessCall:)
@@ -66,17 +67,27 @@
     _sceneMemberList.backgroundColor = [UIColor clearColor];
     [_sceneMemberList registerNib:[UINib nibWithNibName:@"SceneMemberCell" bundle:nil] forCellReuseIdentifier:@"SCENEMEMBERCELL"];
     
-    if (_sceneIndex) {
+    _members = [[NSMutableArray alloc] init];
+    if ([_sceneIndex integerValue] != 0) {
         SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
         if (sceneEntity) {
-            self.navigationItem.title = sceneEntity.sceneName;
+            if (sceneEntity.sceneName) {
+                self.navigationItem.title = sceneEntity.sceneName;
+            }
+            
             if ([sceneEntity.members count]>0) {
                 _members = [[sceneEntity.members allObjects] mutableCopy];
                 [_sceneMemberList reloadData];
-            }else {
-                _members = [[NSMutableArray alloc] init];
             }
         }
+    }else {
+        _sceneIndex = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"SceneEntity_sceneIndex"];
+        SceneEntity *scene = [NSEntityDescription insertNewObjectForEntityForName:@"SceneEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+        scene.rcIndex = _sceneIndex;
+        scene.sceneID = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"SceneEntity_sceneID"];
+        scene.srDeviceId = _srDeviceId;
+        [[CSRAppStateManager sharedInstance].selectedPlace addScenesObject:scene];
+        [[CSRDatabaseManager sharedInstance] saveContext];
     }
     
     
@@ -110,41 +121,43 @@
         }else if ([member.channel integerValue] == 4) {
             p = model.channel3PowerState;
         }
-        [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:member.deviceID channel:@([member.channel integerValue]+1) withPowerState:!p];
+        
+        if ([CSRUtilities belongToTwoChannelSwitch:model.shortName]
+            || [CSRUtilities belongToTwoChannelDimmer:model.shortName]
+            || [CSRUtilities belongToSocketTwoChannel:model.shortName]
+            || [CSRUtilities belongToTwoChannelCurtainController:model.shortName]
+            || [CSRUtilities belongToThreeChannelSwitch:model.shortName]
+            || [CSRUtilities belongToThreeChannelDimmer:model.shortName]) {
+            [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:member.deviceID channel:@([member.channel integerValue]+1) withPowerState:!p];
+        }else {
+            [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:member.deviceID channel:@([member.channel integerValue]) withPowerState:!p];
+        }
     }
 }
 
 - (void)closeAction {
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)editClick {
-    UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addClick)];
-    self.navigationItem.leftBarButtonItem = add;
-    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneClick)];
-    self.navigationItem.rightBarButtonItem = done;
-    
-    for (SceneMemberEntity *m in _members) {
-        m.editing = @1;
+    if (_forSceneRemote) {
+        if ([_members count] == 0) {
+            SceneEntity *scene = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+            if (scene) {
+                [[CSRAppStateManager sharedInstance].selectedPlace removeScenesObject:scene];
+                [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:scene];
+                [[CSRDatabaseManager sharedInstance] saveContext];
+            }
+            
+            if (self.sceneRemoteHandle) {
+                self.sceneRemoteHandle(_keyNumber, 0);
+            }
+            
+        }else {
+            if (self.sceneRemoteHandle) {
+                self.sceneRemoteHandle(_keyNumber, [_sceneIndex integerValue]);
+            }
+        }
+        [self.navigationController popViewControllerAnimated:YES];
+    }else {
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
-    [_sceneMemberList reloadData];
-}
-
-- (void)doneClick {
-    UIButton *btn = [[UIButton alloc] init];
-    [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
-    [btn setTitle:AcTECLocalizedStringFromTable(@"Back", @"Localizable") forState:UIControlStateNormal];
-    [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
-    [btn addTarget:self action:@selector(closeAction) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
-    self.navigationItem.leftBarButtonItem = back;
-    UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Edit", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(editClick)];
-    self.navigationItem.rightBarButtonItem = edit;
-    
-    for (SceneMemberEntity *m in _members) {
-        m.editing = @0;
-    }
-    [_sceneMemberList reloadData];
 }
 
 - (void)addClick {
@@ -634,35 +647,45 @@
 }
 
 - (void)removeSceneMember:(SceneMemberEntity *)mSceneMember {
-    [self showLoading];
-    [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
-    _mMemberToApply = mSceneMember;
-    _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mSceneMember.deviceID];
-    
-    NSInteger s = [_sceneIndex integerValue];
-    Byte b[] = {};
-    b[0] = (Byte)((s & 0xFF00)>>8);
-    b[1] = (Byte)(s & 0x00FF);
-    
-    if ([CSRUtilities belongToTwoChannelSwitch:mSceneMember.kindString]
-        || [CSRUtilities belongToThreeChannelSwitch:mSceneMember.kindString]
-        || [CSRUtilities belongToTwoChannelDimmer:mSceneMember.kindString]
-        || [CSRUtilities belongToSocketTwoChannel:mSceneMember.kindString]
-        || [CSRUtilities belongToTwoChannelCurtainController:mSceneMember.kindString]) {
-        Byte byte[] = {0x5d, 0x03, [mSceneMember.channel integerValue], b[1], b[0]};
-        NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
-        retryCount = 0;
-        retryCmd = cmd;
-        retryDeviceId = mSceneMember.deviceID;
-        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:mSceneMember.deviceID data:cmd];
-    }else {
-        Byte byte[] = {0x98, 0x02, b[1], b[0]};
-        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
-        retryCount = 0;
-        retryCmd = cmd;
-        retryDeviceId = mSceneMember.deviceID;
-        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:mSceneMember.deviceID data:cmd];
-    }
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"removeSceneMemberAlert", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+    [alert.view setTintColor:DARKORAGE];
+    UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self showLoading];
+        [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
+        _mMemberToApply = mSceneMember;
+        _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mSceneMember.deviceID];
+        
+        NSInteger s = [_sceneIndex integerValue];
+        Byte b[] = {};
+        b[0] = (Byte)((s & 0xFF00)>>8);
+        b[1] = (Byte)(s & 0x00FF);
+        
+        if ([CSRUtilities belongToTwoChannelSwitch:mSceneMember.kindString]
+            || [CSRUtilities belongToThreeChannelSwitch:mSceneMember.kindString]
+            || [CSRUtilities belongToTwoChannelDimmer:mSceneMember.kindString]
+            || [CSRUtilities belongToSocketTwoChannel:mSceneMember.kindString]
+            || [CSRUtilities belongToTwoChannelCurtainController:mSceneMember.kindString]) {
+            Byte byte[] = {0x5d, 0x03, [mSceneMember.channel integerValue], b[1], b[0]};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+            retryCount = 0;
+            retryCmd = cmd;
+            retryDeviceId = mSceneMember.deviceID;
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:mSceneMember.deviceID data:cmd];
+        }else {
+            Byte byte[] = {0x98, 0x02, b[1], b[0]};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+            retryCount = 0;
+            retryCmd = cmd;
+            retryDeviceId = mSceneMember.deviceID;
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:mSceneMember.deviceID data:cmd];
+        }
+    }];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [alert addAction:yes];
+    [alert addAction:cancel];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)removeSceneIDTimerOut {

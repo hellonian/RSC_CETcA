@@ -17,5 +17,6 @@
 @dynamic members;
 @dynamic rcIndex;
 @dynamic enumMethod;
+@dynamic srDeviceId;
 
 @end

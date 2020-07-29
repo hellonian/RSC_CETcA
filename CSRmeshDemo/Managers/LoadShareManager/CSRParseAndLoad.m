@@ -297,6 +297,7 @@
             sceneObj.sceneName = sceneDict[@"sceneName"];
             sceneObj.rcIndex = sceneDict[@"rcIndex"];
             sceneObj.enumMethod = sceneDict[@"enumMethod"];
+            sceneObj.srDeviceId = sceneDict[@"srDeviceId"];
 
             NSMutableArray *members = [NSMutableArray new];
             if (parsingDictionary[@"sceneMembers_list"]) {
@@ -584,7 +585,8 @@
                                  @"iconID":(scene.iconID)?(scene.iconID):@0,
                                  @"sceneName":scene.sceneName?scene.sceneName:@"",
                                  @"rcIndex":(scene.rcIndex)?(scene.rcIndex):@0,
-                                 @"enumMethod":(scene.enumMethod)?(scene.enumMethod):@0
+                                 @"enumMethod":(scene.enumMethod)?(scene.enumMethod):@0,
+                                 @"srDeviceId":(scene.srDeviceId)?(scene.srDeviceId):@0
                                  }];
         
         for (SceneMemberEntity *sceneMember in scene.members) {

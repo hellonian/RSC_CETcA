@@ -214,8 +214,9 @@
                             for (int i=0; i<6; i++) {
                                 SceneEntity *defaultScene = [NSEntityDescription insertNewObjectForEntityForName:@"SceneEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
                                 
-                                defaultScene.rcIndex = @(arc4random()%65471+64);
+                                defaultScene.rcIndex = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"SceneEntity_sceneIndex"];
                                 defaultScene.sceneID = @(i);
+                                defaultScene.srDeviceId = @(-1);
                                 if (i==0) {
                                     defaultScene.iconID = @0;
                                     defaultScene.sceneName = @"Home";

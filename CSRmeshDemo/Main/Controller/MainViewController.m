@@ -56,6 +56,10 @@
     CSRmeshDevice *meshDevice;
     CSRDeviceEntity *deleteDeviceEntity;
     BOOL sceneCtrLimit;
+    
+    NSInteger retryCount;
+    NSData *retryCmd;
+    NSNumber *retryDeviceId;
 }
 
 @property (nonatomic,strong) MainCollectionView *mainCollectionView;
@@ -77,6 +81,9 @@
 
 @property (nonatomic,strong) NSMutableDictionary *semaphores;
 @property (weak, nonatomic) IBOutlet UILabel *connectedPLable;
+
+@property (nonatomic, strong) NSMutableArray *selects;
+@property (nonatomic, strong) NSMutableArray *srScenes;
 
 @end
 
@@ -321,9 +328,11 @@
     if (sceneMutableArray != nil || [sceneMutableArray count] !=0) {
         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sceneID" ascending:YES];
         [sceneMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
-        [sceneMutableArray enumerateObjectsUsingBlock:^(SceneEntity *sceneEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-            [_sceneCollectionView.dataArray addObject:sceneEntity];
-        }];
+        for (SceneEntity *sceneEntity in sceneMutableArray) {
+            if ([sceneEntity.srDeviceId isEqualToNumber:@(-1)]) {
+                [_sceneCollectionView.dataArray addObject:sceneEntity];
+            }
+        }
     }
     
     [_sceneCollectionView reloadData];
@@ -548,7 +557,6 @@
 - (void)mainCollectionViewDelegateSceneMenuAction:(NSNumber *)sceneId actionName:(NSString *)actionName {
     selectedSceneId = sceneId;
     if ([actionName isEqualToString:@"Edit"]) {
-        NSLog(@"Edit");
         SceneViewController *svc = [[SceneViewController alloc] init];
         SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:sceneId];
         svc.sceneIndex = s.rcIndex;
@@ -557,7 +565,6 @@
         return;
     }
     if ([actionName isEqualToString:@"Icon"]) {
-        NSLog(@"Icon");
         if (!pickerView) {
             pickerView = [[PlaceColorIconPickerView alloc] initWithFrame:CGRectMake((WIDTH-270)/2, (HEIGHT-190)/2, 270, 190) withMode:CollectionViewPickerMode_SceneIconPicker];
             pickerView.delegate = self;
@@ -571,7 +578,6 @@
         return;
     }
     if ([actionName isEqualToString:@"Rename"]) {
-        NSLog(@"Rename");
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"" preferredStyle:UIAlertControllerStyleAlert];
         NSMutableAttributedString *hogan = [[NSMutableAttributedString alloc] initWithString:AcTECLocalizedStringFromTable(@"Rename", @"Localizable")];
         [hogan addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1] range:NSMakeRange(0, [[hogan string] length])];
@@ -1112,13 +1118,15 @@
 
 #pragma mark - notification
 
--(void)deleteStatus:(NSNotification *)notification
+- (void)deleteStatus:(NSNotification *)notification
 {
     NSNumber *num = notification.userInfo[@"boolFlag"];
     if ([num boolValue] == NO) {
         [self showForceAlert];
     } else {
+        NSString *deleteDeviceShortName;
         if(deleteDeviceEntity) {
+            deleteDeviceShortName = [deleteDeviceEntity.shortName copy];
             if (deleteDeviceEntity.rgbScenes && [deleteDeviceEntity.rgbScenes count]>0) {
                 for (RGBSceneEntity *deleteRgbSceneEntity in deleteDeviceEntity.rgbScenes) {
                     [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:deleteRgbSceneEntity];
@@ -1130,7 +1138,13 @@
             [[CSRDatabaseManager sharedInstance] dropEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
             [[CSRDatabaseManager sharedInstance] sceneMemberEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
             [[CSRDatabaseManager sharedInstance] timerDeviceEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
-            
+            if ([CSRUtilities belongToSceneRemoteSixKeys:deleteDeviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemoteFourKeys:deleteDeviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemoteThreeKeys:deleteDeviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemoteTwoKeys:deleteDeviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemoteOneKey:deleteDeviceEntity.shortName]) {
+                [self removeSceneAfterSceneRemoteDelete:deleteDeviceEntity.deviceId];
+            }
             [[CSRDatabaseManager sharedInstance] saveContext];
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteDeviceEntity" object:nil];
@@ -1143,14 +1157,20 @@
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [weakSelf mainCollectionViewEditlayoutView];
         });
-        if (_hud) {
-            [_hud hideAnimated:YES];
-            _hud = nil;
+        if (!([CSRUtilities belongToSceneRemoteSixKeys:deleteDeviceShortName]
+            || [CSRUtilities belongToSceneRemoteFourKeys:deleteDeviceShortName]
+            || [CSRUtilities belongToSceneRemoteThreeKeys:deleteDeviceShortName]
+            || [CSRUtilities belongToSceneRemoteTwoKeys:deleteDeviceShortName]
+            || [CSRUtilities belongToSceneRemoteOneKey:deleteDeviceShortName])) {
+            if (_hud) {
+                [_hud hideAnimated:YES];
+                _hud = nil;
+            }
         }
     }
 }
 
-- (void) showForceAlert
+- (void)showForceAlert
 {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:AcTECLocalizedStringFromTable(@"DeleteDevice", @"Localizable")
                                                                              message:[NSString stringWithFormat:@"%@ %@ ？",AcTECLocalizedStringFromTable(@"DeleteDeviceOffLine", @"Localizable"), meshDevice.name]
@@ -1181,6 +1201,13 @@
                                                              [[CSRDatabaseManager sharedInstance] dropEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
                                                              [[CSRDatabaseManager sharedInstance] sceneMemberEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
                                                              [[CSRDatabaseManager sharedInstance] timerDeviceEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
+                                                             if ([CSRUtilities belongToSceneRemoteSixKeys:deleteDeviceEntity.shortName]
+                                                                 || [CSRUtilities belongToSceneRemoteFourKeys:deleteDeviceEntity.shortName]
+                                                                 || [CSRUtilities belongToSceneRemoteThreeKeys:deleteDeviceEntity.shortName]
+                                                                 || [CSRUtilities belongToSceneRemoteTwoKeys:deleteDeviceEntity.shortName]
+                                                                 || [CSRUtilities belongToSceneRemoteOneKey:deleteDeviceEntity.shortName]) {
+                                                                 [self removeSceneAfterSceneRemoteDelete:deleteDeviceEntity.deviceId];
+                                                             }
                                                              
                                                              [[CSRDatabaseManager sharedInstance] saveContext];
                                                              
@@ -1190,9 +1217,15 @@
                                                          [[CSRDevicesManager sharedInstance] setDeviceIdNumber:deviceNumber];
                                                          [self getMainDataArray];
                                                          [self mainCollectionViewEditlayoutView];
-                                                         if (_hud) {
-                                                             [_hud hideAnimated:YES];
-                                                             _hud = nil;
+                                                         if (!([CSRUtilities belongToSceneRemoteSixKeys:deleteDeviceEntity.shortName]
+                                                             || [CSRUtilities belongToSceneRemoteFourKeys:deleteDeviceEntity.shortName]
+                                                             || [CSRUtilities belongToSceneRemoteThreeKeys:deleteDeviceEntity.shortName]
+                                                             || [CSRUtilities belongToSceneRemoteTwoKeys:deleteDeviceEntity.shortName]
+                                                             || [CSRUtilities belongToSceneRemoteOneKey:deleteDeviceEntity.shortName])) {
+                                                             if (_hud) {
+                                                                 [_hud hideAnimated:YES];
+                                                                 _hud = nil;
+                                                             }
                                                          }
                                                      }];
     [alertController addAction:okAction];
@@ -1354,6 +1387,148 @@
     _connectedPLable.textColor = DARKORAGE;
     [DeviceModelManager sharedInstance].bleDisconnected = YES;
     [_mainCollectionView reloadData];
+}
+
+- (NSMutableArray *)selects {
+    if (!_selects) {
+        _selects = [[NSMutableArray alloc] init];
+    }
+    return _selects;
+}
+
+- (NSMutableArray *)srScenes {
+    if (!_srScenes) {
+        _srScenes = [[NSMutableArray alloc] init];
+    }
+    return _srScenes;
+}
+
+- (void)removeSceneAfterSceneRemoteDelete:(NSNumber *)srDeviceId {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(removeSceneCall:)
+                                                 name:@"RemoveSceneCall"
+                                               object:nil];
+    [self.selects removeAllObjects];
+    for (SceneEntity *scene in [CSRAppStateManager sharedInstance].selectedPlace.scenes) {
+        if ([scene.srDeviceId isEqualToNumber:srDeviceId]) {
+            [self.srScenes addObject:scene];
+            if ([scene.members count] > 0) {
+                for (SceneMemberEntity *member in scene.members) {
+                    [self.selects addObject:member];
+                }
+            }
+        }
+    }
+    if ([self.selects count] > 0) {
+        [self nextOperation];
+    }else {
+        if (_hud) {
+            [_hud hideAnimated:YES];
+            _hud = nil;
+        }
+        
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RemoveSceneCall" object:nil];
+    }
+}
+
+- (BOOL)nextOperation {
+    if ([self.selects count] > 0) {
+        SceneMemberEntity *m = [self.selects firstObject];
+        CSRDeviceEntity *d = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:m.deviceID];
+        if (d == nil) {
+            [self.selects removeObject:m];
+            return [self nextOperation];
+        }else {
+            
+            [self performSelector:@selector(removeSceneIDTimeOut) withObject:nil afterDelay:10];
+            
+            NSInteger s = [m.sceneID integerValue];
+            Byte b[] = {};
+            b[0] = (Byte)((s & 0xFF00)>>8);
+            b[1] = (Byte)(s & 0x00FF);
+            
+            if ([CSRUtilities belongToTwoChannelSwitch:m.kindString]
+                || [CSRUtilities belongToThreeChannelSwitch:m.kindString]
+                || [CSRUtilities belongToTwoChannelDimmer:m.kindString]
+                || [CSRUtilities belongToSocketTwoChannel:m.kindString]
+                || [CSRUtilities belongToTwoChannelCurtainController:m.kindString]) {
+                Byte byte[] = {0x5d, 0x03, [m.channel integerValue], b[1], b[0]};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+                retryCount = 0;
+                retryCmd = cmd;
+                retryDeviceId = m.deviceID;
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:m.deviceID data:cmd];
+            }else {
+                Byte byte[] = {0x98, 0x02, b[1], b[0]};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                retryCount = 0;
+                retryCmd = cmd;
+                retryDeviceId = m.deviceID;
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:m.deviceID data:cmd];
+            }
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (void)removeSceneIDTimeOut {
+    if (retryCount < 1) {
+        [self performSelector:@selector(removeSceneIDTimeOut) withObject:nil afterDelay:10];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:retryDeviceId data:retryCmd];
+        retryCount ++;
+    }else {
+        SceneMemberEntity *m = [self.selects firstObject];
+        [self.selects removeObject:m];
+        SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:m.sceneID];
+        [s removeMembersObject:m];
+        [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:m];
+        [[CSRDatabaseManager sharedInstance] saveContext];
+        
+        if (![self nextOperation]) {
+            for (SceneEntity *srs in self.srScenes) {
+                [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:srs];
+            }
+            [[CSRDatabaseManager sharedInstance] saveContext];
+            
+            if (_hud) {
+                [_hud hideAnimated:YES];
+                _hud = nil;
+            }
+            
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RemoveSceneCall" object:nil];
+        }
+    }
+}
+
+- (void)removeSceneCall:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceID = userInfo[@"deviceId"];
+    NSNumber *sceneID = userInfo[@"index"];
+    SceneMemberEntity *m = [self.selects firstObject];
+    if ([deviceID isEqualToNumber:m.deviceID] && [sceneID isEqualToNumber:m.sceneID]) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(removeSceneIDTimeOut) object:nil];
+        
+        [self.selects removeObject:m];
+        SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:m.sceneID];
+        [s removeMembersObject:m];
+        [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:m];
+        [[CSRDatabaseManager sharedInstance] saveContext];
+        
+        if (![self nextOperation]) {
+            for (SceneEntity *srs in self.srScenes) {
+                [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:srs];
+            }
+            [[CSRDatabaseManager sharedInstance] saveContext];
+            
+            if (_hud) {
+                [_hud hideAnimated:YES];
+                _hud = nil;
+            }
+            
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RemoveSceneCall" object:nil];
+        }
+    }
 }
 
 @end
