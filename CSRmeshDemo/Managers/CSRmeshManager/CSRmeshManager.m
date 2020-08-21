@@ -179,7 +179,7 @@
                         rgbScenetity.colorSat = sats[i];
                     }else {
                         rgbScenetity.eventType = @(1);
-                        rgbScenetity.changeSpeed = @(1);
+                        rgbScenetity.changeSpeed = @(5);
                         NSArray *colorfulHues = hues[i];
                         rgbScenetity.hueA = colorfulHues[0];
                         rgbScenetity.hueB = colorfulHues[1];
@@ -248,6 +248,28 @@
         [[CSRDevicesManager sharedInstance] createDeviceFromProperties:deviceDictionary];
         
         [[DataModelManager shareInstance] setDeviceTime];
+        
+        if ([CSRUtilities belongToFadeDevice:deviceEntity.shortName]) {
+            NSInteger s = 10;
+            NSNumber *fadeTimeSwitch = [[NSUserDefaults standardUserDefaults] objectForKey:FadeTimeSwitch];
+            if (fadeTimeSwitch) {
+                s = [fadeTimeSwitch integerValue];
+            }
+            [NSThread sleepForTimeInterval:0.3];
+            Byte sbyte[] = {0xea, 0x55, 0xff, s};
+            NSData *scmd = [[NSData alloc] initWithBytes:sbyte length:4];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceId data:scmd];
+            
+            NSInteger d = 30;
+            NSNumber *fadeTimeDimming = [[NSUserDefaults standardUserDefaults] objectForKey:FadeTimeDimming];
+            if (fadeTimeDimming) {
+                d = [fadeTimeDimming integerValue];
+            }
+            [NSThread sleepForTimeInterval:0.3];
+            Byte dbyte[] = {0xea, 0x57, 0xff, d};
+            NSData *dcmd = [[NSData alloc] initWithBytes:dbyte length:4];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceId data:dcmd];
+        }
         
     } else {
         

@@ -121,9 +121,6 @@
 }
 
 - (void)addVCBackAction {
-//    if (self.handle) {
-//        self.handle();
-//    }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reGetDataForPlaceChanged" object:nil];
     CATransition *animation = [CATransition animation];
     [animation setDuration:0.3];

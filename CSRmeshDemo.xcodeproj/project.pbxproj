@@ -41,6 +41,8 @@
 		2E159F30248643D6001E126C /* RemoteMainVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E159F32248643D6001E126C /* RemoteMainVC.xib */; };
 		2E159F372486442A001E126C /* RemoteLCDVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E159F392486442A001E126C /* RemoteLCDVC.xib */; };
 		2E1C839E20CFD782009BCC6D /* PlaceDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E1C83A020CFD782009BCC6D /* PlaceDetailsViewController.xib */; };
+		2E1FA39F24EA2D02008C6497 /* MCPickerAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E1FA39D24EA2D02008C6497 /* MCPickerAlertController.m */; };
+		2E1FA3A024EA2D02008C6497 /* MCPickerAlertController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E1FA39E24EA2D02008C6497 /* MCPickerAlertController.xib */; };
 		2E2000A920182260000AD8C3 /* SceneEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2000A820182260000AD8C3 /* SceneEntity.m */; };
 		2E2000AC2018227E000AD8C3 /* SceneMemberEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2000AB2018227E000AD8C3 /* SceneMemberEntity.m */; };
 		2E216EE62138EDAE00E545B9 /* RGBSceneEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E216EE52138EDAE00E545B9 /* RGBSceneEntity.m */; };
@@ -49,6 +51,8 @@
 		2E2533EE20219850002A6EC3 /* DeviceListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2533ED20219850002A6EC3 /* DeviceListViewController.m */; };
 		2E2A016521425D7600B2EFAF /* MusicListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2A016421425D7600B2EFAF /* MusicListTableViewController.m */; };
 		2E2A016821425F7F00B2EFAF /* GetDataTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2A016721425F7F00B2EFAF /* GetDataTools.m */; };
+		2E2B7D2124D9482200BA4566 /* NearbyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2B7D1F24D9482200BA4566 /* NearbyViewController.m */; };
+		2E2B7D2224D9482200BA4566 /* NearbyViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E2B7D2024D9482200BA4566 /* NearbyViewController.xib */; };
 		2E2E707B1FF5DE60002D1C1D /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70051FF5DE60002D1C1D /* AboutViewController.m */; };
 		2E2E707D1FF5DE60002D1C1D /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70081FF5DE60002D1C1D /* MasterViewController.m */; };
 		2E2E707E1FF5DE60002D1C1D /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E700A1FF5DE60002D1C1D /* MoreViewController.m */; };
@@ -84,13 +88,13 @@
 		2E3B9677200F263A000BD086 /* JQProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3B9674200F263A000BD086 /* JQProgressView.m */; };
 		2E3B967F200F3847000BD086 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3B967D200F3847000BD086 /* MainViewController.m */; };
 		2E3B9680200F3847000BD086 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E3B967E200F3847000BD086 /* MainViewController.xib */; };
+		2E3BE7DB24E3977600049186 /* FadeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E3BE7DD24E3977600049186 /* FadeViewController.xib */; };
 		2E3BED3921DF329100E7078C /* PowerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3BED3721DF329100E7078C /* PowerViewController.m */; };
 		2E3BED3A21DF329100E7078C /* PowerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E3BED3821DF329100E7078C /* PowerViewController.xib */; };
 		2E3EA7C520479F8900AFD4B8 /* RemoteSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3EA7C320479F8900AFD4B8 /* RemoteSettingViewController.m */; };
 		2E48BBE020D239E500401CDD /* LightSensorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E48BBDF20D239E500401CDD /* LightSensorViewController.m */; };
 		2E48BBE420D25C7800401CDD /* LightSensorSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E48BBE220D25C7800401CDD /* LightSensorSettingViewController.m */; };
 		2E4902AF224233F5003B901A /* cskey_db.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E4902AE224233F5003B901A /* cskey_db.json */; };
-		2E4AD1A324C024FC008E8B67 /* FadeSettingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E4AD1A224C024FC008E8B67 /* FadeSettingView.m */; };
 		2E4BBD4E22811FC7005650F8 /* CSRGaia.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E4BBD4922811FC7005650F8 /* CSRGaia.m */; };
 		2E4BBD4F22811FC7005650F8 /* CSRGaiaGattCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E4BBD4A22811FC7005650F8 /* CSRGaiaGattCommand.m */; };
 		2E4BC03D227051BF000719EA /* SoundListenTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E4BC03C227051BF000719EA /* SoundListenTool.m */; };
@@ -108,6 +112,7 @@
 		2E5F120823BD954A0018EF16 /* RemoteLCDVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E5F120623BD954A0018EF16 /* RemoteLCDVC.m */; };
 		2E5F120D23BDD22F0018EF16 /* LCDRemoteMemberCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E5F120B23BDD22F0018EF16 /* LCDRemoteMemberCell.m */; };
 		2E5F120E23BDD22F0018EF16 /* LCDRemoteMemberCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E5F120C23BDD22F0018EF16 /* LCDRemoteMemberCell.xib */; };
+		2E5FBA8E24E2645500A99757 /* FadeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E5FBA8C24E2645500A99757 /* FadeViewController.m */; };
 		2E63A54321E328B800FCE49D /* SocketPowerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E63A54121E328B800FCE49D /* SocketPowerCell.m */; };
 		2E63A54421E328B800FCE49D /* SocketPowerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E63A54221E328B800FCE49D /* SocketPowerCell.xib */; };
 		2E6750BC2493601C004FA52F /* SceneMemberCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E6750BE2493601C004FA52F /* SceneMemberCell.xib */; };
@@ -120,6 +125,10 @@
 		2E6D543B211AB6C6003D02DB /* ColorSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6D543A211AB6C6003D02DB /* ColorSlider.m */; };
 		2E6FBD9620E1D43F0045DDAC /* GroupListSModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6FBD9520E1D43F0045DDAC /* GroupListSModel.m */; };
 		2E706CFF212A7278008D0EC4 /* GalleryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E706D01212A7278008D0EC4 /* GalleryViewController.xib */; };
+		2E78195B24D8063800443497 /* OtherViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E78195924D8063800443497 /* OtherViewController.m */; };
+		2E78195C24D8063800443497 /* OtherViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E78195A24D8063800443497 /* OtherViewController.xib */; };
+		2E7DBC0624E630E700A36905 /* MusicControllerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7DBC0424E630E700A36905 /* MusicControllerVC.m */; };
+		2E7DBC0724E630E700A36905 /* MusicControllerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E7DBC0524E630E700A36905 /* MusicControllerVC.xib */; };
 		2E8623492019DB28004EF0E0 /* DeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8623472019DB28004EF0E0 /* DeviceViewController.m */; };
 		2E8ECC2E239DFA210031367F /* SelectModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8ECC2D239DFA210031367F /* SelectModel.m */; };
 		2E9622BF20C913530097C617 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E9622C120C913530097C617 /* Localizable.strings */; };
@@ -262,6 +271,9 @@
 		2E1C839F20CFD782009BCC6D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PlaceDetailsViewController.xib; sourceTree = "<group>"; };
 		2E1F6FC321C9F61C00915FFF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
 		2E1F6FC521C9F64E00915FFF /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/PlaceDetailsViewController.strings"; sourceTree = "<group>"; };
+		2E1FA39C24EA2D02008C6497 /* MCPickerAlertController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MCPickerAlertController.h; sourceTree = "<group>"; };
+		2E1FA39D24EA2D02008C6497 /* MCPickerAlertController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MCPickerAlertController.m; sourceTree = "<group>"; };
+		2E1FA39E24EA2D02008C6497 /* MCPickerAlertController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MCPickerAlertController.xib; sourceTree = "<group>"; };
 		2E2000A720182260000AD8C3 /* SceneEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneEntity.h; sourceTree = "<group>"; };
 		2E2000A820182260000AD8C3 /* SceneEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneEntity.m; sourceTree = "<group>"; };
 		2E2000AA2018227E000AD8C3 /* SceneMemberEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneMemberEntity.h; sourceTree = "<group>"; };
@@ -277,6 +289,9 @@
 		2E2A016421425D7600B2EFAF /* MusicListTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicListTableViewController.m; sourceTree = "<group>"; };
 		2E2A016621425F7F00B2EFAF /* GetDataTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetDataTools.h; sourceTree = "<group>"; };
 		2E2A016721425F7F00B2EFAF /* GetDataTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetDataTools.m; sourceTree = "<group>"; };
+		2E2B7D1E24D9482200BA4566 /* NearbyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NearbyViewController.h; sourceTree = "<group>"; };
+		2E2B7D1F24D9482200BA4566 /* NearbyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NearbyViewController.m; sourceTree = "<group>"; };
+		2E2B7D2024D9482200BA4566 /* NearbyViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NearbyViewController.xib; sourceTree = "<group>"; };
 		2E2E70041FF5DE60002D1C1D /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
 		2E2E70051FF5DE60002D1C1D /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
 		2E2E70071FF5DE60002D1C1D /* MasterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
@@ -346,6 +361,9 @@
 		2E3B967C200F3847000BD086 /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		2E3B967D200F3847000BD086 /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		2E3B967E200F3847000BD086 /* MainViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
+		2E3BE7DC24E3977600049186 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/FadeViewController.xib; sourceTree = "<group>"; };
+		2E3BE7DF24E3978400049186 /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/FadeViewController.strings; sourceTree = "<group>"; };
+		2E3BE7E124E3978700049186 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/FadeViewController.strings"; sourceTree = "<group>"; };
 		2E3BED3621DF329100E7078C /* PowerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PowerViewController.h; sourceTree = "<group>"; };
 		2E3BED3721DF329100E7078C /* PowerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PowerViewController.m; sourceTree = "<group>"; };
 		2E3BED3821DF329100E7078C /* PowerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PowerViewController.xib; sourceTree = "<group>"; };
@@ -371,8 +389,6 @@
 		2E48BBE120D25C7800401CDD /* LightSensorSettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LightSensorSettingViewController.h; sourceTree = "<group>"; };
 		2E48BBE220D25C7800401CDD /* LightSensorSettingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LightSensorSettingViewController.m; sourceTree = "<group>"; };
 		2E4902AE224233F5003B901A /* cskey_db.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = cskey_db.json; sourceTree = "<group>"; };
-		2E4AD1A124C024FC008E8B67 /* FadeSettingView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FadeSettingView.h; sourceTree = "<group>"; };
-		2E4AD1A224C024FC008E8B67 /* FadeSettingView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FadeSettingView.m; sourceTree = "<group>"; };
 		2E4BBD4822811FC7005650F8 /* CSRGaiaGattCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRGaiaGattCommand.h; sourceTree = "<group>"; };
 		2E4BBD4922811FC7005650F8 /* CSRGaia.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSRGaia.m; sourceTree = "<group>"; };
 		2E4BBD4A22811FC7005650F8 /* CSRGaiaGattCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSRGaiaGattCommand.m; sourceTree = "<group>"; };
@@ -400,6 +416,8 @@
 		2E5F120A23BDD22F0018EF16 /* LCDRemoteMemberCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LCDRemoteMemberCell.h; sourceTree = "<group>"; };
 		2E5F120B23BDD22F0018EF16 /* LCDRemoteMemberCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LCDRemoteMemberCell.m; sourceTree = "<group>"; };
 		2E5F120C23BDD22F0018EF16 /* LCDRemoteMemberCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LCDRemoteMemberCell.xib; sourceTree = "<group>"; };
+		2E5FBA8B24E2645500A99757 /* FadeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FadeViewController.h; sourceTree = "<group>"; };
+		2E5FBA8C24E2645500A99757 /* FadeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FadeViewController.m; sourceTree = "<group>"; };
 		2E63A54021E328B800FCE49D /* SocketPowerCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SocketPowerCell.h; sourceTree = "<group>"; };
 		2E63A54121E328B800FCE49D /* SocketPowerCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SocketPowerCell.m; sourceTree = "<group>"; };
 		2E63A54221E328B800FCE49D /* SocketPowerCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SocketPowerCell.xib; sourceTree = "<group>"; };
@@ -454,9 +472,15 @@
 		2E747FF1221CF69000FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/TimerDetailViewController.strings; sourceTree = "<group>"; };
 		2E747FF3221CF69000FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; wrapsLines = 0; };
 		2E747FF4221CF69100FBEB14 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2E78195824D8063800443497 /* OtherViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtherViewController.h; sourceTree = "<group>"; };
+		2E78195924D8063800443497 /* OtherViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OtherViewController.m; sourceTree = "<group>"; };
+		2E78195A24D8063800443497 /* OtherViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OtherViewController.xib; sourceTree = "<group>"; };
 		2E78257A246FB86B00F78CE5 /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
 		2E78257C246FB96A00F78CE5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
 		2E78257F246FBA6500F78CE5 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/DeviceViewController.strings"; sourceTree = "<group>"; };
+		2E7DBC0324E630E700A36905 /* MusicControllerVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MusicControllerVC.h; sourceTree = "<group>"; };
+		2E7DBC0424E630E700A36905 /* MusicControllerVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicControllerVC.m; sourceTree = "<group>"; };
+		2E7DBC0524E630E700A36905 /* MusicControllerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MusicControllerVC.xib; sourceTree = "<group>"; };
 		2E8623462019DB28004EF0E0 /* DeviceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceViewController.h; sourceTree = "<group>"; };
 		2E8623472019DB28004EF0E0 /* DeviceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeviceViewController.m; sourceTree = "<group>"; };
 		2E8ECC2C239DFA210031367F /* SelectModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelectModel.h; sourceTree = "<group>"; };
@@ -970,6 +994,15 @@
 				2E2E70081FF5DE60002D1C1D /* MasterViewController.m */,
 				2E2E70091FF5DE60002D1C1D /* MoreViewController.h */,
 				2E2E700A1FF5DE60002D1C1D /* MoreViewController.m */,
+				2E78195824D8063800443497 /* OtherViewController.h */,
+				2E78195924D8063800443497 /* OtherViewController.m */,
+				2E78195A24D8063800443497 /* OtherViewController.xib */,
+				2E2B7D1E24D9482200BA4566 /* NearbyViewController.h */,
+				2E2B7D1F24D9482200BA4566 /* NearbyViewController.m */,
+				2E2B7D2024D9482200BA4566 /* NearbyViewController.xib */,
+				2E5FBA8B24E2645500A99757 /* FadeViewController.h */,
+				2E5FBA8C24E2645500A99757 /* FadeViewController.m */,
+				2E3BE7DD24E3977600049186 /* FadeViewController.xib */,
 				2E2E70251FF5DE60002D1C1D /* Places */,
 				2EF3324C204502CA00565374 /* Language */,
 				2EF3324B204502CA00565374 /* Help */,
@@ -1138,6 +1171,9 @@
 				2EA5A8962490C79100037F63 /* SceneViewController.h */,
 				2EA5A8972490C79100037F63 /* SceneViewController.m */,
 				2EBB39972490F4AC00243D5F /* SceneViewController.xib */,
+				2E7DBC0324E630E700A36905 /* MusicControllerVC.h */,
+				2E7DBC0424E630E700A36905 /* MusicControllerVC.m */,
+				2E7DBC0524E630E700A36905 /* MusicControllerVC.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1218,8 +1254,9 @@
 				2EBB39922490D5B000243D5F /* SceneMemberCell.h */,
 				2EBB39932490D5B000243D5F /* SceneMemberCell.m */,
 				2E6750BE2493601C004FA52F /* SceneMemberCell.xib */,
-				2E4AD1A124C024FC008E8B67 /* FadeSettingView.h */,
-				2E4AD1A224C024FC008E8B67 /* FadeSettingView.m */,
+				2E1FA39C24EA2D02008C6497 /* MCPickerAlertController.h */,
+				2E1FA39D24EA2D02008C6497 /* MCPickerAlertController.m */,
+				2E1FA39E24EA2D02008C6497 /* MCPickerAlertController.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1540,6 +1577,7 @@
 				2EF332512045030100565374 /* LanguageViewController.xib in Resources */,
 				2E2E708D1FF5DE60002D1C1D /* PlacesViewController.xib in Resources */,
 				2E9622BF20C913530097C617 /* Localizable.strings in Resources */,
+				2E78195C24D8063800443497 /* OtherViewController.xib in Resources */,
 				2E3BED3A21DF329100E7078C /* PowerViewController.xib in Resources */,
 				2EE757D72010B23100FB75C5 /* SceneCollectionViewCell.xib in Resources */,
 				2E63A54421E328B800FCE49D /* SocketPowerCell.xib in Resources */,
@@ -1552,6 +1590,7 @@
 				2E4DDCF221F968FF00B2ACF3 /* SocketViewController.xib in Resources */,
 				2E2E708F1FF5DE60002D1C1D /* PlaceColorCollectionViewCell.xib in Resources */,
 				2E388A6D214BA8B900CBF73C /* MusicViewController.xib in Resources */,
+				2E1FA3A024EA2D02008C6497 /* MCPickerAlertController.xib in Resources */,
 				2E37075820CE8337000AF696 /* GroupViewController.xib in Resources */,
 				2E6C26E720A5845E00BDB95A /* Main.storyboard in Resources */,
 				F45350891CD8B043002D91AB /* SensorActuatorTypes.json in Resources */,
@@ -1561,8 +1600,10 @@
 				2E9622C720C917EC0097C617 /* InfoPlist.strings in Resources */,
 				2EF332562045031300565374 /* HelpViewController.xib in Resources */,
 				2EC92CEA24C833CE00AD53CF /* ShowExceptionLogVC.xib in Resources */,
+				2E2B7D2224D9482200BA4566 /* NearbyViewController.xib in Resources */,
 				2E1C839E20CFD782009BCC6D /* PlaceDetailsViewController.xib in Resources */,
 				2E2E70B31FF5DE60002D1C1D /* ErrorCodes.strings in Resources */,
+				2E7DBC0724E630E700A36905 /* MusicControllerVC.xib in Resources */,
 				0DE95D161B297FFB006D0397 /* Images.xcassets in Resources */,
 				2E6750BC2493601C004FA52F /* SceneMemberCell.xib in Resources */,
 				2EE50F2D20DA3E3D00B484F7 /* LightSensorSettingViewController.xib in Resources */,
@@ -1574,6 +1615,7 @@
 				2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */,
 				2E4DDCEB21F9680900B2ACF3 /* FanViewController.xib in Resources */,
 				2E4902AF224233F5003B901A /* cskey_db.json in Resources */,
+				2E3BE7DB24E3977600049186 /* FadeViewController.xib in Resources */,
 				2E216EEB2138F28200E545B9 /* RGBSceneCollectionViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1656,6 +1698,7 @@
 				2EC3893F204939CE004D822D /* TimerDetailViewController.m in Sources */,
 				2EE757CA201030CA00FB75C5 /* TopImageView.m in Sources */,
 				2EE757C720102B7B00FB75C5 /* MainCollectionView.m in Sources */,
+				2E2B7D2124D9482200BA4566 /* NearbyViewController.m in Sources */,
 				0D835B371B9749E600FF4376 /* CBPeripheral+Info.m in Sources */,
 				2E2E70B11FF5DE60002D1C1D /* NSMutableArray+Queue.m in Sources */,
 				2E3630FB2199666F00EF22DD /* FanViewController.m in Sources */,
@@ -1693,12 +1736,15 @@
 				0D835B461B9749E600FF4376 /* CSRDatabaseManager.m in Sources */,
 				0D835B881B975E8800FF4376 /* CSRDeviceEntity.m in Sources */,
 				0D835B8B1B975E8800FF4376 /* CSRUserEntity.m in Sources */,
+				2E78195B24D8063800443497 /* OtherViewController.m in Sources */,
 				2E3EA7C520479F8900AFD4B8 /* RemoteSettingViewController.m in Sources */,
 				F4C85EB11CB3EF92003E1FF3 /* CSRPlaceEntity.m in Sources */,
 				2E6A02141F39884500111312 /* TabBarView.m in Sources */,
 				2E2E70B51FF5DE60002D1C1D /* UpdateDeviceModel.m in Sources */,
 				2E6A021A1F39893400111312 /* MainTabBarController.m in Sources */,
+				2E5FBA8E24E2645500A99757 /* FadeViewController.m in Sources */,
 				2EC3893A204921C2004D822D /* TimerTableViewCell.m in Sources */,
+				2E7DBC0624E630E700A36905 /* MusicControllerVC.m in Sources */,
 				F4658A1F1C99747A00C284F4 /* CSRDeviceEventsEntity+CoreDataProperties.m in Sources */,
 				0D835B561B9749E600FF4376 /* CSRCheckbox.m in Sources */,
 				2ED3963F204D09D20068B666 /* TimerDeviceEntity.m in Sources */,
@@ -1713,6 +1759,7 @@
 				2E2533EE20219850002A6EC3 /* DeviceListViewController.m in Sources */,
 				2EA708C32011C31300782209 /* AddDevcieViewController.m in Sources */,
 				2E2E70A61FF5DE60002D1C1D /* DataModelManager.m in Sources */,
+				2E1FA39F24EA2D02008C6497 /* MCPickerAlertController.m in Sources */,
 				2E5F120D23BDD22F0018EF16 /* LCDRemoteMemberCell.m in Sources */,
 				F4C85EA71CB3EE0E003E1FF3 /* CSRControllerEntity+CoreDataProperties.m in Sources */,
 				2EAD479C1FFC76F3007D45E9 /* GallreyDropView.m in Sources */,
@@ -1720,7 +1767,6 @@
 				2EC7D0DE21E6F549007F44C1 /* PowerModel.m in Sources */,
 				2E2E70971FF5DE60002D1C1D /* RemoteViewController.m in Sources */,
 				2E2E708E1FF5DE60002D1C1D /* PlaceColorCollectionViewCell.m in Sources */,
-				2E4AD1A324C024FC008E8B67 /* FadeSettingView.m in Sources */,
 				2EF2DB5A200DA6CF00A1B236 /* DeviceModelManager.m in Sources */,
 				2EEA6E361F453B1300895CE2 /* ControlMaskView.m in Sources */,
 				2EB246B62282CD8B00DFF5D3 /* CSRCallbacks.m in Sources */,
@@ -1936,6 +1982,16 @@
 				2EC18C27221D22E8008B33DC /* fi-FI */,
 			);
 			name = MRGBSceneDetailViewController.xib;
+			sourceTree = "<group>";
+		};
+		2E3BE7DD24E3977600049186 /* FadeViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E3BE7DC24E3977600049186 /* Base */,
+				2E3BE7DF24E3978400049186 /* English */,
+				2E3BE7E124E3978700049186 /* zh-Hans */,
+			);
+			name = FadeViewController.xib;
 			sourceTree = "<group>";
 		};
 		2E4DDCED21F9680900B2ACF3 /* FanViewController.xib */ = {
@@ -2254,7 +2310,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 23;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2314,7 +2370,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 23;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;

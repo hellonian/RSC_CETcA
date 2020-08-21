@@ -137,9 +137,7 @@
             _imgv2.image = [UIImage imageNamed:@"Ico_sun"];
             _label2.text = [NSString stringWithFormat:@"%.f %%",[member.eveD0 integerValue]/255.0*100];
             _imgv3.image = [UIImage imageNamed:@"Ico_cw"];
-            NSString *s = [NSString stringWithFormat:@"%@%@",[CSRUtilities stringWithHexNumber:[member.eveD1 integerValue]],[CSRUtilities stringWithHexNumber:[member.eveD2 integerValue]]];
-            NSInteger t = [CSRUtilities numberWithHexString:s];
-            _label3.text = [NSString stringWithFormat:@"%ld K",t];
+            _label3.text = [NSString stringWithFormat:@"%ld K",[member.eveD2 integerValue]*256+[member.eveD1 integerValue]];
         }
     }else if ([CSRUtilities belongToRGBDevice:member.kindString]) {
         _icon.image = [UIImage imageNamed:@"icon_rgb"];
@@ -182,9 +180,7 @@
             _imgv2.image = [UIImage imageNamed:@"Ico_sun"];
             _label2.text = [NSString stringWithFormat:@"%.f %%",[member.eveD0 integerValue]/255.0*100];
             _imgv3.image = [UIImage imageNamed:@"Ico_cw"];
-            NSString *s = [NSString stringWithFormat:@"%@%@",[CSRUtilities stringWithHexNumber:[member.eveD1 integerValue]],[CSRUtilities stringWithHexNumber:[member.eveD2 integerValue]]];
-            NSInteger t = [CSRUtilities numberWithHexString:s];
-            _label3.text = [NSString stringWithFormat:@"%ld K",t];
+            _label3.text = [NSString stringWithFormat:@"%ld K",[member.eveD2 integerValue]*256+[member.eveD1 integerValue]];
         }else if ([member.eveType integerValue] == 20) {
             _label1.text = @"ON";
             _imgv2.hidden = NO;

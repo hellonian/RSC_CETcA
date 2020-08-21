@@ -32,5 +32,10 @@
 - (void)regetColofulTimerInterval:(NSTimeInterval)interval deviceId:(NSNumber *)deviceId sceneId:(NSNumber *)sceneId;
 - (void)setColorWithDeviceId:(NSNumber *)deviceId withColor:(UIColor *)color;
 - (void)controlScene:(NSNumber *)sceneId;
+- (void)refreshMCChannel:(NSNumber *)deviceID mcChannel:(NSInteger)mcChannel;
+- (void)refreshDeviceID:(NSNumber *)deviceID mcChannelValid:(NSInteger)mcChannelValid mcStatus:(NSInteger)mcStatus mcVoice:(NSInteger)mcVoice;
+- (void)refreshDeviceID:(NSNumber *)deviceID mcCurrentChannel:(NSInteger)mcCurrentChannel;
+- (void)findDevice:(NSNumber *)deviceID getSongName:(NSInteger)channel;
+- (void)postSongNameDeviceID:(NSNumber *)deviceID channel:(NSInteger)channel count:(NSInteger)count index:(NSInteger)index encoding:(NSInteger)encoding data:(NSData *)data;
 
 @end

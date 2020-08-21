@@ -33,6 +33,7 @@
                   @"Setting_remote",
                   @"Setting_sensor",
                   @"Setting_FWupgrade",
+                  @"setting_more",
                   @"Setting_language",
                   @"Setting_help",
                   @"Setting_about"];
@@ -41,6 +42,7 @@
                    AcTECLocalizedStringFromTable(@"Remote", @"Localizable"),
                    AcTECLocalizedStringFromTable(@"LightSensor", @"Localizable"),
                    AcTECLocalizedStringFromTable(@"BTVersion", @"Localizable"),
+                   AcTECLocalizedStringFromTable(@"more", @"Localizable"),
                    AcTECLocalizedStringFromTable(@"Language", @"Localizable"),
                    AcTECLocalizedStringFromTable(@"Help", @"Localizable"),
                    AcTECLocalizedStringFromTable(@"About", @"Localizable")];
@@ -90,6 +92,7 @@
                    AcTECLocalizedStringFromTable(@"Remote", @"Localizable"),
                    AcTECLocalizedStringFromTable(@"LightSensor", @"Localizable"),
                    AcTECLocalizedStringFromTable(@"BTVersion", @"Localizable"),
+                   AcTECLocalizedStringFromTable(@"more", @"Localizable"),
                    AcTECLocalizedStringFromTable(@"Language", @"Localizable"),
                    AcTECLocalizedStringFromTable(@"Help", @"Localizable"),
                    AcTECLocalizedStringFromTable(@"About", @"Localizable")];

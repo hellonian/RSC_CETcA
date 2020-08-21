@@ -380,11 +380,9 @@
 }
 
 - (void)discoveryDidRefresh:(CBPeripheral *)peripheral {
-//    NSLog(@"%@  %@  %@",peripheral.name,peripheral.uuidString,peripheral.identifier.UUIDString);
     for (CSRDeviceEntity *deviceEntity in _appAllDevcies) {
         NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
         NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
-//        NSLog(@"~> %@",adUuidString);
         if ([adUuidString isEqualToString:deviceUuidString]) {
             UpdateDeviceModel *model = [[UpdateDeviceModel alloc] init];
             model.peripheral = peripheral;
@@ -397,8 +395,6 @@
             model.fVersion = deviceEntity.firVersion;
             model.hVersion = deviceEntity.hwVersion;
             NSInteger lastestVersion = [[_latestDic objectForKey:deviceEntity.shortName] integerValue];
-//            NSLog(@"%@ %@ %@ %@",deviceEntity.bleHwVersion,deviceEntity.bleFirVersion,deviceEntity.hwVersion,deviceEntity.firVersion);
-//            NSLog(@"%@ %ld",deviceEntity.firVersion,(long)lastestVersion);
             if (deviceEntity.firVersion && [deviceEntity.firVersion integerValue] < lastestVersion) {
                 model.needUpdate = YES;
             }else {

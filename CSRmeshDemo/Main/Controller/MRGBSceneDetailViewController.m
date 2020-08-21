@@ -87,8 +87,8 @@
     [_colorSaturationSlider setValue:[_rgbSceneEntity.colorSat floatValue]];
     _colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",[_rgbSceneEntity.colorSat floatValue]*100];
     
-    [_changeSpeedSlider setValue:1/[_rgbSceneEntity.changeSpeed floatValue]];
-    _changSpeedLabel.text = [NSString stringWithFormat:@"%.f%%",(1/[_rgbSceneEntity.changeSpeed floatValue]-0.5)/3.5*100];
+    [_changeSpeedSlider setValue:(6-[_rgbSceneEntity.changeSpeed floatValue])];
+    _changSpeedLabel.text = [NSString stringWithFormat:@"%.f%%",(5-[_rgbSceneEntity.changeSpeed floatValue])/4*100];
     
     [self.view addSubview:_colorSaturationTilteLabel];
     NSLayoutConstraint *constraint = [_colorSaturationTilteLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_colorSettingView withOffset:5.0];
@@ -266,13 +266,13 @@
 #pragma mark - 修改速度
 
 - (IBAction)changeSpeed:(UISlider *)sender {
-    _changSpeedLabel.text = [NSString stringWithFormat:@"%.f%%",(sender.value-0.5)/3.5*100];
-    _rgbSceneEntity.changeSpeed = [NSNumber numberWithFloat:1.0/sender.value];
+    _changSpeedLabel.text = [NSString stringWithFormat:@"%.f%%",(sender.value-1)/4*100];
+    _rgbSceneEntity.changeSpeed = [NSNumber numberWithFloat:6-sender.value];
     [[CSRDatabaseManager sharedInstance] saveContext];
     if (self.reloadDataHandle) {
         self.reloadDataHandle();
     }
-    [[DeviceModelManager sharedInstance] regetColofulTimerInterval:1.0/sender.value deviceId:_deviceId sceneId:_rgbSceneEntity.rgbSceneID];
+    [[DeviceModelManager sharedInstance] regetColofulTimerInterval:6-sender.value deviceId:_deviceId sceneId:_rgbSceneEntity.rgbSceneID];
 }
 
 #pragma mark - 恢复默认值
@@ -329,7 +329,7 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":_deviceId}];
         }];
     }
-    [[DeviceModelManager sharedInstance] colorfulAction:_deviceId timeInterval:1.0 hues:@[colorfulHues[0],colorfulHues[1],colorfulHues[2],colorfulHues[3],colorfulHues[4],colorfulHues[5]] colorSaturation:sats[i] rgbSceneId:_rgbSceneEntity.rgbSceneID];
+    [[DeviceModelManager sharedInstance] colorfulAction:_deviceId timeInterval:5.0 hues:@[colorfulHues[0],colorfulHues[1],colorfulHues[2],colorfulHues[3],colorfulHues[4],colorfulHues[5]] colorSaturation:sats[i] rgbSceneId:_rgbSceneEntity.rgbSceneID];
 }
 
 #pragma mark - 修改图片

@@ -639,7 +639,8 @@
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
             
-        }else if ([CSRUtilities belongToSocket:deviceEntity.shortName]) {
+        }else if ([CSRUtilities belongToSocketOneChannel:deviceEntity.shortName]
+                  || [CSRUtilities belongToSocketTwoChannel:deviceEntity.shortName]) {
             SocketViewController *socketVC = [[SocketViewController alloc] init];
             socketVC.deviceId = mainCell.deviceId;
             __weak GroupViewController *weakSelf = self;

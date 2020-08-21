@@ -151,7 +151,7 @@ static DataModelManager *manager = nil;
     }
     
     //添加闹钟回调
-    if ([dataStr hasPrefix:@"a3"]) {
+    else if ([dataStr hasPrefix:@"a3"]) {
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sourceDeviceId];
         NSString *suffixStr;
         if ([deviceEntity.cvVersion integerValue]>18) {
@@ -163,7 +163,7 @@ static DataModelManager *manager = nil;
         @1}];
     }
     
-    if ([dataStr hasPrefix:@"500502"]) {
+    else if ([dataStr hasPrefix:@"500502"]) {
         if ([dataStr length]>=14) {
             NSNumber *channel = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 2)]]];
 //            NSString *indexStr = [NSString stringWithFormat:@"%@%@",[dataStr substringWithRange:NSMakeRange(10, 2)],[dataStr substringWithRange:NSMakeRange(8, 2)]];
@@ -174,7 +174,7 @@ static DataModelManager *manager = nil;
         }
     }
     
-    if ([dataStr hasPrefix:@"500508"]) {
+    else if ([dataStr hasPrefix:@"500508"]) {
         if ([dataStr length]>=14) {
             NSNumber *channel = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 2)]]];
             NSString *state = [dataStr substringWithRange:NSMakeRange(12, 2)];
@@ -182,7 +182,7 @@ static DataModelManager *manager = nil;
         }
     }
     
-    if ([dataStr hasPrefix:@"500506"]) {
+    else if ([dataStr hasPrefix:@"500506"]) {
         if ([dataStr length]>=14) {
             NSNumber *channel = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 2)]]];
             NSString *state = [dataStr substringWithRange:NSMakeRange(12, 2)];
@@ -191,7 +191,7 @@ static DataModelManager *manager = nil;
     }
     
     //删除闹钟回调
-    if ([dataStr hasPrefix:@"a5"]) {
+    else if ([dataStr hasPrefix:@"a5"]) {
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sourceDeviceId];
         NSString *state;
         if ([deviceEntity.cvVersion integerValue]>18) {
@@ -203,7 +203,7 @@ static DataModelManager *manager = nil;
     }
     
     //关闭或开启闹钟回调
-    if ([dataStr hasPrefix:@"a4"]) {
+    else if ([dataStr hasPrefix:@"a4"]) {
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sourceDeviceId];
         NSString *state;
         if ([deviceEntity.cvVersion integerValue]>18) {
@@ -215,7 +215,7 @@ static DataModelManager *manager = nil;
     }
     
     //实物按钮动作反馈
-    if ([dataStr hasPrefix:@"87"]) {
+    else if ([dataStr hasPrefix:@"87"]) {
         
         NSInteger seq = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(4, 2)]];
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sourceDeviceId];
@@ -229,7 +229,7 @@ static DataModelManager *manager = nil;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"physicalButtonActionCall" object:self userInfo:@{@"powerState":state,@"level":level,@"deviceId":sourceDeviceId}];
     }
     
-    if ([dataStr hasPrefix:@"8e"]) {
+    else if ([dataStr hasPrefix:@"8e"]) {
         NSInteger seq = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(4, 2)]];
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sourceDeviceId];
         if (seq && (seq - model.primordial) < 0 && (seq - model.primordial) >-10) {
@@ -253,13 +253,13 @@ static DataModelManager *manager = nil;
     }
     
     //遥控器设置反馈
-    if ([dataStr hasPrefix:@"b0"]) {
+    else if ([dataStr hasPrefix:@"b0"]) {
         NSString *suffixStr = [dataStr substringWithRange:NSMakeRange(6, 2)];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"settingRemoteCall" object:nil userInfo:@{@"settingRemoteCall":suffixStr}];
     }
     
     //获取固件版本
-    if ([dataStr hasPrefix:@"a8"]) {
+    else if ([dataStr hasPrefix:@"a8"]) {
         NSString *hardwareVersion = [dataStr substringWithRange:NSMakeRange(14, 2)];
         NSString *firmwareVersion = [dataStr substringWithRange:NSMakeRange(16, 2)];
         NSString *bleHardwareVersion = [dataStr substringWithRange:NSMakeRange(8, 2)];
@@ -290,30 +290,30 @@ static DataModelManager *manager = nil;
 //        [[NSNotificationCenter defaultCenter] postNotificationName:@"getRemoteBattery" object:nil userInfo:@{@"batteryPercent":[NSNumber numberWithInteger:batteryPercent],@"deviceId":sourceDeviceId}];
 //    }
     
-    if ([dataStr hasPrefix:@"aa"]) {
+    else if ([dataStr hasPrefix:@"aa"]) {
         [self setDeviceTime];
     }
     
-    if ([dataStr hasPrefix:@"b4"]) {
+    else if ([dataStr hasPrefix:@"b4"]) {
         NSString *cntStr = [dataStr substringFromIndex:4];
         if ([cntStr integerValue]) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"settedLightSensorCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"cntStr":cntStr}];
         }
     }
     
-    if ([dataStr hasPrefix:@"760603"]) {
+    else if ([dataStr hasPrefix:@"760603"]) {
         if ([dataStr length]>=16) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"settedLightSensorCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"dataStr":[dataStr substringFromIndex:6]}];
         }
     }
     
-    if ([dataStr hasPrefix:@"760305"]) {
+    else if ([dataStr hasPrefix:@"760305"]) {
         if ([dataStr length]>=10) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"getCurrenIllumination" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"dataStr":[dataStr substringFromIndex:6]}];
         }
     }
     
-    if ([dataStr hasPrefix:@"790305"]) {
+    else if ([dataStr hasPrefix:@"790305"] || [dataStr hasPrefix:@"790205"]) {
         if ([dataStr length] == 8) {
             NSInteger step = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 2)]];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"calibrateCall" object:nil userInfo:@{@"deviceId":sourceDeviceId, @"step":@(step), @"channel":@1}];
@@ -324,11 +324,11 @@ static DataModelManager *manager = nil;
         }
     }
     
-    if ([dataStr hasPrefix:@"7a"] && dataStr.length >= 14) {
+    else if ([dataStr hasPrefix:@"7a"] && dataStr.length >= 14) {
         NSInteger seq = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(12, 2)]];
         NSNumber *channel = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(10, 2)]] + 1);
         if (seq) {
-            seq = [channel integerValue]*10+seq;
+            seq = [channel integerValue]*100+seq;
         }
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sourceDeviceId];
         if (seq && (seq - model.primordial) < 0 && (seq - model.primordial) >-10) {
@@ -342,7 +342,7 @@ static DataModelManager *manager = nil;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"multichannelActionCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"channel":channel,@"level":level,@"state":state}];
     }
     
-    if ([dataStr hasPrefix:@"9d"] ) {
+    else if ([dataStr hasPrefix:@"9d"] ) {
         NSInteger seq = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(10, 2)]];
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sourceDeviceId];
         if (seq && (seq - model.primordial) < 0 && (seq - model.primordial) >-10) {
@@ -356,11 +356,11 @@ static DataModelManager *manager = nil;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"fanControllerCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"fanState":fanState,@"fanSpeed":fanSpeed,@"lampState":lampState}];
     }
     
-    if ([dataStr hasPrefix:@"52"] ) {
+    else if ([dataStr hasPrefix:@"52"] ) {
         NSInteger seq = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 2)]];
         NSNumber *channel = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(4, 2)]] + 1);
         if (seq) {
-            seq = [channel integerValue]*10+seq;
+            seq = [channel integerValue]*100+seq;
         }
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sourceDeviceId];
         if (seq && (seq - model.primordial) < 0 && (seq - model.primordial) >-10) {
@@ -374,7 +374,7 @@ static DataModelManager *manager = nil;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"multichannelActionCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"channel":channel,@"level":level,@"state":state}];
     }
     
-    if ([dataStr hasPrefix:@"5a"]) {
+    else if ([dataStr hasPrefix:@"5a"]) {
         if ([dataStr length]>=12) {
             NSNumber *state = [NSNumber numberWithBool:[[dataStr substringWithRange:NSMakeRange(10, 2)] boolValue]];
             NSString *str1 = [dataStr substringWithRange:NSMakeRange(6, 2)];
@@ -384,7 +384,7 @@ static DataModelManager *manager = nil;
         }
     }
     
-    if ([dataStr hasPrefix:@"94"]) {
+    else if ([dataStr hasPrefix:@"94"]) {
         if ([dataStr length]>=10) {
             NSNumber *state = [NSNumber numberWithBool:[[dataStr substringWithRange:NSMakeRange(8, 2)] boolValue]];
             NSString *str1 = [dataStr substringWithRange:NSMakeRange(4, 2)];
@@ -394,7 +394,7 @@ static DataModelManager *manager = nil;
         }
     }
     
-    if ([dataStr hasPrefix:@"5e"]) {
+    else if ([dataStr hasPrefix:@"5e"]) {
         if ([dataStr length]>=12) {
             NSNumber *state = [NSNumber numberWithBool:[[dataStr substringWithRange:NSMakeRange(10, 2)] boolValue]];
             NSString *str1 = [dataStr substringWithRange:NSMakeRange(6, 2)];
@@ -404,7 +404,7 @@ static DataModelManager *manager = nil;
         }
     }
     
-    if ([dataStr hasPrefix:@"99"]) {
+    else if ([dataStr hasPrefix:@"99"]) {
         if ([dataStr length]>=10) {
             NSNumber *state = [NSNumber numberWithBool:[[dataStr substringWithRange:NSMakeRange(8, 2)] boolValue]];
             NSString *str1 = [dataStr substringWithRange:NSMakeRange(4, 2)];
@@ -414,7 +414,7 @@ static DataModelManager *manager = nil;
         }
     }
     
-    if ([dataStr hasPrefix:@"b60513"]) {
+    else if ([dataStr hasPrefix:@"b60513"]) {
         if ([dataStr length]>=14) {
             NSString *swidx = [dataStr substringWithRange:NSMakeRange(6, 2)];
             NSString *swtype = [dataStr substringWithRange:NSMakeRange(8, 2)];
@@ -422,7 +422,7 @@ static DataModelManager *manager = nil;
         }
     }
     
-    if ([dataStr hasPrefix:@"eb42"]) {
+    else if ([dataStr hasPrefix:@"eb42"]) {
         if ([dataStr length]>=8) {
             NSNumber *state1 = [NSNumber numberWithBool:[[dataStr substringWithRange:NSMakeRange(4, 2)] boolValue]];
             NSNumber *state2 = [NSNumber numberWithBool:[[dataStr substringWithRange:NSMakeRange(6, 2)] boolValue]];
@@ -430,7 +430,7 @@ static DataModelManager *manager = nil;
         }
     }
     
-    if ([dataStr hasPrefix:@"eb44"]) {
+    else if ([dataStr hasPrefix:@"eb44"]) {
         if ([dataStr length]>=12) {
             NSNumber *channel = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(4, 2)]]];
             NSInteger power1 = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 4)]];
@@ -442,13 +442,13 @@ static DataModelManager *manager = nil;
         }
     }
     
-    if ([dataStr hasPrefix:@"eb43"]) {
+    else if ([dataStr hasPrefix:@"eb43"]) {
         if ([dataStr length]>=20) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"socketPowerStatisticsCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"socketPowerStatisticsCall":[dataStr substringFromIndex:4]}];
         }
     }
     
-    if ([dataStr hasPrefix:@"eb35"]) {
+    else if ([dataStr hasPrefix:@"eb35"]) {
         NSInteger mcuBootVersion = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(4, 2)]];
         NSInteger mcuHVersion = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 2)]];
         NSInteger mcuSVersion = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(8, 2)]];
@@ -466,7 +466,7 @@ static DataModelManager *manager = nil;
         }
     }
     
-    if ([dataStr hasPrefix:@"eb34"]) {
+    else if ([dataStr hasPrefix:@"eb34"]) {
         CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sourceDeviceId];
         if (device) {
             device.mcuSVersion = @0;
@@ -474,17 +474,17 @@ static DataModelManager *manager = nil;
         }
     }
     
-    if ([dataStr hasPrefix:@"eb30"]||[dataStr hasPrefix:@"eb32"]||[dataStr hasPrefix:@"eb33"]) {
+    else if ([dataStr hasPrefix:@"eb30"]||[dataStr hasPrefix:@"eb32"]||[dataStr hasPrefix:@"eb33"]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"MCUUpdateDataCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"MCUUpdateDataCall":[dataStr substringFromIndex:2]}];
     }
     
-    if ([dataStr hasPrefix:@"eb5002"]) {
+    else if ([dataStr hasPrefix:@"eb5002"]) {
         if ([dataStr length] >= 10) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"getRemoteEnableState" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"getRemoteEnableState":[dataStr substringFromIndex:8]}];
         }
     }
     
-    if ([dataStr hasPrefix:@"eb52"]) {
+    else if ([dataStr hasPrefix:@"eb52"]) {
         if ([dataStr length]>=10) {
             CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sourceDeviceId];
             device.remoteBranch = [dataStr substringWithRange:NSMakeRange(8, 2)];
@@ -493,91 +493,91 @@ static DataModelManager *manager = nil;
         }
     }
     
-    if ([dataStr hasPrefix:@"eb61"]) {
+    else if ([dataStr hasPrefix:@"eb61"]) {
         if ([dataStr length]>=8) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setRemotePasswordCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"state":[dataStr substringWithRange:NSMakeRange(6, 2)]}];
         }
     }
     
-    if ([dataStr hasPrefix:@"eb62"]) {
+    else if ([dataStr hasPrefix:@"eb62"]) {
         if ([dataStr length]>=6) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"enableRemotePasswordCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"state":[dataStr substringWithRange:NSMakeRange(4, 2)]}];
         }
     }
     
-    if ([dataStr hasPrefix:@"eb63"]) {
+    else if ([dataStr hasPrefix:@"eb63"]) {
         if ([dataStr length]>=12) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"getRemotePassword" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"enable":[dataStr substringWithRange:NSMakeRange(4, 1)],@"passwordCnt":[dataStr substringWithRange:NSMakeRange(5, 1)],@"password":[dataStr substringFromIndex:6]}];
         }
     }
     
-    if ([dataStr hasPrefix:@"eb71"]) {
+    else if ([dataStr hasPrefix:@"eb71"]) {
         if ([dataStr length]>=6) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"getGanjiedianModel" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"state":[dataStr substringWithRange:NSMakeRange(4, 2)]}];
         }
     }
     
-    if ([dataStr hasPrefix:@"eb46"]) {
+    else if ([dataStr hasPrefix:@"eb46"]) {
         if ([dataStr length]>=8) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"clearSocketPower" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"channel":[dataStr substringWithRange:NSMakeRange(4, 2)],@"state":[dataStr substringWithRange:NSMakeRange(6, 2)]}];
         }
     }
     
-    if ([dataStr hasPrefix:@"eb49"]) {
+    else if ([dataStr hasPrefix:@"eb49"]) {
         if ([dataStr length]>=8) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"socketPowerAbnormalReport" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"channel":[dataStr substringWithRange:NSMakeRange(4, 2)],@"state":[dataStr substringWithRange:NSMakeRange(6, 2)]}];
         }
     }
     
-    if ([dataStr hasPrefix:@"eb48"] || [dataStr hasPrefix:@"eb47"]) {
+    else if ([dataStr hasPrefix:@"eb48"] || [dataStr hasPrefix:@"eb47"]) {
         if ([dataStr length]>=10) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"socketPowerThreshold" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"channel":[dataStr substringWithRange:NSMakeRange(4, 2)],@"socketPowerThreshold":[dataStr substringFromIndex:6]}];
         }
     }
     
-    if ([dataStr hasPrefix:@"eb53"] || [dataStr hasPrefix:@"eb54"]) {
+    else if ([dataStr hasPrefix:@"eb53"] || [dataStr hasPrefix:@"eb54"]) {
         if ([dataStr length]>=20) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"remoteKeyTypeCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"remoteKeyTypeCall":[dataStr substringFromIndex:3]}];
         }
     }
     
-    if ([dataStr hasPrefix:@"b6030d"]) {
+    else if ([dataStr hasPrefix:@"b6030d"]) {
         if ([dataStr length]>=10) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"LCDRemoteAddCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"sourceID":[dataStr substringWithRange:NSMakeRange(6, 2)],@"state":[dataStr substringWithRange:NSMakeRange(8, 2)]}];
         }
     }
     
-    if ([dataStr hasPrefix:@"eb7d"]) {
+    else if ([dataStr hasPrefix:@"eb7d"]) {
         if ([dataStr length]>=10) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"LCDRemoteNameCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"sourceID":[dataStr substringWithRange:NSMakeRange(4, 2)],@"packet":[dataStr substringWithRange:NSMakeRange(6, 2)],@"index":[dataStr substringWithRange:NSMakeRange(8, 2)]}];
         }
     }
     
-    if ([dataStr hasPrefix:@"eb7f"]) {
+    else if ([dataStr hasPrefix:@"eb7f"]) {
         if ([dataStr length]>6) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"LCDRemoteKeyIndexCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"keyIndex":[dataStr substringFromIndex:4]}];
         }
     }
     
-    if ([dataStr hasPrefix:@"eb78"] || [dataStr hasPrefix:@"eb79"]) {
+    else if ([dataStr hasPrefix:@"eb78"] || [dataStr hasPrefix:@"eb79"]) {
         if ([dataStr length]>8) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"LCDRemoteSSIDCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"packet":[dataStr substringWithRange:NSMakeRange(4, 2)],@"index":[dataStr substringWithRange:NSMakeRange(6, 2)],@"sort":[dataStr substringWithRange:NSMakeRange(2, 2)]}];
         }
     }
     
-    if ([dataStr hasPrefix:@"eb7701"]) {
+    else if ([dataStr hasPrefix:@"eb7701"]) {
         if ([dataStr length]>=14) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"LCDRemoteIPAdressCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"IPAdress":[dataStr substringFromIndex:6]}];
         }
     }
     
-    if ([dataStr hasPrefix:@"eb7b"]) {
+    else if ([dataStr hasPrefix:@"eb7b"]) {
         if ([dataStr length]>=8) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"LCDRemotePortCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"port":[dataStr substringFromIndex:4]}];
         }
     }
     
-    if ([dataStr hasPrefix:@"600411"]) {
+    else if ([dataStr hasPrefix:@"600411"]) {
         if ([dataStr length] >= 12) {
             NSString *ff = [dataStr substringWithRange:NSMakeRange(10, 2)];
             if ([ff isEqualToString:@"ff"]) {
@@ -589,12 +589,46 @@ static DataModelManager *manager = nil;
         }
     }
     
-    if ([dataStr hasPrefix:@"600480"]) {
+    else if ([dataStr hasPrefix:@"600480"]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"remoteControlGroup" object:nil userInfo:@{@"groupId":destinationDeviceId, @"powerState":@(0)}];
     }
     
-    if ([dataStr hasPrefix:@"600481"]) {
+    else if ([dataStr hasPrefix:@"600481"]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"remoteControlGroup" object:nil userInfo:@{@"groupId":destinationDeviceId, @"powerState":@(1)}];
+    }
+    
+    else if ([dataStr hasPrefix:@"eb83"]) {
+        if ([dataStr length] == 8) {
+            NSString *str = [dataStr substringWithRange:NSMakeRange(4, 4)];
+            [[DeviceModelManager sharedInstance] refreshMCChannel:sourceDeviceId mcChannel:[CSRUtilities numberWithHexString:str]];
+        }
+    }
+    
+    else if ([dataStr hasPrefix:@"b6061f"]) {
+        if ([dataStr length] == 16) {
+            NSInteger mcChannelValid = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 4)]];
+            NSInteger mcStatus = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(10, 2)]];
+            NSInteger mcVoice = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(12, 2)]];
+            [[DeviceModelManager sharedInstance] refreshDeviceID:sourceDeviceId mcChannelValid:mcChannelValid mcStatus:mcStatus mcVoice:mcVoice];
+        }
+    }
+    
+    else if ([dataStr hasPrefix:@"eb84"]) {
+        if ([dataStr length] == 6) {
+            NSInteger channel = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(4, 2)]];
+            [[DeviceModelManager sharedInstance] findDevice:sourceDeviceId getSongName:channel];
+        }
+    }
+    
+    else if ([dataStr hasPrefix:@"eb81"]) {
+        if ([dataStr length] > 12) {
+            NSInteger channel = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(4, 2)]];
+            NSInteger count = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 2)]];
+            NSInteger index = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(8, 2)]];
+            NSInteger encoding = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(10, 2)]];
+            NSData *nameData = [data subdataWithRange:NSMakeRange(6, [data length]-6)];
+            [[DeviceModelManager sharedInstance] postSongNameDeviceID:sourceDeviceId channel:channel count:count index:index encoding:encoding data:nameData];
+        }
     }
 }
 

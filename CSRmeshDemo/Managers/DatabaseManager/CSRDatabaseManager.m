@@ -697,7 +697,7 @@
             [allIdsArray addObject:scene.rcIndex];
         }
         for (; ; ) {
-            NSInteger index = arc4random()%65471+64;
+            NSInteger index = arc4random()%65470+64;
             if ([allIdsArray containsObject:@(index)]) {
                 break;
             }else {

@@ -114,7 +114,6 @@
 + (BOOL)belongToOneChannelCurtainController:(NSString *)shortName;
 + (BOOL)belongToTwoChannelCurtainController:(NSString *)shortName;
 + (BOOL)belongToFanController:(NSString *)shortName;
-+ (BOOL)belongToSocket:(NSString *)shortName;
 + (BOOL)belongToOneChannelDimmer:(NSString *)shortName;
 + (BOOL)belongToTwoChannelDimmer:(NSString *)shortName;
 + (BOOL)belongToSocketOneChannel:(NSString *)shortName;
@@ -134,6 +133,8 @@
 + (BOOL)belongToSceneRemoteTwoKeys:(NSString *)shortName;
 + (BOOL)belongToSceneRemoteOneKey:(NSString *)shortName;
 + (BOOL)belongToFadeDevice:(NSString *)shortName;
++ (BOOL)belongToNearbyFunctionDevice:(NSString *)shortName;
++ (BOOL)belongToMusicController:(NSString *)shortName;
 
 + (NSString *)convertToJsonData:(NSDictionary *)dict;
 + (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString;

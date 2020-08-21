@@ -1254,7 +1254,19 @@
             [timer invalidate];
             timer = nil;
         } failure:^(NSError * _Nonnull error) {
-            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                    _remoteEntity.remoteBranch = cmd;
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                    _setSuccess = YES;
+                    [_hub hideAnimated:YES];
+                    [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+                    [timer invalidate];
+                    timer = nil;
+                } failure:^(NSError * _Nonnull error) {
+                    
+                }];
+            });
         }];
     }else if ([_remoteEntity.shortName isEqualToString:@"R5BSBH"] || [_remoteEntity.shortName isEqualToString:@"RB09"] || [_remoteEntity.shortName isEqualToString:@"5RSIBH"] || [_remoteEntity.shortName isEqualToString:@"5BCBH"]) {
         NSString *cmd = @"9b1a05";
@@ -1286,7 +1298,19 @@
             [timer invalidate];
             timer = nil;
         } failure:^(NSError * _Nonnull error) {
-            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                    _remoteEntity.remoteBranch = cmd;
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                    _setSuccess = YES;
+                    [_hub hideAnimated:YES];
+                    [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+                    [timer invalidate];
+                    timer = nil;
+                } failure:^(NSError * _Nonnull error) {
+                    
+                }];
+            });
         }];
     }else if ([_remoteEntity.shortName isEqualToString:@"R9BSBH"]) {
         NSString *cmd = @"9b2e09";
@@ -1306,7 +1330,19 @@
             [timer invalidate];
             timer = nil;
         } failure:^(NSError * _Nonnull error) {
-            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                    _remoteEntity.remoteBranch = cmd;
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                    _setSuccess = YES;
+                    [_hub hideAnimated:YES];
+                    [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+                    [timer invalidate];
+                    timer = nil;
+                } failure:^(NSError * _Nonnull error) {
+                    
+                }];
+            });
         }];
     }else if ([_remoteEntity.shortName isEqualToString:@"6RSIBH"]
               || [self.remoteEntity.shortName isEqualToString:@"H1CSWB"]
@@ -1331,7 +1367,19 @@
             [timer invalidate];
             timer = nil;
         } failure:^(NSError * _Nonnull error) {
-            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                    _remoteEntity.remoteBranch = cmd;
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                    _setSuccess = YES;
+                    [_hub hideAnimated:YES];
+                    [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+                    [timer invalidate];
+                    timer = nil;
+                } failure:^(NSError * _Nonnull error) {
+                    
+                }];
+            });
         }];
     }else {
         if (![[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]) {
@@ -1353,7 +1401,19 @@
                     [timer invalidate];
                     timer = nil;
                 } failure:^(NSError * _Nonnull error) {
-
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                            _remoteEntity.remoteBranch = cmd;
+                            [[CSRDatabaseManager sharedInstance] saveContext];
+                            _setSuccess = YES;
+                            [_hub hideAnimated:YES];
+                            [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+                            [timer invalidate];
+                            timer = nil;
+                        } failure:^(NSError * _Nonnull error) {
+                            
+                        }];
+                    });
                 }];
             }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"S10IB-H2"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]||[_remoteEntity.shortName isEqualToString:@"1BMBH"]) {
                 
@@ -1374,7 +1434,19 @@
                     [timer invalidate];
                     timer = nil;
                 } failure:^(NSError * _Nonnull error) {
-                    
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                            _remoteEntity.remoteBranch = cmd;
+                            [[CSRDatabaseManager sharedInstance] saveContext];
+                            _setSuccess = YES;
+                            [_hub hideAnimated:YES];
+                            [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+                            [timer invalidate];
+                            timer = nil;
+                        } failure:^(NSError * _Nonnull error) {
+                            
+                        }];
+                    });
                 }];
             }else if ([_remoteEntity.shortName isEqualToString:@"RB07"]) {
                 NSString *cmd = @"9b0602";
@@ -1394,7 +1466,19 @@
                     [timer invalidate];
                     timer = nil;
                 } failure:^(NSError * _Nonnull error) {
-                    
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                            _remoteEntity.remoteBranch = cmd;
+                            [[CSRDatabaseManager sharedInstance] saveContext];
+                            _setSuccess = YES;
+                            [_hub hideAnimated:YES];
+                            [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+                            [timer invalidate];
+                            timer = nil;
+                        } failure:^(NSError * _Nonnull error) {
+                            
+                        }];
+                    });
                 }];
             }
             

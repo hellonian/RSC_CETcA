@@ -159,7 +159,7 @@
 "color" = "色彩";
 "colorSat" = "饱和度";
 "musicFlow" = "音乐律动";
-"fail" = "密码设置失败";
+"fail" = "失败";
 "onoffmode" = "开关模式";
 "pulsewidth1" = "1s 脉冲模式";
 "pulsewidth6" = "6s 脉冲模式";
@@ -196,3 +196,18 @@
 "fadetime" = "淡出时间：";
 "channel" = "通道：";
 "removeSceneMemberAlert" = "确定将该设备从场景中移除吗？";
+"key" = "按键";
+"more" = "更多";
+"nearbyDevices" = "附近的设备";
+"controlOptions" = "控制选项";
+"nearbyAlert" = "60秒内断电并通电设备。";
+"select_the_channel" = "选择通道";
+"select_the_audio_source" = "选择音源";
+"single" = "单曲播放";
+"single_cycle" = "单曲循环";
+"loop_playback" = "顺序播放";
+"random" = "随机播放";
+"order" = "目录循环";
+"no_online_channel_scanned" = "未扫描到在线通道。";
+"select_cycle_mode" = "选择循环模式";
+"refresh" = "刷新";

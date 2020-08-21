@@ -12,6 +12,4 @@
 
 @interface AddDevcieViewController : UIViewController
 
-//@property (nonatomic,strong) void(^handle)(void);
-
 @end

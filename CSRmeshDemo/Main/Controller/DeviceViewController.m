@@ -21,9 +21,8 @@
 #import "MCUUpdateTool.h"
 #import "SoundListenTool.h"
 #import "PowerViewController.h"
-#import "FadeSettingView.h"
 
-@interface DeviceViewController ()<UITextFieldDelegate,ColorSliderDelegate,ColorSquareDelegate,MBProgressHUDDelegate,MCUUpdateToolDelegate,FadeSettingViewDelegate>
+@interface DeviceViewController ()<UITextFieldDelegate,ColorSliderDelegate,ColorSquareDelegate,MBProgressHUDDelegate,MCUUpdateToolDelegate>
 {
     NSString *downloadAddress;
     NSInteger latestMCUSVersion;
@@ -39,7 +38,7 @@
 @property (weak, nonatomic) IBOutlet UISwitch *powerStateSwitch;
 @property (weak, nonatomic) IBOutlet UISlider *levelSlider;
 @property (weak, nonatomic) IBOutlet UILabel *levelLabel;
-@property (nonatomic,strong) DeviceModel *device;
+@property (nonatomic, strong)CSRDeviceEntity *deviceEn;
 @property (nonatomic,copy) NSString *originalName;
 @property (weak, nonatomic) IBOutlet UILabel *colorTemperatureTitle;
 @property (weak, nonatomic) IBOutlet UIView *threeSpeedcolorTemperatureView;
@@ -100,9 +99,6 @@
 @property (strong, nonatomic) IBOutlet UIView *levelSliderChannelTwoView;
 @property (weak, nonatomic) IBOutlet UISlider *levelSliderChannelTwo;
 @property (weak, nonatomic) IBOutlet UILabel *levelLabelChannelTwo;
-
-@property (strong, nonatomic) IBOutlet UIView *fadeView;
-@property (strong, nonatomic) FadeSettingView *fadeSettingView;
 
 @end
 
@@ -191,9 +187,9 @@
         [_topView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
         [_topView autoAlignAxisToSuperviewAxis:ALAxisVertical];
         
-        _device = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-        if ([CSRUtilities belongToSwitch:_device.shortName]) {
-            if ([CSRUtilities belongToThreeSpeedColorTemperatureDevice:_device.shortName]) {
+        _deviceEn = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+        if ([CSRUtilities belongToSwitch:_deviceEn.shortName]) {
+            if ([CSRUtilities belongToThreeSpeedColorTemperatureDevice:_deviceEn.shortName]) {
                 
                 [_scrollView addSubview:_colorTemperatureTitle];
                 [_colorTemperatureTitle autoSetDimension:ALDimensionHeight toSize:20];
@@ -209,7 +205,7 @@
                 
                 _scrollView.contentSize = CGSizeMake(1, 253+20);
                 
-            }else if ([_device.shortName isEqualToString:@"S10IB"]||[_device.shortName isEqualToString:@"S10IBH"]) {
+            }else if ([_deviceEn.shortName isEqualToString:@"S10IB"]||[_deviceEn.shortName isEqualToString:@"S10IBH"]) {
                 [[NSNotificationCenter defaultCenter] addObserver:self
                                                          selector:@selector(getGanjiedianModel:)
                                                              name:@"getGanjiedianModel"
@@ -225,10 +221,10 @@
             }
         }
         
-        else if ([CSRUtilities belongToDimmer:_device.shortName]) {
+        else if ([CSRUtilities belongToDimmer:_deviceEn.shortName]) {
             [self addSubviewBrightnessView];
             
-            if ([CSRUtilities belongToThreeSpeedColorTemperatureDevice:_device.shortName]) {
+            if ([CSRUtilities belongToThreeSpeedColorTemperatureDevice:_deviceEn.shortName]) {
                 [_scrollView addSubview:_colorTemperatureTitle];
                 [_colorTemperatureTitle autoSetDimension:ALDimensionHeight toSize:20];
                 [_colorTemperatureTitle autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_brightnessView withOffset:5];
@@ -242,7 +238,7 @@
                 [_threeSpeedcolorTemperatureView autoAlignAxisToSuperviewAxis:ALAxisVertical];
                 
                 _scrollView.contentSize = CGSizeMake(1, 327+20+20);
-            }else if ([CSRUtilities belongToDALDevice:_device.shortName]) {
+            }else if ([CSRUtilities belongToDALDevice:_deviceEn.shortName]) {
                 [[NSNotificationCenter defaultCenter] addObserver:self
                                                          selector:@selector(getDaliAdress:)
                                                              name:@"getDaliAdress"
@@ -254,7 +250,7 @@
                 if (deviceEntity.remoteBranch && [deviceEntity.remoteBranch length]>0) {
                     [self configDaliAppearance:[CSRUtilities numberWithHexString:deviceEntity.remoteBranch]];
                 }
-            }else if ([_device.shortName isEqualToString:@"SD350"]||[_device.shortName isEqualToString:@"SSD150"]) {
+            }else if ([_deviceEn.shortName isEqualToString:@"SD350"]||[_deviceEn.shortName isEqualToString:@"SSD150"]) {
                 [[NSNotificationCenter defaultCenter] addObserver:self
                                                          selector:@selector(socketPowerCall:)
                                                              name:@"socketPowerCall"
@@ -280,25 +276,18 @@
                 
                 [[DataModelManager shareInstance] sendCmdData:@"ea4801" toDeviceId:_deviceId];
                 
-            }else if ([CSRUtilities belongToFadeDevice:_device.shortName]) {
-                [_scrollView addSubview:_fadeView];
-                [_fadeView autoSetDimension:ALDimensionHeight toSize:44];
-                [_fadeView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-                [_fadeView autoAlignAxisToSuperviewAxis:ALAxisVertical];
-                [_fadeView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_brightnessView withOffset:20.0];
-                _scrollView.contentSize = CGSizeMake(1, 312);
             }else {
                 _scrollView.contentSize = CGSizeMake(1, 208+20+20);
             }
         }
         
-        else if ([CSRUtilities belongToCWDevice:_device.shortName]) {
+        else if ([CSRUtilities belongToCWDevice:_deviceEn.shortName]) {
             [self addSubviewBrightnessView];
             [self addSubViewColorTemperatuteView];
             _scrollView.contentSize = CGSizeMake(1, 282+20+20);
         }
         
-        else if ([CSRUtilities belongToRGBDevice:_device.shortName]) {
+        else if ([CSRUtilities belongToRGBDevice:_deviceEn.shortName]) {
             musicBehavior = YES;
             [self addSubviewBrightnessView];
             [_scrollView addSubview:_colorTitle];
@@ -312,7 +301,7 @@
             _scrollView.contentSize = CGSizeMake(1, 616+20);
         }
         
-        else if ([CSRUtilities belongToRGBCWDevice:_device.shortName]) {
+        else if ([CSRUtilities belongToRGBCWDevice:_deviceEn.shortName]) {
             musicBehavior = YES;
             [self addSubviewBrightnessView];
             
@@ -328,26 +317,26 @@
             _scrollView.contentSize = CGSizeMake(1, 650+20);
         }
         
-        else if ([CSRUtilities belongToTwoChannelSwitch:_device.shortName]) {
+        else if ([CSRUtilities belongToTwoChannelSwitch:_deviceEn.shortName]) {
             [self addSubViewPowerSwitchChannelTwoView];
             _scrollView.contentSize = CGSizeMake(1, 237);
         }
         
-        else if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName]) {
+        else if ([CSRUtilities belongToThreeChannelSwitch:_deviceEn.shortName]) {
             [self addSubViewPowerSwitchChannelTwoView];
             [self addSubViewPowerSwitchChannelThreeView];
             _scrollView.contentSize = CGSizeMake(1, 301);
         }
         
-        else if ([CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
+        else if ([CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]) {
             [self addSubviewBrightnessView];
             [self addSubViewChannelTwoBrightnessView];
             _scrollView.contentSize = CGSizeMake(1, 386);
         }
         
-        self.navigationItem.title = _device.name;
-        self.nameTF.text = _device.name;
-        self.originalName = _device.name;
+        self.navigationItem.title = _deviceEn.name;
+        self.nameTF.text = _deviceEn.name;
+        self.originalName = _deviceEn.name;
         
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
         NSString *macAddr = [deviceEntity.uuid substringFromIndex:24];
@@ -364,8 +353,8 @@
         self.macAddressLabel.text = doneTitle;
         
         if ([deviceEntity.hwVersion integerValue]==2) {
-            NSMutableString *mutStr = [NSMutableString stringWithString:_device.shortName];
-            NSRange range = {0,_device.shortName.length};
+            NSMutableString *mutStr = [NSMutableString stringWithString:_deviceEn.shortName];
+            NSRange range = {0,_deviceEn.shortName.length};
             [mutStr replaceOccurrencesOfString:@"/" withString:@"" options:NSLiteralSearch range:range];
             NSString *urlString = [NSString stringWithFormat:@"http://39.108.152.134/MCU/%@/%@.php",mutStr,mutStr];
             AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
@@ -454,7 +443,7 @@
 
 - (void)starteUpdateHud {
     if (!_updatingHud) {
-        if ([_device.shortName isEqualToString:@"SD350"]||[_device.shortName isEqualToString:@"SSD150"]) {
+        if ([_deviceEn.shortName isEqualToString:@"SD350"]||[_deviceEn.shortName isEqualToString:@"SSD150"]) {
             if (timer) {
                 [timer invalidate];
                 timer = nil;
@@ -480,7 +469,7 @@
         self.translucentBgView = nil;
         [updateMCUBtn removeFromSuperview];
         updateMCUBtn = nil;
-        if (([_device.shortName isEqualToString:@"SD350"]||[_device.shortName isEqualToString:@"SSD150"]) && value) {
+        if (([_deviceEn.shortName isEqualToString:@"SD350"]||[_deviceEn.shortName isEqualToString:@"SSD150"]) && value) {
             timer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(timerMethod:) userInfo:nil repeats:YES];
             [timer fire];
         }
@@ -610,7 +599,7 @@
                                              selector:@selector(setPowerStateSuccess:)
                                                  name:@"setPowerStateSuccess"
                                                object:nil];
-    if ([_device.shortName isEqualToString:@"SD350"]||[_device.shortName isEqualToString:@"SSD150"]) {
+    if ([_deviceEn.shortName isEqualToString:@"SD350"]||[_deviceEn.shortName isEqualToString:@"SSD150"]) {
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(socketPowerCall:)
                                                      name:@"socketPowerCall"
@@ -628,7 +617,7 @@
                                                     name:@"setPowerStateSuccess"
                                                   object:nil];
     [UIApplication sharedApplication].idleTimerDisabled = NO;
-    if ([_device.shortName isEqualToString:@"SD350"]||[_device.shortName isEqualToString:@"SSD150"]) {
+    if ([_deviceEn.shortName isEqualToString:@"SD350"]||[_deviceEn.shortName isEqualToString:@"SSD150"]) {
         [[NSNotificationCenter defaultCenter] removeObserver:self name:@"socketPowerCall" object:nil];
         if (timer) {
             [timer invalidate];
@@ -642,49 +631,50 @@
 }
 
 - (void)adjustInterface {
-    if ([CSRUtilities belongToSwitch:_device.shortName]) {
-        if ([_device.powerState boolValue]) {
+    DeviceModel *deviceM = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+    if ([CSRUtilities belongToSwitch:deviceM.shortName]) {
+        if ([deviceM.powerState boolValue]) {
             [self.powerStateSwitch setOn:YES];
         }else {
             [self.powerStateSwitch setOn:NO];
         }
         return;
-    }else if ([CSRUtilities belongToDimmer:_device.shortName]) {
-        if ([_device.powerState boolValue]) {
+    }else if ([CSRUtilities belongToDimmer:deviceM.shortName]) {
+        if ([deviceM.powerState boolValue]) {
             [self.powerStateSwitch setOn:YES];
-            [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
-            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
+            [self.levelSlider setValue:(CGFloat)[deviceM.level integerValue] animated:YES];
+            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[deviceM.level integerValue]/255.0*100];
         }else {
             [self.powerStateSwitch setOn:NO];
             [self.levelSlider setValue:0 animated:YES];
             self.levelLabel.text = @"0%";
         }
         return;
-    }else if ([CSRUtilities belongToCWDevice:_device.shortName]) {
-        if ([_device.powerState boolValue]) {
+    }else if ([CSRUtilities belongToCWDevice:deviceM.shortName]) {
+        if ([deviceM.powerState boolValue]) {
             [self.powerStateSwitch setOn:YES];
-            [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
-            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
+            [self.levelSlider setValue:(CGFloat)[deviceM.level integerValue] animated:YES];
+            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[deviceM.level integerValue]/255.0*100];
         }else {
             [self.powerStateSwitch setOn:NO];
             [self.levelSlider setValue:0 animated:YES];
             self.levelLabel.text = @"0%";
         }
-        [_colorTemperatureSlider setValue:(CGFloat)[_device.colorTemperature integerValue] animated:YES];
-        _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[_device.colorTemperature integerValue]];
+        [_colorTemperatureSlider setValue:(CGFloat)[deviceM.colorTemperature integerValue] animated:YES];
+        _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[deviceM.colorTemperature integerValue]];
         
         return;
-    }else if ([CSRUtilities belongToRGBDevice:_device.shortName]) {
-        if ([_device.powerState boolValue]) {
+    }else if ([CSRUtilities belongToRGBDevice:deviceM.shortName]) {
+        if ([deviceM.powerState boolValue]) {
             [self.powerStateSwitch setOn:YES];
-            [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
-            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
+            [self.levelSlider setValue:(CGFloat)[deviceM.level integerValue] animated:YES];
+            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[deviceM.level integerValue]/255.0*100];
         }else {
             [self.powerStateSwitch setOn:NO];
             [self.levelSlider setValue:0 animated:YES];
             self.levelLabel.text = @"0%";
         }
-        UIColor *color = [UIColor colorWithRed:[_device.red integerValue]/255.0 green:[_device.green integerValue]/255.0 blue:[_device.blue integerValue]/255.0 alpha:1.0];
+        UIColor *color = [UIColor colorWithRed:[deviceM.red integerValue]/255.0 green:[deviceM.green integerValue]/255.0 blue:[deviceM.blue integerValue]/255.0 alpha:1.0];
         CGFloat hue,saturation,brightness,alpha;
         if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
             [self.colorSlider sliderMyValue:hue];
@@ -694,20 +684,20 @@
             [self.colorSquareView locationPickView:hue colorSaturation:saturation];
         }
         return;
-    }else if ([CSRUtilities belongToRGBCWDevice:_device.shortName]) {
-        if ([_device.powerState boolValue]) {
+    }else if ([CSRUtilities belongToRGBCWDevice:deviceM.shortName]) {
+        if ([deviceM.powerState boolValue]) {
             [self.powerStateSwitch setOn:YES];
-            [self.levelSlider setValue:(CGFloat)[_device.level integerValue] animated:YES];
-            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[_device.level integerValue]/255.0*100];
+            [self.levelSlider setValue:(CGFloat)[deviceM.level integerValue] animated:YES];
+            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[deviceM.level integerValue]/255.0*100];
         }else {
             [self.powerStateSwitch setOn:NO];
             [self.levelSlider setValue:0 animated:YES];
             self.levelLabel.text = @"0%";
         }
 
-        [_colorTemperatureSlider setValue:(CGFloat)[_device.colorTemperature integerValue] animated:YES];
-        _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[_device.colorTemperature integerValue]];
-        UIColor *color = [UIColor colorWithRed:[_device.red integerValue]/255.0 green:[_device.green integerValue]/255.0 blue:[_device.blue integerValue]/255.0 alpha:1.0];
+        [_colorTemperatureSlider setValue:(CGFloat)[deviceM.colorTemperature integerValue] animated:YES];
+        _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[deviceM.colorTemperature integerValue]];
+        UIColor *color = [UIColor colorWithRed:[deviceM.red integerValue]/255.0 green:[deviceM.green integerValue]/255.0 blue:[deviceM.blue integerValue]/255.0 alpha:1.0];
         CGFloat hue,saturation,brightness,alpha;
         if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
             [self.colorSlider sliderMyValue:hue];
@@ -718,29 +708,29 @@
         }
         
         return;
-    }else if ([CSRUtilities belongToTwoChannelSwitch:_device.shortName]) {
-        [self.powerStateSwitch setOn:_device.channel1PowerState];
-        [self.powerSwitchChannelTwo setOn:_device.channel2PowerState];
+    }else if ([CSRUtilities belongToTwoChannelSwitch:deviceM.shortName]) {
+        [self.powerStateSwitch setOn:deviceM.channel1PowerState];
+        [self.powerSwitchChannelTwo setOn:deviceM.channel2PowerState];
         return;
-    }else if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName]) {
-        [self.powerStateSwitch setOn:_device.channel1PowerState];
-        [self.powerSwitchChannelTwo setOn:_device.channel2PowerState];
-        [self.powerSwitchChannelThree setOn:_device.channel3PowerState];
+    }else if ([CSRUtilities belongToThreeChannelSwitch:deviceM.shortName]) {
+        [self.powerStateSwitch setOn:deviceM.channel1PowerState];
+        [self.powerSwitchChannelTwo setOn:deviceM.channel2PowerState];
+        [self.powerSwitchChannelThree setOn:deviceM.channel3PowerState];
         return;
-    }else if ([CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
-        if (_device.channel1PowerState) {
+    }else if ([CSRUtilities belongToTwoChannelDimmer:deviceM.shortName]) {
+        if (deviceM.channel1PowerState) {
             [self.powerStateSwitch setOn:YES];
-            [self.levelSlider setValue:_device.channel1Level animated:YES];
-            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",_device.channel1Level/255.0*100];
+            [self.levelSlider setValue:deviceM.channel1Level animated:YES];
+            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",deviceM.channel1Level/255.0*100];
         }else {
             [self.powerStateSwitch setOn:NO];
             [self.levelSlider setValue:0 animated:YES];
             self.levelLabel.text = @"0%";
         }
-        if (_device.channel2PowerState) {
+        if (deviceM.channel2PowerState) {
             [self.powerSwitchChannelTwo setOn:YES];
-            [self.levelSliderChannelTwo setValue:_device.channel2Level animated:YES];
-            self.levelLabelChannelTwo.text = [NSString stringWithFormat:@"%.f%%",_device.channel2Level/255.0*100];
+            [self.levelSliderChannelTwo setValue:deviceM.channel2Level animated:YES];
+            self.levelLabelChannelTwo.text = [NSString stringWithFormat:@"%.f%%",deviceM.channel2Level/255.0*100];
         }else {
             [self.powerSwitchChannelTwo setOn:NO];
             [self.levelSliderChannelTwo setValue:0 animated:YES];
@@ -757,6 +747,14 @@
         if ([deviceId isEqualToNumber:_deviceId]) {
             [self adjustInterface];
         }
+    }else {
+        CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+        for (CSRDeviceEntity *device in area.devices) {
+            if ([device.deviceId isEqualToNumber:deviceId]) {
+                [self forRGBGroupControllAdustInterface];
+                break;
+            }
+        }
     }
 }
 //开关
@@ -767,9 +765,9 @@
         _powerSwitchChannelTwo.enabled = NO;
         _powerSwitchChannelThree.enabled = NO;
         _RGBGroupControllSwitch.enabled = NO;
-        if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName]
-            || [CSRUtilities belongToTwoChannelSwitch:_device.shortName]
-            || [CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
+        if ([CSRUtilities belongToThreeChannelSwitch:_deviceEn.shortName]
+            || [CSRUtilities belongToTwoChannelSwitch:_deviceEn.shortName]
+            || [CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]) {
             [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@2 withPowerState:sender.on];
         }else {
             if (musicBehavior) {
@@ -800,9 +798,9 @@
         _powerSwitchChannelTwo.enabled = NO;
         _powerSwitchChannelThree.enabled = NO;
         
-        if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName]
-            || [CSRUtilities belongToTwoChannelSwitch:_device.shortName]
-            || [CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
+        if ([CSRUtilities belongToThreeChannelSwitch:_deviceEn.shortName]
+            || [CSRUtilities belongToTwoChannelSwitch:_deviceEn.shortName]
+            || [CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]) {
             [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@3 withPowerState:sender.on];
         }
         
@@ -822,7 +820,7 @@
         _powerSwitchChannelTwo.enabled = NO;
         _powerSwitchChannelThree.enabled = NO;
         
-        if ([CSRUtilities belongToThreeChannelSwitch:_device.shortName]) {
+        if ([CSRUtilities belongToThreeChannelSwitch:_deviceEn.shortName]) {
             [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@5 withPowerState:sender.on];
         }
         
@@ -837,7 +835,7 @@
 
 //调光
 - (IBAction)levelSliderTouchDown:(UISlider *)sender {
-    if ([CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
+    if ([CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]) {
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@2 withLevel:@(sender.value) withState:UIGestureRecognizerStateBegan direction:PanGestureMoveDirectionHorizontal];
     }else {
         if (musicBehavior) {
@@ -852,7 +850,7 @@
 }
 
 - (IBAction)leveSliderValueChanged:(UISlider *)sender {
-    if ([CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
+    if ([CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]) {
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@2 withLevel:@(sender.value) withState:UIGestureRecognizerStateChanged direction:PanGestureMoveDirectionHorizontal];
     }else {
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateChanged direction:PanGestureMoveDirectionHorizontal];
@@ -860,7 +858,7 @@
 }
 
 - (IBAction)levelSliderTouchUpInSide:(UISlider *)sender {
-    if ([CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
+    if ([CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]) {
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@2 withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
     }else {
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
@@ -870,20 +868,20 @@
 
 
 - (IBAction)levelSliderChannelTwoTouchDown:(UISlider *)sender {
-    if ([CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
+    if ([CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]) {
 
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@3 withLevel:@(sender.value) withState:UIGestureRecognizerStateBegan direction:PanGestureMoveDirectionHorizontal];
     }
 }
 
 - (IBAction)levelSliderChannelTwoValueChanged:(UISlider *)sender {
-    if ([CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
+    if ([CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]) {
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@3 withLevel:@(sender.value) withState:UIGestureRecognizerStateChanged direction:PanGestureMoveDirectionHorizontal];
     }
 }
 
 - (IBAction)levelSliderChannelTwoTouchUpInside:(UISlider *)sender {
-    if ([CSRUtilities belongToTwoChannelDimmer:_device.shortName]) {
+    if ([CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]) {
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@3 withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
     }
 }
@@ -1332,7 +1330,7 @@
             _pulseModeLabel.text = AcTECLocalizedStringFromTable(@"onoffmode", @"Localizable");
 //            _switchModelBtn.selected = YES;
 //            [_switchModelBtn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateNormal];
-//            _oneSecondModelBtn.selected = NO;
+            //            _oneSecondModelBtn.%dected = NO;
 //            [_oneSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
 //            _sixSecondModelBtn.selected = NO;
 //            [_sixSecondModelBtn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
@@ -1659,58 +1657,26 @@
     }];
     if (brightness) {
         [_RGBGroupControllSwitch setOn:YES];
-        [_levelSlider setValue:brightness animated:YES];
+        [_levelSlider setValue:brightness animated:NO];
         self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",brightness/255.0*100];
         
     }else {
         [_RGBGroupControllSwitch setOn:NO];
-        [_levelSlider setValue:0 animated:YES];
+        [_levelSlider setValue:0 animated:NO];
         self.levelLabel.text = @"0%";
     }
     CSRDeviceEntity *lastDevice = [[area.devices allObjects] lastObject];
     DeviceModel *lastModel = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:lastDevice.deviceId];
-    [_colorTemperatureSlider setValue:(CGFloat)[lastModel.colorTemperature integerValue] animated:YES];
+    [_colorTemperatureSlider setValue:(CGFloat)[lastModel.colorTemperature integerValue] animated:NO];
     _colorTemperatureLabel.text = [NSString stringWithFormat:@"%ldK",(long)[lastModel.colorTemperature integerValue]];
     UIColor *color = [UIColor colorWithRed:[lastModel.red integerValue]/255.0 green:[lastModel.green integerValue]/255.0 blue:[lastModel.blue integerValue]/255.0 alpha:1.0];
     CGFloat hue,saturation,level,alpha;
     if ([color getHue:&hue saturation:&saturation brightness:&level alpha:&alpha]) {
         [self.colorSlider sliderMyValue:hue];
         self.colorLabel.text = [NSString stringWithFormat:@"%.f",hue*360];
-        [self.colorSaturationSlider setValue:saturation animated:YES];
+        [self.colorSaturationSlider setValue:saturation animated:NO];
         self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",saturation*100];
         [self.colorSquareView locationPickView:hue colorSaturation:saturation];
-    }
-}
-
-- (IBAction)fadeSet:(UIButton *)sender {
-    [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
-    _fadeSettingView = [[FadeSettingView alloc] initWithFrame:CGRectZero];
-    _fadeSettingView.delegate = self;
-    _fadeSettingView.shortName = _device.shortName;
-    [[UIApplication sharedApplication].keyWindow addSubview:_fadeSettingView];
-    [_fadeSettingView autoSetDimension:ALDimensionWidth toSize:271];
-    [_fadeSettingView autoSetDimension:ALDimensionHeight toSize:225];
-    [_fadeSettingView autoCenterInSuperview];
-}
-
-- (void)cancelFadeSetting {
-    if (_fadeSettingView) {
-        [_fadeSettingView removeFromSuperview];
-        _fadeSettingView = nil;
-        [self.translucentBgView removeFromSuperview];
-        _translucentBgView = nil;
-    }
-}
-
-- (void)saveFadeInTime:(NSInteger)fadeInTime fadeInUnit:(NSInteger)fadeInUnit FadeOutTime:(NSInteger)fadeOutTime fadeOutUnit:(NSInteger)fadeOutUnit channel:(NSInteger)channel {
-    Byte byte[] = {0xea, 0x55, channel, fadeInTime, fadeInUnit, fadeOutTime, fadeOutUnit};
-    NSData *cmd = [[NSData alloc] initWithBytes:byte length:7];
-    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-    if (_fadeSettingView) {
-        [_fadeSettingView removeFromSuperview];
-        _fadeSettingView = nil;
-        [self.translucentBgView removeFromSuperview];
-        _translucentBgView = nil;
     }
 }
 

@@ -17,6 +17,7 @@
 #import "TimerDeviceEntity.h"
 #import "DataModelManager.h"
 #import "CSRAppStateManager.h"
+#import <CSRmesh/DataModelApi.h>
 
 @interface TimerDetailViewController ()<UITextFieldDelegate>
 {
@@ -143,7 +144,7 @@
         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sceneID" ascending:YES];
         [areaMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
         for (SceneEntity *sceneEntity in areaMutableArray) {
-            if ([sceneEntity.members count]>0) {
+            if ([sceneEntity.members count]>0 && [sceneEntity.srDeviceId isEqualToNumber:@(-1)]) {
                 [_sceneMutableArray addObject:sceneEntity];
             }
         }
@@ -751,7 +752,7 @@
     NSInteger ms = [[dtstr substringWithRange:NSMakeRange(10, 2)] integerValue];
     NSInteger ss = [[dtstr substringWithRange:NSMakeRange(12, 2)] integerValue];
     
-    [self performSelector:@selector(setTimerTimeOut) withObject:nil afterDelay:30.0];
+    [self performSelector:@selector(setTimerTimeOut) withObject:nil afterDelay:12.0];
     if ([CSRUtilities belongToTwoChannelSwitch:member.kindString]
         || [CSRUtilities belongToThreeChannelSwitch:member.kindString]
         || [CSRUtilities belongToTwoChannelDimmer:member.kindString]
@@ -760,15 +761,24 @@
         
         Byte byte[] = {0x50, 0x18, 0x01, [member.channel integerValue], bIndex[1], bIndex[0], enabled, y, M, d, h, m, 0x00, repeat, [member.eveType integerValue], [member.eveD0 integerValue], [member.eveD1 integerValue], [member.eveD2 integerValue], [member.eveD3 integerValue], 0x00, ys, Ms, ds, hs, ms, ss};
         NSData *cmd = [[NSData alloc] initWithBytes:byte length:26];
+        retryCount = 0;
+        retryCmd = cmd;
+        retryDeviceId = member.deviceID;
         [[DataModelManager shareInstance] sendDataByStreamDataTransfer:member.deviceID data:cmd];
     }else {
         if ([_mDeviceToApply.cvVersion integerValue] > 18) {
             Byte byte[] = {0x83, 0x16, bIndex[1], bIndex[0], enabled, y, M, d, h, m, 0x00, repeat, [member.eveType integerValue], [member.eveD0 integerValue], [member.eveD1 integerValue], [member.eveD2 integerValue], [member.eveD3 integerValue], 0x00, ys, Ms, ds, hs, ms, ss};
             NSData *cmd = [[NSData alloc] initWithBytes:byte length:24];
+            retryCount = 0;
+            retryCmd = cmd;
+            retryDeviceId = member.deviceID;
             [[DataModelManager shareInstance] sendDataByStreamDataTransfer:member.deviceID data:cmd];
         }else {
             Byte byte[] = {0x83, 0x15, index, enabled, y, M, d, h, m, 0x00, repeat, [member.eveType integerValue], [member.eveD0 integerValue], [member.eveD1 integerValue], [member.eveD2 integerValue], [member.eveD3 integerValue], 0x00, ys, Ms, ds, hs, ms, ss};
             NSData *cmd = [[NSData alloc] initWithBytes:byte length:23];
+            retryCount = 0;
+            retryCmd = cmd;
+            retryDeviceId = member.deviceID;
             [[DataModelManager shareInstance] sendDataByStreamDataTransfer:member.deviceID data:cmd];
         }
     }
@@ -846,9 +856,14 @@
 
 - (void)setTimerTimeOut {
     id obj = [_mMembersToApply firstObject];
-    if ([obj isKindOfClass:[TimerDeviceEntity class]] && retryCount < 1) {
-        [self performSelector:@selector(setTimerTimeOut) withObject:nil afterDelay:10];
-        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:retryDeviceId data:retryCmd];
+    if (retryCount < 1) {
+        if ([obj isKindOfClass:[SceneMemberEntity class]]) {
+            [self performSelector:@selector(setTimerTimeOut) withObject:nil afterDelay:12];
+            [[DataModelManager shareInstance] sendDataByStreamDataTransfer:retryDeviceId data:retryCmd];
+        }else if ([obj isKindOfClass:[TimerDeviceEntity class]]) {
+            [self performSelector:@selector(setTimerTimeOut) withObject:nil afterDelay:10];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:retryDeviceId data:retryCmd];
+        }
         retryCount ++;
     }else {
         [_mMembersToApply removeObject:obj];

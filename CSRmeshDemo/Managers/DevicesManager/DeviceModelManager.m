@@ -37,6 +37,8 @@
     BOOL appControlling;
 }
 
+@property (nonatomic, strong) NSMutableDictionary *mcNameDataDic;
+
 @end
 
 @implementation DeviceModelManager
@@ -83,6 +85,16 @@
                     model.deviceId = deviceEntity.deviceId;
                     model.shortName = deviceEntity.shortName;
                     model.name = deviceEntity.name;
+                    
+                    model.powerState = @0;
+                    model.channel1PowerState = NO;
+                    model.channel2PowerState = NO;
+                    model.channel3PowerState = NO;
+                    model.level = @0;
+                    model.channel1Level = 0;
+                    model.channel2Level = 0;
+                    model.channel3Level = 0;
+                    
                     [_allDevices addObject:model];
                 }
             }
@@ -102,6 +114,9 @@
 #pragma mark - LightModelApiDelegate
 
 - (void)didGetLightState:(NSNumber *)deviceId red:(NSNumber *)red green:(NSNumber *)green blue:(NSNumber *)blue level:(NSNumber *)level powerState:(NSNumber *)powerState colorTemperature:(NSNumber *)colorTemperature supports:(NSNumber *)supports meshRequestId:(NSNumber *)meshRequestId {
+    if (appControlling) {
+        return;
+    }
     NSLog(@"调光回调 deviceId--> %@ powerState--> %@ level--> %@ colorTemperature--> %@ supports--> %@ \n red -> %@ -> green -> %@ blue -> %@ ",deviceId,powerState,level,colorTemperature,supports,red,green,blue);
     BOOL exist = NO;
     for (DeviceModel *model in _allDevices) {
@@ -224,14 +239,15 @@
         [_allDevices addObject:model];
     }
     
-    if (!appControlling) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
 }
 
 #pragma mark - PowerModelApiDelegate
 
 - (void)didGetPowerState:(NSNumber *)deviceId state:(NSNumber *)state meshRequestId:(NSNumber *)meshRequestId {
+    if (appControlling) {
+        return;
+    }
     NSLog(@"开关回调 deviceId --> %@ powerState--> %@",deviceId,state);
     BOOL exist = NO;
     for (DeviceModel *model in _allDevices) {
@@ -261,9 +277,7 @@
         model.lampState = [state boolValue];
     }
     
-    if (!appControlling) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId,@"channel":@(1)}];
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId,@"channel":@(1)}];
 }
 
 
@@ -626,10 +640,24 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
         }];
         
-        DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
-        model.powerState = @1;
-        model.colorTemperature = CTCurrentCT;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@1}];
+        if ([deviceId integerValue] > 32768) {
+            DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
+            model.powerState = @1;
+            model.colorTemperature = CTCurrentCT;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@1}];
+        }else {
+            CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:deviceId];
+            for (CSRDeviceEntity *member in area.devices) {
+                for (DeviceModel *model in _allDevices) {
+                    if ([model.deviceId isEqualToNumber:member.deviceId]) {
+                        model.powerState = @1;
+                        model.colorTemperature = CTCurrentCT;
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceId,@"channel":@1}];
+                        break;
+                    }
+                }
+            }
+        }
         
         if (CTCurrentState == UIGestureRecognizerStateEnded) {
             NSLog(@"色温定时器结束");
@@ -659,7 +687,6 @@
         model.red = @(red * 255);
         model.green = @(green * 255);
         model.blue = @(blue * 255);
-        NSLog(@">> %f  %f  %f  %f",red,green,blue,alpha);
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@1}];
 }
@@ -694,15 +721,34 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
         }];
         
-        DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
-        model.powerState = @1;
-        CGFloat red,green,blue,alpha;
-        if ([currentColor getRed:&red green:&green blue:&blue alpha:&alpha]) {
-            model.red = @(red * 255);
-            model.green = @(green * 255);
-            model.blue = @(blue * 255);
+        if ([deviceId integerValue] > 32768) {
+            DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
+            model.powerState = @1;
+            CGFloat red,green,blue,alpha;
+            if ([currentColor getRed:&red green:&green blue:&blue alpha:&alpha]) {
+                model.red = @(red * 255);
+                model.green = @(green * 255);
+                model.blue = @(blue * 255);
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@1}];
+        }else {
+            CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:deviceId];
+            for (CSRDeviceEntity *member in area.devices) {
+                for (DeviceModel *model in _allDevices) {
+                    if ([model.deviceId isEqualToNumber:member.deviceId]) {
+                        model.powerState = @1;
+                        CGFloat red,green,blue,alpha;
+                        if ([currentColor getRed:&red green:&green blue:&blue alpha:&alpha]) {
+                            model.red = @(red * 255);
+                            model.green = @(green * 255);
+                            model.blue = @(blue * 255);
+                        }
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceId,@"channel":@1}];
+                        break;
+                    }
+                }
+            }
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@1}];
         
         if (colorCurrentState == UIGestureRecognizerStateEnded) {
             NSLog(@"颜色定时器结束");
@@ -714,6 +760,9 @@
 
 //物理按钮反馈
 - (void)physicalButtonActionCall: (NSNotification *)notification {
+    if (appControlling) {
+        return;
+    }
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *state = userInfo[@"powerState"];
     NSNumber *deviceId = userInfo[@"deviceId"];
@@ -729,15 +778,18 @@
             if ([model.shortName isEqualToString:@"C300IB"] || [model.shortName isEqualToString:@"C300IBH"]) {
                 model.powerState = [level integerValue] == 255? @(0):@(1);
             }
-            if (!appControlling) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
-            }
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
+            
             return;
         }
     }
 }
 
 - (void)RGBCWDeviceActionCall: (NSNotification *)notification {
+    if (appControlling) {
+        return;
+    }
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
     NSNumber *state = userInfo[@"powerState"];
@@ -759,15 +811,18 @@
             model.red = red;
             model.green = green;
             model.blue = blue;
-            if (!appControlling) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
-            }
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
+            
             return;
         }
     }
 }
 
 - (void)fanControllerCall: (NSNotification *)notification {
+    if (appControlling) {
+        return;
+    }
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
     NSNumber *fanState = userInfo[@"fanState"];
@@ -780,9 +835,9 @@
             model.fansSpeed = [fanSpeed intValue];
             model.lampState = [lampState boolValue];
             model.powerState = @([fanState boolValue] || [lampState boolValue]);
-            if (!appControlling) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
-            }
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
+            
             return;
         }
     }
@@ -864,15 +919,18 @@
                 model.powerState = @(model.channel1PowerState);
                 model.level = @(model.channel1Level > 3 ? model.channel1Level : 3);
             }
-            if (!appControlling) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":channel}];
-            }
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":channel}];
+            
             return;
         }
     }
 }
 
 - (void)childrenModelState: (NSNotification *)notification {
+    if (appControlling) {
+        return;
+    }
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
     NSNumber *state1 = userInfo[@"state1"];
@@ -881,9 +939,9 @@
         if ([model.deviceId isEqualToNumber:deviceId]) {
             model.childrenState1 = [state1 boolValue];
             model.childrenState2 = [state2 boolValue];
-            if (!appControlling) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@4}];
-            }
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@4}];
+            
             *stop = YES;
         }
     }];
@@ -1236,6 +1294,162 @@
             }
         }
     }
+}
+
+- (void)refreshMCChannel:(NSNumber *)deviceID mcChannel:(NSInteger)mcChannel {
+    for (DeviceModel *model in _allDevices) {
+        if ([model.deviceId isEqualToNumber:deviceID]) {
+            model.mcChannel = mcChannel;
+            if (mcChannel == 0) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshMCChannel" object:self userInfo:@{@"deviceId":deviceID}];
+            }else {
+                NSString *hex = [CSRUtilities stringWithHexNumber:mcChannel];
+                NSString *bin = [CSRUtilities getBinaryByhex:hex];
+                for (int i = 0; i < [bin length]; i ++) {
+                    NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
+                    if ([bit boolValue]) {
+                        NSInteger mccc = pow(2, i);
+                        model.mcCurrentChannel = mccc;
+                        //获取音乐控制器的工作状态
+                        NSData *cmd;
+                        if (mccc < 256) {
+                            Byte byte[] = {0xb6, 0x06, 0x20, 0x00, mccc};
+                            cmd = [[NSData alloc] initWithBytes:byte length:5];
+                        }else {
+                            Byte byte[] = {0xb6, 0x06, 0x20, mccc/256, mccc%256};
+                            cmd = [[NSData alloc] initWithBytes:byte length:5];
+                        }
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceID data:cmd];
+                        break;
+                    }
+                }
+            }
+            return;
+        }
+    }
+}
+
+- (void)refreshDeviceID:(NSNumber *)deviceID mcChannelValid:(NSInteger)mcChannelValid mcStatus:(NSInteger)mcStatus mcVoice:(NSInteger)mcVoice {
+    for (DeviceModel *model in _allDevices) {
+        if ([model.deviceId isEqualToNumber:deviceID] && model.mcCurrentChannel == mcChannelValid) {
+            model.mcStatus = mcStatus;
+            model.mcVoice = mcVoice;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshMCChannel" object:self userInfo:@{@"deviceId":deviceID}];
+            NSString *hex = [CSRUtilities stringWithHexNumber:mcChannelValid];
+            NSString *bin = [CSRUtilities getBinaryByhex:hex];
+            for (int i = 0; i < [bin length]; i ++) {
+                NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
+                if ([bit boolValue]) {
+                    Byte byte[] = {0xea, 0x81, i, 0x00, 0x00};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceID data:cmd];
+                    break;
+                }
+            }
+            return;
+        }
+    }
+}
+
+- (void)refreshDeviceID:(NSNumber *)deviceID mcCurrentChannel:(NSInteger)mcCurrentChannel {
+    for (DeviceModel *model in _allDevices) {
+        if ([model.deviceId isEqualToNumber:deviceID]) {
+            model.mcCurrentChannel = mcCurrentChannel;
+            
+            //获取音乐控制器的工作状态
+            NSData *cmd;
+            if (mcCurrentChannel < 256) {
+                Byte byte[] = {0xb6, 0x06, 0x20, 0x00, mcCurrentChannel};
+                cmd = [[NSData alloc] initWithBytes:byte length:5];
+            }else {
+                Byte byte[] = {0xb6, 0x06, 0x20, mcCurrentChannel/256, mcCurrentChannel%256};
+                cmd = [[NSData alloc] initWithBytes:byte length:5];
+            }
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceID data:cmd];
+            break;
+        }
+    }
+}
+
+- (void)findDevice:(NSNumber *)deviceID getSongName:(NSInteger)channel {
+    for (DeviceModel *model in _allDevices) {
+        if ([model.deviceId isEqualToNumber:deviceID]) {
+            if (model.mcCurrentChannel != -1) {
+                NSString *hex = [CSRUtilities stringWithHexNumber:model.mcCurrentChannel];
+                NSString *bin = [CSRUtilities getBinaryByhex:hex];
+                for (int i = 0; i < [bin length]; i ++) {
+                    NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
+                    if ([bit boolValue]) {
+                        if (channel == i) {
+                            Byte byte[] = {0xea, 0x81, channel, 0x00, 0x00};
+                            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+                            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceID data:cmd];
+                        }
+                        break;
+                    }
+                }
+            }
+            break;
+        }
+    }
+}
+
+- (NSMutableDictionary *)mcNameDataDic {
+    if (!_mcNameDataDic) {
+        _mcNameDataDic = [[NSMutableDictionary alloc] init];
+    }
+    return _mcNameDataDic;
+}
+
+- (void)postSongNameDeviceID:(NSNumber *)deviceID channel:(NSInteger)channel count:(NSInteger)count index:(NSInteger)index encoding:(NSInteger)encoding data:(NSData *)data {
+    
+    
+    
+    NSMutableArray *ary = [self.mcNameDataDic objectForKey:deviceID];
+    if (!ary) {
+        ary = [[NSMutableArray alloc] init];
+        [ary addObject:@{@"channel":@(channel),@"count":@(count),@"index":@(index),@"encoding":@(encoding),@"data":data}];
+        [self.mcNameDataDic setObject:ary forKey:deviceID];
+    }else {
+        BOOL compliance = YES;
+        for (NSDictionary *dic in ary) {
+            if (channel != [dic[@"channel"] integerValue] || count != [dic[@"count"] integerValue] || index == [dic[@"index"] integerValue] || encoding != [dic[@"encoding"] integerValue]) {
+                compliance = NO;
+                break;
+            }
+        }
+        if (compliance) {
+            [ary addObject:@{@"channel":@(channel),@"count":@(count),@"index":@(index),@"encoding":@(encoding),@"data":data}];
+
+        }
+       
+    }
+    
+    if ([ary count] == count) {
+        NSMutableData *nameData = [[NSMutableData alloc] init];
+        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+        [ary sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+        for (NSDictionary *dic in ary) {
+            [nameData appendData:dic[@"data"]];
+        }
+        
+        NSInteger encoding = [ary[0][@"encoding"] integerValue];
+        NSString *name;
+        if (encoding == 0) {
+            NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+            name = [[NSString alloc] initWithData:nameData encoding:enc];
+            
+        }else if (encoding == 1) {
+            name = [[NSString alloc] initWithData:nameData encoding:NSUTF8StringEncoding];
+        }
+        DeviceModel *model = [self getDeviceModelByDeviceId:deviceID];
+        model.songName = name;
+        NSLog(@"~~> %@   %@",nameData, name);
+        [self.mcNameDataDic removeObjectForKey:deviceID];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshMCSongName" object:self userInfo:@{@"deviceId":deviceID,@"channel":@(channel)}];
+    }
+    
 }
 
 @end

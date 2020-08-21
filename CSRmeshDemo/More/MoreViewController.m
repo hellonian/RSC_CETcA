@@ -17,6 +17,7 @@
 #import "LanguageViewController.h"
 #import "HelpViewController.h"
 #import "LightSensorViewController.h"
+#import "OtherViewController.h"
 
 @interface MoreViewController ()<UISplitViewControllerDelegate,masterDelegate>
 
@@ -32,6 +33,7 @@
 @property (nonatomic,strong) LanguageViewController *languageVC;
 @property (nonatomic,strong) HelpViewController *helpVC;
 @property (nonatomic,strong) LightSensorViewController *LSVC;
+@property (nonatomic, strong) OtherViewController *otherVC;
 
 @end
 
@@ -60,6 +62,7 @@
     self.aboutVC = [[AboutViewController alloc] init];
     self.placesVC = [[PlacesViewController alloc] init];
     self.masterVC = [[MasterViewController alloc] init];
+    self.otherVC = [[OtherViewController alloc] init];
     self.languageVC = [[LanguageViewController alloc] init];
     self.helpVC = [[HelpViewController alloc] init];
     self.LSVC = [[LightSensorViewController alloc] init];
@@ -124,12 +127,15 @@
             [vcs addObject:self.updateVC];
             break;
         case 5:
-            [vcs addObject:self.languageVC];
+            [vcs addObject:self.otherVC];
             break;
         case 6:
-            [vcs addObject:self.helpVC];
+            [vcs addObject:self.languageVC];
             break;
         case 7:
+            [vcs addObject:self.helpVC];
+            break;
+        case 8:
             [vcs addObject:self.aboutVC];
             break;
         default:
@@ -157,12 +163,15 @@
             [self pushViewConrollerW:self.updateVC];
             break;
         case 5:
-            [self pushViewConrollerW:self.languageVC];
+            [self pushViewConrollerW:self.otherVC];
             break;
         case 6:
-            [self pushViewConrollerW:self.helpVC];
+            [self pushViewConrollerW:self.languageVC];
             break;
         case 7:
+            [self pushViewConrollerW:self.helpVC];
+            break;
+        case 8:
             [self pushViewConrollerW:self.aboutVC];
             break;
         default:

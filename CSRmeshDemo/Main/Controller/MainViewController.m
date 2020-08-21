@@ -47,6 +47,7 @@
 #import "SoundListenTool.h"
 #import "SelectModel.h"
 #import "SceneViewController.h"
+#import "MusicControllerVC.h"
 
 @interface MainViewController ()<MainCollectionViewDelegate,PlaceColorIconPickerViewDelegate,MBProgressHUDDelegate>
 {
@@ -329,7 +330,7 @@
         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sceneID" ascending:YES];
         [sceneMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
         for (SceneEntity *sceneEntity in sceneMutableArray) {
-            if ([sceneEntity.srDeviceId isEqualToNumber:@(-1)]) {
+            if ([sceneEntity.srDeviceId isEqualToNumber:@(-1)] || !sceneEntity.srDeviceId) {
                 [_sceneCollectionView.dataArray addObject:sceneEntity];
             }
         }
@@ -472,10 +473,6 @@
 
 - (void)presentToAddViewController {
     AddDevcieViewController *addVC = [[AddDevcieViewController alloc] init];
-//    __weak MainViewController *weakSelf = self;
-//    addVC.handle = ^{
-//        [weakSelf getMainDataArray];
-//    };
     CATransition *animation = [CATransition animation];
     [animation setDuration:0.3];
     [animation setType:kCATransitionMoveIn];
@@ -802,7 +799,8 @@
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
             
-        }else if ([CSRUtilities belongToSocket:deviceEntity.shortName]) {
+        }else if ([CSRUtilities belongToSocketOneChannel:deviceEntity.shortName]
+                  || [CSRUtilities belongToSocketTwoChannel:deviceEntity.shortName]) {
             SocketViewController *socketVC = [[SocketViewController alloc] init];
             socketVC.deviceId = mainCell.deviceId;
             __weak MainViewController *weakSelf = self;
@@ -843,6 +841,14 @@
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
+        }else if ([CSRUtilities belongToMusicController:deviceEntity.shortName]) {
+            MusicControllerVC *mcvc = [[MusicControllerVC alloc] init];
+            mcvc.deviceId = mainCell.deviceId;
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:mcvc];
+            nav.modalPresentationStyle = UIModalPresentationPopover;
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
         }else{
             DeviceViewController *dvc = [[DeviceViewController alloc] init];
             dvc.deviceId = mainCell.deviceId;
@@ -850,6 +856,7 @@
             dvc.reloadDataHandle = ^{
                 [weakSelf getMainDataArray];
             };
+            
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
             nav.modalPresentationStyle = UIModalPresentationPopover;
             [self presentViewController:nav animated:YES completion:nil];

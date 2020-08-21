@@ -212,6 +212,8 @@
                 self.scanVCHandle();
             }
             
+            [NSThread sleepForTimeInterval:3.0];
+            
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reGetDataForPlaceChanged" object:nil];
             
             [self.navigationController popViewControllerAnimated:YES];

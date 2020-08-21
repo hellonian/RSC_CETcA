@@ -320,6 +320,13 @@
             self.level2Label.hidden = NO;
             self.level3Label.hidden = NO;
             self.levelTextTopCon.constant = -14.0;
+        }else if ([CSRUtilities belongToMusicController:deviceEntity.shortName]) {
+            self.iconView.image = [UIImage imageNamed:@"room_bajiao"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
+            self.levelLabel.hidden = YES;
+            self.level2Label.hidden = YES;
+            self.level3Label.hidden = YES;
+            self.levelTextTopCon.constant = 0;
         }
         
         self.cellIndexPath = indexPath;
@@ -427,6 +434,13 @@
             self.level2Label.hidden = NO;
             self.level3Label.hidden = NO;
             self.levelTextTopCon.constant = -14.0;
+        }else if ([CSRUtilities belongToMusicController:device.deviceShortName]) {
+            self.iconView.image = [UIImage imageNamed:@"room_bajiao"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
+            self.levelLabel.hidden = NO;
+            self.level2Label.hidden = YES;
+            self.level3Label.hidden = YES;
+            self.levelTextTopCon.constant = 0;
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
@@ -525,6 +539,8 @@
             self.iconView.image = [UIImage imageNamed:@"Device_lcdremote"];
         }else if ([CSRUtilities belongToThreeChannelSwitch:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_switch3"];
+        }else if ([CSRUtilities belongToMusicController:appearanceShortname]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_bajiao"];
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
@@ -723,32 +739,6 @@
     }
     
 }
-
-    //- (void)adjustGroupCellBgcolorAndLevelLabel:(NSNumber *)deviceId {
-    //    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:deviceId];
-    //    
-    //    if ([model.powerState boolValue]) {
-    //        self.nameLabel.textColor = DARKORAGE;
-    //        self.levelLabel.textColor = DARKORAGE;
-    //        self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
-    //        if ([CSRUtilities belongToDimmer:model.shortName]
-    //            || [CSRUtilities belongToTwoChannelDimmer:model.shortName]
-    //            || [CSRUtilities belongToRGBDevice:model.shortName]
-    //            || [CSRUtilities belongToCWDevice:model.shortName]
-    //            || [CSRUtilities belongToRGBCWDevice:model.shortName]) {
-    //            if ([model.level floatValue]/255.0*100>0 && [model.level floatValue]/255.0*100 < 1.0) {
-    //                self.levelLabel.text = @"1%";
-    //            }else {
-    //                self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level integerValue]/255.0*100];
-    //            }
-    //        }
-    //    }else {
-    //        self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
-    //        self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
-    //        self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
-    //        self.levelLabel.text = @"0%";
-    //    }
-    //}
 
 - (void)setPowerStateSuccess:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;

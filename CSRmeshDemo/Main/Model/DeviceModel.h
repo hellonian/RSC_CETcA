@@ -37,6 +37,11 @@
 @property (nonatomic, assign) NSInteger channel3Level;
 @property (nonatomic, assign) NSInteger cDirection1;//1——正转（关） 2——正转停 3——反转（开） 0——反转（停）
 @property (nonatomic, assign) NSInteger cDirection2;
+@property (nonatomic, assign) NSInteger mcChannel;
+@property (nonatomic, assign) NSInteger mcCurrentChannel;
+@property (nonatomic, assign) NSInteger mcStatus;
+@property (nonatomic, assign) NSInteger mcVoice;
+@property (nonatomic, strong) NSString *songName;
 
 @end
 

@@ -46,6 +46,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
 @property (strong, nonatomic) IBOutlet UIView *nameView;
 @property (strong, nonatomic) IBOutlet UIView *sceneView1;
 @property (strong, nonatomic) IBOutlet UIView *sceneView2;
+@property (weak, nonatomic) IBOutlet UIImageView *mainRemoteBgImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *sceneRemoteBgImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *circleImageView;
 @property (weak, nonatomic) IBOutlet UIButton *remoteBtn11;
@@ -200,8 +201,8 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             _mType = MainRemoteType_CW;
             [self prepare1:deviceEntity];
             _circleImageView.image = [UIImage imageNamed:@"remotecirclecw"];
-            [_remoteBtn11 setImage:[UIImage imageNamed:@"remotebtn5_default"] forState:UIControlStateNormal];
-            [_remoteBtn11 setImage:[UIImage imageNamed:@"remotebtn5_highlighted"] forState:UIControlStateHighlighted];
+            [_remoteBtn11 setImage:[UIImage imageNamed:@"remotebtn16_default"] forState:UIControlStateNormal];
+            [_remoteBtn11 setImage:[UIImage imageNamed:@"remotebtn16_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn12 setImage:[UIImage imageNamed:@"remotebtn14_default"] forState:UIControlStateNormal];
             [_remoteBtn12 setImage:[UIImage imageNamed:@"remotebtn14_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn13 setImage:[UIImage imageNamed:@"remotebtn1_default"] forState:UIControlStateNormal];
@@ -444,7 +445,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             mod.deviceID = @(0);
             [_settingSelectMutArray insertObject:mod atIndex:i];
         }
-        deviceEntity.remoteBranch = @"0100000000020000000003000000000400000000";
+        deviceEntity.remoteBranch = @"0700000000080000000009000000000a00000000";
         [[CSRDatabaseManager sharedInstance] saveContext];
     }
     
@@ -478,6 +479,10 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         || [CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
         || [CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]) {
         _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotesceneeditbg"];
+    }else if ([CSRUtilities belongToRGBRemote:deviceEntity.shortName]
+              || [CSRUtilities belongToCWRemote:deviceEntity.shortName]
+              || [CSRUtilities belongToRGBCWRemote:deviceEntity.shortName]) {
+        _mainRemoteBgImageView.image = [UIImage imageNamed:@"remotemaineditbg"];
     }
 }
 
@@ -492,6 +497,10 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         || [CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
         || [CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]) {
         _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg"];
+    }else if ([CSRUtilities belongToRGBRemote:deviceEntity.shortName]
+              || [CSRUtilities belongToCWRemote:deviceEntity.shortName]
+              || [CSRUtilities belongToRGBCWRemote:deviceEntity.shortName]) {
+        _mainRemoteBgImageView.image = [UIImage imageNamed:@"remotemainbg"];
     }
 }
 
@@ -500,7 +509,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         if (sender.tag == 7 || sender.tag == 8 || sender.tag == 9 || sender.tag == 10) {
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
                     [alert.view setTintColor:DARKORAGE];
-                    UIAlertAction *device = [UIAlertAction actionWithTitle:@"Select Device" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    UIAlertAction *device = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Select", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                         [self selectDevice:sender];
                     }];
                     UIAlertAction *clear = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Clear", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
@@ -559,20 +568,36 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                         self.translucentBgView = nil;
                     }
                 } failure:^(NSError * _Nonnull error) {
-                    if (_activityIndicator) {
-                        [_activityIndicator stopAnimating];
-                        [_activityIndicator removeFromSuperview];
-                        _activityIndicator = nil;
-                        [self.translucentBgView removeFromSuperview];
-                        self.translucentBgView = nil;
-                    }
-                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"%@: %@",AcTECLocalizedStringFromTable(@"Error", @"Localizable"),AcTECLocalizedStringFromTable(@"notRespond", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
-                    [alert.view setTintColor:DARKORAGE];
-                    UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
-                    [alert addAction:cancel];
-                    [self presentViewController:alert animated:YES completion:nil];
+                    [[DataModelApi sharedInstance] sendData:_deviceId data:cmd success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                        NSString *br = [CSRUtilities hexStringForData:[data subdataWithRange:NSMakeRange(3, 3)]];
+                        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                        if ([deviceEntity.remoteBranch length] > 0) {
+                            deviceEntity.remoteBranch = [deviceEntity.remoteBranch stringByReplacingCharactersInRange:NSMakeRange(6*(keyNumber-1), 6) withString:br];
+                            [[CSRDatabaseManager sharedInstance] saveContext];
+                        }
+                        
+                        if (_activityIndicator) {
+                            [_activityIndicator stopAnimating];
+                            [_activityIndicator removeFromSuperview];
+                            _activityIndicator = nil;
+                            [self.translucentBgView removeFromSuperview];
+                            self.translucentBgView = nil;
+                        }
+                    } failure:^(NSError * _Nonnull error) {
+                        if (_activityIndicator) {
+                            [_activityIndicator stopAnimating];
+                            [_activityIndicator removeFromSuperview];
+                            _activityIndicator = nil;
+                            [self.translucentBgView removeFromSuperview];
+                            self.translucentBgView = nil;
+                        }
+                        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"%@: %@",AcTECLocalizedStringFromTable(@"Error", @"Localizable"),AcTECLocalizedStringFromTable(@"notRespond", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
+                        [alert.view setTintColor:DARKORAGE];
+                        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+                        [alert addAction:cancel];
+                        [self presentViewController:alert animated:YES completion:nil];
+                    }];
                 }];
-                
             };
             [self.navigationController pushViewController:svc animated:YES];
         }
@@ -672,30 +697,26 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                 [_activityIndicator autoCenterInSuperview];
                 [_activityIndicator startAnimating];
             }
-            
             SelectModel *mod = devices[0];
             [_settingSelectMutArray replaceObjectAtIndex:([mod.sourceID integerValue]-7) withObject:mod];
+
+            NSInteger channel = [mod.channel integerValue];
+            NSInteger c0 = (channel & 0xFF00) >> 8;
+            NSInteger c1 = channel & 0x00FF;
             
-            Byte b_index[] = {};
-            NSInteger i_index = [mod.channel integerValue];
-            b_index[0] = (Byte)((i_index & 0xFF00) >> 8);
-            b_index[1] = (Byte)(i_index & 0x00FF);
-            
-            Byte b_deviceId[] = {};
-            NSInteger i_deviceId = [mod.channel integerValue];
-            b_deviceId[0] = (Byte)((i_deviceId & 0xFF00) >> 8);
-            b_deviceId[1] = (Byte)(i_deviceId & 0x00FF);
-            
-            Byte byte[] = {0x9b, 0x06, 0x01, [mod.sourceID integerValue], b_index[1], b_index[0], b_deviceId[1], b_deviceId[0]};
+            NSInteger sDeviceId = [mod.deviceID integerValue];
+            NSInteger d0 = (sDeviceId & 0xFF00) >> 8;
+            NSInteger d1 = sDeviceId & 0x00FF;
+            Byte byte[] = {0x9b, 0x06, 0x01, [mod.sourceID integerValue], c1, c0, d1, d0};
             NSData *cmd = [[NSData alloc] initWithBytes:byte length:8];
             [[DataModelApi sharedInstance] sendData:_deviceId data:cmd success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
                 NSString *br = [CSRUtilities hexStringForData:[data subdataWithRange:NSMakeRange(3, 5)]];
                 CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
                 if ([deviceEntity.remoteBranch length] == 40) {
-                    deviceEntity.remoteBranch = [deviceEntity.remoteBranch stringByReplacingCharactersInRange:NSMakeRange(([mod.sourceID integerValue]-1)*5, 5) withString:br];
+                    deviceEntity.remoteBranch = [deviceEntity.remoteBranch stringByReplacingCharactersInRange:NSMakeRange(([mod.sourceID integerValue]-7)*10, 10) withString:br];
                     [[CSRDatabaseManager sharedInstance] saveContext];
                 }
-                
+
                 if (_activityIndicator) {
                     [_activityIndicator stopAnimating];
                     [_activityIndicator removeFromSuperview];
@@ -704,18 +725,37 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                     self.translucentBgView = nil;
                 }
             } failure:^(NSError * _Nonnull error) {
-                if (_activityIndicator) {
-                    [_activityIndicator stopAnimating];
-                    [_activityIndicator removeFromSuperview];
-                    _activityIndicator = nil;
-                    [self.translucentBgView removeFromSuperview];
-                    self.translucentBgView = nil;
-                }
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"%@: %@",AcTECLocalizedStringFromTable(@"Error", @"Localizable"),AcTECLocalizedStringFromTable(@"notRespond", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
-                [alert.view setTintColor:DARKORAGE];
-                UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
-                [alert addAction:cancel];
-                [self presentViewController:alert animated:YES completion:nil];
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [[DataModelApi sharedInstance] sendData:_deviceId data:cmd success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                        NSString *br = [CSRUtilities hexStringForData:[data subdataWithRange:NSMakeRange(3, 5)]];
+                        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                        if ([deviceEntity.remoteBranch length] == 40) {
+                            deviceEntity.remoteBranch = [deviceEntity.remoteBranch stringByReplacingCharactersInRange:NSMakeRange(([mod.sourceID integerValue]-1)*5, 5) withString:br];
+                            [[CSRDatabaseManager sharedInstance] saveContext];
+                        }
+
+                        if (_activityIndicator) {
+                            [_activityIndicator stopAnimating];
+                            [_activityIndicator removeFromSuperview];
+                            _activityIndicator = nil;
+                            [self.translucentBgView removeFromSuperview];
+                            self.translucentBgView = nil;
+                        }
+                    } failure:^(NSError * _Nonnull error) {
+                        if (_activityIndicator) {
+                            [_activityIndicator stopAnimating];
+                            [_activityIndicator removeFromSuperview];
+                            _activityIndicator = nil;
+                            [self.translucentBgView removeFromSuperview];
+                            self.translucentBgView = nil;
+                        }
+                        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"%@: %@",AcTECLocalizedStringFromTable(@"Error", @"Localizable"),AcTECLocalizedStringFromTable(@"notRespond", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
+                        [alert.view setTintColor:DARKORAGE];
+                        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+                        [alert addAction:cancel];
+                        [self presentViewController:alert animated:YES completion:nil];
+                    }];
+                });
             }];
         }
     }];
@@ -742,7 +782,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         NSString *br = [CSRUtilities hexStringForData:[data subdataWithRange:NSMakeRange(3, 5)]];
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
         if ([deviceEntity.remoteBranch length] == 40) {
-            deviceEntity.remoteBranch = [deviceEntity.remoteBranch stringByReplacingCharactersInRange:NSMakeRange(([mod.sourceID integerValue]-1)*10, 10) withString:br];
+            deviceEntity.remoteBranch = [deviceEntity.remoteBranch stringByReplacingCharactersInRange:NSMakeRange(([mod.sourceID integerValue]-7)*10, 10) withString:br];
             [[CSRDatabaseManager sharedInstance] saveContext];
         }
 
@@ -754,18 +794,37 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             self.translucentBgView = nil;
         }
     } failure:^(NSError * _Nonnull error) {
-        if (_activityIndicator) {
-            [_activityIndicator stopAnimating];
-            [_activityIndicator removeFromSuperview];
-            _activityIndicator = nil;
-            [self.translucentBgView removeFromSuperview];
-            self.translucentBgView = nil;
-        }
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"%@: %@",AcTECLocalizedStringFromTable(@"Error", @"Localizable"),AcTECLocalizedStringFromTable(@"notRespond", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
-        [alert.view setTintColor:DARKORAGE];
-        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
-        [alert addAction:cancel];
-        [self presentViewController:alert animated:YES completion:nil];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [[DataModelApi sharedInstance] sendData:_deviceId data:cmd success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                NSString *br = [CSRUtilities hexStringForData:[data subdataWithRange:NSMakeRange(3, 5)]];
+                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                if ([deviceEntity.remoteBranch length] == 40) {
+                    deviceEntity.remoteBranch = [deviceEntity.remoteBranch stringByReplacingCharactersInRange:NSMakeRange(([mod.sourceID integerValue]-1)*10, 10) withString:br];
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                }
+
+                if (_activityIndicator) {
+                    [_activityIndicator stopAnimating];
+                    [_activityIndicator removeFromSuperview];
+                    _activityIndicator = nil;
+                    [self.translucentBgView removeFromSuperview];
+                    self.translucentBgView = nil;
+                }
+            } failure:^(NSError * _Nonnull error) {
+                if (_activityIndicator) {
+                    [_activityIndicator stopAnimating];
+                    [_activityIndicator removeFromSuperview];
+                    _activityIndicator = nil;
+                    [self.translucentBgView removeFromSuperview];
+                    self.translucentBgView = nil;
+                }
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"%@: %@",AcTECLocalizedStringFromTable(@"Error", @"Localizable"),AcTECLocalizedStringFromTable(@"notRespond", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
+                [alert.view setTintColor:DARKORAGE];
+                UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+                [alert addAction:cancel];
+                [self presentViewController:alert animated:YES completion:nil];
+            }];
+        });
     }];
 }
 
@@ -848,7 +907,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
 - (void)checkeStopLongPressGesture:(NSString *)sw num:(int)i {
     i++;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if ([self.beganLongpressGestures containsObject:sw] && i<11) {
+        if ([self.beganLongpressGestures containsObject:sw] && i>10) {
             [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"b60512%@020000",sw]] success:nil failure:nil];
             [self checkeStopLongPressGesture:sw num:i];
         }

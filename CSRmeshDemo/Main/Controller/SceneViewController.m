@@ -81,6 +81,11 @@
             }
         }
     }else {
+        CSRDeviceEntity *d = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_srDeviceId];
+        if (d) {
+            self.navigationItem.title = [NSString stringWithFormat:@"%@ - %@ %ld",d.name,AcTECLocalizedStringFromTable(@"key", @"Localizable"),(long)_keyNumber];
+        }
+        
         _sceneIndex = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"SceneEntity_sceneIndex"];
         SceneEntity *scene = [NSEntityDescription insertNewObjectForEntityForName:@"SceneEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
         scene.rcIndex = _sceneIndex;
@@ -233,8 +238,14 @@
                 }else if ([CSRUtilities belongToOneChannelCurtainController:device.shortName]) {
                     [self createSceneMemberCurtain:device channel:1];
                 }else if ([CSRUtilities belongToTwoChannelCurtainController:device.shortName]) {
-                    [self createSceneMemberCurtain:device channel:1];
-                    [self createSceneMemberCurtain:device channel:2];
+                    if ([model.channel integerValue] == 2) {
+                        [self createSceneMemberCurtain:device channel:1];
+                    }else if ([model.channel integerValue] == 3) {
+                        [self createSceneMemberCurtain:device channel:2];
+                    }else if ([model.channel integerValue] == 4) {
+                        [self createSceneMemberCurtain:device channel:1];
+                        [self createSceneMemberCurtain:device channel:2];
+                    }
                 }else if ([CSRUtilities belongToFanController:device.shortName]) {
                     [self createSceneMemberFan:device];
                 }
@@ -390,11 +401,9 @@
     }else if (device.channel1PowerState) {
         m.eveType = @(25);
         m.eveD0 = @(device.channel1Level);
-        NSString *t = [CSRUtilities stringWithHexNumber:[device.colorTemperature integerValue]];
-        NSString *t1 = [t substringToIndex:2];
-        NSString *t2 = [t substringFromIndex:2];
-        m.eveD1 = @([CSRUtilities numberWithHexString:t1]);
-        m.eveD2 = @([CSRUtilities numberWithHexString:t2]);
+        NSInteger c = [device.colorTemperature integerValue];
+        m.eveD2 = @((c & 0xFF00) >> 8);
+        m.eveD1 = @(c & 0x00FF);
     }
     m.eveD3 = @0;
     SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
@@ -452,11 +461,9 @@
         }else if ([device.supports integerValue] == 1) {
             m.eveType = @(25);
             m.eveD0 = @(device.channel1Level);
-            NSString *t = [CSRUtilities stringWithHexNumber:[device.colorTemperature integerValue]];
-            NSString *t1 = [t substringToIndex:2];
-            NSString *t2 = [t substringFromIndex:2];
-            m.eveD1 = @([CSRUtilities numberWithHexString:t1]);
-            m.eveD2 = @([CSRUtilities numberWithHexString:t2]);
+            NSInteger c = [device.colorTemperature integerValue];
+            m.eveD2 = @((c & 0xFF00) >> 8);
+            m.eveD1 = @(c & 0x00FF);
             m.eveD3 = @0;
         }
     }

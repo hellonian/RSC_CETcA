@@ -948,6 +948,7 @@
                 sceneObj.iconID = sceneDict[@"`c_resIndex`"];
                 sceneObj.sceneName = sceneDict[@"`c_name`"];
                 sceneObj.rcIndex = sceneDict[@"`c_csrsceneid`"];
+                sceneObj.srDeviceId = @(-1);
                 sceneObj.enumMethod = @(NO);
                 
                 NSMutableArray *members = [NSMutableArray new];

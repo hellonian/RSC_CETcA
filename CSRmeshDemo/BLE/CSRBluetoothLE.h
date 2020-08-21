@@ -80,4 +80,6 @@
 - (BOOL)listenFor:(NSString *)service_uuid
    characteristic:(NSString *)charactaristic_uuid;
 
+@property(nonatomic, assign) BOOL isNearbyFunction;
+
 @end

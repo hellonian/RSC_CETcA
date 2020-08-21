@@ -34,6 +34,8 @@
 #define ACTUATOR    @"ACTUATOR"
 
 #define AppLanguageSwitchKey @"App_Language_Switch_Key"
+#define FadeTimeSwitch @"Fade_Time_Switch_Key"
+#define FadeTimeDimming @"Fade_Time_Dimming_Key"
 
 #define AcTECLocalizedStringFromTable(key, tableName) \
 [[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:[[NSUserDefaults standardUserDefaults] objectForKey:AppLanguageSwitchKey] ofType:@"lproj"]] localizedStringForKey:key value:nil table:tableName]

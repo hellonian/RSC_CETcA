@@ -183,7 +183,20 @@
             [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             
             for (CSRDeviceEntity *device in mutableArray) {
-                if (([kDimmers containsObject:device.shortName] || [kSwitchs containsObject:device.shortName] || [kCWDevices containsObject:device.shortName] || [kRGBDevices containsObject:device.shortName] || [kRGBCWDevices containsObject:device.shortName] || [kOneChannelCurtainController containsObject:device.shortName] || [kTwoChannelCurtainController containsObject:device.shortName] || [kFanController containsObject:device.shortName] || [kSockets containsObject:device.shortName] || [kTwoChannelDimmers containsObject:device.shortName] || [kTwoChannelSwitchs containsObject:device.shortName] || [kThreeChannelSwitchs containsObject:device.shortName]) && ![deviceIds containsObject:device.deviceId]) {
+                if (([kDimmers containsObject:device.shortName]
+                     || [kSwitchs containsObject:device.shortName]
+                     || [kCWDevices containsObject:device.shortName]
+                     || [kRGBDevices containsObject:device.shortName]
+                     || [kRGBCWDevices containsObject:device.shortName]
+                     || [kOneChannelCurtainController containsObject:device.shortName]
+                     || [kTwoChannelCurtainController containsObject:device.shortName]
+                     || [kFanController containsObject:device.shortName]
+                     || [kSocketsOneChannel containsObject:device.shortName]
+                     || [kSocketsTwoChannel containsObject:device.shortName]
+                     || [kTwoChannelDimmers containsObject:device.shortName]
+                     || [kTwoChannelSwitchs containsObject:device.shortName]
+                     || [kThreeChannelSwitchs containsObject:device.shortName])
+                    && ![deviceIds containsObject:device.deviceId]) {
                     SingleDeviceModel *model = [[SingleDeviceModel alloc] init];
                     model.deviceId = device.deviceId;
                     model.deviceName = device.name;
@@ -606,7 +619,19 @@
             [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             
             for (CSRDeviceEntity *device in mutableArray) {
-                if ([kDimmers containsObject:device.shortName] || [kSwitchs containsObject:device.shortName] || [kCWDevices containsObject:device.shortName] || [kRGBDevices containsObject:device.shortName] || [kRGBCWDevices containsObject:device.shortName] || [kOneChannelCurtainController containsObject:device.shortName] || [kTwoChannelCurtainController containsObject:device.shortName] || [kFanController containsObject:device.shortName] || [kSockets containsObject:device.shortName] || [kTwoChannelDimmers containsObject:device.shortName] || [kTwoChannelSwitchs containsObject:device.shortName] || [kThreeChannelSwitchs containsObject:device.shortName]) {
+                if ([kDimmers containsObject:device.shortName]
+                    || [kSwitchs containsObject:device.shortName]
+                    || [kCWDevices containsObject:device.shortName]
+                    || [kRGBDevices containsObject:device.shortName]
+                    || [kRGBCWDevices containsObject:device.shortName]
+                    || [kOneChannelCurtainController containsObject:device.shortName]
+                    || [kTwoChannelCurtainController containsObject:device.shortName]
+                    || [kFanController containsObject:device.shortName]
+                    || [kSocketsOneChannel containsObject:device.shortName]
+                    || [kSocketsTwoChannel containsObject:device.shortName]
+                    || [kTwoChannelDimmers containsObject:device.shortName]
+                    || [kTwoChannelSwitchs containsObject:device.shortName]
+                    || [kThreeChannelSwitchs containsObject:device.shortName]) {
                     
                     BOOL exist = NO;
                     for (SceneMemberEntity *m in self.originalMembers) {
@@ -621,6 +646,7 @@
                         model.deviceId = device.deviceId;
                         model.deviceName = device.name;
                         model.deviceShortName = device.shortName;
+                        model.curtainDirection = device.remoteBranch;
                         model.isForList = YES;
                         if ([_originalMembers count]>0) {
                             __block BOOL exist = NO;
@@ -653,7 +679,19 @@
             [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             
             for (CSRDeviceEntity *device in mutableArray) {
-                if ([kDimmers containsObject:device.shortName] || [kSwitchs containsObject:device.shortName] || [kCWDevices containsObject:device.shortName] || [kRGBDevices containsObject:device.shortName] || [kRGBCWDevices containsObject:device.shortName] || [kOneChannelCurtainController containsObject:device.shortName] || [kTwoChannelCurtainController containsObject:device.shortName] || [kFanController containsObject:device.shortName] || [kSockets containsObject:device.shortName] || [kTwoChannelDimmers containsObject:device.shortName] || [kTwoChannelSwitchs containsObject:device.shortName] || [kThreeChannelSwitchs containsObject:device.shortName]) {
+                if ([kDimmers containsObject:device.shortName]
+                    || [kSwitchs containsObject:device.shortName]
+                    || [kCWDevices containsObject:device.shortName]
+                    || [kRGBDevices containsObject:device.shortName]
+                    || [kRGBCWDevices containsObject:device.shortName]
+                    || [kOneChannelCurtainController containsObject:device.shortName]
+                    || [kTwoChannelCurtainController containsObject:device.shortName]
+                    || [kFanController containsObject:device.shortName]
+                    || [kSocketsOneChannel containsObject:device.shortName]
+                    || [kSocketsTwoChannel containsObject:device.shortName]
+                    || [kTwoChannelDimmers containsObject:device.shortName]
+                    || [kTwoChannelSwitchs containsObject:device.shortName]
+                    || [kThreeChannelSwitchs containsObject:device.shortName]) {
                     SingleDeviceModel *model = [[SingleDeviceModel alloc] init];
                     model.deviceId = device.deviceId;
                     model.deviceName = device.name;
@@ -817,7 +855,7 @@
                                 }
                             }
                             for (SelectModel *mod in _selectedDevices) {
-                                if ([mod.deviceID isEqualToNumber:eCell.groupId]) {
+                                if ([mod.deviceID isEqualToNumber:eCell.groupId] || [mod.deviceID isEqualToNumber:eCell.deviceId]) {
                                     [_selectedDevices removeObject:mod];
                                     break;
                                 }
@@ -836,7 +874,7 @@
                                 }
                             }
                             for (SelectModel *mod in _selectedDevices) {
-                                if ([mod.deviceID isEqualToNumber:eCell.deviceId]) {
+                                if ([mod.deviceID isEqualToNumber:eCell.deviceId] || [mod.deviceID isEqualToNumber:eCell.groupId]) {
                                     [_selectedDevices removeObject:mod];
                                     break;
                                 }
@@ -1012,7 +1050,8 @@
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
             
-        }else if ([CSRUtilities belongToSocket:deviceEntity.shortName]) {
+        }else if ([CSRUtilities belongToSocketOneChannel:deviceEntity.shortName]
+                  || [CSRUtilities belongToSocketTwoChannel:deviceEntity.shortName]) {
             SocketViewController *socketVC = [[SocketViewController alloc] init];
             socketVC.deviceId = mainCell.deviceId;
             socketVC.reloadDataHandle = ^{
@@ -1412,5 +1451,73 @@
     return _twoChannelSelectedView;
 }
 
+- (UIView *)curtainKindView {
+    if (!_curtainKindView) {
+        _curtainKindView = [[UIView alloc] initWithFrame:CGRectZero];
+        _curtainKindView.backgroundColor = [UIColor whiteColor];
+        _curtainKindView.alpha = 0.9;
+        _curtainKindView.layer.cornerRadius = 14;
+        _curtainKindView.layer.masksToBounds = YES;
+
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 271, 30)];
+        titleLabel.text = AcTECLocalizedStringFromTable(@"ChooseTypeOfCurtain", @"Localizable");
+        titleLabel.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+        titleLabel.textAlignment = NSTextAlignmentCenter;
+        [_curtainKindView addSubview:titleLabel];
+
+        UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 30, 271, 1)];
+        line.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+        [_curtainKindView addSubview:line];
+
+        UIButton *horizontalBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 31, 135, 135)];
+        [horizontalBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
+        [_curtainKindView addSubview:horizontalBtn];
+
+        UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(135, 31, 1, 135)];
+        line1.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+        [_curtainKindView addSubview:line1];
+
+        UIButton *verticalBtn = [[UIButton alloc] initWithFrame:CGRectMake(136, 31, 135, 135)];
+        [verticalBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
+        [_curtainKindView addSubview:verticalBtn];
+        
+        CSRDeviceEntity *selectedCurtainDeviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_selectedCurtainDeviceId];
+
+        if ([CSRUtilities belongToOneChannelCurtainController:selectedCurtainDeviceEntity.shortName]) {
+            horizontalBtn.tag = 11;
+            [horizontalBtn setImage:[UIImage imageNamed:@"curtainHImage"] forState:UIControlStateNormal];
+            verticalBtn.tag = 22;
+            [verticalBtn setImage:[UIImage imageNamed:@"curtainVImage"] forState:UIControlStateNormal];
+        }else if ([CSRUtilities belongToTwoChannelCurtainController:selectedCurtainDeviceEntity.shortName]) {
+            horizontalBtn.tag = 33;
+            [horizontalBtn setImage:[UIImage imageNamed:@"curtainHHImage"] forState:UIControlStateNormal];
+            verticalBtn.tag = 44;
+            [verticalBtn setImage:[UIImage imageNamed:@"curtainVVImage"] forState:UIControlStateNormal];
+        }
+    }
+    return _curtainKindView;
+}
+
+- (void)selectTypeOfCurtain:(UIButton *)sender {
+    CSRDeviceEntity *selectedCurtainDeviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_selectedCurtainDeviceId];
+    if (sender.tag == 11) {
+        selectedCurtainDeviceEntity.remoteBranch = @"ch";
+    }else if (sender.tag == 22) {
+        selectedCurtainDeviceEntity.remoteBranch = @"cv";
+    }else if (sender.tag == 33) {
+        selectedCurtainDeviceEntity.remoteBranch = @"chh";
+    }else if (sender.tag == 44) {
+        selectedCurtainDeviceEntity.remoteBranch = @"cvv";
+    }
+    [[CSRDatabaseManager sharedInstance] saveContext];
+    
+    [self loadData];
+    [_devicesCollectionView reloadData];
+    
+    [self.curtainKindView removeFromSuperview];
+    self.curtainKindView = nil;
+    [self.translucentBgView removeFromSuperview];
+    self.translucentBgView = nil;
+}
 
 @end

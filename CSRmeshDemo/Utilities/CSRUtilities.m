@@ -1141,7 +1141,29 @@
 }
 
 + (BOOL)belongToMainVCDevice: (NSString *)shortName {
-    if ([kDimmers containsObject:shortName] || [kSwitchs containsObject:shortName] || [kCWDevices containsObject:shortName] || [kRGBDevices containsObject:shortName] || [kRGBCWDevices containsObject:shortName] || [kOneChannelCurtainController containsObject:shortName] || [kTwoChannelCurtainController containsObject:shortName] || [kFanController containsObject:shortName] || [kSockets containsObject:shortName] || [kTwoChannelDimmers containsObject:shortName] || [kTwoChannelSwitchs containsObject:shortName] || [kCWRemotes containsObject:shortName] || [kRGBRemotes containsObject:shortName] || [kRGBCWRemotes containsObject:shortName] || [kSceneRemotesSixKeys containsObject:shortName] || [kSceneRemotesFourKeys containsObject:shortName] || [kSceneRemotesThreeKeys containsObject:shortName] || [kSceneRemotesTwoKeys containsObject:shortName] || [kSceneRemotesOneKey containsObject:shortName] || [kLCDRemote containsObject:shortName] || [kThreeChannelSwitchs containsObject:shortName]) {
+    if ([kDimmers containsObject:shortName]
+        || [kSwitchs containsObject:shortName]
+        || [kCWDevices containsObject:shortName]
+        || [kRGBDevices containsObject:shortName]
+        || [kRGBCWDevices containsObject:shortName]
+        || [kOneChannelCurtainController containsObject:shortName]
+        || [kTwoChannelCurtainController containsObject:shortName]
+        || [kFanController containsObject:shortName]
+        || [kSocketsOneChannel containsObject:shortName]
+        || [kSocketsTwoChannel containsObject:shortName]
+        || [kTwoChannelDimmers containsObject:shortName]
+        || [kTwoChannelSwitchs containsObject:shortName]
+        || [kCWRemotes containsObject:shortName]
+        || [kRGBRemotes containsObject:shortName]
+        || [kRGBCWRemotes containsObject:shortName]
+        || [kSceneRemotesSixKeys containsObject:shortName]
+        || [kSceneRemotesFourKeys containsObject:shortName]
+        || [kSceneRemotesThreeKeys containsObject:shortName]
+        || [kSceneRemotesTwoKeys containsObject:shortName]
+        || [kSceneRemotesOneKey containsObject:shortName]
+        || [kLCDRemote containsObject:shortName]
+        || [kThreeChannelSwitchs containsObject:shortName]
+        || [kMusicController containsObject:shortName]) {
         return YES;
     }
     return NO;
@@ -1191,13 +1213,6 @@
 
 + (BOOL)belongToFanController:(NSString *)shortName {
     if ([kFanController containsObject:shortName]) {
-        return YES;
-    }
-    return NO;
-}
-
-+ (BOOL)belongToSocket:(NSString *)shortName {
-    if ([kSockets containsObject:shortName]) {
         return YES;
     }
     return NO;
@@ -1330,6 +1345,20 @@
 
 + (BOOL)belongToFadeDevice:(NSString *)shortName {
     if ([kFadeDevice containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToNearbyFunctionDevice:(NSString *)shortName {
+    if ([kNearbyFunctionDevices containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToMusicController:(NSString *)shortName {
+    if ([kMusicController containsObject:shortName]) {
         return YES;
     }
     return NO;

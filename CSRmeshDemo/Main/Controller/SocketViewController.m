@@ -130,7 +130,7 @@
             [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:@"ea4801"] success:nil failure:nil];
         }
         
-        [self changeUI:_deviceId channel:3];
+        [self changeUI:_deviceId channel:1];
         if ([curtainEntity.hwVersion integerValue]==2) {
             NSMutableString *mutStr = [NSMutableString stringWithString:curtainEntity.shortName];
             NSRange range = {0,curtainEntity.shortName.length};
@@ -299,76 +299,83 @@
     if (deviceModel) {
         
         if (channel == 2) {
-            [_channel1Switch setOn:deviceModel.channel1PowerState];
-            if (deviceModel.channel1PowerState && !deviceModel.childrenState1) {
-                [_childSwitch1 setEnabled:NO];
-                _child1Btn.hidden = NO;
-            }else {
-                [_childSwitch1 setEnabled:YES];
-                _child1Btn.hidden = YES;
-            }
             
+            [_channel1Switch setOn:deviceModel.channel1PowerState];
             [_childSwitch1 setOn:deviceModel.childrenState1];
-            if (deviceModel.childrenState1) {
+            if (deviceModel.channel1PowerState && !deviceModel.childrenState1) {
+                [_channel1Switch setEnabled:YES];
+                [_socket1Btn setHidden:YES];
+                [_childSwitch1 setEnabled:NO];
+                [_child1Btn setHidden:NO];
+            }else if (!deviceModel.channel1PowerState && deviceModel.childrenState1) {
                 [_channel1Switch setEnabled:NO];
-                _socket1Btn.hidden = NO;
+                [_socket1Btn setHidden:NO];
+                [_childSwitch1 setEnabled:YES];
+                [_child1Btn setHidden:YES];
             }else {
                 [_channel1Switch setEnabled:YES];
-                _socket1Btn.hidden = YES;
-            }
-        }else if (channel == 3) {
-            [_channel2Switch setOn:deviceModel.channel2PowerState];
-            if (deviceModel.channel2PowerState && !deviceModel.childrenState2) {
-                [_childSwitch2 setEnabled:NO];
-                _child2Btn.hidden = NO;
-            }else {
-                [_childSwitch2 setEnabled:YES];
-                _child2Btn.hidden = YES;
+                [_socket1Btn setHidden:YES];
+                [_childSwitch1 setEnabled:YES];
+                [_child1Btn setHidden:YES];
             }
             
+        }else if (channel == 3) {
+            
+            [_channel2Switch setOn:deviceModel.channel2PowerState];
             [_childSwitch2 setOn:deviceModel.childrenState2];
-            if (deviceModel.childrenState2) {
+            if (deviceModel.channel2PowerState && !deviceModel.childrenState2) {
+                [_channel2Switch setEnabled:YES];
+                [_socket2Btn setHidden:YES];
+                [_childSwitch2 setEnabled:NO];
+                [_child2Btn setHidden:NO];
+            }else if (!deviceModel.channel2PowerState && deviceModel.childrenState2) {
                 [_channel2Switch setEnabled:NO];
-                _socket2Btn.hidden = NO;
+                [_socket2Btn setHidden:NO];
+                [_childSwitch2 setEnabled:YES];
+                [_child2Btn setHidden:YES];
             }else {
                 [_channel2Switch setEnabled:YES];
-                _socket2Btn.hidden = YES;
+                [_socket2Btn setHidden:YES];
+                [_childSwitch2 setEnabled:YES];
+                [_child2Btn setHidden:YES];
             }
+            
         }else if (channel == 1 || channel == 4) {
             [_channel1Switch setOn:deviceModel.channel1PowerState];
-            if (deviceModel.channel1PowerState && !deviceModel.childrenState1) {
-                [_childSwitch1 setEnabled:NO];
-                _child1Btn.hidden = NO;
-            }else {
-                [_childSwitch1 setEnabled:YES];
-                _child1Btn.hidden = YES;
-            }
-            
-            [_channel2Switch setOn:deviceModel.channel2PowerState];
-            if (deviceModel.channel2PowerState && !deviceModel.childrenState2) {
-                [_childSwitch2 setEnabled:NO];
-                _child2Btn.hidden = NO;
-            }else {
-                [_childSwitch2 setEnabled:YES];
-                _child2Btn.hidden = YES;
-            }
-            
             [_childSwitch1 setOn:deviceModel.childrenState1];
-            if (deviceModel.childrenState1) {
+            if (deviceModel.channel1PowerState && !deviceModel.childrenState1) {
+                [_channel1Switch setEnabled:YES];
+                [_socket1Btn setHidden:YES];
+                [_childSwitch1 setEnabled:NO];
+                [_child1Btn setHidden:NO];
+            }else if (!deviceModel.channel1PowerState && deviceModel.childrenState1) {
                 [_channel1Switch setEnabled:NO];
-                _socket1Btn.hidden = NO;
+                [_socket1Btn setHidden:NO];
+                [_childSwitch1 setEnabled:YES];
+                [_child1Btn setHidden:YES];
             }else {
                 [_channel1Switch setEnabled:YES];
-                _socket1Btn.hidden = YES;
+                [_socket1Btn setHidden:YES];
+                [_childSwitch1 setEnabled:YES];
+                [_child1Btn setHidden:YES];
             }
-            
+            [_channel2Switch setOn:deviceModel.channel2PowerState];
             [_childSwitch2 setOn:deviceModel.childrenState2];
-            if (deviceModel.childrenState2) {
+            if (deviceModel.channel2PowerState && !deviceModel.childrenState2) {
+                [_channel2Switch setEnabled:YES];
+                [_socket2Btn setHidden:YES];
+                [_childSwitch2 setEnabled:NO];
+                [_child2Btn setHidden:NO];
+            }else if (!deviceModel.channel2PowerState && deviceModel.childrenState2) {
                 [_channel2Switch setEnabled:NO];
-                _socket2Btn.hidden = NO;
+                [_socket2Btn setHidden:NO];
+                [_childSwitch2 setEnabled:YES];
+                [_child2Btn setHidden:YES];
             }else {
                 [_channel2Switch setEnabled:YES];
-                _socket2Btn.hidden = YES;
+                [_socket2Btn setHidden:YES];
+                [_childSwitch2 setEnabled:YES];
+                [_child2Btn setHidden:YES];
             }
         }
     }
