@@ -152,6 +152,8 @@
 		2EC3893F204939CE004D822D /* TimerDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC3893D204939CE004D822D /* TimerDetailViewController.m */; };
 		2EC3FB7A223B4EFA0050A5DD /* DiscoveryTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC3FB79223B4EFA0050A5DD /* DiscoveryTableViewController.m */; };
 		2EC3FB7D223B85D20050A5DD /* OTAU.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC3FB7C223B85D20050A5DD /* OTAU.m */; };
+		2EC4D19324F790380053C261 /* RippleAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC4D19224F790380053C261 /* RippleAnimationView.m */; };
+		2EC4D19624F7AC770053C261 /* MusicAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC4D19524F7AC770053C261 /* MusicAnimationView.m */; };
 		2EC73CF62124197700850882 /* ColorSquare.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC73CF52124197700850882 /* ColorSquare.m */; };
 		2EC7D0DE21E6F549007F44C1 /* PowerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC7D0DD21E6F549007F44C1 /* PowerModel.m */; };
 		2EC8BB3421460F0E002ED85F /* MusicPlayTools.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2EC8BB3221460F0D002ED85F /* MusicPlayTools.mm */; };
@@ -190,7 +192,7 @@
 		2EF718331FFB2C0600901918 /* GalleryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF718311FFB2C0600901918 /* GalleryViewController.m */; };
 		2EF718751FFB6C4D00901918 /* GalleryDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF718741FFB6C4D00901918 /* GalleryDetailViewController.m */; };
 		9673B7D71D770C2000082385 /* CSRmesh.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968AF2421D7709910010904A /* CSRmesh.framework */; };
-		9B11A63178E224E88A4362DC /* libPods-CSRmeshDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC0A5B6099ED05FF9599ED2D /* libPods-CSRmeshDemo.a */; };
+		9B11A63178E224E88A4362DC /* libPods-AcTECBLE.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC0A5B6099ED05FF9599ED2D /* libPods-AcTECBLE.a */; };
 		CD94058E1D91598F00492624 /* CSRmeshRestClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD94058D1D91598F00492624 /* CSRmeshRestClient.framework */; };
 		CE04468D1C47E36F00263F15 /* CSRPeripheral.m in Sources */ = {isa = PBXBuildFile; fileRef = CE04468C1C47E36F00263F15 /* CSRPeripheral.m */; };
 		CE88141E1BB4212800AE4D3C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D6E44F31B3C4059000A44DD /* QuartzCore.framework */; };
@@ -251,7 +253,7 @@
 		0D835B931B975E8800FF4376 /* CSRAreaEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CSRAreaEntity.m; path = "Model Classes/CSRAreaEntity.m"; sourceTree = "<group>"; };
 		0D9CF7E21B55390E00451332 /* CSRAppStateManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = CSRAppStateManager.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		0D9CF7E31B55390E00451332 /* CSRAppStateManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CSRAppStateManager.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		0DE95D021B297FFB006D0397 /* CSRmeshDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CSRmeshDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0DE95D021B297FFB006D0397 /* AcTECBLE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AcTECBLE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DE95D071B297FFB006D0397 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = main.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		0DE95D091B297FFB006D0397 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = AppDelegate.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		0DE95D0A1B297FFB006D0397 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -630,6 +632,10 @@
 		2EC4206022179F2D00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/TimerDetailViewController.strings; sourceTree = "<group>"; };
 		2EC4206222179F2D00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2EC4206322179F2D00E1717F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2EC4D19124F790380053C261 /* RippleAnimationView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RippleAnimationView.h; sourceTree = "<group>"; };
+		2EC4D19224F790380053C261 /* RippleAnimationView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RippleAnimationView.m; sourceTree = "<group>"; };
+		2EC4D19424F7AC770053C261 /* MusicAnimationView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MusicAnimationView.h; sourceTree = "<group>"; };
+		2EC4D19524F7AC770053C261 /* MusicAnimationView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicAnimationView.m; sourceTree = "<group>"; };
 		2EC6682822A4B60800FECC2A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LightSensorSettingViewController.strings"; sourceTree = "<group>"; };
 		2EC6682A22A4B69C00FECC2A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/LightSensorSettingViewController.strings; sourceTree = "<group>"; };
 		2EC6682C22A4B6B500FECC2A /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LightSensorSettingViewController.strings; sourceTree = "<group>"; };
@@ -684,7 +690,7 @@
 		2EE757D52010B23100FB75C5 /* SceneCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SceneCollectionViewCell.xib; sourceTree = "<group>"; };
 		2EE95A811FAB0F9700E1F945 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		2EE95A821FAB0F9700E1F945 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		2EE98D9421B0D4D900FAC3AF /* CSRmeshDemo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CSRmeshDemo.entitlements; sourceTree = "<group>"; };
+		2EE98D9421B0D4D900FAC3AF /* AcTECBLE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AcTECBLE.entitlements; sourceTree = "<group>"; };
 		2EE98D9521B0DD5000FAC3AF /* ScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScanViewController.m; sourceTree = "<group>"; };
 		2EE98D9621B0DD5000FAC3AF /* ScanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScanViewController.h; sourceTree = "<group>"; };
 		2EEA42792151FFF70050B729 /* CustomizeProgressHud.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CustomizeProgressHud.h; sourceTree = "<group>"; };
@@ -714,14 +720,14 @@
 		2EF718311FFB2C0600901918 /* GalleryViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GalleryViewController.m; sourceTree = "<group>"; };
 		2EF718731FFB6C4D00901918 /* GalleryDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GalleryDetailViewController.h; sourceTree = "<group>"; };
 		2EF718741FFB6C4D00901918 /* GalleryDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GalleryDetailViewController.m; sourceTree = "<group>"; };
-		39523700A53C1F8D1887BAE1 /* Pods-CSRmeshDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CSRmeshDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-CSRmeshDemo/Pods-CSRmeshDemo.release.xcconfig"; sourceTree = "<group>"; };
+		39523700A53C1F8D1887BAE1 /* Pods-AcTECBLE.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AcTECBLE.release.xcconfig"; path = "Pods/Target Support Files/Pods-AcTECBLE/Pods-AcTECBLE.release.xcconfig"; sourceTree = "<group>"; };
 		968AF2421D7709910010904A /* CSRmesh.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CSRmesh.framework; sourceTree = "<group>"; };
 		CD94058D1D91598F00492624 /* CSRmeshRestClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CSRmeshRestClient.framework; sourceTree = "<group>"; };
 		CE04468B1C47E36F00263F15 /* CSRPeripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRPeripheral.h; sourceTree = "<group>"; };
 		CE04468C1C47E36F00263F15 /* CSRPeripheral.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSRPeripheral.m; sourceTree = "<group>"; };
 		CE0E69F21B4D68FE000CF461 /* CSRParseAndLoad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = CSRParseAndLoad.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		CE0E69F31B4D68FE000CF461 /* CSRParseAndLoad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CSRParseAndLoad.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		CE31FDA51BAAB2E100CA4772 /* CSRmeshDemoUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CSRmeshDemoUITests.m; sourceTree = "<group>"; };
+		CE31FDA51BAAB2E100CA4772 /* AcTECBLEUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AcTECBLEUITests.m; sourceTree = "<group>"; };
 		CE31FDA71BAAB2E100CA4772 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CE76AE111B9D897800C0B687 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CE80334D1B39997100A7E3F0 /* CSRDevicesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRDevicesManager.h; sourceTree = "<group>"; };
@@ -739,12 +745,12 @@
 		CE96B5271B57ACC3009BAF5A /* CSRConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = CSRConstants.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		CE96B52A1B57AE98009BAF5A /* CSRUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = CSRUtilities.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		CE96B52B1B57AE98009BAF5A /* CSRUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CSRUtilities.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		CEADA8F21B3AF22E00D18D56 /* CSRmeshDemo.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRmeshDemo.pch; sourceTree = "<group>"; };
+		CEADA8F21B3AF22E00D18D56 /* AcTECBLE.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AcTECBLE.pch; sourceTree = "<group>"; };
 		CED2FE4C1BF25CF4004957C8 /* CSRmeshStyleKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRmeshStyleKit.h; sourceTree = "<group>"; };
 		CED2FE4D1BF25CF4004957C8 /* CSRmeshStyleKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSRmeshStyleKit.m; sourceTree = "<group>"; };
 		CEE5E7391B398ABB0039F83C /* CSRmesh.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CSRmesh.xcdatamodel; sourceTree = "<group>"; };
-		E20A37FC4B94EE53E94DDF92 /* Pods-CSRmeshDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CSRmeshDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CSRmeshDemo/Pods-CSRmeshDemo.debug.xcconfig"; sourceTree = "<group>"; };
-		EC0A5B6099ED05FF9599ED2D /* libPods-CSRmeshDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CSRmeshDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E20A37FC4B94EE53E94DDF92 /* Pods-AcTECBLE.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AcTECBLE.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AcTECBLE/Pods-AcTECBLE.debug.xcconfig"; sourceTree = "<group>"; };
+		EC0A5B6099ED05FF9599ED2D /* libPods-AcTECBLE.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AcTECBLE.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F43D7A5B1D004225009ADD96 /* CSRGatewayEntity+CoreDataProperties.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CSRGatewayEntity+CoreDataProperties.m"; path = "Model Classes/CSRGatewayEntity+CoreDataProperties.m"; sourceTree = "<group>"; };
 		F45350881CD8B043002D91AB /* SensorActuatorTypes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SensorActuatorTypes.json; sourceTree = "<group>"; };
 		F45744DA1CC905AC000A0B7A /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
@@ -790,7 +796,7 @@
 				0D6E44FF1B3C4059000A44DD /* UIKit.framework in Frameworks */,
 				F45744DB1CC905AC000A0B7A /* libz.tbd in Frameworks */,
 				9673B7D71D770C2000082385 /* CSRmesh.framework in Frameworks */,
-				9B11A63178E224E88A4362DC /* libPods-CSRmeshDemo.a in Frameworks */,
+				9B11A63178E224E88A4362DC /* libPods-AcTECBLE.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -815,7 +821,7 @@
 				0D6E45011B3C407A000A44DD /* QuickLook.framework */,
 				0D6E44F41B3C4059000A44DD /* SystemConfiguration.framework */,
 				0D6E44F51B3C4059000A44DD /* UIKit.framework */,
-				EC0A5B6099ED05FF9599ED2D /* libPods-CSRmeshDemo.a */,
+				EC0A5B6099ED05FF9599ED2D /* libPods-AcTECBLE.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -861,8 +867,8 @@
 		0DE95CF91B297FFB006D0397 = {
 			isa = PBXGroup;
 			children = (
-				0DE95D041B297FFB006D0397 /* CSRmeshDemo */,
-				CE31FDA41BAAB2E100CA4772 /* CSRmeshDemoUITests */,
+				0DE95D041B297FFB006D0397 /* AcTECBLE */,
+				CE31FDA41BAAB2E100CA4772 /* AcTECBLEUITests */,
 				0DE95D031B297FFB006D0397 /* Products */,
 				0052561DD4191E4895D97D40 /* Frameworks */,
 				CD94058D1D91598F00492624 /* CSRmeshRestClient.framework */,
@@ -873,15 +879,15 @@
 		0DE95D031B297FFB006D0397 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0DE95D021B297FFB006D0397 /* CSRmeshDemo.app */,
+				0DE95D021B297FFB006D0397 /* AcTECBLE.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		0DE95D041B297FFB006D0397 /* CSRmeshDemo */ = {
+		0DE95D041B297FFB006D0397 /* AcTECBLE */ = {
 			isa = PBXGroup;
 			children = (
-				2EE98D9421B0D4D900FAC3AF /* CSRmeshDemo.entitlements */,
+				2EE98D9421B0D4D900FAC3AF /* AcTECBLE.entitlements */,
 				2E6A02221F39B02500111312 /* tabBar */,
 				968AF2411D7709910010904A /* Frameworks */,
 				0DFC7A1C1B38645300E1BC46 /* Categories */,
@@ -896,7 +902,7 @@
 				0DFC79F31B3863BD00E1BC46 /* StyleKits */,
 				0DE95D051B297FFB006D0397 /* Supporting Files */,
 			);
-			path = CSRmeshDemo;
+			path = AcTECBLE;
 			sourceTree = "<group>";
 		};
 		0DE95D051B297FFB006D0397 /* Supporting Files */ = {
@@ -905,7 +911,7 @@
 				2E4902AE224233F5003B901A /* cskey_db.json */,
 				F45350881CD8B043002D91AB /* SensorActuatorTypes.json */,
 				CE76AE111B9D897800C0B687 /* Info.plist */,
-				CEADA8F21B3AF22E00D18D56 /* CSRmeshDemo.pch */,
+				CEADA8F21B3AF22E00D18D56 /* AcTECBLE.pch */,
 				0DE95D071B297FFB006D0397 /* main.m */,
 				2E9622C120C913530097C617 /* Localizable.strings */,
 				2E9622C920C917EC0097C617 /* InfoPlist.strings */,
@@ -1257,6 +1263,10 @@
 				2E1FA39C24EA2D02008C6497 /* MCPickerAlertController.h */,
 				2E1FA39D24EA2D02008C6497 /* MCPickerAlertController.m */,
 				2E1FA39E24EA2D02008C6497 /* MCPickerAlertController.xib */,
+				2EC4D19124F790380053C261 /* RippleAnimationView.h */,
+				2EC4D19224F790380053C261 /* RippleAnimationView.m */,
+				2EC4D19424F7AC770053C261 /* MusicAnimationView.h */,
+				2EC4D19524F7AC770053C261 /* MusicAnimationView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1387,8 +1397,8 @@
 		8C260C9757556F8E730DD43D /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				E20A37FC4B94EE53E94DDF92 /* Pods-CSRmeshDemo.debug.xcconfig */,
-				39523700A53C1F8D1887BAE1 /* Pods-CSRmeshDemo.release.xcconfig */,
+				E20A37FC4B94EE53E94DDF92 /* Pods-AcTECBLE.debug.xcconfig */,
+				39523700A53C1F8D1887BAE1 /* Pods-AcTECBLE.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1401,13 +1411,13 @@
 			path = Frameworks;
 			sourceTree = "<group>";
 		};
-		CE31FDA41BAAB2E100CA4772 /* CSRmeshDemoUITests */ = {
+		CE31FDA41BAAB2E100CA4772 /* AcTECBLEUITests */ = {
 			isa = PBXGroup;
 			children = (
-				CE31FDA51BAAB2E100CA4772 /* CSRmeshDemoUITests.m */,
+				CE31FDA51BAAB2E100CA4772 /* AcTECBLEUITests.m */,
 				CE31FDA71BAAB2E100CA4772 /* Info.plist */,
 			);
-			path = CSRmeshDemoUITests;
+			path = AcTECBLEUITests;
 			sourceTree = "<group>";
 		};
 		CE80334C1B39997100A7E3F0 /* DevicesManager */ = {
@@ -1486,25 +1496,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		0DE95D011B297FFB006D0397 /* CSRmeshDemo */ = {
+		0DE95D011B297FFB006D0397 /* AcTECBLE */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0DE95D281B297FFB006D0397 /* Build configuration list for PBXNativeTarget "CSRmeshDemo" */;
+			buildConfigurationList = 0DE95D281B297FFB006D0397 /* Build configuration list for PBXNativeTarget "AcTECBLE" */;
 			buildPhases = (
 				B20C21DA7171BA6DFAAC6DFF /* [CP] Check Pods Manifest.lock */,
 				0DE95CFE1B297FFB006D0397 /* Sources */,
 				0DE95CFF1B297FFB006D0397 /* Frameworks */,
 				0DE95D001B297FFB006D0397 /* Resources */,
 				CD58591C1C43FA0600A7105D /* Embed Watch Content */,
-				FE7E4770300DDFB35C14D06F /* [CP] Embed Pods Frameworks */,
 				342CF30690750D5CEDBB8C8F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = CSRmeshDemo;
-			productName = CSRmeshDemo;
-			productReference = 0DE95D021B297FFB006D0397 /* CSRmeshDemo.app */;
+			name = AcTECBLE;
+			productName = AcTECBLE;
+			productReference = 0DE95D021B297FFB006D0397 /* AcTECBLE.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1513,9 +1522,9 @@
 		0DE95CFA1B297FFB006D0397 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				CLASSPREFIX = CSR;
+				CLASSPREFIX = "";
 				LastUpgradeCheck = 0930;
-				ORGANIZATIONNAME = "Cambridge Silicon Radio Ltd";
+				ORGANIZATIONNAME = "AcTEC ELECTRONICS Ltd";
 				TargetAttributes = {
 					0DE95D011B297FFB006D0397 = {
 						CreatedOnToolsVersion = 6.3.2;
@@ -1535,7 +1544,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 0DE95CFD1B297FFB006D0397 /* Build configuration list for PBXProject "CSRmeshDemo" */;
+			buildConfigurationList = 0DE95CFD1B297FFB006D0397 /* Build configuration list for PBXProject "AcTECBLE" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -1560,7 +1569,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				0DE95D011B297FFB006D0397 /* CSRmeshDemo */,
+				0DE95D011B297FFB006D0397 /* AcTECBLE */,
 			);
 		};
 /* End PBXProject section */
@@ -1629,16 +1638,16 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-CSRmeshDemo/Pods-CSRmeshDemo-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-AcTECBLE/Pods-AcTECBLE-resources.sh",
 				"${PODS_ROOT}/SGQRCode/SGQRCode/SGQRCode.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SGQRCode.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CSRmeshDemo/Pods-CSRmeshDemo-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AcTECBLE/Pods-AcTECBLE-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		B20C21DA7171BA6DFAAC6DFF /* [CP] Check Pods Manifest.lock */ = {
@@ -1652,26 +1661,11 @@
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CSRmeshDemo-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-AcTECBLE-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		FE7E4770300DDFB35C14D06F /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CSRmeshDemo/Pods-CSRmeshDemo-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1691,6 +1685,7 @@
 				F4F11C131D00408C0080F3BB /* CSRGatewayEntity.m in Sources */,
 				2E37075720CE647A000AF696 /* NSBundle+AppLanguageSwitch.m in Sources */,
 				0D835B951B97603600FF4376 /* CSRmesh.xcdatamodeld in Sources */,
+				2EC4D19324F790380053C261 /* RippleAnimationView.m in Sources */,
 				2EC8BB37214653AF002ED85F /* MeterTable.mm in Sources */,
 				0D835B361B9749E600FF4376 /* AppDelegate.m in Sources */,
 				2E3A65F7202BF97300B3E425 /* SingleDeviceModel.m in Sources */,
@@ -1817,6 +1812,7 @@
 				2E2E70911FF5DE60002D1C1D /* PlaceIconCollectionViewCell.m in Sources */,
 				2E3B9677200F263A000BD086 /* JQProgressView.m in Sources */,
 				0D835B801B9749E700FF4376 /* main.m in Sources */,
+				2EC4D19624F7AC770053C261 /* MusicAnimationView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2300,32 +2296,32 @@
 		};
 		0DE95D291B297FFB006D0397 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E20A37FC4B94EE53E94DDF92 /* Pods-CSRmeshDemo.debug.xcconfig */;
+			baseConfigurationReference = E20A37FC4B94EE53E94DDF92 /* Pods-AcTECBLE.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = NO;
-				CODE_SIGN_ENTITLEMENTS = CSRmeshDemo/CSRmeshDemo.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 23;
+				CURRENT_PROJECT_VERSION = 25;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/CSRmeshDemo/Frameworks",
+					"$(PROJECT_DIR)/AcTECBLE/Frameworks",
 					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = CSRmeshDemo/CSRmeshDemo.pch;
+				GCC_PREFIX_HEADER = AcTECBLE/AcTECBLE.pch;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
-				INFOPLIST_FILE = CSRmeshDemo/Info.plist;
+				INFOPLIST_FILE = AcTECBLE/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -2360,32 +2356,32 @@
 		};
 		0DE95D2A1B297FFB006D0397 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 39523700A53C1F8D1887BAE1 /* Pods-CSRmeshDemo.release.xcconfig */;
+			baseConfigurationReference = 39523700A53C1F8D1887BAE1 /* Pods-AcTECBLE.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = NO;
-				CODE_SIGN_ENTITLEMENTS = CSRmeshDemo/CSRmeshDemo.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 23;
+				CURRENT_PROJECT_VERSION = 25;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/CSRmeshDemo/Frameworks",
+					"$(PROJECT_DIR)/AcTECBLE/Frameworks",
 					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = CSRmeshDemo/CSRmeshDemo.pch;
+				GCC_PREFIX_HEADER = AcTECBLE/AcTECBLE.pch;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
-				INFOPLIST_FILE = CSRmeshDemo/Info.plist;
+				INFOPLIST_FILE = AcTECBLE/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -2421,7 +2417,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0DE95CFD1B297FFB006D0397 /* Build configuration list for PBXProject "CSRmeshDemo" */ = {
+		0DE95CFD1B297FFB006D0397 /* Build configuration list for PBXProject "AcTECBLE" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0DE95D261B297FFB006D0397 /* Debug */,
@@ -2430,7 +2426,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0DE95D281B297FFB006D0397 /* Build configuration list for PBXNativeTarget "CSRmeshDemo" */ = {
+		0DE95D281B297FFB006D0397 /* Build configuration list for PBXNativeTarget "AcTECBLE" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0DE95D291B297FFB006D0397 /* Debug */,

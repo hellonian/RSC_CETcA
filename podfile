@@ -3,10 +3,10 @@ platform :ios, '8.0'
 # Uncomment this line if you're using Swift
 # use_frameworks!
 
-workspace 'CSRmeshDemo.xcworkspace'
+workspace 'AcTECBLE.xcworkspace'
 
-target 'CSRmeshDemo' do
-    project 'CSRmeshDemo.xcodeproj'
+target 'AcTECBLE' do
+    project 'AcTECBLE.xcodeproj'
     pod 'AFNetworking','~> 2.5.3'
     pod 'OpenSSL', '~> 1.0'
     pod 'PureLayout'
