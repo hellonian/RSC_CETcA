@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="RGBSceneCollectionViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="90" height="114"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="90" height="114"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="R0X-hC-ZyG">
+                        <rect key="frame" x="0.0" y="0.0" width="90" height="90"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="R0X-hC-ZyG" secondAttribute="height" multiplier="1:1" id="kJ3-Mx-ZEK"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                <integer key="value" value="45"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                        </userDefinedRuntimeAttributes>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QeA-0A-h6B">
+                        <rect key="frame" x="0.0" y="90" width="90" height="24"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <color key="textColor" red="0.30196078430000001" green="0.30196078430000001" blue="0.30196078430000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CMU-4f-ugx">
+                        <rect key="frame" x="0.0" y="0.0" width="90" height="90"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="CMU-4f-ugx" secondAttribute="height" multiplier="1:1" id="tUG-ez-CmT"/>
+                        </constraints>
+                    </imageView>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="R0X-hC-ZyG" secondAttribute="trailing" id="6Lm-Yj-GpX"/>
+                <constraint firstItem="QeA-0A-h6B" firstAttribute="top" secondItem="R0X-hC-ZyG" secondAttribute="bottom" id="6nj-DZ-rzQ"/>
+                <constraint firstItem="CMU-4f-ugx" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="Ata-4n-1AW"/>
+                <constraint firstAttribute="trailing" secondItem="QeA-0A-h6B" secondAttribute="trailing" id="Cng-jo-MMo"/>
+                <constraint firstItem="R0X-hC-ZyG" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="bkM-zh-8mR"/>
+                <constraint firstAttribute="bottom" secondItem="QeA-0A-h6B" secondAttribute="bottom" id="fFs-Ot-BE3"/>
+                <constraint firstItem="R0X-hC-ZyG" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="kyh-zz-dU7"/>
+                <constraint firstItem="CMU-4f-ugx" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="q7q-rp-eIM"/>
+                <constraint firstAttribute="trailing" secondItem="CMU-4f-ugx" secondAttribute="trailing" id="rR6-cq-iAQ"/>
+                <constraint firstItem="QeA-0A-h6B" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="xc8-Ih-fda"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="SEy-5g-ep8"/>
+            <size key="customSize" width="90" height="114"/>
+            <connections>
+                <outlet property="RGBSceneImageView" destination="R0X-hC-ZyG" id="cqa-Wb-ACc"/>
+                <outlet property="RGBSceneNameLabel" destination="QeA-0A-h6B" id="NPr-Kd-E0c"/>
+                <outlet property="colorfulRingImageView" destination="CMU-4f-ugx" id="MNv-UO-hyv"/>
+            </connections>
+            <point key="canvasLocation" x="45" y="84"/>
+        </collectionViewCell>
+    </objects>
+</document>

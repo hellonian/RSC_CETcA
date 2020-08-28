@@ -1,0 +1,21 @@
+
+/* Class = "UITextField"; placeholder = "Place name"; ObjectID = "Jd1-eJ-EqW"; */
+"Jd1-eJ-EqW.placeholder" = "Place name";
+
+/* Class = "UILabel"; text = "Scan the RQ code to share place with this phone. Please make sure the two phones are under the same WIFI."; ObjectID = "WAl-Hv-Wp5"; */
+"WAl-Hv-Wp5.text" = "Scan the  QR code to share place with this phone.\nPlease make sure the two phones are under the same WIFI.\n\nTip: after data sharing, either party may set the device to delete, group, scene, timer or other Settings, which may cause other mobile terminals to control the device. At this point the sharing needs to be redone to achieve data consistency.";
+
+/* Class = "UILabel"; text = "Network key"; ObjectID = "bs7-mY-b11"; */
+"bs7-mY-b11.text" = "Network key";
+
+/* Class = "UILabel"; text = "Place name"; ObjectID = "hYf-3F-9HS"; */
+"hYf-3F-9HS.text" = "Place name";
+
+/* Class = "UIButton"; normalTitle = "Delete"; ObjectID = "lRG-Nx-Y7O"; */
+"lRG-Nx-Y7O.normalTitle" = "Delete";
+
+/* Class = "UILabel"; text = "Show password"; ObjectID = "rQO-oA-8kS"; */
+"rQO-oA-8kS.text" = "Show password";
+
+/* Class = "UITextField"; placeholder = "Network key"; ObjectID = "zjv-Gy-2n3"; */
+"zjv-Gy-2n3.placeholder" = "Network key";

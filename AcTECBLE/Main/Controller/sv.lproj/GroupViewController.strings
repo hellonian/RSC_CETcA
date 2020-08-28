@@ -1,0 +1,9 @@
+
+/* Class = "UIButton"; normalTitle = "Back"; ObjectID = "AxW-sY-k9a"; */
+"AxW-sY-k9a.normalTitle" = "Tillbaka";
+
+/* Class = "UIButton"; normalTitle = "Edit"; ObjectID = "HJZ-lb-IPq"; */
+"HJZ-lb-IPq.normalTitle" = "Ändra";
+
+/* Class = "UITextField"; placeholder = "Enter group name"; ObjectID = "aHb-IC-OPi"; */
+"aHb-IC-OPi.placeholder" = "Ange gruppnamn";

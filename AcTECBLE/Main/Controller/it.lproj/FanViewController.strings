@@ -1,0 +1,18 @@
+
+/* Class = "UILabel"; text = "Fan"; ObjectID = "5V9-CY-oPZ"; */
+"5V9-CY-oPZ.text" = "ventilatore";
+
+/* Class = "UILabel"; text = "ON/OFF"; ObjectID = "F18-Gj-LNR"; */
+"F18-Gj-LNR.text" = "ON/OFF";
+
+/* Class = "UILabel"; text = "MAC"; ObjectID = "MD1-EN-2SO"; */
+"MD1-EN-2SO.text" = "MAC";
+
+/* Class = "UILabel"; text = "Lamp"; ObjectID = "Wx4-gU-2a7"; */
+"Wx4-gU-2a7.text" = "Lampada";
+
+/* Class = "UILabel"; text = "Name"; ObjectID = "YCz-NL-HpX"; */
+"YCz-NL-HpX.text" = "Nome";
+
+/* Class = "UILabel"; text = "ON/OFF"; ObjectID = "nZ7-Of-cRa"; */
+"nZ7-Of-cRa.text" = "ON/OFF";

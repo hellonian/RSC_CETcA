@@ -1,0 +1,24 @@
+
+/* Class = "UIButton"; normalTitle = "-"; ObjectID = "74e-Xa-y46"; */
+"74e-Xa-y46.normalTitle" = "-";
+
+/* Class = "UILabel"; text = "Fade time for toggling ON or OFF"; ObjectID = "EKx-i4-nhQ"; */
+"EKx-i4-nhQ.text" = "Fade time for toggling ON or OFF";
+
+/* Class = "UILabel"; text = "3.0 s"; ObjectID = "VDz-0m-r9B"; */
+"VDz-0m-r9B.text" = "3.0 s";
+
+/* Class = "UILabel"; text = "Fade time for switch dimming"; ObjectID = "WD0-og-cea"; */
+"WD0-og-cea.text" = "Fade time for switch dimming";
+
+/* Class = "UILabel"; text = "1.0 s"; ObjectID = "b1j-cg-hGY"; */
+"b1j-cg-hGY.text" = "1.0 s";
+
+/* Class = "UIButton"; normalTitle = "+"; ObjectID = "jIN-Sw-kR6"; */
+"jIN-Sw-kR6.normalTitle" = "+";
+
+/* Class = "UIButton"; normalTitle = "+"; ObjectID = "qxM-xP-jAU"; */
+"qxM-xP-jAU.normalTitle" = "+";
+
+/* Class = "UIButton"; normalTitle = "-"; ObjectID = "rQb-D7-yRp"; */
+"rQb-D7-yRp.normalTitle" = "-";
