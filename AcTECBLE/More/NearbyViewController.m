@@ -197,7 +197,6 @@
 }
 
 - (void)countdownMethod {
-    NSLog(@"><><><><");
     NSInteger countdown = [self.countdownLabel.text integerValue];
     if (countdown > 0) {
         self.countdownLabel.text = [NSString stringWithFormat:@"%ld",countdown - 1];
