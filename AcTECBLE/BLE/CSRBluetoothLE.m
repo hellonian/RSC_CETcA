@@ -768,7 +768,7 @@
                 [self.characteristicQueue removeObjectForKey:characteristic.UUID.UUIDString];
             }
         }
-    }else {
+    }else if(!_isNearbyFunction) {
         NSMutableDictionary *advertisementData = [NSMutableDictionary dictionary];
         
         [advertisementData setObject:@(NO) forKey:CBAdvertisementDataIsConnectable];

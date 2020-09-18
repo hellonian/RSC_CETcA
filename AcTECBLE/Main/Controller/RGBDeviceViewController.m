@@ -12,7 +12,6 @@
 #import "MusicViewController.h"
 #import "CSRDatabaseManager.h"
 #import "PureLayout.h"
-#import "MusicPlayTools.h"
 #import "DeviceModelManager.h"
 
 @interface RGBDeviceViewController ()
@@ -89,29 +88,10 @@
     _selecteBtn.backgroundColor = DARKORAGE;
     
     [_threeView bringSubviewToFront:_allViews[sender.tag]];
-    
-//    if (sender.tag != 2) {
-//        if ([MusicPlayTools shareMusicPlay].audioPlayer.playing) {
-//            [[MusicPlayTools shareMusicPlay] musicStop];
-//        }
-//        if ([MusicPlayTools shareMusicPlay].audioRecorder.recording) {
-//            [[MusicPlayTools shareMusicPlay] recordStop];
-//        }
-//    }
-//    if (sender.tag != 1) {
-//        [[DeviceModelManager sharedInstance] invalidateColofulTimer];
-//    }
 }
 
 - (void)closeAction {
     [self dismissViewControllerAnimated:YES completion:nil];
-//    if ([MusicPlayTools shareMusicPlay].audioPlayer.playing) {
-//        [[MusicPlayTools shareMusicPlay] musicStop];
-//    }
-//    if ([MusicPlayTools shareMusicPlay].audioRecorder.recording) {
-//        [[MusicPlayTools shareMusicPlay] recordStop];
-//    }
-//    [[DeviceModelManager sharedInstance] invalidateColofulTimer];
 }
 
 

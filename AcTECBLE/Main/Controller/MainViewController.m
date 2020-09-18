@@ -250,7 +250,7 @@
     
     NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
     if (mutableArray != nil || [mutableArray count] != 0) {
-        __block BOOL isOldCVesion = NO;
+//        __block BOOL isOldCVesion = NO;
         [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
             NSLog(@"~~~~~> %@  %@  %@  %@ %@",deviceEntity.name,deviceEntity.cvVersion,deviceEntity.deviceId,deviceEntity.uuid,deviceEntity.firVersion);
             if ([CSRUtilities belongToMainVCDevice: deviceEntity.shortName]) {
@@ -259,18 +259,18 @@
                     [_mainCollectionView.dataArray addObject:deviceEntity];
                 }
                 
+//                if ([deviceEntity.cvVersion integerValue]<18) {
+//                    isOldCVesion = YES;
+//                }
+            }/*else if ([deviceEntity.shortName isEqualToString:@"RB01"]) {
                 if ([deviceEntity.cvVersion integerValue]<18) {
                     isOldCVesion = YES;
                 }
-            }else if ([deviceEntity.shortName isEqualToString:@"RB01"]) {
-                if ([deviceEntity.cvVersion integerValue]<18) {
-                    isOldCVesion = YES;
-                }
-            }
+            }*/
         }];
         
-        [CSRAppStateManager sharedInstance].selectedPlace.color = @(isOldCVesion);
-        [[CSRDatabaseManager sharedInstance] saveContext];
+//        [CSRAppStateManager sharedInstance].selectedPlace.color = @(isOldCVesion);
+//        [[CSRDatabaseManager sharedInstance] saveContext];
     }
     
     NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
@@ -481,6 +481,7 @@
     [animation setSubtype:kCATransitionFromRight];
     [self.view.window.layer addAnimation:animation forKey:nil];
     UINavigationController *nav= [[UINavigationController alloc] initWithRootViewController:addVC];
+    nav.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:nav animated:NO completion:nil];
 }
 
@@ -746,7 +747,6 @@
 }
 
 - (void)mainCollectionViewDelegateLongPressAction:(id)cell {
-    NSLog(@"longpress");
     MainCollectionViewCell *mainCell = (MainCollectionViewCell *)cell;
     if ([mainCell.groupId isEqualToNumber:@1000]) {
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
@@ -847,6 +847,9 @@
         }else if ([CSRUtilities belongToMusicController:deviceEntity.shortName]) {
             MusicControllerVC *mcvc = [[MusicControllerVC alloc] init];
             mcvc.deviceId = mainCell.deviceId;
+            mcvc.reloadDataHandle = ^{
+                [self getMainDataArray];
+            };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:mcvc];
             nav.modalPresentationStyle = UIModalPresentationPopover;
             [self presentViewController:nav animated:YES completion:nil];

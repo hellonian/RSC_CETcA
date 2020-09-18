@@ -288,13 +288,22 @@
             lMod.sortID = @([_dataAry count]);
             [_dataAry insertObject:lMod atIndex:[_dataAry count]-1];
             [_memberList reloadData];
-            
-            NSString *infoStr = [NSString stringWithFormat:@"%@%@%@%@%@",[CSRUtilities stringWithHexNumber:[lMod.sourceID integerValue]],[CSRUtilities stringWithHexNumber:[lMod.typeID integerValue]],[CSRUtilities exchangePositionOfDeviceId:[lMod.channel integerValue]],[CSRUtilities exchangePositionOfDeviceId:[lMod.deviceID integerValue]],[CSRUtilities stringWithHexNumber:[lMod.iconID integerValue]]];
-            [[DataModelManager shareInstance] sendCmdData:[NSString stringWithFormat:@"b6070c%@",infoStr] toDeviceId:_deviceId];
+            NSInteger s = [lMod.sourceID integerValue];
+            NSInteger t = [lMod.typeID integerValue];
+            NSInteger r = [lMod.channel integerValue];
+            NSInteger r1 = (r & 0xFF00) >> 8;
+            NSInteger r0 = r & 0x00FF;
+            NSInteger a = [lMod.deviceID integerValue];
+            NSInteger a1 = (a & 0xFF00) >> 8;
+            NSInteger a0 = a & 0x00FF;
+            NSInteger i = [lMod.iconID integerValue];
+            Byte byte[] = {0xb6, 0x08, 0x0c, s, t, r0, r1, a0, a1, i};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
             
             CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-            NSString *a = [device.remoteBranch length]>0? device.remoteBranch:@"";
-            device.remoteBranch = [NSString stringWithFormat:@"%@%@",a,infoStr];
+            NSString *rb = [device.remoteBranch length]>0? device.remoteBranch:@"";
+            device.remoteBranch = [NSString stringWithFormat:@"%@%@",rb,[CSRUtilities hexStringForData:[cmd subdataWithRange:NSMakeRange(3, 7)]]];
             [[CSRDatabaseManager sharedInstance] saveContext];
             
             if ([mod.deviceID integerValue] < 32768) {
@@ -610,7 +619,12 @@
             break;
         case UIGestureRecognizerStateEnded:
         {
-            [_memberList endInteractiveMovement];
+            NSIndexPath *indexPath = [_memberList indexPathForItemAtPoint:[gesture locationInView:_memberList]];
+            if (indexPath.row == _dataAry.count - 1) {
+               [_memberList cancelInteractiveMovement];
+            }else {
+                [_memberList endInteractiveMovement];
+            }
         }
             break;
         default:
@@ -620,44 +634,52 @@
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
+    if (indexPath.row < [_dataAry count]-1) {
+        return YES;
+    }
+    return NO;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView moveItemAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
     
-    LCDSelectModel *sourceM = [_dataAry objectAtIndex:sourceIndexPath.row];
-    
-    int s = [sourceM.sortID intValue];
-    
-    Byte byte[4] = {0xea, 0x7e, s, destinationIndexPath.row+1};
+    Byte byte[] = {0xea, 0x7e, sourceIndexPath.row + 1, destinationIndexPath.row + 1};
     NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
-    [[DataModelApi sharedInstance] sendData:_deviceId data:cmd success:nil failure:nil];
+    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
     
     id obj = [_dataAry objectAtIndex:sourceIndexPath.row];
-    [_dataAry removeObject:obj];
+    [_dataAry removeObjectAtIndex:sourceIndexPath.row];
     [_dataAry insertObject:obj atIndex:destinationIndexPath.row];
     
+    [_dataAry removeObject:@0];
+    for (int i = 0; i < [_dataAry count]; i ++) {
+        LCDSelectModel *m = [_dataAry objectAtIndex:i];
+        m.sortID = @(i+1);
+    }
+    
     [self reorderStoreData];
+    [_dataAry addObject:@0];
 }
 
 - (void)LCDRemoteKeyIndexCall:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
     if ([deviceId isEqualToNumber:_deviceId]) {
-        NSString *keyIndex = userInfo[@"keyIndex"];
-        NSInteger offset = [CSRUtilities numberWithHexString:[keyIndex substringToIndex:2]];
+        NSData *data = userInfo[@"keyIndex"];
+        Byte *bytes = (Byte *)[data bytes];
+        NSInteger offset = bytes[0];
         [_dataAry removeObject:@0];
-        for (int i=0; i<(keyIndex.length-2)/2; i++) {
-            NSInteger sourceID = [CSRUtilities numberWithHexString:[keyIndex substringWithRange:NSMakeRange(2+i*2, 2)]];
-            for (LCDSelectModel *m in _dataAry) {
-                if ([m.sourceID integerValue] == sourceID) {
-                    m.sortID = [NSNumber numberWithInteger:(offset + i)];
-                    break;
+        if ([_dataAry count] > 0) {
+            for (int i=0; i<[data length]-1; i++) {
+                NSInteger sourceID = bytes[i+1];
+                for (LCDSelectModel *m in _dataAry) {
+                    if ([m.sourceID integerValue] == sourceID) {
+                        m.sortID = @(offset+i);
+                        break;
+                    }
                 }
             }
-        }
-        if ([_dataAry count] != 0) {
-            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sourceID" ascending:YES];
+            
+            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortID" ascending:YES];
             [_dataAry sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             [_memberList reloadData];
             
@@ -974,17 +996,18 @@
         Byte *bytes = (unsigned char *)[data bytes];
         if (at == bytes[20] && sumC == bytes[21]) {
             NSData *d_k = [data subdataWithRange:NSMakeRange(12, 2)];
-            int k = -1;
-            [d_k getBytes:&k length:sizeof(k)];
+            Byte *bytes_k = (Byte *)[d_k bytes];
+            int k = bytes_k[0] * 256 + bytes_k[1];
             
             NSData *d_t = [data subdataWithRange:NSMakeRange(14, 2)];
-            int t = -1;
-            [d_t getBytes:&t length:sizeof(t)];
+            Byte *bytes_t = (Byte *)[d_t bytes];
+            int t = bytes_t[0] * 256 + bytes_t[1];
         
             NSData *d_p = [data subdataWithRange:NSMakeRange(8, 4)];
-            int p = -1;
-            [d_p getBytes:&p length:sizeof(p)];
+            Byte *bytes_p = (Byte *)[d_p bytes];
+            int p = bytes_p[0] * 256 * 256 * 256 +  bytes_p[1] * 256 * 256 + bytes_p[2] * 256 + bytes_p[3];
             
+//            NBSLog(@"%d  %d  %d  %ld  %ld",k,t,p,_applyCmdType,_applyIndex);
             if (k == 1 && t == _applyCmdType && p == _applyIndex) {
                 
                 NSInteger l = _applyData.length;
@@ -1056,6 +1079,7 @@
     }
     NSDictionary *jd = @{@"buttonCount":[NSNumber numberWithInteger:[a count]],@"buttonList":a};
     NSString *j = [CSRUtilities convertToJsonData2:jd];
+//    NBSLog(@"%@",j);
     _applyData = [j dataUsingEncoding:NSUTF8StringEncoding];
     
     _applyIndex = 1;
@@ -1092,6 +1116,7 @@
     Byte bytesum[] = {[self atFromData:mutableData], [self sumCFromData:mutableData]};
     NSData *end = [[NSData alloc] initWithBytes:bytesum length:2];
     [mutableData appendData:end];
+//    NBSLog(@"%@",mutableData);
     [self.tcpSocketManager writeData:mutableData withTimeout:-1 tag:0];
     
     [self.tcpSocketManager readDataWithTimeout:-1 tag:0];
@@ -1144,7 +1169,8 @@
         Byte bytesum[] = {[self atFromData:mutableData], [self sumCFromData:mutableData]};
         NSData *end = [[NSData alloc] initWithBytes:bytesum length:2];
         [mutableData appendData:end];
-        NSLog(@"wallpaper> %@",[mutableData subdataWithRange:NSMakeRange(0, 20)]);
+//        NSLog(@"wallpaper> %@",[mutableData subdataWithRange:NSMakeRange(0, 20)]);
+//        NBSLog(@"%@",mutableData);
         [self.tcpSocketManager writeData:mutableData withTimeout:-1 tag:0];
     }
 }

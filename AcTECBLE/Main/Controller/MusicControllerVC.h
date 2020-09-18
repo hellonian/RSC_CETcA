@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MusicControllerVC : UIViewController
 
 @property (nonatomic,strong)NSNumber *deviceId;
+@property (nonatomic,copy) void (^reloadDataHandle)(void);
 
 @end
 

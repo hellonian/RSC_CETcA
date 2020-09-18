@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -40,8 +40,11 @@
                 <outlet property="ganjiedianRowView" destination="sAd-Ek-V0c" id="uEx-De-lic"/>
                 <outlet property="ganjiedianView" destination="kQj-SV-fbG" id="rP7-JW-y3g"/>
                 <outlet property="levelLabel" destination="lRY-vT-dpa" id="5hr-90-baz"/>
+                <outlet property="levelLabelChannelThree" destination="a7r-CR-nDh" id="H6E-ri-cNp"/>
                 <outlet property="levelLabelChannelTwo" destination="y2N-Pk-tZx" id="ggE-Wv-9a5"/>
                 <outlet property="levelSlider" destination="8Cl-t0-0uR" id="udp-Hv-bNM"/>
+                <outlet property="levelSliderChannelThree" destination="3n3-vb-9F0" id="igk-xs-Ozc"/>
+                <outlet property="levelSliderChannelThreeView" destination="Nhj-ED-Ydb" id="HX2-4k-YRd"/>
                 <outlet property="levelSliderChannelTwo" destination="NNG-Vp-1fW" id="oD3-gK-e8m"/>
                 <outlet property="levelSliderChannelTwoView" destination="RYI-ox-GgF" id="eJH-fO-GiJ"/>
                 <outlet property="macAddressLabel" destination="AK8-j8-AgG" id="Zjh-s9-Osr"/>
@@ -1258,7 +1261,54 @@
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="ixr-j1-73z"/>
-            <point key="canvasLocation" x="-326" y="2776"/>
+            <point key="canvasLocation" x="-337" y="2744"/>
+        </view>
+        <view contentMode="scaleToFill" id="Nhj-ED-Ydb">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="42"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a7r-CR-nDh">
+                    <rect key="frame" x="333" y="12" width="40" height="18"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="40" id="PKb-XK-rCu"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="255" minValue="0.0" maxValue="255" translatesAutoresizingMaskIntoConstraints="NO" id="3n3-vb-9F0">
+                    <rect key="frame" x="42" y="6" width="285" height="31"/>
+                    <color key="minimumTrackTintColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <connections>
+                        <action selector="levelSliderChannelThreeTouchDown:" destination="-1" eventType="touchDown" id="fsZ-mm-gDW"/>
+                        <action selector="levelSliderChannelThreeTouchUpInside:" destination="-1" eventType="touchUpOutside" id="fMm-dG-hnZ"/>
+                        <action selector="levelSliderChannelThreeTouchUpInside:" destination="-1" eventType="touchUpInside" id="x46-OF-DKd"/>
+                        <action selector="levelSliderChannelThreeValueChanged:" destination="-1" eventType="valueChanged" id="K9H-W8-l2r"/>
+                    </connections>
+                </slider>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Ico_sun" translatesAutoresizingMaskIntoConstraints="NO" id="fCO-wm-P5K">
+                    <rect key="frame" x="14" y="14" width="16" height="14"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="16" id="b3F-WW-oEH"/>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="16" id="qww-Zf-ybk"/>
+                    </constraints>
+                </imageView>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="a7r-CR-nDh" firstAttribute="top" secondItem="Nhj-ED-Ydb" secondAttribute="top" constant="12" id="7N7-cI-OYP"/>
+                <constraint firstItem="fCO-wm-P5K" firstAttribute="leading" secondItem="QaL-hE-H0D" secondAttribute="leading" constant="14" id="CLl-fz-VWq"/>
+                <constraint firstItem="3n3-vb-9F0" firstAttribute="centerY" secondItem="Nhj-ED-Ydb" secondAttribute="centerY" id="Ddi-8Q-08T"/>
+                <constraint firstAttribute="trailing" secondItem="3n3-vb-9F0" secondAttribute="trailing" constant="68" id="J2t-Ek-tjC"/>
+                <constraint firstAttribute="trailing" secondItem="a7r-CR-nDh" secondAttribute="trailing" constant="20" id="VRe-Oe-Hoy"/>
+                <constraint firstItem="fCO-wm-P5K" firstAttribute="top" secondItem="QaL-hE-H0D" secondAttribute="top" constant="14" id="hvR-Dr-h9I"/>
+                <constraint firstItem="3n3-vb-9F0" firstAttribute="leading" secondItem="Nhj-ED-Ydb" secondAttribute="leading" constant="44" id="lM9-a2-gI0"/>
+                <constraint firstAttribute="bottom" secondItem="a7r-CR-nDh" secondAttribute="bottom" constant="12" id="rnP-8a-gug"/>
+                <constraint firstItem="QaL-hE-H0D" firstAttribute="bottom" secondItem="fCO-wm-P5K" secondAttribute="bottom" constant="14" id="whJ-VV-HMP"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="QaL-hE-H0D"/>
+            <point key="canvasLocation" x="-337" y="2835"/>
         </view>
     </objects>
     <resources>

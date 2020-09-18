@@ -83,7 +83,7 @@
         NSInteger switchNum = 0;
         NSInteger controllerNum = 0;
         for (CSRDeviceEntity *deviceEntity in self.groupMembers) {
-            if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName]) {
+            if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName] || [CSRUtilities belongToThreeChannelDimmer:deviceEntity.shortName]) {
                 dimmerNum ++;
             }else if ([CSRUtilities belongToCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
                 dimmerNum ++;
@@ -148,7 +148,7 @@
         NSInteger switchNum = 0;
         NSInteger controllerNum = 0;
         for (CSRDeviceEntity *deviceEntity in self.groupMembers) {
-            if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName]) {
+            if ([CSRUtilities belongToDimmer:deviceEntity.shortName] || [CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName] || [CSRUtilities belongToThreeChannelDimmer:deviceEntity.shortName]) {
                 dimmerNum ++;
             }else if ([CSRUtilities belongToCWDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBDevice:deviceEntity.shortName] || [CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
                 dimmerNum ++;
@@ -321,6 +321,13 @@
             self.level2Label.hidden = NO;
             self.level3Label.hidden = NO;
             self.levelTextTopCon.constant = -14.0;
+        }else if ([CSRUtilities belongToThreeChannelDimmer:deviceEntity.shortName]) {
+            self.iconView.image = [UIImage imageNamed:@"dimmer3"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable");
+            self.levelLabel.hidden = NO;
+            self.level2Label.hidden = NO;
+            self.level3Label.hidden = NO;
+            self.levelTextTopCon.constant = -14.0;
         }else if ([CSRUtilities belongToMusicController:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"room_bajiao"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
@@ -437,6 +444,13 @@
             self.level2Label.hidden = NO;
             self.level3Label.hidden = NO;
             self.levelTextTopCon.constant = -14.0;
+        }else if ([CSRUtilities belongToThreeChannelDimmer:device.deviceShortName]) {
+            self.iconView.image = [UIImage imageNamed:@"device_dimmer3"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable");
+            self.levelLabel.hidden = NO;
+            self.level2Label.hidden = NO;
+            self.level3Label.hidden = NO;
+            self.levelTextTopCon.constant = -14.0;
         }else if ([CSRUtilities belongToMusicController:device.deviceShortName]) {
             self.iconView.image = [UIImage imageNamed:@"room_bajiao"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
@@ -543,6 +557,8 @@
             self.iconView.image = [UIImage imageNamed:@"Device_lcdremote"];
         }else if ([CSRUtilities belongToThreeChannelSwitch:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_switch3"];
+        }else if ([CSRUtilities belongToThreeChannelDimmer:appearanceShortname]) {
+            self.iconView.image = [UIImage imageNamed:@"device_dimmer3"];
         }else if ([CSRUtilities belongToMusicController:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_bajiao"];
         }
@@ -665,6 +681,36 @@
             }else {
                 self.level3Label.text = @"OFF";
                 self.level3Label.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+            }
+        }else if ([CSRUtilities belongToThreeChannelDimmer:model.shortName]) {
+            if (model.channel1PowerState) {
+                NSInteger l = model.channel1Level/255.0*100;
+                self.levelLabel.text = (l>0 && l<1) ? @"1%" : [NSString stringWithFormat:@"%ld%%",l];
+                self.levelLabel.textColor = DARKORAGE;
+            }else {
+                self.levelLabel.text = @"0%";
+                self.levelLabel.textColor = ColorWithAlpha(77, 77, 77, 1);
+            }
+            if (model.channel2PowerState) {
+                NSInteger l = model.channel2Level/255.0*100;
+                self.level2Label.text = (l>0 && l<1) ? @"1%" : [NSString stringWithFormat:@"%ld%%",l];
+                self.level2Label.textColor = DARKORAGE;
+            }else {
+                self.level2Label.text = @"0%";
+                self.level2Label.textColor = ColorWithAlpha(77, 77, 77, 1);
+            }
+            if (model.channel3PowerState) {
+                NSInteger l = model.channel3Level/255.0*100;
+                self.level3Label.text = (l>0 && l<1) ? @"1%" : [NSString stringWithFormat:@"%ld%%",l];
+                self.level3Label.textColor = DARKORAGE;
+            }else {
+                self.level3Label.text = @"0%";
+                self.level3Label.textColor = ColorWithAlpha(77, 77, 77, 1);
+            }
+            if (model.channel1PowerState || model.channel2PowerState || model.channel3PowerState) {
+                self.nameLabel.textColor = DARKORAGE;
+            }else {
+                self.nameLabel.textColor = ColorWithAlpha(77, 77, 77, 1);
             }
         }else {
             if (![model.powerState boolValue]) {
@@ -802,7 +848,8 @@
                         &&![CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]
                         &&![CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
                         &&![CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]
-                        &&![CSRUtilities belongToLCDRemote:deviceEntity.shortName]) {
+                        &&![CSRUtilities belongToLCDRemote:deviceEntity.shortName]
+                        &&![CSRUtilities belongToMusicController:deviceEntity.shortName]) {
                         if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
                             if (!deviceEntity.remoteBranch || deviceEntity.remoteBranch.length == 0) {
                                 if (self.superCellDelegate && [self.superCellDelegate respondsToSelector:@selector(superCollectionViewCellDelegateCurtainTapAction:)]) {

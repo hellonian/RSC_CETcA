@@ -21,7 +21,6 @@ void UncaughtExceptionHandler(NSException * exception) {
     NSString * path = [applicationDocumentsDirectory() stringByAppendingPathComponent:@"Exception.txt"];
     // 将一个txt文件写入沙盒
     [url writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:nil];
-
 }
 
 @implementation MyUncaughtExceptionHandler

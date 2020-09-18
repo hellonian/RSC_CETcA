@@ -280,7 +280,7 @@
             }
         }else {
             if ([self.channel integerValue] == 1) {
-                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@1 withPowerState:!model.powerState];
+                [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@1 withPowerState:![model.powerState boolValue]];
             }else if ([self.channel integerValue] == 2) {
                 [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@2 withPowerState:!model.channel1PowerState];
             }else if ([self.channel integerValue] == 3) {
@@ -307,7 +307,6 @@
 - (void)setPowerStateSuccess:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
-    
     if (_deviceId && [deviceId isEqualToNumber:_deviceId]) {
         [self adjustDropViewBgcolorWithdeviceId:deviceId];
     }

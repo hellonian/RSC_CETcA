@@ -199,7 +199,8 @@
                      || [kSocketsTwoChannel containsObject:device.shortName]
                      || [kTwoChannelDimmers containsObject:device.shortName]
                      || [kTwoChannelSwitchs containsObject:device.shortName]
-                     || [kThreeChannelSwitchs containsObject:device.shortName])
+                     || [kThreeChannelSwitchs containsObject:device.shortName]
+                     || [kThreeChannelDimmers containsObject:device.shortName])
                     && ![deviceIds containsObject:device.deviceId]) {
                     SingleDeviceModel *model = [[SingleDeviceModel alloc] init];
                     model.deviceId = device.deviceId;
@@ -635,7 +636,9 @@
                     || [kSocketsTwoChannel containsObject:device.shortName]
                     || [kTwoChannelDimmers containsObject:device.shortName]
                     || [kTwoChannelSwitchs containsObject:device.shortName]
-                    || [kThreeChannelSwitchs containsObject:device.shortName]) {
+                    || [kThreeChannelSwitchs containsObject:device.shortName]
+                    || [kMusicController containsObject:device.shortName]
+                    || [kThreeChannelDimmers containsObject:device.shortName]) {
                     
                     BOOL exist = NO;
                     for (SceneMemberEntity *m in self.originalMembers) {
@@ -720,7 +723,8 @@
                     || [kSocketsTwoChannel containsObject:device.shortName]
                     || [kTwoChannelDimmers containsObject:device.shortName]
                     || [kTwoChannelSwitchs containsObject:device.shortName]
-                    || [kThreeChannelSwitchs containsObject:device.shortName]) {
+                    || [kThreeChannelSwitchs containsObject:device.shortName]
+                    || [kThreeChannelDimmers containsObject:device.shortName]) {
                     SingleDeviceModel *model = [[SingleDeviceModel alloc] init];
                     model.deviceId = device.deviceId;
                     model.deviceName = device.name;
@@ -925,7 +929,8 @@
                 || [CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName]
                     || [CSRUtilities belongToFanController:deviceEntity.shortName]) {
                     mod.channel = @4;
-                }else if ([CSRUtilities belongToThreeChannelSwitch:deviceEntity.shortName]) {
+                }else if ([CSRUtilities belongToThreeChannelSwitch:deviceEntity.shortName]
+                          || [CSRUtilities belongToThreeChannelDimmer:deviceEntity.shortName]) {
                     mod.channel = @8;
                 }
                 
@@ -954,7 +959,8 @@
                     if (_selectMode == DeviceListSelectMode_Single || _selectMode == DeviceListSelectMode_ForDrop) {
                         [self removeOtherSeletedDevice:mainCell.deviceId];
                     }
-                }else if ([CSRUtilities belongToThreeChannelSwitch:deviceEntity.shortName]) {
+                }else if ([CSRUtilities belongToThreeChannelSwitch:deviceEntity.shortName]
+                          || [CSRUtilities belongToThreeChannelDimmer:deviceEntity.shortName]) {
                     _channelCurrentDeviceID = mainCell.deviceId;
                     [self.view addSubview:self.translucentBgView];
                     [self.view addSubview:self.threeChannelSelectedView];

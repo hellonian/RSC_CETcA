@@ -658,7 +658,8 @@
                     || [CSRUtilities belongToThreeChannelSwitch:_mDeviceToApply.shortName]
                     || [CSRUtilities belongToTwoChannelDimmer:_mDeviceToApply.shortName]
                     || [CSRUtilities belongToSocketTwoChannel:_mDeviceToApply.shortName]
-                    || [CSRUtilities belongToTwoChannelCurtainController:_mDeviceToApply.shortName]) {
+                    || [CSRUtilities belongToTwoChannelCurtainController:_mDeviceToApply.shortName]
+                    || [CSRUtilities belongToThreeChannelDimmer:_mDeviceToApply.shortName]) {
                     Byte byte[] = {0x50, 0x04, 0x07, [td.channel integerValue], bIndex[1], bIndex[0]};
                     NSData *cmd = [[NSData alloc] initWithBytes:byte length:6];
                     retryCount = 0;
@@ -757,7 +758,8 @@
         || [CSRUtilities belongToThreeChannelSwitch:member.kindString]
         || [CSRUtilities belongToTwoChannelDimmer:member.kindString]
         || [CSRUtilities belongToSocketTwoChannel:member.kindString]
-        || [CSRUtilities belongToTwoChannelCurtainController:member.kindString]) {
+        || [CSRUtilities belongToTwoChannelCurtainController:member.kindString]
+        || [CSRUtilities belongToThreeChannelDimmer:member.kindString]) {
         
         Byte byte[] = {0x50, 0x18, 0x01, [member.channel integerValue], bIndex[1], bIndex[0], enabled, y, M, d, h, m, 0x00, repeat, [member.eveType integerValue], [member.eveD0 integerValue], [member.eveD1 integerValue], [member.eveD2 integerValue], [member.eveD3 integerValue], 0x00, ys, Ms, ds, hs, ms, ss};
         NSData *cmd = [[NSData alloc] initWithBytes:byte length:26];
@@ -922,7 +924,8 @@
                 || [CSRUtilities belongToThreeChannelSwitch:d.shortName]
                 || [CSRUtilities belongToTwoChannelDimmer:d.shortName]
                 || [CSRUtilities belongToSocketTwoChannel:d.shortName]
-                || [CSRUtilities belongToTwoChannelCurtainController:d.shortName]) {
+                || [CSRUtilities belongToTwoChannelCurtainController:d.shortName]
+                || [CSRUtilities belongToThreeChannelDimmer:d.shortName]) {
                 NSString *channelStr = @"";
                 if ([td.channel integerValue] == 1) {
                     channelStr = AcTECLocalizedStringFromTable(@"Channel1", @"Localizable");
@@ -943,7 +946,8 @@
                 || [CSRUtilities belongToThreeChannelSwitch:d.shortName]
                 || [CSRUtilities belongToTwoChannelDimmer:d.shortName]
                 || [CSRUtilities belongToSocketTwoChannel:d.shortName]
-                || [CSRUtilities belongToTwoChannelCurtainController:d.shortName]) {
+                || [CSRUtilities belongToTwoChannelCurtainController:d.shortName]
+                || [CSRUtilities belongToThreeChannelDimmer:d.shortName]) {
                 NSString *channelStr = @"";
                 if ([sm.channel integerValue] == 1) {
                     channelStr = AcTECLocalizedStringFromTable(@"Channel1", @"Localizable");

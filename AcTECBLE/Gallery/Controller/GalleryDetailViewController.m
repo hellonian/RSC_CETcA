@@ -232,8 +232,8 @@
             dropView.channel = model.channel;
             dropView.delegate = self;
             
-            CSRmeshDevice *device = [[CSRDevicesManager sharedInstance] getDeviceFromDeviceId:model.deviceID];
-            dropView.kindName = device.shortName;
+            CSRDeviceEntity *d = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:model.deviceID];
+            dropView.kindName = d.shortName;
             
             [_controlImageView addDropViewInCenter:dropView];
         }

@@ -18,20 +18,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    UIButton *btn = [[UIButton alloc] init];
-    [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
-    [btn setTitle:AcTECLocalizedStringFromTable(@"Setting", @"Localizable") forState:UIControlStateNormal];
-    [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
-    [btn addTarget:self action:@selector(back) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
-    self.navigationItem.leftBarButtonItem = back;
     if (_path) {
-        _txtView.text = [[NSString alloc] initWithContentsOfFile:_path encoding:NSUTF8StringEncoding error:nil];
+        _txtView.text = _path;
     }
 }
 
 - (void)back {
-    [self.navigationController popoverPresentationController];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 /*

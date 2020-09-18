@@ -54,18 +54,18 @@
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>AcTEC BLE  is designed to control Bluetooth smart devices.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Set the images of groups&apos; icons and gallery control mode need to use your Camera.</string>
+	<string>Set the images of groups' icons and gallery control mode need to use your Camera.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Agree to get your location and show you the weather information for your location.</string>
+	<string>Sharing places requires location information.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Singing to the phone, the RGB device changes color with your singing voice.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Set the images of groups&apos; icons and gallery control mode need to use your Photo Library.</string>
+	<string>Set the images of groups' icons and gallery control mode need to use your Photo Library.</string>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>audio</string>
 		<string>bluetooth-central</string>
 		<string>bluetooth-peripheral</string>
-		<string>audio</string>
 	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>

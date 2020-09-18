@@ -79,12 +79,12 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *keyFourRightConstraint;
 
 @property (strong, nonatomic) IBOutlet UIView *mcrView;
-@property (weak, nonatomic) IBOutlet UIButton *remoteBtn24;
-@property (weak, nonatomic) IBOutlet UIButton *remoteBtn25;
-@property (weak, nonatomic) IBOutlet UIButton *remoteBtn26;
-@property (weak, nonatomic) IBOutlet UIButton *remoteBtn27;
 @property (weak, nonatomic) IBOutlet UIButton *remoteBtn28;
 @property (weak, nonatomic) IBOutlet UIButton *remoteBtn29;
+@property (weak, nonatomic) IBOutlet UIButton *remoteBtn30;
+@property (weak, nonatomic) IBOutlet UIButton *remoteBtn31;
+@property (weak, nonatomic) IBOutlet UIButton *remoteBtn32;
+@property (weak, nonatomic) IBOutlet UIButton *remoteBtn33;
 @property (weak, nonatomic) IBOutlet UIImageView *musicRemoteBgImageView;
 
 @end
@@ -149,20 +149,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [_remoteBtn16 setImage:[UIImage imageNamed:@"remotebtn6_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn17 setImage:[UIImage imageNamed:@"remotebtn5_default"] forState:UIControlStateNormal];
             [_remoteBtn17 setImage:[UIImage imageNamed:@"remotebtn5_highlighted"] forState:UIControlStateHighlighted];
-            _remoteBtn11.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn11.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn12.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn12.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn13.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn13.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn14.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn14.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn15.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn15.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn16.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn16.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn17.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn17.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
             UILongPressGestureRecognizer *gesture11 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn11 addGestureRecognizer:gesture11];
             UILongPressGestureRecognizer *gesture12 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
@@ -189,20 +175,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [_remoteBtn16 setImage:[UIImage imageNamed:@"remotebtn0_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn17 setImage:[UIImage imageNamed:@"remotebtn5_default"] forState:UIControlStateNormal];
             [_remoteBtn17 setImage:[UIImage imageNamed:@"remotebtn5_highlighted"] forState:UIControlStateHighlighted];
-            _remoteBtn11.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn11.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn12.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn12.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn13.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn13.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn14.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn14.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn15.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn15.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn16.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn16.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn17.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn17.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
             UILongPressGestureRecognizer *gesture14 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn14 addGestureRecognizer:gesture14];
             UILongPressGestureRecognizer *gesture15 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
@@ -226,18 +198,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [_remoteBtn16 setImage:[UIImage imageNamed:@"remotebtn2_default"] forState:UIControlStateNormal];
             [_remoteBtn16 setImage:[UIImage imageNamed:@"remotebtn2_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn17 removeFromSuperview];
-            _remoteBtn11.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn11.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn12.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn12.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn13.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn13.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn14.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn14.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn15.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn15.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn16.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn16.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
             UILongPressGestureRecognizer *gesture12 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn12 addGestureRecognizer:gesture12];
             UILongPressGestureRecognizer *gesture13 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
@@ -256,19 +216,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
             [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
-            
-            _remoteBtn18.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn18.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn19.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn19.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn20.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn20.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn21.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn21.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn22.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn22.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn23.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn23.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
             
             UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn18 addGestureRecognizer:gesture17];
@@ -295,15 +242,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
             
-            _remoteBtn18.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn18.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn19.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn19.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn20.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn20.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn21.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn21.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            
             UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn18 addGestureRecognizer:gesture17];
             UILongPressGestureRecognizer *gesture18 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
@@ -327,13 +265,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
             [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
-            
-            _remoteBtn18.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn18.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn19.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn19.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn20.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn20.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
             
             UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn18 addGestureRecognizer:gesture17];
@@ -360,11 +291,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
             [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
-            
-            _remoteBtn18.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn18.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn19.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn19.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
             
             UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn18 addGestureRecognizer:gesture17];
@@ -407,23 +333,89 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [self.mcrView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
             [self.mcrView autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [self.mcrView autoSetDimensionsToSize:CGSizeMake(320, 320)];
-            _remoteBtn24.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn24.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn25.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn25.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn26.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn26.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn27.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn27.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn28.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn28.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            _remoteBtn29.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn29.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+            
+            NSMutableAttributedString *psn = [[NSMutableAttributedString alloc] initWithString:@"开/关\nPlay/Stop"];
+            [psn addAttribute:NSForegroundColorAttributeName value:ColorWithAlpha(190, 190, 190, 1) range:NSMakeRange(0, [psn length])];
+            [psn addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:16.0] range:NSMakeRange(0, 3)];
+            [psn addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:10.0] range:NSMakeRange(4, [psn length]-4)];
+            [_remoteBtn30 setAttributedTitle:psn forState:UIControlStateNormal];
+            NSMutableAttributedString *psh = [[NSMutableAttributedString alloc] initWithAttributedString:psn];
+            [psh addAttribute:NSForegroundColorAttributeName value:ColorWithAlpha(65, 92, 165, 1) range:NSMakeRange(0, [psh length])];
+            [_remoteBtn30 setAttributedTitle:psh forState:UIControlStateHighlighted];
+            
+            _remoteBtn30.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            _remoteBtn30.titleLabel.numberOfLines = 2;
+            _remoteBtn30.titleLabel.textAlignment = NSTextAlignmentCenter;
+            
+            NSMutableAttributedString *muten = [[NSMutableAttributedString alloc] initWithString:@"静音\nMute"];
+            [muten addAttribute:NSForegroundColorAttributeName value:ColorWithAlpha(190, 190, 190, 1) range:NSMakeRange(0, [muten length])];
+            [muten addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:16.0] range:NSMakeRange(0, 2)];
+            [muten addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:10.0] range:NSMakeRange(3, [muten length]-3)];
+            [_remoteBtn31 setAttributedTitle:muten forState:UIControlStateNormal];
+            NSMutableAttributedString *muteh = [[NSMutableAttributedString alloc] initWithAttributedString:muten];
+            [muteh addAttribute:NSForegroundColorAttributeName value:ColorWithAlpha(65, 92, 165, 1) range:NSMakeRange(0, [muteh length])];
+            [_remoteBtn31 setAttributedTitle:muteh forState:UIControlStateHighlighted];
+            
+            _remoteBtn31.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            _remoteBtn31.titleLabel.numberOfLines = 2;
+            _remoteBtn31.titleLabel.textAlignment = NSTextAlignmentCenter;
+            
+            NSMutableAttributedString *prevn = [[NSMutableAttributedString alloc] initWithString:@"上一首\nPrev"];
+            [prevn addAttribute:NSForegroundColorAttributeName value:ColorWithAlpha(190, 190, 190, 1) range:NSMakeRange(0, [prevn length])];
+            [prevn addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:16.0] range:NSMakeRange(0, 3)];
+            [prevn addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:10.0] range:NSMakeRange(4, [prevn length]-4)];
+            [_remoteBtn32 setAttributedTitle:prevn forState:UIControlStateNormal];
+            NSMutableAttributedString *prevh = [[NSMutableAttributedString alloc] initWithAttributedString:prevn];
+            [prevh addAttribute:NSForegroundColorAttributeName value:ColorWithAlpha(65, 92, 165, 1) range:NSMakeRange(0, [prevh length])];
+            [_remoteBtn32 setAttributedTitle:prevh forState:UIControlStateHighlighted];
+            
+            _remoteBtn32.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            _remoteBtn32.titleLabel.numberOfLines = 2;
+            _remoteBtn32.titleLabel.textAlignment = NSTextAlignmentCenter;
+            
+            NSMutableAttributedString *nextn = [[NSMutableAttributedString alloc] initWithString:@"下一首\nNext"];
+            [nextn addAttribute:NSForegroundColorAttributeName value:ColorWithAlpha(190, 190, 190, 1) range:NSMakeRange(0, [nextn length])];
+            [nextn addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:16.0] range:NSMakeRange(0, 3)];
+            [nextn addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:10.0] range:NSMakeRange(4, [nextn length]-4)];
+            [_remoteBtn33 setAttributedTitle:nextn forState:UIControlStateNormal];
+            NSMutableAttributedString *nexth = [[NSMutableAttributedString alloc] initWithAttributedString:nextn];
+            [nexth addAttribute:NSForegroundColorAttributeName value:ColorWithAlpha(65, 92, 165, 1) range:NSMakeRange(0, [nexth length])];
+            [_remoteBtn33 setAttributedTitle:nexth forState:UIControlStateHighlighted];
+            
+            _remoteBtn33.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            _remoteBtn33.titleLabel.numberOfLines = 2;
+            _remoteBtn33.titleLabel.textAlignment = NSTextAlignmentCenter;
+            
+            NSMutableAttributedString *voldownn = [[NSMutableAttributedString alloc] initWithString:@"音量减\nVol Down"];
+            [voldownn addAttribute:NSForegroundColorAttributeName value:ColorWithAlpha(190, 190, 190, 1) range:NSMakeRange(0, [voldownn length])];
+            [voldownn addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:16.0] range:NSMakeRange(0, 3)];
+            [voldownn addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:10.0] range:NSMakeRange(4, [voldownn length]-4)];
+            [_remoteBtn28 setAttributedTitle:voldownn forState:UIControlStateNormal];
+            NSMutableAttributedString *voldownh = [[NSMutableAttributedString alloc] initWithAttributedString:voldownn];
+            [voldownh addAttribute:NSForegroundColorAttributeName value:ColorWithAlpha(65, 92, 165, 1) range:NSMakeRange(0, [voldownh length])];
+            [_remoteBtn28 setAttributedTitle:voldownh forState:UIControlStateHighlighted];
+            
+            _remoteBtn28.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            _remoteBtn28.titleLabel.numberOfLines = 2;
+            _remoteBtn28.titleLabel.textAlignment = NSTextAlignmentCenter;
+            
+            NSMutableAttributedString *volupn = [[NSMutableAttributedString alloc] initWithString:@"音量加\nVol Up"];
+            [volupn addAttribute:NSForegroundColorAttributeName value:ColorWithAlpha(190, 190, 190, 1) range:NSMakeRange(0, [volupn length])];
+            [volupn addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:16.0] range:NSMakeRange(0, 3)];
+            [volupn addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:10.0] range:NSMakeRange(4, [volupn length]-4)];
+            [_remoteBtn29 setAttributedTitle:volupn forState:UIControlStateNormal];
+            NSMutableAttributedString *voluph = [[NSMutableAttributedString alloc] initWithAttributedString:volupn];
+            [voluph addAttribute:NSForegroundColorAttributeName value:ColorWithAlpha(65, 92, 165, 1) range:NSMakeRange(0, [voluph length])];
+            [_remoteBtn29 setAttributedTitle:voluph forState:UIControlStateHighlighted];
+            
+            _remoteBtn29.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            _remoteBtn29.titleLabel.numberOfLines = 2;
+            _remoteBtn29.titleLabel.textAlignment = NSTextAlignmentCenter;
             
             UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
-            [_remoteBtn26 addGestureRecognizer:longPressGesture];
+            [_remoteBtn28 addGestureRecognizer:longPressGesture];
             UILongPressGestureRecognizer *longPressGesture1 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
-            [_remoteBtn27 addGestureRecognizer:longPressGesture1];
+            [_remoteBtn29 addGestureRecognizer:longPressGesture1];
             
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configureMusicRemoteCall:) name:@"configureMusicRemoteCall" object:nil];
             
@@ -998,11 +990,11 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         case 6:
             sw = 6;
             break;
-        case 20:
-            sw = 3;
+        case 22:
+            sw = 5;
             break;
-        case 21:
-            sw = 4;
+        case 23:
+            sw = 6;
             break;
         default:
             break;

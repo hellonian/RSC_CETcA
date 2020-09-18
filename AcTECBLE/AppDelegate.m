@@ -13,6 +13,8 @@
 //#import "CSRBluetoothLE.h"
 #import <MBProgressHUD.h>
 
+#import "MyUncaughtExceptionHandler.h"
+
 @interface AppDelegate ()
 
 @end
@@ -92,6 +94,8 @@ static NSString * const sceneListKey = @"com.actec.bluetooth.sceneListKey";
     
     //全局修改菊花颜色
     [UIActivityIndicatorView appearanceWhenContainedInInstancesOfClasses:@[[MBProgressHUD class]]].color = [UIColor whiteColor];
+    
+    [MyUncaughtExceptionHandler setDefaultHandler];
     
     return YES;
 }

@@ -555,7 +555,7 @@ static DataModelManager *manager = nil;
     
     else if ([dataStr hasPrefix:@"eb7f"]) {
         if ([dataStr length]>6) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"LCDRemoteKeyIndexCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"keyIndex":[dataStr substringFromIndex:4]}];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"LCDRemoteKeyIndexCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"keyIndex":[data subdataWithRange:NSMakeRange(2, [data length]-2)]}];
         }
     }
     

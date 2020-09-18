@@ -35,6 +35,7 @@
     UIGestureRecognizerState colorCurrentState;
     
     BOOL appControlling;
+    BOOL groupControlling;
 }
 
 @property (nonatomic, strong) NSMutableDictionary *mcNameDataDic;
@@ -114,169 +115,111 @@
 #pragma mark - LightModelApiDelegate
 
 - (void)didGetLightState:(NSNumber *)deviceId red:(NSNumber *)red green:(NSNumber *)green blue:(NSNumber *)blue level:(NSNumber *)level powerState:(NSNumber *)powerState colorTemperature:(NSNumber *)colorTemperature supports:(NSNumber *)supports meshRequestId:(NSNumber *)meshRequestId {
-    if (appControlling) {
+    NSLog(@"调光回调 deviceId--> %@ powerState--> %@ level--> %@ colorTemperature--> %@ supports--> %@ \n red -> %@ -> green -> %@ blue -> %@ ",deviceId,powerState,level,colorTemperature,supports,red,green,blue);
+    if (groupControlling) {
         return;
     }
-    NSLog(@"调光回调 deviceId--> %@ powerState--> %@ level--> %@ colorTemperature--> %@ supports--> %@ \n red -> %@ -> green -> %@ blue -> %@ ",deviceId,powerState,level,colorTemperature,supports,red,green,blue);
-    BOOL exist = NO;
-    for (DeviceModel *model in _allDevices) {
-        if ([model.deviceId isEqualToNumber:deviceId]) {
-            exist = YES;
-            model.isleave = NO;
-            
-            if ([CSRUtilities belongToFanController:model.shortName]) {
-                model.fanState = [powerState boolValue];
-                model.lampState = [supports boolValue];
-                NSInteger l = [level integerValue];
-                if (l > 0 && l <= 85) {
-                    model.fansSpeed = 0;
-                }else if (l > 85 && l <= 170) {
-                    model.fansSpeed = 1;
-                }else if (l > 170 && l <= 255) {
-                    model.fansSpeed = 2;
-                }
-            }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName]
-                      || [CSRUtilities belongToSocketTwoChannel:model.shortName]
-                      || [CSRUtilities belongToTwoChannelSwitch:model.shortName]) {
-                model.channel1PowerState = [powerState boolValue];
-                model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
-                model.channel2PowerState = [red boolValue];
-                model.channel2Level = [green integerValue] > 3 ? [green integerValue] : 3;
-                model.powerState = @([powerState boolValue] || [red boolValue]);
-                NSInteger l = [level integerValue] > [green integerValue] ? [level integerValue] : [green integerValue];
-                model.level = @(l > 3 ? l : 3);
-            }else if ([CSRUtilities belongToThreeChannelSwitch:model.shortName]
-                      || [CSRUtilities belongToThreeChannelDimmer:model.shortName]) {
-                model.channel1PowerState = [powerState boolValue];
-                model.channel1Level =  [level integerValue] > 3 ? [level integerValue] : 3;
-                model.channel2PowerState = [red boolValue];
-                model.channel2Level = [green integerValue] > 3 ? [green integerValue] : 3;
-                model.channel3PowerState = [blue boolValue];
-                model.channel3Level = [colorTemperature integerValue] > 3 ? [colorTemperature integerValue] : 3;
-                model.powerState = @([powerState boolValue] || [red boolValue] || [blue boolValue]);
-                NSInteger l = ([level integerValue] > [green integerValue] ? [level integerValue] : [green integerValue]) > [colorTemperature integerValue] ? ([level integerValue] > [green integerValue] ? [level integerValue] : [green integerValue]) : [colorTemperature integerValue];
-                model.level = @(l > 3 ? l : 3);
-            }else if ([CSRUtilities belongToTwoChannelCurtainController:model.shortName]) {
-                model.channel1PowerState = [powerState boolValue];
-                model.channel1Level = [level integerValue];
-                model.channel2PowerState = [red boolValue];
-                model.channel2Level = [green integerValue];
-                model.powerState = @([powerState boolValue] || [red boolValue]);
-                NSInteger l = [level integerValue] > [green integerValue] ? [level integerValue] : [green integerValue];
-                model.level = @(l);
-            }else if ([CSRUtilities belongToOneChannelCurtainController:model.shortName]) {
-                model.powerState = powerState;
-                model.channel1PowerState = [powerState boolValue];
-                model.level = level;
-                model.channel1Level = [level integerValue];
-            }else {
-                model.powerState = powerState;
-                model.channel1PowerState = [powerState boolValue];
-                model.level = [level integerValue] > 3 ? level : @3;
-                model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
-                model.red = red;
-                model.green = green;
-                model.blue = blue;
-                model.colorTemperature = colorTemperature;
-                model.supports = supports;
-            }
+    
+    DeviceModel *model;
+    for (DeviceModel *m in _allDevices) {
+        if ([m.deviceId isEqualToNumber:deviceId]) {
+            model = m;
             break;
         }
     }
-    
-    if (!exist) {
-        DeviceModel *model = [[DeviceModel alloc] init];
+    if (!model) {
+        model = [[DeviceModel alloc] init];
         model.deviceId = deviceId;
-        model.isleave = NO;
         CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
         model.shortName = device.shortName;
         model.name = device.name;
-        
-        if ([CSRUtilities belongToFanController:model.shortName]) {
-            model.fanState = [powerState boolValue];
-            model.lampState = [supports boolValue];
-            NSInteger l = [level integerValue];
-            if (l > 0 && l <= 85) {
-                model.fansSpeed = 0;
-            }else if (l > 85 && l <= 170) {
-                model.fansSpeed = 1;
-            }else if (l > 170 && l <= 255) {
-                model.fansSpeed = 2;
-            }
-        }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName]
-                  || [CSRUtilities belongToSocketTwoChannel:model.shortName]
-                  || [CSRUtilities belongToTwoChannelCurtainController:model.shortName]
-                  || [CSRUtilities belongToTwoChannelSwitch:model.shortName]) {
-            model.channel1PowerState = [powerState boolValue];
-            model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
-            model.channel2PowerState = [red boolValue];
-            model.channel2Level = [green integerValue] > 3 ? [green integerValue] : 3;
-            model.powerState = @([powerState boolValue] || [red boolValue]);
-            NSInteger l = [level integerValue] > [green integerValue] ? [level integerValue] : [green integerValue];
-            model.level = @(l > 3 ? l : 3);
-        }else if ([CSRUtilities belongToThreeChannelSwitch:model.shortName]
-                  || [CSRUtilities belongToThreeChannelDimmer:model.shortName]) {
-            model.channel1PowerState = [powerState boolValue];
-            model.channel1Level =  [level integerValue] > 3 ? [level integerValue] : 3;
-            model.channel2PowerState = [red boolValue];
-            model.channel2Level = [green integerValue] > 3 ? [green integerValue] : 3;
-            model.channel3PowerState = [blue boolValue];
-            model.channel3Level = [colorTemperature integerValue] > 3 ? [colorTemperature integerValue] : 3;
-            model.powerState = @([powerState boolValue] || [red boolValue] || [blue boolValue]);
-            NSInteger l = ([level integerValue] > [green integerValue] ? [level integerValue] : [green integerValue]) > [colorTemperature integerValue] ? ([level integerValue] > [green integerValue] ? [level integerValue] : [green integerValue]) : [colorTemperature integerValue];
-            model.level = @(l > 3 ? l : 3);
-        }else {
-            model.powerState = powerState;
-            model.channel1PowerState = [powerState boolValue];
-            model.level = [level integerValue] > 3 ? level : @3;
-            model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
-            model.red = red;
-            model.green = green;
-            model.blue = blue;
-            model.colorTemperature = colorTemperature;
-            model.supports = supports;
-        }
         [_allDevices addObject:model];
     }
+    model.isleave = NO;
+    if ([CSRUtilities belongToFanController:model.shortName]) {
+        model.fanState = [powerState boolValue];
+        model.lampState = [supports boolValue];
+        NSInteger l = [level integerValue];
+        if (l > 0 && l <= 85) {
+            model.fansSpeed = 0;
+        }else if (l > 85 && l <= 170) {
+            model.fansSpeed = 1;
+        }else if (l > 170 && l <= 255) {
+            model.fansSpeed = 2;
+        }
+    }else if ([CSRUtilities belongToTwoChannelDimmer:model.shortName]
+              || [CSRUtilities belongToSocketTwoChannel:model.shortName]
+              || [CSRUtilities belongToTwoChannelCurtainController:model.shortName]
+              || [CSRUtilities belongToTwoChannelSwitch:model.shortName]) {
+        model.channel1PowerState = [powerState boolValue];
+        model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
+        model.channel2PowerState = [red boolValue];
+        model.channel2Level = [green integerValue] > 3 ? [green integerValue] : 3;
+        model.powerState = @([powerState boolValue] || [red boolValue]);
+        NSInteger l = [level integerValue] > [green integerValue] ? [level integerValue] : [green integerValue];
+        model.level = @(l > 3 ? l : 3);
+    }else if ([CSRUtilities belongToThreeChannelSwitch:model.shortName]
+              || [CSRUtilities belongToThreeChannelDimmer:model.shortName]) {
+        model.channel1PowerState = [powerState boolValue];
+        model.channel1Level =  [level integerValue] > 3 ? [level integerValue] : 3;
+        model.channel2PowerState = [red boolValue];
+        model.channel2Level = [green integerValue] > 3 ? [green integerValue] : 3;
+        model.channel3PowerState = [blue boolValue];
+        model.channel3Level = [colorTemperature integerValue] > 3 ? [colorTemperature integerValue] : 3;
+        model.powerState = @([powerState boolValue] || [red boolValue] || [blue boolValue]);
+        NSInteger l = ([level integerValue] > [green integerValue] ? [level integerValue] : [green integerValue]) > [colorTemperature integerValue] ? ([level integerValue] > [green integerValue] ? [level integerValue] : [green integerValue]) : [colorTemperature integerValue];
+        model.level = @(l > 3 ? l : 3);
+    }else {
+        model.powerState = powerState;
+        model.channel1PowerState = [powerState boolValue];
+        model.level = [level integerValue] > 3 ? level : @3;
+        model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
+        model.red = red;
+        model.green = green;
+        model.blue = blue;
+        model.colorTemperature = colorTemperature;
+        model.supports = supports;
+    }
     
+    if (appControlling) {
+        return;
+    }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
 }
 
 #pragma mark - PowerModelApiDelegate
 
 - (void)didGetPowerState:(NSNumber *)deviceId state:(NSNumber *)state meshRequestId:(NSNumber *)meshRequestId {
-    if (appControlling) {
+    if (groupControlling) {
         return;
     }
     NSLog(@"开关回调 deviceId --> %@ powerState--> %@",deviceId,state);
-    BOOL exist = NO;
-    for (DeviceModel *model in _allDevices) {
-        if ([model.deviceId isEqualToNumber:deviceId]) {
-            model.isleave = NO;
-            model.powerState = state;
-            model.channel1PowerState = [state boolValue];
-            model.channel2PowerState = [state boolValue];
-            model.channel3PowerState = [state boolValue];
-            model.fanState = [state boolValue];
-            model.lampState = [state boolValue];
+    DeviceModel *model;
+    for (DeviceModel *m in _allDevices) {
+        if ([m.deviceId isEqualToNumber:deviceId]) {
+            model = m;
             break;
         }
     }
-    if (!exist) {
-        DeviceModel *model = [[DeviceModel alloc] init];
+    if (!model) {
+        model = [[DeviceModel alloc] init];
         model.deviceId = deviceId;
-        model.isleave = NO;
         CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
         model.shortName = device.shortName;
         model.name = device.name;
-        model.powerState = state;
-        model.channel1PowerState = [state boolValue];
-        model.channel2PowerState = [state boolValue];
-        model.channel3PowerState = [state boolValue];
-        model.fanState = [state boolValue];
-        model.lampState = [state boolValue];
+        [_allDevices addObject:model];
     }
+    model.isleave = NO;
+    model.powerState = state;
+    model.channel1PowerState = [state boolValue];
+    model.channel2PowerState = [state boolValue];
+    model.channel3PowerState = [state boolValue];
+    model.fanState = [state boolValue];
+    model.lampState = [state boolValue];
     
+    if (appControlling) {
+        return;
+    }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"state":state,@"deviceId":deviceId,@"channel":@(1)}];
 }
 
@@ -322,9 +265,8 @@
             model.lampState = powerState;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@1}];
         }else {
-            [[PowerModelApi sharedInstance] setPowerState:deviceId state:@(powerState) success:nil failure:^(NSError * _Nullable error) {
-                
-            }];
+            groupControlling = YES;
+            [[PowerModelApi sharedInstance] setPowerState:deviceId state:@(powerState) success:nil failure:nil];
             CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:deviceId];
             for (CSRDeviceEntity *member in area.devices) {
                 for (DeviceModel *model in _allDevices) {
@@ -430,6 +372,9 @@
             
         }else if ([channel integerValue] == 8) {
             
+            d.channel1PowerState = powerState;
+            d.channel2PowerState = powerState;
+            d.channel3PowerState = powerState;
             l = (d.channel1Level > d.channel2Level ? d.channel1Level : d.channel2Level) > d.channel3Level ? (d.channel1Level > d.channel2Level ? d.channel1Level : d.channel2Level) : d.channel3Level;
             if ([CSRUtilities belongToThreeChannelSwitch:d.shortName]
                 || [CSRUtilities belongToThreeChannelDimmer:d.shortName]) {
@@ -468,16 +413,17 @@
         NSNumber *deviceId = infotimer.userInfo;
         if (moveDirection == PanGestureMoveDirectionHorizontal) {
             if ([currentChannel integerValue] == 1) {
-                [[LightModelApi sharedInstance] setLevel:deviceId level:currentLevel success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-                    
-                } failure:^(NSError * _Nullable error) {
-                    NSLog(@"error : >>>> %@",error);
-                    DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
-                    model.isleave = YES;
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
-                }];
                 
                 if ([deviceId integerValue] > 32768) {
+                    [[LightModelApi sharedInstance] setLevel:deviceId level:currentLevel success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                        
+                    } failure:^(NSError * _Nullable error) {
+                        NSLog(@"error : >>>> %@",error);
+                        DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
+                        model.isleave = YES;
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
+                    }];
+                    
                     DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
                     if ([currentLevel integerValue] == 0) {
                         model.powerState = @(0);
@@ -511,6 +457,9 @@
                     }
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@1}];
                 }else {
+                    groupControlling = YES;
+                    [[LightModelApi sharedInstance] setLevel:deviceId level:currentLevel success:nil failure:nil];
+                    
                     CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:deviceId];
                     for (CSRDeviceEntity *member in area.devices) {
                         for (DeviceModel *model in _allDevices) {
@@ -733,14 +682,17 @@
             DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
             model.powerState = @1;
             model.colorTemperature = CTCurrentCT;
+            model.supports = @1;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@1}];
         }else {
+            groupControlling = YES;
             CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:deviceId];
             for (CSRDeviceEntity *member in area.devices) {
                 for (DeviceModel *model in _allDevices) {
                     if ([model.deviceId isEqualToNumber:member.deviceId]) {
                         model.powerState = @1;
                         model.colorTemperature = CTCurrentCT;
+                        model.supports = @1;
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceId,@"channel":@1}];
                         break;
                     }
@@ -761,13 +713,18 @@
     appControlling = YES;
     [self performSelector:@selector(cancelAppControlling) withObject:nil afterDelay:4.0];
     
-    [[LightModelApi sharedInstance] setColor:deviceId color:color duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-        
-    } failure:^(NSError * _Nullable error) {
-        DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
-        model.isleave = YES;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
-    }];
+    if ([deviceId integerValue] > 32768) {
+        [[LightModelApi sharedInstance] setColor:deviceId color:color duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+            
+        } failure:^(NSError * _Nullable error) {
+            DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
+            model.isleave = YES;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
+        }];
+    }else {
+        groupControlling = YES;
+        [[LightModelApi sharedInstance] setColor:deviceId color:color duration:@0 success:nil failure:nil];
+    }
     
     DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
     model.powerState = @1;
@@ -802,15 +759,16 @@
         [self performSelector:@selector(cancelAppControlling) withObject:nil afterDelay:4.0];
         
         NSNumber *deviceId = infoTimer.userInfo;
-        [[LightModelApi sharedInstance] setColor:deviceId color:currentColor duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-            
-        } failure:^(NSError * _Nullable error) {
-            DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
-            model.isleave = YES;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
-        }];
         
         if ([deviceId integerValue] > 32768) {
+            [[LightModelApi sharedInstance] setColor:deviceId color:currentColor duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                
+            } failure:^(NSError * _Nullable error) {
+                DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
+                model.isleave = YES;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
+            }];
+            
             DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
             model.powerState = @1;
             CGFloat red,green,blue,alpha;
@@ -819,8 +777,12 @@
                 model.green = @(green * 255);
                 model.blue = @(blue * 255);
             }
+            model.supports = @0;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@1}];
         }else {
+            groupControlling = YES;
+            [[LightModelApi sharedInstance] setColor:deviceId color:currentColor duration:@0 success:nil failure:nil];
+            
             CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:deviceId];
             for (CSRDeviceEntity *member in area.devices) {
                 for (DeviceModel *model in _allDevices) {
@@ -832,6 +794,7 @@
                             model.green = @(green * 255);
                             model.blue = @(blue * 255);
                         }
+                        model.supports = @0;
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceId,@"channel":@1}];
                         break;
                     }
@@ -849,34 +812,46 @@
 
 //物理按钮反馈
 - (void)physicalButtonActionCall: (NSNotification *)notification {
-    if (appControlling) {
+    if (groupControlling) {
         return;
     }
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *state = userInfo[@"powerState"];
     NSNumber *deviceId = userInfo[@"deviceId"];
     NSNumber *level = userInfo[@"level"];
-    for (DeviceModel *model in _allDevices) {
-        if ([model.deviceId isEqualToNumber:deviceId]) {
-            model.isleave = NO;
-            model.powerState = state;
-            model.channel1PowerState = [state boolValue];
-            model.level = [level integerValue] > 3 ? level : @3;
-            model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
-            //旧款窗帘逻辑错误的矫正
-            if ([model.shortName isEqualToString:@"C300IB"] || [model.shortName isEqualToString:@"C300IBH"]) {
-                model.powerState = [level integerValue] == 255? @(0):@(1);
-            }
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
-            
-            return;
+    DeviceModel *model;
+    for (DeviceModel *m in _allDevices) {
+        if ([m.deviceId isEqualToNumber:deviceId]) {
+            model = m;
+            break;
         }
     }
+    if (!model) {
+        model = [[DeviceModel alloc] init];
+        model.deviceId = deviceId;
+        CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+        model.shortName = device.shortName;
+        model.name = device.name;
+        [_allDevices addObject:model];
+    }
+    model.isleave = NO;
+    model.powerState = state;
+    model.channel1PowerState = [state boolValue];
+    model.level = [level integerValue] > 3 ? level : @3;
+    model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
+    //旧款窗帘逻辑错误的矫正
+    if ([model.shortName isEqualToString:@"C300IB"] || [model.shortName isEqualToString:@"C300IBH"]) {
+        model.powerState = [level integerValue] == 255? @(0):@(1);
+    }
+    
+    if (appControlling) {
+        return;
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
 }
 
 - (void)RGBCWDeviceActionCall: (NSNotification *)notification {
-    if (appControlling) {
+    if (groupControlling) {
         return;
     }
     NSDictionary *userInfo = notification.userInfo;
@@ -888,28 +863,40 @@
     NSNumber *green = userInfo[@"green"];
     NSNumber *blue = userInfo[@"blue"];
     NSNumber *level = userInfo[@"level"];
-    for (DeviceModel *model in _allDevices) {
-        if ([model.deviceId isEqualToNumber:deviceId]) {
-            model.isleave = NO;
-            model.powerState = state;
-            model.channel1PowerState = [state boolValue];
-            model.level = [level integerValue] > 3 ? level : @3;
-            model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
-            model.supports = supports;
-            model.colorTemperature = temperature;
-            model.red = red;
-            model.green = green;
-            model.blue = blue;
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
-            
-            return;
+    DeviceModel *model;
+    for (DeviceModel *m in _allDevices) {
+        if ([m.deviceId isEqualToNumber:deviceId]) {
+            model = m;
+            break;
         }
     }
+    if (!model) {
+        model = [[DeviceModel alloc] init];
+        model.deviceId = deviceId;
+        CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+        model.shortName = device.shortName;
+        model.name = device.name;
+        [_allDevices addObject:model];
+    }
+    model.isleave = NO;
+    model.powerState = state;
+    model.channel1PowerState = [state boolValue];
+    model.level = [level integerValue] > 3 ? level : @3;
+    model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
+    model.supports = supports;
+    model.colorTemperature = temperature;
+    model.red = red;
+    model.green = green;
+    model.blue = blue;
+    
+    if (appControlling) {
+        return;
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
 }
 
 - (void)fanControllerCall: (NSNotification *)notification {
-    if (appControlling) {
+    if (groupControlling) {
         return;
     }
     NSDictionary *userInfo = notification.userInfo;
@@ -917,23 +904,35 @@
     NSNumber *fanState = userInfo[@"fanState"];
     NSNumber *fanSpeed = userInfo[@"fanSpeed"];
     NSNumber *lampState = userInfo[@"lampState"];
-    for (DeviceModel *model in _allDevices) {
-        if ([model.deviceId isEqualToNumber:deviceId]) {
-            model.isleave = NO;
-            model.fanState = [fanState boolValue];
-            model.fansSpeed = [fanSpeed intValue];
-            model.lampState = [lampState boolValue];
-            model.powerState = @([fanState boolValue] || [lampState boolValue]);
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
-            
-            return;
+    DeviceModel *model;
+    for (DeviceModel *m in _allDevices) {
+        if ([m.deviceId isEqualToNumber:deviceId]) {
+            model = m;
+            break;
         }
     }
+    if (!model) {
+        model = [[DeviceModel alloc] init];
+        model.deviceId = deviceId;
+        CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+        model.shortName = device.shortName;
+        model.name = device.name;
+        [_allDevices addObject:model];
+    }
+    model.isleave = NO;
+    model.fanState = [fanState boolValue];
+    model.fansSpeed = [fanSpeed intValue];
+    model.lampState = [lampState boolValue];
+    model.powerState = @([fanState boolValue] || [lampState boolValue]);
+    
+    if (appControlling) {
+        return;
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
 }
 
 - (void)multichannelActionCall:(NSNotification *)notification {
-    if (appControlling) {
+    if (groupControlling) {
         return;
     }
     NSDictionary *userInfo = notification.userInfo;
@@ -941,102 +940,129 @@
     NSNumber *channel = userInfo[@"channel"];
     NSNumber *level = userInfo[@"level"];
     NSNumber *state = userInfo[@"state"];
-    for (DeviceModel *model in _allDevices) {
-        if ([model.deviceId isEqualToNumber:deviceId]) {
-            model.isleave = NO;
-            if ([channel integerValue] == 2) {
-                model.channel1PowerState = [state boolValue];
-                model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
-            }else if ([channel integerValue] == 3) {
-                model.channel2PowerState = [state boolValue];
-                model.channel2Level = [level integerValue] > 3 ? [level integerValue] : 3;
-            }else if ([channel integerValue] == 5) {
-                model.channel3PowerState = [state boolValue];
-                model.channel3Level = [level integerValue] > 3 ? [level integerValue] : 3;
-            }else if ([channel integerValue] == 4) {
-                model.channel1PowerState = [state boolValue];
-                model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
-                model.channel2PowerState = [state boolValue];
-                model.channel2Level = [level integerValue] > 3 ? [level integerValue] : 3;
-            }else if ([channel integerValue] == 7) {
-                model.channel2PowerState = [state boolValue];
-                model.channel2Level = [level integerValue] > 3 ? [level integerValue] : 3;
-                model.channel3PowerState = [state boolValue];
-                model.channel3Level = [level integerValue] > 3 ? [level integerValue] : 3;
-            }else if ([channel integerValue] == 6) {
-                model.channel1PowerState = [state boolValue];
-                model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
-                model.channel3PowerState = [state boolValue];
-                model.channel3Level = [level integerValue] > 3 ? [level integerValue] : 3;
-            }else if ([channel integerValue] == 8) {
-                model.channel1PowerState = [state boolValue];
-                model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
-                model.channel2PowerState = [state boolValue];
-                model.channel2Level = [level integerValue] > 3 ? [level integerValue] : 3;
-                model.channel3PowerState = [state boolValue];
-                model.channel3Level = [level integerValue] > 3 ? [level integerValue] : 3;
-            }
-            if ([CSRUtilities belongToTwoChannelDimmer:model.shortName]
-                || [CSRUtilities belongToTwoChannelSwitch:model.shortName]
-                || [CSRUtilities belongToSocketTwoChannel:model.shortName]) {
-                model.powerState = @(model.channel1PowerState || model.channel2PowerState);
-                model.level = @(model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level);
-            }else if ([CSRUtilities belongToThreeChannelSwitch:model.shortName]
-                      || [CSRUtilities belongToThreeChannelDimmer:model.shortName]) {
-                model.powerState = @(model.channel1PowerState || model.channel2PowerState || model.channel3PowerState);
-                model.level = @((model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level) > model.channel3Level ? (model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level) : model.channel3Level);
-            }else if ([CSRUtilities belongToTwoChannelCurtainController:model.shortName]) {
-                if ([channel integerValue] == 2) {
-                    model.channel1PowerState = [state boolValue];
-                    model.channel1Level = [level integerValue];
-                }else if ([channel integerValue] == 3) {
-                    model.channel2PowerState = [state boolValue];
-                    model.channel2Level = [level integerValue];
-                }else if ([channel integerValue] == 4) {
-                    model.channel1PowerState = [state boolValue];
-                    model.channel1Level = [level integerValue];
-                    model.channel2PowerState = [state boolValue];
-                    model.channel2Level = [level integerValue];
-                }
-                model.powerState = @(model.channel1PowerState || model.channel2PowerState);
-                model.level = @(model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level);
-            }else if ([CSRUtilities belongToOneChannelCurtainController:model.shortName]) {
-                if ([channel integerValue] == 2) {
-                    model.channel1PowerState = [state boolValue];
-                    model.channel1Level = [level integerValue];
-                    model.powerState = state;
-                    model.level = level;
-                }
-            }else {
-                model.powerState = @(model.channel1PowerState);
-                model.level = @(model.channel1Level > 3 ? model.channel1Level : 3);
-            }
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":channel}];
-            
-            return;
+    DeviceModel *model;
+    for (DeviceModel *m in _allDevices) {
+        if ([m.deviceId isEqualToNumber:deviceId]) {
+            model = m;
+            break;
         }
     }
+    if (!model) {
+        model = [[DeviceModel alloc] init];
+        model.deviceId = deviceId;
+        CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+        model.shortName = device.shortName;
+        model.name = device.name;
+        [_allDevices addObject:model];
+    }
+    model.isleave = NO;
+    if ([channel integerValue] == 2) {
+        model.channel1PowerState = [state boolValue];
+        model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
+    }else if ([channel integerValue] == 3) {
+        model.channel2PowerState = [state boolValue];
+        model.channel2Level = [level integerValue] > 3 ? [level integerValue] : 3;
+    }else if ([channel integerValue] == 5) {
+        model.channel3PowerState = [state boolValue];
+        model.channel3Level = [level integerValue] > 3 ? [level integerValue] : 3;
+    }else if ([channel integerValue] == 4) {
+        model.channel1PowerState = [state boolValue];
+        model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
+        model.channel2PowerState = [state boolValue];
+        model.channel2Level = [level integerValue] > 3 ? [level integerValue] : 3;
+    }else if ([channel integerValue] == 7) {
+        model.channel2PowerState = [state boolValue];
+        model.channel2Level = [level integerValue] > 3 ? [level integerValue] : 3;
+        model.channel3PowerState = [state boolValue];
+        model.channel3Level = [level integerValue] > 3 ? [level integerValue] : 3;
+    }else if ([channel integerValue] == 6) {
+        model.channel1PowerState = [state boolValue];
+        model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
+        model.channel3PowerState = [state boolValue];
+        model.channel3Level = [level integerValue] > 3 ? [level integerValue] : 3;
+    }else if ([channel integerValue] == 8) {
+        model.channel1PowerState = [state boolValue];
+        model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
+        model.channel2PowerState = [state boolValue];
+        model.channel2Level = [level integerValue] > 3 ? [level integerValue] : 3;
+        model.channel3PowerState = [state boolValue];
+        model.channel3Level = [level integerValue] > 3 ? [level integerValue] : 3;
+    }
+    if ([CSRUtilities belongToTwoChannelDimmer:model.shortName]
+        || [CSRUtilities belongToTwoChannelSwitch:model.shortName]
+        || [CSRUtilities belongToSocketTwoChannel:model.shortName]) {
+        model.powerState = @(model.channel1PowerState || model.channel2PowerState);
+        model.level = @(model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level);
+    }else if ([CSRUtilities belongToThreeChannelSwitch:model.shortName]
+              || [CSRUtilities belongToThreeChannelDimmer:model.shortName]) {
+        model.powerState = @(model.channel1PowerState || model.channel2PowerState || model.channel3PowerState);
+        model.level = @((model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level) > model.channel3Level ? (model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level) : model.channel3Level);
+    }else if ([CSRUtilities belongToTwoChannelCurtainController:model.shortName]) {
+        if ([channel integerValue] == 2) {
+            model.channel1PowerState = [state boolValue];
+            model.channel1Level = [level integerValue];
+        }else if ([channel integerValue] == 3) {
+            model.channel2PowerState = [state boolValue];
+            model.channel2Level = [level integerValue];
+        }else if ([channel integerValue] == 4) {
+            model.channel1PowerState = [state boolValue];
+            model.channel1Level = [level integerValue];
+            model.channel2PowerState = [state boolValue];
+            model.channel2Level = [level integerValue];
+        }
+        model.powerState = @(model.channel1PowerState || model.channel2PowerState);
+        model.level = @(model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level);
+    }else if ([CSRUtilities belongToOneChannelCurtainController:model.shortName]) {
+        if ([channel integerValue] == 2) {
+            model.channel1PowerState = [state boolValue];
+            model.channel1Level = [level integerValue];
+            model.powerState = state;
+            model.level = level;
+        }
+    }else {
+        model.powerState = @(model.channel1PowerState);
+        model.level = @(model.channel1Level > 3 ? model.channel1Level : 3);
+    }
+    
+    if (appControlling) {
+        return;
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":channel}];
+    
 }
 
 - (void)childrenModelState: (NSNotification *)notification {
-    if (appControlling) {
+    if (groupControlling) {
         return;
     }
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
     NSNumber *state1 = userInfo[@"state1"];
     NSNumber *state2 = userInfo[@"state2"];
-    [_allDevices enumerateObjectsUsingBlock:^(DeviceModel *model, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([model.deviceId isEqualToNumber:deviceId]) {
-            model.childrenState1 = [state1 boolValue];
-            model.childrenState2 = [state2 boolValue];
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@4}];
-            
-            *stop = YES;
+    
+    DeviceModel *model;
+    for (DeviceModel *m in _allDevices) {
+        if ([m.deviceId isEqualToNumber:deviceId]) {
+            model = m;
+            break;
         }
-    }];
+    }
+    if (!model) {
+        model = [[DeviceModel alloc] init];
+        model.deviceId = deviceId;
+        CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+        model.shortName = device.shortName;
+        model.name = device.name;
+        [_allDevices addObject:model];
+    }
+    model.isleave = NO;
+    model.childrenState1 = [state1 boolValue];
+    model.childrenState2 = [state2 boolValue];
+    
+    if (appControlling) {
+        return;
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@4}];
 }
 
 - (void)colorfulAction:(NSNumber *)deviceId timeInterval:(NSTimeInterval)timeInterval hues:(NSArray *)huesAry colorSaturation:(NSNumber *)colorSat rgbSceneId:(NSNumber *)rgbSceneId {
@@ -1244,6 +1270,32 @@
                     model.powerState = @(model.channel1PowerState || model.channel2PowerState);
                     model.level = @(model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level);
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@([member.channel integerValue]+1)}];
+                }else if ([CSRUtilities belongToThreeChannelDimmer:model.shortName]) {
+                    if ([member.channel integerValue] == 1) {
+                        if ([member.eveType integerValue] == 17) {
+                            model.channel1PowerState = NO;
+                        }else if ([member.eveType integerValue] == 18) {
+                            model.channel1PowerState = YES;
+                            model.channel1Level = [member.eveD0 integerValue];
+                        }
+                    }else if ([member.channel integerValue] == 2) {
+                        if ([member.eveType integerValue] == 17) {
+                            model.channel2PowerState = NO;
+                        }else if ([member.eveType integerValue] == 18) {
+                            model.channel2PowerState = YES;
+                            model.channel2Level = [member.eveD0 integerValue];
+                        }
+                    }else if ([member.channel integerValue] == 4) {
+                        if ([member.eveType integerValue] == 17) {
+                            model.channel3PowerState = NO;
+                        }else if ([member.eveType integerValue] == 18) {
+                            model.channel3PowerState = YES;
+                            model.channel3Level = [member.eveD0 integerValue];
+                        }
+                    }
+                    model.powerState = @(model.channel1PowerState || model.channel2PowerState || model.channel3PowerState);
+                    model.level = @((model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level) > model.channel3Level ? (model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level) : model.channel3Level);
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@([member.channel integerValue]+1)}];
                 }else if ([CSRUtilities belongToCWDevice:model.shortName]) {
                     if ([member.eveType integerValue] == 17) {
                         model.channel1PowerState = NO;
@@ -1251,7 +1303,7 @@
                     }else if ([member.eveType integerValue] == 25) {
                         model.channel1PowerState = YES;
                         model.channel1Level = [member.eveD0 integerValue];
-                        model.colorTemperature = @([member.eveD1 integerValue] * 256 + [member.eveD2 integerValue]);
+                        model.colorTemperature = @([member.eveD2 integerValue] * 256 + [member.eveD1 integerValue]);
                         model.level = member.eveD0;
                     }
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@1}];
@@ -1282,13 +1334,15 @@
                         model.supports = @0;
                         model.powerState = @1;
                         model.level = member.eveD0;
+                        model.supports = @0;
                     }else if ([member.eveType integerValue] == 25) {
                         model.channel1PowerState = YES;
                         model.channel1Level = [member.eveD0 integerValue];
-                        model.colorTemperature = @([member.eveD1 integerValue] * 256 + [member.eveD2 integerValue]);
+                        model.colorTemperature = @([member.eveD2 integerValue] * 256 + [member.eveD1 integerValue]);
                         model.supports = @1;
                         model.powerState = @1;
                         model.level = member.eveD0;
+                        model.supports = @1;
                     }
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@1}];
                 }else if ([CSRUtilities belongToSocketOneChannel:model.shortName]) {
@@ -1341,6 +1395,11 @@
                     model.fansSpeed = [member.eveD1 intValue];
                     model.lampState = [member.eveD2 boolValue];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@1}];
+                }else if ([CSRUtilities belongToMusicController:model.shortName]) {
+                    model.mcCurrentChannel = [member.channel integerValue];
+                    model.mcStatus = [member.eveD0 integerValue];
+                    model.mcVoice = [member.eveD1 integerValue];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@1}];
                 }
                 break;
             }
@@ -1350,6 +1409,7 @@
 
 - (void)cancelAppControlling {
     appControlling = NO;
+    groupControlling = NO;
 }
 
 - (void)remoteControlScene: (NSNotification *)notification {
@@ -1422,25 +1482,11 @@
 }
 
 - (void)refreshDeviceID:(NSNumber *)deviceID mcChannelValid:(NSInteger)mcChannelValid mcStatus:(NSInteger)mcStatus mcVoice:(NSInteger)mcVoice {
-    if (appControlling) {
-        return;
-    }
     for (DeviceModel *model in _allDevices) {
         if ([model.deviceId isEqualToNumber:deviceID] && model.mcCurrentChannel == mcChannelValid) {
             model.mcStatus = mcStatus;
             model.mcVoice = mcVoice;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshMCChannel" object:self userInfo:@{@"deviceId":deviceID}];
-            NSString *hex = [CSRUtilities stringWithHexNumber:mcChannelValid];
-            NSString *bin = [CSRUtilities getBinaryByhex:hex];
-            for (int i = 0; i < [bin length]; i ++) {
-                NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
-                if ([bit boolValue]) {
-                    Byte byte[] = {0xea, 0x81, i, 0x00, 0x00};
-                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
-                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceID data:cmd];
-                    break;
-                }
-            }
             return;
         }
     }
@@ -1553,9 +1599,6 @@
 }
 
 - (void)controlMC:(NSNumber *)deviceID data:(NSData *)cmd {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(cancelAppControlling) object:nil];
-    appControlling = YES;
-    [self performSelector:@selector(cancelAppControlling) withObject:nil afterDelay:4.0];
     [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceID data:cmd];
 }
 

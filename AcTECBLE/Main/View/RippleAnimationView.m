@@ -109,9 +109,9 @@ static double const animationDuration = 3;
     
     if (_animationType == AnimationTypeWithBackground) {
         pulsingLayer.backgroundColor = ColorWithAlpha(255, 216, 87, 0.5).CGColor;
-        pulsingLayer.borderWidth = 0.5;
+        pulsingLayer.borderWidth = 0.5f;
     } else {
-        pulsingLayer.borderWidth = 1.f;
+        pulsingLayer.borderWidth = 1.5f;
     }
     
     pulsingLayer.borderColor = ColorWithAlpha(255, 216, 87, 0.5).CGColor;
@@ -156,10 +156,10 @@ static double const animationDuration = 3;
     CAKeyframeAnimation *borderColorAnimation = [CAKeyframeAnimation animation];
     
     borderColorAnimation.keyPath = @"borderColor";
-    borderColorAnimation.values = @[(__bridge id)ColorWithAlpha(234, 94, 18, 0.4).CGColor,
-                                    (__bridge id)ColorWithAlpha(234, 94, 18, 0.4).CGColor,
-                                    (__bridge id)ColorWithAlpha(234, 94, 18, 0.1).CGColor,
-                                    (__bridge id)ColorWithAlpha(234, 94, 18, 0).CGColor];
+    borderColorAnimation.values = @[(__bridge id)ColorWithAlpha(255, 255, 255, 0.4).CGColor,
+                                    (__bridge id)ColorWithAlpha(255, 255, 255, 0.4).CGColor,
+                                    (__bridge id)ColorWithAlpha(255, 255, 255, 0.1).CGColor,
+                                    (__bridge id)ColorWithAlpha(255, 255, 255, 0).CGColor];
     borderColorAnimation.keyTimes = @[@0.3,@0.6,@0.9,@1];
     return borderColorAnimation;
 }

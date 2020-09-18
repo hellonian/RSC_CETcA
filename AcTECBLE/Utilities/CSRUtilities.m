@@ -1164,7 +1164,8 @@
         || [kLCDRemote containsObject:shortName]
         || [kThreeChannelSwitchs containsObject:shortName]
         || [kMusicController containsObject:shortName]
-        || [kMusicControlRemote containsObject:shortName]) {
+        || [kMusicControlRemote containsObject:shortName]
+        || [kThreeChannelDimmers containsObject:shortName]) {
         return YES;
     }
     return NO;

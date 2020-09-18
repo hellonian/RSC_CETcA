@@ -99,6 +99,9 @@
 @property (strong, nonatomic) IBOutlet UIView *levelSliderChannelTwoView;
 @property (weak, nonatomic) IBOutlet UISlider *levelSliderChannelTwo;
 @property (weak, nonatomic) IBOutlet UILabel *levelLabelChannelTwo;
+@property (strong, nonatomic) IBOutlet UIView *levelSliderChannelThreeView;
+@property (weak, nonatomic) IBOutlet UISlider *levelSliderChannelThree;
+@property (weak, nonatomic) IBOutlet UILabel *levelLabelChannelThree;
 
 @end
 
@@ -334,12 +337,18 @@
             _scrollView.contentSize = CGSizeMake(1, 386);
         }
         
+        else if ([CSRUtilities belongToThreeChannelDimmer:_deviceEn.shortName]) {
+            [self addSubviewBrightnessView];
+            [self addSubViewChannelTwoBrightnessView];
+            [self addSubViewChannelThreeBrightnessView];
+            _scrollView.contentSize = CGSizeMake(1, 514);
+        }
+        
         self.navigationItem.title = _deviceEn.name;
         self.nameTF.text = _deviceEn.name;
         self.originalName = _deviceEn.name;
         
-        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-        NSString *macAddr = [deviceEntity.uuid substringFromIndex:24];
+        NSString *macAddr = [_deviceEn.uuid substringFromIndex:24];
         NSString *doneTitle = @"";
         int count = 0;
         for (int i = 0; i<macAddr.length; i++) {
@@ -352,7 +361,7 @@
         }
         self.macAddressLabel.text = doneTitle;
         
-        if ([deviceEntity.hwVersion integerValue]==2) {
+        if ([_deviceEn.hwVersion integerValue]==2) {
             NSMutableString *mutStr = [NSMutableString stringWithString:_deviceEn.shortName];
             NSRange range = {0,_deviceEn.shortName.length};
             [mutStr replaceOccurrencesOfString:@"/" withString:@"" options:NSLiteralSearch range:range];
@@ -364,7 +373,7 @@
                 NSDictionary *dic = (NSDictionary *)responseObject;
                 latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
                 downloadAddress = dic[@"Download_address"];
-                if ([deviceEntity.mcuSVersion integerValue]<latestMCUSVersion) {
+                if ([_deviceEn.mcuSVersion integerValue]<latestMCUSVersion) {
                     updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
                     [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
                     [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
@@ -593,6 +602,20 @@
     [_levelSliderChannelTwoView autoAlignAxisToSuperviewAxis:ALAxisVertical];
 }
 
+- (void)addSubViewChannelThreeBrightnessView {
+    [_scrollView addSubview:_powerSwitchChannelThreeView];
+    [_powerSwitchChannelThreeView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_levelSliderChannelTwoView withOffset:20.0];
+    [_powerSwitchChannelThreeView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [_powerSwitchChannelThreeView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+    [_powerSwitchChannelThreeView autoSetDimension:ALDimensionHeight toSize:44.0];
+    
+    [_scrollView addSubview:_levelSliderChannelThreeView];
+    [_levelSliderChannelThreeView autoSetDimension:ALDimensionHeight toSize:44.0];
+    [_levelSliderChannelThreeView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_powerSwitchChannelThreeView withOffset:20.0];
+    [_levelSliderChannelThreeView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+    [_levelSliderChannelThreeView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -737,6 +760,35 @@
             self.levelLabelChannelTwo.text = @"0%";
         }
         return;
+    }else if ([CSRUtilities belongToThreeChannelDimmer:deviceM.shortName]) {
+        if (deviceM.channel1PowerState) {
+            [self.powerStateSwitch setOn:YES];
+            [self.levelSlider setValue:deviceM.channel1Level animated:YES];
+            self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",deviceM.channel1Level/255.0*100];
+        }else {
+            [self.powerStateSwitch setOn:NO];
+            [self.levelSlider setValue:0 animated:YES];
+            self.levelLabel.text = @"0%";
+        }
+        if (deviceM.channel2PowerState) {
+            [self.powerSwitchChannelTwo setOn:YES];
+            [self.levelSliderChannelTwo setValue:deviceM.channel2Level animated:YES];
+            self.levelLabelChannelTwo.text = [NSString stringWithFormat:@"%.f%%",deviceM.channel2Level/255.0*100];
+        }else {
+            [self.powerSwitchChannelTwo setOn:NO];
+            [self.levelSliderChannelTwo setValue:0 animated:YES];
+            self.levelLabelChannelTwo.text = @"0%";
+        }
+        if (deviceM.channel3PowerState) {
+            [self.powerSwitchChannelThree setOn:YES];
+            [self.levelSliderChannelThree setValue:deviceM.channel3Level animated:YES];
+            self.levelLabelChannelThree.text = [NSString stringWithFormat:@"%.f%%",deviceM.channel3Level/255.0*100];
+        }else {
+            [self.powerSwitchChannelThree setOn:NO];
+            [self.levelSliderChannelThree setValue:0 animated:YES];
+            self.levelLabelChannelThree.text = @"0%";
+        }
+        return;
     }
 }
 
@@ -767,7 +819,8 @@
         _RGBGroupControllSwitch.enabled = NO;
         if ([CSRUtilities belongToThreeChannelSwitch:_deviceEn.shortName]
             || [CSRUtilities belongToTwoChannelSwitch:_deviceEn.shortName]
-            || [CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]) {
+            || [CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]
+            || [CSRUtilities belongToThreeChannelDimmer:_deviceEn.shortName]) {
             [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@2 withPowerState:sender.on];
         }else {
             if (musicBehavior) {
@@ -800,7 +853,8 @@
         
         if ([CSRUtilities belongToThreeChannelSwitch:_deviceEn.shortName]
             || [CSRUtilities belongToTwoChannelSwitch:_deviceEn.shortName]
-            || [CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]) {
+            || [CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]
+            || [CSRUtilities belongToThreeChannelDimmer:_deviceEn.shortName]) {
             [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@3 withPowerState:sender.on];
         }
         
@@ -820,7 +874,8 @@
         _powerSwitchChannelTwo.enabled = NO;
         _powerSwitchChannelThree.enabled = NO;
         
-        if ([CSRUtilities belongToThreeChannelSwitch:_deviceEn.shortName]) {
+        if ([CSRUtilities belongToThreeChannelSwitch:_deviceEn.shortName]
+            || [CSRUtilities belongToThreeChannelDimmer:_deviceEn.shortName]) {
             [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@5 withPowerState:sender.on];
         }
         
@@ -835,7 +890,8 @@
 
 //调光
 - (IBAction)levelSliderTouchDown:(UISlider *)sender {
-    if ([CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]) {
+    if ([CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]
+        || [CSRUtilities belongToThreeChannelDimmer:_deviceEn.shortName]) {
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@2 withLevel:@(sender.value) withState:UIGestureRecognizerStateBegan direction:PanGestureMoveDirectionHorizontal];
     }else {
         if (musicBehavior) {
@@ -850,7 +906,8 @@
 }
 
 - (IBAction)leveSliderValueChanged:(UISlider *)sender {
-    if ([CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]) {
+    if ([CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]
+        || [CSRUtilities belongToThreeChannelDimmer:_deviceEn.shortName]) {
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@2 withLevel:@(sender.value) withState:UIGestureRecognizerStateChanged direction:PanGestureMoveDirectionHorizontal];
     }else {
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateChanged direction:PanGestureMoveDirectionHorizontal];
@@ -858,7 +915,8 @@
 }
 
 - (IBAction)levelSliderTouchUpInSide:(UISlider *)sender {
-    if ([CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]) {
+    if ([CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]
+        || [CSRUtilities belongToThreeChannelDimmer:_deviceEn.shortName]) {
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@2 withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
     }else {
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@1 withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
@@ -868,21 +926,41 @@
 
 
 - (IBAction)levelSliderChannelTwoTouchDown:(UISlider *)sender {
-    if ([CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]) {
-
+    if ([CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]
+        || [CSRUtilities belongToThreeChannelDimmer:_deviceEn.shortName]) {
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@3 withLevel:@(sender.value) withState:UIGestureRecognizerStateBegan direction:PanGestureMoveDirectionHorizontal];
     }
 }
 
 - (IBAction)levelSliderChannelTwoValueChanged:(UISlider *)sender {
-    if ([CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]) {
+    if ([CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]
+        || [CSRUtilities belongToThreeChannelDimmer:_deviceEn.shortName]) {
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@3 withLevel:@(sender.value) withState:UIGestureRecognizerStateChanged direction:PanGestureMoveDirectionHorizontal];
     }
 }
 
 - (IBAction)levelSliderChannelTwoTouchUpInside:(UISlider *)sender {
-    if ([CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]) {
+    if ([CSRUtilities belongToTwoChannelDimmer:_deviceEn.shortName]
+        || [CSRUtilities belongToThreeChannelDimmer:_deviceEn.shortName]) {
         [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@3 withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
+    }
+}
+
+- (IBAction)levelSliderChannelThreeTouchDown:(UISlider *)sender {
+    if ([CSRUtilities belongToThreeChannelDimmer:_deviceEn.shortName]) {
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@5 withLevel:@(sender.value) withState:UIGestureRecognizerStateBegan direction:PanGestureMoveDirectionHorizontal];
+    }
+}
+
+- (IBAction)levelSliderChannelThreeValueChanged:(UISlider *)sender {
+    if ([CSRUtilities belongToThreeChannelDimmer:_deviceEn.shortName]) {
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@5 withLevel:@(sender.value) withState:UIGestureRecognizerStateChanged direction:PanGestureMoveDirectionHorizontal];
+    }
+}
+
+- (IBAction)levelSliderChannelThreeTouchUpInside:(UISlider *)sender {
+    if ([CSRUtilities belongToThreeChannelDimmer:_deviceEn.shortName]) {
+        [[DeviceModelManager sharedInstance] setLevelWithDeviceId:_deviceId channel:@5 withLevel:@(sender.value) withState:UIGestureRecognizerStateEnded direction:PanGestureMoveDirectionHorizontal];
     }
 }
 
@@ -1098,10 +1176,8 @@
             }
         }
         [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
-    }else if (state == UIGestureRecognizerStateEnded) {
-        
     }
-    UIColor *color = [UIColor colorWithHue:myValue saturation:_colorSaturationSlider.value brightness:1.0 alpha:1.0];
+    UIColor *color = [UIColor colorWithHue:myValue saturation:(floorf(_colorSaturationSlider.value*100+0.5))/100 brightness:1.0 alpha:1.0];
     [[DeviceModelManager sharedInstance] setColorWithDeviceId:_deviceId withColor:color withState:state];
 }
 

@@ -43,7 +43,7 @@
         point.x = self.bounds.size.width - 14;
     }
     _thumbButton.center = point;
-    self.myValue = (point.x-14)/(self.bounds.size.width - 27.5);
+    self.myValue = (floorf(((point.x-14)/(self.bounds.size.width - 27.5))*100+0.5))/100;
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(colorSliderValueChanged:withState:)]) {
         [self.delegate colorSliderValueChanged:self.myValue withState:sender.state];

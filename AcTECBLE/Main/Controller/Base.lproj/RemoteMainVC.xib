@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -38,12 +38,12 @@
                 <outlet property="remoteBtn21" destination="kKM-1c-QF1" id="aiC-Pw-4AS"/>
                 <outlet property="remoteBtn22" destination="8T7-IW-tfl" id="yTX-x2-zsS"/>
                 <outlet property="remoteBtn23" destination="ZPn-Fo-B4N" id="bSK-O4-rXa"/>
-                <outlet property="remoteBtn24" destination="tmq-13-C0p" id="tSO-iF-xyo"/>
-                <outlet property="remoteBtn25" destination="e5L-ub-Q1k" id="sir-ri-Efa"/>
-                <outlet property="remoteBtn26" destination="As5-tk-Rz5" id="FMy-X3-x0F"/>
-                <outlet property="remoteBtn27" destination="jsg-Ej-sxG" id="anb-K3-cVr"/>
                 <outlet property="remoteBtn28" destination="6jW-pj-RSx" id="fDJ-rx-1kp"/>
                 <outlet property="remoteBtn29" destination="idd-Nj-7fz" id="Ie6-Qu-ghS"/>
+                <outlet property="remoteBtn30" destination="tmq-13-C0p" id="XEO-RG-pzX"/>
+                <outlet property="remoteBtn31" destination="e5L-ub-Q1k" id="E9j-bH-HWp"/>
+                <outlet property="remoteBtn32" destination="As5-tk-Rz5" id="e9k-h5-399"/>
+                <outlet property="remoteBtn33" destination="jsg-Ej-sxG" id="pS3-37-UIF"/>
                 <outlet property="sceneRemoteBgImageView" destination="nwn-Zd-fva" id="fA6-T9-6DZ"/>
                 <outlet property="sceneView1" destination="t1S-gb-fEa" id="EnX-yD-gw4"/>
                 <outlet property="sceneView2" destination="mEz-d0-cpB" id="wNK-YO-weh"/>
@@ -433,10 +433,24 @@
                         <constraint firstAttribute="width" constant="67" id="NDN-Vi-t9t"/>
                         <constraint firstAttribute="height" constant="52" id="YeU-y7-d2m"/>
                     </constraints>
+                    <inset key="titleEdgeInsets" minX="-67" minY="0.0" maxX="0.0" maxY="0.0"/>
                     <state key="normal" image="remotescenebtn_default"/>
-                    <state key="highlighted" image="remotescenebtn_highlighted"/>
+                    <state key="highlighted" title="开/关" image="remotescenebtn_highlighted"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="F5R-t6-jAb"/>
+                    </connections>
+                </button>
+                <button opaque="NO" tag="19" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="e5L-ub-Q1k">
+                    <rect key="frame" x="174" y="56" width="67" height="52"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="67" id="GsZ-ne-x8n"/>
+                        <constraint firstAttribute="height" constant="52" id="KnM-ok-aAO"/>
+                    </constraints>
+                    <inset key="titleEdgeInsets" minX="-67" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    <state key="normal" image="remotescenebtn_default"/>
+                    <state key="highlighted" title="静音" image="remotescenebtn_highlighted"/>
+                    <connections>
+                        <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="A6b-bi-8S8"/>
                     </connections>
                 </button>
                 <button opaque="NO" tag="20" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="As5-tk-Rz5">
@@ -445,8 +459,9 @@
                         <constraint firstAttribute="height" constant="52" id="8py-zk-L4M"/>
                         <constraint firstAttribute="width" constant="67" id="ZC5-ME-CNa"/>
                     </constraints>
+                    <inset key="titleEdgeInsets" minX="-67" minY="0.0" maxX="0.0" maxY="0.0"/>
                     <state key="normal" image="remotescenebtn_default"/>
-                    <state key="highlighted" image="remotescenebtn_highlighted"/>
+                    <state key="highlighted" title="上一首" image="remotescenebtn_highlighted"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="8qo-kC-hwl"/>
                     </connections>
@@ -457,6 +472,7 @@
                         <constraint firstAttribute="width" constant="67" id="mjB-Op-oVv"/>
                         <constraint firstAttribute="height" constant="52" id="s2D-vY-oPC"/>
                     </constraints>
+                    <inset key="titleEdgeInsets" minX="-67" minY="0.0" maxX="0.0" maxY="0.0"/>
                     <state key="normal" image="remotescenebtn_default"/>
                     <state key="highlighted" image="remotescenebtn_highlighted"/>
                     <connections>
@@ -469,8 +485,13 @@
                         <constraint firstAttribute="width" constant="67" id="OWx-8F-MW3"/>
                         <constraint firstAttribute="height" constant="52" id="gec-Ml-QL2"/>
                     </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                    <inset key="titleEdgeInsets" minX="-67" minY="0.0" maxX="0.0" maxY="0.0"/>
                     <state key="normal" image="remotescenebtn_default"/>
                     <state key="highlighted" image="remotescenebtn_highlighted"/>
+                    <connections>
+                        <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="Pgf-db-hid"/>
+                    </connections>
                 </button>
                 <button opaque="NO" tag="23" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="idd-Nj-7fz">
                     <rect key="frame" x="174" y="212" width="67" height="52"/>
@@ -478,22 +499,11 @@
                         <constraint firstAttribute="height" constant="52" id="TlN-gp-5Ob"/>
                         <constraint firstAttribute="width" constant="67" id="vor-KX-i3K"/>
                     </constraints>
+                    <inset key="titleEdgeInsets" minX="-67" minY="0.0" maxX="0.0" maxY="0.0"/>
                     <state key="normal" image="remotescenebtn_default"/>
                     <state key="highlighted" image="remotescenebtn_highlighted"/>
                     <connections>
-                        <action selector="musicControlRemoteBtnTouchUpInside:" destination="-1" eventType="touchUpInside" id="G5g-zV-e5C"/>
-                    </connections>
-                </button>
-                <button opaque="NO" tag="19" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="e5L-ub-Q1k">
-                    <rect key="frame" x="174" y="56" width="67" height="52"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="67" id="GsZ-ne-x8n"/>
-                        <constraint firstAttribute="height" constant="52" id="KnM-ok-aAO"/>
-                    </constraints>
-                    <state key="normal" image="remotescenebtn_default"/>
-                    <state key="highlighted" image="remotescenebtn_highlighted"/>
-                    <connections>
-                        <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="A6b-bi-8S8"/>
+                        <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="wIu-eO-ZX1"/>
                     </connections>
                 </button>
             </subviews>
@@ -532,7 +542,7 @@
         <image name="remotebtn9_highlighted" width="58" height="58"/>
         <image name="remotemainbg" width="320" height="320"/>
         <image name="remotescenebg" width="280" height="280"/>
-        <image name="remotescenebtn_default" width="60" height="46"/>
-        <image name="remotescenebtn_highlighted" width="60" height="46"/>
+        <image name="remotescenebtn_default" width="68" height="52"/>
+        <image name="remotescenebtn_highlighted" width="68" height="52"/>
     </resources>
 </document>

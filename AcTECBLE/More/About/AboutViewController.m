@@ -76,13 +76,12 @@
 }
 
 - (void)showExceptionLog {
-    [MyUncaughtExceptionHandler setDefaultHandler];
     NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     NSString *dataPath = [path stringByAppendingPathComponent:@"Exception.txt"];
     NSData *data = [NSData dataWithContentsOfFile:dataPath];
     if (data != nil) {
         ShowExceptionLogVC *svc = [[ShowExceptionLogVC alloc] init];
-        svc.path = dataPath;
+        svc.path = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         [self.navigationController pushViewController:svc animated:YES];
     }
 }

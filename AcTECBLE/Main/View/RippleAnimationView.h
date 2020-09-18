@@ -6,8 +6,6 @@
 //  Copyright © 2020 AcTEC ELECTRONICS Ltd. All rights reserved.
 //
 
-#define ColorWithAlpha(r, g, b, a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
-
 #import <UIKit/UIKit.h>
 
 typedef NS_ENUM(NSInteger, AnimationType) {

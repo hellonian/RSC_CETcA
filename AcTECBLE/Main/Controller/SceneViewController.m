@@ -218,6 +218,27 @@
                         [self createSceneMemberDimmer:device channel:1];
                         [self createSceneMemberDimmer:device channel:2];
                     }
+                }else if ([CSRUtilities belongToThreeChannelDimmer:device.shortName]) {
+                    if ([model.channel integerValue] == 2) {
+                        [self createSceneMemberDimmer:device channel:1];
+                    }else if ([model.channel integerValue] == 3) {
+                        [self createSceneMemberDimmer:device channel:2];
+                    }else if ([model.channel integerValue] == 5) {
+                        [self createSceneMemberDimmer:device channel:4];
+                    }else if ([model.channel integerValue] == 4) {
+                        [self createSceneMemberDimmer:device channel:1];
+                        [self createSceneMemberDimmer:device channel:2];
+                    }else if ([model.channel integerValue] == 6) {
+                        [self createSceneMemberDimmer:device channel:1];
+                        [self createSceneMemberDimmer:device channel:4];
+                    }else if ([model.channel integerValue] == 7) {
+                        [self createSceneMemberDimmer:device channel:2];
+                        [self createSceneMemberDimmer:device channel:4];
+                    }else if ([model.channel integerValue] == 8) {
+                        [self createSceneMemberDimmer:device channel:1];
+                        [self createSceneMemberDimmer:device channel:2];
+                        [self createSceneMemberDimmer:device channel:4];
+                    }
                 }else if ([CSRUtilities belongToCWDevice:device.shortName]) {
                     [self createSceneMemberCW:device];
                 }else if ([CSRUtilities belongToRGBDevice:device.shortName]) {
@@ -248,6 +269,8 @@
                     }
                 }else if ([CSRUtilities belongToFanController:device.shortName]) {
                     [self createSceneMemberFan:device];
+                }else if ([CSRUtilities belongToMusicController:device.shortName]) {
+                    [self createSceneMemberMusicController:device channel:[model.channel integerValue]];
                 }
             }
             
@@ -283,7 +306,8 @@
                 || [CSRUtilities belongToThreeChannelSwitch:m.kindString]
                 || [CSRUtilities belongToTwoChannelDimmer:m.kindString]
                 || [CSRUtilities belongToSocketTwoChannel:m.kindString]
-                || [CSRUtilities belongToTwoChannelCurtainController:m.kindString]) {
+                || [CSRUtilities belongToTwoChannelCurtainController:m.kindString]
+                || [CSRUtilities belongToThreeChannelDimmer:m.kindString]) {
                 Byte byte[] = {0x59, 0x08, [m.channel integerValue], b[1], b[0], e, d0, d1, d2, d3};
                 NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
                 retryCount = 0;
@@ -376,6 +400,14 @@
         }else if (device.channel2PowerState) {
             m.eveType = @(18);
             m.eveD0 = @(device.channel2Level);
+        }
+    }else if (channel == 4) {
+        if (!device.channel3PowerState) {
+            m.eveType = @(17);
+            m.eveD0 = @0;
+        }else {
+            m.eveType = @(18);
+            m.eveD0 = @(device.channel3Level);
         }
     }
     m.eveD2 = @0;
@@ -548,6 +580,22 @@
     [self.selects addObject:m];
 }
 
+- (void)createSceneMemberMusicController:(DeviceModel *)device channel:(NSInteger)channel {
+    SceneMemberEntity *m = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+    m.sceneID = _sceneIndex;
+    m.kindString = device.shortName;
+    m.deviceID = device.deviceId;
+    m.channel = @(channel);
+    m.eveType = @34;
+    m.eveD0 = @(device.mcStatus);
+    m.eveD1 = @(device.mcVoice);
+    SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+    [sceneEntity addMembersObject:m];
+    [[CSRDatabaseManager sharedInstance] saveContext];
+    
+    [self.selects addObject:m];
+}
+
 - (void)sceneAddedSuccessCall:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceID = userInfo[@"deviceId"];
@@ -671,7 +719,8 @@
             || [CSRUtilities belongToThreeChannelSwitch:mSceneMember.kindString]
             || [CSRUtilities belongToTwoChannelDimmer:mSceneMember.kindString]
             || [CSRUtilities belongToSocketTwoChannel:mSceneMember.kindString]
-            || [CSRUtilities belongToTwoChannelCurtainController:mSceneMember.kindString]) {
+            || [CSRUtilities belongToTwoChannelCurtainController:mSceneMember.kindString]
+            || [CSRUtilities belongToThreeChannelDimmer:mSceneMember.kindString]) {
             Byte byte[] = {0x5d, 0x03, [mSceneMember.channel integerValue], b[1], b[0]};
             NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
             retryCount = 0;

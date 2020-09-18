@@ -159,7 +159,8 @@
         
         _settingSelectMutArray = [[NSMutableArray alloc] initWithCapacity:4];
         
-        if ([[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]) {
+        if (/*[[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]*/
+            [_remoteEntity.cvVersion integerValue] < 18) {
             if (_remoteEntity.remoteBranch.length > 72) {
                 NSArray *remoteArray = [self.remoteEntity.remoteBranch componentsSeparatedByString:@"|"];
                 [remoteArray enumerateObjectsUsingBlock:^(NSString *brach, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -263,7 +264,8 @@
         [self.singleRemoteView autoPinEdgeToSuperviewEdge:ALEdgeRight];
         [self.singleRemoteView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameBgView withOffset:30];
         _settingSelectMutArray = [[NSMutableArray alloc] initWithCapacity:1];
-        if ([[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]) {
+        if (/*[[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]*/
+            [_remoteEntity.cvVersion integerValue] < 18) {
             if (_remoteEntity.remoteBranch.length >= 18) {
                 SelectModel *mod = [[SelectModel alloc] init];
                 mod.sourceID = @(1);
@@ -520,7 +522,8 @@
         
         _settingSelectMutArray = [[NSMutableArray alloc] initWithCapacity:2];
         
-        if ([[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]) {
+        if (/*[[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]*/
+            [_remoteEntity.cvVersion integerValue] < 18) {
             if (_remoteEntity.remoteBranch.length >37) {
                 NSArray *remoteArray = [self.remoteEntity.remoteBranch componentsSeparatedByString:@"|"];
                 [remoteArray enumerateObjectsUsingBlock:^(NSString *brach, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -1382,107 +1385,8 @@
             });
         }];
     }else {
-        if (![[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]) {
-            if ([_remoteEntity.shortName isEqualToString:@"RB01"]||[_remoteEntity.shortName isEqualToString:@"RB05"]) {
-                NSString *cmd = @"9b1504";
-                for (SelectModel *mod in _settingSelectMutArray) {
-                    NSString *sw = [CSRUtilities stringWithHexNumber:[mod.sourceID integerValue]];
-                    NSString *rc = [CSRUtilities exchangePositionOfDeviceId:[mod.channel integerValue]];
-                    NSString *dst = [CSRUtilities exchangePositionOfDeviceId:[mod.deviceID integerValue]];
-                    cmd = [NSString stringWithFormat:@"%@%@%@%@",cmd,sw,rc,dst];
-                }
-                
-                [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-                    _remoteEntity.remoteBranch = cmd;
-                    [[CSRDatabaseManager sharedInstance] saveContext];
-                    _setSuccess = YES;
-                    [_hub hideAnimated:YES];
-                    [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
-                    [timer invalidate];
-                    timer = nil;
-                } failure:^(NSError * _Nonnull error) {
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-                            _remoteEntity.remoteBranch = cmd;
-                            [[CSRDatabaseManager sharedInstance] saveContext];
-                            _setSuccess = YES;
-                            [_hub hideAnimated:YES];
-                            [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
-                            [timer invalidate];
-                            timer = nil;
-                        } failure:^(NSError * _Nonnull error) {
-                            
-                        }];
-                    });
-                }];
-            }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"S10IB-H2"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]||[_remoteEntity.shortName isEqualToString:@"1BMBH"]) {
-                
-                NSString *cmd = @"9b0601";
-                for (SelectModel *mod in _settingSelectMutArray) {
-                    NSString *sw = [CSRUtilities stringWithHexNumber:[mod.sourceID integerValue]];
-                    NSString *rc = [CSRUtilities exchangePositionOfDeviceId:[mod.channel integerValue]];
-                    NSString *dst = [CSRUtilities exchangePositionOfDeviceId:[mod.deviceID integerValue]];
-                    cmd = [NSString stringWithFormat:@"%@%@%@%@",cmd,sw,rc,dst];
-                }
-                
-                [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-                    _remoteEntity.remoteBranch = cmd;
-                    [[CSRDatabaseManager sharedInstance] saveContext];
-                    _setSuccess = YES;
-                    [_hub hideAnimated:YES];
-                    [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
-                    [timer invalidate];
-                    timer = nil;
-                } failure:^(NSError * _Nonnull error) {
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-                            _remoteEntity.remoteBranch = cmd;
-                            [[CSRDatabaseManager sharedInstance] saveContext];
-                            _setSuccess = YES;
-                            [_hub hideAnimated:YES];
-                            [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
-                            [timer invalidate];
-                            timer = nil;
-                        } failure:^(NSError * _Nonnull error) {
-                            
-                        }];
-                    });
-                }];
-            }else if ([_remoteEntity.shortName isEqualToString:@"RB07"]) {
-                NSString *cmd = @"9b0602";
-                for (SelectModel *mod in _settingSelectMutArray) {
-                    NSString *sw = [CSRUtilities stringWithHexNumber:[mod.sourceID integerValue]];
-                    NSString *rc = [CSRUtilities exchangePositionOfDeviceId:[mod.channel integerValue]];
-                    NSString *dst = [CSRUtilities exchangePositionOfDeviceId:[mod.deviceID integerValue]];
-                    cmd = [NSString stringWithFormat:@"%@%@%@%@",cmd,sw,rc,dst];
-                }
-                
-                [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-                    _remoteEntity.remoteBranch = cmd;
-                    [[CSRDatabaseManager sharedInstance] saveContext];
-                    _setSuccess = YES;
-                    [_hub hideAnimated:YES];
-                    [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
-                    [timer invalidate];
-                    timer = nil;
-                } failure:^(NSError * _Nonnull error) {
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-                            _remoteEntity.remoteBranch = cmd;
-                            [[CSRDatabaseManager sharedInstance] saveContext];
-                            _setSuccess = YES;
-                            [_hub hideAnimated:YES];
-                            [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
-                            [timer invalidate];
-                            timer = nil;
-                        } failure:^(NSError * _Nonnull error) {
-                            
-                        }];
-                    });
-                }];
-            }
-            
-        }else {
+        if (/*[[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]*/
+            [_remoteEntity.cvVersion integerValue] < 18) {
             if ([_remoteEntity.shortName isEqualToString:@"RB01"]||[_remoteEntity.shortName isEqualToString:@"RB05"]) {
                 
                 NSString *cmdStr1;
@@ -1770,6 +1674,106 @@
                     }
                     
                 });
+            }
+            
+        }else {
+            if ([_remoteEntity.shortName isEqualToString:@"RB01"]||[_remoteEntity.shortName isEqualToString:@"RB05"]) {
+                NSString *cmd = @"9b1504";
+                for (SelectModel *mod in _settingSelectMutArray) {
+                    NSString *sw = [CSRUtilities stringWithHexNumber:[mod.sourceID integerValue]];
+                    NSString *rc = [CSRUtilities exchangePositionOfDeviceId:[mod.channel integerValue]];
+                    NSString *dst = [CSRUtilities exchangePositionOfDeviceId:[mod.deviceID integerValue]];
+                    cmd = [NSString stringWithFormat:@"%@%@%@%@",cmd,sw,rc,dst];
+                }
+                
+                [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                    _remoteEntity.remoteBranch = cmd;
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                    _setSuccess = YES;
+                    [_hub hideAnimated:YES];
+                    [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+                    [timer invalidate];
+                    timer = nil;
+                } failure:^(NSError * _Nonnull error) {
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                            _remoteEntity.remoteBranch = cmd;
+                            [[CSRDatabaseManager sharedInstance] saveContext];
+                            _setSuccess = YES;
+                            [_hub hideAnimated:YES];
+                            [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+                            [timer invalidate];
+                            timer = nil;
+                        } failure:^(NSError * _Nonnull error) {
+                            
+                        }];
+                    });
+                }];
+            }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"S10IB-H2"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]||[_remoteEntity.shortName isEqualToString:@"1BMBH"]) {
+                
+                NSString *cmd = @"9b0601";
+                for (SelectModel *mod in _settingSelectMutArray) {
+                    NSString *sw = [CSRUtilities stringWithHexNumber:[mod.sourceID integerValue]];
+                    NSString *rc = [CSRUtilities exchangePositionOfDeviceId:[mod.channel integerValue]];
+                    NSString *dst = [CSRUtilities exchangePositionOfDeviceId:[mod.deviceID integerValue]];
+                    cmd = [NSString stringWithFormat:@"%@%@%@%@",cmd,sw,rc,dst];
+                }
+                
+                [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                    _remoteEntity.remoteBranch = cmd;
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                    _setSuccess = YES;
+                    [_hub hideAnimated:YES];
+                    [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+                    [timer invalidate];
+                    timer = nil;
+                } failure:^(NSError * _Nonnull error) {
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                            _remoteEntity.remoteBranch = cmd;
+                            [[CSRDatabaseManager sharedInstance] saveContext];
+                            _setSuccess = YES;
+                            [_hub hideAnimated:YES];
+                            [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+                            [timer invalidate];
+                            timer = nil;
+                        } failure:^(NSError * _Nonnull error) {
+                            
+                        }];
+                    });
+                }];
+            }else if ([_remoteEntity.shortName isEqualToString:@"RB07"]) {
+                NSString *cmd = @"9b0602";
+                for (SelectModel *mod in _settingSelectMutArray) {
+                    NSString *sw = [CSRUtilities stringWithHexNumber:[mod.sourceID integerValue]];
+                    NSString *rc = [CSRUtilities exchangePositionOfDeviceId:[mod.channel integerValue]];
+                    NSString *dst = [CSRUtilities exchangePositionOfDeviceId:[mod.deviceID integerValue]];
+                    cmd = [NSString stringWithFormat:@"%@%@%@%@",cmd,sw,rc,dst];
+                }
+                
+                [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                    _remoteEntity.remoteBranch = cmd;
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                    _setSuccess = YES;
+                    [_hub hideAnimated:YES];
+                    [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+                    [timer invalidate];
+                    timer = nil;
+                } failure:^(NSError * _Nonnull error) {
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                            _remoteEntity.remoteBranch = cmd;
+                            [[CSRDatabaseManager sharedInstance] saveContext];
+                            _setSuccess = YES;
+                            [_hub hideAnimated:YES];
+                            [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+                            [timer invalidate];
+                            timer = nil;
+                        } failure:^(NSError * _Nonnull error) {
+                            
+                        }];
+                    });
+                }];
             }
         }
     }
@@ -2250,7 +2254,8 @@
     if ([deviceId isEqualToNumber:_remoteEntity.deviceId]) {
         [_settingSelectMutArray removeAllObjects];
         if ([self.remoteEntity.shortName isEqualToString:@"RB01"]||[self.remoteEntity.shortName isEqualToString:@"RB05"]) {
-            if ([[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]) {
+            if (/*[[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]*/
+                [_remoteEntity.cvVersion integerValue] < 18) {
                 if (_remoteEntity.remoteBranch.length > 72) {
                     NSArray *remoteArray = [self.remoteEntity.remoteBranch componentsSeparatedByString:@"|"];
                     [remoteArray enumerateObjectsUsingBlock:^(NSString *brach, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -2341,7 +2346,8 @@
                 }
             }
         }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]||[_remoteEntity.shortName isEqualToString:@"1BMBH"]) {
-            if ([[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]) {
+            if (/*[[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]*/
+                [_remoteEntity.cvVersion integerValue] < 18) {
                 if (_remoteEntity.remoteBranch.length >= 18) {
                     SelectModel *mod = [[SelectModel alloc] init];
                     mod.sourceID = @(1);
@@ -2527,7 +2533,8 @@
                 _R9BSBHControlNineLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
             }
         }else if ([self.remoteEntity.shortName isEqualToString:@"RB07"]) {
-            if ([[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]) {
+            if (/*[[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]*/
+                [_remoteEntity.cvVersion integerValue] < 18) {
                 if (_remoteEntity.remoteBranch.length >37) {
                     NSArray *remoteArray = [self.remoteEntity.remoteBranch componentsSeparatedByString:@"|"];
                     [remoteArray enumerateObjectsUsingBlock:^(NSString *brach, NSUInteger idx, BOOL * _Nonnull stop) {
