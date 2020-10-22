@@ -240,6 +240,7 @@
     }];
     
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
+    nav.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:nav animated:YES completion:nil];
     
 }

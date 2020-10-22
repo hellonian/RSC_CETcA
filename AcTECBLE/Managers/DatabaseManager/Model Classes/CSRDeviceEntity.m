@@ -39,5 +39,12 @@
 @dynamic bleFirVersion;
 @dynamic bleHwVersion;
 @dynamic wallPaper;
+@dynamic ipAddress;
+@dynamic port;
+@dynamic mcSonosInfoVersion;
+@dynamic sonoss;
+@dynamic subnetMask;
+@dynamic gateway;
+@dynamic dns;
 
 @end

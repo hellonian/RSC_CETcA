@@ -46,6 +46,9 @@
 
 @property (nonatomic, strong) NSMutableDictionary *characteristicQueue;
 
+@property (nonatomic, strong) NSMutableArray *collectionPeripherals;
+@property (nonatomic, assign) BOOL startCollect;
+
 @end
 
 
@@ -176,6 +179,7 @@
     @synchronized(self) {
         if ([centralManager state] == CBCentralManagerStatePoweredOn) {
             //////////////////////////////////////////////////////////////////
+            _startCollect = YES;
             if (_isUpdateFW) {
                 [_foundPeripherals removeAllObjects];
             }
@@ -193,6 +197,7 @@
     // Stop Scan
 -(void) stopScan {
     @synchronized(self) {
+        _startCollect = NO;
         [centralManager stopScan];
     }
     NSLog (@"Stop Scan");
@@ -252,6 +257,8 @@
                 if (_isForGAIA && self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(didPowerOff)]) {
                     [self.bleDelegate didPowerOff];
                 }
+            }else {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"CBCentralManagerStatePoweredOff" object:nil];
             }
             
             break;
@@ -275,7 +282,7 @@
                     [self.bleDelegate didPowerOn];
                 }
             }
-            
+            _startCollect = YES;
             CBUUID *uuid = [CBUUID UUIDWithString:@"FEF1"];
             CBUUID *uuid1 = [CBUUID UUIDWithString:@"00001016-D102-11E1-9B23-00025B00A5A5"];
             NSDictionary *options = [self createDiscoveryOptions];
@@ -325,7 +332,7 @@
         }
     }else if (self.isNearbyFunction && peripheral.name != nil && [CSRUtilities belongToNearbyFunctionDevice:peripheral.name]) {
         [self discoveryDidRefresh:peripheral];
-    }else if ([RSSI integerValue]>-80 && peripheral.name != nil) {
+    }else if ([RSSI integerValue]>-80 && peripheral.name != nil && [RSSI integerValue] != 127) {
         
         NSMutableDictionary *enhancedAdvertismentData = [NSMutableDictionary dictionaryWithDictionary:advertisementData];
         enhancedAdvertismentData [CSR_PERIPHERAL] = peripheral;
@@ -343,7 +350,19 @@
 //            if ([peripheral.uuidString length]>11 && [[peripheral.uuidString substringToIndex:12] isEqualToString:@"002006060223"]) {
 //                [[CSRBridgeRoaming sharedInstance] didDiscoverBridgeDevice:central peripheral:peripheral advertisment:advertisementData RSSI:RSSI];
 //            }
-            [[CSRBridgeRoaming sharedInstance] didDiscoverBridgeDevice:central peripheral:peripheral advertisment:advertisementData RSSI:RSSI];
+//            [[CSRBridgeRoaming sharedInstance] didDiscoverBridgeDevice:central peripheral:peripheral advertisment:advertisementData RSSI:RSSI];
+            
+            if (_startCollect) {
+                if ([self.collectionPeripherals count] == 0) {
+                    [self performSelector:@selector(connectBridgeAction) withObject:nil afterDelay:1];
+                }
+                NSDictionary *dic = @{@"RSSI":RSSI,@"peripheral":peripheral,@"advertisementData":advertisementData};
+                if (![self.collectionPeripherals containsObject:dic]) {
+                    [self.collectionPeripherals addObject:dic];
+                }
+                
+            }
+            
             
 #endif
             
@@ -437,7 +456,7 @@
 #ifdef BRIDGE_ROAMING_ENABLE
         [[CSRBridgeRoaming sharedInstance] connectedPeripheral:peripheral];
         NSLog (@"BRIDGE CONNECTED %@  %@",peripheral.name,peripheral.uuidString);
-        
+        [self.collectionPeripherals removeAllObjects];
 //        [[DeviceModelManager sharedInstance] getAllDevicesState];
         
 #endif
@@ -473,7 +492,7 @@
             
             //#ifdef  BRIDGE_DISCONNECT_ALERT
             NSLog (@"BRIDGE DISCONNECTED : %@",peripheral.name);
-            
+            _startCollect = YES;
             //#endif
             
             // Call up Bridge Select View
@@ -1017,6 +1036,21 @@
     }
     
     return nil;
+}
+
+- (NSMutableArray *)collectionPeripherals {
+    if (!_collectionPeripherals) {
+        _collectionPeripherals = [[NSMutableArray alloc] init];
+    }
+    return _collectionPeripherals;
+}
+
+- (void)connectBridgeAction {
+    _startCollect = NO;
+    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"RSSI" ascending:YES];
+    [self.collectionPeripherals sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+    NSDictionary *dic = [self.collectionPeripherals lastObject];
+    [[CSRBridgeRoaming sharedInstance] didDiscoverBridgeDevice:centralManager peripheral:dic[@"peripheral"] advertisment:dic[@"advertisementData"] RSSI:dic[@"RSSI"]];
 }
 
 @end

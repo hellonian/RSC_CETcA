@@ -48,6 +48,7 @@
 #import "SelectModel.h"
 #import "SceneViewController.h"
 #import "MusicControllerVC.h"
+#import "SonosMusicControllerVC.h"
 
 @interface MainViewController ()<MainCollectionViewDelegate,PlaceColorIconPickerViewDelegate,MBProgressHUDDelegate>
 {
@@ -99,6 +100,7 @@
     self.navigationItem.rightBarButtonItem = edit;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reGetDataForPlaceChanged) name:@"reGetDataForPlaceChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CBCentralManagerStatePoweredOff:) name:@"CBCentralManagerStatePoweredOff" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeConnectedNotification:) name:@"BridgeConnectedNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeDisconnectedNotification:) name:@"BridgeDisconnectedNotification" object:nil];
     
@@ -445,6 +447,7 @@
         [animation setType:kCATransitionMoveIn];
         [animation setSubtype:kCATransitionFromRight];
         [self.view.window.layer addAnimation:animation forKey:nil];
+        nav.modalPresentationStyle = UIModalPresentationFullScreen;
         [self presentViewController:nav animated:NO completion:nil];
         
     }];
@@ -561,6 +564,7 @@
         SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:sceneId];
         svc.sceneIndex = s.rcIndex;
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
+        nav.modalPresentationStyle = UIModalPresentationFullScreen;
         [self presentViewController:nav animated:YES completion:nil];
         return;
     }
@@ -667,7 +671,11 @@
             [self getMainDataArray];
         };
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:rgbgroupVC];
-        nav.modalPresentationStyle = UIModalPresentationPopover;
+        if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+            nav.modalPresentationStyle = UIModalPresentationFullScreen;
+        }else {
+            nav.modalPresentationStyle = UIModalPresentationPopover;
+        }
         [self presentViewController:nav animated:YES completion:nil];
         [self.mainCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell *cell, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([cell.groupId isEqualToNumber:groupId]) {
@@ -683,7 +691,11 @@
             [self getMainDataArray];
         };
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
-        nav.modalPresentationStyle = UIModalPresentationPopover;
+        if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+            nav.modalPresentationStyle = UIModalPresentationFullScreen;
+        }else {
+            nav.modalPresentationStyle = UIModalPresentationPopover;
+        }
         [self presentViewController:nav animated:YES completion:nil];
         [self.mainCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell *cell, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([cell.groupId isEqualToNumber:groupId]) {
@@ -731,6 +743,7 @@
                 SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithId:sceneId];
                 svc.sceneIndex = s.rcIndex;
                 UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:svc];
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
                 [self presentViewController:nav animated:YES completion:nil];
                 
             }];
@@ -759,14 +772,22 @@
                 [weakSelf getMainDataArray];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:RGBDVC];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
             
-        }else if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
+        }else if ([CSRUtilities belongToOneChannelCurtainController:deviceEntity.shortName]
+                  || [CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName]
+                  || [CSRUtilities belongToHOneChannelCurtainController:deviceEntity.shortName]) {
             
-            if (!deviceEntity.remoteBranch || deviceEntity.remoteBranch.length == 0) {
+            if (([CSRUtilities belongToOneChannelCurtainController:deviceEntity.shortName]
+                 || [CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName])
+                && deviceEntity.remoteBranch.length == 0) {
                 _selectedCurtainDeviceEntity = deviceEntity;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
@@ -782,7 +803,11 @@
                     [weakSelf getMainDataArray];
                 };
                 UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:curtainVC];
-                nav.modalPresentationStyle = UIModalPresentationPopover;
+                if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                    nav.modalPresentationStyle = UIModalPresentationFullScreen;
+                }else {
+                    nav.modalPresentationStyle = UIModalPresentationPopover;
+                }
                 [self presentViewController:nav animated:YES completion:nil];
                 nav.popoverPresentationController.sourceRect = mainCell.bounds;
                 nav.popoverPresentationController.sourceView = mainCell;
@@ -796,7 +821,11 @@
                 [weakSelf getMainDataArray];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:fanVC];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
@@ -810,7 +839,11 @@
                 [weakSelf getMainDataArray];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:socketVC];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
@@ -822,6 +855,11 @@
                   || [CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]
                   || [CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
                   || [CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]
+                  || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]
+                  || [CSRUtilities belongToSceneRemoteFourKeysV:deviceEntity.shortName]
+                  || [CSRUtilities belongToSceneRemoteThreeKeysV:deviceEntity.shortName]
+                  || [CSRUtilities belongToSceneRemoteTwoKeysV:deviceEntity.shortName]
+                  || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]
                   || [CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]) {
             RemoteMainVC *rmvc = [[RemoteMainVC alloc] init];
             rmvc.deviceId = mainCell.deviceId;
@@ -829,7 +867,11 @@
                 [self getMainDataArray];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:rmvc];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
@@ -840,7 +882,11 @@
                 [self getMainDataArray];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:lcdvc];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
@@ -851,7 +897,26 @@
                 [self getMainDataArray];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:mcvc];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
+        }else if ([CSRUtilities belongToSonosMusicController:deviceEntity.shortName]) {
+            SonosMusicControllerVC *sonosVC = [[SonosMusicControllerVC alloc] init];
+            sonosVC.deviceId = mainCell.deviceId;
+            sonosVC.reloadDataHandle = ^{
+                [self getMainDataArray];
+            };
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:sonosVC];
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
@@ -864,7 +929,11 @@
             };
             
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
@@ -889,6 +958,7 @@
         [animation setType:kCATransitionMoveIn];
         [animation setSubtype:kCATransitionFromRight];
         [self.view.window.layer addAnimation:animation forKey:nil];
+        nav.modalPresentationStyle = UIModalPresentationFullScreen;
         [self presentViewController:nav animated:NO completion:nil];
     }
 }
@@ -1052,6 +1122,7 @@
             gvc.areaEntity = [_mainCollectionView.dataArray objectAtIndex:cellIndexPath.row];
             
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:gvc];
+            nav.modalPresentationStyle = UIModalPresentationFullScreen;
             [self presentViewController:nav animated:NO completion:nil];
             
         }];
@@ -1155,7 +1226,12 @@
                 || [CSRUtilities belongToSceneRemoteFourKeys:deleteDeviceEntity.shortName]
                 || [CSRUtilities belongToSceneRemoteThreeKeys:deleteDeviceEntity.shortName]
                 || [CSRUtilities belongToSceneRemoteTwoKeys:deleteDeviceEntity.shortName]
-                || [CSRUtilities belongToSceneRemoteOneKey:deleteDeviceEntity.shortName]) {
+                || [CSRUtilities belongToSceneRemoteOneKey:deleteDeviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemoteSixKeysV:deleteDeviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemoteFourKeysV:deleteDeviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemoteThreeKeysV:deleteDeviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemoteTwoKeysV:deleteDeviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemoteOneKeyV:deleteDeviceEntity.shortName]) {
                 [self removeSceneAfterSceneRemoteDelete:deleteDeviceEntity.deviceId];
             }
             [[CSRDatabaseManager sharedInstance] saveContext];
@@ -1174,7 +1250,12 @@
             || [CSRUtilities belongToSceneRemoteFourKeys:deleteDeviceShortName]
             || [CSRUtilities belongToSceneRemoteThreeKeys:deleteDeviceShortName]
             || [CSRUtilities belongToSceneRemoteTwoKeys:deleteDeviceShortName]
-            || [CSRUtilities belongToSceneRemoteOneKey:deleteDeviceShortName])) {
+            || [CSRUtilities belongToSceneRemoteOneKey:deleteDeviceShortName]
+              || [CSRUtilities belongToSceneRemoteSixKeysV:deleteDeviceShortName]
+              || [CSRUtilities belongToSceneRemoteFourKeysV:deleteDeviceShortName]
+              || [CSRUtilities belongToSceneRemoteThreeKeysV:deleteDeviceShortName]
+              || [CSRUtilities belongToSceneRemoteTwoKeysV:deleteDeviceShortName]
+              || [CSRUtilities belongToSceneRemoteOneKeyV:deleteDeviceShortName])) {
             if (_hud) {
                 [_hud hideAnimated:YES];
                 _hud = nil;
@@ -1218,7 +1299,12 @@
                                                                  || [CSRUtilities belongToSceneRemoteFourKeys:deleteDeviceEntity.shortName]
                                                                  || [CSRUtilities belongToSceneRemoteThreeKeys:deleteDeviceEntity.shortName]
                                                                  || [CSRUtilities belongToSceneRemoteTwoKeys:deleteDeviceEntity.shortName]
-                                                                 || [CSRUtilities belongToSceneRemoteOneKey:deleteDeviceEntity.shortName]) {
+                                                                 || [CSRUtilities belongToSceneRemoteOneKey:deleteDeviceEntity.shortName]
+                                                                 || [CSRUtilities belongToSceneRemoteSixKeysV:deleteDeviceEntity.shortName]
+                                                                 || [CSRUtilities belongToSceneRemoteFourKeysV:deleteDeviceEntity.shortName]
+                                                                 || [CSRUtilities belongToSceneRemoteThreeKeysV:deleteDeviceEntity.shortName]
+                                                                 || [CSRUtilities belongToSceneRemoteTwoKeysV:deleteDeviceEntity.shortName]
+                                                                 || [CSRUtilities belongToSceneRemoteOneKeyV:deleteDeviceEntity.shortName]) {
                                                                  [self removeSceneAfterSceneRemoteDelete:deleteDeviceEntity.deviceId];
                                                              }
                                                              
@@ -1234,7 +1320,12 @@
                                                              || [CSRUtilities belongToSceneRemoteFourKeys:deleteDeviceEntity.shortName]
                                                              || [CSRUtilities belongToSceneRemoteThreeKeys:deleteDeviceEntity.shortName]
                                                              || [CSRUtilities belongToSceneRemoteTwoKeys:deleteDeviceEntity.shortName]
-                                                             || [CSRUtilities belongToSceneRemoteOneKey:deleteDeviceEntity.shortName])) {
+                                                             || [CSRUtilities belongToSceneRemoteOneKey:deleteDeviceEntity.shortName]
+                                                               || [CSRUtilities belongToSceneRemoteSixKeysV:deleteDeviceEntity.shortName]
+                                                               || [CSRUtilities belongToSceneRemoteFourKeysV:deleteDeviceEntity.shortName]
+                                                               || [CSRUtilities belongToSceneRemoteThreeKeysV:deleteDeviceEntity.shortName]
+                                                               || [CSRUtilities belongToSceneRemoteTwoKeysV:deleteDeviceEntity.shortName]
+                                                               || [CSRUtilities belongToSceneRemoteOneKeyV:deleteDeviceEntity.shortName])) {
                                                              if (_hud) {
                                                                  [_hud hideAnimated:YES];
                                                                  _hud = nil;
@@ -1391,14 +1482,19 @@
     CBPeripheral *per = dic[@"peripheral"];
     _connectedPLable.text = [NSString stringWithFormat:@"%@ %@",per.name,per.uuidString];
     _connectedPLable.textColor = [UIColor whiteColor];
-    [DeviceModelManager sharedInstance].bleDisconnected = NO;
     [_mainCollectionView reloadData];
 }
 
 - (void)bridgeDisconnectedNotification:(NSNotification *)notification {
     _connectedPLable.text = @"Bluetooth is not connected! ";
     _connectedPLable.textColor = DARKORAGE;
-    [DeviceModelManager sharedInstance].bleDisconnected = YES;
+    for (id obj in _mainCollectionView.dataArray) {
+        if ([obj isKindOfClass:[CSRDeviceEntity class]]) {
+            CSRDeviceEntity *d = (CSRDeviceEntity *)obj;
+            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
+            model.isleave = YES;
+        }
+    }
     [_mainCollectionView reloadData];
 }
 
@@ -1542,6 +1638,19 @@
             [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RemoveSceneCall" object:nil];
         }
     }
+}
+
+- (void)CBCentralManagerStatePoweredOff:(NSNotification *)notification {
+    for (id obj in _mainCollectionView.dataArray) {
+        if ([obj isKindOfClass:[CSRDeviceEntity class]]) {
+            CSRDeviceEntity *d = (CSRDeviceEntity *)obj;
+            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:d.deviceId];
+            model.isleave = YES;
+        }
+    }
+    [_mainCollectionView reloadData];
+    _connectedPLable.text = @"Bluetooth is not connected! ";
+    _connectedPLable.textColor = DARKORAGE;
 }
 
 @end

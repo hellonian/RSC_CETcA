@@ -208,18 +208,31 @@
                 _fConrolFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
             }
         }else {
-            if (_remoteEntity.remoteBranch.length >= 46) {
-                for (int i=0; i<4; i++) {
+            for (int i=0; i<5; i++) {
+                SelectModel *mod = [[SelectModel alloc] init];
+                mod.sourceID = @(i+1);
+                mod.channel = @(0);
+                mod.deviceID = @(0);
+                [_settingSelectMutArray insertObject:mod atIndex:i];
+            }
+            _fConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _fConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _fConrolThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _fConrolFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            
+            if (self.remoteEntity.remoteBranch.length >= 16) {
+                NSInteger c = (self.remoteEntity.remoteBranch.length-6) / 10;
+                for (int i=0; i<c; i++) {
                     NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
                     SelectModel *mod = [[SelectModel alloc] init];
-                    mod.sourceID = @([CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]]);
+                    NSInteger s = [CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]];
                     NSInteger channelInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]];
                     mod.channel = @(channelInt);
                     NSInteger deviceIDInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(6, 4)]];
                     mod.deviceID = @(deviceIDInt);
-                    [_settingSelectMutArray insertObject:mod atIndex:i];
-                    
-                    switch (i) {
+                    mod.sourceID = @(s);
+                    [_settingSelectMutArray replaceObjectAtIndex:s-1 withObject:mod];
+                    switch (s-1) {
                         case 0:
                             [self fillControlLabel:_fConrolOneLabel selectedLabel:_fSelectOneLabel selectModel:mod];
                             break;
@@ -236,18 +249,6 @@
                             break;
                     }
                 }
-            }else {
-                for (int i=0; i<4; i++) {
-                    SelectModel *mod = [[SelectModel alloc] init];
-                    mod.sourceID = @(i+1);
-                    mod.channel = @(0);
-                    mod.deviceID = @(0);
-                    [_settingSelectMutArray insertObject:mod atIndex:i];
-                }
-                _fConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _fConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _fConrolThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _fConrolFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
             }
         }
         
@@ -282,23 +283,23 @@
                 _sConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
             }
         }else {
+            SelectModel *mod = [[SelectModel alloc] init];
+            mod.sourceID = @(1);
+            mod.channel = @(0);
+            mod.deviceID = @(0);
+            [_settingSelectMutArray insertObject:mod atIndex:0];
+            _sConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
             if (self.remoteEntity.remoteBranch.length >= 16) {
                 NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(6, 10)];
                 SelectModel *mod = [[SelectModel alloc] init];
-                mod.sourceID = @([CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]]);
+                NSInteger s = [CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]];
                 NSInteger channelInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]];
                 mod.channel = @(channelInt);
                 NSInteger deviceIDInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(6, 4)]];
                 mod.deviceID = @(deviceIDInt);
-                [_settingSelectMutArray insertObject:mod atIndex:0];
+                mod.sourceID = @(s);
+                [_settingSelectMutArray replaceObjectAtIndex:s-1 withObject:mod];
                 [self fillControlLabel:_sConrolOneLabel selectedLabel:_sSelectOneLabel selectModel:mod];
-            }else {
-                SelectModel *mod = [[SelectModel alloc] init];
-                mod.sourceID = @(1);
-                mod.channel = @(0);
-                mod.deviceID = @(0);
-                [_settingSelectMutArray insertObject:mod atIndex:0];
-                _sConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
             }
         }
         
@@ -319,19 +320,28 @@
         
         _settingSelectMutArray = [[NSMutableArray alloc] initWithCapacity:4];
         
-        if (self.remoteEntity.remoteBranch.length >= 26) {
-            
-            for (int i=0; i<2; i++) {
+        for (int i=0; i<2; i++) {
+            SelectModel *mod = [[SelectModel alloc] init];
+            mod.sourceID = @(i+1);
+            mod.channel = @(0);
+            mod.deviceID = @(0);
+            [_settingSelectMutArray insertObject:mod atIndex:i];
+        }
+        _tConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        if (self.remoteEntity.remoteBranch.length >= 16) {
+            NSInteger c = (self.remoteEntity.remoteBranch.length-6) / 10;
+            for (int i=0; i<c; i++) {
                 NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
                 SelectModel *mod = [[SelectModel alloc] init];
-                mod.sourceID = @([CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]]);
+                NSInteger s = [CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]];
                 NSInteger channelInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]];
                 mod.channel = @(channelInt);
                 NSInteger deviceIDInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(6, 4)]];
                 mod.deviceID = @(deviceIDInt);
-                [_settingSelectMutArray insertObject:mod atIndex:i];
-                
-                switch (i) {
+                mod.sourceID = @(s);
+                [_settingSelectMutArray replaceObjectAtIndex:s-1 withObject:mod];
+                switch (s-1) {
                     case 0:
                         [self fillControlLabel:_tConrolOneLabel selectedLabel:_tSelectOneLabel selectModel:mod];
                         break;
@@ -342,17 +352,6 @@
                         break;
                 }
             }
-            
-        }else {
-            for (int i=0; i<2; i++) {
-                SelectModel *mod = [[SelectModel alloc] init];
-                mod.sourceID = @(i+1);
-                mod.channel = @(0);
-                mod.deviceID = @(0);
-                [_settingSelectMutArray insertObject:mod atIndex:i];
-            }
-            _tConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-            _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
         }
         
     }else if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"]
@@ -388,18 +387,36 @@
         
         _settingSelectMutArray = [[NSMutableArray alloc] initWithCapacity:5];
         
-        if (self.remoteEntity.remoteBranch.length >= 56) {
-            for (int i=0; i<5; i++) {
-                NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
+        for (int i=0; i<5; i++) {
+            SelectModel *mod = [[SelectModel alloc] init];
+            mod.sourceID = @(i+1);
+            mod.channel = @(0);
+            mod.deviceID = @(0);
+            [_settingSelectMutArray insertObject:mod atIndex:i];
+        }
+        _R5BSHBControlOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _R5BSHBControlTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _R5BSHBControlThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _R5BSHBControlFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _R5BSHBControlFiveLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        if (self.remoteEntity.remoteBranch.length >= 16) {
+            NSInteger c = (self.remoteEntity.remoteBranch.length-6) / 10;
+            for (int i=0; i<c; i++) {
+               NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
                 SelectModel *mod = [[SelectModel alloc] init];
-                mod.sourceID = @([CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]]);
+                NSInteger s = [CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]];
                 NSInteger channelInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]];
                 mod.channel = @(channelInt);
                 NSInteger deviceIDInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(6, 4)]];
                 mod.deviceID = @(deviceIDInt);
-                [_settingSelectMutArray insertObject:mod atIndex:i];
-                
-                switch (i) {
+                if (s == 0) {
+                    mod.sourceID = @(5);
+                    [_settingSelectMutArray replaceObjectAtIndex:4 withObject:mod];
+                }else {
+                    mod.sourceID = @(s);
+                    [_settingSelectMutArray replaceObjectAtIndex:s-1 withObject:mod];
+                }
+                switch (s-1) {
                     case 0:
                         [self fillControlLabel:_R5BSHBControlOneLabel selectedLabel:_R5BSHBSelectOneLabel selectModel:mod];
                         break;
@@ -413,25 +430,13 @@
                         [self fillControlLabel:_R5BSHBControlFourLabel selectedLabel:_R5BSHBSelectFourLabel selectModel:mod];
                         break;
                     case 4:
+                    case -1:
                         [self fillControlLabel:_R5BSHBControlFiveLabel selectedLabel:_R5BSHBSelectFiveLabel selectModel:mod];
                         break;
                     default:
                         break;
                 }
             }
-        }else {
-            for (int i=0; i<5; i++) {
-                SelectModel *mod = [[SelectModel alloc] init];
-                mod.sourceID = @(i+1);
-                mod.channel = @(0);
-                mod.deviceID = @(0);
-                [_settingSelectMutArray insertObject:mod atIndex:i];
-            }
-            _R5BSHBControlOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-            _R5BSHBControlTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-            _R5BSHBControlThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-            _R5BSHBControlFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-            _R5BSHBControlFiveLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
         }
     }else if ([self.remoteEntity.shortName isEqualToString:@"R9BSBH"]) {
         _practicalityImageView.image = [UIImage imageNamed:@"rb01"];
@@ -451,18 +456,35 @@
         
         _settingSelectMutArray = [[NSMutableArray alloc] initWithCapacity:9];
         
-        if (_remoteEntity.remoteBranch.length >= 96) {
-            for (int i=0; i<9; i++) {
+        for (int i=0; i<9; i++) {
+            SelectModel *mod = [[SelectModel alloc] init];
+            mod.sourceID = @(i+1);
+            mod.channel = @(0);
+            mod.deviceID = @(0);
+            [_settingSelectMutArray insertObject:mod atIndex:i];
+        }
+        _R9BSBHControlOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _R9BSBHControlTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _R9BSBHControlThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _R9BSBHControlFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _R9BSBHControlFiveLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _R9BSBHControlSixLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _R9BSBHControlSevenLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _R9BSBHControlEightLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _R9BSBHControlNineLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        if (self.remoteEntity.remoteBranch.length >= 16) {
+            NSInteger c = (self.remoteEntity.remoteBranch.length-6) / 10;
+            for (int i=0; i<c; i++) {
                 NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
                 SelectModel *mod = [[SelectModel alloc] init];
-                mod.sourceID = @([CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]]);
+                NSInteger s = [CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]];
                 NSInteger channelInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]];
                 mod.channel = @(channelInt);
                 NSInteger deviceIDInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(6, 4)]];
                 mod.deviceID = @(deviceIDInt);
-                [_settingSelectMutArray insertObject:mod atIndex:i];
-                
-                switch (i) {
+                mod.sourceID = @(s);
+                [_settingSelectMutArray replaceObjectAtIndex:s-1 withObject:mod];
+                switch (s-1) {
                     case 0:
                         [self fillControlLabel:_R9BSBHControlOneLabel selectedLabel:_R9BSBHSelectOneLabel selectModel:mod];
                         break;
@@ -494,23 +516,6 @@
                         break;
                 }
             }
-        }else {
-            for (int i=0; i<9; i++) {
-                SelectModel *mod = [[SelectModel alloc] init];
-                mod.sourceID = @(i+1);
-                mod.channel = @(0);
-                mod.deviceID = @(0);
-                [_settingSelectMutArray insertObject:mod atIndex:i];
-            }
-            _R9BSBHControlOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-            _R9BSBHControlTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-            _R9BSBHControlThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-            _R9BSBHControlFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-            _R9BSBHControlFiveLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-            _R9BSBHControlSixLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-            _R9BSBHControlSevenLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-            _R9BSBHControlEightLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-            _R9BSBHControlNineLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
         }
     }else if ([self.remoteEntity.shortName isEqualToString:@"RB07"]) {
         _practicalityImageView.image = [UIImage imageNamed:@"bajiao"];
@@ -558,18 +563,28 @@
                 _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
             }
         }else {
-            if (_remoteEntity.remoteBranch.length >= 26) {
-                for (int i=0; i<2; i++) {
+            for (int i=0; i<2; i++) {
+                SelectModel *mod = [[SelectModel alloc] init];
+                mod.sourceID = @(i+1);
+                mod.channel = @(0);
+                mod.deviceID = @(0);
+                [_settingSelectMutArray insertObject:mod atIndex:i];
+            }
+            _tConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            if (self.remoteEntity.remoteBranch.length >= 16) {
+                NSInteger c = (self.remoteEntity.remoteBranch.length-6) / 10;
+                for (int i=0; i<c; i++) {
                     NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
                     SelectModel *mod = [[SelectModel alloc] init];
-                    mod.sourceID = @([CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]]);
+                    NSInteger s = [CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]];
                     NSInteger channelInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]];
                     mod.channel = @(channelInt);
                     NSInteger deviceIDInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(6, 4)]];
                     mod.deviceID = @(deviceIDInt);
-                    [_settingSelectMutArray insertObject:mod atIndex:i];
-                    
-                    switch (i) {
+                    mod.sourceID = @(s);
+                    [_settingSelectMutArray replaceObjectAtIndex:s-1 withObject:mod];
+                    switch (s-1) {
                         case 0:
                             [self fillControlLabel:_tConrolOneLabel selectedLabel:_tSelectOneLabel selectModel:mod];
                             break;
@@ -580,16 +595,6 @@
                             break;
                     }
                 }
-            }else {
-                for (int i=0; i<2; i++) {
-                    SelectModel *mod = [[SelectModel alloc] init];
-                    mod.sourceID = @(i+1);
-                    mod.channel = @(0);
-                    mod.deviceID = @(0);
-                    [_settingSelectMutArray insertObject:mod atIndex:i];
-                }
-                _tConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
             }
         }
     }else if ([self.remoteEntity.shortName isEqualToString:@"6RSIBH"]
@@ -597,7 +602,13 @@
               || [self.remoteEntity.shortName isEqualToString:@"H2CSWB"]
               || [self.remoteEntity.shortName isEqualToString:@"H3CSWB"]
               || [self.remoteEntity.shortName isEqualToString:@"H4CSWB"]
-              || [self.remoteEntity.shortName isEqualToString:@"H6CSWB"]) {
+              || [self.remoteEntity.shortName isEqualToString:@"H6CSWB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H1CSB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H2CSB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H3CSB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H4CSB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H6CSB"]
+              || [self.remoteEntity.shortName isEqualToString:@"KT6RS"]) {
         _practicalityImageView.image = [UIImage imageNamed:@"bajiao"];
         keyCount = 6;
         UIButton *btn = [[UIButton alloc] initWithFrame:CGRectZero];
@@ -621,18 +632,32 @@
         
         _settingSelectMutArray = [[NSMutableArray alloc] initWithCapacity:6];
         
-        if (_remoteEntity.remoteBranch.length >= 66) {
-            for (int i=0; i<6; i++) {
+        for (int i=0; i<6; i++) {
+            SelectModel *mod = [[SelectModel alloc] init];
+            mod.sourceID = @(i+1);
+            mod.channel = @(0);
+            mod.deviceID = @(0);
+            [_settingSelectMutArray insertObject:mod atIndex:i];
+        }
+        _sixKeyControlOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _sixKeyControlTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _sixKeyControlThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _sixKeyControlFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _sixKeyControlFiveLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        _sixKeyControlSixLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+        if (self.remoteEntity.remoteBranch.length >= 16) {
+            NSInteger c = (self.remoteEntity.remoteBranch.length-6) / 10;
+            for (int i=0; i<c; i++) {
                 NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
                 SelectModel *mod = [[SelectModel alloc] init];
-                mod.sourceID = @([CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]]);
+                NSInteger s = [CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]];
                 NSInteger channelInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]];
                 mod.channel = @(channelInt);
                 NSInteger deviceIDInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(6, 4)]];
                 mod.deviceID = @(deviceIDInt);
-                [_settingSelectMutArray insertObject:mod atIndex:i];
-                
-                switch (i) {
+                mod.sourceID = @(s);
+                [_settingSelectMutArray replaceObjectAtIndex:s-1 withObject:mod];
+                switch (s-1) {
                     case 0:
                         [self fillControlLabel:_sixKeyControlOneLabel selectedLabel:_sixKeySelectOneLabel selectModel:mod];
                         break;
@@ -655,20 +680,6 @@
                         break;
                 }
             }
-        }else {
-            for (int i=0; i<6; i++) {
-                SelectModel *mod = [[SelectModel alloc] init];
-                mod.sourceID = @(i+1);
-                mod.channel = @(0);
-                mod.deviceID = @(0);
-                [_settingSelectMutArray insertObject:mod atIndex:i];
-            }
-            _sixKeyControlOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-            _sixKeyControlTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-            _sixKeyControlThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-            _sixKeyControlFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-            _sixKeyControlFiveLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-            _sixKeyControlSixLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
         }
     }
     
@@ -843,7 +854,13 @@
                   || [self.remoteEntity.shortName isEqualToString:@"H2CSWB"]
                   || [self.remoteEntity.shortName isEqualToString:@"H3CSWB"]
                   || [self.remoteEntity.shortName isEqualToString:@"H4CSWB"]
-                  || [self.remoteEntity.shortName isEqualToString:@"H6CSWB"]) {
+                  || [self.remoteEntity.shortName isEqualToString:@"H6CSWB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H1CSB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H2CSB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H3CSB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H4CSB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H6CSB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"KT6RS"]) {
             if (safeHeight <= 580) {
                 _contentViewHeight.constant = 580;
             }else {
@@ -1066,6 +1083,7 @@
         }
     }];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
+    nav.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:nav animated:YES completion:nil];
 }
 
@@ -1352,7 +1370,13 @@
               || [self.remoteEntity.shortName isEqualToString:@"H2CSWB"]
               || [self.remoteEntity.shortName isEqualToString:@"H3CSWB"]
               || [self.remoteEntity.shortName isEqualToString:@"H4CSWB"]
-              || [self.remoteEntity.shortName isEqualToString:@"H6CSWB"]) {
+              || [self.remoteEntity.shortName isEqualToString:@"H6CSWB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H1CSB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H2CSB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H3CSB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H4CSB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H6CSB"]
+              || [self.remoteEntity.shortName isEqualToString:@"KT6RS"]) {
         NSString *cmd = @"9b1f06";
         for (SelectModel *mod in _settingSelectMutArray) {
             NSString *sw = [CSRUtilities stringWithHexNumber:[mod.sourceID integerValue]];
@@ -2237,15 +2261,27 @@
 }
 
 - (IBAction)readRemoteConfig:(UIButton *)sender {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"remotereadalert", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
-    [alert.view setTintColor:DARKORAGE];
-    UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    if ([_remoteEntity.shortName isEqualToString:@"RB01"]
+        || [_remoteEntity.shortName isEqualToString:@"RB02"]
+        || [_remoteEntity.shortName isEqualToString:@"RB03"]
+        || [_remoteEntity.shortName isEqualToString:@"R9BSBH"]
+        || [_remoteEntity.shortName isEqualToString:@"R5BSBH"]
+        || [_remoteEntity.shortName isEqualToString:@"5BCBH"]
+        || [_remoteEntity.shortName isEqualToString:@"RB05"]) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"remotereadalert", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+        [alert.view setTintColor:DARKORAGE];
+        UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            Byte byte[] = {0x71, 0x01, 0x00};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_remoteEntity.deviceId data:cmd];
+        }];
+        [alert addAction:yes];
+        [self presentViewController:alert animated:YES completion:nil];
+    }else {
         Byte byte[] = {0x71, 0x01, 0x00};
         NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
         [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_remoteEntity.deviceId data:cmd];
-    }];
-    [alert addAction:yes];
-    [self presentViewController:alert animated:YES completion:nil];
+    }
 }
 
 - (void)getRemoteConfiguration:(NSNotification *)notification {
@@ -2254,151 +2290,98 @@
     if ([deviceId isEqualToNumber:_remoteEntity.deviceId]) {
         [_settingSelectMutArray removeAllObjects];
         if ([self.remoteEntity.shortName isEqualToString:@"RB01"]||[self.remoteEntity.shortName isEqualToString:@"RB05"]) {
-            if (/*[[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]*/
-                [_remoteEntity.cvVersion integerValue] < 18) {
-                if (_remoteEntity.remoteBranch.length > 72) {
-                    NSArray *remoteArray = [self.remoteEntity.remoteBranch componentsSeparatedByString:@"|"];
-                    [remoteArray enumerateObjectsUsingBlock:^(NSString *brach, NSUInteger idx, BOOL * _Nonnull stop) {
-                        NSString *swIndex = [brach substringToIndex:2];
-                        NSString *rcIndex = [brach substringWithRange:NSMakeRange(2, 4)];
-                        SelectModel *mod = [[SelectModel alloc] init];
-                        mod.sourceID = @([CSRUtilities numberWithHexString:swIndex]);
-                        if ([brach length]>15) {
-                            mod.channel = @([self exchangePositionOfDeviceIdString:rcIndex]);
-                            mod.deviceID = @([self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(12, 4)]]);
-                        }else {
-                            mod.channel = @(0);
-                            mod.deviceID = @(0);
-                        }
-                        [_settingSelectMutArray insertObject:mod atIndex:idx];
-                        
-                        switch (idx) {
-                            case 0:
-                                [self fillControlLabel:_fConrolOneLabel selectedLabel:_fSelectOneLabel selectModel:mod];
-                                break;
-                            case 1:
-                                [self fillControlLabel:_fConrolTwoLabel selectedLabel:_fSelectTwoLabel selectModel:mod];
-                                break;
-                            case 2:
-                                [self fillControlLabel:_fConrolThreeLabel selectedLabel:_fSelectThreeLabel selectModel:mod];
-                                break;
-                            case 3:
-                                [self fillControlLabel:_fConrolFourLabel selectedLabel:_fSelectFourLabel selectModel:mod];
-                                break;
-                            default:
-                                break;
-                        }
-                    }];
-                }else {
-                    for (int i=0; i<4; i++) {
-                        SelectModel *mod = [[SelectModel alloc] init];
-                        mod.sourceID = @(i+1);
-                        mod.channel = @(0);
-                        mod.deviceID = @(0);
-                        [_settingSelectMutArray insertObject:mod atIndex:i];
-                    }
-                    _fConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                    _fConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                    _fConrolThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                    _fConrolFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                }
-            }else {
-                if (_remoteEntity.remoteBranch.length >= 46) {
-                    for (int i=0; i<4; i++) {
-                        NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
-                        SelectModel *mod = [[SelectModel alloc] init];
-                        mod.sourceID = @([CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]]);
-                        NSInteger channelInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]];
-                        mod.channel = @(channelInt);
-                        NSInteger deviceIDInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(6, 4)]];
-                        mod.deviceID = @(deviceIDInt);
-                        [_settingSelectMutArray insertObject:mod atIndex:i];
-                        
-                        switch (i) {
-                            case 0:
-                                [self fillControlLabel:_fConrolOneLabel selectedLabel:_fSelectOneLabel selectModel:mod];
-                                break;
-                            case 1:
-                                [self fillControlLabel:_fConrolTwoLabel selectedLabel:_fSelectTwoLabel selectModel:mod];
-                                break;
-                            case 2:
-                                [self fillControlLabel:_fConrolThreeLabel selectedLabel:_fSelectThreeLabel selectModel:mod];
-                                break;
-                            case 3:
-                                [self fillControlLabel:_fConrolFourLabel selectedLabel:_fSelectFourLabel selectModel:mod];
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }else {
-                    for (int i=0; i<4; i++) {
-                        SelectModel *mod = [[SelectModel alloc] init];
-                        mod.sourceID = @(i+1);
-                        mod.channel = @(0);
-                        mod.deviceID = @(0);
-                        [_settingSelectMutArray insertObject:mod atIndex:i];
-                    }
-                    _fConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                    _fConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                    _fConrolThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                    _fConrolFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                }
+            for (int i=0; i<4; i++) {
+                SelectModel *mod = [[SelectModel alloc] init];
+                mod.sourceID = @(i+1);
+                mod.channel = @(0);
+                mod.deviceID = @(0);
+                [_settingSelectMutArray insertObject:mod atIndex:i];
             }
-        }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]||[_remoteEntity.shortName isEqualToString:@"1BMBH"]) {
-            if (/*[[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]*/
-                [_remoteEntity.cvVersion integerValue] < 18) {
-                if (_remoteEntity.remoteBranch.length >= 18) {
+            _fConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _fConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _fConrolThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _fConrolFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _fSelectOneLabel.text = @"";
+            _fSelectTwoLabel.text = @"";
+            _fSelectThreeLabel.text = @"";
+            _fSelectFourLabel.text = @"";
+            if (self.remoteEntity.remoteBranch.length >= 16) {
+                NSInteger c = (self.remoteEntity.remoteBranch.length-6) / 10;
+                for (int i=0; i<c; i++) {
+                   NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
                     SelectModel *mod = [[SelectModel alloc] init];
-                    mod.sourceID = @(1);
-                    mod.channel = @([self exchangePositionOfDeviceIdString:[_remoteEntity.remoteBranch substringWithRange:NSMakeRange(2, 4)]]);
-                    mod.deviceID = @([self exchangePositionOfDeviceIdString:[_remoteEntity.remoteBranch substringWithRange:NSMakeRange(12, 4)]]);
-                    [_settingSelectMutArray insertObject:mod atIndex:0];
-                    [self fillControlLabel:_sConrolOneLabel selectedLabel:_sSelectOneLabel selectModel:mod];
-                }else {
-                    SelectModel *mod = [[SelectModel alloc] init];
-                    mod.sourceID = @(1);
-                    mod.channel = @(0);
-                    mod.deviceID = @(0);
-                    [_settingSelectMutArray insertObject:mod atIndex:0];
-                    _sConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                }
-            }else {
-                if (self.remoteEntity.remoteBranch.length >= 16) {
-                    NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(6, 10)];
-                    SelectModel *mod = [[SelectModel alloc] init];
-                    mod.sourceID = @([CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]]);
+                    NSInteger s = [CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]];
                     NSInteger channelInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]];
                     mod.channel = @(channelInt);
                     NSInteger deviceIDInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(6, 4)]];
                     mod.deviceID = @(deviceIDInt);
-                    [_settingSelectMutArray insertObject:mod atIndex:0];
-                    [self fillControlLabel:_sConrolOneLabel selectedLabel:_sSelectOneLabel selectModel:mod];
-                }else {
-                    SelectModel *mod = [[SelectModel alloc] init];
-                    mod.sourceID = @(1);
-                    mod.channel = @(0);
-                    mod.deviceID = @(0);
-                    [_settingSelectMutArray insertObject:mod atIndex:0];
-                    _sConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+                    mod.sourceID = @(s);
+                    [_settingSelectMutArray replaceObjectAtIndex:s-1 withObject:mod];
+                    switch (s-1) {
+                        case 0:
+                            [self fillControlLabel:_fConrolOneLabel selectedLabel:_fSelectOneLabel selectModel:mod];
+                            break;
+                        case 1:
+                            [self fillControlLabel:_fConrolTwoLabel selectedLabel:_fSelectTwoLabel selectModel:mod];
+                            break;
+                        case 2:
+                            [self fillControlLabel:_fConrolThreeLabel selectedLabel:_fSelectThreeLabel selectModel:mod];
+                            break;
+                        case 3:
+                            [self fillControlLabel:_fConrolFourLabel selectedLabel:_fSelectFourLabel selectModel:mod];
+                            break;
+                        default:
+                            break;
+                    }
                 }
+            }
+        }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]||[_remoteEntity.shortName isEqualToString:@"1BMBH"]) {
+            SelectModel *mod = [[SelectModel alloc] init];
+            mod.sourceID = @(1);
+            mod.channel = @(0);
+            mod.deviceID = @(0);
+            [_settingSelectMutArray insertObject:mod atIndex:0];
+            _sConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _sSelectOneLabel.text = @"";
+            if (self.remoteEntity.remoteBranch.length >= 16) {
+                NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(6, 10)];
+                 SelectModel *mod = [[SelectModel alloc] init];
+                 NSInteger s = [CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]];
+                 NSInteger channelInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]];
+                 mod.channel = @(channelInt);
+                 NSInteger deviceIDInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(6, 4)]];
+                 mod.deviceID = @(deviceIDInt);
+                 mod.sourceID = @(s);
+                 [_settingSelectMutArray replaceObjectAtIndex:s-1 withObject:mod];
+                [self fillControlLabel:_sConrolOneLabel selectedLabel:_sSelectOneLabel selectModel:mod];
             }
         }else if ([self.remoteEntity.shortName isEqualToString:@"RB04"]
                   || [self.remoteEntity.shortName isEqualToString:@"RSIBH"]
                   || [self.remoteEntity.shortName isEqualToString:@"S10IB-H2"]) {
-            if (self.remoteEntity.remoteBranch.length >= 26) {
-                
-                for (int i=0; i<2; i++) {
-                    NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
+            for (int i=0; i<2; i++) {
+                SelectModel *mod = [[SelectModel alloc] init];
+                mod.sourceID = @(i+1);
+                mod.channel = @(0);
+                mod.deviceID = @(0);
+                [_settingSelectMutArray insertObject:mod atIndex:i];
+            }
+            _tConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _tSelectOneLabel.text = @"";
+            _tSelectTwoLabel.text = @"";
+            if (self.remoteEntity.remoteBranch.length >= 16) {
+                NSInteger c = (self.remoteEntity.remoteBranch.length-6) / 10;
+                for (int i=0; i<c; i++) {
+                   NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
                     SelectModel *mod = [[SelectModel alloc] init];
-                    mod.sourceID = @([CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]]);
+                    NSInteger s = [CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]];
                     NSInteger channelInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]];
                     mod.channel = @(channelInt);
                     NSInteger deviceIDInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(6, 4)]];
                     mod.deviceID = @(deviceIDInt);
-                    [_settingSelectMutArray insertObject:mod atIndex:i];
-                    
-                    switch (i) {
+                    mod.sourceID = @(s);
+                    [_settingSelectMutArray replaceObjectAtIndex:s-1 withObject:mod];
+                    switch (s-1) {
                         case 0:
                             [self fillControlLabel:_tConrolOneLabel selectedLabel:_tSelectOneLabel selectModel:mod];
                             break;
@@ -2409,34 +2392,47 @@
                             break;
                     }
                 }
-                
-            }else {
-                for (int i=0; i<2; i++) {
-                    SelectModel *mod = [[SelectModel alloc] init];
-                    mod.sourceID = @(i+1);
-                    mod.channel = @(0);
-                    mod.deviceID = @(0);
-                    [_settingSelectMutArray insertObject:mod atIndex:i];
-                }
-                _tConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
             }
         }else if ([self.remoteEntity.shortName isEqualToString:@"R5BSBH"]
                   || [self.remoteEntity.shortName isEqualToString:@"RB09"]
                   || [self.remoteEntity.shortName isEqualToString:@"5RSIBH"]
                   || [self.remoteEntity.shortName isEqualToString:@"5BCBH"]) {
-            if (self.remoteEntity.remoteBranch.length >= 56) {
-                for (int i=0; i<5; i++) {
-                    NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
+            [_settingSelectMutArray removeAllObjects];
+            for (int i=0; i<5; i++) {
+                SelectModel *mod = [[SelectModel alloc] init];
+                mod.sourceID = @(i+1);
+                mod.channel = @(0);
+                mod.deviceID = @(0);
+                [_settingSelectMutArray insertObject:mod atIndex:i];
+            }
+            _R5BSHBControlOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _R5BSHBControlTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _R5BSHBControlThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _R5BSHBControlFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _R5BSHBControlFiveLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _R5BSHBSelectOneLabel.text = @"";
+            _R5BSHBSelectTwoLabel.text = @"";
+            _R5BSHBSelectThreeLabel.text = @"";
+            _R5BSHBSelectFourLabel.text = @"";
+            _R5BSHBSelectFiveLabel.text = @"";
+            if (self.remoteEntity.remoteBranch.length >= 16) {
+                NSInteger c = (self.remoteEntity.remoteBranch.length-6) / 10;
+                for (int i=0; i<c; i++) {
+                   NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
                     SelectModel *mod = [[SelectModel alloc] init];
-                    mod.sourceID = @([CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]]);
+                    NSInteger s = [CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]];
                     NSInteger channelInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]];
                     mod.channel = @(channelInt);
                     NSInteger deviceIDInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(6, 4)]];
                     mod.deviceID = @(deviceIDInt);
-                    [_settingSelectMutArray insertObject:mod atIndex:i];
-                    
-                    switch (i) {
+                    if (s == 0) {
+                        mod.sourceID = @(5);
+                        [_settingSelectMutArray replaceObjectAtIndex:4 withObject:mod];
+                    }else {
+                        mod.sourceID = @(s);
+                        [_settingSelectMutArray replaceObjectAtIndex:s-1 withObject:mod];
+                    }
+                    switch (s-1) {
                         case 0:
                             [self fillControlLabel:_R5BSHBControlOneLabel selectedLabel:_R5BSHBSelectOneLabel selectModel:mod];
                             break;
@@ -2449,6 +2445,7 @@
                         case 3:
                             [self fillControlLabel:_R5BSHBControlFourLabel selectedLabel:_R5BSHBSelectFourLabel selectModel:mod];
                             break;
+                        case -1:
                         case 4:
                             [self fillControlLabel:_R5BSHBControlFiveLabel selectedLabel:_R5BSHBSelectFiveLabel selectModel:mod];
                             break;
@@ -2456,33 +2453,46 @@
                             break;
                     }
                 }
-            }else {
-                for (int i=0; i<5; i++) {
-                    SelectModel *mod = [[SelectModel alloc] init];
-                    mod.sourceID = @(i+1);
-                    mod.channel = @(0);
-                    mod.deviceID = @(0);
-                    [_settingSelectMutArray insertObject:mod atIndex:i];
-                }
-                _R5BSHBControlOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _R5BSHBControlTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _R5BSHBControlThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _R5BSHBControlFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _R5BSHBControlFiveLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
             }
         }else if ([self.remoteEntity.shortName isEqualToString:@"R9BSBH"]) {
-            if (_remoteEntity.remoteBranch.length >= 96) {
-                for (int i=0; i<9; i++) {
-                    NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
+            for (int i=0; i<9; i++) {
+                SelectModel *mod = [[SelectModel alloc] init];
+                mod.sourceID = @(i+1);
+                mod.channel = @(0);
+                mod.deviceID = @(0);
+                [_settingSelectMutArray insertObject:mod atIndex:i];
+            }
+            _R9BSBHControlOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _R9BSBHControlTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _R9BSBHControlThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _R9BSBHControlFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _R9BSBHControlFiveLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _R9BSBHControlSixLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _R9BSBHControlSevenLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _R9BSBHControlEightLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _R9BSBHControlNineLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _R9BSBHSelectOneLabel.text = @"";
+            _R9BSBHSelectTwoLabel.text = @"";
+            _R9BSBHSelectThreeLabel.text = @"";
+            _R9BSBHSelectFourLabel.text = @"";
+            _R9BSBHSelectFiveLabel.text = @"";
+            _R9BSBHSelectSixLabel.text = @"";
+            _R9BSBHSelectSevenLabel.text = @"";
+            _R9BSBHSelectEightLabel.text = @"";
+            _R9BSBHSelectNineLabel.text = @"";
+            if (self.remoteEntity.remoteBranch.length >= 16) {
+                NSInteger c = (self.remoteEntity.remoteBranch.length-6) / 10;
+                for (int i=0; i<c; i++) {
+                   NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
                     SelectModel *mod = [[SelectModel alloc] init];
-                    mod.sourceID = @([CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]]);
+                    NSInteger s = [CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]];
                     NSInteger channelInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]];
                     mod.channel = @(channelInt);
                     NSInteger deviceIDInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(6, 4)]];
                     mod.deviceID = @(deviceIDInt);
-                    [_settingSelectMutArray insertObject:mod atIndex:i];
-                    
-                    switch (i) {
+                    mod.sourceID = @(s);
+                    [_settingSelectMutArray replaceObjectAtIndex:s-1 withObject:mod];
+                    switch (s-1) {
                         case 0:
                             [self fillControlLabel:_R9BSBHControlOneLabel selectedLabel:_R9BSBHSelectOneLabel selectModel:mod];
                             break;
@@ -2514,113 +2524,81 @@
                             break;
                     }
                 }
-            }else {
-                for (int i=0; i<9; i++) {
-                    SelectModel *mod = [[SelectModel alloc] init];
-                    mod.sourceID = @(i+1);
-                    mod.channel = @(0);
-                    mod.deviceID = @(0);
-                    [_settingSelectMutArray insertObject:mod atIndex:i];
-                }
-                _R9BSBHControlOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _R9BSBHControlTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _R9BSBHControlThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _R9BSBHControlFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _R9BSBHControlFiveLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _R9BSBHControlSixLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _R9BSBHControlSevenLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _R9BSBHControlEightLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _R9BSBHControlNineLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
             }
         }else if ([self.remoteEntity.shortName isEqualToString:@"RB07"]) {
-            if (/*[[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]*/
-                [_remoteEntity.cvVersion integerValue] < 18) {
-                if (_remoteEntity.remoteBranch.length >37) {
-                    NSArray *remoteArray = [self.remoteEntity.remoteBranch componentsSeparatedByString:@"|"];
-                    [remoteArray enumerateObjectsUsingBlock:^(NSString *brach, NSUInteger idx, BOOL * _Nonnull stop) {
-                        NSString *swIndex = [brach substringToIndex:2];
-                        NSString *rcIndex = [brach substringWithRange:NSMakeRange(2, 4)];
-                        SelectModel *mod = [[SelectModel alloc] init];
-                        mod.sourceID = @([CSRUtilities numberWithHexString:swIndex]);
-                        mod.channel = @([self exchangePositionOfDeviceIdString:rcIndex]);
-                        mod.deviceID = @([self exchangePositionOfDeviceIdString:[brach substringWithRange:NSMakeRange(12, 4)]]);
-                        [_settingSelectMutArray insertObject:mod atIndex:idx];
-                        
-                        switch (idx) {
-                            case 0:
-                                [self fillControlLabel:_tConrolOneLabel selectedLabel:_tSelectOneLabel selectModel:mod];
-                                break;
-                            case 1:
-                                [self fillControlLabel:_tConrolTwoLabel selectedLabel:_tSelectTwoLabel selectModel:mod];
-                                break;
-                            default:
-                                break;
-                        }
-                    }];
-                }else {
-                    for (int i=0; i<2; i++) {
-                        SelectModel *mod = [[SelectModel alloc] init];
-                        mod.sourceID = @(i+1);
-                        mod.channel = @(0);
-                        mod.deviceID = @(0);
-                        [_settingSelectMutArray insertObject:mod atIndex:i];
-                    }
-                    _tConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                    _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                }
-            }else {
-                if (_remoteEntity.remoteBranch.length >= 26) {
-                    for (int i=0; i<2; i++) {
-                        NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
-                        SelectModel *mod = [[SelectModel alloc] init];
-                        mod.sourceID = @([CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]]);
-                        NSInteger channelInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]];
-                        mod.channel = @(channelInt);
-                        NSInteger deviceIDInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(6, 4)]];
-                        mod.deviceID = @(deviceIDInt);
-                        [_settingSelectMutArray insertObject:mod atIndex:i];
-                        
-                        switch (i) {
-                            case 0:
-                                [self fillControlLabel:_tConrolOneLabel selectedLabel:_tSelectOneLabel selectModel:mod];
-                                break;
-                            case 1:
-                                [self fillControlLabel:_tConrolTwoLabel selectedLabel:_tSelectTwoLabel selectModel:mod];
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }else {
-                    for (int i=0; i<2; i++) {
-                        SelectModel *mod = [[SelectModel alloc] init];
-                        mod.sourceID = @(i+1);
-                        mod.channel = @(0);
-                        mod.deviceID = @(0);
-                        [_settingSelectMutArray insertObject:mod atIndex:i];
-                    }
-                    _tConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                    _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                }
+            for (int i=0; i<2; i++) {
+                SelectModel *mod = [[SelectModel alloc] init];
+                mod.sourceID = @(i+1);
+                mod.channel = @(0);
+                mod.deviceID = @(0);
+                [_settingSelectMutArray insertObject:mod atIndex:i];
             }
-        }else if ([self.remoteEntity.shortName isEqualToString:@"6RSIBH"]
-        || [self.remoteEntity.shortName isEqualToString:@"H1CSWB"]
-        || [self.remoteEntity.shortName isEqualToString:@"H2CSWB"]
-        || [self.remoteEntity.shortName isEqualToString:@"H3CSWB"]
-        || [self.remoteEntity.shortName isEqualToString:@"H4CSWB"]
-        || [self.remoteEntity.shortName isEqualToString:@"H6CSWB"]) {
-            if (_remoteEntity.remoteBranch.length >= 66) {
-                for (int i=0; i<6; i++) {
-                    NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
+            _tConrolOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _tConrolTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _tSelectOneLabel.text = @"";
+            _tSelectTwoLabel.text = @"";
+            if (self.remoteEntity.remoteBranch.length >= 16) {
+                NSInteger c = (self.remoteEntity.remoteBranch.length-6) / 10;
+                for (int i=0; i<c; i++) {
+                   NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
                     SelectModel *mod = [[SelectModel alloc] init];
-                    mod.sourceID = @([CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]]);
+                    NSInteger s = [CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]];
                     NSInteger channelInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]];
                     mod.channel = @(channelInt);
                     NSInteger deviceIDInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(6, 4)]];
                     mod.deviceID = @(deviceIDInt);
-                    [_settingSelectMutArray insertObject:mod atIndex:i];
-                    
-                    switch (i) {
+                    mod.sourceID = @(s);
+                    [_settingSelectMutArray replaceObjectAtIndex:s-1 withObject:mod];
+                    switch (s-1) {
+                        case 0:
+                            [self fillControlLabel:_tConrolOneLabel selectedLabel:_tSelectOneLabel selectModel:mod];
+                            break;
+                        case 1:
+                            [self fillControlLabel:_tConrolTwoLabel selectedLabel:_tSelectTwoLabel selectModel:mod];
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }else if ([self.remoteEntity.shortName isEqualToString:@"6RSIBH"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H1CSWB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H2CSWB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H3CSWB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H4CSWB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H6CSWB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H1CSB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H2CSB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H3CSB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H4CSB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H6CSB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"KT6RS"]) {
+            for (int i=0; i<6; i++) {
+                SelectModel *mod = [[SelectModel alloc] init];
+                mod.sourceID = @(i+1);
+                mod.channel = @(0);
+                mod.deviceID = @(0);
+                [_settingSelectMutArray insertObject:mod atIndex:i];
+            }
+            _sixKeyControlOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _sixKeyControlTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _sixKeyControlThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _sixKeyControlFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _sixKeyControlFiveLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            _sixKeyControlSixLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
+            if (self.remoteEntity.remoteBranch.length >= 16) {
+                NSInteger c = (self.remoteEntity.remoteBranch.length-6) / 10;
+                for (int i=0; i<c; i++) {
+                   NSString *str = [_remoteEntity.remoteBranch substringWithRange:NSMakeRange(10*i+6, 10)];
+                    SelectModel *mod = [[SelectModel alloc] init];
+                    NSInteger s = [CSRUtilities numberWithHexString:[str substringWithRange:NSMakeRange(0, 2)]];
+                    NSInteger channelInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(2, 4)]];
+                    mod.channel = @(channelInt);
+                    NSInteger deviceIDInt = [self exchangePositionOfDeviceIdString:[str substringWithRange:NSMakeRange(6, 4)]];
+                    mod.deviceID = @(deviceIDInt);
+                    mod.sourceID = @(s);
+                    [_settingSelectMutArray replaceObjectAtIndex:s-1 withObject:mod];
+                    switch (s-1) {
                         case 0:
                             [self fillControlLabel:_sixKeyControlOneLabel selectedLabel:_sixKeySelectOneLabel selectModel:mod];
                             break;
@@ -2643,21 +2621,8 @@
                             break;
                     }
                 }
-            }else {
-                for (int i=0; i<6; i++) {
-                    SelectModel *mod = [[SelectModel alloc] init];
-                    mod.sourceID = @(i+1);
-                    mod.channel = @(0);
-                    mod.deviceID = @(0);
-                    [_settingSelectMutArray insertObject:mod atIndex:i];
-                }
-                _sixKeyControlOneLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _sixKeyControlTwoLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _sixKeyControlThreeLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _sixKeyControlFourLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _sixKeyControlFiveLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
-                _sixKeyControlSixLabel.text = AcTECLocalizedStringFromTable(@"TapToSelect", @"Localizable");
             }
+
         }
     }
 }

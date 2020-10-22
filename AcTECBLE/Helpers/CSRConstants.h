@@ -40,31 +40,36 @@
 #define kRGBSceneDefaultColorSat @[@(0.27),@(0.4),@(0),@(0.4),@(0.85),@(1),@(0.4),@(0.3),@(1),@(1),@(1),@(1)]
 
 #define kDimmers @[@"D350BT",@"D350B-H",@"D350SB",@"D350B",@"D300IB",@"D300SB-T3",@"D350SB-T1",@"D300IB-H",@"D300IB-T2",@"D350B-B",@"D350B-L",@"D300IB-L",@"D0-10IB",@"D0/1-10IB",@"D350SB-Q2",@"D300SB",@"D350STB-Q",@"D350SB-Q",@"D1-10VIBH",@"D300IB",@"DDSB",@"D300IB-Q",@"D300B",@"D300B-H",@"DDSB",@"DAL-IBH",@"D300BH",@"D0/1-10B",@"PD350B",@"SD350",@"D350GB",@"SSD150",@"GD400B",@"ED350B",@"ED350SB",@"TD400B",@"DM300BH",@"TD300B"]
-#define kSwitchs @[@"S350BT",@"S350B",@"S2400IB",@"S350B-H",@"S2400IB-H",@"S2400IB-T4",@"S10IB",@"S10IB-H2",@"S10IBH",@"S2400IB-Q",@"GS10B",@"ES350B",@"S6AB",@"RM300BH",@"TS10B",@"PS10B",@"TS5B"]
-#define kRemotes @[@"RB01",@"RB02",@"S10IB-H2",@"RB04",@"RSIBH",@"R5BSBH",@"R9BSBH",@"RB07",@"RB06",@"RSBH",@"RB05",@"RB09",@"1BMBH",@"5RSIBH",@"5BCBH",@"6RSIBH",@"H1CSWB",@"H2CSWB",@"H3CSWB",@"H4CSWB",@"H6CSWB"]
+#define kSwitchs @[@"S350BT",@"S350B",@"S2400IB",@"S350B-H",@"S2400IB-H",@"S2400IB-T4",@"S10IB",@"S10IB-H2",@"S10IBH",@"S2400IB-Q",@"GS10B",@"ES350B",@"S6AB",@"RM300BH",@"TS10B",@"PS10B",@"TS5B",@"PS5B"]
+#define kRemotes @[@"RB01",@"RB02",@"S10IB-H2",@"RB04",@"RSIBH",@"R5BSBH",@"R9BSBH",@"RB07",@"RB06",@"RSBH",@"RB05",@"RB09",@"1BMBH",@"5RSIBH",@"5BCBH",@"6RSIBH",@"H1CSWB",@"H2CSWB",@"H3CSWB",@"H4CSWB",@"H6CSWB",@"H1CSB",@"H2CSB",@"H3CSB",@"H4CSB",@"H6CSB",@"KT6RS"]
 
 #define kCWRemotes @[@"GR12B", @"TR12B"]
 #define kRGBRemotes @[@"GR13B", @"TR13B"]
 #define kRGBCWRemotes @[@"GR15B", @"TR15B"]
-#define kSceneRemotesSixKeys @[@"TR6B", @"PR6B"]
-#define kSceneRemotesFourKeys @[@"TR4B",@"PR4B"]
-#define kSceneRemotesThreeKeys @[@"TR3B",@"PR3B"]
-#define kSceneRemotesTwoKeys @[@"TR2B",@"PR2B"]
-#define kSceneRemotesOneKey @[@"TR1B",@"PR1B"]
+#define kSceneRemotesSixKeys @[@"TR6B"]
+#define kSceneRemotesFourKeys @[@"TR4B"]
+#define kSceneRemotesThreeKeys @[@"TR3B"]
+#define kSceneRemotesTwoKeys @[@"TR2B"]
+#define kSceneRemotesOneKey @[@"TR1B"]
+#define kSceneRemotesSixKeysV @[@"PR6B"]
+#define kSceneRemotesFourKeysV @[@"PR4B"]
+#define kSceneRemotesThreeKeysV @[@"PR3B"]
+#define kSceneRemotesTwoKeysV @[@"PR2B"]
+#define kSceneRemotesOneKeyV @[@"PR1B"]
 
 #define kLCDRemote @[@"GR1000B"]
 
 #define kSocketsOneChannel @[@"PS2400B",@"SR2400",@"SSR1200",@"GP10B",@"P2400",@"H1PPWVBX",@"PP10B",@"TP10B"]
 #define kSocketsTwoChannel @[@"P2400B-H",@"P2400B-H2",@"P2400B",@"H2PPHB-WH",@"K2PPHB",@"K2PPHBX",@"H2PPWHB"]
 
-#define kTwoChannelSwitchs @[@"GS20B-2G",@"ES500B-2G",@"TS20B-2G",@"PS20B-2G",@"TS8B-2G"]
+#define kTwoChannelSwitchs @[@"GS20B-2G",@"ES500B-2G",@"TS20B-2G",@"PS20B-2G",@"TS8B-2G",@"PS8B-2G"]
 
 #define kOneChannelSwitchs @[@"S6AB",@"TS5B"]//实体按键控制反馈使用52开头协议，区别于普通单路调光器的87开头协议
 #define kOneChannelDimmers @[@"GD400B",@"TD400B",@"DM300BH",@"TD300B"]//实体按键控制反馈使用52开头协议，区别于普通单路调光器的87开头协议
-#define kTwoChannelDimmers @[@"D200IB-2G",@"D200GB-2G",@"GD400B-2G",@"ED500B-2G",@"D300IB-2G",@"TD400B-2G",@"PD400B-2G"]
+#define kTwoChannelDimmers @[@"D200IB-2G",@"D200GB-2G",@"GD400B-2G",@"ED500B-2G",@"D300IB-2G",@"TD400B-2G",@"PD400B-2G",@"KT2DS"]
 #define kThreeChannelDimmers @[@"TD400B-3G"]
 
-#define kThreeChannelSwitchs @[@"TS10B-3G",@"TS18B-3G",@"PS18B-3G",@"TS12B-3G"]
+#define kThreeChannelSwitchs @[@"TS10B-3G",@"TS18B-3G",@"PS18B-3G",@"TS12B-3G",@"PS12B-3G"]
 
 #define kThreeSpeedColorTemperaturesDevices @[@"D350SB",@"D300IB",@"D350B",@"S350B",@"D350B-B",@"D350B-L",@"D300IB-L",@"D300SB"]
 
@@ -78,6 +83,7 @@
 
 #define kOneChannelCurtainController @[@"C300IB",@"C300IBH",@"C300IB-1G",@"GC300B",@"TC300B"]
 #define kTwoChannelCurtainController @[@"C300IB-2G",@"GC600B-2G",@"TC300B-2G",@"TC600B-2G"]
+#define kHOneChannelCurtainController @[@"DT82TV"]
 
 #define kFanController @[@"F350B-H",@"F350IBH",@"F150IBH",@"FC150A"]
 
@@ -87,8 +93,10 @@
 #define kNearbyFunctionDevices @[@"LI-45B"]
 #define kMusicController @[@"MRS485IB"]
 #define kMusicControlRemote @[@"TRM6B-BO", @"TR6BEM"]
+#define kSonosMusicController @[@"MTCPB-M2"]
 
 #define PLAYMODE @[AcTECLocalizedStringFromTable(@"single", @"Localizable"),AcTECLocalizedStringFromTable(@"single_cycle", @"Localizable"),AcTECLocalizedStringFromTable(@"loop_playback", @"Localizable"),AcTECLocalizedStringFromTable(@"random", @"Localizable"),AcTECLocalizedStringFromTable(@"order", @"Localizable")]
+#define PLAYMODE_SONOS @[AcTECLocalizedStringFromTable(@"single", @"Localizable"),AcTECLocalizedStringFromTable(@"single_cycle", @"Localizable"),AcTECLocalizedStringFromTable(@"random", @"Localizable"),AcTECLocalizedStringFromTable(@"order", @"Localizable")]
 #define AUDIOSOURCES @[@"FM",@"DVD",@"MP3",@"AUX",@"NET RADIO",@"CLOUD MUSIC",@"AIRPLAY",@"DLNA"]
 
 #pragma mark - Notifications

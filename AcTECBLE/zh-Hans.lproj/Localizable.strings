@@ -171,7 +171,7 @@
 "Channel1"="第 1 路";
 "Channel2"="第 2 路";
 "Channel3"="第 3 路";
-"alert"="提示！";
+"alert"="提示";
 "cantsetoff"="儿童模式开启的状态下无法设置关闭状态。";
 "OK" = "确定";
 "Scene3" = "场景3";
@@ -211,3 +211,13 @@
 "no_online_channel_scanned" = "未扫描到在线通道。";
 "select_cycle_mode" = "选择循环模式";
 "refresh" = "刷新";
+"curtaion_restore_alert" = "设备恢复出厂设置后，相关的设置数据将全部清除。";
+"lan_connection_failed" = "局域网连接失败";
+"check_lan" = "请检查双方网络和路由器状态。";
+"retry" = "重试";
+"set_wallpaper" = "设置壁纸";
+"m_select_error_alert" = "无法选择，未获取到当前音乐控制器播放状态，需先对其进行操作。";
+"module" = "模块";
+"networking_setting" = "网络设置";
+"connected" = "已连接";
+"not_connected" = "未连接";

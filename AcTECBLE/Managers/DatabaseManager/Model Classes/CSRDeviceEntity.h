@@ -5,7 +5,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class CSRAreaEntity,DropEntity,RGBSceneEntity;
+@class CSRAreaEntity,DropEntity,RGBSceneEntity,SonosEntity;
 
 @interface CSRDeviceEntity : NSManagedObject
 
@@ -38,7 +38,14 @@
 @property (nonatomic, retain) NSNumber * hwVersion;
 @property (nonatomic, retain) NSNumber * bleFirVersion;
 @property (nonatomic, retain) NSNumber * bleHwVersion;
-@property (nonatomic, retain) NSData *wallPaper;
+@property (nonatomic, retain) NSData * wallPaper;
+@property (nonatomic, retain) NSString * ipAddress;
+@property (nonatomic, retain) NSNumber * port;
+@property (nonatomic, retain) NSNumber * mcSonosInfoVersion;
+@property (nonatomic, retain) NSSet * sonoss;
+@property (nonatomic, retain) NSString * subnetMask;
+@property (nonatomic, retain) NSString * gateway;
+@property (nonatomic, retain) NSString * dns;
 
 @end
 
@@ -58,5 +65,10 @@
 - (void)removeRgbScenesObject:(RGBSceneEntity *)value;
 - (void)addRgbScenes:(NSSet *)values;
 - (void)removeRGBScenes:(NSSet *)values;
+
+- (void)addSonossObject:(SonosEntity *)value;
+- (void)removeSonossObject:(SonosEntity *)value;
+- (void)addSonoss:(NSSet *)values;
+- (void)removeSonoss:(NSSet *)values;
 
 @end

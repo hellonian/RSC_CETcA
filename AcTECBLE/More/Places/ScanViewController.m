@@ -195,7 +195,8 @@
         }
         if (receiveData.length == dataLengthByHead) {
             NSString *jsonString = [[NSString alloc] initWithData:receiveData encoding:NSUTF8StringEncoding];
-            NSLog(@"jsonString>> %@",jsonString);
+//            NSLog(@"jsonString>> %@",jsonString);
+//            NBSLog(@"%@", jsonString);
             NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:jsonString];
             CSRParseAndLoad *parseLoad = [[CSRParseAndLoad alloc] init];
             CSRPlaceEntity *sharePlace = [parseLoad parseIncomingDictionary:jsonDictionary];

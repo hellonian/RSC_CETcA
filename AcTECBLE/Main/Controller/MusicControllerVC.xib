@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -13,6 +13,7 @@
                 <outlet property="channelBtn" destination="Ywx-R9-WGA" id="HYm-Zn-sgy"/>
                 <outlet property="cover" destination="nvs-I5-T6W" id="9zU-IN-m1J"/>
                 <outlet property="cycleBtn" destination="dTG-rD-jgH" id="wZR-NK-WUq"/>
+                <outlet property="cycleBtnAxisVerticalConstraint" destination="UCC-Qu-BnO" id="elq-Y7-sb9"/>
                 <outlet property="muteBtn" destination="2Gr-ee-lLv" id="tRa-gW-2oc"/>
                 <outlet property="playBtn" destination="H2M-hx-T9f" id="QZD-do-jCc"/>
                 <outlet property="songNameLabel" destination="iIL-M6-YoC" id="TwZ-0O-V1J"/>
@@ -79,7 +80,7 @@
                         <action selector="muteAction:" destination="-1" eventType="touchUpInside" id="1ud-EY-XAu"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ywx-R9-WGA">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ywx-R9-WGA">
                     <rect key="frame" x="179" y="660" width="56" height="16"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="16" id="9Nb-St-nFy"/>
@@ -97,7 +98,7 @@
                         <action selector="channelAction:" destination="-1" eventType="touchUpInside" id="dzN-op-qIM"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dTG-rD-jgH">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dTG-rD-jgH">
                     <rect key="frame" x="75.5" y="660" width="56" height="16"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="56" id="IDq-YH-aJl"/>
@@ -115,7 +116,7 @@
                         <action selector="cycleAction:" destination="-1" eventType="touchUpInside" id="H1t-Ue-oEd"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2h9-Rt-XAu">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2h9-Rt-XAu">
                     <rect key="frame" x="282.5" y="660" width="56" height="16"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="16" id="Ckk-ev-OJa"/>
@@ -150,6 +151,7 @@
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.95294117649999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="Ywx-R9-WGA" firstAttribute="top" secondItem="iIL-M6-YoC" secondAttribute="bottom" constant="50" id="1i0-8Z-Tbe"/>
@@ -175,7 +177,6 @@
                 <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="iIL-M6-YoC" secondAttribute="trailing" constant="20" id="sfo-kq-pOa"/>
                 <constraint firstItem="Q5M-cg-NOt" firstAttribute="bottom" secondItem="Nc7-Gk-bRI" secondAttribute="bottom" constant="42" id="sok-k1-4mt"/>
             </constraints>
-            <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <point key="canvasLocation" x="131.8840579710145" y="152.67857142857142"/>
         </view>
     </objects>

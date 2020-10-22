@@ -16,6 +16,7 @@
 #import "SceneMemberEntity.h"
 #import "TimerEntity.h"
 #import "TimerDeviceEntity.h"
+#import "SonosEntity.h"
 
 @interface CSRDatabaseManager : NSObject {
     BOOL newDatabase;
@@ -70,5 +71,7 @@
 - (void)timerDeviceEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId;
 - (void)dropEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId;
 - (void)sceneMemberEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId;
+
+- (SonosEntity *)saveNewSonos:(NSNumber *)deviceID channel:(NSNumber *)channel infoVersion:(NSNumber *)infoVersion modelType:(NSNumber *)modelType modelNumber:(NSNumber *)modelNumber name:(NSString *)name;
 
 @end

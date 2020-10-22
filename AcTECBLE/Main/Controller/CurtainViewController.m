@@ -45,6 +45,9 @@
 @property (nonatomic,assign) NSInteger controllChannel;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *channelSelectSeg;
 @property (nonatomic,strong) CSRDeviceEntity *curtainEntity;
+@property (weak, nonatomic) IBOutlet UIButton *cSettingBtn;
+@property (strong, nonatomic) IBOutlet UIView *cSettingView;
+@property (weak, nonatomic) IBOutlet UISwitch *cReverseSwitch;
 
 @end
 
@@ -53,15 +56,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
-        UIButton *btn = [[UIButton alloc] init];
-        [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
-        [btn setTitle:AcTECLocalizedStringFromTable(@"Back", @"Localizable") forState:UIControlStateNormal];
-        [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
-        [btn addTarget:self action:@selector(closeAction) forControlEvents:UIControlEventTouchUpInside];
-        UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
-        self.navigationItem.leftBarButtonItem = back;
-    }
+    UIButton *btn = [[UIButton alloc] init];
+    [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
+    [btn setTitle:AcTECLocalizedStringFromTable(@"Back", @"Localizable") forState:UIControlStateNormal];
+    [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(closeAction) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
+    self.navigationItem.leftBarButtonItem = back;
     UIBarButtonItem *calibrate = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"calibrate", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(calibrateAction)];
     self.navigationItem.rightBarButtonItem = calibrate;
     
@@ -88,33 +89,47 @@
         }
         self.macAddressLabel.text = doneTitle;
         self.controllChannel = 1;
-        if ([_curtainEntity.remoteBranch isEqualToString:@"ch"]) {
-            self.channelSelectSeg.hidden = YES;
-            self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainHImage"];
-            [self.openBtn setImage:[UIImage imageNamed:@"curtainHOpen"] forState:UIControlStateNormal];
-            [self.closeBtn setImage:[UIImage imageNamed:@"curtainHClose"] forState:UIControlStateNormal];
-        }else if ([_curtainEntity.remoteBranch isEqualToString:@"cv"]) {
-            self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainVImage"];
-            self.channelSelectSeg.hidden = YES;
-            [self.openBtn setImage:[UIImage imageNamed:@"curtainVOpen"] forState:UIControlStateNormal];
-            [self.closeBtn setImage:[UIImage imageNamed:@"curtainVClose"] forState:UIControlStateNormal];
-        }else if ([_curtainEntity.remoteBranch isEqualToString:@"chh"]) {
-            self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainHHImage"];
-            [self.openBtn setImage:[UIImage imageNamed:@"curtainHOpen"] forState:UIControlStateNormal];
-            [self.closeBtn setImage:[UIImage imageNamed:@"curtainHClose"] forState:UIControlStateNormal];
-        }else if ([_curtainEntity.remoteBranch isEqualToString:@"cvv"]) {
-            self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainVVImage"];
-            [self.openBtn setImage:[UIImage imageNamed:@"curtainVOpen"] forState:UIControlStateNormal];
-            [self.closeBtn setImage:[UIImage imageNamed:@"curtainVClose"] forState:UIControlStateNormal];
-        }
         if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
+            if ([_curtainEntity.remoteBranch isEqualToString:@"ch"]) {
+                self.channelSelectSeg.hidden = YES;
+                self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainHImage"];
+                [self.openBtn setImage:[UIImage imageNamed:@"curtainHOpen"] forState:UIControlStateNormal];
+                [self.closeBtn setImage:[UIImage imageNamed:@"curtainHClose"] forState:UIControlStateNormal];
+            }else if ([_curtainEntity.remoteBranch isEqualToString:@"cv"]) {
+                self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainVImage"];
+                self.channelSelectSeg.hidden = YES;
+                [self.openBtn setImage:[UIImage imageNamed:@"curtainVOpen"] forState:UIControlStateNormal];
+                [self.closeBtn setImage:[UIImage imageNamed:@"curtainVClose"] forState:UIControlStateNormal];
+            }
+            
             DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
             if ([_curtainEntity.shortName isEqualToString:@"C300IB"] || [_curtainEntity.shortName isEqualToString:@"C300IBH"]/*旧设备*/) {
                 [_curtainSlider setValue:[model.level floatValue] animated:YES];
             }else {
                 [_curtainSlider setValue:model.channel1Level animated:YES];
             }
+            
         }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
+            if ([_curtainEntity.remoteBranch isEqualToString:@"chh"]) {
+                self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainHHImage"];
+                [self.openBtn setImage:[UIImage imageNamed:@"curtainHOpen"] forState:UIControlStateNormal];
+                [self.closeBtn setImage:[UIImage imageNamed:@"curtainHClose"] forState:UIControlStateNormal];
+            }else if ([_curtainEntity.remoteBranch isEqualToString:@"cvv"]) {
+                self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainVVImage"];
+                [self.openBtn setImage:[UIImage imageNamed:@"curtainVOpen"] forState:UIControlStateNormal];
+                [self.closeBtn setImage:[UIImage imageNamed:@"curtainVClose"] forState:UIControlStateNormal];
+            }
+            
+            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+            [_curtainSlider setValue:model.channel1Level animated:YES];
+            
+        }else if ([CSRUtilities belongToHOneChannelCurtainController:_curtainEntity.shortName]) {
+            self.channelSelectSeg.hidden = YES;
+            self.navigationItem.rightBarButtonItem = nil;
+            self.cSettingBtn.hidden = NO;
+            self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainHImage"];
+            [self.openBtn setImage:[UIImage imageNamed:@"curtainHOpen"] forState:UIControlStateNormal];
+            [self.closeBtn setImage:[UIImage imageNamed:@"curtainHClose"] forState:UIControlStateNormal];
             DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
             [_curtainSlider setValue:model.channel1Level animated:YES];
         }
@@ -517,7 +532,8 @@
         }else if (sender.value == 0) {
             [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"7902020%ld",(long)_controllChannel]] success:nil failure:nil];
         }else {
-            if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
+            if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]
+                || [CSRUtilities belongToHOneChannelCurtainController:_curtainEntity.shortName]) {
                 [[LightModelApi sharedInstance] setLevel:_deviceId level:@(sender.value) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
                     
                 } failure:^(NSError * _Nullable error) {
@@ -539,7 +555,8 @@
         }else if (sender.value == 0) {
             [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"7902020%ld",(long)_controllChannel]] success:nil failure:nil];
         }else {
-            if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
+            if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]
+                || [CSRUtilities belongToHOneChannelCurtainController:_curtainEntity.shortName]) {
                 if ([_curtainEntity.shortName isEqualToString:@"C300IB"] || [_curtainEntity.shortName isEqualToString:@"C300IBH"]/*旧设备*/) {
                     [[LightModelApi sharedInstance] setLevel:_deviceId level:@(sender.value) success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
                         
@@ -585,8 +602,131 @@
         _translucentBgView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
         _translucentBgView.backgroundColor = [UIColor blackColor];
         _translucentBgView.alpha = 0.4;
+        _translucentBgView.userInteractionEnabled = NO;
     }
     return _translucentBgView;
+}
+
+- (void)addSubSettingView {
+    [self.navigationController.view addSubview:_cSettingView];
+    NSLayoutConstraint *left,*right,*top;
+    if (@available(iOS 11.0, *)) {
+        left = [NSLayoutConstraint constraintWithItem:_cSettingView
+                                            attribute:NSLayoutAttributeLeft
+                                            relatedBy:NSLayoutRelationEqual
+                                               toItem:self.navigationController.view.safeAreaLayoutGuide
+                                            attribute:NSLayoutAttributeLeft
+                                           multiplier:1.0
+                                             constant:10.0];
+        right = [NSLayoutConstraint constraintWithItem:_cSettingView
+                                             attribute:NSLayoutAttributeRight
+                                             relatedBy:NSLayoutRelationEqual
+                                                toItem:self.navigationController.view.safeAreaLayoutGuide
+                                             attribute:NSLayoutAttributeRight
+                                            multiplier:1.0
+                                              constant:-10.0];
+        top = [NSLayoutConstraint constraintWithItem:_cSettingView
+                                           attribute:NSLayoutAttributeTop
+                                           relatedBy:NSLayoutRelationEqual
+                                              toItem:self.navigationController.view.safeAreaLayoutGuide
+                                           attribute:NSLayoutAttributeBottom
+                                          multiplier:1.0
+                                            constant:20.0];
+    } else {
+        left = [NSLayoutConstraint constraintWithItem:_cSettingView
+                                            attribute:NSLayoutAttributeLeft
+                                            relatedBy:NSLayoutRelationEqual
+                                               toItem:self.navigationController.view
+                                            attribute:NSLayoutAttributeLeft
+                                           multiplier:1.0
+                                             constant:10.0];
+        right = [NSLayoutConstraint constraintWithItem:_cSettingView
+                                             attribute:NSLayoutAttributeRight
+                                             relatedBy:NSLayoutRelationEqual
+                                                toItem:self.navigationController.view
+                                             attribute:NSLayoutAttributeRight
+                                            multiplier:1.0
+                                              constant:-10.0];
+        top = [NSLayoutConstraint constraintWithItem:_cSettingView
+                                           attribute:NSLayoutAttributeTop
+                                           relatedBy:NSLayoutRelationEqual
+                                              toItem:self.navigationController.view
+                                           attribute:NSLayoutAttributeBottom
+                                          multiplier:1.0
+                                            constant:20.0];
+
+    }
+    NSLayoutConstraint *height = [NSLayoutConstraint constraintWithItem:_cSettingView
+                                                              attribute:NSLayoutAttributeHeight
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:nil
+                                                              attribute:NSLayoutAttributeNotAnAttribute
+                                                             multiplier:1.0
+                                                               constant:129];
+    [self.navigationController.view addConstraint:left];
+    [self.navigationController.view addConstraint:right];
+    [self.navigationController.view addConstraint:top];
+    [self.navigationController.view addConstraint:height];
+    [_cReverseSwitch setOn:[_curtainEntity.favourite boolValue]];
+}
+
+- (IBAction)cSettingBtnTouchDown:(UIButton *)sender {
+    [self.navigationController.view addSubview:self.translucentBgView];
+    _translucentBgView.alpha = 0;
+    [self addSubSettingView];
+}
+
+- (IBAction)cSettingAction:(UIButton *)sender {
+    [UIView animateWithDuration:0.5 animations:^{
+        _translucentBgView.alpha = 0.4;
+        CGRect rect = _cSettingView.frame;
+        rect.origin.y -= (_cSettingView.bounds.size.height+30);
+        _cSettingView.frame = rect;
+    }];
+}
+
+- (void)dismiss {
+    [UIView animateWithDuration:0.5 animations:^{
+        CGRect rect = _cSettingView.frame;
+        rect.origin.y += (_cSettingView.bounds.size.height+30);
+        _cSettingView.frame = rect;
+        _translucentBgView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [_cSettingView removeFromSuperview];
+        [_translucentBgView removeFromSuperview];
+        _translucentBgView = nil;
+    }];
+}
+
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    [self dismiss];
+}
+
+- (IBAction)cRestoreAction:(UIButton *)sender {
+    [self dismiss];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:AcTECLocalizedStringFromTable(@"alert", @"Localizable") message:AcTECLocalizedStringFromTable(@"curtaion_restore_alert", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+    [alert.view setTintColor:DARKORAGE];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        Byte byte[] = {0x79, 0x01, 0xAA};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+        _curtainEntity.favourite = @(NO);
+        [[CSRDatabaseManager sharedInstance] saveContext];
+    }];
+    [alert addAction:cancel];
+    [alert addAction:yes];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (IBAction)reverseAction:(UISwitch *)sender {
+    [self dismiss];
+    NSInteger r = sender.on ? 0x88 : 0x99;
+    Byte byte[] = {0x79, 0x01, r};
+    NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+    _curtainEntity.favourite = @(sender.on);
+    [[CSRDatabaseManager sharedInstance] saveContext];
 }
 
 @end

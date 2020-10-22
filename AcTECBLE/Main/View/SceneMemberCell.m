@@ -390,9 +390,20 @@
         }
         _imgv3.image = [UIImage imageNamed:@"Ico_voice"];
         _label3.text = [NSString stringWithFormat:@"%ld",iv];
+    }else if ([CSRUtilities belongToHOneChannelCurtainController:member.kindString]) {
+        _icon.image = [UIImage imageNamed:@"icon_curtain"];
+        _channelLabel.hidden = YES;
+        _imgv2.hidden = YES;
+        _label2.hidden = YES;
+        _imgv3.hidden = YES;
+        _label3.hidden = YES;
+        _imgv1.image = [UIImage imageNamed:@"Ico_power"];
+        if ([member.eveType integerValue] == 17) {
+            _label1.text = @"OFF";
+        }else if ([member.eveType integerValue] == 16) {
+            _label1.text = @"ON";
+        }
     }
-    
-    
 }
 
 - (IBAction)removeAction:(UIButton *)sender {

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SonosMusicControllerVC">
+            <connections>
+                <outlet property="listView" destination="Zu7-ox-rrT" id="uD4-sV-FIo"/>
+                <outlet property="noneView" destination="PLB-Cg-iqg" id="2q0-Nd-7hG"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1gB-l3-Orz">
+                    <rect key="frame" x="151.5" y="822" width="111" height="30"/>
+                    <state key="normal" title="Network Setting">
+                        <color key="titleColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </state>
+                    <connections>
+                        <action selector="networkingSettingAction:" destination="-1" eventType="touchUpInside" id="oVL-Wz-Isr"/>
+                    </connections>
+                </button>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PLB-Cg-iqg">
+                    <rect key="frame" x="0.0" y="44" width="414" height="768"/>
+                    <subviews>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="none_mc" translatesAutoresizingMaskIntoConstraints="NO" id="bDi-EV-y4K">
+                            <rect key="frame" x="117" y="147.5" width="180" height="180"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="180" id="3TK-Xi-xy9"/>
+                                <constraint firstAttribute="height" constant="180" id="ap4-sa-m7x"/>
+                            </constraints>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ImZ-g2-imT">
+                            <rect key="frame" x="30" y="327.5" width="354" height="200"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="200" id="Arn-gl-b1I"/>
+                            </constraints>
+                            <string key="text">You can connect up to 10 SONOS.
+Click the network Settings, enter the account number and password, and set the docking module, smartphone or tablet, SONO audio, and SONOS audio in the same network. The docking module will automatically add SONOS audio.</string>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <color key="textColor" red="0.30196078430000001" green="0.30196078430000001" blue="0.30196078430000001" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="bDi-EV-y4K" firstAttribute="centerY" secondItem="PLB-Cg-iqg" secondAttribute="centerY" multiplier="0.618" id="13i-Ry-MXO"/>
+                        <constraint firstItem="ImZ-g2-imT" firstAttribute="leading" secondItem="PLB-Cg-iqg" secondAttribute="leading" constant="30" id="HXb-oK-Djd"/>
+                        <constraint firstItem="bDi-EV-y4K" firstAttribute="centerX" secondItem="PLB-Cg-iqg" secondAttribute="centerX" id="aL2-AQ-NwU"/>
+                        <constraint firstAttribute="trailing" secondItem="ImZ-g2-imT" secondAttribute="trailing" constant="30" id="nF4-Ln-lGG"/>
+                        <constraint firstItem="ImZ-g2-imT" firstAttribute="top" secondItem="bDi-EV-y4K" secondAttribute="bottom" id="nkK-Sq-5Wa"/>
+                    </constraints>
+                </view>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="Zu7-ox-rrT">
+                    <rect key="frame" x="0.0" y="44" width="414" height="768"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </tableView>
+            </subviews>
+            <color key="backgroundColor" red="0.86274509799999999" green="0.86274509799999999" blue="0.86274509799999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="Q5M-cg-NOt" firstAttribute="bottom" secondItem="1gB-l3-Orz" secondAttribute="bottom" constant="10" id="6b8-zV-a7T"/>
+                <constraint firstItem="1gB-l3-Orz" firstAttribute="top" secondItem="Zu7-ox-rrT" secondAttribute="bottom" constant="10" id="Ahm-FL-1Wn"/>
+                <constraint firstItem="Zu7-ox-rrT" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="EPt-46-pKv"/>
+                <constraint firstItem="Zu7-ox-rrT" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="Rtq-v1-AlX"/>
+                <constraint firstItem="1gB-l3-Orz" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="a1d-W9-HtC"/>
+                <constraint firstItem="PLB-Cg-iqg" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="cDE-SS-iD3"/>
+                <constraint firstItem="PLB-Cg-iqg" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="ifR-SX-dG6"/>
+                <constraint firstItem="PLB-Cg-iqg" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" id="rLL-0v-uwi"/>
+                <constraint firstItem="1gB-l3-Orz" firstAttribute="top" secondItem="PLB-Cg-iqg" secondAttribute="bottom" constant="10" id="vbV-EG-AIg"/>
+                <constraint firstItem="Zu7-ox-rrT" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" id="y0t-4F-MvX"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
+            <point key="canvasLocation" x="56.521739130434788" y="-169.41964285714286"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="none_mc" width="180" height="180"/>
+    </resources>
+</document>

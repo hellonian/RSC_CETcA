@@ -321,6 +321,7 @@
     
     UINavigationController *nav= [[UINavigationController alloc] initWithRootViewController:detailVC];
     [nav setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
+    nav.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:nav animated:YES completion:nil];
     
 }
@@ -341,6 +342,7 @@
     
     UINavigationController *nav= [[UINavigationController alloc] initWithRootViewController:gdvc];
     [nav setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
+    nav.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:nav animated:NO completion:nil];
 }
 

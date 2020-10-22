@@ -64,7 +64,9 @@
     [[DataModelManager shareInstance] sendCmdData:@"ea30" toDeviceId:_deviceId];
     __weak MCUUpdateTool *weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if (!_startedUpdate) {
+        static int i = 0;
+        if (!_startedUpdate && i < 10) {
+            i++;
             [weakSelf sendAskUpdateCmd];
         }
     });

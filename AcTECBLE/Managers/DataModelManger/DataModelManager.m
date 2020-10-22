@@ -20,6 +20,7 @@
 
 @property (nonatomic,strong) DataModelApi *manager;
 @property (nonatomic,strong) NSMutableDictionary *deviceKeyDic;
+@property (nonatomic, strong) NSMutableDictionary *sonosInfoDic;
 
 
 @end
@@ -138,7 +139,7 @@ static DataModelManager *manager = nil;
 }
 
 - (void)didReceiveBlockData:(NSNumber *)destinationDeviceId sourceDeviceId:(NSNumber *)sourceDeviceId data:(NSData *)data {
-    NSLog(@"didReceiveBlockData: %@ ----- %@ +++++ %@",data,destinationDeviceId,sourceDeviceId);
+//    NSLog(@"didReceiveBlockData: %@ ----- %@ +++++ %@",data,destinationDeviceId,sourceDeviceId);
     
     NSString *dataStr = [CSRUtilities hexStringForData:data];
     
@@ -566,14 +567,47 @@ static DataModelManager *manager = nil;
     }
     
     else if ([dataStr hasPrefix:@"eb7701"]) {
-        if ([dataStr length]>=14) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"LCDRemoteIPAdressCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"IPAdress":[dataStr substringFromIndex:6]}];
+        if ([dataStr length] == 14) {
+            NSData *d = [data subdataWithRange:NSMakeRange(3, 4)];
+            Byte *byte = (Byte *)[d bytes];
+            NSString *ip = [NSString stringWithFormat:@"%hhu.%hhu.%hhu.%hhu", byte[0], byte[1], byte[2], byte[3]];
+            [[DeviceModelManager sharedInstance] refreshIPAddress:sourceDeviceId IPAddress:ip];
+        }
+    }
+    
+    else if ([dataStr hasPrefix:@"eb7703"]) {
+        if ([dataStr length] == 14) {
+            NSData *d = [data subdataWithRange:NSMakeRange(3, 4)];
+            Byte *byte = (Byte *)[d bytes];
+            NSString *sub = [NSString stringWithFormat:@"%hhu.%hhu.%hhu.%hhu", byte[0], byte[1], byte[2], byte[3]];
+            [[DeviceModelManager sharedInstance] refreshSubnetMask:sourceDeviceId subnetMask:sub];
+        }
+    }
+    
+    else if ([dataStr hasPrefix:@"eb7702"]) {
+        if ([dataStr length] == 14) {
+            NSData *d = [data subdataWithRange:NSMakeRange(3, 4)];
+            Byte *byte = (Byte *)[d bytes];
+            NSString *gateway = [NSString stringWithFormat:@"%hhu.%hhu.%hhu.%hhu", byte[0], byte[1], byte[2], byte[3]];
+            [[DeviceModelManager sharedInstance] refreshGateway:sourceDeviceId gateway:gateway];
+        }
+    }
+    
+    else if ([dataStr hasPrefix:@"eb7704"]) {
+        if ([dataStr length] == 14) {
+            NSData *d = [data subdataWithRange:NSMakeRange(3, 4)];
+            Byte *byte = (Byte *)[d bytes];
+            NSString *dns = [NSString stringWithFormat:@"%hhu.%hhu.%hhu.%hhu", byte[0], byte[1], byte[2], byte[3]];
+            [[DeviceModelManager sharedInstance] refreshDNS:sourceDeviceId DNS:dns];
         }
     }
     
     else if ([dataStr hasPrefix:@"eb7b"]) {
-        if ([dataStr length]>=8) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"LCDRemotePortCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"port":[dataStr substringFromIndex:4]}];
+        if ([dataStr length] == 8) {
+            NSData *d = [data subdataWithRange:NSMakeRange(3, 2)];
+            Byte *byte = (Byte *)[d bytes];
+            NSInteger port = byte[0] * 256 + byte[1];
+            [[DeviceModelManager sharedInstance] refreshPort:sourceDeviceId port:port];
         }
     }
     
@@ -598,18 +632,26 @@ static DataModelManager *manager = nil;
     }
     
     else if ([dataStr hasPrefix:@"eb83"]) {
-        if ([dataStr length] == 8) {
-            NSString *str = [dataStr substringWithRange:NSMakeRange(4, 4)];
-            [[DeviceModelManager sharedInstance] refreshMCChannel:sourceDeviceId mcChannel:[CSRUtilities numberWithHexString:str]];
+        if ([dataStr length] == 12) {
+            Byte *byte = (Byte *)[data bytes];
+            NSInteger mcLiveChannels = byte[2] * 256 + byte[3];
+            NSInteger mcExistChannels = byte[4] * 256 + byte[5];
+            [[DeviceModelManager sharedInstance] refreshMCChannels:sourceDeviceId mcLiveChannels:mcLiveChannels mcExistChannels:mcExistChannels];
+        }else if ([dataStr length] == 8) {
+            Byte *byte = (Byte *)[data bytes];
+            NSInteger mcLiveChannels = byte[2] * 256 + byte[3];
+            [[DeviceModelManager sharedInstance] refreshMCChannels:sourceDeviceId mcLiveChannels:mcLiveChannels mcExistChannels:mcLiveChannels];
         }
     }
     
-    else if ([dataStr hasPrefix:@"b6061f"]) {
-        if ([dataStr length] == 16) {
-            NSInteger mcChannelValid = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(6, 4)]];
-            NSInteger mcStatus = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(10, 2)]];
-            NSInteger mcVoice = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(12, 2)]];
-            [[DeviceModelManager sharedInstance] refreshDeviceID:sourceDeviceId mcChannelValid:mcChannelValid mcStatus:mcStatus mcVoice:mcVoice];
+    else if ([dataStr hasPrefix:@"b6081f"]) {
+        if ([dataStr length] == 20) {
+            Byte *byte = (Byte *)[data bytes];
+            NSInteger mcChannelValid = byte[3] * 256 + byte[4];
+            NSInteger mcStatus = byte[5];
+            NSInteger mcVoice = byte[6];
+            NSInteger mcSong = byte[7];
+            [[DeviceModelManager sharedInstance] refreshDeviceID:sourceDeviceId mcChannelValid:mcChannelValid mcStatus:mcStatus mcVoice:mcVoice mcSong:mcSong];
         }
     }
     
@@ -637,6 +679,81 @@ static DataModelManager *manager = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"configureMusicRemoteCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"state":@(state)}];
         }
     }
+    
+    else if ([dataStr hasPrefix:@"eb7707"]) {
+        if ([dataStr length] == 8) {
+            NSData *d = [data subdataWithRange:NSMakeRange(3, 1)];
+            Byte *byte = (Byte *)[d bytes];
+            BOOL b = byte[0];
+            [[DeviceModelManager sharedInstance] refreshNetworkConnectionStatus:sourceDeviceId staus:b];
+        }
+    }
+    
+    else if ([dataStr hasPrefix:@"eb86"]) {
+        if ([dataStr length] > 10) {
+            Byte *byte = (Byte *)[data bytes];
+            
+            NSMutableDictionary *ded = [self.sonosInfoDic objectForKey:sourceDeviceId];
+            NSMutableDictionary *chd;
+            if (ded) {
+                chd = [ded objectForKey:@(byte[2])];
+                if (!chd) {
+                    chd = [[NSMutableDictionary alloc] init];
+                    [chd setObject:[data subdataWithRange:NSMakeRange(6, [data length]-6)] forKey:@(byte[4])];
+                    [ded setObject:chd forKey:@(byte[2])];
+                }else {
+                    [chd setObject:[data subdataWithRange:NSMakeRange(6, [data length]-6)] forKey:@(byte[4])];
+                }
+            }else {
+                ded = [[NSMutableDictionary alloc] init];
+                chd = [[NSMutableDictionary alloc] init];
+                [chd setObject:[data subdataWithRange:NSMakeRange(6, [data length]-6)] forKey:@(byte[4])];
+                [ded setObject:chd forKey:@(byte[2])];
+                [self.sonosInfoDic setObject:ded forKey:sourceDeviceId];
+            }
+            if ([chd count] == byte[3]) {
+                NSArray *pia = [[chd allKeys] sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+                    return [obj1 compare:obj2];
+                }];
+                NSMutableData *namedata = [[NSMutableData alloc] init];
+                for (NSNumber *packetIdx in pia) {
+                    [namedata appendData:[chd objectForKey:packetIdx]];
+                }
+                Byte *nbyte = (Byte *)[namedata bytes];
+                NSInteger type = nbyte[0] >> 7;
+                NSInteger number = nbyte[0] & 0x7F;
+                NSString *name = [[NSString alloc] initWithData:[namedata subdataWithRange:NSMakeRange(1, [namedata length]-1)] encoding:NSUTF8StringEncoding];
+                NSLog(@"%ld  %ld  %@  %@",type, number, name, namedata);
+                [[CSRDatabaseManager sharedInstance] saveNewSonos:sourceDeviceId channel:@(byte[2]) infoVersion:@(byte[5]) modelType:@(type) modelNumber:@(number) name:name];
+                
+                [ded removeObjectForKey:@(byte[2])];
+                if ([ded count] == 0) {
+                    [self.sonosInfoDic removeObjectForKey:sourceDeviceId];
+                    if ([self.sonosInfoDic count] == 0) {
+                        _sonosInfoDic  = nil;
+                    }
+                }
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshSonosInfo" object:self userInfo:@{@"deviceId":sourceDeviceId, @"channel":@(byte[2])}];
+
+            }
+            
+        }
+    }
+    
+    else if ([dataStr hasPrefix:@"eb87"]) {
+        if ([data length] == 3) {
+            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sourceDeviceId];
+            if (deviceEntity) {
+                Byte *byte = (Byte *)[data bytes];
+                NSInteger newVersion = byte[2];
+                if ([deviceEntity.mcSonosInfoVersion integerValue] < newVersion) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshAllInfo" object:self userInfo:@{@"deviceId":sourceDeviceId}];
+                }
+            }
+        }
+    }
+    
 }
 
 - (void)didReceiveStreamData:(NSNumber *)deviceId streamNumber:(NSNumber *)streamNumber data:(NSData *)data {
@@ -673,6 +790,7 @@ static DataModelManager *manager = nil;
         }
         CSRDeviceEntity *remote = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
         remote.remoteBranch = [CSRUtilities hexStringForData:data];
+        [[CSRDatabaseManager sharedInstance] saveContext];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"getRemoteConfiguration" object:nil userInfo:@{@"deviceId":deviceId}];
     }
     
@@ -754,6 +872,12 @@ static DataModelManager *manager = nil;
     return _deviceKeyDic;
 }
 
+- (NSMutableDictionary *)sonosInfoDic {
+    if (!_sonosInfoDic) {
+        _sonosInfoDic = [[NSMutableDictionary alloc] init];
+    }
+    return _sonosInfoDic;
+}
 
 
 @end

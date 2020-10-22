@@ -638,7 +638,8 @@
                     || [kTwoChannelSwitchs containsObject:device.shortName]
                     || [kThreeChannelSwitchs containsObject:device.shortName]
                     || [kMusicController containsObject:device.shortName]
-                    || [kThreeChannelDimmers containsObject:device.shortName]) {
+                    || [kThreeChannelDimmers containsObject:device.shortName]
+                    || [kHOneChannelCurtainController containsObject:device.shortName]) {
                     
                     BOOL exist = NO;
                     for (SceneMemberEntity *m in self.originalMembers) {
@@ -760,23 +761,20 @@
 }
 
 - (void)removeOtherSeletedDevice:(NSNumber *)deviceID {
-    [_devicesCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell * enCell, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (![enCell.deviceId isEqualToNumber:deviceID] && enCell.seleteButton.selected) {
-            enCell.seleteButton.selected = NO;
-            [_devicesCollectionView.dataArray enumerateObjectsUsingBlock:^(SingleDeviceModel  *device, NSUInteger idx, BOOL * _Nonnull stop) {
-                if ([device.deviceId isEqualToNumber:enCell.deviceId]) {
-                    device.isSelected = NO;
-                    *stop = YES;
+    for (SingleDeviceModel *s in _devicesCollectionView.dataArray) {
+        if ([s.deviceId isEqualToNumber:deviceID] && !s.isSelected) {
+            s.isSelected = YES;
+        }else if (![s.deviceId isEqualToNumber:deviceID] && s.isSelected) {
+            s.isSelected = NO;
+            for (SelectModel *m in _selectedDevices) {
+                if ([m.deviceID isEqualToNumber:s.deviceId]) {
+                    [_selectedDevices removeObject:m];
+                    break;
                 }
-            }];
-            [_selectedDevices enumerateObjectsUsingBlock:^(SelectModel *mod, NSUInteger idx, BOOL * _Nonnull stop) {
-                if ([mod.deviceID isEqualToNumber:enCell.deviceId]) {
-                    [_selectedDevices removeObject:mod];
-                    *stop = YES;
-                }
-            }];
+            }
         }
-    }];
+    }
+    [_devicesCollectionView reloadData];
 }
 
 - (void)mainCollectionViewDelegateSelectAction:(id)cell {
@@ -812,46 +810,40 @@
                 mod.channel = @(32);
                 mod.sourceID = _sourceID;
                 [_selectedDevices addObject:mod];
-                [_devicesCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell * enCell, NSUInteger idx, BOOL * _Nonnull stop) {
-                    if (![enCell.groupId isEqualToNumber:mainCell.groupId] && enCell.seleteButton.selected) {
-                        enCell.seleteButton.selected = NO;
-                        [_devicesCollectionView.dataArray enumerateObjectsUsingBlock:^(GroupListSModel  *gMod, NSUInteger idx, BOOL * _Nonnull stop) {
-                            if ([gMod.areaID isEqualToNumber:enCell.groupId]) {
-                                gMod.isSelected = NO;
-                                *stop = YES;
+                for (GroupListSModel  *gMod in _devicesCollectionView.dataArray) {
+                    if ([gMod.areaID isEqualToNumber:mainCell.groupId] && !gMod.isSelected) {
+                        gMod.isSelected = YES;
+                    }else if (![gMod.areaID isEqualToNumber:mainCell.groupId] && gMod.isSelected) {
+                        gMod.isSelected = NO;
+                        for (SelectModel *m in _selectedDevices) {
+                            if ([m.deviceID isEqualToNumber:gMod.areaID]) {
+                                [_selectedDevices removeObject:m];
+                                break;
                             }
-                        }];
-                        [_selectedDevices enumerateObjectsUsingBlock:^(SelectModel *mod, NSUInteger idx, BOOL * _Nonnull stop) {
-                            if ([mod.deviceID isEqualToNumber:enCell.groupId]) {
-                                [_selectedDevices removeObject:mod];
-                                *stop = YES;
-                            }
-                        }];
+                        }
                     }
-                }];
+                }
+                [_devicesCollectionView reloadData];
             }else if (_selectMode == DeviceListSelectMode_SelectScene) {
                 SelectModel *mod = [[SelectModel alloc] init];
                 mod.deviceID = @(0);
                 mod.channel = mainCell.rcIndex;
                 mod.sourceID = _sourceID;
                 [_selectedDevices addObject:mod];
-                [_devicesCollectionView.visibleCells enumerateObjectsUsingBlock:^(MainCollectionViewCell * enCell, NSUInteger idx, BOOL * _Nonnull stop) {
-                    if (![enCell.rcIndex isEqualToNumber:mainCell.rcIndex] && enCell.seleteButton.selected) {
-                        enCell.seleteButton.selected = NO;
-                        [_devicesCollectionView.dataArray enumerateObjectsUsingBlock:^(SceneListSModel  *sMod, NSUInteger idx, BOOL * _Nonnull stop) {
-                            if ([sMod.rcIndex isEqualToNumber:enCell.rcIndex]) {
-                                sMod.isSelected = NO;
-                                *stop = YES;
+                for (SceneListSModel  *sMod in _devicesCollectionView.dataArray) {
+                    if ([sMod.rcIndex isEqualToNumber:mainCell.rcIndex] && !sMod.isSelected) {
+                        sMod.isSelected = YES;
+                    }else if (![sMod.rcIndex isEqualToNumber:mainCell.rcIndex] && sMod.isSelected) {
+                        sMod.isSelected = NO;
+                        for (SelectModel *m in _selectedDevices) {
+                            if ([m.channel isEqualToNumber:sMod.rcIndex]) {
+                                [_selectedDevices removeObject:m];
+                                break;
                             }
-                        }];
-                        [_selectedDevices enumerateObjectsUsingBlock:^(SelectModel *mod, NSUInteger idx, BOOL * _Nonnull stop) {
-                            if ([mod.channel isEqualToNumber:enCell.rcIndex]) {
-                                [_selectedDevices removeObject:mod];
-                                *stop = YES;
-                            }
-                        }];
+                        }
                     }
-                }];
+                }
+                [_devicesCollectionView reloadData];
             }else if (_selectMode == DeviceListSelectMode_ForGroup) {
                 SelectModel *mod = [[SelectModel alloc] init];
                 mod.deviceID = mainCell.deviceId;
@@ -969,12 +961,28 @@
                     if (_selectMode == DeviceListSelectMode_Single || _selectMode == DeviceListSelectMode_ForDrop) {
                         [self removeOtherSeletedDevice:mainCell.deviceId];
                     }
+                }else if ([CSRUtilities belongToMusicController:deviceEntity.shortName]) {
+                    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:mainCell.deviceId];
+                    if (model.mcLiveChannels == 0 || model.mcCurrentChannel == -1 || model.mcStatus == -1 || model.mcVoice == -1) {
+                        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"m_select_error_alert", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+                        [alert.view setTintColor:DARKORAGE];
+                        UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                            mainCell.seleteButton.selected = NO;
+                        }];
+                        [alert addAction:yes];
+                        [self presentViewController:alert animated:YES completion:nil];
+                    }else {
+                        SelectModel *mod = [[SelectModel alloc] init];
+                        mod.deviceID = mainCell.deviceId;
+                        mod.channel = @(model.mcCurrentChannel);
+                        mod.sourceID = _sourceID;
+                        [_selectedDevices addObject:mod];
+                    }
                 }else {
                     SelectModel *mod = [[SelectModel alloc] init];
                     mod.deviceID = mainCell.deviceId;
                     mod.channel = @1;
                     mod.sourceID = _sourceID;
-                    
                     [_selectedDevices addObject:mod];
                     if (_selectMode == DeviceListSelectMode_Single || _selectMode == DeviceListSelectMode_ForDrop) {
                         [self removeOtherSeletedDevice:mainCell.deviceId];
@@ -1056,9 +1064,13 @@
     if ([mainCell.groupId isEqualToNumber:@2000]) {
         
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
-        if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
+        if ([CSRUtilities belongToOneChannelCurtainController:deviceEntity.shortName]
+            || [CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName]
+            || [CSRUtilities belongToHOneChannelCurtainController:deviceEntity.shortName]) {
             
-            if (!deviceEntity.remoteBranch || deviceEntity.remoteBranch.length == 0) {
+            if (([CSRUtilities belongToOneChannelCurtainController:deviceEntity.shortName]
+                || [CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName])
+                && deviceEntity.remoteBranch.length == 0) {
                 _selectedCurtainDeviceId = mainCell.deviceId;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];

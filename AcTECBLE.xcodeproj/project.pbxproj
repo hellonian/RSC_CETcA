@@ -40,6 +40,8 @@
 		2E06A4FF20205B0E007B8BEA /* GroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E06A4FD20205B0E007B8BEA /* GroupViewController.m */; };
 		2E159F30248643D6001E126C /* RemoteMainVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E159F32248643D6001E126C /* RemoteMainVC.xib */; };
 		2E159F372486442A001E126C /* RemoteLCDVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E159F392486442A001E126C /* RemoteLCDVC.xib */; };
+		2E18B21F25232D5D0044D2E0 /* NetworkSettingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E18B21D25232D5D0044D2E0 /* NetworkSettingVC.m */; };
+		2E18B22025232D5D0044D2E0 /* NetworkSettingVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E18B21E25232D5D0044D2E0 /* NetworkSettingVC.xib */; };
 		2E1C839E20CFD782009BCC6D /* PlaceDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E1C83A020CFD782009BCC6D /* PlaceDetailsViewController.xib */; };
 		2E1FA39F24EA2D02008C6497 /* MCPickerAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E1FA39D24EA2D02008C6497 /* MCPickerAlertController.m */; };
 		2E1FA3A024EA2D02008C6497 /* MCPickerAlertController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E1FA39E24EA2D02008C6497 /* MCPickerAlertController.xib */; };
@@ -120,7 +122,6 @@
 		2E6D543B211AB6C6003D02DB /* ColorSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6D543A211AB6C6003D02DB /* ColorSlider.m */; };
 		2E6FBD9620E1D43F0045DDAC /* GroupListSModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6FBD9520E1D43F0045DDAC /* GroupListSModel.m */; };
 		2E706CFF212A7278008D0EC4 /* GalleryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E706D01212A7278008D0EC4 /* GalleryViewController.xib */; };
-		2E7C7B12250B6B6A00AFA845 /* FadeViewController.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E7C7B06250B6B6A00AFA845 /* FadeViewController.strings */; };
 		2E7C7B13250B6B6A00AFA845 /* FadeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7C7B09250B6B6A00AFA845 /* FadeViewController.m */; };
 		2E7C7B14250B6B6A00AFA845 /* NearbyViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E7C7B0A250B6B6A00AFA845 /* NearbyViewController.xib */; };
 		2E7C7B15250B6B6A00AFA845 /* FadeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E7C7B0B250B6B6A00AFA845 /* FadeViewController.xib */; };
@@ -130,6 +131,7 @@
 		2E7DBC0624E630E700A36905 /* MusicControllerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7DBC0424E630E700A36905 /* MusicControllerVC.m */; };
 		2E7DBC0724E630E700A36905 /* MusicControllerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E7DBC0524E630E700A36905 /* MusicControllerVC.xib */; };
 		2E8623492019DB28004EF0E0 /* DeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8623472019DB28004EF0E0 /* DeviceViewController.m */; };
+		2E87A7F72532B29F00DD9605 /* SonosEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E87A7F62532B29F00DD9605 /* SonosEntity.m */; };
 		2E8ECC2E239DFA210031367F /* SelectModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8ECC2D239DFA210031367F /* SelectModel.m */; };
 		2E9622BF20C913530097C617 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E9622C120C913530097C617 /* Localizable.strings */; };
 		2E9622C720C917EC0097C617 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E9622C920C917EC0097C617 /* InfoPlist.strings */; };
@@ -144,6 +146,8 @@
 		2EB246B32282A82600DFF5D3 /* QTIRWCPSegment.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB246AF2282A82600DFF5D3 /* QTIRWCPSegment.m */; };
 		2EB246B62282CD8B00DFF5D3 /* CSRCallbacks.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB246B52282CD8B00DFF5D3 /* CSRCallbacks.m */; };
 		2EB246B92282CEB500DFF5D3 /* CSRBLEUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB246B82282CEB500DFF5D3 /* CSRBLEUtil.m */; };
+		2EB3C2C9251D7D6D002FFD1D /* SonosMusicControllerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB3C2C7251D7D6D002FFD1D /* SonosMusicControllerVC.m */; };
+		2EB3C2CA251D7D6D002FFD1D /* SonosMusicControllerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EB3C2C8251D7D6D002FFD1D /* SonosMusicControllerVC.xib */; };
 		2EBB39952490D5B000243D5F /* SceneMemberCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EBB39932490D5B000243D5F /* SceneMemberCell.m */; };
 		2EBB39982490F4AC00243D5F /* SceneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EBB39972490F4AC00243D5F /* SceneViewController.xib */; };
 		2EBBA91D21D7442E00D2E7DA /* SocketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EBBA91B21D7442E00D2E7DA /* SocketViewController.m */; };
@@ -261,12 +265,13 @@
 		2E06A4FD20205B0E007B8BEA /* GroupViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GroupViewController.m; sourceTree = "<group>"; };
 		2E0AA21A2126758300DB45EB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
 		2E0AA21C2126758F00DB45EB /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/RemoteSettingViewController.strings"; sourceTree = "<group>"; };
+		2E112AE8252074F100553CEE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/RemoteLCDVC.xib; sourceTree = "<group>"; };
 		2E159F31248643D6001E126C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/RemoteMainVC.xib; sourceTree = "<group>"; };
 		2E159F34248643E6001E126C /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/RemoteMainVC.strings; sourceTree = "<group>"; };
 		2E159F36248643E8001E126C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/RemoteMainVC.strings"; sourceTree = "<group>"; };
-		2E159F382486442A001E126C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/RemoteLCDVC.xib; sourceTree = "<group>"; };
-		2E159F3B24864439001E126C /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/RemoteLCDVC.strings; sourceTree = "<group>"; };
-		2E159F3D2486443E001E126C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/RemoteLCDVC.strings"; sourceTree = "<group>"; };
+		2E18B21C25232D5D0044D2E0 /* NetworkSettingVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkSettingVC.h; sourceTree = "<group>"; };
+		2E18B21D25232D5D0044D2E0 /* NetworkSettingVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NetworkSettingVC.m; sourceTree = "<group>"; };
+		2E18B21E25232D5D0044D2E0 /* NetworkSettingVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NetworkSettingVC.xib; sourceTree = "<group>"; };
 		2E1C839F20CFD782009BCC6D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PlaceDetailsViewController.xib; sourceTree = "<group>"; };
 		2E1F6FC321C9F61C00915FFF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
 		2E1F6FC521C9F64E00915FFF /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/PlaceDetailsViewController.strings"; sourceTree = "<group>"; };
@@ -401,6 +406,8 @@
 		2E5A587B21378B6800E416F9 /* MusicViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicViewController.m; sourceTree = "<group>"; };
 		2E5C130A23C05EC200A13994 /* LCDSelectModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LCDSelectModel.h; sourceTree = "<group>"; };
 		2E5C130B23C05EC200A13994 /* LCDSelectModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LCDSelectModel.m; sourceTree = "<group>"; };
+		2E5D671E25248F29000E5376 /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/FadeViewController.strings; sourceTree = "<group>"; };
+		2E5D671F25248F2C000E5376 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/FadeViewController.strings"; sourceTree = "<group>"; };
 		2E5EA0D6217F123700554825 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2E5F120523BD954A0018EF16 /* RemoteLCDVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteLCDVC.h; sourceTree = "<group>"; };
 		2E5F120623BD954A0018EF16 /* RemoteLCDVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteLCDVC.m; sourceTree = "<group>"; };
@@ -411,8 +418,6 @@
 		2E63A54121E328B800FCE49D /* SocketPowerCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SocketPowerCell.m; sourceTree = "<group>"; };
 		2E63A54221E328B800FCE49D /* SocketPowerCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SocketPowerCell.xib; sourceTree = "<group>"; };
 		2E6750BD2493601C004FA52F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/SceneMemberCell.xib; sourceTree = "<group>"; };
-		2E6750C824936160004FA52F /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SceneMemberCell.strings; sourceTree = "<group>"; };
-		2E6750CA24936165004FA52F /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SceneMemberCell.strings"; sourceTree = "<group>"; };
 		2E6A020D1F39884500111312 /* TabBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarButton.h; sourceTree = "<group>"; };
 		2E6A020E1F39884500111312 /* TabBarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarButton.m; sourceTree = "<group>"; };
 		2E6A020F1F39884500111312 /* TabBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarView.h; sourceTree = "<group>"; };
@@ -465,8 +470,6 @@
 		2E78257C246FB96A00F78CE5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
 		2E78257F246FBA6500F78CE5 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/DeviceViewController.strings"; sourceTree = "<group>"; };
 		2E7C7B05250B6B6A00AFA845 /* OtherViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OtherViewController.h; sourceTree = "<group>"; };
-		2E7C7B07250B6B6A00AFA845 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/FadeViewController.strings"; sourceTree = "<group>"; };
-		2E7C7B08250B6B6A00AFA845 /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/FadeViewController.strings; sourceTree = "<group>"; };
 		2E7C7B09250B6B6A00AFA845 /* FadeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FadeViewController.m; sourceTree = "<group>"; };
 		2E7C7B0A250B6B6A00AFA845 /* NearbyViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NearbyViewController.xib; sourceTree = "<group>"; };
 		2E7C7B0C250B6B6A00AFA845 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/FadeViewController.xib; sourceTree = "<group>"; };
@@ -480,6 +483,8 @@
 		2E7DBC0524E630E700A36905 /* MusicControllerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MusicControllerVC.xib; sourceTree = "<group>"; };
 		2E8623462019DB28004EF0E0 /* DeviceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceViewController.h; sourceTree = "<group>"; };
 		2E8623472019DB28004EF0E0 /* DeviceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeviceViewController.m; sourceTree = "<group>"; };
+		2E87A7F52532B29F00DD9605 /* SonosEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SonosEntity.h; sourceTree = "<group>"; };
+		2E87A7F62532B29F00DD9605 /* SonosEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SonosEntity.m; sourceTree = "<group>"; };
 		2E8ECC2C239DFA210031367F /* SelectModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelectModel.h; sourceTree = "<group>"; };
 		2E8ECC2D239DFA210031367F /* SelectModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelectModel.m; sourceTree = "<group>"; };
 		2E9622C320C9137E0097C617 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -508,6 +513,10 @@
 		2EB246B52282CD8B00DFF5D3 /* CSRCallbacks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSRCallbacks.m; sourceTree = "<group>"; };
 		2EB246B72282CEB400DFF5D3 /* CSRBLEUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRBLEUtil.h; sourceTree = "<group>"; };
 		2EB246B82282CEB500DFF5D3 /* CSRBLEUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSRBLEUtil.m; sourceTree = "<group>"; };
+		2EB3C2C5251D7C26002FFD1D /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/CurtainViewController.strings"; sourceTree = "<group>"; };
+		2EB3C2C6251D7D6D002FFD1D /* SonosMusicControllerVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SonosMusicControllerVC.h; sourceTree = "<group>"; };
+		2EB3C2C7251D7D6D002FFD1D /* SonosMusicControllerVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SonosMusicControllerVC.m; sourceTree = "<group>"; };
+		2EB3C2C8251D7D6D002FFD1D /* SonosMusicControllerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SonosMusicControllerVC.xib; sourceTree = "<group>"; };
 		2EBB39922490D5B000243D5F /* SceneMemberCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneMemberCell.h; sourceTree = "<group>"; };
 		2EBB39932490D5B000243D5F /* SceneMemberCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneMemberCell.m; sourceTree = "<group>"; };
 		2EBB39972490F4AC00243D5F /* SceneViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SceneViewController.xib; sourceTree = "<group>"; };
@@ -653,7 +662,6 @@
 		2ED20A5E217467EC000DFFAC /* CSRmesh 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "CSRmesh 2.xcdatamodel"; sourceTree = "<group>"; };
 		2ED23F6F215DCCCA0040A922 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CurtainViewController.xib; sourceTree = "<group>"; };
 		2ED23F72215DCCCE0040A922 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/CurtainViewController.strings; sourceTree = "<group>"; };
-		2ED23F74215DCCD00040A922 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/CurtainViewController.strings"; sourceTree = "<group>"; };
 		2ED3963A204D09A00068B666 /* TimerEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerEntity.h; sourceTree = "<group>"; };
 		2ED3963B204D09A00068B666 /* TimerEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerEntity.m; sourceTree = "<group>"; };
 		2ED3963D204D09D20068B666 /* TimerDeviceEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerDeviceEntity.h; sourceTree = "<group>"; };
@@ -1159,6 +1167,12 @@
 				2E7DBC0324E630E700A36905 /* MusicControllerVC.h */,
 				2E7DBC0424E630E700A36905 /* MusicControllerVC.m */,
 				2E7DBC0524E630E700A36905 /* MusicControllerVC.xib */,
+				2EB3C2C6251D7D6D002FFD1D /* SonosMusicControllerVC.h */,
+				2EB3C2C7251D7D6D002FFD1D /* SonosMusicControllerVC.m */,
+				2EB3C2C8251D7D6D002FFD1D /* SonosMusicControllerVC.xib */,
+				2E18B21C25232D5D0044D2E0 /* NetworkSettingVC.h */,
+				2E18B21D25232D5D0044D2E0 /* NetworkSettingVC.m */,
+				2E18B21E25232D5D0044D2E0 /* NetworkSettingVC.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1326,15 +1340,14 @@
 			isa = PBXGroup;
 			children = (
 				2E7C7B05250B6B6A00AFA845 /* OtherViewController.h */,
-				2E7C7B06250B6B6A00AFA845 /* FadeViewController.strings */,
-				2E7C7B09250B6B6A00AFA845 /* FadeViewController.m */,
-				2E7C7B0A250B6B6A00AFA845 /* NearbyViewController.xib */,
-				2E7C7B0B250B6B6A00AFA845 /* FadeViewController.xib */,
-				2E7C7B0D250B6B6A00AFA845 /* NearbyViewController.m */,
 				2E7C7B0E250B6B6A00AFA845 /* OtherViewController.m */,
-				2E7C7B0F250B6B6A00AFA845 /* FadeViewController.h */,
-				2E7C7B10250B6B6A00AFA845 /* NearbyViewController.h */,
 				2E7C7B11250B6B6A00AFA845 /* OtherViewController.xib */,
+				2E7C7B10250B6B6A00AFA845 /* NearbyViewController.h */,
+				2E7C7B0D250B6B6A00AFA845 /* NearbyViewController.m */,
+				2E7C7B0A250B6B6A00AFA845 /* NearbyViewController.xib */,
+				2E7C7B0F250B6B6A00AFA845 /* FadeViewController.h */,
+				2E7C7B09250B6B6A00AFA845 /* FadeViewController.m */,
+				2E7C7B0B250B6B6A00AFA845 /* FadeViewController.xib */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -1479,6 +1492,8 @@
 				2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */,
 				2E216EE42138EDAE00E545B9 /* RGBSceneEntity.h */,
 				2E216EE52138EDAE00E545B9 /* RGBSceneEntity.m */,
+				2E87A7F52532B29F00DD9605 /* SonosEntity.h */,
+				2E87A7F62532B29F00DD9605 /* SonosEntity.m */,
 			);
 			name = "Model Classes";
 			sourceTree = "<group>";
@@ -1575,6 +1590,7 @@
 				2E3B9680200F3847000BD086 /* MainViewController.xib in Resources */,
 				2EF332512045030100565374 /* LanguageViewController.xib in Resources */,
 				2E2E708D1FF5DE60002D1C1D /* PlacesViewController.xib in Resources */,
+				2E18B22025232D5D0044D2E0 /* NetworkSettingVC.xib in Resources */,
 				2E9622BF20C913530097C617 /* Localizable.strings in Resources */,
 				2E3BED3A21DF329100E7078C /* PowerViewController.xib in Resources */,
 				2EE757D72010B23100FB75C5 /* SceneCollectionViewCell.xib in Resources */,
@@ -1591,13 +1607,13 @@
 				2E388A6D214BA8B900CBF73C /* MusicViewController.xib in Resources */,
 				2E1FA3A024EA2D02008C6497 /* MCPickerAlertController.xib in Resources */,
 				2E37075820CE8337000AF696 /* GroupViewController.xib in Resources */,
-				2E7C7B12250B6B6A00AFA845 /* FadeViewController.strings in Resources */,
 				2E6C26E720A5845E00BDB95A /* Main.storyboard in Resources */,
 				F45350891CD8B043002D91AB /* SensorActuatorTypes.json in Resources */,
 				2E7C7B18250B6B6A00AFA845 /* OtherViewController.xib in Resources */,
 				2EF57E2E24CA7404003D908A /* AboutViewController.xib in Resources */,
 				2E6BD80420D0AD6D00036CA2 /* RemoteSettingViewController.xib in Resources */,
 				2E706CFF212A7278008D0EC4 /* GalleryViewController.xib in Resources */,
+				2EB3C2CA251D7D6D002FFD1D /* SonosMusicControllerVC.xib in Resources */,
 				2E9622C720C917EC0097C617 /* InfoPlist.strings in Resources */,
 				2EF332562045031300565374 /* HelpViewController.xib in Resources */,
 				2EC92CEA24C833CE00AD53CF /* ShowExceptionLogVC.xib in Resources */,
@@ -1680,6 +1696,7 @@
 				0D835B361B9749E600FF4376 /* AppDelegate.m in Sources */,
 				2E3A65F7202BF97300B3E425 /* SingleDeviceModel.m in Sources */,
 				2EB246B22282A82600DFF5D3 /* QTIRWCP.m in Sources */,
+				2EB3C2C9251D7D6D002FFD1D /* SonosMusicControllerVC.m in Sources */,
 				2EC3893F204939CE004D822D /* TimerDetailViewController.m in Sources */,
 				2EE757CA201030CA00FB75C5 /* TopImageView.m in Sources */,
 				2EE757C720102B7B00FB75C5 /* MainCollectionView.m in Sources */,
@@ -1695,6 +1712,7 @@
 				0D835B941B975E8800FF4376 /* CSRAreaEntity.m in Sources */,
 				2E216EEA2138F28200E545B9 /* RGBSceneCollectionViewCell.m in Sources */,
 				2E5A5873213788F900E416F9 /* FavoriteViewController.m in Sources */,
+				2E18B21F25232D5D0044D2E0 /* NetworkSettingVC.m in Sources */,
 				0D835B3C1B9749E600FF4376 /* CSRUtilities.m in Sources */,
 				0D835B3D1B9749E600FF4376 /* CSRmeshManager.m in Sources */,
 				2E3417BE23A7276A000D1A52 /* RemoteMainVC.m in Sources */,
@@ -1711,6 +1729,7 @@
 				2EF718331FFB2C0600901918 /* GalleryViewController.m in Sources */,
 				2E216EE62138EDAE00E545B9 /* RGBSceneEntity.m in Sources */,
 				2E48BBE420D25C7800401CDD /* LightSensorSettingViewController.m in Sources */,
+				2E87A7F72532B29F00DD9605 /* SonosEntity.m in Sources */,
 				CE04468D1C47E36F00263F15 /* CSRPeripheral.m in Sources */,
 				2E35F74C222A7E41001D9342 /* GroupControlView.m in Sources */,
 				2EF718291FFB224800901918 /* GalleryEntity.m in Sources */,
@@ -1819,9 +1838,7 @@
 		2E159F392486442A001E126C /* RemoteLCDVC.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				2E159F382486442A001E126C /* Base */,
-				2E159F3B24864439001E126C /* English */,
-				2E159F3D2486443E001E126C /* zh-Hans */,
+				2E112AE8252074F100553CEE /* Base */,
 			);
 			name = RemoteLCDVC.xib;
 			sourceTree = "<group>";
@@ -2011,8 +2028,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				2E6750BD2493601C004FA52F /* Base */,
-				2E6750C824936160004FA52F /* English */,
-				2E6750CA24936165004FA52F /* zh-Hans */,
 			);
 			name = SceneMemberCell.xib;
 			sourceTree = "<group>";
@@ -2077,19 +2092,12 @@
 			name = GalleryViewController.xib;
 			sourceTree = "<group>";
 		};
-		2E7C7B06250B6B6A00AFA845 /* FadeViewController.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2E7C7B07250B6B6A00AFA845 /* zh-Hans */,
-				2E7C7B08250B6B6A00AFA845 /* English */,
-			);
-			name = FadeViewController.strings;
-			sourceTree = "<group>";
-		};
 		2E7C7B0B250B6B6A00AFA845 /* FadeViewController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				2E7C7B0C250B6B6A00AFA845 /* Base */,
+				2E5D671E25248F29000E5376 /* English */,
+				2E5D671F25248F2C000E5376 /* zh-Hans */,
 			);
 			name = FadeViewController.xib;
 			sourceTree = "<group>";
@@ -2137,7 +2145,6 @@
 			children = (
 				2ED23F6F215DCCCA0040A922 /* Base */,
 				2ED23F72215DCCCE0040A922 /* en */,
-				2ED23F74215DCCD00040A922 /* zh-Hans */,
 				2EC4205722179F2B00E1717F /* de */,
 				2E48A7FC221BAEC00052A617 /* sv */,
 				2E747FD5221CE2AA00FBEB14 /* nb */,
@@ -2148,6 +2155,7 @@
 				2EC18C03221D22A0008B33DC /* fr */,
 				2EC18C16221D22B8008B33DC /* pt-PT */,
 				2EC18C29221D22E8008B33DC /* fi-FI */,
+				2EB3C2C5251D7C26002FFD1D /* zh-Hans */,
 			);
 			name = CurtainViewController.xib;
 			sourceTree = "<group>";
@@ -2300,7 +2308,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 10;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2360,7 +2368,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 10;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;

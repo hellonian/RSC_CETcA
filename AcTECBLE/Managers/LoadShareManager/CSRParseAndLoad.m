@@ -669,7 +669,8 @@
 //                                                       options:0
 //                                                         error:&error];
     NSString *jsonString = [CSRUtilities convertToJsonData:jsonDictionary];
-    NSLog(@"%@",jsonString);
+//    NSLog(@"%@",jsonString);
+    NBSLog(@"%@",jsonString);
     NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     return jsonData;
     
@@ -911,7 +912,8 @@
                             deviceEntity.remoteBranch = [NSString stringWithFormat:@"9b1a0501%@02%@03%@04%@05%@06%@",s1,s2,s3,s4,s5,s6];
                             
                         }
-                    }else if ([CSRUtilities belongToCurtainController:deviceDict[@"`c_shortName`"]]) {
+                    }else if ([CSRUtilities belongToOneChannelCurtainController:deviceDict[@"`c_shortName`"]]
+                              || [CSRUtilities belongToTwoChannelCurtainController:deviceDict[@"`c_shortName`"]]) {
                         if ([deviceDict[@"`c_curtain_type`"] integerValue] == 1) {
                             deviceEntity.remoteBranch = @"ch";
                         }else if ([deviceDict[@"`c_curtain_type`"] integerValue] == 2) {
@@ -1254,7 +1256,8 @@
                                                 sceneMemberObj.eveD1 = @([parentDict[@"`c_children_mode2`"] boolValue]);
                                                 [members addObject:sceneMemberObj];
                                             }
-                                        }else if ([CSRUtilities belongToOneChannelCurtainController:deviceDict[@"`c_shortName`"]]) {
+                                        }else if ([CSRUtilities belongToOneChannelCurtainController:deviceDict[@"`c_shortName`"]]
+                                                  || [CSRUtilities belongToHOneChannelCurtainController:deviceDict[@"`c_shortName`"]]) {
                                             SceneMemberEntity *sceneMemberObj = [self creatSceneMemberObj:sceneDict[@"`_id`"] parentDict:parentDict deviceDic:deviceDict channel:@1];
                                             if (![parentDict[@"`c_bOnOff`"] boolValue]) {
                                                 sceneMemberObj.eveType = @(17);
@@ -1723,7 +1726,8 @@
                                                 sceneMemberObj.eveD1 = @([parentDict[@"`c_children_mode2`"] boolValue]);
                                                 [members addObject:sceneMemberObj];
                                             }
-                                        }else if ([CSRUtilities belongToOneChannelCurtainController:deviceDict[@"`c_shortName`"]]) {
+                                        }else if ([CSRUtilities belongToOneChannelCurtainController:deviceDict[@"`c_shortName`"]]
+                                                  || [CSRUtilities belongToHOneChannelCurtainController:deviceDict[@"`c_shortName`"]]) {
                                             SceneMemberEntity *sceneMemberObj = [self creatSceneMemberObj:sceneDict[@"`_id`"] parentDict:parentDict deviceDic:deviceDict channel:@1];
                                             if (![parentDict[@"`c_bOnOff`"] boolValue]) {
                                                 sceneMemberObj.eveType = @(17);

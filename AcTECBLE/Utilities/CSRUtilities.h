@@ -110,7 +110,6 @@
 + (BOOL)belongToCWDevice:(NSString *)shortName;
 + (BOOL)belongToRGBDevice:(NSString *)shortName;
 + (BOOL)belongToRGBCWDevice:(NSString *)shortName;
-+ (BOOL)belongToCurtainController:(NSString *)shortName;
 + (BOOL)belongToOneChannelCurtainController:(NSString *)shortName;
 + (BOOL)belongToTwoChannelCurtainController:(NSString *)shortName;
 + (BOOL)belongToFanController:(NSString *)shortName;
@@ -136,6 +135,13 @@
 + (BOOL)belongToNearbyFunctionDevice:(NSString *)shortName;
 + (BOOL)belongToMusicController:(NSString *)shortName;
 + (BOOL)belongToMusicControlRemote:(NSString *)shortName;
++ (BOOL)belongToHOneChannelCurtainController:(NSString *)shortName;
++ (BOOL)belongToSonosMusicController:(NSString *)shortName;
++ (BOOL)belongToSceneRemoteSixKeysV:(NSString *)shortName;
++ (BOOL)belongToSceneRemoteFourKeysV:(NSString *)shortName;
++ (BOOL)belongToSceneRemoteThreeKeysV:(NSString *)shortName;
++ (BOOL)belongToSceneRemoteTwoKeysV:(NSString *)shortName;
++ (BOOL)belongToSceneRemoteOneKeyV:(NSString *)shortName;
 
 + (NSString *)convertToJsonData:(NSDictionary *)dict;
 + (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString;

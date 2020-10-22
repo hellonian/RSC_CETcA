@@ -171,7 +171,7 @@
 "Channel1"="Channel 1";
 "Channel2"="Channel 2";
 "Channel3"="Channel 3";
-"alert"="Alert!";
+"alert"="Alert";
 "cantsetoff"="Can't set off state when children mode is on.";
 "OK" = "OK";
 "Scene3" = "Scene3";
@@ -211,3 +211,13 @@
 "no_online_channel_scanned" = "No online channel scanned.";
 "select_cycle_mode" = "Select Cycle Mode";
 "refresh" = "Refresh";
+"curtaion_restore_alert" = "After the device resumes factory Settings, all relevant setting data will be cleared.";
+"lan_connection_failed" = "LAN connection failed";
+"check_lan" = "Please check both sides of the network and the status of the router.";
+"retry" = "Retry";
+"set_wallpaper" = "Set Wallpaper";
+"m_select_error_alert" = "Unable to select, the current music controller playing status is not obtained, it needs to be operated first.";
+"module" = "Module";
+"networking_setting" = "Networking Setting";
+"connected" = "Connected";
+"not_connected" = "Not connected";

@@ -42,15 +42,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
-        UIButton *btn = [[UIButton alloc] init];
-        [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
-        [btn setTitle:AcTECLocalizedStringFromTable(@"Back", @"Localizable") forState:UIControlStateNormal];
-        [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
-        [btn addTarget:self action:@selector(closeAction) forControlEvents:UIControlEventTouchUpInside];
-        UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
-        self.navigationItem.leftBarButtonItem = back;
-    }
+    UIButton *btn = [[UIButton alloc] init];
+    [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
+    [btn setTitle:AcTECLocalizedStringFromTable(@"Back", @"Localizable") forState:UIControlStateNormal];
+    [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(closeAction) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
+    self.navigationItem.leftBarButtonItem = back;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(setFanSuccess:)
                                                  name:@"setPowerStateSuccess"

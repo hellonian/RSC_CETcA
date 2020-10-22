@@ -144,8 +144,12 @@
         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sceneID" ascending:YES];
         [areaMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
         for (SceneEntity *sceneEntity in areaMutableArray) {
-            if ([sceneEntity.members count]>0 && [sceneEntity.srDeviceId isEqualToNumber:@(-1)]) {
-                [_sceneMutableArray addObject:sceneEntity];
+            if ([sceneEntity.members count]>0) {
+                if ([sceneEntity.srDeviceId integerValue] > 0) {
+                    
+                }else {
+                    [_sceneMutableArray addObject:sceneEntity];
+                }
             }
         }
     }
@@ -667,21 +671,12 @@
                     retryDeviceId = td.deviceID;
                     [[DataModelManager shareInstance] sendDataByBlockDataTransfer:td.deviceID data:cmd];
                 }else {
-                    if ([_mDeviceToApply.cvVersion integerValue] > 18) {
-                        Byte byte[] = {0x85, 0x02, bIndex[1], bIndex[0]};
-                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
-                        retryCount = 0;
-                        retryCmd = cmd;
-                        retryDeviceId = td.deviceID;
-                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:td.deviceID data:cmd];
-                    }else {
-                        Byte byte[] = {0x85, 0x01, [td.timerIndex integerValue]};
-                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
-                        retryCount = 0;
-                        retryCmd = cmd;
-                        retryDeviceId = td.deviceID;
-                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:td.deviceID data:cmd];
-                    }
+                    Byte byte[] = {0x85, 0x02, bIndex[1], bIndex[0]};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                    retryCount = 0;
+                    retryCmd = cmd;
+                    retryDeviceId = td.deviceID;
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:td.deviceID data:cmd];
                 }
                 
                 return YES;
@@ -768,21 +763,12 @@
         retryDeviceId = member.deviceID;
         [[DataModelManager shareInstance] sendDataByStreamDataTransfer:member.deviceID data:cmd];
     }else {
-        if ([_mDeviceToApply.cvVersion integerValue] > 18) {
-            Byte byte[] = {0x83, 0x16, bIndex[1], bIndex[0], enabled, y, M, d, h, m, 0x00, repeat, [member.eveType integerValue], [member.eveD0 integerValue], [member.eveD1 integerValue], [member.eveD2 integerValue], [member.eveD3 integerValue], 0x00, ys, Ms, ds, hs, ms, ss};
-            NSData *cmd = [[NSData alloc] initWithBytes:byte length:24];
-            retryCount = 0;
-            retryCmd = cmd;
-            retryDeviceId = member.deviceID;
-            [[DataModelManager shareInstance] sendDataByStreamDataTransfer:member.deviceID data:cmd];
-        }else {
-            Byte byte[] = {0x83, 0x15, index, enabled, y, M, d, h, m, 0x00, repeat, [member.eveType integerValue], [member.eveD0 integerValue], [member.eveD1 integerValue], [member.eveD2 integerValue], [member.eveD3 integerValue], 0x00, ys, Ms, ds, hs, ms, ss};
-            NSData *cmd = [[NSData alloc] initWithBytes:byte length:23];
-            retryCount = 0;
-            retryCmd = cmd;
-            retryDeviceId = member.deviceID;
-            [[DataModelManager shareInstance] sendDataByStreamDataTransfer:member.deviceID data:cmd];
-        }
+        Byte byte[] = {0x83, 0x16, bIndex[1], bIndex[0], enabled, y, M, d, h, m, 0x00, repeat, [member.eveType integerValue], [member.eveD0 integerValue], [member.eveD1 integerValue], [member.eveD2 integerValue], [member.eveD3 integerValue], 0x00, ys, Ms, ds, hs, ms, ss};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:24];
+        retryCount = 0;
+        retryCmd = cmd;
+        retryDeviceId = member.deviceID;
+        [[DataModelManager shareInstance] sendDataByStreamDataTransfer:member.deviceID data:cmd];
     }
     
 }

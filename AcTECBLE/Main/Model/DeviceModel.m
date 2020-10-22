@@ -13,10 +13,12 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        self.mcChannel = 0;
+        self.mcLiveChannels = 0;
+        self.mcExistChannels = 0;
         self.mcCurrentChannel = -1;
         self.mcStatus = -1;
         self.mcVoice = -1;
+        self.mcSong = -1;
     }
     return self;
 }

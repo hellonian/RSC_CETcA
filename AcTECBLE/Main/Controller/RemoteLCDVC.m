@@ -31,8 +31,6 @@
 @property (nonatomic, assign) NSInteger applyIndex;
 @property (nonatomic, strong) NSData *applyData;
 @property (nonatomic, strong) NSString *wifiPassword;
-@property (nonatomic, strong) NSString *IPAdress;
-@property (nonatomic, assign) NSInteger port;
 @property (nonatomic, strong) GCDAsyncSocket *tcpSocketManager;
 @property (weak, nonatomic) IBOutlet UIButton *uConfigBtn;
 @property (weak, nonatomic) IBOutlet UIButton *uIconBtn;
@@ -46,19 +44,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
-        if (@available(iOS 13.0, *)) {
-            
-        }else {
-            UIButton *btn = [[UIButton alloc] init];
-            [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
-            [btn setTitle:AcTECLocalizedStringFromTable(@"Back", @"Localizable") forState:UIControlStateNormal];
-            [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
-            [btn addTarget:self action:@selector(closeAction) forControlEvents:UIControlEventTouchUpInside];
-            UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
-            self.navigationItem.leftBarButtonItem = back;
-        }
-    }
+    UIButton *btn = [[UIButton alloc] init];
+    [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
+    [btn setTitle:AcTECLocalizedStringFromTable(@"Back", @"Localizable") forState:UIControlStateNormal];
+    [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(closeAction) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
+    self.navigationItem.leftBarButtonItem = back;
     
     UIButton *wifiBtn = [[UIButton alloc] init];
     [wifiBtn setTitle:@"WIFI" forState:UIControlStateNormal];
@@ -81,12 +73,12 @@
                                                  name:@"LCDRemoteSSIDCall"
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(LCDRemoteIPAdressCall:)
-                                                 name:@"LCDRemoteIPAdressCall"
+                                             selector:@selector(refreshIPAddress:)
+                                                 name:@"refreshIPAddress"
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(LCDRemotePortCall:)
-                                                 name:@"LCDRemotePortCall"
+                                             selector:@selector(refreshPort:)
+                                                 name:@"refreshPort"
                                                object:nil];
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(wallpaperTapAction:)];
@@ -317,6 +309,7 @@
         }
     }];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
+    nav.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:nav animated:YES completion:nil];
     
 }
@@ -714,11 +707,37 @@
 }
 
 - (void)wifiAction {
-    if (@available(iOS 13.0, *)) {
-        [self getcurrentLocation];
+    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+    if (!deviceEntity.ipAddress || !deviceEntity.port) {
+        if (@available(iOS 13.0, *)) {
+            [self getcurrentLocation];
+        }else {
+            [self getWifiInfo];
+        }
     }else {
-        [self getWifiInfo];
+        [self performSelector:@selector(socketConnectionTimeOut) withObject:nil afterDelay:10.0];
+        [self connentHost:deviceEntity.ipAddress prot:[deviceEntity.port integerValue]];
     }
+}
+
+- (void)socketConnectionTimeOut {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:AcTECLocalizedStringFromTable(@"lan_connection_failed", @"Localizable") message:AcTECLocalizedStringFromTable(@"check_lan", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+    [alert.view setTintColor:DARKORAGE];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *confirm = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"retry", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+        deviceEntity.ipAddress = nil;
+        deviceEntity.port = nil;
+        [[CSRDatabaseManager sharedInstance] saveContext];
+        if (@available(iOS 13.0, *)) {
+            [self getcurrentLocation];
+        }else {
+            [self getWifiInfo];
+        }
+    }];
+    [alert addAction:cancel];
+    [alert addAction:confirm];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)getcurrentLocation {
@@ -751,7 +770,7 @@
         
         UIAlertAction *confirm = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"send", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             UITextField *textField = alert.textFields.firstObject;
-            
+            [self performSelector:@selector(socketConnectionTimeOut) withObject:nil afterDelay:20.0];
             [self sendWifiName:name wifiPassword:textField.text];
             
         }];
@@ -842,33 +861,28 @@
     }
 }
 
-- (void)LCDRemoteIPAdressCall:(NSNotification *)notification {
+- (void)refreshIPAddress:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
     if ([deviceId isEqualToNumber:_deviceId]) {
-        NSString *s = userInfo[@"IPAdress"];
-        for (int i = 0; i < s.length/2; i ++) {
-            NSInteger a = [CSRUtilities numberWithHexString:[s substringWithRange:NSMakeRange(2*i, 2)]];
-            if (i == 0) {
-                _IPAdress = [NSString stringWithFormat:@"%ld",(long)a];
-            }else {
-                _IPAdress = [NSString stringWithFormat:@"%@.%ld",_IPAdress,(long)a];
-            }
-        }
-        if (_port != -1) {
-            [self connentHost:_IPAdress prot:_port];
+        NSString *ip = userInfo[@"IPAddress"];
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+        if (deviceEntity.port) {
+            [self connentHost:ip prot:[deviceEntity.port integerValue]];
         }
     }
 }
 
-- (void)LCDRemotePortCall:(NSNotification *)notification {
+- (void)refreshPort:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceId = userInfo[@"deviceId"];
     if ([deviceId isEqualToNumber:_deviceId]) {
-        NSString *p = userInfo[@"port"];
-        _port = [CSRUtilities numberWithHexString:p];
-        if ([_IPAdress length]>0) {
-            [self connentHost:_IPAdress prot:_port];
+        NSNumber *p = userInfo[@"port"];
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+        deviceEntity.port = p;
+        [[CSRDatabaseManager sharedInstance] saveContext];
+        if (deviceEntity.ipAddress) {
+            [self connentHost:deviceEntity.ipAddress prot:[p integerValue]];
         }
     }
 }
@@ -890,6 +904,7 @@
             NSLog(@"Connect Error: %@", connectError);
         }else {
             NSLog(@"Connect success!");
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(socketConnectionTimeOut) object:nil];
             
             self.uConfigBtn.hidden = NO;
             self.uIconBtn.hidden = NO;
@@ -1132,10 +1147,35 @@
         UIImage *img = [self originalImage:[UIImage imageWithData:d.wallPaper]];
         NSData *imgData = UIImagePNGRepresentation(img);
         
-        NSDictionary *jd = @{@"imgCount":@1,@"imgList":@[@{@"imgAppType":@145,@"imgIndex":@51,@"imgName":@"wallPaper",@"imgSize":@([imgData length]),@"imgCRC32":@([self crc32:imgData]),@"imgData":[CSRUtilities hexStringFromData:imgData]}]};
+        NSDictionary *jd = @{@"imgCount":@1,@"imgList":@[@{@"imgAppType":@145,@"imgIndex":@51,@"imgName":@"wallPaper",@"imgSize":@([imgData length]),@"imgCRC32":@([self crc32:imgData]),@"imgData":@"1"}]};
         
         NSString *j = [CSRUtilities convertToJsonData2:jd];
-        _applyData = [j dataUsingEncoding:NSUTF8StringEncoding];
+        NSData *j_data = [j dataUsingEncoding:NSUTF8StringEncoding];
+        NSInteger j_length = [j_data length];
+        NSInteger j_lb0 = (j_length & 0xFF000000)>>24;
+        NSInteger j_lb1 = (j_length & 0x00FF0000)>>16;
+        NSInteger j_lb2 = (j_length & 0x0000FF00)>>8;
+        NSInteger j_lb3 = (j_length & 0x000000FF);
+        Byte j_byte[] = {0x00, 0x00, j_lb0, j_lb1, j_lb2, j_lb3};
+        NSData *j_head = [[NSData alloc] initWithBytes:j_byte length:6];
+        NSMutableData *jdata = [[NSMutableData alloc] init];
+        [jdata appendData:j_head];
+        [jdata appendData:j_data];
+        
+        NSInteger i_length = [imgData length];
+        NSInteger i_lb0 = (i_length & 0xFF000000)>>24;
+        NSInteger i_lb1 = (i_length & 0x00FF0000)>>16;
+        NSInteger i_lb2 = (i_length & 0x0000FF00)>>8;
+        NSInteger i_lb3 = (i_length & 0x000000FF);
+        Byte i_byte[] = {0x00, 0x01, i_lb0, i_lb1, i_lb2, i_lb3};
+        NSData *i_head = [[NSData alloc] initWithBytes:i_byte length:6];
+        NSMutableData *iData = [[NSMutableData alloc] init];
+        [iData appendData:i_head];
+        [iData appendData:imgData];
+        
+        [jdata appendData:iData];
+        
+        _applyData = jdata;
         _applyIndex = 1;
         _applyCmdType = 4;
         NSInteger l = _applyData.length;

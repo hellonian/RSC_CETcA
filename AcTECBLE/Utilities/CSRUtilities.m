@@ -1165,7 +1165,14 @@
         || [kThreeChannelSwitchs containsObject:shortName]
         || [kMusicController containsObject:shortName]
         || [kMusicControlRemote containsObject:shortName]
-        || [kThreeChannelDimmers containsObject:shortName]) {
+        || [kThreeChannelDimmers containsObject:shortName]
+        || [kHOneChannelCurtainController containsObject:shortName]
+        || [kSonosMusicController containsObject:shortName]
+        || [kSceneRemotesSixKeysV containsObject:shortName]
+        || [kSceneRemotesFourKeysV containsObject:shortName]
+        || [kSceneRemotesThreeKeysV containsObject:shortName]
+        || [kSceneRemotesTwoKeysV containsObject:shortName]
+        || [kSceneRemotesOneKeyV containsObject:shortName]) {
         return YES;
     }
     return NO;
@@ -1187,13 +1194,6 @@
 
 + (BOOL)belongToRGBCWDevice:(NSString *)shortName {
     if ([kRGBCWDevices containsObject:shortName]) {
-        return YES;
-    }
-    return NO;
-}
-
-+ (BOOL)belongToCurtainController:(NSString *)shortName {
-    if ([kOneChannelCurtainController containsObject:shortName] || [kTwoChannelCurtainController containsObject:shortName]) {
         return YES;
     }
     return NO;
@@ -1368,6 +1368,51 @@
 
 + (BOOL)belongToMusicControlRemote:(NSString *)shortName {
     if ([kMusicControlRemote containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToHOneChannelCurtainController:(NSString *)shortName {
+    if ([kHOneChannelCurtainController containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToSonosMusicController:(NSString *)shortName {
+    if ([kSonosMusicController containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToSceneRemoteSixKeysV:(NSString *)shortName {
+    if ([kSceneRemotesSixKeysV containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
++ (BOOL)belongToSceneRemoteFourKeysV:(NSString *)shortName {
+    if ([kSceneRemotesFourKeysV containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
++ (BOOL)belongToSceneRemoteThreeKeysV:(NSString *)shortName {
+    if ([kSceneRemotesThreeKeysV containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
++ (BOOL)belongToSceneRemoteTwoKeysV:(NSString *)shortName {
+    if ([kSceneRemotesTwoKeysV containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
++ (BOOL)belongToSceneRemoteOneKeyV:(NSString *)shortName {
+    if ([kSceneRemotesOneKeyV containsObject:shortName]) {
         return YES;
     }
     return NO;

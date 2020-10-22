@@ -1,6 +1,24 @@
 
+/* Class = "UILabel"; text = "Reverse"; ObjectID = "5qB-Ov-t75"; */
+"5qB-Ov-t75.text" = "反转";
+
+/* Class = "UILabel"; text = "Setting"; ObjectID = "U6M-dH-5cU"; */
+"U6M-dH-5cU.text" = "设置";
+
 /* Class = "UILabel"; text = "Name"; ObjectID = "XKo-p8-b4L"; */
 "XKo-p8-b4L.text" = "标签";
 
+/* Class = "UIButton"; normalTitle = "Setting"; ObjectID = "cme-Kv-heh"; */
+"cme-Kv-heh.normalTitle" = "设置";
+
+/* Class = "UILabel"; text = "Restore"; ObjectID = "dc3-po-pGH"; */
+"dc3-po-pGH.text" = "恢复出厂";
+
 /* Class = "UILabel"; text = "MAC"; ObjectID = "qrD-BG-4ED"; */
 "qrD-BG-4ED.text" = "MAC";
+
+/* Class = "UISegmentedControl"; tvx-hh-vue.segmentTitles[0] = "1"; ObjectID = "tvx-hh-vue"; */
+"tvx-hh-vue.segmentTitles[0]" = "1";
+
+/* Class = "UISegmentedControl"; tvx-hh-vue.segmentTitles[1] = "2"; ObjectID = "tvx-hh-vue"; */
+"tvx-hh-vue.segmentTitles[1]" = "2";

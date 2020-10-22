@@ -147,6 +147,7 @@
         }];
         
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
+        nav.modalPresentationStyle = UIModalPresentationFullScreen;
         [self presentViewController:nav animated:YES completion:nil];
     }
 }
@@ -580,6 +581,7 @@
         }];
         
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
+        nav.modalPresentationStyle = UIModalPresentationFullScreen;
         [self presentViewController:nav animated:YES completion:nil];
     }
 }
@@ -634,7 +636,11 @@
                 [_devicesCollectionView reloadData];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:RGBDVC];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
@@ -649,11 +655,17 @@
                 [_devicesCollectionView reloadData];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:socketVC];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
-        }else if ([CSRUtilities belongToCurtainController:deviceEntity.shortName]) {
+        }else if ([CSRUtilities belongToOneChannelCurtainController:deviceEntity.shortName]
+                  || [CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName]
+                  || [CSRUtilities belongToHOneChannelCurtainController:deviceEntity.shortName]) {
             CurtainViewController *curtainVC = [[CurtainViewController alloc] init];
             curtainVC.deviceId = mainCell.deviceId;
             curtainVC.reloadDataHandle = ^{
@@ -661,7 +673,11 @@
                 [_devicesCollectionView reloadData];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:curtainVC];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
@@ -674,7 +690,11 @@
                 [_devicesCollectionView reloadData];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
             

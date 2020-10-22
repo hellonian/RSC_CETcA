@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19E287" minimumToolsVersion="Xcode 4.3" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="1">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17192" systemVersion="19G2021" minimumToolsVersion="Xcode 4.3" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="1">
     <entity name="CSRAreaEntity" representedClassName="CSRAreaEntity" syncable="YES">
         <attribute name="androidId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="areaIconNum" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
@@ -34,12 +34,16 @@
         <attribute name="deviceHash" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="deviceId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" indexed="YES" syncable="YES"/>
         <attribute name="dhmKey" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="dns" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="favourite" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="firVersion" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="gateway" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="groups" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="hwVersion" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="ipAddress" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isAssociated" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="isEditting" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="mcSonosInfoVersion" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="mcuBootVersion" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="mcuHVersion" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="mcuSVersion" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
@@ -47,15 +51,18 @@
         <attribute name="modelLow" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="nGroups" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="port" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="remoteBranch" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="shortName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sortId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="subnetMask" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="wallPaper" optional="YES" attributeType="Binary" syncable="YES"/>
         <relationship name="areas" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CSRAreaEntity" inverseName="devices" inverseEntity="CSRAreaEntity" syncable="YES"/>
         <relationship name="events" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CSREventEntity" inverseName="devices" inverseEntity="CSREventEntity" syncable="YES"/>
         <relationship name="place" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CSRPlaceEntity" inverseName="devices" inverseEntity="CSRPlaceEntity" syncable="YES"/>
         <relationship name="rgbScenes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RGBSceneEntity" inverseName="device" inverseEntity="RGBSceneEntity" syncable="YES"/>
+        <relationship name="sonoss" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SonosEntity" inverseName="device" inverseEntity="SonosEntity" syncable="YES"/>
     </entity>
     <entity name="CSRDeviceEventsEntity" representedClassName="CSRDeviceEventsEntity" syncable="YES">
         <attribute name="actionID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
@@ -190,6 +197,15 @@
         <attribute name="sortID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <relationship name="scene" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SceneEntity" inverseName="members" inverseEntity="SceneEntity" syncable="YES"/>
     </entity>
+    <entity name="SonosEntity" syncable="YES">
+        <attribute name="channel" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="deviceID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="infoVersion" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="modelNumber" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="modelType" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="device" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CSRDeviceEntity" inverseName="sonoss" inverseEntity="CSRDeviceEntity" syncable="YES"/>
+    </entity>
     <entity name="TimerDeviceEntity" representedClassName="TimerDeviceEntity" syncable="YES">
         <attribute name="alive" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="channel" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
@@ -212,7 +228,7 @@
     <elements>
         <element name="CSRAreaEntity" positionX="81" positionY="-207" width="128" height="208"/>
         <element name="CSRControllerEntity" positionX="-495" positionY="18" width="128" height="180"/>
-        <element name="CSRDeviceEntity" positionX="61" positionY="200" width="128" height="508"/>
+        <element name="CSRDeviceEntity" positionX="61" positionY="200" width="128" height="613"/>
         <element name="CSRDeviceEventsEntity" positionX="-621" positionY="305" width="128" height="133"/>
         <element name="CSREventEntity" positionX="-434" positionY="288" width="128" height="180"/>
         <element name="CSRGatewayEntity" positionX="-191" positionY="269" width="128" height="178"/>
@@ -224,6 +240,7 @@
         <element name="RGBSceneEntity" positionX="-423" positionY="-135" width="128" height="313"/>
         <element name="SceneEntity" positionX="-423" positionY="-135" width="128" height="163"/>
         <element name="SceneMemberEntity" positionX="-414" positionY="-126" width="128" height="223"/>
+        <element name="SonosEntity" positionX="-423" positionY="-135" width="128" height="148"/>
         <element name="TimerDeviceEntity" positionX="-414" positionY="-126" width="128" height="133"/>
         <element name="TimerEntity" positionX="-423" positionY="-135" width="128" height="178"/>
     </elements>

@@ -22,7 +22,6 @@
 @interface MusicControllerVC ()<MCUUpdateToolDelegate, MBProgressHUDDelegate>
 {
     NSInteger cycle;
-    NSInteger channel;
     NSInteger source;
     BOOL mute;
     BOOL play;
@@ -52,6 +51,7 @@
 @property (nonatomic,strong) MBProgressHUD *updatingHud;
 @property (nonatomic,copy) NSString *originalName;
 @property (nonatomic, strong) UIButton *titleBtn;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *cycleBtnAxisVerticalConstraint;
 
 @end
 
@@ -60,112 +60,154 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    UIButton *btn = [[UIButton alloc] init];
-    [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
-    [btn setTitle:AcTECLocalizedStringFromTable(@"Back", @"Localizable") forState:UIControlStateNormal];
-    [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
-    [btn addTarget:self action:@selector(closeAction) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
-    self.navigationItem.leftBarButtonItem = back;
-    
-    UIBarButtonItem *channelStateItem = [[UIBarButtonItem alloc] initWithTitle:@"OFF" style:UIBarButtonItemStylePlain target:self action:@selector(channelState:)];
-    self.navigationItem.rightBarButtonItem = channelStateItem;
-    
-    UILongPressGestureRecognizer *gesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(refresh:)];
-    [_cover addGestureRecognizer:gesture];
-    
-    _titleBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [_titleBtn addTarget:self action:@selector(rename) forControlEvents:UIControlEventTouchUpInside];
-    [_titleBtn setTitleColor:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] forState:UIControlStateNormal];
-    [_titleBtn.titleLabel setFont:[UIFont boldSystemFontOfSize:17]];
-    [_titleBtn sizeToFit];
-    self.navigationItem.titleView = _titleBtn;
-    
     _cycleBtn.layer.borderColor = [UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1].CGColor;
     _channelBtn.layer.borderColor = [UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1].CGColor;
     _sourceBtn.layer.borderColor = [UIColor colorWithRed:150/255.0 green:150/255.0 blue:150/255.0 alpha:1].CGColor;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshMCChannel:) name:@"refreshMCChannel" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshMCChannelState:) name:@"refreshMCChannelState" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshMCSongName:) name:@"refreshMCSongName" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setPowerStateSuccess:) name:@"setPowerStateSuccess"
       object:nil];
     
+    semaphore = dispatch_semaphore_create(0);
+    
     if (_deviceId) {
         
-        semaphore = dispatch_semaphore_create(0);
-        
         CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-        [_titleBtn setTitle:device.name forState:UIControlStateNormal];
-        
-        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-        if (model) {
-            if (model.mcChannel != 0 && model.mcCurrentChannel != -1 && model.mcStatus != -1 && model.mcVoice != -1) {
+        if (device) {
+            if ([CSRUtilities belongToMusicController:device.shortName]) {
+                UIBarButtonItem *channelStateItem = [[UIBarButtonItem alloc] initWithTitle:@"OFF" style:UIBarButtonItemStylePlain target:self action:@selector(channelState:)];
+                self.navigationItem.rightBarButtonItem = channelStateItem;
+                UIButton *btn = [[UIButton alloc] init];
+                [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
+                [btn setTitle:AcTECLocalizedStringFromTable(@"Back", @"Localizable") forState:UIControlStateNormal];
+                [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+                [btn addTarget:self action:@selector(closeAction) forControlEvents:UIControlEventTouchUpInside];
+                UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
+                self.navigationItem.leftBarButtonItem = back;
                 
-                [self refreshDisplay:model];
-                _songNameLabel.text = model.songName;
+                UILongPressGestureRecognizer *gesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(refresh:)];
+                [_cover addGestureRecognizer:gesture];
                 
-            }else {
-                //扫描在线通道
+                _titleBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+                [_titleBtn addTarget:self action:@selector(rename) forControlEvents:UIControlEventTouchUpInside];
+                [_titleBtn setTitleColor:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] forState:UIControlStateNormal];
+                [_titleBtn.titleLabel setFont:[UIFont boldSystemFontOfSize:17]];
+                [_titleBtn sizeToFit];
+                self.navigationItem.titleView = _titleBtn;
+                
+                [_titleBtn setTitle:device.name forState:UIControlStateNormal];
+                
+                DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+                if (model) {
+                    if (model.mcLiveChannels != 0 && model.mcCurrentChannel != -1 && model.mcStatus != -1 && model.mcVoice != -1) {
+                        
+                        [self refreshDisplay:model];
+                        _songNameLabel.text = model.songName;
+                        
+                    }else {
+                        //扫描在线通道
+                        [self showLoading];
+                        [self performSelector:@selector(scanOnlineChannelTimeOut) withObject:nil afterDelay:10];
+                        Byte byte[] = {0xea, 0x82, 0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+                        
+                        dispatch_group_t group = dispatch_group_create();
+                        dispatch_group_async(group, dispatch_queue_create("com.actec.music", DISPATCH_QUEUE_CONCURRENT), ^{
+                            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                if (!groupCancel) {
+                                    NSString *hex = [CSRUtilities stringWithHexNumber:model.mcCurrentChannel];
+                                    NSString *bin = [CSRUtilities getBinaryByhex:hex];
+                                    for (int i = 0; i < [bin length]; i ++) {
+                                        NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
+                                        if ([bit boolValue]) {
+                                            Byte byte[] = {0xea, 0x81, i, 0x00, 0x00};
+                                            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+                                            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                                            break;
+                                        }
+                                    }
+                                }
+                            });
+                        });
+                        
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                        
+                    }
+                }
+                
+                if ([device.hwVersion integerValue] == 2) {
+                    NSMutableString *mutStr = [NSMutableString stringWithString:device.shortName];
+                    NSRange range = {0,device.shortName.length};
+                    [mutStr replaceOccurrencesOfString:@"/" withString:@"" options:NSLiteralSearch range:range];
+                    NSString *urlString = [NSString stringWithFormat:@"http://39.108.152.134/MCU/%@/%@.php",mutStr,mutStr];
+                    AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
+                    sessionManager.responseSerializer.acceptableContentTypes = nil;
+                    sessionManager.requestSerializer.cachePolicy = NSURLRequestReloadIgnoringCacheData;
+                    [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+                        NSDictionary *dic = (NSDictionary *)responseObject;
+                        latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
+                        downloadAddress = dic[@"Download_address"];
+                        if ([device.mcuSVersion integerValue]<latestMCUSVersion) {
+                            updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
+                            [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
+                            [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
+                            [updateMCUBtn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+                            [updateMCUBtn addTarget:self action:@selector(askUpdateMCU) forControlEvents:UIControlEventTouchUpInside];
+                            [self.view addSubview:updateMCUBtn];
+                            [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+                            [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeRight];
+                            [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom];
+                            [updateMCUBtn autoSetDimension:ALDimensionHeight toSize:44.0];
+                        }
+                    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+                        NSLog(@"%@",error);
+                    }];
+                }
+                
+            }else if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
+                _channelBtn.hidden = YES;
+                _sourceBtn.hidden = YES;
+                for (SonosEntity *so in device.sonoss) {
+                    if ([so.channel integerValue] == _channel) {
+                        self.navigationItem.title = so.name;
+                        break;
+                    }
+                }
+                
                 [self showLoading];
                 [self performSelector:@selector(scanOnlineChannelTimeOut) withObject:nil afterDelay:10];
-                Byte byte[] = {0xea, 0x82, 0x00};
-                NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
-                
                 dispatch_group_t group = dispatch_group_create();
                 dispatch_group_async(group, dispatch_queue_create("com.actec.music", DISPATCH_QUEUE_CONCURRENT), ^{
                     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
                     dispatch_async(dispatch_get_main_queue(), ^{
                         if (!groupCancel) {
-                            NSString *hex = [CSRUtilities stringWithHexNumber:model.mcCurrentChannel];
-                            NSString *bin = [CSRUtilities getBinaryByhex:hex];
-                            for (int i = 0; i < [bin length]; i ++) {
-                                NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
-                                if ([bit boolValue]) {
-                                    Byte byte[] = {0xea, 0x81, i, 0x00, 0x00};
-                                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
-                                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-                                    break;
-                                }
-                            }
+                            Byte byte[] = {0xea, 0x81, _channel, 0x00, 0x00};
+                            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+                            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
                         }
                     });
                 });
                 
-                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-                
+                [[DeviceModelManager sharedInstance] refreshDeviceID:_deviceId mcCurrentChannel:pow(2, _channel)];
             }
         }
-        if ([device.hwVersion integerValue] == 2) {
-            NSMutableString *mutStr = [NSMutableString stringWithString:device.shortName];
-            NSRange range = {0,device.shortName.length};
-            [mutStr replaceOccurrencesOfString:@"/" withString:@"" options:NSLiteralSearch range:range];
-            NSString *urlString = [NSString stringWithFormat:@"http://39.108.152.134/MCU/%@/%@.php",mutStr,mutStr];
-            AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
-            sessionManager.responseSerializer.acceptableContentTypes = nil;
-            sessionManager.requestSerializer.cachePolicy = NSURLRequestReloadIgnoringCacheData;
-            [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
-                NSDictionary *dic = (NSDictionary *)responseObject;
-                latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
-                downloadAddress = dic[@"Download_address"];
-                if ([device.mcuSVersion integerValue]<latestMCUSVersion) {
-                    updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
-                    [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
-                    [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
-                    [updateMCUBtn setTitleColor:DARKORAGE forState:UIControlStateNormal];
-                    [updateMCUBtn addTarget:self action:@selector(askUpdateMCU) forControlEvents:UIControlEventTouchUpInside];
-                    [self.view addSubview:updateMCUBtn];
-                    [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-                    [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeRight];
-                    [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom];
-                    [updateMCUBtn autoSetDimension:ALDimensionHeight toSize:44.0];
-                }
-            } failure:^(NSURLSessionDataTask *task, NSError *error) {
-                NSLog(@"%@",error);
-            }];
-        }
-        
     }
     
+}
+
+- (void)viewDidLayoutSubviews {
+    if (_deviceId) {
+        CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+        if (device) {
+            if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
+                CGFloat w = self.view.bounds.size.width/2.0;
+                CGFloat cc = 1/2.0*w;
+                _cycleBtnAxisVerticalConstraint.constant = cc;
+            }
+        }
+    }
 }
 
 - (void)closeAction {
@@ -277,20 +319,25 @@
 }
 
 - (IBAction)lastAction:(UIButton *)sender {
-    Byte byte[] = {0xea, 0x80, channel, 0x00};
+    Byte byte[] = {0xea, 0x80, _channel, 0x00};
     NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
     [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
 }
 
 - (IBAction)nextAction:(UIButton *)sender {
-    Byte byte[] = {0xea, 0x80, channel, 0x01};
+    Byte byte[] = {0xea, 0x80, _channel, 0x01};
     NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
     [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
 }
 
 - (void)sendControlCommand:(NSInteger)dv {
-    NSInteger cv = pow(2, channel);
-    NSInteger s = channelState + play*2 + source*4 + cycle*32;
+    NSInteger cv = pow(2, _channel);
+    NSInteger cy = cycle;
+    CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+    if ([CSRUtilities belongToSonosMusicController:device.shortName] && (cycle == 2 || cycle == 3)) {
+        cy = cycle + 1;
+    }
+    NSInteger s = channelState + play*2 + source*4 + cy*32;
     NSInteger v = mute + voice*2;
     
     DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
@@ -299,9 +346,10 @@
         model.mcVoice = v;
     }
     
-    Byte byte[] = {0xb6, 0x06, 0x1e, cv/256, cv%256, pow(2, dv), s, v};
-    NSData *cmd = [[NSData alloc] initWithBytes:byte length:8];
+    Byte byte[] = {0xb6, 0x08, 0x1e, cv/256, cv%256, pow(2, dv), s, v, 0x00, 0x00};
+    NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
     [[DeviceModelManager sharedInstance] controlMC:_deviceId data:cmd];
+    
 }
 
 - (void)startAnimation {
@@ -359,8 +407,8 @@
 - (IBAction)channelAction:(UIButton *)sender {
     
     DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-    if (model && model.mcChannel != 0) {
-        NSString *hex = [CSRUtilities stringWithHexNumber:model.mcChannel];
+    if (model && model.mcLiveChannels != 0) {
+        NSString *hex = [CSRUtilities stringWithHexNumber:model.mcLiveChannels];
         NSString *bin = [CSRUtilities getBinaryByhex:hex];
         NSMutableArray *mAry = [[NSMutableArray alloc] init];
         NSMutableArray *sAry = [[NSMutableArray alloc] init];
@@ -373,8 +421,8 @@
         }
         
         MCPickerAlertController *alert = [MCPickerAlertController MCAlertControllerWithTitle:AcTECLocalizedStringFromTable(@"select_the_channel", @"Localizable") dataArray:sAry];
-        [alert.pickerView selectRow:channel inComponent:0 animated:NO];
-        alert.selectedRow = channel;
+        [alert.pickerView selectRow:_channel inComponent:0 animated:NO];
+        alert.selectedRow = _channel;
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
             
         }];
@@ -384,7 +432,7 @@
             for (int i = 0; i < [bin length]; i ++) {
                 NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
                 if ([bit boolValue]) {
-                    if (channel != i) {
+                    if (_channel != i) {
                         [self showLoading];
                         [self performSelector:@selector(scanOnlineChannelTimeOut) withObject:nil afterDelay:10];
                         
@@ -408,7 +456,7 @@
                             });
                         });
                         
-                        [[DeviceModelManager sharedInstance] refreshDeviceID:_deviceId mcCurrentChannel:pow(2, channel)];
+                        [[DeviceModelManager sharedInstance] refreshDeviceID:_deviceId mcCurrentChannel:pow(2, _channel)];
                         
                     }
                 }
@@ -416,7 +464,7 @@
             
         }];
         alert.pickerViewBlock = ^(NSInteger row) {
-            channel = row;
+            _channel = row;
         };
         [alert addAction:cancelAction];
         [alert addAction:okAction];
@@ -447,7 +495,14 @@
 
 - (IBAction)cycleAction:(UIButton *)sender {
     
-    MCPickerAlertController *alert = [MCPickerAlertController MCAlertControllerWithTitle:AcTECLocalizedStringFromTable(@"select_cycle_mode", @"Localizable") dataArray:PLAYMODE];
+    NSArray *pa;
+    CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+    if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
+        pa = PLAYMODE_SONOS;
+    }else {
+        pa = PLAYMODE;
+    }
+    MCPickerAlertController *alert = [MCPickerAlertController MCAlertControllerWithTitle:AcTECLocalizedStringFromTable(@"select_cycle_mode", @"Localizable") dataArray:pa];
     [alert.pickerView selectRow:cycle inComponent:0 animated:NO];
     alert.selectedRow = cycle;
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -455,7 +510,7 @@
     }];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self sendControlCommand:3];
-        [_cycleBtn setTitle:PLAYMODE[cycle] forState:UIControlStateNormal];
+        [_cycleBtn setTitle:pa[cycle] forState:UIControlStateNormal];
     }];
     alert.pickerViewBlock = ^(NSInteger row) {
         cycle = row;
@@ -494,7 +549,7 @@
     return bin;
 }
 
-- (void)refreshMCChannel:(NSNotification *)notification {
+- (void)refreshMCChannelState:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceID = userInfo[@"deviceId"];
     if ([deviceID isEqualToNumber:_deviceId]) {
@@ -502,20 +557,30 @@
         
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
         if (model) {
-            if (model.mcChannel == 0) {
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"no_online_channel_scanned", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
-                [alert.view setTintColor:DARKORAGE];
-                UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            if ([CSRUtilities belongToMusicController:model.shortName]) {
+                if (model.mcLiveChannels == 0) {
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"no_online_channel_scanned", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+                    [alert.view setTintColor:DARKORAGE];
+                    UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        [self hideLoading];
+                    }];
+                    [alert addAction:yes];
+                    [self presentViewController:alert animated:YES completion:nil];
+                }else if (model.mcCurrentChannel != -1 && model.mcStatus != -1 && model.mcVoice != -1) {
+                    [self refreshDisplay:model];
                     [self hideLoading];
-                }];
-                [alert addAction:yes];
-                [self presentViewController:alert animated:YES completion:nil];
-            }else if (model.mcCurrentChannel != -1 && model.mcStatus != -1 && model.mcVoice != -1) {
-                [self refreshDisplay:model];
-                [self hideLoading];
-                groupCancel = NO;
-                dispatch_semaphore_signal(semaphore);
+                    groupCancel = NO;
+                    dispatch_semaphore_signal(semaphore);
+                }
+            }else if ([CSRUtilities belongToSonosMusicController:model.shortName]) {
+                if (model.mcCurrentChannel != -1 && model.mcStatus != -1 && model.mcVoice != -1) {
+                    [self refreshDisplay:model];
+                    [self hideLoading];
+                    groupCancel = NO;
+                    dispatch_semaphore_signal(semaphore);
+                }
             }
+            
         }
     }
 }
@@ -527,7 +592,7 @@
         NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
         if ([bit boolValue]) {
             [_channelBtn setTitle:[NSString stringWithFormat:@"%@ %d",AcTECLocalizedStringFromTable(@"channel", @"Localizable"),i] forState:UIControlStateNormal];
-            channel = i;
+            _channel = i;
             break;
         }
     }
@@ -582,8 +647,17 @@
         }
     }
     if (ic < 5) {
-        [_cycleBtn setTitle:PLAYMODE[ic] forState:UIControlStateNormal];
-        cycle = ic;
+        CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+        if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
+            cycle = ic;
+            if (ic == 3 || ic == 4) {
+                cycle = ic - 1;
+            }
+            [_cycleBtn setTitle:PLAYMODE[cycle] forState:UIControlStateNormal];
+        }else {
+            [_cycleBtn setTitle:PLAYMODE[ic] forState:UIControlStateNormal];
+            cycle = ic;
+        }
     }
     NSString *hex2 = [CSRUtilities stringWithHexNumber:model.mcVoice];
     NSString *bin2 = [self fixBinStringEightLenth:[CSRUtilities getBinaryByhex:hex2]];

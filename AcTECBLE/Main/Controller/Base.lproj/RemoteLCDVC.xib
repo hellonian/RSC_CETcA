@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -72,54 +72,60 @@
                         <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                     </collectionViewFlowLayout>
                 </collectionView>
-                <imageView clipsSubviews="YES" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="topbg" translatesAutoresizingMaskIntoConstraints="NO" id="YYE-CZ-qRn">
+                <imageView clipsSubviews="YES" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YYE-CZ-qRn">
                     <rect key="frame" x="0.0" y="44" width="414" height="212"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="YYE-CZ-qRn" secondAttribute="height" multiplier="320:164" id="ls7-6y-N5w"/>
                     </constraints>
                 </imageView>
-                <button opaque="NO" alpha="0.65000000000000002" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m6O-cE-aWz">
-                    <rect key="frame" x="194" y="58" width="200" height="30"/>
+                <button hidden="YES" opaque="NO" alpha="0.65000000000000002" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m6O-cE-aWz">
+                    <rect key="frame" x="274" y="58" width="120" height="30"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="6P6-bb-ATm"/>
-                        <constraint firstAttribute="width" constant="200" id="z6B-mM-xRM"/>
+                        <constraint firstAttribute="width" constant="120" id="z6B-mM-xRM"/>
                     </constraints>
-                    <state key="normal" title="Update the configuration">
-                        <color key="titleColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <state key="normal" title="同步设备" image="icon_wifi">
+                        <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                     </state>
                     <connections>
                         <action selector="updateConfiguration:" destination="-1" eventType="touchUpInside" id="YXb-G8-0ac"/>
                     </connections>
                 </button>
-                <button opaque="NO" alpha="0.65000000000000002" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EXO-AW-9a2">
-                    <rect key="frame" x="194" y="102" width="200" height="30"/>
+                <button hidden="YES" opaque="NO" alpha="0.65000000000000002" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EXO-AW-9a2">
+                    <rect key="frame" x="274" y="102" width="120" height="30"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="200" id="4V9-lu-EOv"/>
+                        <constraint firstAttribute="width" constant="120" id="4V9-lu-EOv"/>
                         <constraint firstAttribute="height" constant="30" id="9HM-ae-CAu"/>
                     </constraints>
-                    <state key="normal" title="Update icon library">
-                        <color key="titleColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <state key="normal" title="同步图库" image="icon_wifi">
+                        <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                     </state>
                     <connections>
                         <action selector="updateIconLibrary:" destination="-1" eventType="touchUpInside" id="rzF-wh-shm"/>
                     </connections>
                 </button>
-                <button opaque="NO" alpha="0.64999997615814209" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IpU-rC-r1e">
-                    <rect key="frame" x="194" y="146" width="200" height="30"/>
+                <button hidden="YES" opaque="NO" alpha="0.64999997615814209" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IpU-rC-r1e">
+                    <rect key="frame" x="274" y="146" width="120" height="30"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="Azz-BG-vkW"/>
-                        <constraint firstAttribute="width" constant="200" id="fcm-Uq-jwG"/>
+                        <constraint firstAttribute="width" constant="120" id="fcm-Uq-jwG"/>
                     </constraints>
-                    <state key="normal" title="Synchronize wallpaper">
-                        <color key="titleColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <state key="normal" title="同步壁纸" image="icon_wifi">
+                        <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                     </state>
                     <connections>
                         <action selector="synchronizeWallpaper:" destination="-1" eventType="touchUpInside" id="rwv-Jn-BDi"/>
                     </connections>
                 </button>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="单击设置壁纸" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PB3-0o-nC8">
+                    <rect key="frame" x="164" y="141.5" width="86" height="17"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <color key="textColor" red="0.30196078430000001" green="0.30196078430000001" blue="0.30196078430000001" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.95294117649999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
@@ -127,11 +133,13 @@
                 <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="IpU-rC-r1e" secondAttribute="trailing" constant="20" id="8xx-FC-P2G"/>
                 <constraint firstItem="IpU-rC-r1e" firstAttribute="top" secondItem="EXO-AW-9a2" secondAttribute="bottom" constant="14" id="ADe-wv-WaZ"/>
                 <constraint firstItem="YYE-CZ-qRn" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="EHZ-UV-MD2"/>
+                <constraint firstItem="PB3-0o-nC8" firstAttribute="centerX" secondItem="YYE-CZ-qRn" secondAttribute="centerX" id="HHe-AW-I4C"/>
                 <constraint firstItem="M1g-Ww-gRT" firstAttribute="top" secondItem="YYE-CZ-qRn" secondAttribute="bottom" id="LZZ-Es-s7f"/>
                 <constraint firstItem="qk2-e1-GFn" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="Lkv-5S-bGG"/>
                 <constraint firstItem="YYE-CZ-qRn" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" id="PNa-lG-LC2"/>
                 <constraint firstItem="YYE-CZ-qRn" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="UpI-xb-gpl"/>
                 <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="EXO-AW-9a2" secondAttribute="trailing" constant="20" id="fDc-pt-Tfy"/>
+                <constraint firstItem="PB3-0o-nC8" firstAttribute="centerY" secondItem="YYE-CZ-qRn" secondAttribute="centerY" id="grB-dd-Iex"/>
                 <constraint firstItem="M1g-Ww-gRT" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="hmX-UR-bdk"/>
                 <constraint firstItem="M1g-Ww-gRT" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="kI8-P5-BzB"/>
                 <constraint firstItem="EXO-AW-9a2" firstAttribute="top" secondItem="m6O-cE-aWz" secondAttribute="bottom" constant="14" id="lOc-Vz-WJ4"/>
@@ -145,6 +153,6 @@
         </view>
     </objects>
     <resources>
-        <image name="topbg" width="427" height="193.5"/>
+        <image name="icon_wifi" width="20" height="20"/>
     </resources>
 </document>

@@ -233,11 +233,23 @@
     UpdateDeviceModel *model = [self.dataArray objectAtIndex:indexPath.row];
     cell.textLabel.text = model.name;
     NSString *bleFString = @"";
-    if ([model.bleFVersion integerValue]==513) {
-        bleFString = @"21";
-    }else if ([model.bleFVersion integerValue]==258) {
-        bleFString = @"12";
+    NSString *s = [CSRUtilities stringWithHexNumber:[model.bleFVersion integerValue]];
+    switch ([s length]) {
+        case 3:
+            s = [NSString stringWithFormat:@"0%@",s];
+            break;
+        case 2:
+            s = [NSString stringWithFormat:@"00%@",s];
+            break;
+        case 1:
+            s = [NSString stringWithFormat:@"000%@",s];
+            break;
+        default:
+            break;
     }
+    NSInteger s1 = [CSRUtilities numberWithHexString:[s substringWithRange:NSMakeRange(0, 2)]];
+    NSInteger s2 = [CSRUtilities numberWithHexString:[s substringWithRange:NSMakeRange(2, 2)]];
+    bleFString = [NSString stringWithFormat:@"%ld%ld",s1,s2];
     cell.detailTextLabel.text = [NSString stringWithFormat:@"V%@.%@.%@.%@",[CSRUtilities stringWithHexNumber:[model.bleHwVersion integerValue]],bleFString,model.hVersion,model.fVersion];
     if (model.needUpdate) {
         cell.textLabel.textColor = DARKORAGE;

@@ -835,13 +835,19 @@
         [_allDevices addObject:model];
     }
     model.isleave = NO;
-    model.powerState = state;
-    model.channel1PowerState = [state boolValue];
-    model.level = [level integerValue] > 3 ? level : @3;
-    model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
-    //旧款窗帘逻辑错误的矫正
-    if ([model.shortName isEqualToString:@"C300IB"] || [model.shortName isEqualToString:@"C300IBH"]) {
-        model.powerState = [level integerValue] == 255? @(0):@(1);
+    
+    if ([CSRUtilities belongToOneChannelCurtainController:model.shortName]
+        || [CSRUtilities belongToHOneChannelCurtainController:model.shortName]) {
+        BOOL b = [level integerValue] == 255 ? NO : YES;
+        model.powerState = @(b);
+        model.channel1PowerState = b;
+        model.level = level;
+        model.channel1Level = [level integerValue];
+    }else {
+        model.powerState = state;
+        model.channel1PowerState = [state boolValue];
+        model.level = [level integerValue] > 3 ? level : @3;
+        model.channel1Level = [level integerValue] > 3 ? [level integerValue] : 3;
     }
     
     if (appControlling) {
@@ -1012,7 +1018,8 @@
         }
         model.powerState = @(model.channel1PowerState || model.channel2PowerState);
         model.level = @(model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level);
-    }else if ([CSRUtilities belongToOneChannelCurtainController:model.shortName]) {
+    }else if ([CSRUtilities belongToOneChannelCurtainController:model.shortName]
+              || [CSRUtilities belongToHOneChannelCurtainController:model.shortName]) {
         if ([channel integerValue] == 2) {
             model.channel1PowerState = [state boolValue];
             model.channel1Level = [level integerValue];
@@ -1360,7 +1367,8 @@
                     }
                     model.powerState = @(model.channel1PowerState || model.channel2PowerState);
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@([member.channel integerValue]+1)}];
-                }else if ([CSRUtilities belongToOneChannelCurtainController:model.shortName]) {
+                }else if ([CSRUtilities belongToOneChannelCurtainController:model.shortName]
+                          || [CSRUtilities belongToHOneChannelCurtainController:model.shortName]) {
                     if ([member.eveType integerValue] == 17) {
                         model.channel1PowerState = NO;
                         model.powerState = @0;
@@ -1448,45 +1456,51 @@
     }
 }
 
-- (void)refreshMCChannel:(NSNumber *)deviceID mcChannel:(NSInteger)mcChannel {
+- (void)refreshMCChannels:(NSNumber *)deviceID mcLiveChannels:(NSInteger)mcLiveChannels mcExistChannels:(NSInteger)mcExistChannels {
     for (DeviceModel *model in _allDevices) {
         if ([model.deviceId isEqualToNumber:deviceID]) {
-            model.mcChannel = mcChannel;
-            if (mcChannel == 0) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshMCChannel" object:self userInfo:@{@"deviceId":deviceID}];
-            }else {
-                NSString *hex = [CSRUtilities stringWithHexNumber:mcChannel];
-                NSString *bin = [CSRUtilities getBinaryByhex:hex];
-                for (int i = 0; i < [bin length]; i ++) {
-                    NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
-                    if ([bit boolValue]) {
-                        NSInteger mccc = pow(2, i);
-                        model.mcCurrentChannel = mccc;
-                        //获取音乐控制器的工作状态
-                        NSData *cmd;
-                        if (mccc < 256) {
-                            Byte byte[] = {0xb6, 0x06, 0x20, 0x00, mccc};
-                            cmd = [[NSData alloc] initWithBytes:byte length:5];
-                        }else {
-                            Byte byte[] = {0xb6, 0x06, 0x20, mccc/256, mccc%256};
-                            cmd = [[NSData alloc] initWithBytes:byte length:5];
+            model.mcLiveChannels = mcLiveChannels;
+            model.mcExistChannels = mcExistChannels;
+            if ([CSRUtilities belongToMusicController:model.shortName]) {
+                if (mcLiveChannels == 0) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshMCChannelState" object:self userInfo:@{@"deviceId":deviceID}];
+                }else {
+                    NSString *hex = [CSRUtilities stringWithHexNumber:mcLiveChannels];
+                    NSString *bin = [CSRUtilities getBinaryByhex:hex];
+                    for (int i = 0; i < [bin length]; i ++) {
+                        NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
+                        if ([bit boolValue]) {
+                            NSInteger mccc = pow(2, i);
+                            model.mcCurrentChannel = mccc;
+                            //获取音乐控制器的工作状态
+                            NSData *cmd;
+                            if (mccc < 256) {
+                                Byte byte[] = {0xb6, 0x03, 0x20, 0x00, mccc};
+                                cmd = [[NSData alloc] initWithBytes:byte length:5];
+                            }else {
+                                Byte byte[] = {0xb6, 0x03, 0x20, mccc/256, mccc%256};
+                                cmd = [[NSData alloc] initWithBytes:byte length:5];
+                            }
+                            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceID data:cmd];
+                            break;
                         }
-                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceID data:cmd];
-                        break;
                     }
                 }
+            }else if ([CSRUtilities belongToSonosMusicController:model.shortName]) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshMCChannels" object:self userInfo:@{@"deviceId":deviceID}];
             }
-            return;
+            break;
         }
     }
 }
 
-- (void)refreshDeviceID:(NSNumber *)deviceID mcChannelValid:(NSInteger)mcChannelValid mcStatus:(NSInteger)mcStatus mcVoice:(NSInteger)mcVoice {
+- (void)refreshDeviceID:(NSNumber *)deviceID mcChannelValid:(NSInteger)mcChannelValid mcStatus:(NSInteger)mcStatus mcVoice:(NSInteger)mcVoice mcSong:(NSInteger)song {
     for (DeviceModel *model in _allDevices) {
         if ([model.deviceId isEqualToNumber:deviceID] && model.mcCurrentChannel == mcChannelValid) {
             model.mcStatus = mcStatus;
             model.mcVoice = mcVoice;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshMCChannel" object:self userInfo:@{@"deviceId":deviceID}];
+            model.mcSong = song;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshMCChannelState" object:self userInfo:@{@"deviceId":deviceID}];
             return;
         }
     }
@@ -1500,10 +1514,10 @@
             //获取音乐控制器的工作状态
             NSData *cmd;
             if (mcCurrentChannel < 256) {
-                Byte byte[] = {0xb6, 0x06, 0x20, 0x00, mcCurrentChannel};
+                Byte byte[] = {0xb6, 0x03, 0x20, 0x00, mcCurrentChannel};
                 cmd = [[NSData alloc] initWithBytes:byte length:5];
             }else {
-                Byte byte[] = {0xb6, 0x06, 0x20, mcCurrentChannel/256, mcCurrentChannel%256};
+                Byte byte[] = {0xb6, 0x03, 0x20, mcCurrentChannel/256, mcCurrentChannel%256};
                 cmd = [[NSData alloc] initWithBytes:byte length:5];
             }
             [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceID data:cmd];
@@ -1600,6 +1614,116 @@
 
 - (void)controlMC:(NSNumber *)deviceID data:(NSData *)cmd {
     [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceID data:cmd];
+}
+
+- (void)refreshNetworkConnectionStatus:(NSNumber *)deviceID staus:(BOOL)status {
+    for (DeviceModel *model in _allDevices) {
+        if ([model.deviceId isEqualToNumber:deviceID]) {
+            if (status) {
+                Byte byte[] = {0xea, 0x77, 0x01};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceID data:cmd];
+            }else {
+                CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID];
+                device.ipAddress = nil;
+                device.port = nil;
+                [[CSRDatabaseManager sharedInstance] saveContext];
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshNetworkConnectionStatus"
+                                                                object:self
+                                                              userInfo:@{@"deviceId":deviceID, @"type":@(7), @"staus":@(status)}];
+            break;
+        }
+    }
+}
+
+- (void)refreshIPAddress:(NSNumber *)deviceID IPAddress:(NSString *)ip {
+    for (DeviceModel *model in _allDevices) {
+        if ([model.deviceId isEqualToNumber:deviceID]) {
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID];
+            device.ipAddress = ip;
+            [[CSRDatabaseManager sharedInstance] saveContext];
+            
+            Byte byte[] = {0xea, 0x77, 0x03};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceID data:cmd];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshNetworkConnectionStatus"
+                                                                object:self
+                                                              userInfo:@{@"deviceId":deviceID, @"type":@(1), @"staus":ip}];
+            break;
+        }
+    }
+}
+
+- (void)refreshSubnetMask:(NSNumber *)deviceID subnetMask:(NSString *)sub {
+    for (DeviceModel *model in _allDevices) {
+        if ([model.deviceId isEqualToNumber:deviceID]) {
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID];
+            device.subnetMask = sub;
+            [[CSRDatabaseManager sharedInstance] saveContext];
+            
+            Byte byte[] = {0xea, 0x77, 0x02};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceID data:cmd];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshNetworkConnectionStatus"
+                                                                object:self
+                                                              userInfo:@{@"deviceId":deviceID, @"type":@(3), @"staus":sub}];
+            
+            break;
+        }
+    }
+}
+
+- (void)refreshGateway:(NSNumber *)deviceID gateway:(NSString *)gateway {
+    for (DeviceModel *model in _allDevices) {
+        if ([model.deviceId isEqualToNumber:deviceID]) {
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID];
+            device.subnetMask = gateway;
+            [[CSRDatabaseManager sharedInstance] saveContext];
+            
+            Byte byte[] = {0xea, 0x77, 0x04};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceID data:cmd];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshNetworkConnectionStatus"
+                                                                object:self
+                                                              userInfo:@{@"deviceId":deviceID, @"type":@(2), @"staus":gateway}];
+            
+            break;
+        }
+    }
+}
+
+- (void)refreshDNS:(NSNumber *)deviceID DNS:(NSString *)dns {
+    for (DeviceModel *model in _allDevices) {
+        if ([model.deviceId isEqualToNumber:deviceID]) {
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID];
+            device.dns = dns;
+            [[CSRDatabaseManager sharedInstance] saveContext];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshNetworkConnectionStatus"
+                                                                object:self
+                                                              userInfo:@{@"deviceId":deviceID, @"type":@(4), @"staus":dns}];
+            
+            break;
+        }
+    }
+}
+
+- (void)refreshPort:(NSNumber *)deviceID port:(NSInteger)port {
+    for (DeviceModel *model in _allDevices) {
+        if ([model.deviceId isEqualToNumber:deviceID]) {
+           CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID];
+            device.port = @(port);
+            [[CSRDatabaseManager sharedInstance] saveContext];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshPort"
+                                                                object:self
+                                                              userInfo:@{@"deviceId":deviceID, @"port":@(port)}];
+            break;
+        }
+    }
 }
 
 @end

@@ -1208,4 +1208,40 @@
     }
 }
 
+#pragma mark - sonos
+
+- (SonosEntity *)saveNewSonos:(NSNumber *)deviceID channel:(NSNumber *)channel infoVersion:(NSNumber *)infoVersion modelType:(NSNumber *)modelType modelNumber:(NSNumber *)modelNumber name:(NSString *)name {
+    __block CSRDeviceEntity *sDeviceEntity;
+    [[CSRAppStateManager sharedInstance].selectedPlace.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity * _Nonnull obj, BOOL * _Nonnull stop) {
+        if ([obj.deviceId isEqualToNumber:deviceID]) {
+            sDeviceEntity = obj;
+            *stop = YES;
+        }
+    }];
+    if (sDeviceEntity) {
+        sDeviceEntity.mcSonosInfoVersion = infoVersion;
+        __block SonosEntity *newSonosEntity;
+        [sDeviceEntity.sonoss enumerateObjectsUsingBlock:^(SonosEntity * _Nonnull obj, BOOL * _Nonnull stop) {
+            if ([obj.channel isEqualToNumber:channel]) {
+                newSonosEntity = obj;
+                *stop = YES;
+            }
+        }];
+        if (!newSonosEntity) {
+            newSonosEntity = [NSEntityDescription insertNewObjectForEntityForName:@"SonosEntity" inManagedObjectContext:self.managedObjectContext];
+        }
+        newSonosEntity.deviceID = deviceID;
+        newSonosEntity.channel = channel;
+        newSonosEntity.infoVersion = infoVersion;
+        newSonosEntity.modelType = modelType;
+        newSonosEntity.modelNumber = modelNumber;
+        newSonosEntity.name = name;
+        
+        [sDeviceEntity addSonossObject:newSonosEntity];
+        [self saveContext];
+        return newSonosEntity;
+    }
+    return nil;
+}
+
 @end

@@ -256,7 +256,8 @@
                         [self createSceneMemberSocket:device channel:1];
                         [self createSceneMemberSocket:device channel:2];
                     }
-                }else if ([CSRUtilities belongToOneChannelCurtainController:device.shortName]) {
+                }else if ([CSRUtilities belongToOneChannelCurtainController:device.shortName]
+                          || [CSRUtilities belongToHOneChannelCurtainController:device.shortName]) {
                     [self createSceneMemberCurtain:device channel:1];
                 }else if ([CSRUtilities belongToTwoChannelCurtainController:device.shortName]) {
                     if ([model.channel integerValue] == 2) {
@@ -278,6 +279,7 @@
         }
     }];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
+    nav.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:nav animated:YES completion:nil];
 }
 
@@ -307,7 +309,8 @@
                 || [CSRUtilities belongToTwoChannelDimmer:m.kindString]
                 || [CSRUtilities belongToSocketTwoChannel:m.kindString]
                 || [CSRUtilities belongToTwoChannelCurtainController:m.kindString]
-                || [CSRUtilities belongToThreeChannelDimmer:m.kindString]) {
+                || [CSRUtilities belongToThreeChannelDimmer:m.kindString]
+                || [CSRUtilities belongToMusicController:m.kindString]) {
                 Byte byte[] = {0x59, 0x08, [m.channel integerValue], b[1], b[0], e, d0, d1, d2, d3};
                 NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
                 retryCount = 0;
@@ -585,10 +588,20 @@
     m.sceneID = _sceneIndex;
     m.kindString = device.shortName;
     m.deviceID = device.deviceId;
-    m.channel = @(channel);
+    NSString *hex = [CSRUtilities stringWithHexNumber:channel];
+    NSString *bin = [CSRUtilities getBinaryByhex:hex];
+    for (int i = 0; i < [bin length]; i ++) {
+        NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
+        if ([bit boolValue]) {
+            m.channel = @(i+1);
+            break;
+        }
+    }
     m.eveType = @34;
     m.eveD0 = @(device.mcStatus);
     m.eveD1 = @(device.mcVoice);
+    m.eveD2 = @(device.mcSong);
+    m.eveD3 = @0;
     SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
     [sceneEntity addMembersObject:m];
     [[CSRDatabaseManager sharedInstance] saveContext];
@@ -720,7 +733,8 @@
             || [CSRUtilities belongToTwoChannelDimmer:mSceneMember.kindString]
             || [CSRUtilities belongToSocketTwoChannel:mSceneMember.kindString]
             || [CSRUtilities belongToTwoChannelCurtainController:mSceneMember.kindString]
-            || [CSRUtilities belongToThreeChannelDimmer:mSceneMember.kindString]) {
+            || [CSRUtilities belongToThreeChannelDimmer:mSceneMember.kindString]
+            || [CSRUtilities belongToMusicController:mSceneMember.kindString]) {
             Byte byte[] = {0x5d, 0x03, [mSceneMember.channel integerValue], b[1], b[0]};
             NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
             retryCount = 0;

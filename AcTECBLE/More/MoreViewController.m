@@ -187,6 +187,7 @@
     [animation setType:kCATransitionMoveIn];
     [animation setSubtype:kCATransitionFromRight];
     [self.view.window.layer addAnimation:animation forKey:nil];
+    nav.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:nav animated:NO completion:nil];
 }
 

@@ -15,7 +15,6 @@
 @property (nonatomic, strong) NSMutableArray *allDevices;
 @property (nonatomic, strong) NSMutableDictionary *allTimers;
 @property (nonatomic, strong) NSMutableDictionary *allTimerColorfulNums;
-@property (nonatomic, assign) BOOL bleDisconnected;
 
 + (DeviceModelManager *)sharedInstance;
 - (void)getAllDevicesState;
@@ -32,11 +31,18 @@
 - (void)regetColofulTimerInterval:(NSTimeInterval)interval deviceId:(NSNumber *)deviceId sceneId:(NSNumber *)sceneId;
 - (void)setColorWithDeviceId:(NSNumber *)deviceId withColor:(UIColor *)color;
 - (void)controlScene:(NSNumber *)sceneId;
-- (void)refreshMCChannel:(NSNumber *)deviceID mcChannel:(NSInteger)mcChannel;
-- (void)refreshDeviceID:(NSNumber *)deviceID mcChannelValid:(NSInteger)mcChannelValid mcStatus:(NSInteger)mcStatus mcVoice:(NSInteger)mcVoice;
+- (void)refreshMCChannels:(NSNumber *)deviceID mcLiveChannels:(NSInteger)mcLiveChannels mcExistChannels:(NSInteger)mcExistChannels;
+- (void)refreshDeviceID:(NSNumber *)deviceID mcChannelValid:(NSInteger)mcChannelValid mcStatus:(NSInteger)mcStatus mcVoice:(NSInteger)mcVoice mcSong:(NSInteger)song;
 - (void)refreshDeviceID:(NSNumber *)deviceID mcCurrentChannel:(NSInteger)mcCurrentChannel;
 - (void)findDevice:(NSNumber *)deviceID getSongName:(NSInteger)channel;
 - (void)postSongNameDeviceID:(NSNumber *)deviceID channel:(NSInteger)channel count:(NSInteger)count index:(NSInteger)index encoding:(NSInteger)encoding data:(NSData *)data;
 - (void)controlMC:(NSNumber *)deviceID data:(NSData *)cmd;
+
+- (void)refreshNetworkConnectionStatus:(NSNumber *)deviceID staus:(BOOL)status;
+- (void)refreshIPAddress:(NSNumber *)deviceID IPAddress:(NSString *)ip;
+- (void)refreshPort:(NSNumber *)deviceID port:(NSInteger)port;
+- (void)refreshSubnetMask:(NSNumber *)deviceID subnetMask:(NSString *)sub;
+- (void)refreshGateway:(NSNumber *)deviceID gateway:(NSString *)gateway;
+- (void)refreshDNS:(NSNumber *)deviceID DNS:(NSString *)dns;
 
 @end

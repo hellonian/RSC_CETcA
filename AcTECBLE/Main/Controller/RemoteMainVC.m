@@ -77,6 +77,8 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *keyThreeLeftConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *keyFourTopConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *keyFourRightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *keyFiveLeftConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *keySixRightConstraint;
 
 @property (strong, nonatomic) IBOutlet UIView *mcrView;
 @property (weak, nonatomic) IBOutlet UIButton *remoteBtn28;
@@ -94,19 +96,13 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
-        if (@available(iOS 13.0, *)) {
-            
-        }else {
-            UIButton *btn = [[UIButton alloc] init];
-            [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
-            [btn setTitle:AcTECLocalizedStringFromTable(@"Back", @"Localizable") forState:UIControlStateNormal];
-            [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
-            [btn addTarget:self action:@selector(closeAction) forControlEvents:UIControlEventTouchUpInside];
-            UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
-            self.navigationItem.leftBarButtonItem = back;
-        }
-    }
+    UIButton *btn = [[UIButton alloc] init];
+    [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
+    [btn setTitle:AcTECLocalizedStringFromTable(@"Back", @"Localizable") forState:UIControlStateNormal];
+    [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(closeAction) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
+    self.navigationItem.leftBarButtonItem = back;
     
     UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Edit", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(editAction)];
     self.navigationItem.rightBarButtonItem = edit;
@@ -206,7 +202,8 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [_remoteBtn15 addGestureRecognizer:gesture15];
             UILongPressGestureRecognizer *gesture16 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn16 addGestureRecognizer:gesture16];
-        }else if ([CSRUtilities belongToSceneRemoteSixKeys:deviceEntity.shortName]) {
+        }else if ([CSRUtilities belongToSceneRemoteSixKeys:deviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]) {
             _mType = MainRemoteType_SceneSix;
             if ([deviceEntity.remoteBranch length] != 36) {
                 deviceEntity.remoteBranch = @"010000020000030000040000050000060000";
@@ -229,9 +226,20 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [_remoteBtn22 addGestureRecognizer:gesture21];
             UILongPressGestureRecognizer *gesture22 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn23 addGestureRecognizer:gesture22];
+            if ([CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]) {
+                _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vs"];
+                _keyOneLeftConstraint.constant = 20;
+                _keyTwoRightConstraint.constant = 126;
+                _keyThreeLeftConstraint.constant = 233;
+                _keyThreeTopConstraint.constant = 52;
+                _keyFourRightConstraint.constant = 233;
+                _keyFourTopConstraint.constant = 212;
+                _keyFiveLeftConstraint.constant = 126;
+                _keySixRightConstraint.constant = 20;
+            }
             
-            
-        }else if ([CSRUtilities belongToSceneRemoteFourKeys:deviceEntity.shortName]) {
+        }else if ([CSRUtilities belongToSceneRemoteFourKeys:deviceEntity.shortName]
+                  || [CSRUtilities belongToSceneRemoteFourKeysV:deviceEntity.shortName]) {
             _mType = MainRemoteType_SceneFour;
             if ([deviceEntity.remoteBranch length] != 24) {
                 deviceEntity.remoteBranch = @"010000020000030000040000";
@@ -253,9 +261,21 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             
             _remoteBtn22.hidden = YES;
             _remoteBtn23.hidden = YES;
-            _keyThreeTopConstraint.constant = 212;
-            _keyFourTopConstraint.constant = 212;
-        }else if ([CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]) {
+            
+            if ([CSRUtilities belongToSceneRemoteFourKeys:deviceEntity.shortName]) {
+                _keyThreeTopConstraint.constant = 212;
+                _keyFourTopConstraint.constant = 212;
+            }else if ([CSRUtilities belongToSceneRemoteFourKeysV:deviceEntity.shortName]) {
+                _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vt"];
+                _keyOneLeftConstraint.constant = 46;
+                _keyTwoRightConstraint.constant = 46;
+                _keyThreeLeftConstraint.constant = 46;
+                _keyThreeTopConstraint.constant = 212;
+                _keyFourRightConstraint.constant = 46;
+                _keyFourTopConstraint.constant = 212;
+            }
+        }else if ([CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]
+                  || [CSRUtilities belongToSceneRemoteThreeKeysV:deviceEntity.shortName]) {
             _mType = MainRemoteType_SceneThree;
             if ([deviceEntity.remoteBranch length] != 18) {
                 deviceEntity.remoteBranch = @"010000020000030000";
@@ -276,12 +296,24 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             _remoteBtn21.hidden = YES;
             _remoteBtn22.hidden = YES;
             _remoteBtn23.hidden = YES;
-            _keyOneLeftConstraint.constant = 127;
-            _keyTwoTopConstraint.constant = 133;
-            _keyTwoRightConstraint.constant = 127;
-            _keyThreeTopConstraint.constant = 212;
-            _keyThreeLeftConstraint.constant = 127;
-        }else if ([CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]) {
+            
+            if ([CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]) {
+                _keyOneLeftConstraint.constant = 127;
+                _keyTwoTopConstraint.constant = 133;
+                _keyTwoRightConstraint.constant = 127;
+                _keyThreeTopConstraint.constant = 212;
+                _keyThreeLeftConstraint.constant = 127;
+            }else if ([CSRUtilities belongToSceneRemoteThreeKeysV:deviceEntity.shortName]) {
+                _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vs"];
+                _keyOneLeftConstraint.constant = 20;
+                _keyOneTopConstraint.constant = 212;
+                _keyTwoRightConstraint.constant = 126;
+                _keyTwoTopConstraint.constant = 212;
+                _keyThreeLeftConstraint.constant = 233;
+                _keyThreeTopConstraint.constant = 212;
+            }
+        }else if ([CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
+                  || [CSRUtilities belongToSceneRemoteTwoKeysV:deviceEntity.shortName]) {
             _mType = MainRemoteType_SceneTwo;
             if ([deviceEntity.remoteBranch length] != 12) {
                 deviceEntity.remoteBranch = @"010000020000";
@@ -301,10 +333,20 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             _remoteBtn21.hidden = YES;
             _remoteBtn22.hidden = YES;
             _remoteBtn23.hidden = YES;
-            _keyOneLeftConstraint.constant = 127;
-            _keyTwoTopConstraint.constant = 212;
-            _keyTwoRightConstraint.constant = 127;
-        }else if ([CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]) {
+            
+            if ([CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]) {
+                _keyOneLeftConstraint.constant = 127;
+                _keyTwoRightConstraint.constant = 127;
+                _keyTwoTopConstraint.constant = 212;
+            }else if ([CSRUtilities belongToSceneRemoteTwoKeysV:deviceEntity.shortName]) {
+                _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vt"];
+                _keyOneLeftConstraint.constant = 46;
+                _keyOneTopConstraint.constant = 212;
+                _keyTwoRightConstraint.constant = 46;
+                _keyTwoTopConstraint.constant = 212;
+            }
+        }else if ([CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]
+                  || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]) {
             _mType = MainRemoteType_SceneOne;
             if ([deviceEntity.remoteBranch length] != 6) {
                 deviceEntity.remoteBranch = @"010000";
@@ -315,9 +357,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
             
-            _remoteBtn18.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
-            _remoteBtn18.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
-            
             UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn18 addGestureRecognizer:gesture17];
             
@@ -326,7 +365,12 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             _remoteBtn21.hidden = YES;
             _remoteBtn22.hidden = YES;
             _remoteBtn23.hidden = YES;
-            _keyOneTopConstraint.constant = 133;
+
+            if ([CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]) {
+                _keyOneTopConstraint.constant = 133;
+            }else if ([CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]) {
+                _keyOneTopConstraint.constant = 212;
+            }
             _keyOneLeftConstraint.constant = 127;
         }else if ([CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]) {
             [self.view addSubview:self.mcrView];
@@ -519,7 +563,8 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         || [CSRUtilities belongToSceneRemoteFourKeys:deviceEntity.shortName]
         || [CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]
         || [CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
-        || [CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]) {
+        || [CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]
+        || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]) {
         _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotesceneeditbg"];
     }else if ([CSRUtilities belongToRGBRemote:deviceEntity.shortName]
               || [CSRUtilities belongToCWRemote:deviceEntity.shortName]
@@ -527,6 +572,12 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         _mainRemoteBgImageView.image = [UIImage imageNamed:@"remotemaineditbg"];
     }else if ([CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]) {
         _musicRemoteBgImageView.image = [UIImage imageNamed:@"remotesceneeditbg"];
+    }else if ([CSRUtilities belongToSceneRemoteTwoKeysV:deviceEntity.shortName]
+              || [CSRUtilities belongToSceneRemoteFourKeysV:deviceEntity.shortName]) {
+        _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vte"];
+    }else if ([CSRUtilities belongToSceneRemoteThreeKeysV:deviceEntity.shortName]
+              || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]) {
+        _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vse"];
     }
 }
 
@@ -539,7 +590,8 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         || [CSRUtilities belongToSceneRemoteFourKeys:deviceEntity.shortName]
         || [CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]
         || [CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
-        || [CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]) {
+        || [CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]
+        || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]) {
         _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg"];
     }else if ([CSRUtilities belongToRGBRemote:deviceEntity.shortName]
               || [CSRUtilities belongToCWRemote:deviceEntity.shortName]
@@ -547,6 +599,12 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         _mainRemoteBgImageView.image = [UIImage imageNamed:@"remotemainbg"];
     }else if ([CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]) {
         _musicRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg"];
+    }else if ([CSRUtilities belongToSceneRemoteTwoKeysV:deviceEntity.shortName]
+              || [CSRUtilities belongToSceneRemoteFourKeysV:deviceEntity.shortName]) {
+        _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vt"];
+    }else if ([CSRUtilities belongToSceneRemoteThreeKeysV:deviceEntity.shortName]
+              || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]) {
+        _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vs"];
     }
 }
 
@@ -683,6 +741,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                 
             }];
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
+            nav.modalPresentationStyle = UIModalPresentationFullScreen;
             [self presentViewController:nav animated:YES completion:nil];
         }
     }else {
@@ -866,6 +925,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         }
     }];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
+    nav.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:nav animated:YES completion:nil];
 }
 

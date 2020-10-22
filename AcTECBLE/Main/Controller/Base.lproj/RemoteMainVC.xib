@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RemoteMainVC">
             <connections>
                 <outlet property="circleImageView" destination="nZm-tl-ybY" id="wwS-kl-cfs"/>
+                <outlet property="keyFiveLeftConstraint" destination="yEQ-Sr-c4b" id="Wnt-qG-oht"/>
                 <outlet property="keyFourRightConstraint" destination="0VJ-Uw-tPH" id="ijo-sa-OA4"/>
                 <outlet property="keyFourTopConstraint" destination="Zd0-Lq-hTC" id="6NU-JW-NZo"/>
                 <outlet property="keyOneLeftConstraint" destination="rta-EV-pLc" id="dOB-ba-GjE"/>
                 <outlet property="keyOneTopConstraint" destination="eCd-cq-QHr" id="bY6-Un-vHz"/>
+                <outlet property="keySixRightConstraint" destination="xBj-cR-nWd" id="TkW-Eb-4VU"/>
                 <outlet property="keyThreeLeftConstraint" destination="DVo-aw-1xN" id="205-wc-dkV"/>
                 <outlet property="keyThreeTopConstraint" destination="4ea-aP-kSf" id="tBJ-Ds-WCK"/>
                 <outlet property="keyTwoRightConstraint" destination="KU9-0h-Luh" id="yXo-a7-aCD"/>
@@ -100,6 +103,7 @@
                             </constraints>
                         </view>
                     </subviews>
+                    <viewLayoutGuide key="safeArea" id="Fsc-Yz-etz"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstItem="UuL-In-9bd" firstAttribute="bottom" secondItem="MT6-cq-JjY" secondAttribute="bottom" id="4dc-fs-Bn9"/>
@@ -126,7 +130,6 @@
                         <constraint firstItem="AGj-iT-LR1" firstAttribute="top" secondItem="177-z9-DiB" secondAttribute="top" id="wei-Tq-q7c"/>
                         <constraint firstItem="zdH-xq-cY3" firstAttribute="top" secondItem="177-z9-DiB" secondAttribute="bottom" constant="12" id="z3o-e2-thd"/>
                     </constraints>
-                    <viewLayoutGuide key="safeArea" id="Fsc-Yz-etz"/>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Control smart panel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="waD-gy-O5f">
                     <rect key="frame" x="20" y="154" width="104" height="21"/>
@@ -138,6 +141,7 @@
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.95294117649999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="waD-gy-O5f" firstAttribute="top" secondItem="8Fw-EQ-Xc4" secondAttribute="bottom" constant="20" id="2xu-nM-8Jd"/>
@@ -146,7 +150,6 @@
                 <constraint firstItem="8Fw-EQ-Xc4" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" id="odf-3j-mnT"/>
                 <constraint firstItem="8Fw-EQ-Xc4" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="tD2-nV-7sQ"/>
             </constraints>
-            <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <point key="canvasLocation" x="119" y="218"/>
         </view>
         <view contentMode="scaleToFill" id="t1S-gb-fEa">
@@ -270,7 +273,8 @@
                     </connections>
                 </button>
             </subviews>
-            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+            <viewLayoutGuide key="safeArea" id="N9U-44-ww8"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="jqF-BP-jNb" firstAttribute="centerX" secondItem="t1S-gb-fEa" secondAttribute="centerX" id="158-Ta-vGi"/>
                 <constraint firstItem="nxp-pb-AZ5" firstAttribute="centerY" secondItem="t1S-gb-fEa" secondAttribute="centerY" multiplier="58:49" id="15U-fR-iic"/>
@@ -314,7 +318,6 @@
                 <constraint firstItem="tjQ-QN-sMD" firstAttribute="centerY" secondItem="t1S-gb-fEa" secondAttribute="centerY" multiplier="22:49" id="y4d-hb-Y1w"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="N9U-44-ww8"/>
             <point key="canvasLocation" x="-518.84057971014499" y="-15.401785714285714"/>
         </view>
         <view contentMode="scaleToFill" id="mEz-d0-cpB">
@@ -397,7 +400,8 @@
                     </connections>
                 </button>
             </subviews>
-            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+            <viewLayoutGuide key="safeArea" id="7dv-PH-Zdt"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="kKM-1c-QF1" secondAttribute="trailing" constant="79" id="0VJ-Uw-tPH"/>
                 <constraint firstItem="azG-zw-7yb" firstAttribute="top" secondItem="mEz-d0-cpB" secondAttribute="top" constant="133" id="4ea-aP-kSf"/>
@@ -417,7 +421,6 @@
                 <constraint firstItem="8T7-IW-tfl" firstAttribute="leading" secondItem="mEz-d0-cpB" secondAttribute="leading" constant="79" id="yEQ-Sr-c4b"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="7dv-PH-Zdt"/>
             <point key="canvasLocation" x="-519" y="251"/>
         </view>
         <view contentMode="scaleToFill" id="zr4-2H-Vmk">
@@ -507,7 +510,8 @@
                     </connections>
                 </button>
             </subviews>
-            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+            <viewLayoutGuide key="safeArea" id="OLi-0a-KIj"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="6jW-pj-RSx" firstAttribute="leading" secondItem="zr4-2H-Vmk" secondAttribute="leading" constant="79" id="1B5-OX-Wl6"/>
                 <constraint firstItem="tmq-13-C0p" firstAttribute="top" secondItem="zr4-2H-Vmk" secondAttribute="top" constant="56" id="6FN-wG-c1G"/>
@@ -527,7 +531,6 @@
                 <constraint firstItem="p68-Ie-R7Q" firstAttribute="trailing" secondItem="OLi-0a-KIj" secondAttribute="trailing" id="xIZ-7h-lXp"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="OLi-0a-KIj"/>
             <point key="canvasLocation" x="-519" y="521"/>
         </view>
     </objects>
@@ -544,5 +547,8 @@
         <image name="remotescenebg" width="280" height="280"/>
         <image name="remotescenebtn_default" width="68" height="52"/>
         <image name="remotescenebtn_highlighted" width="68" height="52"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>
