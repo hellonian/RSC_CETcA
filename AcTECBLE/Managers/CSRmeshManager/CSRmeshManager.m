@@ -144,6 +144,7 @@
             deviceEntity.deviceHash = deviceHash;
             deviceEntity.dhmKey = dhmKey;
             deviceEntity.remoteBranch = @"";
+            deviceEntity.mcuSVersion = nil;
             if (meshDevice.appearanceValue) {
                 deviceEntity.appearance = meshDevice.appearanceValue;
             }

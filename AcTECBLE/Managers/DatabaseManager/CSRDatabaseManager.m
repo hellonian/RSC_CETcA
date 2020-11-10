@@ -1176,6 +1176,7 @@
             [self.managedObjectContext deleteObject:timer];
         }
     }
+    [self saveContext];
 }
 
 - (void)dropEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId {
@@ -1191,24 +1192,43 @@
             [self.managedObjectContext deleteObject:drop];
         }
     }
+    [self saveContext];
 }
 
 - (void)sceneMemberEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId {
-    for (SceneEntity *scene in [CSRAppStateManager sharedInstance].selectedPlace.scenes) {
-        NSMutableArray *ary = [[NSMutableArray alloc] init];
-        for (SceneMemberEntity *member in scene.members) {
-            if ([member.deviceID isEqualToNumber:deviceId]) {
-                [ary addObject:member];
+    if (deviceId) {
+        for (SceneEntity *scene in [CSRAppStateManager sharedInstance].selectedPlace.scenes) {
+            NSMutableArray *ary = [[NSMutableArray alloc] init];
+            for (SceneMemberEntity *member in scene.members) {
+                if ([member.deviceID isEqualToNumber:deviceId]) {
+                    [ary addObject:member];
+                }
+            }
+            for (SceneMemberEntity *member in ary) {
+                [scene removeMembersObject:member];
+                [self.managedObjectContext deleteObject:member];
             }
         }
-        for (SceneMemberEntity *member in ary) {
-            [scene removeMembersObject:member];
-            [self.managedObjectContext deleteObject:member];
-        }
+        [self saveContext];
     }
 }
 
 #pragma mark - sonos
+
+- (void)cleanSonos:(NSNumber *)deviceID {
+    for (CSRDeviceEntity *deviceEntity in [CSRAppStateManager sharedInstance].selectedPlace.devices) {
+        if ([deviceEntity.deviceId isEqualToNumber:deviceID]) {
+            if ([deviceEntity.sonoss count]>0) {
+                [deviceEntity removeSonoss:deviceEntity.sonoss];
+            }
+            for (SonosEntity *sonosEntity in deviceEntity.sonoss) {
+                [self.managedObjectContext deleteObject:sonosEntity];
+            }
+            [self saveContext];
+            break;
+        }
+    }
+}
 
 - (SonosEntity *)saveNewSonos:(NSNumber *)deviceID channel:(NSNumber *)channel infoVersion:(NSNumber *)infoVersion modelType:(NSNumber *)modelType modelNumber:(NSNumber *)modelNumber name:(NSString *)name {
     __block CSRDeviceEntity *sDeviceEntity;

@@ -139,7 +139,7 @@ static DataModelManager *manager = nil;
 }
 
 - (void)didReceiveBlockData:(NSNumber *)destinationDeviceId sourceDeviceId:(NSNumber *)sourceDeviceId data:(NSData *)data {
-//    NSLog(@"didReceiveBlockData: %@ ----- %@ +++++ %@",data,destinationDeviceId,sourceDeviceId);
+    NSLog(@"didReceiveBlockData: %@ ----- %@ +++++ %@",data,destinationDeviceId,sourceDeviceId);
     
     NSString *dataStr = [CSRUtilities hexStringForData:data];
     
@@ -637,10 +637,6 @@ static DataModelManager *manager = nil;
             NSInteger mcLiveChannels = byte[2] * 256 + byte[3];
             NSInteger mcExistChannels = byte[4] * 256 + byte[5];
             [[DeviceModelManager sharedInstance] refreshMCChannels:sourceDeviceId mcLiveChannels:mcLiveChannels mcExistChannels:mcExistChannels];
-        }else if ([dataStr length] == 8) {
-            Byte *byte = (Byte *)[data bytes];
-            NSInteger mcLiveChannels = byte[2] * 256 + byte[3];
-            [[DeviceModelManager sharedInstance] refreshMCChannels:sourceDeviceId mcLiveChannels:mcLiveChannels mcExistChannels:mcLiveChannels];
         }
     }
     
@@ -651,6 +647,13 @@ static DataModelManager *manager = nil;
             NSInteger mcStatus = byte[5];
             NSInteger mcVoice = byte[6];
             NSInteger mcSong = byte[7];
+            NSInteger seq = byte[9] + mcChannelValid*100;
+            DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sourceDeviceId];
+            if (seq && (seq-model.primordial)<0 && (seq-model.primordial)>-10) {
+                return;
+            }
+            model.primordial = seq;
+            
             [[DeviceModelManager sharedInstance] refreshDeviceID:sourceDeviceId mcChannelValid:mcChannelValid mcStatus:mcStatus mcVoice:mcVoice mcSong:mcSong];
         }
     }

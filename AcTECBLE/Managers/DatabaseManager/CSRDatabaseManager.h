@@ -72,6 +72,7 @@
 - (void)dropEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId;
 - (void)sceneMemberEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId;
 
+- (void)cleanSonos:(NSNumber *)deviceID;
 - (SonosEntity *)saveNewSonos:(NSNumber *)deviceID channel:(NSNumber *)channel infoVersion:(NSNumber *)infoVersion modelType:(NSNumber *)modelType modelNumber:(NSNumber *)modelNumber name:(NSString *)name;
 
 @end

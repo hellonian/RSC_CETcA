@@ -151,5 +151,8 @@
 
 + (NSString *)getWifiName;
 
-+(NSString *)convertToJsonData2:(NSDictionary *)dict;
++ (NSString *)convertToJsonData2:(NSDictionary *)dict;
+
++ (int)atFromData:(NSData *)data;
+
 @end

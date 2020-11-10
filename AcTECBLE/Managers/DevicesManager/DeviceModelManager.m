@@ -1462,6 +1462,7 @@
             model.mcLiveChannels = mcLiveChannels;
             model.mcExistChannels = mcExistChannels;
             if ([CSRUtilities belongToMusicController:model.shortName]) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"noticeSceneSettingVC" object:self userInfo:@{@"deviceId":deviceID}];
                 if (mcLiveChannels == 0) {
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshMCChannelState" object:self userInfo:@{@"deviceId":deviceID}];
                 }else {
@@ -1680,7 +1681,7 @@
     for (DeviceModel *model in _allDevices) {
         if ([model.deviceId isEqualToNumber:deviceID]) {
             CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID];
-            device.subnetMask = gateway;
+            device.gateway = gateway;
             [[CSRDatabaseManager sharedInstance] saveContext];
             
             Byte byte[] = {0xea, 0x77, 0x04};
@@ -1721,6 +1722,17 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshPort"
                                                                 object:self
                                                               userInfo:@{@"deviceId":deviceID, @"port":@(port)}];
+            break;
+        }
+    }
+}
+
+- (void)refreshSongList:(NSNumber *)deviceID songs:(NSString *)songs {
+    for (DeviceModel *model in _allDevices) {
+        if ([model.deviceId isEqualToNumber:deviceID]) {
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID];
+            device.remoteBranch = songs;
+            [[CSRDatabaseManager sharedInstance] saveContext];
             break;
         }
     }

@@ -195,7 +195,6 @@
         }
         if (receiveData.length == dataLengthByHead) {
             NSString *jsonString = [[NSString alloc] initWithData:receiveData encoding:NSUTF8StringEncoding];
-//            NSLog(@"jsonString>> %@",jsonString);
 //            NBSLog(@"%@", jsonString);
             NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:jsonString];
             CSRParseAndLoad *parseLoad = [[CSRParseAndLoad alloc] init];
@@ -242,7 +241,6 @@
                     NSData *fileData = [NSMutableData dataWithData:[receiveData subdataWithRange:NSMakeRange(8, fileLength)]];
                     if (firstFile) {
                         NSString *jsonString = [[NSString alloc] initWithData:fileData encoding:NSUTF8StringEncoding];
-//                        NSLog(@"ajsonString>> %@",jsonString);
 //                        NBSLog(@"ajsonString>> %@",jsonString);
                         NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:jsonString];
                         [self.files addObject:jsonDictionary];
@@ -325,7 +323,6 @@
         NSAssert(host != nil, @"host must be not nil");
     }
     
-    [self.tcpSocketManager disconnect];
     if (self.tcpSocketManager == nil) {
         self.tcpSocketManager = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
     }
@@ -333,14 +330,16 @@
     BOOL isConnected = [self.tcpSocketManager isConnected];
     NSLog(@"isConnected: %d",isConnected);
     if (!isConnected) {
-        if (![self.tcpSocketManager connectToHost:host onPort:port error:&connectError]) {
-            NSLog(@"Connect Error: %@", connectError);
-        }else {
-            NSLog(@"Connect success!");
-            [self.tcpSocketManager readDataWithTimeout:-1 tag:0];
-        }
+        [self.tcpSocketManager connectToHost:host onPort:port error:&connectError];
+    }else {
+        [self.tcpSocketManager readDataWithTimeout:-1 tag:0];
     }
 
+}
+
+- (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port {
+    NSLog(@">>>>> didConnectToHost <<<<<");
+    [self.tcpSocketManager readDataWithTimeout:-1 tag:0];
 }
 
 //获取本机wifi名称

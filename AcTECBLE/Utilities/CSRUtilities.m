@@ -1635,4 +1635,16 @@
     return WiFiName;
 }
 
+//校验和
++ (int)atFromData:(NSData *)data {
+    int lm = (int)data.length;
+    Byte *bytes = (unsigned char *)[data bytes];
+    int sumT = 0;
+    for (int i = 0; i < lm; i++) {
+        sumT += bytes[i];
+    }
+    int at = sumT % 256;
+    return at;
+}
+
 @end

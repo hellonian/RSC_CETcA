@@ -892,7 +892,6 @@
         NSAssert(host != nil, @"host must be not nil");
     }
     
-    [self.tcpSocketManager disconnect];
     if (self.tcpSocketManager == nil) {
         self.tcpSocketManager = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
     }
@@ -900,77 +899,27 @@
     BOOL isConnected = [self.tcpSocketManager isConnected];
     NSLog(@"isConnected: %d",isConnected);
     if (!isConnected) {
-        if (![self.tcpSocketManager connectToHost:host onPort:port error:&connectError]) {
-            NSLog(@"Connect Error: %@", connectError);
-        }else {
-            NSLog(@"Connect success!");
-            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(socketConnectionTimeOut) object:nil];
-            
-            self.uConfigBtn.hidden = NO;
-            self.uIconBtn.hidden = NO;
-            self.uWallBtn.hidden = NO;
-            
-            /*
-            //测试
-            NSDictionary *dic = @{@"libVersion":@3,@"imgCount":@3,@"imgList":@[@{@"imgAppType":@145,@"imgIndex":@1,@"imgName":@"面板主页",@"imgSize":@500}]};
-            NSString *json = [CSRUtilities convertToJsonData:dic];
-            NSData *data = [json dataUsingEncoding:NSUTF8StringEncoding];
-            
-            NSInteger l = data.length;
-            
-            NSInteger packet = l/2000 + 1;
-            if (l%2000 == 0) {
-                packet = l/2000;
-            }
-            
-            Byte byte_p[4] = {};
-            byte_p[0] = (Byte)((packet & 0xFF000000)>>24);
-            byte_p[1] = (Byte)((packet & 0x00FF0000)>>16);
-            byte_p[2] = (Byte)((packet & 0x0000FF00)>>8);
-            byte_p[3] = (Byte)((packet & 0x000000FF));
-            
-            NSInteger lp = 2000;
-            if (l < 2000) {
-                 lp = l;
-            }
-            
-            Byte byte_lp[4] = {};
-            byte_lp[0] = (Byte)((lp & 0xFF000000)>>24);
-            byte_lp[1] = (Byte)((lp & 0x00FF0000)>>16);
-            byte_lp[2] = (Byte)((lp & 0x0000FF00)>>8);
-            byte_lp[3] = (Byte)((lp & 0x000000FF));
-            
-            Byte byte[] = {0xA5, 0xA6, 0xA7, 0xA8, byte_p[0], byte_p[1], byte_p[2], byte_p[3], 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, byte_lp[0], byte_lp[1], byte_lp[2], byte_lp[3]};
-            NSData *head = [[NSData alloc] initWithBytes:byte length:20];
-            NSMutableData *mutableData = [[NSMutableData alloc] init];
-            [mutableData appendData:head];
-            [mutableData appendData:data];
-            
-            int lm = (int)mutableData.length;
-            Byte *bytes = (unsigned char *)[mutableData bytes];
-            
-            int sumT = 0;
-            int sumC = 0;
-            for (int i = 0; i < lm; i++) {
-                sumT += bytes[i];
-                sumC ^= bytes[i];
-            }
-            int at = sumT%256;
-            printf("校验和：%d\n",at);
-            printf("累加和：%d\n",sumT);
-            printf("异或和：%d\n",sumC);
-            
-            Byte bytesum[] = {at, sumC};
-            NSData *end = [[NSData alloc] initWithBytes:bytesum length:2];
-            [mutableData appendData:end];
-            
-            NSLog(@"DATA2：%@ \n",mutableData);
-            
-            [self.tcpSocketManager writeData:mutableData withTimeout:-1 tag:0];
-            */
-            [self.tcpSocketManager readDataWithTimeout:-1 tag:0];
-        }
+        [self.tcpSocketManager connectToHost:host onPort:port error:&connectError];
+    }else {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(socketConnectionTimeOut) object:nil];
+        self.uConfigBtn.hidden = NO;
+        self.uIconBtn.hidden = NO;
+        self.uWallBtn.hidden = NO;
+        [self.tcpSocketManager readDataWithTimeout:-1 tag:0];
     }
+}
+
+- (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(socketConnectionTimeOut) object:nil];
+    
+    self.uConfigBtn.hidden = NO;
+    self.uIconBtn.hidden = NO;
+    self.uWallBtn.hidden = NO;
+    [self.tcpSocketManager readDataWithTimeout:-1 tag:0];
+}
+
+- (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err {
+    
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {

@@ -358,7 +358,6 @@
             }
         }
         self.macAddressLabel.text = doneTitle;
-        
         if ([_deviceEn.hwVersion integerValue]==2) {
             NSMutableString *mutStr = [NSMutableString stringWithString:_deviceEn.shortName];
             NSRange range = {0,_deviceEn.shortName.length};
@@ -371,7 +370,7 @@
                 NSDictionary *dic = (NSDictionary *)responseObject;
                 latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
                 downloadAddress = dic[@"Download_address"];
-                if ([_deviceEn.mcuSVersion integerValue]<latestMCUSVersion) {
+                if ([_deviceEn.mcuSVersion integerValue] != 0 && [_deviceEn.mcuSVersion integerValue]<latestMCUSVersion) {
                     updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
                     [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
                     [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];

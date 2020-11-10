@@ -15,6 +15,9 @@
 #import <CSRmesh/DataModelApi.h>
 #import "SceneViewController.h"
 #import "DataModelManager.h"
+#import "AFHTTPSessionManager.h"
+#import "MCUUpdateTool.h"
+#import <MBProgressHUD.h>
 
 #define pi 3.14159265358979323846
 
@@ -30,7 +33,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
     MainRemoteType_SceneOne
 };
 
-@interface RemoteMainVC ()<UITextFieldDelegate>
+@interface RemoteMainVC ()<UITextFieldDelegate, MCUUpdateToolDelegate, MBProgressHUDDelegate>
 {
     BOOL editing;
     NSInteger currentAngle;
@@ -40,6 +43,10 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
     NSInteger tapTag;
     NSData *applyCmd;
     NSInteger retryCount;
+    
+    NSString *downloadAddress;
+    NSInteger latestMCUSVersion;
+    UIButton *updateMCUBtn;
 }
 
 @property (weak, nonatomic) IBOutlet UITextField *nameTf;
@@ -88,6 +95,8 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
 @property (weak, nonatomic) IBOutlet UIButton *remoteBtn32;
 @property (weak, nonatomic) IBOutlet UIButton *remoteBtn33;
 @property (weak, nonatomic) IBOutlet UIImageView *musicRemoteBgImageView;
+
+@property (nonatomic,strong) MBProgressHUD *updatingHud;
 
 @end
 
@@ -476,6 +485,34 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                 mod.deviceID = @(0);
                 [_settingSelectMutArray addObject:mod];
             }
+        }
+        if ([deviceEntity.hwVersion integerValue]==2) {
+            NSMutableString *mutStr = [NSMutableString stringWithString:deviceEntity.shortName];
+            NSRange range = {0,deviceEntity.shortName.length};
+            [mutStr replaceOccurrencesOfString:@"/" withString:@"" options:NSLiteralSearch range:range];
+            NSString *urlString = [NSString stringWithFormat:@"http://39.108.152.134/MCU/%@/%@.php",mutStr,mutStr];
+            AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
+            sessionManager.responseSerializer.acceptableContentTypes = nil;
+            sessionManager.requestSerializer.cachePolicy = NSURLRequestReloadIgnoringCacheData;
+            [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+                NSDictionary *dic = (NSDictionary *)responseObject;
+                latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
+                downloadAddress = dic[@"Download_address"];
+                if ([deviceEntity.mcuSVersion integerValue] != 0 && [deviceEntity.mcuSVersion integerValue]<latestMCUSVersion) {
+                    updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
+                    [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
+                    [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
+                    [updateMCUBtn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+                    [updateMCUBtn addTarget:self action:@selector(askUpdateMCU) forControlEvents:UIControlEventTouchUpInside];
+                    [self.view addSubview:updateMCUBtn];
+                    [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+                    [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeRight];
+                    [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom];
+                    [updateMCUBtn autoSetDimension:ALDimensionHeight toSize:44.0];
+                }
+            } failure:^(NSURLSessionDataTask *task, NSError *error) {
+                NSLog(@"%@",error);
+            }];
         }
     }
 }
@@ -1213,6 +1250,49 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         [alert addAction:cancel];
         [self presentViewController:alert animated:YES completion:nil];
     }
+}
+
+- (void)askUpdateMCU {
+    [MCUUpdateTool sharedInstace].toolDelegate = self;
+    [[MCUUpdateTool sharedInstace] askUpdateMCU:_deviceId downloadAddress:downloadAddress latestMCUSVersion:latestMCUSVersion];
+}
+
+- (void)starteUpdateHud {
+    if (!_updatingHud) {
+        [timer invalidate];
+        timer = nil;
+        [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+        _updatingHud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
+        _updatingHud.mode = MBProgressHUDModeAnnularDeterminate;
+        _updatingHud.delegate = self;
+    }
+}
+
+- (void)updateHudProgress:(CGFloat)progress {
+    if (_updatingHud) {
+        _updatingHud.progress = progress;
+    }
+}
+
+- (void)updateSuccess:(BOOL)value {
+    if (_updatingHud) {
+        [_updatingHud hideAnimated:YES];
+        [self.translucentBgView removeFromSuperview];
+        self.translucentBgView = nil;
+        [updateMCUBtn removeFromSuperview];
+        updateMCUBtn = nil;
+        NSString *valueStr = value? AcTECLocalizedStringFromTable(@"Success", @"Localizable"):AcTECLocalizedStringFromTable(@"Error", @"Localizable");
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:valueStr preferredStyle:UIAlertControllerStyleAlert];
+        [alert.view setTintColor:DARKORAGE];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+        [alert addAction:cancel];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
+}
+
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+    [hud removeFromSuperview];
+    hud = nil;
 }
 
 @end

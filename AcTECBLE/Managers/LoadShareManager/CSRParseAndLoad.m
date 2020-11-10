@@ -40,46 +40,48 @@
 - (void) deleteEntitiesInSelectedPlace:(CSRPlaceEntity *)placeEntity
 {
     //Delete already devices, areas, gateway and (cloudTenancyID,cloudMeshID,cloudSiteID)
-    [placeEntity removeAreas:placeEntity.areas];
-    for (CSRAreaEntity *area in placeEntity.areas) {
+    
+    NSSet *areas = placeEntity.areas;
+    for (CSRAreaEntity *area in areas) {
         [managedObjectContext deleteObject:area];
     }
+    [placeEntity removeAreas:areas];
     
     NSSet *gallerys = placeEntity.gallerys;
-    [placeEntity removeGallerys:gallerys];
     for (GalleryEntity *gallery in gallerys) {
         for (DropEntity *drop in gallery.drops) {
             [managedObjectContext deleteObject:drop];
         }
         [managedObjectContext deleteObject:gallery];
     }
+    [placeEntity removeGallerys:gallerys];
     
     NSSet *scenes = placeEntity.scenes;
-    [placeEntity removeScenes:scenes];
     for (SceneEntity *scene in scenes) {
         for (SceneMemberEntity *member in scene.members) {
             [managedObjectContext deleteObject:member];
         }
         [managedObjectContext deleteObject:scene];
     }
+    [placeEntity removeScenes:scenes];
     
     NSSet *timers = placeEntity.timers;
-    [placeEntity removeTimers:timers];
     for (TimerEntity *timer in timers) {
         for (TimerDeviceEntity *timerDevice in timer.timerDevices) {
             [managedObjectContext deleteObject:timerDevice];
         }
         [managedObjectContext deleteObject:timer];
     }
+    [placeEntity removeTimers:timers];
     
     NSSet *devices = placeEntity.devices;
-    [placeEntity removeDevices:placeEntity.devices];
     for (CSRDeviceEntity *device in devices) {
         for (RGBSceneEntity *rgbScene in device.rgbScenes) {
             [managedObjectContext deleteObject:rgbScene];
         }
         [managedObjectContext deleteObject:device];
     }
+    [placeEntity removeDevices:placeEntity.devices];
     [placeEntity removeGateways:placeEntity.gateways];
 //    placeEntity.settings.cloudTenancyID = nil;
 //    placeEntity.settings.cloudMeshID = nil;
@@ -331,6 +333,8 @@
             timerDeviceObj.timerID = timerDeviceDict[@"timerID"];
             timerDeviceObj.deviceID = timerDeviceDict[@"deviceID"];
             timerDeviceObj.timerIndex = timerDeviceDict[@"timerIndex"];
+            timerDeviceObj.alive = timerDeviceDict[@"alive"];
+            timerDeviceObj.channel = timerDeviceDict[@"channel"];
         }
     }
     if (parsingDictionary[@"timers_list"]) {
@@ -624,7 +628,9 @@
         for (TimerDeviceEntity *timerDevice in timer.timerDevices) {
             [timerDevicesArray addObject:@{@"timerID":(timer.timerID)?(timer.timerID):@0,
                                            @"deviceID":(timerDevice.deviceID)?(timerDevice.deviceID):@0,
-                                           @"timerIndex":(timerDevice.timerIndex)?(timerDevice.timerIndex):@0
+                                           @"timerIndex":(timerDevice.timerIndex)?(timerDevice.timerIndex):@0,
+                                           @"alive":(timerDevice.alive)?(timerDevice.alive):@0,
+                                           @"channel":(timerDevice.channel)?(timerDevice.channel):@0
                                            }];
         }
     }
@@ -669,8 +675,7 @@
 //                                                       options:0
 //                                                         error:&error];
     NSString *jsonString = [CSRUtilities convertToJsonData:jsonDictionary];
-//    NSLog(@"%@",jsonString);
-    NBSLog(@"%@",jsonString);
+//    NBSLog(@"%@",jsonString);
     NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     return jsonData;
     

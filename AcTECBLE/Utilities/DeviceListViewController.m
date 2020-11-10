@@ -32,6 +32,10 @@
 #import "SelectModel.h"
 
 #import "MusicControllerVC.h"
+#import "SonosMusicControllerVC.h"
+#import "SonosSelectModel.h"
+#import "SonosSceneSettingVC.h"
+
 
 @interface DeviceListViewController ()<MainCollectionViewDelegate>
 
@@ -200,7 +204,8 @@
                      || [kTwoChannelDimmers containsObject:device.shortName]
                      || [kTwoChannelSwitchs containsObject:device.shortName]
                      || [kThreeChannelSwitchs containsObject:device.shortName]
-                     || [kThreeChannelDimmers containsObject:device.shortName])
+                     || [kThreeChannelDimmers containsObject:device.shortName]
+                     || [kHOneChannelCurtainController containsObject:device.shortName])
                     && ![deviceIds containsObject:device.deviceId]) {
                     SingleDeviceModel *model = [[SingleDeviceModel alloc] init];
                     model.deviceId = device.deviceId;
@@ -639,7 +644,8 @@
                     || [kThreeChannelSwitchs containsObject:device.shortName]
                     || [kMusicController containsObject:device.shortName]
                     || [kThreeChannelDimmers containsObject:device.shortName]
-                    || [kHOneChannelCurtainController containsObject:device.shortName]) {
+                    || [kHOneChannelCurtainController containsObject:device.shortName]
+                    || [kSonosMusicController containsObject:device.shortName]) {
                     
                     BOOL exist = NO;
                     for (SceneMemberEntity *m in self.originalMembers) {
@@ -705,6 +711,23 @@
                 }
             }
         }
+    }else if (self.selectMode == DeviceListSelectMode_SingleRegardlessChannelPlus) {
+        NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
+        if ([mutableArray count] > 0) {
+            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
+            [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+            
+            for (CSRDeviceEntity *device in mutableArray) {
+                SingleDeviceModel *model = [[SingleDeviceModel alloc] init];
+                model.deviceId = device.deviceId;
+                model.deviceName = device.name;
+                model.deviceShortName = device.shortName;
+                model.isForList = YES;
+                model.isSelected = NO;
+                
+                [_devicesCollectionView.dataArray addObject:model];
+            }
+        }
     }else {
         NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
         if ([mutableArray count] > 0) {
@@ -719,6 +742,7 @@
                     || [kRGBCWDevices containsObject:device.shortName]
                     || [kOneChannelCurtainController containsObject:device.shortName]
                     || [kTwoChannelCurtainController containsObject:device.shortName]
+                    || [kHOneChannelCurtainController containsObject:device.shortName]
                     || [kFanController containsObject:device.shortName]
                     || [kSocketsOneChannel containsObject:device.shortName]
                     || [kSocketsTwoChannel containsObject:device.shortName]
@@ -908,7 +932,8 @@
                     }
                 }
                 
-            }else if (_selectMode == DeviceListSelectMode_SingleRegardlessChannel) {
+            }else if (_selectMode == DeviceListSelectMode_SingleRegardlessChannel
+                      || _selectMode == DeviceListSelectMode_SingleRegardlessChannelPlus) {
                 SelectModel *mod = [[SelectModel alloc] init];
                 mod.deviceID = mainCell.deviceId;
                 mod.channel = @1;
@@ -961,23 +986,24 @@
                     if (_selectMode == DeviceListSelectMode_Single || _selectMode == DeviceListSelectMode_ForDrop) {
                         [self removeOtherSeletedDevice:mainCell.deviceId];
                     }
-                }else if ([CSRUtilities belongToMusicController:deviceEntity.shortName]) {
-                    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:mainCell.deviceId];
-                    if (model.mcLiveChannels == 0 || model.mcCurrentChannel == -1 || model.mcStatus == -1 || model.mcVoice == -1) {
-                        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"m_select_error_alert", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
-                        [alert.view setTintColor:DARKORAGE];
-                        UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                }else if ([CSRUtilities belongToSonosMusicController:deviceEntity.shortName]
+                          || [CSRUtilities belongToMusicController:deviceEntity.shortName]) {
+                    SonosSceneSettingVC *sss = [[SonosSceneSettingVC alloc] init];
+                    sss.deviceID = deviceEntity.deviceId;
+                    sss.sonosSceneSettingHandle = ^(NSArray * _Nonnull sModels) {
+                        int i = 0;
+                        for (SonosSelectModel *sModel in sModels) {
+                            if ([sModel.channel integerValue] != -1 && ![_selectedDevices containsObject:sModel]) {
+                                [_selectedDevices addObject:sModel];
+                                i ++;
+                            }
+                        }
+                        if (i==0) {
                             mainCell.seleteButton.selected = NO;
-                        }];
-                        [alert addAction:yes];
-                        [self presentViewController:alert animated:YES completion:nil];
-                    }else {
-                        SelectModel *mod = [[SelectModel alloc] init];
-                        mod.deviceID = mainCell.deviceId;
-                        mod.channel = @(model.mcCurrentChannel);
-                        mod.sourceID = _sourceID;
-                        [_selectedDevices addObject:mod];
-                    }
+                        }
+                    };
+                    [self.navigationController pushViewController:sss animated:YES];
+                    
                 }else {
                     SelectModel *mod = [[SelectModel alloc] init];
                     mod.deviceID = mainCell.deviceId;
@@ -1086,7 +1112,11 @@
                     [_devicesCollectionView reloadData];
                 };
                 UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:curtainVC];
-                nav.modalPresentationStyle = UIModalPresentationPopover;
+                if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                    nav.modalPresentationStyle = UIModalPresentationFullScreen;
+                }else {
+                    nav.modalPresentationStyle = UIModalPresentationPopover;
+                }
                 [self presentViewController:nav animated:YES completion:nil];
                 nav.popoverPresentationController.sourceRect = mainCell.bounds;
                 nav.popoverPresentationController.sourceView = mainCell;
@@ -1100,7 +1130,11 @@
                 [_devicesCollectionView reloadData];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:fanVC];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
@@ -1114,19 +1148,47 @@
                 [_devicesCollectionView reloadData];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:socketVC];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
         }else if ([CSRUtilities belongToMusicController:deviceEntity.shortName]) {
             MusicControllerVC *mcvc = [[MusicControllerVC alloc] init];
             mcvc.deviceId = mainCell.deviceId;
+            mcvc.reloadDataHandle = ^{
+                [self loadData];
+                [_devicesCollectionView reloadData];
+            };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:mcvc];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
-        }else{
+        }else if ([CSRUtilities belongToSonosMusicController:deviceEntity.shortName]) {
+            SonosMusicControllerVC *sonosVC = [[SonosMusicControllerVC alloc] init];
+            sonosVC.deviceId = mainCell.deviceId;
+            sonosVC.reloadDataHandle = ^{
+                [self loadData];
+                [_devicesCollectionView reloadData];
+            };
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:sonosVC];
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
+        }else {
             DeviceViewController *dvc = [[DeviceViewController alloc] init];
             dvc.deviceId = mainCell.deviceId;
             dvc.reloadDataHandle = ^{
@@ -1134,7 +1196,11 @@
                 [_devicesCollectionView reloadData];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:dvc];
-            nav.modalPresentationStyle = UIModalPresentationPopover;
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
@@ -1615,7 +1681,7 @@
                 [btn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateSelected];
                 [btn setTitle:[NSString stringWithFormat:@"%d", i*4 + j] forState:UIControlStateNormal];
                 [btn setTitleColor:[UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1] forState:UIControlStateNormal];
-                [btn addTarget:self action:@selector(selectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpInside];
+                [btn addTarget:self action:@selector(mcChannelSelectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpInside];
                 [_mcChannelSelectedView addSubview:btn];
             }
         }
@@ -1644,6 +1710,16 @@
         [_mcChannelSelectedView addSubview:save];
     }
     return _mcChannelSelectedView;
+}
+
+- (void)mcChannelSelectedViewTouchInsideAction:(UIButton *)sender {
+    sender.selected = !sender.selected;
+    for (int i = 0; i < 16; i ++) {
+        UIButton *btn = (UIButton *)[sender.superview viewWithTag:i+100];
+        if (btn && btn.selected && btn.tag != sender.tag) {
+            btn.selected = NO;
+        }
+    }
 }
 
 - (void)mcChannelViewSaveAction:(UIButton *)sender {

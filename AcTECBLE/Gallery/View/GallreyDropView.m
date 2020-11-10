@@ -113,7 +113,8 @@
 - (void)tapGestureAction:(UITapGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateEnded) {
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-        if ([CSRUtilities belongToOneChannelCurtainController:model.shortName]) {
+        if ([CSRUtilities belongToOneChannelCurtainController:model.shortName]
+            || [CSRUtilities belongToHOneChannelCurtainController:model.shortName]) {
             if (model.channel1Level == 0) {
                 Byte byte[] = {0x79, 0x02, 0x01, 0x01};
                 NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
@@ -463,7 +464,8 @@
                 self.layer.borderColor = [UIColor darkGrayColor].CGColor;
             }
         }
-    }else if ([CSRUtilities belongToOneChannelCurtainController:_kindName]) {
+    }else if ([CSRUtilities belongToOneChannelCurtainController:_kindName]
+              || [CSRUtilities belongToHOneChannelCurtainController:_kindName]) {
         self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:(255 - [model.level floatValue])/255.0*0.9];
         self.layer.borderColor = DARKORAGE.CGColor;
     }else if ([CSRUtilities belongToTwoChannelCurtainController:_kindName]) {

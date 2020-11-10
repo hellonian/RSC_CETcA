@@ -1,3 +1,4 @@
+
 # Uncomment this line to define a global platform for your project
 platform :ios, '8.0'
 # Uncomment this line if you're using Swift
@@ -7,12 +8,12 @@ workspace 'AcTECBLE.xcworkspace'
 
 target 'AcTECBLE' do
     project 'AcTECBLE.xcodeproj'
-    pod 'AFNetworking','~> 2.5.3'
-    pod 'OpenSSL', '~> 1.0'
+    pod 'AFNetworking','~>2.5.3'
+    pod 'OpenSSL'
     pod 'PureLayout'
     pod 'OHMySQL'
     pod 'MBProgressHUD'
-    pod 'SDWebImage', '~> 4.0'
+    pod 'SDWebImage'
     pod 'CocoaAsyncSocket'
-    pod 'SGQRCode', '~> 3.0.1'
+    pod 'SGQRCode'
 end

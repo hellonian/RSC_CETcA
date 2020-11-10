@@ -141,7 +141,7 @@
                 NSDictionary *dic = (NSDictionary *)responseObject;
                 latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
                 downloadAddress = dic[@"Download_address"];
-                if ([curtainEntity.mcuSVersion integerValue]<latestMCUSVersion) {
+                if ([curtainEntity.mcuSVersion integerValue] != 0 && [curtainEntity.mcuSVersion integerValue]<latestMCUSVersion) {
                     updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
                     [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
                     [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];

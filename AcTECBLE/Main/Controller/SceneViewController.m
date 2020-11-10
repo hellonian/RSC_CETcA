@@ -17,6 +17,7 @@
 #import "DataModelManager.h"
 #import "PureLayout.h"
 #import "CSRAppStateManager.h"
+#import "SonosSelectModel.h"
 
 @interface SceneViewController ()<UITableViewDelegate,UITableViewDataSource,SceneMemberCellDelegate>
 {
@@ -173,105 +174,111 @@
     [list getSelectedDevices:^(NSArray *devices) {
         if ([devices count] > 0) {
             [self showLoading];
-            for (SelectModel *model in devices) {
-                DeviceModel *device = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:model.deviceID];
-                if ([CSRUtilities belongToSwitch:device.shortName]) {
-                    [self createSceneMemberSwitch:device channel:1];
-                }else if ([CSRUtilities belongToTwoChannelSwitch:device.shortName]) {
-                    if ([model.channel integerValue] == 2) {
-                        [self createSceneMemberSwitch:device channel:1];
-                    }else if ([model.channel integerValue] == 3) {
-                        [self createSceneMemberSwitch:device channel:2];
-                    }else if ([model.channel integerValue] == 4) {
-                        [self createSceneMemberSwitch:device channel:1];
-                        [self createSceneMemberSwitch:device channel:2];
+            for (id d in devices) {
+                if ([d isKindOfClass:[SonosSelectModel class]]) {
+                    SonosSelectModel *ssm = (SonosSelectModel *)d;
+                    if ([ssm.channel integerValue] != -1) {
+                        [self createSceneMemberSonos:ssm];
                     }
-                }else if ([CSRUtilities belongToThreeChannelSwitch:device.shortName]) {
-                    if ([model.channel integerValue] == 2) {
+                }else {
+                    SelectModel *model = (SelectModel *)d;
+                    DeviceModel *device = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:model.deviceID];
+                    if ([CSRUtilities belongToSwitch:device.shortName]) {
                         [self createSceneMemberSwitch:device channel:1];
-                    }else if ([model.channel integerValue] == 3) {
-                        [self createSceneMemberSwitch:device channel:2];
-                    }else if ([model.channel integerValue] == 5) {
-                        [self createSceneMemberSwitch:device channel:4];
-                    }else if ([model.channel integerValue] == 4) {
-                        [self createSceneMemberSwitch:device channel:1];
-                        [self createSceneMemberSwitch:device channel:2];
-                    }else if ([model.channel integerValue] == 6) {
-                        [self createSceneMemberSwitch:device channel:1];
-                        [self createSceneMemberSwitch:device channel:4];
-                    }else if ([model.channel integerValue] == 7) {
-                        [self createSceneMemberSwitch:device channel:2];
-                        [self createSceneMemberSwitch:device channel:4];
-                    }else if ([model.channel integerValue] == 8) {
-                        [self createSceneMemberSwitch:device channel:1];
-                        [self createSceneMemberSwitch:device channel:2];
-                        [self createSceneMemberSwitch:device channel:4];
-                    }
-                }else if ([CSRUtilities belongToDimmer:device.shortName]) {
-                    [self createSceneMemberDimmer:device channel:1];
-                }else if ([CSRUtilities belongToTwoChannelDimmer:device.shortName]) {
-                    if ([model.channel integerValue] == 2) {
+                    }else if ([CSRUtilities belongToTwoChannelSwitch:device.shortName]) {
+                        if ([model.channel integerValue] == 2) {
+                            [self createSceneMemberSwitch:device channel:1];
+                        }else if ([model.channel integerValue] == 3) {
+                            [self createSceneMemberSwitch:device channel:2];
+                        }else if ([model.channel integerValue] == 4) {
+                            [self createSceneMemberSwitch:device channel:1];
+                            [self createSceneMemberSwitch:device channel:2];
+                        }
+                    }else if ([CSRUtilities belongToThreeChannelSwitch:device.shortName]) {
+                        if ([model.channel integerValue] == 2) {
+                            [self createSceneMemberSwitch:device channel:1];
+                        }else if ([model.channel integerValue] == 3) {
+                            [self createSceneMemberSwitch:device channel:2];
+                        }else if ([model.channel integerValue] == 5) {
+                            [self createSceneMemberSwitch:device channel:4];
+                        }else if ([model.channel integerValue] == 4) {
+                            [self createSceneMemberSwitch:device channel:1];
+                            [self createSceneMemberSwitch:device channel:2];
+                        }else if ([model.channel integerValue] == 6) {
+                            [self createSceneMemberSwitch:device channel:1];
+                            [self createSceneMemberSwitch:device channel:4];
+                        }else if ([model.channel integerValue] == 7) {
+                            [self createSceneMemberSwitch:device channel:2];
+                            [self createSceneMemberSwitch:device channel:4];
+                        }else if ([model.channel integerValue] == 8) {
+                            [self createSceneMemberSwitch:device channel:1];
+                            [self createSceneMemberSwitch:device channel:2];
+                            [self createSceneMemberSwitch:device channel:4];
+                        }
+                    }else if ([CSRUtilities belongToDimmer:device.shortName]) {
                         [self createSceneMemberDimmer:device channel:1];
-                    }else if ([model.channel integerValue] == 3) {
-                        [self createSceneMemberDimmer:device channel:2];
-                    }else if ([model.channel integerValue] == 4) {
-                        [self createSceneMemberDimmer:device channel:1];
-                        [self createSceneMemberDimmer:device channel:2];
-                    }
-                }else if ([CSRUtilities belongToThreeChannelDimmer:device.shortName]) {
-                    if ([model.channel integerValue] == 2) {
-                        [self createSceneMemberDimmer:device channel:1];
-                    }else if ([model.channel integerValue] == 3) {
-                        [self createSceneMemberDimmer:device channel:2];
-                    }else if ([model.channel integerValue] == 5) {
-                        [self createSceneMemberDimmer:device channel:4];
-                    }else if ([model.channel integerValue] == 4) {
-                        [self createSceneMemberDimmer:device channel:1];
-                        [self createSceneMemberDimmer:device channel:2];
-                    }else if ([model.channel integerValue] == 6) {
-                        [self createSceneMemberDimmer:device channel:1];
-                        [self createSceneMemberDimmer:device channel:4];
-                    }else if ([model.channel integerValue] == 7) {
-                        [self createSceneMemberDimmer:device channel:2];
-                        [self createSceneMemberDimmer:device channel:4];
-                    }else if ([model.channel integerValue] == 8) {
-                        [self createSceneMemberDimmer:device channel:1];
-                        [self createSceneMemberDimmer:device channel:2];
-                        [self createSceneMemberDimmer:device channel:4];
-                    }
-                }else if ([CSRUtilities belongToCWDevice:device.shortName]) {
-                    [self createSceneMemberCW:device];
-                }else if ([CSRUtilities belongToRGBDevice:device.shortName]) {
-                    [self createSceneMemberRGB:device];
-                }else if ([CSRUtilities belongToRGBCWDevice:device.shortName]) {
-                    [self createSceneMemberRGBCW:device];
-                }else if ([CSRUtilities belongToSocketOneChannel:device.shortName]) {
-                    [self createSceneMemberSocket:device channel:1];
-                }else if ([CSRUtilities belongToSocketTwoChannel:device.shortName]) {
-                    if ([model.channel integerValue] == 2) {
+                    }else if ([CSRUtilities belongToTwoChannelDimmer:device.shortName]) {
+                        if ([model.channel integerValue] == 2) {
+                            [self createSceneMemberDimmer:device channel:1];
+                        }else if ([model.channel integerValue] == 3) {
+                            [self createSceneMemberDimmer:device channel:2];
+                        }else if ([model.channel integerValue] == 4) {
+                            [self createSceneMemberDimmer:device channel:1];
+                            [self createSceneMemberDimmer:device channel:2];
+                        }
+                    }else if ([CSRUtilities belongToThreeChannelDimmer:device.shortName]) {
+                        if ([model.channel integerValue] == 2) {
+                            [self createSceneMemberDimmer:device channel:1];
+                        }else if ([model.channel integerValue] == 3) {
+                            [self createSceneMemberDimmer:device channel:2];
+                        }else if ([model.channel integerValue] == 5) {
+                            [self createSceneMemberDimmer:device channel:4];
+                        }else if ([model.channel integerValue] == 4) {
+                            [self createSceneMemberDimmer:device channel:1];
+                            [self createSceneMemberDimmer:device channel:2];
+                        }else if ([model.channel integerValue] == 6) {
+                            [self createSceneMemberDimmer:device channel:1];
+                            [self createSceneMemberDimmer:device channel:4];
+                        }else if ([model.channel integerValue] == 7) {
+                            [self createSceneMemberDimmer:device channel:2];
+                            [self createSceneMemberDimmer:device channel:4];
+                        }else if ([model.channel integerValue] == 8) {
+                            [self createSceneMemberDimmer:device channel:1];
+                            [self createSceneMemberDimmer:device channel:2];
+                            [self createSceneMemberDimmer:device channel:4];
+                        }
+                    }else if ([CSRUtilities belongToCWDevice:device.shortName]) {
+                        [self createSceneMemberCW:device];
+                    }else if ([CSRUtilities belongToRGBDevice:device.shortName]) {
+                        [self createSceneMemberRGB:device];
+                    }else if ([CSRUtilities belongToRGBCWDevice:device.shortName]) {
+                        [self createSceneMemberRGBCW:device];
+                    }else if ([CSRUtilities belongToSocketOneChannel:device.shortName]) {
                         [self createSceneMemberSocket:device channel:1];
-                    }else if ([model.channel integerValue] == 3) {
-                        [self createSceneMemberSocket:device channel:2];
-                    }else if ([model.channel integerValue] == 4) {
-                        [self createSceneMemberSocket:device channel:1];
-                        [self createSceneMemberSocket:device channel:2];
-                    }
-                }else if ([CSRUtilities belongToOneChannelCurtainController:device.shortName]
-                          || [CSRUtilities belongToHOneChannelCurtainController:device.shortName]) {
-                    [self createSceneMemberCurtain:device channel:1];
-                }else if ([CSRUtilities belongToTwoChannelCurtainController:device.shortName]) {
-                    if ([model.channel integerValue] == 2) {
+                    }else if ([CSRUtilities belongToSocketTwoChannel:device.shortName]) {
+                        if ([model.channel integerValue] == 2) {
+                            [self createSceneMemberSocket:device channel:1];
+                        }else if ([model.channel integerValue] == 3) {
+                            [self createSceneMemberSocket:device channel:2];
+                        }else if ([model.channel integerValue] == 4) {
+                            [self createSceneMemberSocket:device channel:1];
+                            [self createSceneMemberSocket:device channel:2];
+                        }
+                    }else if ([CSRUtilities belongToOneChannelCurtainController:device.shortName]
+                              || [CSRUtilities belongToHOneChannelCurtainController:device.shortName]) {
                         [self createSceneMemberCurtain:device channel:1];
-                    }else if ([model.channel integerValue] == 3) {
-                        [self createSceneMemberCurtain:device channel:2];
-                    }else if ([model.channel integerValue] == 4) {
-                        [self createSceneMemberCurtain:device channel:1];
-                        [self createSceneMemberCurtain:device channel:2];
+                    }else if ([CSRUtilities belongToTwoChannelCurtainController:device.shortName]) {
+                        if ([model.channel integerValue] == 2) {
+                            [self createSceneMemberCurtain:device channel:1];
+                        }else if ([model.channel integerValue] == 3) {
+                            [self createSceneMemberCurtain:device channel:2];
+                        }else if ([model.channel integerValue] == 4) {
+                            [self createSceneMemberCurtain:device channel:1];
+                            [self createSceneMemberCurtain:device channel:2];
+                        }
+                    }else if ([CSRUtilities belongToFanController:device.shortName]) {
+                        [self createSceneMemberFan:device];
                     }
-                }else if ([CSRUtilities belongToFanController:device.shortName]) {
-                    [self createSceneMemberFan:device];
-                }else if ([CSRUtilities belongToMusicController:device.shortName]) {
-                    [self createSceneMemberMusicController:device channel:[model.channel integerValue]];
                 }
             }
             
@@ -310,7 +317,8 @@
                 || [CSRUtilities belongToSocketTwoChannel:m.kindString]
                 || [CSRUtilities belongToTwoChannelCurtainController:m.kindString]
                 || [CSRUtilities belongToThreeChannelDimmer:m.kindString]
-                || [CSRUtilities belongToMusicController:m.kindString]) {
+                || [CSRUtilities belongToMusicController:m.kindString]
+                || [CSRUtilities belongToSonosMusicController:m.kindString]) {
                 Byte byte[] = {0x59, 0x08, [m.channel integerValue], b[1], b[0], e, d0, d1, d2, d3};
                 NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
                 retryCount = 0;
@@ -609,6 +617,43 @@
     [self.selects addObject:m];
 }
 
+- (void)createSceneMemberSonos:(SonosSelectModel *)model {
+    SceneMemberEntity *m = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
+    m.sceneID = _sceneIndex;
+    m.deviceID = model.deviceID;
+    m.channel = model.channel;
+    m.eveType = @34;
+    
+    NSInteger status;
+    CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:model.deviceID];
+    if ([CSRUtilities belongToSonosMusicController:de.shortName]) {
+        NSInteger cy;
+        if (model.cycle > 1) {
+            cy = model.cycle+1;
+        }else {
+            cy = model.cycle;
+        }
+        status = 1 + model.play*2 + cy*32;
+    }else {
+        status = model.channelState + model.play*2 + model.source*4 + model.cycle*32;
+    }
+    
+    m.eveD0 = @(status);
+    NSInteger voice = model.mute + model.voice*2;
+    m.eveD1 = @(voice);
+    m.eveD2 = @(model.songNumber);
+    m.eveD3 = @0;
+    DeviceModel *device = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:model.deviceID];
+    if (device) {
+        m.kindString = device.shortName;
+    }
+    SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+    [sceneEntity addMembersObject:m];
+    [[CSRDatabaseManager sharedInstance] saveContext];
+    
+    [self.selects addObject:m];
+}
+
 - (void)sceneAddedSuccessCall:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceID = userInfo[@"deviceId"];
@@ -734,7 +779,8 @@
             || [CSRUtilities belongToSocketTwoChannel:mSceneMember.kindString]
             || [CSRUtilities belongToTwoChannelCurtainController:mSceneMember.kindString]
             || [CSRUtilities belongToThreeChannelDimmer:mSceneMember.kindString]
-            || [CSRUtilities belongToMusicController:mSceneMember.kindString]) {
+            || [CSRUtilities belongToMusicController:mSceneMember.kindString]
+            || [CSRUtilities belongToSonosMusicController:mSceneMember.kindString]) {
             Byte byte[] = {0x5d, 0x03, [mSceneMember.channel integerValue], b[1], b[0]};
             NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
             retryCount = 0;

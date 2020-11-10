@@ -44,5 +44,6 @@
 - (void)refreshSubnetMask:(NSNumber *)deviceID subnetMask:(NSString *)sub;
 - (void)refreshGateway:(NSNumber *)deviceID gateway:(NSString *)gateway;
 - (void)refreshDNS:(NSNumber *)deviceID DNS:(NSString *)dns;
+- (void)refreshSongList:(NSNumber *)deviceID songs:(NSString *)songs;
 
 @end

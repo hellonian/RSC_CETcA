@@ -39,8 +39,8 @@
 #define kRGBSceneDefaultHue @[@(0.17),@(0.17),@(0),@(0.17),@(0.9),@(0.6),@(0.3),@(0.67),@(0.04),@[@(0.15),@(0.36),@(0.5),@(0.6),@(0.8),@(0.95)],@[@(0.18),@(0.35),@(0.4),@(0.5),@(0.67),@(1)],@[@(0),@(0.08),@(0.17),@(0.33),@(0.67),@(0.83)]]
 #define kRGBSceneDefaultColorSat @[@(0.27),@(0.4),@(0),@(0.4),@(0.85),@(1),@(0.4),@(0.3),@(1),@(1),@(1),@(1)]
 
-#define kDimmers @[@"D350BT",@"D350B-H",@"D350SB",@"D350B",@"D300IB",@"D300SB-T3",@"D350SB-T1",@"D300IB-H",@"D300IB-T2",@"D350B-B",@"D350B-L",@"D300IB-L",@"D0-10IB",@"D0/1-10IB",@"D350SB-Q2",@"D300SB",@"D350STB-Q",@"D350SB-Q",@"D1-10VIBH",@"D300IB",@"DDSB",@"D300IB-Q",@"D300B",@"D300B-H",@"DDSB",@"DAL-IBH",@"D300BH",@"D0/1-10B",@"PD350B",@"SD350",@"D350GB",@"SSD150",@"GD400B",@"ED350B",@"ED350SB",@"TD400B",@"DM300BH",@"TD300B"]
-#define kSwitchs @[@"S350BT",@"S350B",@"S2400IB",@"S350B-H",@"S2400IB-H",@"S2400IB-T4",@"S10IB",@"S10IB-H2",@"S10IBH",@"S2400IB-Q",@"GS10B",@"ES350B",@"S6AB",@"RM300BH",@"TS10B",@"PS10B",@"TS5B",@"PS5B"]
+#define kDimmers @[@"D350BT",@"D350B-H",@"D350SB",@"D350B",@"D300IB",@"D300SB-T3",@"D350SB-T1",@"D300IB-H",@"D300IB-T2",@"D350B-B",@"D350B-L",@"D300IB-L",@"D0-10IB",@"D0/1-10IB",@"D350SB-Q2",@"D300SB",@"D350STB-Q",@"D350SB-Q",@"D1-10VIBH",@"D300IB",@"DDSB",@"D300IB-Q",@"D300B",@"D300B-H",@"DDSB2",@"DAL-IBH",@"D300BH",@"D0/1-10B",@"PD350B",@"SD350",@"D350GB",@"SSD150",@"GD400B",@"ED350B",@"ED350SB",@"TD400B",@"DM300BH",@"TD300B"]
+#define kSwitchs @[@"S350BT",@"S350B",@"S2400IB",@"S350B-H",@"S2400IB-H",@"S2400IB-T4",@"S10IB",@"S10IB-H2",@"S10IBH",@"S2400IB-Q",@"GS10B",@"ES350B",@"S6AB",@"RM300BH",@"TS10B",@"PS10B",@"TS5B",@"PS5B",@"4DCOB",@"RM1440BH"]
 #define kRemotes @[@"RB01",@"RB02",@"S10IB-H2",@"RB04",@"RSIBH",@"R5BSBH",@"R9BSBH",@"RB07",@"RB06",@"RSBH",@"RB05",@"RB09",@"1BMBH",@"5RSIBH",@"5BCBH",@"6RSIBH",@"H1CSWB",@"H2CSWB",@"H3CSWB",@"H4CSWB",@"H6CSWB",@"H1CSB",@"H2CSB",@"H3CSB",@"H4CSB",@"H6CSB",@"KT6RS"]
 
 #define kCWRemotes @[@"GR12B", @"TR12B"]
@@ -59,7 +59,7 @@
 
 #define kLCDRemote @[@"GR1000B"]
 
-#define kSocketsOneChannel @[@"PS2400B",@"SR2400",@"SSR1200",@"GP10B",@"P2400",@"H1PPWVBX",@"PP10B",@"TP10B"]
+#define kSocketsOneChannel @[@"PS2400B",@"SR2400",@"SSR1200",@"GP10B",@"P2400",@"H1PPWVBX",@"PP10B",@"TP10B",@"KBSKTREL"]
 #define kSocketsTwoChannel @[@"P2400B-H",@"P2400B-H2",@"P2400B",@"H2PPHB-WH",@"K2PPHB",@"K2PPHBX",@"H2PPWHB"]
 
 #define kTwoChannelSwitchs @[@"GS20B-2G",@"ES500B-2G",@"TS20B-2G",@"PS20B-2G",@"TS8B-2G",@"PS8B-2G"]
@@ -87,7 +87,7 @@
 
 #define kFanController @[@"F350B-H",@"F350IBH",@"F150IBH",@"FC150A"]
 
-#define kDALDevice @[@"DDSB",@"DAL-IBH",@"DDAL"]
+#define kDALDevice @[@"DDSB",@"DAL-IBH",@"DDAL",@"DDSB2"]
 
 #define kFadeDevice @[@"TD300B", @"TD400B-2G", @"TD400B-3G",@"PD400B-2G"]
 #define kNearbyFunctionDevices @[@"LI-45B"]

@@ -1,0 +1,186 @@
+//
+//  SocketConnectionTool.m
+//  AcTECBLE
+//
+//  Created by AcTEC on 2020/10/23.
+//  Copyright © 2020 AcTEC ELECTRONICS Ltd. All rights reserved.
+//
+
+#import "SocketConnectionTool.h"
+#import "CSRUtilities.h"
+#import "CSRDatabaseManager.h"
+#import "DeviceModelManager.h"
+
+@implementation SocketConnectionTool
+
+- (void)connentHost:(NSString *)host prot:(uint16_t)port {
+    if (host==nil || host.length <= 0) {
+        NSAssert(host != nil, @"host must be not nil");
+    }
+    
+    if (self.tcpSocketManager == nil) {
+        self.tcpSocketManager = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+    }
+    NSError *connectError = nil;
+    BOOL isConnected = [self.tcpSocketManager isConnected];
+    NSLog(@"isConnected: %d",isConnected);
+    if (!isConnected) {
+        [self.tcpSocketManager connectToHost:host onPort:port error:&connectError];
+    }else {
+        NSInteger frameNumber = [self getFrameNumber];
+        Byte b[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00};
+        NSData *d = [[NSData alloc] initWithBytes:b length:12];
+        int sum = [CSRUtilities atFromData:d];
+        Byte byte[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, sum, 0xfe};
+        NSData *data = [[NSData alloc] initWithBytes:byte length:14];
+        [self writeData:data];
+        
+        [self.tcpSocketManager readDataWithTimeout:-1 tag:0];
+    }
+}
+
+- (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port {
+    NSInteger frameNumber = [self getFrameNumber];
+    Byte b[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00};
+    NSData *d = [[NSData alloc] initWithBytes:b length:12];
+    int sum = [CSRUtilities atFromData:d];
+    Byte byte[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, sum, 0xfe};
+    NSData *data = [[NSData alloc] initWithBytes:byte length:14];
+    [self writeData:data];
+    
+    [self.tcpSocketManager readDataWithTimeout:-1 tag:0];
+}
+
+- (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(socketConnectFail:)]) {
+        [self.delegate socketConnectFail:_deviceID];
+    }
+}
+
+- (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
+    NSLog(@"readdata: %@",data);
+    
+    Byte headByte[1];
+    [data getBytes:headByte range:NSMakeRange(0, 1)];
+    Byte frameNumberByte[1];
+    [data getBytes:frameNumberByte range:NSMakeRange(1, 1)];
+    if (headByte[0] == 0xa5 && frameNumberByte[0] == self.frameNumber) {
+        self.receiveData = [[NSMutableData alloc] initWithData:data];
+    }else {
+        [self.receiveData appendData:data];
+    }
+    
+    Byte endByte[1];
+    [self.receiveData getBytes:endByte range:NSMakeRange([self.receiveData length]-1, 1)];
+    Byte checkByte[1];
+    [self.receiveData getBytes:checkByte range:NSMakeRange([self.receiveData length]-2, 1)];
+    int check = [CSRUtilities atFromData:[self.receiveData subdataWithRange:NSMakeRange(0, [self.receiveData length]-2)]];
+    if (endByte[0] == 0xfe && checkByte[0] == check) {
+        NSLog(@"%@",[[NSString alloc] initWithData:[self.receiveData subdataWithRange:NSMakeRange(12, [self.receiveData length] - 14)] encoding:NSUTF8StringEncoding]);
+        
+        Byte cmdByte[2];
+        [self.receiveData getBytes:cmdByte range:NSMakeRange(10, 2)];
+        
+        if (cmdByte[0] == 0x01 && cmdByte[1] == 0x80) {
+            Byte sourceByte[2];
+            [self.receiveData getBytes:sourceByte range:NSMakeRange(8, 2)];
+            self.sourceAddress = sourceByte[0] + sourceByte[1]*256;
+            
+            Byte sByte[2];
+            sByte[0] = (self.sourceAddress & 0xFF00) >> 8;
+            sByte[1] = self.sourceAddress & 0x00FF;
+            NSInteger frameNumber = [self getFrameNumber];
+            Byte b[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, sByte[1], sByte[0], 0x01, 0x00, 0x01, 0x10};
+            NSData *d = [[NSData alloc] initWithBytes:b length:12];
+            int sum = [CSRUtilities atFromData:d];
+            Byte byte[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, sByte[1], sByte[0], 0x01, 0x00, 0x01, 0x10, sum, 0xfe};
+            NSData *data = [[NSData alloc] initWithBytes:byte length:14];
+            NSLog(@"getDeviceInfosAction: %@",data);
+            [self writeData:data];
+            
+        }else if (cmdByte[0] == 0x01 && cmdByte[1] == 0x90) {
+            NSString *json = [[NSString alloc] initWithData:[self.receiveData subdataWithRange:NSMakeRange(12, [self.receiveData length] - 14)] encoding:NSUTF8StringEncoding];
+            NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:json];
+            if ([jsonDictionary count] > 0) {
+                BOOL success = [jsonDictionary[@"success"] boolValue];
+                if (success) {
+                    NSInteger version = [jsonDictionary[@"version"] integerValue];
+                    NSArray *devices = jsonDictionary[@"device"];
+                    if ([devices count] > 0) {
+                        [[CSRDatabaseManager sharedInstance] cleanSonos:_deviceID];
+                        for (NSDictionary *device in devices) {
+                            NSInteger channel = [device[@"channel"] integerValue];
+                            NSInteger model = [device[@"model"] integerValue];
+                            NSInteger type = model >> 7;
+                            NSInteger number = model & 0x7F;
+                            NSString *room = device[@"room"];
+                            [[CSRDatabaseManager sharedInstance] saveNewSonos:_deviceID channel:@(channel) infoVersion:@(version) modelType:@(type) modelNumber:@(number) name:room];
+                            [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshSonosInfo" object:self userInfo:@{@"deviceId":_deviceID, @"channel":@(channel)}];
+                        }
+                        
+                        Byte sByte[2];
+                        sByte[0] = (self.sourceAddress & 0xFF00) >> 8;
+                        sByte[1] = self.sourceAddress & 0x00FF;
+                        NSInteger frameNumber = [self getFrameNumber];
+                        Byte b[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, sByte[1], sByte[0], 0x01, 0x00, 0x02, 0x10};
+                        NSData *d = [[NSData alloc] initWithBytes:b length:12];
+                        int sum = [CSRUtilities atFromData:d];
+                        Byte byte[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, sByte[1], sByte[0], 0x01, 0x00, 0x02, 0x10, sum, 0xfe};
+                        NSData *data = [[NSData alloc] initWithBytes:byte length:14];
+                        NSLog(@"getFavoritesAction: %@",data);
+                        [self writeData:data];
+                        
+                    }
+                }
+            }
+        }else if (cmdByte[0] == 0x02 && cmdByte[1] == 0x90) {
+            NSString *json = [[NSString alloc] initWithData:[self.receiveData subdataWithRange:NSMakeRange(12, [self.receiveData length] - 14)] encoding:NSUTF8StringEncoding];
+            
+            NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:json];
+            if ([jsonDictionary count] > 0) {
+                BOOL success = [jsonDictionary[@"success"] boolValue];
+                if (success) {
+                    [[DeviceModelManager sharedInstance] refreshSongList:_deviceID songs:json];
+                }
+            }
+        }else if (cmdByte[0] == 0x03 && cmdByte[1] == 0x10) {
+            NSString *json = [[NSString alloc] initWithData:[self.receiveData subdataWithRange:NSMakeRange(12, [self.receiveData length] - 14)] encoding:NSUTF8StringEncoding];
+            NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:json];
+            if ([jsonDictionary count] > 0) {
+                NSInteger version = [jsonDictionary[@"version"] integerValue];
+                CSRDeviceEntity *d = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
+                if ([d.mcSonosInfoVersion integerValue] < version) {
+                    Byte sByte[2];
+                    sByte[0] = (self.sourceAddress & 0xFF00) >> 8;
+                    sByte[1] = self.sourceAddress & 0x00FF;
+                    NSInteger frameNumber = [self getFrameNumber];
+                    Byte b[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, sByte[1], sByte[0], 0x01, 0x00, 0x02, 0x10};
+                    NSData *d = [[NSData alloc] initWithBytes:b length:12];
+                    int sum = [CSRUtilities atFromData:d];
+                    Byte byte[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, sByte[1], sByte[0], 0x01, 0x00, 0x02, 0x10, sum, 0xfe};
+                    NSData *data = [[NSData alloc] initWithBytes:byte length:14];
+                    NSLog(@"getFavoritesAction: %@",data);
+                    [self writeData:data];
+                }
+            }
+        }
+        
+        
+    }
+    
+    [self.tcpSocketManager readDataWithTimeout:-1 tag:0];
+}
+
+- (NSInteger)getFrameNumber {
+    self.frameNumber ++ ;
+    if (self.frameNumber > 255) {
+        self.frameNumber = 0;
+    }
+    return self.frameNumber;
+}
+
+- (void)writeData:(NSData *)data {
+    [self.tcpSocketManager writeData:data withTimeout:-1 tag:0];
+}
+
+@end

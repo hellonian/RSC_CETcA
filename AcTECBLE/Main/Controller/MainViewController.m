@@ -1216,8 +1216,9 @@
                     [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:deleteRgbSceneEntity];
                 }
             }
-            [[CSRAppStateManager sharedInstance].selectedPlace removeDevicesObject:deleteDeviceEntity];
-            [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:deleteDeviceEntity];
+            if ([CSRUtilities belongToSonosMusicController:deleteDeviceEntity.shortName]) {
+                [[CSRDatabaseManager sharedInstance] cleanSonos:deleteDeviceEntity.deviceId];
+            }
             
             [[CSRDatabaseManager sharedInstance] dropEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
             [[CSRDatabaseManager sharedInstance] sceneMemberEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
@@ -1234,6 +1235,8 @@
                 || [CSRUtilities belongToSceneRemoteOneKeyV:deleteDeviceEntity.shortName]) {
                 [self removeSceneAfterSceneRemoteDelete:deleteDeviceEntity.deviceId];
             }
+            [[CSRAppStateManager sharedInstance].selectedPlace removeDevicesObject:deleteDeviceEntity];
+            [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:deleteDeviceEntity];
             [[CSRDatabaseManager sharedInstance] saveContext];
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteDeviceEntity" object:nil];
@@ -1251,11 +1254,11 @@
             || [CSRUtilities belongToSceneRemoteThreeKeys:deleteDeviceShortName]
             || [CSRUtilities belongToSceneRemoteTwoKeys:deleteDeviceShortName]
             || [CSRUtilities belongToSceneRemoteOneKey:deleteDeviceShortName]
-              || [CSRUtilities belongToSceneRemoteSixKeysV:deleteDeviceShortName]
-              || [CSRUtilities belongToSceneRemoteFourKeysV:deleteDeviceShortName]
-              || [CSRUtilities belongToSceneRemoteThreeKeysV:deleteDeviceShortName]
-              || [CSRUtilities belongToSceneRemoteTwoKeysV:deleteDeviceShortName]
-              || [CSRUtilities belongToSceneRemoteOneKeyV:deleteDeviceShortName])) {
+            || [CSRUtilities belongToSceneRemoteSixKeysV:deleteDeviceShortName]
+            || [CSRUtilities belongToSceneRemoteFourKeysV:deleteDeviceShortName]
+            || [CSRUtilities belongToSceneRemoteThreeKeysV:deleteDeviceShortName]
+            || [CSRUtilities belongToSceneRemoteTwoKeysV:deleteDeviceShortName]
+            || [CSRUtilities belongToSceneRemoteOneKeyV:deleteDeviceShortName])) {
             if (_hud) {
                 [_hud hideAnimated:YES];
                 _hud = nil;
@@ -1289,8 +1292,9 @@
                                                                      [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:deleteRgbSceneEntity];
                                                                  }
                                                              }
-                                                             [[CSRAppStateManager sharedInstance].selectedPlace removeDevicesObject:deleteDeviceEntity];
-                                                             [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:deleteDeviceEntity];
+                                                             if ([CSRUtilities belongToSonosMusicController:deleteDeviceEntity.shortName]) {
+                                                                 [[CSRDatabaseManager sharedInstance] cleanSonos:deleteDeviceEntity.deviceId];
+                                                             }
                                                              
                                                              [[CSRDatabaseManager sharedInstance] dropEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
                                                              [[CSRDatabaseManager sharedInstance] sceneMemberEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
@@ -1307,6 +1311,9 @@
                                                                  || [CSRUtilities belongToSceneRemoteOneKeyV:deleteDeviceEntity.shortName]) {
                                                                  [self removeSceneAfterSceneRemoteDelete:deleteDeviceEntity.deviceId];
                                                              }
+                                                             
+                                                             [[CSRAppStateManager sharedInstance].selectedPlace removeDevicesObject:deleteDeviceEntity];
+                                                             [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:deleteDeviceEntity];
                                                              
                                                              [[CSRDatabaseManager sharedInstance] saveContext];
                                                              

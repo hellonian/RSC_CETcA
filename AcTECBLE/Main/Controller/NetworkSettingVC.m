@@ -11,9 +11,9 @@
 #import <CoreLocation/CLLocationManager.h>
 #import "CSRUtilities.h"
 #import "DataModelManager.h"
-#import "GCDAsyncSocket.h"
+#import "DeviceModelManager.h"
 
-@interface NetworkSettingVC ()<CLLocationManagerDelegate,GCDAsyncSocketDelegate>
+@interface NetworkSettingVC ()<CLLocationManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *connectionLabel;
 @property (weak, nonatomic) IBOutlet UILabel *ipLabel;
@@ -23,7 +23,8 @@
 @property (nonatomic, strong) NSString *wifiPassword;
 @property (nonatomic, strong) NSData *applyData;
 @property (nonatomic, assign) NSInteger applyIndex;
-@property (nonatomic, strong) GCDAsyncSocket *tcpSocketManager;
+@property (nonatomic, strong) NSMutableData *receiveData;
+@property (weak, nonatomic) IBOutlet UIButton *socketConnectionBtn;
 
 @end
 
@@ -224,81 +225,6 @@
         }
     }
 }
-
-- (IBAction)socketConnectAction:(id)sender {
-    CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-    if (device.ipAddress) {
-        [self connentHost:device.ipAddress prot:8888];
-    }
-}
-
-- (void)connentHost:(NSString *)host prot:(uint16_t)port{
-    if (host==nil || host.length <= 0) {
-        NSAssert(host != nil, @"host must be not nil");
-    }
-    
-    [self.tcpSocketManager disconnect];
-    if (self.tcpSocketManager == nil) {
-        self.tcpSocketManager = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-    }
-    NSError *connectError = nil;
-    BOOL isConnected = [self.tcpSocketManager isConnected];
-    NSLog(@"isConnected: %d",isConnected);
-    if (!isConnected) {
-        if (![self.tcpSocketManager connectToHost:host onPort:port error:&connectError]) {
-            NSLog(@"Connect Error: %@", connectError);
-        }else {
-            NSLog(@"Connect success!");
-            [self.tcpSocketManager readDataWithTimeout:-1 tag:0];
-        }
-    }
-}
-
-
-- (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
-    NSLog(@">><><> %@", data);
-    
-    [sock readDataWithTimeout:-1 tag:0];
-}
-
-- (IBAction)getDeviceInfosAction:(id)sender {
-    Byte b[] = {0xa5, 0x00, 0x0e, 0x00, 0x00, 0x00, 0x10, 0x00, 0x01, 0x00, 0x01, 0x10};
-    NSData *d = [[NSData alloc] initWithBytes:b length:12];
-    int sum = [self sumCFromData:d];
-    Byte byte[] = {0xa5, 0x00, 0x0e, 0x00, 0x00, 0x00, 0x10, 0x00, 0x01, 0x00, 0x01, 0x10, sum, 0xfe};
-    NSData *data = [[NSData alloc] initWithBytes:byte length:14];
-    NSLog(@"getDeviceInfosAction: %@",data);
-    [self.tcpSocketManager writeData:data withTimeout:-1 tag:0];
-}
-
-- (IBAction)getFavoritesAction:(id)sender {
-    Byte b[] = {0xa5, 0x00, 0x0e, 0x00, 0x00, 0x00, 0x10, 0x00, 0x01, 0x00, 0x01, 0x10};
-    NSData *d = [[NSData alloc] initWithBytes:b length:12];
-    int sum = [self sumCFromData:d];
-    Byte byte[] = {0xa5, 0x00, 0x0e, 0x00, 0x00, 0x00, 0x10, 0x00, 0x01, 0x00, 0x02, 0x10, sum, 0xfe};
-    NSData *data = [[NSData alloc] initWithBytes:byte length:14];
-    NSLog(@"getFavoritesAction: %@",data);
-    [self.tcpSocketManager writeData:data withTimeout:-1 tag:0];
-}
-
-- (int)sumCFromData:(NSData *)data {
-    int lm = (int)data.length;
-    Byte *bytes = (unsigned char *)[data bytes];
-    int sumC = 0;
-    for (int i = 0; i < lm; i++) {
-        sumC ^= bytes[i];
-    }
-    return sumC;
-}
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 
 @end

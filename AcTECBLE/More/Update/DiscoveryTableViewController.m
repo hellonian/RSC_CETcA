@@ -318,7 +318,7 @@
             [_customizeHud updateProgress:0.1];
         });
         
-        if ([model.bleHwVersion integerValue] >= 16 && [model.bleHwVersion integerValue] < 32) {
+        if (([model.bleHwVersion integerValue] >= 16 && [model.bleHwVersion integerValue] < 32)|| ([model.kind isEqualToString:@"S350B"] || [model.kind isEqualToString:@"S2400IB"] || [model.kind isEqualToString:@"S2400IB-Q"] || [model.kind isEqualToString:@"D350SB"] || [model.kind isEqualToString:@"D350B"] || [model.kind isEqualToString:@"D300IB-T2"] || [model.kind isEqualToString:@"D350SB-Q2"] || [model.kind isEqualToString:@"D300SB"] || [model.kind isEqualToString:@"D350SB-Q"] || [model.kind isEqualToString:@"D300IB-Q"] || [model.kind isEqualToString:@"RB01"] || [model.kind isEqualToString:@"RB05"] || [model.kind isEqualToString:@"D300IB"])) {
             [[CSRBluetoothLE sharedInstance] setIsForGAIA:NO];
             [[OTAU shareInstance] setSourceFilePath:path];
             if (model.connected) {

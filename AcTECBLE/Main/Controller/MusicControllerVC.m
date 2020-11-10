@@ -149,7 +149,7 @@
                         NSDictionary *dic = (NSDictionary *)responseObject;
                         latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
                         downloadAddress = dic[@"Download_address"];
-                        if ([device.mcuSVersion integerValue]<latestMCUSVersion) {
+                        if ([device.mcuSVersion integerValue] != 0 && [device.mcuSVersion integerValue]<latestMCUSVersion) {
                             updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
                             [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
                             [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
@@ -709,7 +709,6 @@
     [self.view addSubview:self.indicatorView];
     [self.indicatorView autoCenterInSuperview];
     [self.indicatorView startAnimating];
-    
 }
 
 - (void)hideLoading {
@@ -743,33 +742,35 @@
 }
 
 - (void)refresh:(UILongPressGestureRecognizer *)sender {
-    [self showLoading];
-    [self performSelector:@selector(scanOnlineChannelTimeOut) withObject:nil afterDelay:10];
-    Byte byte[] = {0xea, 0x82, 0x00};
-    NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
-    
-    dispatch_group_t group = dispatch_group_create();
-    dispatch_group_async(group, dispatch_queue_create("com.actec.music", DISPATCH_QUEUE_CONCURRENT), ^{
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (!groupCancel) {
-                DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-                NSString *hex = [CSRUtilities stringWithHexNumber:model.mcCurrentChannel];
-                NSString *bin = [CSRUtilities getBinaryByhex:hex];
-                for (int i = 0; i < [bin length]; i ++) {
-                    NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
-                    if ([bit boolValue]) {
-                        Byte byte[] = {0xea, 0x81, i, 0x00, 0x00};
-                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
-                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-                        break;
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        [self showLoading];
+        [self performSelector:@selector(scanOnlineChannelTimeOut) withObject:nil afterDelay:10];
+        Byte byte[] = {0xea, 0x82, 0x00};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+        
+        dispatch_group_t group = dispatch_group_create();
+        dispatch_group_async(group, dispatch_queue_create("com.actec.music", DISPATCH_QUEUE_CONCURRENT), ^{
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (!groupCancel) {
+                    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+                    NSString *hex = [CSRUtilities stringWithHexNumber:model.mcCurrentChannel];
+                    NSString *bin = [CSRUtilities getBinaryByhex:hex];
+                    for (int i = 0; i < [bin length]; i ++) {
+                        NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
+                        if ([bit boolValue]) {
+                            Byte byte[] = {0xea, 0x81, i, 0x00, 0x00};
+                            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+                            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                            break;
+                        }
                     }
                 }
-            }
+            });
         });
-    });
-    
-    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+        
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+    }
 }
 
 - (void)channelState:(UIBarButtonItem *)item {

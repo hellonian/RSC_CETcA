@@ -13,8 +13,9 @@
 #import "DataModelManager.h"
 #import "NetworkSettingVC.h"
 #import "MusicControllerVC.h"
+#import "SocketConnectionTool.h"
 
-@interface SonosMusicControllerVC ()<UITableViewDelegate, UITableViewDataSource>
+@interface SonosMusicControllerVC ()<UITableViewDelegate, UITableViewDataSource, SocketConnectionToolDelegate>
 {
     NSData *retryCmd;
     NSInteger retryCount;
@@ -26,6 +27,8 @@
 @property (nonatomic, strong) NSMutableArray *listDataAry;
 @property (weak, nonatomic) IBOutlet UIView *noneView;
 @property (nonatomic, strong) NSMutableArray *infoQueue;
+
+@property (nonatomic, strong) SocketConnectionTool *socketTool;
 
 @end
 
@@ -55,6 +58,7 @@
     [_titleBtn sizeToFit];
     self.navigationItem.titleView = _titleBtn;
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshNetworkConnectionStatus:) name:@"refreshNetworkConnectionStatus" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshMCChannels:) name:@"refreshMCChannels" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshSonosInfo:) name:@"refreshSonosInfo" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshAllInfo:) name:@"refreshAllInfo" object:nil];
@@ -74,11 +78,11 @@
             [_listView reloadData];
         }else {
             _listView.hidden = YES;
-            Byte byte[] = {0xea, 0x82, 0x00};
-            NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
-            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
         }
         
+        Byte byte[] = {0xea, 0x77, 0x07};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
     }
 }
 
@@ -166,9 +170,7 @@
                         }else {
                             [self.infoQueue addObject:@(i)];
                         }
-                        
                     }
-                    
                 }
                 [self nextOperation];
             }else {
@@ -322,6 +324,7 @@
         CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
         if ([device.sonoss count]>0) {
             _noneView.hidden = YES;
+            _listView.hidden = NO;
             _listDataAry = [[device.sonoss allObjects] mutableCopy];
             NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"channel" ascending:YES];
             [_listDataAry sortUsingDescriptors:[NSArray arrayWithObject:sort]];
@@ -329,8 +332,10 @@
         }
         if ([userInfo[@"channel"] integerValue] == [[self.infoQueue firstObject] integerValue]) {
             [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(readInfoTimeOut) object:nil];
-            [self.infoQueue removeObjectAtIndex:0];
-            [self nextOperation];
+            if ([self.infoQueue count] > 0) {
+                [self.infoQueue removeObjectAtIndex:0];
+                [self nextOperation];
+            }
         }
     }
 }
@@ -364,22 +369,60 @@
             model.mcExistChannels = 0;
         }
         
-        Byte byte[] = {0xea, 0x82, 0x00};
+        Byte byte[] = {0xea, 0x77, 0x07};
         NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
         [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
     }
 }
 
-
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)refreshNetworkConnectionStatus:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    NSInteger type = [userInfo[@"type"] integerValue];
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        if (type == 1) {
+            NSString *status = userInfo[@"staus"];
+            [self.socketTool connentHost:status prot:8888];
+        }else if (type == 7) {
+            BOOL status = [userInfo[@"staus"] boolValue];
+            if (!status) {
+                [self refreshMCChannelsByBluetooth];
+            }
+        }
+    }
 }
-*/
+
+- (SocketConnectionTool *)socketTool {
+    if (!_socketTool) {
+        _socketTool = [[SocketConnectionTool alloc] init];
+        _socketTool.delegate = self;
+        _socketTool.deviceID = _deviceId;
+    }
+    return _socketTool;
+}
+
+- (void)saveSonosInfo:(NSNumber *)deviceID {
+    if ([deviceID isEqualToNumber:_deviceId]) {
+        _noneView.hidden = YES;
+        CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+        _listDataAry = [[device.sonoss allObjects] mutableCopy];
+        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"channel" ascending:YES];
+        [_listDataAry sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+        [_listView reloadData];
+    }
+}
+
+- (void)socketConnectFail:(NSNumber *)deviceID {
+    if ([deviceID isEqualToNumber:_deviceId]) {
+        [self refreshMCChannelsByBluetooth];
+    }
+}
+
+- (void)refreshMCChannelsByBluetooth {
+    Byte byte[] = {0xea, 0x82, 0x00};
+    NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+}
+
 
 @end
