@@ -154,5 +154,6 @@
 + (NSString *)convertToJsonData2:(NSDictionary *)dict;
 
 + (int)atFromData:(NSData *)data;
++ (NSString *)binaryStringWithInteger:(NSInteger)value;
 
 @end

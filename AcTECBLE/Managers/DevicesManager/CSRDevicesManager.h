@@ -18,7 +18,6 @@
 
 //old
 @property (strong, atomic) NSNumber *areaId;
-@property (strong, atomic) NSNumber *deviceIdNumber;
 //new
 @property (atomic, strong) NSString *siteId;
 @property (atomic, strong) NSString *userId;

@@ -15,10 +15,10 @@
 #import <MBProgressHUD.h>
 #import "AFHTTPSessionManager.h"
 #import "PureLayout.h"
-#import "MCUUpdateTool.h"
 #import "DataModelManager.h"
+#import "UpdataMCUTool.h"
 
-@interface SocketViewController ()<UITextFieldDelegate,MBProgressHUDDelegate,MCUUpdateToolDelegate>
+@interface SocketViewController ()<UITextFieldDelegate,MBProgressHUDDelegate,UpdataMCUToolDelegate>
 {
     NSTimer *timer;
     NSString *downloadAddress;
@@ -53,6 +53,7 @@
 @property (weak, nonatomic) IBOutlet UISwitch *thresholdSwitch2;
 @property (weak, nonatomic) IBOutlet UIImageView *abnormalImageView1;
 @property (weak, nonatomic) IBOutlet UIImageView *abnormalImageView2;
+@property (nonatomic, strong) UIAlertController *mcuAlert;
 
 @end
 
@@ -161,8 +162,8 @@
 }
 
 - (void)askUpdateMCU {
-    [MCUUpdateTool sharedInstace].toolDelegate = self;
-    [[MCUUpdateTool sharedInstace] askUpdateMCU:_deviceId downloadAddress:downloadAddress latestMCUSVersion:latestMCUSVersion];
+    [UpdataMCUTool sharedInstace].toolDelegate = self;
+    [[UpdataMCUTool sharedInstace] askUpdateMCU:_deviceId downloadAddress:downloadAddress latestMCUSVersion:latestMCUSVersion];
 }
 
 -(void)viewDidLayoutSubviews {
@@ -196,23 +197,22 @@
     }
 }
 
-- (void)updateSuccess:(BOOL)value {
+- (void)updateSuccess:(NSString *)value {
     if (_updatingHud) {
         [_updatingHud hideAnimated:YES];
         [self.translucentBgView removeFromSuperview];
         self.translucentBgView = nil;
         [updateMCUBtn removeFromSuperview];
         updateMCUBtn = nil;
-        if (value) {
-            timer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(timerMethod:) userInfo:nil repeats:YES];
-            [timer fire];
+        if (!_mcuAlert) {
+            _mcuAlert = [UIAlertController alertControllerWithTitle:nil message:value preferredStyle:UIAlertControllerStyleAlert];
+            [_mcuAlert.view setTintColor:DARKORAGE];
+            UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+            [_mcuAlert addAction:cancel];
+            [self presentViewController:_mcuAlert animated:YES completion:nil];
+        }else {
+            [_mcuAlert setMessage:value];
         }
-        NSString *valueStr = value? AcTECLocalizedStringFromTable(@"Success", @"Localizable"):AcTECLocalizedStringFromTable(@"Error", @"Localizable");
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:valueStr preferredStyle:UIAlertControllerStyleAlert];
-        [alert.view setTintColor:DARKORAGE];
-        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
-        [alert addAction:cancel];
-        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 

@@ -470,13 +470,13 @@ static DataModelManager *manager = nil;
     else if ([dataStr hasPrefix:@"eb34"]) {
         CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sourceDeviceId];
         if (device) {
-            device.mcuSVersion = @0;
+            device.mcuSVersion = @(-1);
             [[CSRDatabaseManager sharedInstance] saveContext];
         }
     }
     
     else if ([dataStr hasPrefix:@"eb30"]||[dataStr hasPrefix:@"eb32"]||[dataStr hasPrefix:@"eb33"]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"MCUUpdateDataCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"MCUUpdateDataCall":[dataStr substringFromIndex:2]}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"MCUUpdateDataCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"MCUUpdateDataCall":data}];
     }
     
     else if ([dataStr hasPrefix:@"eb5002"]) {

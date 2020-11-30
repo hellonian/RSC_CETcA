@@ -346,52 +346,48 @@
             }
         }
         
-        NSString *hex1 = [CSRUtilities stringWithHexNumber:[member.eveD0 integerValue]];
-        NSString *bin1 = [self fixBinStringEightLenth:[CSRUtilities getBinaryByhex:hex1]];
+        _imgv1.image = nil;
+        _imgv2.image = nil;
+        _imgv3.image = nil;
+        _label1.text = @"";
+        _label2.text = @"";
+        _label3.text = @"";
         
-        NSString *cp = [bin1 substringWithRange:NSMakeRange([bin1 length]-1, 1)];
-        _imgv1.image = [UIImage imageNamed:@"Ico_power"];
-        _label1.text = [cp boolValue]?@"ON":@"OFF";
+        NSInteger et = [member.eveType integerValue];
+        if (et & 0x01) {
+            _label1.text = ([member.eveD0 integerValue] & 0x01) ? @"ON":@"OFF";
+        }
         
-        NSString *s = [bin1 substringWithRange:NSMakeRange([bin1 length]-1-4, 3)];
-        NSInteger is = 0;
-        for (int i = 0; i < [s length]; i ++) {
-            NSString *bit = [s substringWithRange:NSMakeRange([s length]-1-i, 1)];
-            if ([bit boolValue]) {
-                is = is + pow(2, i);
+        if (et & 0x4) {
+            NSInteger is = ([member.eveD0 integerValue] & 0x1c) >> 2;
+            if ([_label1.text length] > 0) {
+                _label1.text = [NSString stringWithFormat:@"%@  %@",_label1.text,AUDIOSOURCES[is]];
+            }else {
+                _label1.text = [NSString stringWithFormat:@"%@",AUDIOSOURCES[is]];
             }
         }
-        if (is < 8) {
-            _label1.text = [NSString stringWithFormat:@"%@ %@", _label1.text,AUDIOSOURCES[is]];
+        
+        if (et & 0x02) {
+            _label2.text = ([member.eveD0 integerValue] & 0x02) ? @"Play":@"Stop";
         }
         
-        NSString *p = [bin1 substringWithRange:NSMakeRange([bin1 length]-1-1, 1)];
-        _imgv2.image = [UIImage imageNamed:@"Ico_mc"];
-        _label2.text = [p boolValue]?@"Play":@"Stop";
-        NSString *c = [bin1 substringWithRange:NSMakeRange([bin1 length]-1-7, 3)];
-        NSInteger ic = 0;
-        for (int i = 0; i < [c length]; i ++) {
-            NSString *bit = [c substringWithRange:NSMakeRange([c length]-1-i, 1)];
-            if ([bit boolValue]) {
-                ic = ic + pow(2, i);
+        if (et & 0x03) {
+            NSInteger ic = ([member.eveD0 integerValue] & 0xe0) >> 5;
+            if (ic < 5) {
+                if ([_label2.text length] > 0) {
+                    _label2.text = [NSString stringWithFormat:@"%@ %@",_label2.text,PLAYMODE[ic-1]];
+                }else {
+                    _label2.text = [NSString stringWithFormat:@"%@",PLAYMODE[ic-1]];
+                }
             }
-        }
-        if (ic < 5) {
-            _label2.text = [NSString stringWithFormat:@"%@ %@",_label2.text,PLAYMODE[ic]];
         }
         
-        NSString *hex2 = [CSRUtilities stringWithHexNumber:[member.eveD1 integerValue]];
-        NSString *bin2 = [self fixBinStringEightLenth:[CSRUtilities getBinaryByhex:hex2]];
-        NSString *v = [bin2 substringWithRange:NSMakeRange([bin2 length]-1-7, 7)];
-        NSInteger iv = 0;
-        for (int i = 0; i < [v length]; i ++) {
-            NSString *bit = [v substringWithRange:NSMakeRange([v length]-1-i, 1)];
-            if ([bit boolValue]) {
-                iv = iv + pow(2, i);
-            }
+        if (et & 0x10) {
+            _label3.text = @"Mute";
+        }else if (et & 0x20) {
+            NSInteger iv = ([member.eveD1 integerValue] & 0xfe) >> 1;
+            _label3.text = [NSString stringWithFormat:@"%ld",iv];
         }
-        _imgv3.image = [UIImage imageNamed:@"Ico_voice"];
-        _label3.text = [NSString stringWithFormat:@"%ld",iv];
     }else if ([CSRUtilities belongToSonosMusicController:member.kindString]) {
         _icon.image = [UIImage imageNamed:@"icon_sonos"];
         _channelLabel.hidden = NO;
@@ -415,52 +411,55 @@
             }
         }
         _channelLabel.text = str;
-        _imgv1.image = [UIImage imageNamed:@"Ico_mc"];
-        if ([device.remoteBranch length]>0) {
-            NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:device.remoteBranch];
-            if ([jsonDictionary count]>0) {
-                NSArray *songs = jsonDictionary[@"song"];
-                for (NSDictionary *dic in songs) {
-                    NSInteger n = [dic[@"id"] integerValue];
-                    if (n == [member.eveD2 integerValue]) {
-                        _label1.text = dic[@"name"];
-                        break;
+        
+        _imgv1.image = nil;
+        _imgv2.image = nil;
+        _imgv3.image = nil;
+        _label1.text = @"";
+        _label2.text = @"";
+        _label3.text = @"";
+        
+        NSInteger et = [member.eveType integerValue];
+        if (et & 0x40) {
+            if ([device.remoteBranch length]>0) {
+                NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:device.remoteBranch];
+                if ([jsonDictionary count]>0) {
+                    NSArray *songs = jsonDictionary[@"song"];
+                    for (NSDictionary *dic in songs) {
+                        NSInteger n = [dic[@"id"] integerValue];
+                        if (n == [member.eveD2 integerValue]) {
+                            _label1.text = dic[@"name"];
+                            break;
+                        }
                     }
                 }
             }
         }
         
-        NSString *hex1 = [CSRUtilities stringWithHexNumber:[member.eveD0 integerValue]];
-        NSString *bin1 = [self fixBinStringEightLenth:[CSRUtilities getBinaryByhex:hex1]];
-        NSString *p = [bin1 substringWithRange:NSMakeRange([bin1 length]-1-1, 1)];
-        _imgv2.image = [UIImage imageNamed:@"Ico_mc"];
-        _label2.text = [p boolValue]?@"Play":@"Stop";
-        NSString *c = [bin1 substringWithRange:NSMakeRange([bin1 length]-1-7, 3)];
-        NSInteger ic = 0;
-        for (int i = 0; i < [c length]; i ++) {
-            NSString *bit = [c substringWithRange:NSMakeRange([c length]-1-i, 1)];
-            if ([bit boolValue]) {
-                ic = ic + pow(2, i);
+        if (et & 0x02) {
+            _label2.text = ([member.eveD0 integerValue] & 0x02) ? @"Play":@"Stop";
+        }
+        
+        if (et & 0x03) {
+            NSInteger ic = ([member.eveD0 integerValue] & 0xe0) >> 5;
+            if (ic>2) {
+                ic = ic-1;
+            }
+            if (ic<4) {
+                if ([_label2.text length] > 0) {
+                    _label2.text = [NSString stringWithFormat:@"%@ %@",_label2.text,PLAYMODE[ic]];
+                }else {
+                    _label2.text = [NSString stringWithFormat:@"%@",PLAYMODE[ic]];
+                }
             }
         }
-        if (ic>2) {
-            ic = ic-1;
+        
+        if (et & 0x10) {
+            _label3.text = @"Mute";
+        }else if (et & 0x20) {
+            NSInteger iv = ([member.eveD1 integerValue] & 0xfe) >> 1;
+            _label3.text = [NSString stringWithFormat:@"%ld",iv];
         }
-        if (ic < 4) {
-            _label2.text = [NSString stringWithFormat:@"%@ %@",_label2.text,PLAYMODE_SONOS[ic]];
-        }
-        NSString *hex2 = [CSRUtilities stringWithHexNumber:[member.eveD1 integerValue]];
-        NSString *bin2 = [self fixBinStringEightLenth:[CSRUtilities getBinaryByhex:hex2]];
-        NSString *v = [bin2 substringWithRange:NSMakeRange([bin2 length]-1-7, 7)];
-        NSInteger iv = 0;
-        for (int i = 0; i < [v length]; i ++) {
-            NSString *bit = [v substringWithRange:NSMakeRange([v length]-1-i, 1)];
-            if ([bit boolValue]) {
-                iv = iv + pow(2, i);
-            }
-        }
-        _imgv3.image = [UIImage imageNamed:@"Ico_voice"];
-        _label3.text = [NSString stringWithFormat:@"%ld",iv];
     }
 }
 

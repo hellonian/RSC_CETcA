@@ -142,7 +142,6 @@
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceID = userInfo[@"deviceId"];
     if ([deviceID isEqualToNumber:_deviceId]) {
-        
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
         CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
         if (model) {

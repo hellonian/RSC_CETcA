@@ -13,12 +13,12 @@
 #import <CSRmesh/LightModelApi.h>
 #import "DeviceModelManager.h"
 #import <MBProgressHUD.h>
-#import "MCUUpdateTool.h"
 #import "AFHTTPSessionManager.h"
 #import "PureLayout.h"
 #import "DataModelManager.h"
+#import "UpdataMCUTool.h"
 
-@interface CurtainViewController ()<UITextFieldDelegate,MBProgressHUDDelegate,MCUUpdateToolDelegate>
+@interface CurtainViewController ()<UITextFieldDelegate,MBProgressHUDDelegate,UpdataMCUToolDelegate>
 {
     NSString *downloadAddress;
     NSInteger latestMCUSVersion;
@@ -48,6 +48,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *cSettingBtn;
 @property (strong, nonatomic) IBOutlet UIView *cSettingView;
 @property (weak, nonatomic) IBOutlet UISwitch *cReverseSwitch;
+@property (nonatomic, strong) UIAlertController *mcuAlert;
 
 @end
 
@@ -147,6 +148,7 @@
                 NSDictionary *dic = (NSDictionary *)responseObject;
                 latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
                 downloadAddress = dic[@"Download_address"];
+                NSLog(@" %ld  --  %@", latestMCUSVersion, _curtainEntity.mcuSVersion);
                 if ([_curtainEntity.mcuSVersion integerValue] != 0 && [_curtainEntity.mcuSVersion integerValue]<latestMCUSVersion) {
                     updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
                     [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
@@ -168,8 +170,8 @@
 }
 
 - (void)askUpdateMCU {
-    [MCUUpdateTool sharedInstace].toolDelegate = self;
-    [[MCUUpdateTool sharedInstace] askUpdateMCU:_deviceId downloadAddress:downloadAddress latestMCUSVersion:latestMCUSVersion];
+    [UpdataMCUTool sharedInstace].toolDelegate = self;
+    [[UpdataMCUTool sharedInstace] askUpdateMCU:_deviceId downloadAddress:downloadAddress latestMCUSVersion:latestMCUSVersion];
 }
 
 - (void)starteUpdateHud {
@@ -187,19 +189,22 @@
     }
 }
 
-- (void)updateSuccess:(BOOL)value {
+- (void)updateSuccess:(NSString *)value {
     if (_updatingHud) {
         [_updatingHud hideAnimated:YES];
         [self.translucentBgView removeFromSuperview];
         self.translucentBgView = nil;
         [updateMCUBtn removeFromSuperview];
         updateMCUBtn = nil;
-        NSString *valueStr = value? AcTECLocalizedStringFromTable(@"Success", @"Localizable"):AcTECLocalizedStringFromTable(@"Error", @"Localizable");
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:valueStr preferredStyle:UIAlertControllerStyleAlert];
-        [alert.view setTintColor:DARKORAGE];
-        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
-        [alert addAction:cancel];
-        [self presentViewController:alert animated:YES completion:nil];
+        if (!_mcuAlert) {
+            _mcuAlert = [UIAlertController alertControllerWithTitle:nil message:value preferredStyle:UIAlertControllerStyleAlert];
+            [_mcuAlert.view setTintColor:DARKORAGE];
+            UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+            [_mcuAlert addAction:cancel];
+            [self presentViewController:_mcuAlert animated:YES completion:nil];
+        }else {
+            [_mcuAlert setMessage:value];
+        }
     }
 }
 

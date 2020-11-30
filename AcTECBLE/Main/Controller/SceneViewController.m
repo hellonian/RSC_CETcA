@@ -324,6 +324,7 @@
                 retryCount = 0;
                 retryCmd = cmd;
                 retryDeviceId = m.deviceID;
+                NSLog(@"%@",cmd);
                 [[DataModelManager shareInstance] sendDataByBlockDataTransfer:m.deviceID data:cmd];
             }else {
                 Byte byte[] = {0x93, 0x07, b[1], b[0], e, d0, d1, d2, d3};
@@ -622,7 +623,7 @@
     m.sceneID = _sceneIndex;
     m.deviceID = model.deviceID;
     m.channel = model.channel;
-    m.eveType = @34;
+    m.eveType = @(model.dataValid + pow(2, 7));
     
     NSInteger status;
     CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:model.deviceID];
@@ -635,11 +636,12 @@
         }
         status = 1 + model.play*2 + cy*32;
     }else {
-        status = model.channelState + model.play*2 + model.source*4 + model.cycle*32;
+        status = model.channelState + model.play*2 + model.source*4 + (model.cycle+1)*32;
     }
     
     m.eveD0 = @(status);
-    NSInteger voice = model.mute + model.voice*2;
+    NSInteger vo = model.play ? model.voice : 0;
+    NSInteger voice = model.mute + vo*2;
     m.eveD1 = @(voice);
     m.eveD2 = @(model.songNumber);
     m.eveD3 = @0;

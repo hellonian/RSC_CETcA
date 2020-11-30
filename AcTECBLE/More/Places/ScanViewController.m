@@ -330,7 +330,7 @@
     BOOL isConnected = [self.tcpSocketManager isConnected];
     NSLog(@"isConnected: %d",isConnected);
     if (!isConnected) {
-        [self.tcpSocketManager connectToHost:host onPort:port error:&connectError];
+        [self.tcpSocketManager connectToHost:host onPort:port withTimeout:5 error:&connectError];
     }else {
         [self.tcpSocketManager readDataWithTimeout:-1 tag:0];
     }
@@ -340,6 +340,17 @@
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port {
     NSLog(@">>>>> didConnectToHost <<<<<");
     [self.tcpSocketManager readDataWithTimeout:-1 tag:0];
+}
+
+- (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err {
+    NSLog(@">>>>> socketDidDisconnect <<<<<");
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"lan_connection_fail", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+    [alert.view setTintColor:DARKORAGE];
+    UIAlertAction *action = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }];
+    [alert addAction:action];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 //获取本机wifi名称

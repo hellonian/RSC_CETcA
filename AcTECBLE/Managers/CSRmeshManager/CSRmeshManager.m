@@ -135,6 +135,38 @@
             
             deviceEntity = [NSEntityDescription insertNewObjectForEntityForName:@"CSRDeviceEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
             
+        }else {
+            
+            if (deviceEntity.rgbScenes && [deviceEntity.rgbScenes count] > 0) {
+                for (RGBSceneEntity *deleteRgbSceneEntity in deviceEntity.rgbScenes) {
+                    [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:deleteRgbSceneEntity];
+                }
+            }
+            if ([CSRUtilities belongToSonosMusicController:deviceEntity.shortName]) {
+                [[CSRDatabaseManager sharedInstance] cleanSonos:deviceEntity.deviceId];
+            }
+            [[CSRDatabaseManager sharedInstance] dropEntityDeleteWhenDeleteDeviceEntity:deviceEntity.deviceId];
+            [[CSRDatabaseManager sharedInstance] sceneMemberEntityDeleteWhenDeleteDeviceEntity:deviceEntity.deviceId];
+            [[CSRDatabaseManager sharedInstance] timerDeviceEntityDeleteWhenDeleteDeviceEntity:deviceEntity.deviceId];
+            NSData *groups = [CSRUtilities dataForHexString:deviceEntity.groups];
+            uint16_t *dataToModify = (uint16_t*)groups.bytes;
+            NSMutableArray *desiredGroups = [NSMutableArray new];
+            for (int count=0; count < deviceEntity.groups.length/2; count++, dataToModify++) {
+                NSNumber *groupValue = @(*dataToModify);
+                [desiredGroups addObject:groupValue];
+            }
+            for (int i=0; i<[desiredGroups count]; i++) {
+                NSNumber *areaValue = [desiredGroups objectAtIndex:i];
+                CSRAreaEntity *areaEntity = [[[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"CSRAreaEntity" withPredicate:@"areaID == %@", areaValue] firstObject];
+                if (areaEntity) {
+                    [areaEntity removeDevicesObject:deviceEntity];
+                }
+                
+                NSMutableData *myData = (NSMutableData*)[CSRUtilities dataForHexString:deviceEntity.groups];
+                uint16_t *groups = (uint16_t *) myData.mutableBytes;
+                *(groups + i) = 0;
+                deviceEntity.groups = [CSRUtilities hexStringFromData:(NSData*)myData];
+            }
         }
         
         if (deviceEntity) {

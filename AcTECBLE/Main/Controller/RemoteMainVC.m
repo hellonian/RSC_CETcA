@@ -16,8 +16,8 @@
 #import "SceneViewController.h"
 #import "DataModelManager.h"
 #import "AFHTTPSessionManager.h"
-#import "MCUUpdateTool.h"
 #import <MBProgressHUD.h>
+#import "UpdataMCUTool.h"
 
 #define pi 3.14159265358979323846
 
@@ -33,7 +33,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
     MainRemoteType_SceneOne
 };
 
-@interface RemoteMainVC ()<UITextFieldDelegate, MCUUpdateToolDelegate, MBProgressHUDDelegate>
+@interface RemoteMainVC ()<UITextFieldDelegate, UpdataMCUToolDelegate, MBProgressHUDDelegate>
 {
     BOOL editing;
     NSInteger currentAngle;
@@ -97,6 +97,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
 @property (weak, nonatomic) IBOutlet UIImageView *musicRemoteBgImageView;
 
 @property (nonatomic,strong) MBProgressHUD *updatingHud;
+@property (nonatomic, strong) UIAlertController *mcuAlert;
 
 @end
 
@@ -674,6 +675,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             svc.srDeviceId = _deviceId;
             CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
             if (deviceEntity.remoteBranch > 0) {
+                NSLog(@"%@", deviceEntity.remoteBranch);
                 svc.sceneIndex = @([self exchangePositionOfDeviceIdString:[deviceEntity.remoteBranch substringWithRange:NSMakeRange((sender.tag-1)*6+2, 4)]]);
             }else {
                 svc.sceneIndex = @0;
@@ -1253,8 +1255,8 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
 }
 
 - (void)askUpdateMCU {
-    [MCUUpdateTool sharedInstace].toolDelegate = self;
-    [[MCUUpdateTool sharedInstace] askUpdateMCU:_deviceId downloadAddress:downloadAddress latestMCUSVersion:latestMCUSVersion];
+    [UpdataMCUTool sharedInstace].toolDelegate = self;
+    [[UpdataMCUTool sharedInstace] askUpdateMCU:_deviceId downloadAddress:downloadAddress latestMCUSVersion:latestMCUSVersion];
 }
 
 - (void)starteUpdateHud {
@@ -1274,19 +1276,22 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
     }
 }
 
-- (void)updateSuccess:(BOOL)value {
+- (void)updateSuccess:(NSString *)value {
     if (_updatingHud) {
         [_updatingHud hideAnimated:YES];
         [self.translucentBgView removeFromSuperview];
         self.translucentBgView = nil;
         [updateMCUBtn removeFromSuperview];
         updateMCUBtn = nil;
-        NSString *valueStr = value? AcTECLocalizedStringFromTable(@"Success", @"Localizable"):AcTECLocalizedStringFromTable(@"Error", @"Localizable");
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:valueStr preferredStyle:UIAlertControllerStyleAlert];
-        [alert.view setTintColor:DARKORAGE];
-        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
-        [alert addAction:cancel];
-        [self presentViewController:alert animated:YES completion:nil];
+        if (!_mcuAlert) {
+            _mcuAlert = [UIAlertController alertControllerWithTitle:nil message:value preferredStyle:UIAlertControllerStyleAlert];
+            [_mcuAlert.view setTintColor:DARKORAGE];
+            UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+            [_mcuAlert addAction:cancel];
+            [self presentViewController:_mcuAlert animated:YES completion:nil];
+        }else {
+            [_mcuAlert setMessage:value];
+        }
     }
 }
 

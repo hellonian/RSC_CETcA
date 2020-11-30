@@ -21,17 +21,21 @@
     if (self.tcpSocketManager == nil) {
         self.tcpSocketManager = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
     }
-    NSError *connectError = nil;
+    
     BOOL isConnected = [self.tcpSocketManager isConnected];
     NSLog(@"isConnected: %d",isConnected);
     if (!isConnected) {
-        [self.tcpSocketManager connectToHost:host onPort:port error:&connectError];
+        NSError *connectError = nil;
+        [self.tcpSocketManager connectToHost:host onPort:port withTimeout:5 error:&connectError];
     }else {
+        Byte sByte[2];
+        sByte[0] = (self.sourceAddress & 0xFF00) >> 8;
+        sByte[1] = self.sourceAddress & 0x00FF;
         NSInteger frameNumber = [self getFrameNumber];
-        Byte b[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00};
+        Byte b[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, sByte[1], sByte[0], 0x01, 0x00, 0x01, 0x10};
         NSData *d = [[NSData alloc] initWithBytes:b length:12];
         int sum = [CSRUtilities atFromData:d];
-        Byte byte[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, sum, 0xfe};
+        Byte byte[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, sByte[1], sByte[0], 0x01, 0x00, 0x01, 0x10, sum, 0xfe};
         NSData *data = [[NSData alloc] initWithBytes:byte length:14];
         [self writeData:data];
         
@@ -40,7 +44,7 @@
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port {
-    NSInteger frameNumber = [self getFrameNumber];
+    NSInteger frameNumber = 0;
     Byte b[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00};
     NSData *d = [[NSData alloc] initWithBytes:b length:12];
     int sum = [CSRUtilities atFromData:d];
@@ -95,7 +99,6 @@
             int sum = [CSRUtilities atFromData:d];
             Byte byte[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, sByte[1], sByte[0], 0x01, 0x00, 0x01, 0x10, sum, 0xfe};
             NSData *data = [[NSData alloc] initWithBytes:byte length:14];
-            NSLog(@"getDeviceInfosAction: %@",data);
             [self writeData:data];
             
         }else if (cmdByte[0] == 0x01 && cmdByte[1] == 0x90) {
@@ -115,7 +118,9 @@
                             NSInteger number = model & 0x7F;
                             NSString *room = device[@"room"];
                             [[CSRDatabaseManager sharedInstance] saveNewSonos:_deviceID channel:@(channel) infoVersion:@(version) modelType:@(type) modelNumber:@(number) name:room];
-                            [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshSonosInfo" object:self userInfo:@{@"deviceId":_deviceID, @"channel":@(channel)}];
+                        }
+                        if (self.delegate && [self.delegate respondsToSelector:@selector(saveSonosInfo:)]) {
+                            [self.delegate saveSonosInfo:_deviceID];
                         }
                         
                         Byte sByte[2];
@@ -127,7 +132,6 @@
                         int sum = [CSRUtilities atFromData:d];
                         Byte byte[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, sByte[1], sByte[0], 0x01, 0x00, 0x02, 0x10, sum, 0xfe};
                         NSData *data = [[NSData alloc] initWithBytes:byte length:14];
-                        NSLog(@"getFavoritesAction: %@",data);
                         [self writeData:data];
                         
                     }
@@ -159,7 +163,6 @@
                     int sum = [CSRUtilities atFromData:d];
                     Byte byte[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, sByte[1], sByte[0], 0x01, 0x00, 0x02, 0x10, sum, 0xfe};
                     NSData *data = [[NSData alloc] initWithBytes:byte length:14];
-                    NSLog(@"getFavoritesAction: %@",data);
                     [self writeData:data];
                 }
             }

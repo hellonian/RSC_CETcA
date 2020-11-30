@@ -57,6 +57,7 @@
 @property (nonatomic, strong) UIView *threeChannelSelectedView;
 
 @property (nonatomic, strong) UIView *mcChannelSelectedView;
+@property (nonatomic, strong) UIView *mcSonosChannelSelectionView;
 
 @end
 
@@ -692,7 +693,8 @@
             NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
             [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             for (CSRDeviceEntity *deviceEntity in mutableArray) {
-                if ([CSRUtilities belongToMusicController:deviceEntity.shortName]) {
+                if ([CSRUtilities belongToMusicController:deviceEntity.shortName]
+                    || [CSRUtilities belongToSonosMusicController:deviceEntity.shortName]) {
                     SingleDeviceModel *singleDevice = [[SingleDeviceModel alloc] init];
                     singleDevice.deviceId = deviceEntity.deviceId;
                     singleDevice.deviceName = deviceEntity.name;
@@ -954,13 +956,29 @@
                 [_selectedDevices addObject:mod];
                 [self removeOtherSeletedDevice:mainCell.deviceId];
             }else if (_selectMode == DeviceListSelectMode_MusicController) {
-                _channelCurrentDeviceID = mainCell.deviceId;
-                [self.view addSubview:self.translucentBgView];
-                [self.view addSubview:self.mcChannelSelectedView];
-                [self.mcChannelSelectedView autoCenterInSuperview];
-                [self.mcChannelSelectedView autoSetDimensionsToSize:CGSizeMake(271, 255)];
-                [self removeOtherSeletedDevice:mainCell.deviceId];
-                self.navigationItem.rightBarButtonItem.enabled = NO;
+                CSRDeviceEntity *deviceE = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
+                if ([CSRUtilities belongToMusicController:deviceE.shortName]) {
+                    _channelCurrentDeviceID = mainCell.deviceId;
+                    [self.view addSubview:self.translucentBgView];
+                    [self.view addSubview:self.mcChannelSelectedView];
+                    [self.mcChannelSelectedView autoCenterInSuperview];
+                    [self.mcChannelSelectedView autoSetDimensionsToSize:CGSizeMake(271, 255)];
+                    [self removeOtherSeletedDevice:mainCell.deviceId];
+                    self.navigationItem.rightBarButtonItem.enabled = NO;
+                }else if ([CSRUtilities belongToSonosMusicController:deviceE.shortName]) {
+                    if ([deviceE.sonoss count]>0) {
+                        _channelCurrentDeviceID = mainCell.deviceId;
+                        [self.view addSubview:self.translucentBgView];
+                        [self.view addSubview:self.mcSonosChannelSelectionView];
+                        [self.mcSonosChannelSelectionView autoCenterInSuperview];
+                        [self.mcSonosChannelSelectionView autoSetDimensionsToSize:CGSizeMake(271, 31+[deviceE.sonoss count]*45+44)];
+                        [self removeOtherSeletedDevice:mainCell.deviceId];
+                        self.navigationItem.rightBarButtonItem.enabled = NO;
+                    }else {
+                        mainCell.seleteButton.selected = NO;
+                    }
+                }
+                
             }else {
                 CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
                 if ([CSRUtilities belongToSocketTwoChannel:deviceEntity.shortName]
@@ -1003,7 +1021,6 @@
                         }
                     };
                     [self.navigationController pushViewController:sss animated:YES];
-                    
                 }else {
                     SelectModel *mod = [[SelectModel alloc] init];
                     mod.deviceID = mainCell.deviceId;
@@ -1389,6 +1406,12 @@
                 _mcChannelSelectedView = nil;
                 self.navigationItem.rightBarButtonItem.enabled = YES;
             }
+        }else if (button.tag == 51) {
+            if (_mcSonosChannelSelectionView) {
+                [_mcSonosChannelSelectionView removeFromSuperview];
+                _mcSonosChannelSelectionView = nil;
+                self.navigationItem.rightBarButtonItem.enabled = YES;
+            }
         }
         
         if (_translucentBgView) {
@@ -1763,6 +1786,127 @@
     if (_mcChannelSelectedView) {
         [_mcChannelSelectedView removeFromSuperview];
         _mcChannelSelectedView = nil;
+    }
+    if (_translucentBgView) {
+        [_translucentBgView removeFromSuperview];
+        _translucentBgView = nil;
+    }
+    self.navigationItem.rightBarButtonItem.enabled = YES;
+}
+
+- (UIView *)mcSonosChannelSelectionView {
+    if (!_mcSonosChannelSelectionView) {
+        _mcSonosChannelSelectionView = [[UIView alloc] initWithFrame:CGRectZero];
+        _mcSonosChannelSelectionView.backgroundColor = [UIColor whiteColor];
+        _mcSonosChannelSelectionView.alpha = 0.9;
+        _mcSonosChannelSelectionView.layer.cornerRadius = 14;
+        _mcSonosChannelSelectionView.layer.masksToBounds = YES;
+        
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 271, 30)];
+        titleLabel.text = AcTECLocalizedStringFromTable(@"select_the_channel", @"Localizable");
+        titleLabel.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
+        titleLabel.textAlignment = NSTextAlignmentCenter;
+        [_mcSonosChannelSelectionView addSubview:titleLabel];
+        
+        CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_channelCurrentDeviceID];
+        NSArray *sonos = [device.sonoss allObjects];
+        for (int i = 0; i < [device.sonoss count]; i ++) {
+            SonosEntity *s = [sonos objectAtIndex:i];
+            UIButton *btn = [[UIButton alloc] init];
+            btn.frame = CGRectMake(0, 31+i*45, 271, 44);
+            btn.tag = [s.channel integerValue]+100;
+            [btn setImage:[UIImage imageNamed:@"To_select"] forState:UIControlStateNormal];
+            [btn setImage:[UIImage imageNamed:@"Be_selected"] forState:UIControlStateSelected];
+            [btn setTitle:s.name forState:UIControlStateNormal];
+            [btn setTitleColor:[UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1] forState:UIControlStateNormal];
+            [btn addTarget:self action:@selector(mcSonosChannelSelectedViewTouchInsideAction:) forControlEvents:UIControlEventTouchUpInside];
+            [_mcSonosChannelSelectionView addSubview:btn];
+        }
+        
+        UIButton *cancel = [[UIButton alloc] initWithFrame:CGRectMake(0, 31+[sonos count]*45, 135, 44)];
+        cancel.tag = 51;
+        [cancel setTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") forState:UIControlStateNormal];
+        [cancel setTitleColor:DARKORAGE forState:UIControlStateNormal];
+        [cancel addTarget:self action:@selector(channelViewCancelAction:) forControlEvents:UIControlEventTouchUpInside];
+        [cancel addTarget:self action:@selector(channelViewTouchDown:) forControlEvents:UIControlEventTouchDown];
+        [cancel addTarget:self action:@selector(channelViewTouchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
+        [_mcSonosChannelSelectionView addSubview:cancel];
+        
+        UIView *line4 = [[UIView alloc] initWithFrame:CGRectMake(135, 211, 1, 44)];
+        line4.backgroundColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1];
+        [_mcSonosChannelSelectionView addSubview:line4];
+        
+        UIButton *save = [UIButton buttonWithType:UIButtonTypeCustom];
+        save.tag = 52;
+        [save setFrame:CGRectMake(136, 31+[sonos count]*45, 135, 44)];
+        [save setTitle:AcTECLocalizedStringFromTable(@"Save", @"Localizable") forState:UIControlStateNormal];
+        [save setTitleColor:DARKORAGE forState:UIControlStateNormal];
+        [save addTarget:self action:@selector(mcSonosChannelViewSaveAction:) forControlEvents:UIControlEventTouchUpInside];
+        [save addTarget:self action:@selector(channelViewTouchDown:) forControlEvents:UIControlEventTouchDown];
+        [save addTarget:self action:@selector(channelViewTouchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
+        [_mcSonosChannelSelectionView addSubview:save];
+    }
+    return _mcSonosChannelSelectionView;
+}
+
+- (void)mcSonosChannelSelectedViewTouchInsideAction:(UIButton *)sender {
+    sender.selected = !sender.selected;
+    CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_channelCurrentDeviceID];
+    NSArray *sonoss = [device.sonoss allObjects];
+    for (int i = 0; i < [sonoss count]; i ++) {
+        SonosEntity *s = [sonoss objectAtIndex:i];
+        UIButton *btn = (UIButton *)[sender.superview viewWithTag:[s.channel integerValue]+100];
+        if (btn && btn.selected && btn.tag != sender.tag) {
+            btn.selected = NO;
+        }
+    }
+}
+
+- (void)mcSonosChannelViewSaveAction:(UIButton *)sender {
+    sender.selected = !sender.selected;
+    CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_channelCurrentDeviceID];
+    NSArray *sonoss = [device.sonoss allObjects];
+    NSInteger mcChannel = 0;
+    for (int i = 0; i < [sonoss count]; i ++) {
+        SonosEntity *s = [sonoss objectAtIndex:i];
+        UIButton *btn = (UIButton *)[sender.superview viewWithTag:[s.channel integerValue]+100];
+        if (btn && btn.selected) {
+            mcChannel = mcChannel + pow(2, [s.channel integerValue]);
+        }
+    }
+    if (mcChannel == 0) {
+        for (MainCollectionViewCell *mainCell in _devicesCollectionView.visibleCells) {
+            if ([mainCell.deviceId isEqualToNumber:_channelCurrentDeviceID]) {
+                mainCell.seleteButton.selected = NO;
+                break;
+            }
+        }
+        for (SelectModel *mod in _selectedDevices) {
+            if ([mod.deviceID isEqualToNumber:_channelCurrentDeviceID]) {
+                [_selectedDevices removeObject:mod];
+                break;
+            }
+        }
+    }else {
+        BOOL exist = NO;
+        for (SelectModel *mod in _selectedDevices) {
+            if ([mod.deviceID isEqualToNumber:_channelCurrentDeviceID]) {
+                mod.channel = @(mcChannel);
+                exist = YES;
+                break;
+            }
+        }
+        if (!exist) {
+            SelectModel *mod = [[SelectModel alloc] init];
+            mod.deviceID = _channelCurrentDeviceID;
+            mod.channel = @(mcChannel);
+            [_selectedDevices addObject:mod];
+        }
+    }
+    
+    if (_mcSonosChannelSelectionView) {
+        [_mcSonosChannelSelectionView removeFromSuperview];
+        _mcSonosChannelSelectionView = nil;
     }
     if (_translucentBgView) {
         [_translucentBgView removeFromSuperview];

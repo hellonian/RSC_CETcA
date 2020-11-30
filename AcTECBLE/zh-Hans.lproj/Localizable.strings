@@ -221,3 +221,4 @@
 "networking_setting" = "网络设置";
 "connected" = "已连接";
 "not_connected" = "未连接";
+"lan_connection_fail" = "局域网连接失败，请重试或更换路由器后重试。";

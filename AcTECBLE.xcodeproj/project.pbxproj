@@ -42,9 +42,8 @@
 		2E159F372486442A001E126C /* RemoteLCDVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E159F392486442A001E126C /* RemoteLCDVC.xib */; };
 		2E18B21F25232D5D0044D2E0 /* NetworkSettingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E18B21D25232D5D0044D2E0 /* NetworkSettingVC.m */; };
 		2E18B22025232D5D0044D2E0 /* NetworkSettingVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E18B21E25232D5D0044D2E0 /* NetworkSettingVC.xib */; };
+		2E192D192572479E001161FF /* MusicControllerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E192D182572479E001161FF /* MusicControllerVC.m */; };
 		2E1C839E20CFD782009BCC6D /* PlaceDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E1C83A020CFD782009BCC6D /* PlaceDetailsViewController.xib */; };
-		2E1FA39F24EA2D02008C6497 /* MCPickerAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E1FA39D24EA2D02008C6497 /* MCPickerAlertController.m */; };
-		2E1FA3A024EA2D02008C6497 /* MCPickerAlertController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E1FA39E24EA2D02008C6497 /* MCPickerAlertController.xib */; };
 		2E2000A920182260000AD8C3 /* SceneEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2000A820182260000AD8C3 /* SceneEntity.m */; };
 		2E2000AC2018227E000AD8C3 /* SceneMemberEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2000AB2018227E000AD8C3 /* SceneMemberEntity.m */; };
 		2E2139F725512F4A009946D0 /* SelectionListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2139F625512F4A009946D0 /* SelectionListModel.m */; };
@@ -129,7 +128,6 @@
 		2E7C7B16250B6B6A00AFA845 /* NearbyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7C7B0D250B6B6A00AFA845 /* NearbyViewController.m */; };
 		2E7C7B17250B6B6A00AFA845 /* OtherViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7C7B0E250B6B6A00AFA845 /* OtherViewController.m */; };
 		2E7C7B18250B6B6A00AFA845 /* OtherViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E7C7B11250B6B6A00AFA845 /* OtherViewController.xib */; };
-		2E7DBC0624E630E700A36905 /* MusicControllerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E7DBC0424E630E700A36905 /* MusicControllerVC.m */; };
 		2E7DBC0724E630E700A36905 /* MusicControllerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E7DBC0524E630E700A36905 /* MusicControllerVC.xib */; };
 		2E814454254FA7C700B2606B /* SonosSelectModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E814453254FA7C700B2606B /* SonosSelectModel.m */; };
 		2E857F562542798300CA2B14 /* SocketConnectionTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E857F552542798300CA2B14 /* SocketConnectionTool.m */; };
@@ -169,10 +167,10 @@
 		2ED23F6E215DCCCA0040A922 /* CurtainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2ED23F70215DCCCA0040A922 /* CurtainViewController.xib */; };
 		2ED3963C204D09A00068B666 /* TimerEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963B204D09A00068B666 /* TimerEntity.m */; };
 		2ED3963F204D09D20068B666 /* TimerDeviceEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */; };
+		2ED50B73256796F700E67AEB /* UpdataMCUTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED50B72256796F700E67AEB /* UpdataMCUTool.m */; };
 		2EDF04DB213D14CA00B9E92F /* SRGBSceneDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF04D9213D14CA00B9E92F /* SRGBSceneDetailViewController.m */; };
 		2EDF04E0213D151300B9E92F /* MRGBSceneDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF04DE213D151300B9E92F /* MRGBSceneDetailViewController.m */; };
 		2EE50F2D20DA3E3D00B484F7 /* LightSensorSettingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EE50F2F20DA3E3D00B484F7 /* LightSensorSettingViewController.xib */; };
-		2EE5E8C8227194A500EFE8B9 /* MCUUpdateTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE5E8C7227194A500EFE8B9 /* MCUUpdateTool.m */; };
 		2EE757C720102B7B00FB75C5 /* MainCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE757C620102B7B00FB75C5 /* MainCollectionView.m */; };
 		2EE757CA201030CA00FB75C5 /* TopImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE757C9201030CA00FB75C5 /* TopImageView.m */; };
 		2EE757CD2010763C00FB75C5 /* SuperCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE757CC2010763C00FB75C5 /* SuperCollectionViewCell.m */; };
@@ -277,12 +275,10 @@
 		2E18B21C25232D5D0044D2E0 /* NetworkSettingVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkSettingVC.h; sourceTree = "<group>"; };
 		2E18B21D25232D5D0044D2E0 /* NetworkSettingVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NetworkSettingVC.m; sourceTree = "<group>"; };
 		2E18B21E25232D5D0044D2E0 /* NetworkSettingVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NetworkSettingVC.xib; sourceTree = "<group>"; };
+		2E192D182572479E001161FF /* MusicControllerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicControllerVC.m; sourceTree = "<group>"; };
 		2E1C839F20CFD782009BCC6D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PlaceDetailsViewController.xib; sourceTree = "<group>"; };
 		2E1F6FC321C9F61C00915FFF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
 		2E1F6FC521C9F64E00915FFF /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/PlaceDetailsViewController.strings"; sourceTree = "<group>"; };
-		2E1FA39C24EA2D02008C6497 /* MCPickerAlertController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MCPickerAlertController.h; sourceTree = "<group>"; };
-		2E1FA39D24EA2D02008C6497 /* MCPickerAlertController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MCPickerAlertController.m; sourceTree = "<group>"; };
-		2E1FA39E24EA2D02008C6497 /* MCPickerAlertController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MCPickerAlertController.xib; sourceTree = "<group>"; };
 		2E2000A720182260000AD8C3 /* SceneEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneEntity.h; sourceTree = "<group>"; };
 		2E2000A820182260000AD8C3 /* SceneEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneEntity.m; sourceTree = "<group>"; };
 		2E2000AA2018227E000AD8C3 /* SceneMemberEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneMemberEntity.h; sourceTree = "<group>"; };
@@ -484,7 +480,6 @@
 		2E7C7B11250B6B6A00AFA845 /* OtherViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OtherViewController.xib; sourceTree = "<group>"; };
 		2E7D4CA12547B447002B8D92 /* AcTECBLE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AcTECBLE.entitlements; sourceTree = "<group>"; };
 		2E7DBC0324E630E700A36905 /* MusicControllerVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MusicControllerVC.h; sourceTree = "<group>"; };
-		2E7DBC0424E630E700A36905 /* MusicControllerVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicControllerVC.m; sourceTree = "<group>"; };
 		2E7DBC0524E630E700A36905 /* MusicControllerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MusicControllerVC.xib; sourceTree = "<group>"; };
 		2E814452254FA7C700B2606B /* SonosSelectModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SonosSelectModel.h; sourceTree = "<group>"; };
 		2E814453254FA7C700B2606B /* SonosSelectModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SonosSelectModel.m; sourceTree = "<group>"; };
@@ -669,13 +664,13 @@
 		2ED3963B204D09A00068B666 /* TimerEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerEntity.m; sourceTree = "<group>"; };
 		2ED3963D204D09D20068B666 /* TimerDeviceEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimerDeviceEntity.h; sourceTree = "<group>"; };
 		2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerDeviceEntity.m; sourceTree = "<group>"; };
+		2ED50B71256796F700E67AEB /* UpdataMCUTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UpdataMCUTool.h; sourceTree = "<group>"; };
+		2ED50B72256796F700E67AEB /* UpdataMCUTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UpdataMCUTool.m; sourceTree = "<group>"; };
 		2EDF04D8213D14CA00B9E92F /* SRGBSceneDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SRGBSceneDetailViewController.h; sourceTree = "<group>"; };
 		2EDF04D9213D14CA00B9E92F /* SRGBSceneDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SRGBSceneDetailViewController.m; sourceTree = "<group>"; };
 		2EDF04DD213D151300B9E92F /* MRGBSceneDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MRGBSceneDetailViewController.h; sourceTree = "<group>"; };
 		2EDF04DE213D151300B9E92F /* MRGBSceneDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MRGBSceneDetailViewController.m; sourceTree = "<group>"; };
 		2EE50F2E20DA3E3D00B484F7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LightSensorSettingViewController.xib; sourceTree = "<group>"; };
-		2EE5E8C6227194A500EFE8B9 /* MCUUpdateTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MCUUpdateTool.h; sourceTree = "<group>"; };
-		2EE5E8C7227194A500EFE8B9 /* MCUUpdateTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MCUUpdateTool.m; sourceTree = "<group>"; };
 		2EE757C520102B7B00FB75C5 /* MainCollectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainCollectionView.h; sourceTree = "<group>"; };
 		2EE757C620102B7B00FB75C5 /* MainCollectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainCollectionView.m; sourceTree = "<group>"; };
 		2EE757C8201030CA00FB75C5 /* TopImageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TopImageView.h; sourceTree = "<group>"; };
@@ -997,7 +992,6 @@
 		2E2E70021FF5DE60002D1C1D /* More */ = {
 			isa = PBXGroup;
 			children = (
-				2E7C7B04250B6B6A00AFA845 /* Other */,
 				2E2E70071FF5DE60002D1C1D /* MasterViewController.h */,
 				2E2E70081FF5DE60002D1C1D /* MasterViewController.m */,
 				2E2E70091FF5DE60002D1C1D /* MoreViewController.h */,
@@ -1009,6 +1003,7 @@
 				2E48BBDD20D239B100401CDD /* LightSensor */,
 				2E2E70551FF5DE60002D1C1D /* Timer */,
 				2E2E70671FF5DE60002D1C1D /* Update */,
+				2E7C7B04250B6B6A00AFA845 /* Other */,
 				2E2E70031FF5DE60002D1C1D /* About */,
 			);
 			path = More;
@@ -1169,7 +1164,7 @@
 				2EA5A8972490C79100037F63 /* SceneViewController.m */,
 				2EBB39972490F4AC00243D5F /* SceneViewController.xib */,
 				2E7DBC0324E630E700A36905 /* MusicControllerVC.h */,
-				2E7DBC0424E630E700A36905 /* MusicControllerVC.m */,
+				2E192D182572479E001161FF /* MusicControllerVC.m */,
 				2E7DBC0524E630E700A36905 /* MusicControllerVC.xib */,
 				2EB3C2C6251D7D6D002FFD1D /* SonosMusicControllerVC.h */,
 				2EB3C2C7251D7D6D002FFD1D /* SonosMusicControllerVC.m */,
@@ -1198,8 +1193,6 @@
 				2EC7D0DD21E6F549007F44C1 /* PowerModel.m */,
 				2E4BC03B227051BF000719EA /* SoundListenTool.h */,
 				2E4BC03C227051BF000719EA /* SoundListenTool.m */,
-				2EE5E8C6227194A500EFE8B9 /* MCUUpdateTool.h */,
-				2EE5E8C7227194A500EFE8B9 /* MCUUpdateTool.m */,
 				2E8ECC2C239DFA210031367F /* SelectModel.h */,
 				2E8ECC2D239DFA210031367F /* SelectModel.m */,
 				2E5C130A23C05EC200A13994 /* LCDSelectModel.h */,
@@ -1210,6 +1203,8 @@
 				2E857F552542798300CA2B14 /* SocketConnectionTool.m */,
 				2E2139F525512F4A009946D0 /* SelectionListModel.h */,
 				2E2139F625512F4A009946D0 /* SelectionListModel.m */,
+				2ED50B71256796F700E67AEB /* UpdataMCUTool.h */,
+				2ED50B72256796F700E67AEB /* UpdataMCUTool.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1261,9 +1256,6 @@
 				2EBB39922490D5B000243D5F /* SceneMemberCell.h */,
 				2EBB39932490D5B000243D5F /* SceneMemberCell.m */,
 				2E6750BE2493601C004FA52F /* SceneMemberCell.xib */,
-				2E1FA39C24EA2D02008C6497 /* MCPickerAlertController.h */,
-				2E1FA39D24EA2D02008C6497 /* MCPickerAlertController.m */,
-				2E1FA39E24EA2D02008C6497 /* MCPickerAlertController.xib */,
 				2EC4D19124F790380053C261 /* RippleAnimationView.h */,
 				2EC4D19224F790380053C261 /* RippleAnimationView.m */,
 				2E972B3E254AB17E0089EE88 /* SelectionListView.h */,
@@ -1619,7 +1611,6 @@
 				2E4DDCF221F968FF00B2ACF3 /* SocketViewController.xib in Resources */,
 				2E2E708F1FF5DE60002D1C1D /* PlaceColorCollectionViewCell.xib in Resources */,
 				2E388A6D214BA8B900CBF73C /* MusicViewController.xib in Resources */,
-				2E1FA3A024EA2D02008C6497 /* MCPickerAlertController.xib in Resources */,
 				2E37075820CE8337000AF696 /* GroupViewController.xib in Resources */,
 				2E6C26E720A5845E00BDB95A /* Main.storyboard in Resources */,
 				F45350891CD8B043002D91AB /* SensorActuatorTypes.json in Resources */,
@@ -1696,6 +1687,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2E192D192572479E001161FF /* MusicControllerVC.m in Sources */,
 				2E2E70AC1FF5DE60002D1C1D /* TimerViewController.m in Sources */,
 				F43D7A5C1D004225009ADD96 /* CSRGatewayEntity+CoreDataProperties.m in Sources */,
 				2E5A587D21378B6800E416F9 /* MusicViewController.m in Sources */,
@@ -1732,6 +1724,7 @@
 				0D835B3D1B9749E600FF4376 /* CSRmeshManager.m in Sources */,
 				2E3417BE23A7276A000D1A52 /* RemoteMainVC.m in Sources */,
 				0D835B3F1B9749E600FF4376 /* CSRParseAndLoad.m in Sources */,
+				2ED50B73256796F700E67AEB /* UpdataMCUTool.m in Sources */,
 				2E6FBD9620E1D43F0045DDAC /* GroupListSModel.m in Sources */,
 				2E48BBE020D239E500401CDD /* LightSensorViewController.m in Sources */,
 				0D835B411B9749E600FF4376 /* CSRAppStateManager.m in Sources */,
@@ -1763,7 +1756,6 @@
 				2E2E70B51FF5DE60002D1C1D /* UpdateDeviceModel.m in Sources */,
 				2E6A021A1F39893400111312 /* MainTabBarController.m in Sources */,
 				2EC3893A204921C2004D822D /* TimerTableViewCell.m in Sources */,
-				2E7DBC0624E630E700A36905 /* MusicControllerVC.m in Sources */,
 				F4658A1F1C99747A00C284F4 /* CSRDeviceEventsEntity+CoreDataProperties.m in Sources */,
 				2E7C7B16250B6B6A00AFA845 /* NearbyViewController.m in Sources */,
 				0D835B561B9749E600FF4376 /* CSRCheckbox.m in Sources */,
@@ -1779,7 +1771,6 @@
 				2E2533EE20219850002A6EC3 /* DeviceListViewController.m in Sources */,
 				2EA708C32011C31300782209 /* AddDevcieViewController.m in Sources */,
 				2E2E70A61FF5DE60002D1C1D /* DataModelManager.m in Sources */,
-				2E1FA39F24EA2D02008C6497 /* MCPickerAlertController.m in Sources */,
 				2E5F120D23BDD22F0018EF16 /* LCDRemoteMemberCell.m in Sources */,
 				F4C85EA71CB3EE0E003E1FF3 /* CSRControllerEntity+CoreDataProperties.m in Sources */,
 				2EAD479C1FFC76F3007D45E9 /* GallreyDropView.m in Sources */,
@@ -1810,7 +1801,6 @@
 				F4C85EA81CB3EE0E003E1FF3 /* CSRControllerEntity.m in Sources */,
 				2E3B9661200F2553000BD086 /* DeviceModel.m in Sources */,
 				2EDF04E0213D151300B9E92F /* MRGBSceneDetailViewController.m in Sources */,
-				2EE5E8C8227194A500EFE8B9 /* MCUUpdateTool.m in Sources */,
 				2EE757D1201078A000FB75C5 /* MainCollectionViewCell.m in Sources */,
 				2EC3FB7A223B4EFA0050A5DD /* DiscoveryTableViewController.m in Sources */,
 				2E2E70B21FF5DE60002D1C1D /* PCM.m in Sources */,
@@ -2316,7 +2306,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2338,7 +2328,7 @@
 					"$(inherited)",
 					"\"${PODS_ROOT}/OpenSSL/lib\"",
 				);
-				MARKETING_VERSION = 3.0.3;
+				MARKETING_VERSION = 3.0.4;
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-isystem",
@@ -2376,7 +2366,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2398,7 +2388,7 @@
 					"$(inherited)",
 					"\"${PODS_ROOT}/OpenSSL/lib\"",
 				);
-				MARKETING_VERSION = 3.0.3;
+				MARKETING_VERSION = 3.0.4;
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-isystem",

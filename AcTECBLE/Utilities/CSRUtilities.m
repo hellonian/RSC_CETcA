@@ -1647,4 +1647,13 @@
     return at;
 }
 
++ (NSString *)binaryStringWithInteger:(NSInteger)value {
+    NSMutableString *string = [NSMutableString string];
+    while (value) {
+        [string insertString:(value & 1) ? @"1":@"0" atIndex:0];
+        value /= 2;
+    }
+    return string;
+}
+
 @end

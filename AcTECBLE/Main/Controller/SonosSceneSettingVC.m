@@ -16,6 +16,7 @@
 #import "CSRConstants.h"
 #import "SonosSelectModel.h"
 #import "DataModelManager.h"
+#import "SocketConnectionTool.h"
 
 @interface SonosSceneSettingVC ()<SelectionListViewDelegate, UITableViewDelegate, UITableViewDataSource>
 
@@ -26,6 +27,7 @@
 @property (nonatomic, strong) NSMutableArray *didChannels;
 @property (nonatomic,strong) UIView *translucentBgView;
 @property (nonatomic,strong) UIActivityIndicatorView *indicatorView;
+@property (nonatomic, strong) SocketConnectionTool *socketTool;
 
 @end
 
@@ -38,6 +40,13 @@
         CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
         self.navigationItem.title = device.name;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noticeSceneSettingVC:) name:@"noticeSceneSettingVC" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshNetworkConnectionStatus:) name:@"refreshNetworkConnectionStatus" object:nil];
+        
+        if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
+            Byte byte[] = {0xea, 0x77, 0x07};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceID data:cmd];
+        }
     }
     
     self.view.backgroundColor = ColorWithAlpha(234, 238, 243, 1);
@@ -147,11 +156,13 @@
         [cell addSubview:sLabel];
         [sLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 150, 0, 30)];
     }
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     UILabel *sLab = [cell viewWithTag:1];
     SonosSelectModel *m = [_dataMutAry objectAtIndex:indexPath.section];
     switch (indexPath.row) {
         case 0:
         {
+            cell.imageView.image = nil;
             CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
             if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
                 cell.textLabel.text = @"Select SONOS";
@@ -207,9 +218,8 @@
             CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
             if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
                 cell.textLabel.text = @"Select Music";
-                if ([m.channel integerValue] == -1) {
-                    sLab.text = @"";
-                }else {
+                if (m.dataValid & 0x40) {
+                    cell.imageView.image = [UIImage imageNamed:@"Be_selected"];
                     if ([device.remoteBranch length]>0) {
                         NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:device.remoteBranch];
                         if ([jsonDictionary count]>0) {
@@ -223,61 +233,86 @@
                             }
                         }
                     }
+                }else {
+                    cell.imageView.image = [UIImage imageNamed:@"To_select"];
+                    sLab.text = @"";
                 }
             }else if ([CSRUtilities belongToMusicController:device.shortName]) {
                 cell.textLabel.text = @"Select Audio Source";
-                if ([m.channel integerValue] == -1) {
-                    sLab.text = @"";
-                }else {
+                if (m.dataValid & 0x04) {
+                    cell.imageView.image = [UIImage imageNamed:@"Be_selected"];
                     sLab.text = [AUDIOSOURCES objectAtIndex:m.source];
+                }else {
+                    cell.imageView.image = [UIImage imageNamed:@"To_select"];
+                    sLab.text = @"";
                 }
             }
         }
             break;
         case 2:
+        {
             cell.textLabel.text = @"Play/Stop";
-            if ([m.channel integerValue] == -1) {
-                sLab.text = @"";
-            }else {
+            if (m.dataValid & 0x02) {
+                cell.imageView.image = [UIImage imageNamed:@"Be_selected"];
                 sLab.text = m.play ? @"Play" : @"Stop";
+            }else {
+                cell.imageView.image = [UIImage imageNamed:@"To_select"];
+                sLab.text = @"";
             }
+        }
             break;
         case 3:
+        {
             cell.textLabel.text = @"Cycle";
-            if ([m.channel integerValue] == -1) {
-                sLab.text = @"";
-            }else {
+            if (m.dataValid & 0x08) {
+                cell.imageView.image = [UIImage imageNamed:@"Be_selected"];
                 CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
                 if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
                     sLab.text = [PLAYMODE_SONOS objectAtIndex:m.cycle];
                 }else if ([CSRUtilities belongToMusicController:device.shortName]) {
                     sLab.text = [PLAYMODE objectAtIndex:m.cycle];
                 }
+            }else {
+                cell.imageView.image = [UIImage imageNamed:@"To_select"];
+                sLab.text = @"";
             }
+        }
             break;
         case 4:
+        {
             cell.textLabel.text = @"Mute";
-            if ([m.channel integerValue] == -1) {
-                sLab.text = @"";
-            }else {
+            if (m.dataValid & 0x10) {
+                cell.imageView.image = [UIImage imageNamed:@"Be_selected"];
                 sLab.text = m.mute ? @"Mute" : @"Normal";
+            }else {
+                cell.imageView.image = [UIImage imageNamed:@"To_select"];
+                sLab.text = @"";
             }
+        }
             break;
         case 5:
+        {
             cell.textLabel.text = @"Voice";
-            if ([m.channel integerValue] == -1) {
-                sLab.text = @"";
-            }else {
+            if (m.dataValid & 0x20) {
+                cell.imageView.image = [UIImage imageNamed:@"Be_selected"];
                 sLab.text = [NSString stringWithFormat:@"%ld", m.voice];
+            }else {
+                cell.imageView.image = [UIImage imageNamed:@"To_select"];
+                sLab.text = @"";
             }
+        }
             break;
         case 6:
+        {
             cell.textLabel.text = @"Channel Power";
-            if ([m.channel integerValue] == -1) {
-                sLab.text = @"";
-            }else {
+            if (m.dataValid & 0x01) {
+                cell.imageView.image = [UIImage imageNamed:@"Be_selected"];
                 sLab.text = m.channelState ? @"ON" : @"OFF";
+            }else {
+                cell.imageView.image = [UIImage imageNamed:@"To_select"];
+                sLab.text = @"";
             }
+        }
             break;
         default:
             break;
@@ -287,6 +322,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     _operatingSection = indexPath.section;
+    SonosSelectModel *m = [_dataMutAry objectAtIndex:indexPath.section];
     if (indexPath.row == 0) {
         if (_deviceID) {
             CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
@@ -305,6 +341,7 @@
                     CGFloat sh = w/0.618;
                     CGFloat mh = [ary count]*44+90;
                     CGFloat h = sh > mh ? mh : sh;
+                    [self.view addSubview:self.translucentBgView];
                     _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((WIDTH-w)/2.0, (HEIGHT-h)/2.0, w, h) dataArray:ary tite:@"Select SONOS" mode:SelectionListViewSelectionMode_Sonos];
                     _selectionView.delegate = self;
                     [self.view addSubview:_selectionView];
@@ -328,6 +365,7 @@
                     CGFloat sh = w/0.618;
                     CGFloat mh = [ary count]*44+90;
                     CGFloat h = sh > mh ? mh : sh;
+                    [self.view addSubview:self.translucentBgView];
                     _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((WIDTH-w)/2.0, (HEIGHT-h)/2.0, w, h) dataArray:ary tite:@"Select Channel" mode:SelectionListViewSelectionMode_Sonos];
                     _selectionView.delegate = self;
                     [self.view addSubview:_selectionView];
@@ -344,112 +382,185 @@
         if (_deviceID) {
             CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
             if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
-                if ([device.remoteBranch length]>0) {
-                    NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:device.remoteBranch];
-                    if ([jsonDictionary count]>0) {
-                        NSArray *songs = jsonDictionary[@"song"];
-                        if ([songs count] > 0) {
-                            CGFloat w = WIDTH * 0.618;
-                            CGFloat sh = w/0.618;
-                            CGFloat mh = [songs count]*44+90;
-                            CGFloat h = sh > mh ? mh : sh;
-                            NSMutableArray *ary = [[NSMutableArray alloc] init];
-                            for (NSDictionary *dic in songs) {
-                                SelectionListModel *slm = [[SelectionListModel alloc] init];
-                                slm.value = [dic[@"id"] integerValue];
-                                slm.name = dic[@"name"];
-                                [ary addObject:slm];
+                
+                if (m.dataValid & 0x40) {
+                    m.dataValid -= 64;
+                    [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                }else {
+                    if ([device.remoteBranch length]>0) {
+                        NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:device.remoteBranch];
+                        if ([jsonDictionary count]>0) {
+                            NSArray *songs = jsonDictionary[@"song"];
+                            if ([songs count] > 0) {
+                                CGFloat w = WIDTH * 0.618;
+                                CGFloat sh = w/0.618;
+                                CGFloat mh = [songs count]*44+90;
+                                CGFloat h = sh > mh ? mh : sh;
+                                NSMutableArray *ary = [[NSMutableArray alloc] init];
+                                for (NSDictionary *dic in songs) {
+                                    SelectionListModel *slm = [[SelectionListModel alloc] init];
+                                    slm.value = [dic[@"id"] integerValue];
+                                    slm.name = dic[@"name"];
+                                    [ary addObject:slm];
+                                }
+                                _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((WIDTH-w)/2.0, (HEIGHT-h)/2.0, w, h) dataArray:ary tite:@"Select Music" mode:SelectionListViewSelectionMode_Music];
+                                _selectionView.delegate = self;
+                                [self.view addSubview:_selectionView];
                             }
-                            _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((WIDTH-w)/2.0, (HEIGHT-h)/2.0, w, h) dataArray:ary tite:@"Select Music" mode:SelectionListViewSelectionMode_Music];
-                            _selectionView.delegate = self;
-                            [self.view addSubview:_selectionView];
                         }
                     }
                 }
-                
             }else if ([CSRUtilities belongToMusicController:device.shortName]) {
-                CGFloat w = WIDTH * 0.618;
-                CGFloat sh = w/0.618;
-                CGFloat mh = 8*44+90;
-                CGFloat h = sh > mh ? mh : sh;
-                NSMutableArray *ary = [[NSMutableArray alloc] init];
-                for (int i = 0; i < 8; i ++) {
-                    SelectionListModel *slm = [[SelectionListModel alloc] init];
-                    slm.value = i;
-                    slm.name = AUDIOSOURCES[i];
-                    [ary addObject:slm];
+                if (m.dataValid & 0x04) {
+                    m.dataValid -= 4;
+                    [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                }else {
+                    CGFloat w = WIDTH * 0.618;
+                    CGFloat sh = w/0.618;
+                    CGFloat mh = 8*44+90;
+                    CGFloat h = sh > mh ? mh : sh;
+                    NSMutableArray *ary = [[NSMutableArray alloc] init];
+                    for (int i = 0; i < 8; i ++) {
+                        SelectionListModel *slm = [[SelectionListModel alloc] init];
+                        slm.value = i;
+                        slm.name = AUDIOSOURCES[i];
+                        [ary addObject:slm];
+                    }
+                    [self.view addSubview:self.translucentBgView];
+                    _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((WIDTH-w)/2.0, (HEIGHT-h)/2.0, w, h) dataArray:ary tite:@"Select Audio Source" mode:SelectionListViewSelectionMode_Source];
+                    _selectionView.delegate = self;
+                    [self.view addSubview:_selectionView];
                 }
-                _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((WIDTH-w)/2.0, (HEIGHT-h)/2.0, w, h) dataArray:ary tite:@"Select Audio Source" mode:SelectionListViewSelectionMode_Source];
-                _selectionView.delegate = self;
-                [self.view addSubview:_selectionView];
             }
         }
     }else if (indexPath.row == 2) {
-        SonosSelectModel *m = [_dataMutAry objectAtIndex:_operatingSection];
-        m.play = !m.play;
-        NSIndexPath *ind = [NSIndexPath indexPathForRow:2 inSection:_operatingSection];
-        [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:ind] withRowAnimation:UITableViewRowAnimationNone];
-    }else if (indexPath.row == 3) {
-        if (_deviceID) {
-            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
-            if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
-                CGFloat w = WIDTH * 0.618;
-                CGFloat sh = w/0.618;
-                CGFloat mh = 4*44+90;
-                CGFloat h = sh > mh ? mh : sh;
-                NSMutableArray *ary = [[NSMutableArray alloc] init];
-                for (int i = 0; i < 4; i ++) {
-                    SelectionListModel *slm = [[SelectionListModel alloc] init];
-                    slm.value = i;
-                    slm.name = PLAYMODE_SONOS[i];
-                    [ary addObject:slm];
+        if (m.dataValid & 0x02) {
+            m.dataValid -= 2;
+            [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+        }else {
+            CGFloat w = WIDTH * 0.618;
+            CGFloat sh = w/0.618;
+            CGFloat mh = 2*44+90;
+            CGFloat h = sh > mh ? mh : sh;
+            NSMutableArray *ary = [[NSMutableArray alloc] init];
+            for (int i = 0; i < 2; i ++) {
+                SelectionListModel *slm = [[SelectionListModel alloc] init];
+                slm.value = i;
+                if (i==0) {
+                    slm.name = @"Play";
+                }else if (i == 1) {
+                    slm.name = @"Stop";
                 }
-                _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((WIDTH-w)/2.0, (HEIGHT-h)/2.0, w, h) dataArray:ary tite:@"Select Cycle" mode:SelectionListViewSelectionMode_Cycle];
-                _selectionView.delegate = self;
-                [self.view addSubview:_selectionView];
-            }else if ([CSRUtilities belongToMusicController:device.shortName]) {
-                CGFloat w = WIDTH * 0.618;
-                CGFloat sh = w/0.618;
-                CGFloat mh = 5*44+90;
-                CGFloat h = sh > mh ? mh : sh;
-                NSMutableArray *ary = [[NSMutableArray alloc] init];
-                for (int i = 0; i < 5; i ++) {
-                    SelectionListModel *slm = [[SelectionListModel alloc] init];
-                    slm.value = i;
-                    slm.name = PLAYMODE[i];
-                    [ary addObject:slm];
-                }
-                _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((WIDTH-w)/2.0, (HEIGHT-h)/2.0, w, h) dataArray:ary tite:@"Select Cycle" mode:SelectionListViewSelectionMode_Cycle];
-                _selectionView.delegate = self;
-                [self.view addSubview:_selectionView];
+                [ary addObject:slm];
             }
+            [self.view addSubview:self.translucentBgView];
+            _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((WIDTH-w)/2.0, (HEIGHT-h)/2.0, w, h) dataArray:ary tite:@"Select Play/Stop" mode:SelectionListViewSelectionMode_PlayStop];
+            _selectionView.delegate = self;
+            [self.view addSubview:_selectionView];
+        }
+    }else if (indexPath.row == 3) {
+        if (m.dataValid & 0x08) {
+            m.dataValid -= 8;
+            [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+        }else {
+            CGFloat w = WIDTH * 0.618;
+            CGFloat sh = w/0.618;
+            CGFloat mh = 4*44+90;
+            CGFloat h = sh > mh ? mh : sh;
+            NSMutableArray *ary = [[NSMutableArray alloc] init];
+            for (int i = 0; i < 4; i ++) {
+                SelectionListModel *slm = [[SelectionListModel alloc] init];
+                slm.value = i;
+                if (_deviceID) {
+                    CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
+                    if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
+                        slm.name = PLAYMODE_SONOS[i];
+                    }else if ([CSRUtilities belongToMusicController:device.shortName]) {
+                        slm.name = PLAYMODE[i];
+                    }
+                }
+                [ary addObject:slm];
+            }
+            [self.view addSubview:self.translucentBgView];
+            _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((WIDTH-w)/2.0, (HEIGHT-h)/2.0, w, h) dataArray:ary tite:@"Select Cycle" mode:SelectionListViewSelectionMode_Cycle];
+            _selectionView.delegate = self;
+            [self.view addSubview:_selectionView];
         }
     }else if (indexPath.row == 4) {
-        SonosSelectModel *m = [_dataMutAry objectAtIndex:_operatingSection];
-        m.mute = !m.mute;
-        NSIndexPath *ind = [NSIndexPath indexPathForRow:4 inSection:_operatingSection];
-        [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:ind] withRowAnimation:UITableViewRowAnimationNone];
+        if (m.dataValid & 0x10) {
+            m.dataValid -= 16;
+            [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+        }else {
+            CGFloat w = WIDTH * 0.618;
+            CGFloat sh = w/0.618;
+            CGFloat mh = 2*44+90;
+            CGFloat h = sh > mh ? mh : sh;
+            NSMutableArray *ary = [[NSMutableArray alloc] init];
+            for (int i = 0; i < 2; i ++) {
+                SelectionListModel *slm = [[SelectionListModel alloc] init];
+                slm.value = i;
+                if (i==0) {
+                    slm.name = @"Normal";
+                }else if (i == 1) {
+                    slm.name = @"Mute";
+                }
+                [ary addObject:slm];
+            }
+            [self.view addSubview:self.translucentBgView];
+            _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((WIDTH-w)/2.0, (HEIGHT-h)/2.0, w, h) dataArray:ary tite:@"Select Normal/Mute" mode:SelectionListViewSelectionMode_NormalMute];
+            _selectionView.delegate = self;
+            [self.view addSubview:_selectionView];
+        }
     }else if (indexPath.row == 5) {
-        UISlider *slider = [[UISlider alloc] initWithFrame:CGRectMake(20, (HEIGHT - 60)/2.0, WIDTH-40, 60)];
-        slider.backgroundColor = ColorWithAlpha(246, 246, 246, 0.96);
-        slider.tintColor = DARKORAGE;
-        slider.minimumValue = 0;
-        slider.maximumValue = 100;
-        [slider addTarget:self action:@selector(voiceAction:) forControlEvents:UIControlEventValueChanged];
-        [slider addTarget:self action:@selector(voiceUpAction:) forControlEvents:UIControlEventTouchUpInside];
-        [slider addTarget:self action:@selector(voiceUpAction:) forControlEvents:UIControlEventTouchUpOutside];
-        [self.view addSubview:slider];
+        if (m.dataValid & 0x20) {
+            m.dataValid -= 32;
+            [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+        }else {
+            [self.view addSubview:self.translucentBgView];
+            UISlider *slider = [[UISlider alloc] initWithFrame:CGRectMake(20, (HEIGHT - 60)/2.0, WIDTH-40, 60)];
+            slider.backgroundColor = ColorWithAlpha(246, 246, 246, 0.96);
+            slider.tintColor = DARKORAGE;
+            slider.minimumValue = 0;
+            slider.maximumValue = 100;
+            slider.value = m.voice;
+            [slider addTarget:self action:@selector(voiceAction:) forControlEvents:UIControlEventValueChanged];
+            [slider addTarget:self action:@selector(voiceUpAction:) forControlEvents:UIControlEventTouchUpInside];
+            [slider addTarget:self action:@selector(voiceUpAction:) forControlEvents:UIControlEventTouchUpOutside];
+            [self.view addSubview:slider];
+        }
     }else if (indexPath.row == 6) {
-        SonosSelectModel *m = [_dataMutAry objectAtIndex:_operatingSection];
-        m.channelState = !m.channelState;
-        NSIndexPath *ind = [NSIndexPath indexPathForRow:6 inSection:_operatingSection];
-        [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:ind] withRowAnimation:UITableViewRowAnimationNone];
+        if (m.dataValid & 0x01) {
+            m.dataValid -= 1;
+            [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+        }else {
+            CGFloat w = WIDTH * 0.618;
+            CGFloat sh = w/0.618;
+            CGFloat mh = 2*44+90;
+            CGFloat h = sh > mh ? mh : sh;
+            NSMutableArray *ary = [[NSMutableArray alloc] init];
+            for (int i = 0; i < 2; i ++) {
+                SelectionListModel *slm = [[SelectionListModel alloc] init];
+                slm.value = i;
+                if (i==0) {
+                    slm.name = @"ON";
+                }else if (i == 1) {
+                    slm.name = @"OFF";
+                }
+                [ary addObject:slm];
+            }
+            [self.view addSubview:self.translucentBgView];
+            _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((WIDTH-w)/2.0, (HEIGHT-h)/2.0, w, h) dataArray:ary tite:@"Select Channel Power State" mode:SelectionListViewSelectionMode_ChannelPowerState];
+            _selectionView.delegate = self;
+            [self.view addSubview:_selectionView];
+        }
     }
 }
 
 - (void)selectionListViewCancelAction {
     [_selectionView removeFromSuperview];
     _selectionView = nil;
+    [_translucentBgView removeFromSuperview];
+    _translucentBgView = nil;
 }
 
 - (void)selectionListViewSaveAction:(NSArray *)ary selectionMode:(SelectionListViewSelectionMode)mode {
@@ -474,24 +585,50 @@
         SelectionListModel *slm = [ary firstObject];
         SonosSelectModel *m = [_dataMutAry objectAtIndex:_operatingSection];
         m.songNumber = slm.value;
+        m.dataValid += 64;
         NSIndexPath *ind = [NSIndexPath indexPathForRow:1 inSection:_operatingSection];
         [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:ind] withRowAnimation:UITableViewRowAnimationNone];
     }else if (mode == SelectionListViewSelectionMode_Cycle) {
         SelectionListModel *slm = [ary firstObject];
         SonosSelectModel *m = [_dataMutAry objectAtIndex:_operatingSection];
         m.cycle = slm.value;
+        m.dataValid += 8;
         NSIndexPath *ind = [NSIndexPath indexPathForRow:3 inSection:_operatingSection];
         [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:ind] withRowAnimation:UITableViewRowAnimationNone];
     }else if (mode == SelectionListViewSelectionMode_Source) {
         SelectionListModel *slm = [ary firstObject];
         SonosSelectModel *m = [_dataMutAry objectAtIndex:_operatingSection];
         m.source = slm.value;
+        m.dataValid += 4;
         NSIndexPath *ind = [NSIndexPath indexPathForRow:1 inSection:_operatingSection];
         [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:ind] withRowAnimation:UITableViewRowAnimationNone];
+    }else if (mode == SelectionListViewSelectionMode_PlayStop) {
+        SelectionListModel *slm = [ary firstObject];
+        SonosSelectModel *m = [_dataMutAry objectAtIndex:_operatingSection];
+        m.play = slm.value == 0 ? YES : NO;
+        m.dataValid += 2;
+        NSIndexPath *ind = [NSIndexPath indexPathForRow:2 inSection:_operatingSection];
+        [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:ind] withRowAnimation:UITableViewRowAnimationNone];
+    }else if (mode == SelectionListViewSelectionMode_NormalMute) {
+        SelectionListModel *slm = [ary firstObject];
+        SonosSelectModel *m = [_dataMutAry objectAtIndex:_operatingSection];
+        m.mute = slm.value == 0 ? NO : YES;
+        m.dataValid += 16;
+        NSIndexPath *ind = [NSIndexPath indexPathForRow:4 inSection:_operatingSection];
+        [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:ind] withRowAnimation:UITableViewRowAnimationNone];
+    }else if (mode == SelectionListViewSelectionMode_ChannelPowerState) {
+        SelectionListModel *slm = [ary firstObject];
+        SonosSelectModel *m = [_dataMutAry objectAtIndex:_operatingSection];
+        m.channelState = slm.value == 0 ? YES : NO;
+        m.dataValid += 1;
+        NSIndexPath *ind = [NSIndexPath indexPathForRow:6 inSection:_operatingSection];
+        [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:ind] withRowAnimation:UITableViewRowAnimationNone];
     }
-        
+    
     [_selectionView removeFromSuperview];
     _selectionView = nil;
+    [_translucentBgView removeFromSuperview];
+    _translucentBgView = nil;
 }
 
 - (void)voiceAction:(UISlider *)slider {
@@ -504,9 +641,12 @@
 - (void)voiceUpAction:(UISlider *)slider {
     SonosSelectModel *m = [_dataMutAry objectAtIndex:_operatingSection];
     m.voice = (NSInteger)slider.value;
+    m.dataValid += 32;
     NSIndexPath *ind = [NSIndexPath indexPathForRow:5 inSection:_operatingSection];
     [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:ind] withRowAnimation:UITableViewRowAnimationNone];
     [slider removeFromSuperview];
+    [_translucentBgView removeFromSuperview];
+    _translucentBgView = nil;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -576,6 +716,7 @@
             CGFloat sh = w/0.618;
             CGFloat mh = [ary count]*44+90;
             CGFloat h = sh > mh ? mh : sh;
+            [self.view addSubview:self.translucentBgView];
             _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((WIDTH-w)/2.0, (HEIGHT-h)/2.0, w, h) dataArray:ary tite:@"Select Channel" mode:SelectionListViewSelectionMode_Sonos];
             _selectionView.delegate = self;
             [self.view addSubview:_selectionView];
@@ -588,6 +729,26 @@
             [self presentViewController:alert animated:YES completion:nil];
         }
     }
+}
+
+- (void)refreshNetworkConnectionStatus:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *deviceId = userInfo[@"deviceId"];
+    NSInteger type = [userInfo[@"type"] integerValue];
+    if ([deviceId isEqualToNumber:_deviceID]) {
+        if (type == 1) {
+            NSString *status = userInfo[@"staus"];
+            [self.socketTool connentHost:status prot:8888];
+        }
+    }
+}
+
+- (SocketConnectionTool *)socketTool {
+    if (!_socketTool) {
+        _socketTool = [[SocketConnectionTool alloc] init];
+        _socketTool.deviceID = _deviceID;
+    }
+    return _socketTool;
 }
 
 /*

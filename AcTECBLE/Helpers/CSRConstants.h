@@ -90,12 +90,12 @@
 #define kDALDevice @[@"DDSB",@"DAL-IBH",@"DDAL",@"DDSB2"]
 
 #define kFadeDevice @[@"TD300B", @"TD400B-2G", @"TD400B-3G",@"PD400B-2G"]
-#define kNearbyFunctionDevices @[@"LI-45B"]
+#define kNearbyFunctionDevices @[@"LI-45B", @"IE-CW", @"IE-RGBCW", @"C2AB"]
 #define kMusicController @[@"MRS485IB"]
-#define kMusicControlRemote @[@"TRM6B-BO", @"TR6BEM"]
+#define kMusicControlRemote @[@"TRM6B-BO", @"TR6BEM", @"PR6BEM"]
 #define kSonosMusicController @[@"MTCPB-M2"]
 
-#define PLAYMODE @[AcTECLocalizedStringFromTable(@"single", @"Localizable"),AcTECLocalizedStringFromTable(@"single_cycle", @"Localizable"),AcTECLocalizedStringFromTable(@"loop_playback", @"Localizable"),AcTECLocalizedStringFromTable(@"random", @"Localizable"),AcTECLocalizedStringFromTable(@"order", @"Localizable")]
+#define PLAYMODE @[AcTECLocalizedStringFromTable(@"single_cycle", @"Localizable"),AcTECLocalizedStringFromTable(@"loop_playback", @"Localizable"),AcTECLocalizedStringFromTable(@"random", @"Localizable"),AcTECLocalizedStringFromTable(@"order", @"Localizable")]
 #define PLAYMODE_SONOS @[AcTECLocalizedStringFromTable(@"single", @"Localizable"),AcTECLocalizedStringFromTable(@"single_cycle", @"Localizable"),AcTECLocalizedStringFromTable(@"random", @"Localizable"),AcTECLocalizedStringFromTable(@"order", @"Localizable")]
 #define AUDIOSOURCES @[@"FM",@"DVD",@"MP3",@"AUX",@"NET RADIO",@"CLOUD MUSIC",@"AIRPLAY",@"DLNA"]
 

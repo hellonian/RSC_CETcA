@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSInteger voice;
 @property (nonatomic, assign) BOOL channelState;
 @property (nonatomic, assign) NSInteger source;
+@property (nonatomic, assign) NSInteger dataValid;
 
 @end
 

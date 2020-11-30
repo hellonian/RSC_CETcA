@@ -221,3 +221,4 @@
 "networking_setting" = "Networking Setting";
 "connected" = "Connected";
 "not_connected" = "Not connected";
+"lan_connection_fail" = "LAN connection failed, please try again or replace router.";

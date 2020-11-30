@@ -20,11 +20,11 @@
 #import <CSRmesh/DataModelApi.h>
 #import "DeviceModelManager.h"
 #import "AFHTTPSessionManager.h"
-#import "MCUUpdateTool.h"
+#import "UpdataMCUTool.h"
 
 #import "SelectModel.h"
 
-@interface RemoteSettingViewController ()<UITextFieldDelegate,MBProgressHUDDelegate,MCUUpdateToolDelegate>
+@interface RemoteSettingViewController ()<UITextFieldDelegate,MBProgressHUDDelegate,UpdataMCUToolDelegate>
 {
     dispatch_semaphore_t semaphore;
     NSInteger timerSeconde;
@@ -126,6 +126,7 @@
 @property (nonatomic,strong) UIView *keyTypeSettingView;
 
 @property (nonatomic,strong) NSMutableArray *settingSelectMutArray;
+@property (nonatomic, strong) UIAlertController *mcuAlert;
 
 @end
 
@@ -719,8 +720,8 @@
     
 }
 - (void)askUpdateMCU {
-    [MCUUpdateTool sharedInstace].toolDelegate = self;
-    [[MCUUpdateTool sharedInstace] askUpdateMCU:_remoteEntity.deviceId downloadAddress:downloadAddress latestMCUSVersion:latestMCUSVersion];
+    [UpdataMCUTool sharedInstace].toolDelegate = self;
+    [[UpdataMCUTool sharedInstace] askUpdateMCU:_remoteEntity.deviceId downloadAddress:downloadAddress latestMCUSVersion:latestMCUSVersion];
 }
 
 - (void)starteUpdateHud {
@@ -738,19 +739,22 @@
     }
 }
 
-- (void)updateSuccess:(BOOL)value {
+- (void)updateSuccess:(NSString *)value {
     if (_updatingHud) {
         [_updatingHud hideAnimated:YES];
         [self.translucentBgView removeFromSuperview];
         self.translucentBgView = nil;
         [updateMCUBtn removeFromSuperview];
         updateMCUBtn = nil;
-        NSString *valueStr = value? AcTECLocalizedStringFromTable(@"Success", @"Localizable"):AcTECLocalizedStringFromTable(@"Error", @"Localizable");
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:valueStr preferredStyle:UIAlertControllerStyleAlert];
-        [alert.view setTintColor:DARKORAGE];
-        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
-        [alert addAction:cancel];
-        [self presentViewController:alert animated:YES completion:nil];
+        if (!_mcuAlert) {
+            _mcuAlert = [UIAlertController alertControllerWithTitle:nil message:value preferredStyle:UIAlertControllerStyleAlert];
+            [_mcuAlert.view setTintColor:DARKORAGE];
+            UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+            [_mcuAlert addAction:cancel];
+            [self presentViewController:_mcuAlert animated:YES completion:nil];
+        }else {
+            [_mcuAlert setMessage:value];
+        }
     }
 }
 
@@ -2089,10 +2093,6 @@
         [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:self.remoteEntity];
         [[CSRDatabaseManager sharedInstance] saveContext];
         
-        NSNumber *deviceNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRDeviceEntity"];
-        
-        [[CSRDevicesManager sharedInstance] setDeviceIdNumber:deviceNumber];
-        
         if (self.reloadDataHandle) {
             self.reloadDataHandle();
         }
@@ -2120,9 +2120,6 @@
                                                          [[CSRAppStateManager sharedInstance].selectedPlace removeDevicesObject:self.remoteEntity];
                                                          [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:self.remoteEntity];
                                                          [[CSRDatabaseManager sharedInstance] saveContext];
-                                                         NSNumber *deviceNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRDeviceEntity"];
-                                                         
-                                                         [[CSRDevicesManager sharedInstance] setDeviceIdNumber:deviceNumber];
                                                          
                                                          if (self.reloadDataHandle) {
                                                              self.reloadDataHandle();

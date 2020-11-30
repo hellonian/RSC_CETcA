@@ -228,10 +228,6 @@
         [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:self.lightSensor];
         [[CSRDatabaseManager sharedInstance] saveContext];
         
-        NSNumber *deviceNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRDeviceEntity"];
-        
-        [[CSRDevicesManager sharedInstance] setDeviceIdNumber:deviceNumber];
-        
         if (self.reloadDataHandle) {
             self.reloadDataHandle();
         }
@@ -259,9 +255,6 @@
                                                          [[CSRAppStateManager sharedInstance].selectedPlace removeDevicesObject:self.lightSensor];
                                                          [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:self.lightSensor];
                                                          [[CSRDatabaseManager sharedInstance] saveContext];
-                                                         NSNumber *deviceNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRDeviceEntity"];
-                                                         
-                                                         [[CSRDevicesManager sharedInstance] setDeviceIdNumber:deviceNumber];
                                                          
                                                          if (self.reloadDataHandle) {
                                                              self.reloadDataHandle();

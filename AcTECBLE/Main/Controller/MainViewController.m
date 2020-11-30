@@ -254,7 +254,7 @@
     if (mutableArray != nil || [mutableArray count] != 0) {
 //        __block BOOL isOldCVesion = NO;
         [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSLog(@"~~~~~> %@  %@  %@  %@ %@",deviceEntity.name,deviceEntity.cvVersion,deviceEntity.deviceId,deviceEntity.uuid,deviceEntity.firVersion);
+            NSLog(@"~~~~~> %@  %@  %@  %@ %@",deviceEntity.name,deviceEntity.cvVersion,deviceEntity.deviceId,deviceEntity.uuid,deviceEntity.groups);
             if ([CSRUtilities belongToMainVCDevice: deviceEntity.shortName]) {
                 if (![deviceIdWasInAreaArray containsObject:deviceEntity.deviceId]) {
                     deviceEntity.isEditting = @(_mainCVEditting);
@@ -1241,8 +1241,6 @@
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteDeviceEntity" object:nil];
         }
-        NSNumber *deviceNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRDeviceEntity"];
-        [[CSRDevicesManager sharedInstance] setDeviceIdNumber:deviceNumber];
         
         [self getMainDataArray];
         __weak MainViewController *weakSelf = self;
@@ -1319,8 +1317,6 @@
                                                              
                                                              [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteDeviceEntity" object:nil];
                                                          }
-                                                         NSNumber *deviceNumber = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"CSRDeviceEntity"];
-                                                         [[CSRDevicesManager sharedInstance] setDeviceIdNumber:deviceNumber];
                                                          [self getMainDataArray];
                                                          [self mainCollectionViewEditlayoutView];
                                                          if (!([CSRUtilities belongToSceneRemoteSixKeys:deleteDeviceEntity.shortName]

@@ -18,11 +18,11 @@
 #import <CSRmesh/LightModelApi.h>
 #import "AFHTTPSessionManager.h"
 #import <MBProgressHUD.h>
-#import "MCUUpdateTool.h"
 #import "SoundListenTool.h"
 #import "PowerViewController.h"
+#import "UpdataMCUTool.h"
 
-@interface DeviceViewController ()<UITextFieldDelegate,ColorSliderDelegate,ColorSquareDelegate,MBProgressHUDDelegate,MCUUpdateToolDelegate>
+@interface DeviceViewController ()<UITextFieldDelegate,ColorSliderDelegate,ColorSquareDelegate,MBProgressHUDDelegate,UpdataMCUToolDelegate>
 {
     NSString *downloadAddress;
     NSInteger latestMCUSVersion;
@@ -102,6 +102,8 @@
 @property (strong, nonatomic) IBOutlet UIView *levelSliderChannelThreeView;
 @property (weak, nonatomic) IBOutlet UISlider *levelSliderChannelThree;
 @property (weak, nonatomic) IBOutlet UILabel *levelLabelChannelThree;
+
+@property (nonatomic, strong) UIAlertController *mcuAlert;
 
 @end
 
@@ -443,8 +445,8 @@
 }
 
 - (void)askUpdateMCU {
-    [MCUUpdateTool sharedInstace].toolDelegate = self;
-    [[MCUUpdateTool sharedInstace] askUpdateMCU:_deviceId downloadAddress:downloadAddress latestMCUSVersion:latestMCUSVersion];
+    [UpdataMCUTool sharedInstace].toolDelegate = self;
+    [[UpdataMCUTool sharedInstace] askUpdateMCU:_deviceId downloadAddress:downloadAddress latestMCUSVersion:latestMCUSVersion];
 }
 
 - (void)starteUpdateHud {
@@ -468,23 +470,26 @@
     }
 }
 
-- (void)updateSuccess:(BOOL)value {
+- (void)updateSuccess:(NSString *)value {
     if (_updatingHud) {
         [_updatingHud hideAnimated:YES];
         [self.translucentBgView removeFromSuperview];
         self.translucentBgView = nil;
         [updateMCUBtn removeFromSuperview];
         updateMCUBtn = nil;
-        if (([_deviceEn.shortName isEqualToString:@"SD350"]||[_deviceEn.shortName isEqualToString:@"SSD150"]) && value) {
+        if (([_deviceEn.shortName isEqualToString:@"SD350"]||[_deviceEn.shortName isEqualToString:@"SSD150"])) {
             timer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(timerMethod:) userInfo:nil repeats:YES];
             [timer fire];
         }
-        NSString *valueStr = value? AcTECLocalizedStringFromTable(@"Success", @"Localizable"):AcTECLocalizedStringFromTable(@"Error", @"Localizable");
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:valueStr preferredStyle:UIAlertControllerStyleAlert];
-        [alert.view setTintColor:DARKORAGE];
-        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
-        [alert addAction:cancel];
-        [self presentViewController:alert animated:YES completion:nil];
+        if (!_mcuAlert) {
+            _mcuAlert = [UIAlertController alertControllerWithTitle:nil message:value preferredStyle:UIAlertControllerStyleAlert];
+            [_mcuAlert.view setTintColor:DARKORAGE];
+            UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+            [_mcuAlert addAction:cancel];
+            [self presentViewController:_mcuAlert animated:YES completion:nil];
+        }else {
+            [_mcuAlert setMessage:value];
+        }
     }
 }
 

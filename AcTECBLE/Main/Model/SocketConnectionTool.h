@@ -11,6 +11,7 @@
 
 @protocol SocketConnectionToolDelegate <NSObject>
 
+@optional
 - (void)saveSonosInfo:(NSNumber *_Nullable)deviceID;
 - (void)socketConnectFail:(NSNumber *_Nullable)deviceID;
 

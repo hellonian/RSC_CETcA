@@ -93,7 +93,11 @@
         }
     }else if (_sMode == SelectionListViewSelectionMode_Music
               || _sMode == SelectionListViewSelectionMode_Cycle
-              || _sMode == SelectionListViewSelectionMode_Source) {
+              || _sMode == SelectionListViewSelectionMode_Source
+              || _sMode == SelectionListViewSelectionMode_PlayStop
+              || _sMode == SelectionListViewSelectionMode_NormalMute
+              || _sMode == SelectionListViewSelectionMode_ChannelPowerState
+              || _sMode == SelectionListViewSelectionMode_Channel) {
         if (model.selected) {
             if ([_selectedAry count] > 0) {
                 SelectionListModel *model = [_selectedAry firstObject];

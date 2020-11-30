@@ -928,25 +928,30 @@
                         }else if ([deviceDict[@"`c_curtain_type`"] integerValue] == 4) {
                             deviceEntity.remoteBranch = @"cvv";
                         }
-                    }else if ([CSRUtilities belongToSceneRemoteOneKey:deviceDict[@"`c_shortName`"]]) {
+                    }else if ([CSRUtilities belongToSceneRemoteOneKey:deviceDict[@"`c_shortName`"]]
+                              || [CSRUtilities belongToSceneRemoteOneKeyV:deviceDict[@"`c_shortName`"]]) {
                         NSInteger s1 = [deviceDict[@"`c_deviceid_1`"] integerValue];
                         deviceEntity.remoteBranch = [NSString stringWithFormat:@"01%@",[CSRUtilities exchangePositionOfDeviceId:s1]];
-                    }else if ([CSRUtilities belongToSceneRemoteTwoKeys:deviceDict[@"`c_shortName`"]]) {
+                    }else if ([CSRUtilities belongToSceneRemoteTwoKeys:deviceDict[@"`c_shortName`"]]
+                              || [CSRUtilities belongToSceneRemoteTwoKeysV:deviceDict[@"`c_shortName`"]]) {
                         NSInteger s1 = [deviceDict[@"`c_deviceid_1`"] integerValue];
                         NSInteger s2 = [deviceDict[@"`c_deviceid_2`"] integerValue];
                         deviceEntity.remoteBranch = [NSString stringWithFormat:@"01%@02%@",[CSRUtilities exchangePositionOfDeviceId:s1],[CSRUtilities exchangePositionOfDeviceId:s2]];
-                    }else if ([CSRUtilities belongToSceneRemoteThreeKeys:deviceDict[@"`c_shortName`"]]) {
+                    }else if ([CSRUtilities belongToSceneRemoteThreeKeys:deviceDict[@"`c_shortName`"]]
+                              || [CSRUtilities belongToSceneRemoteThreeKeysV:deviceDict[@"`c_shortName`"]]) {
                         NSInteger s1 = [deviceDict[@"`c_deviceid_1`"] integerValue];
                         NSInteger s2 = [deviceDict[@"`c_deviceid_2`"] integerValue];
                         NSInteger s3 = [deviceDict[@"`c_deviceid_3`"] integerValue];
                         deviceEntity.remoteBranch = [NSString stringWithFormat:@"01%@02%@03%@",[CSRUtilities exchangePositionOfDeviceId:s1],[CSRUtilities exchangePositionOfDeviceId:s2],[CSRUtilities exchangePositionOfDeviceId:s3]];
-                    }else if ([CSRUtilities belongToSceneRemoteFourKeys:deviceDict[@"`c_shortName`"]]) {
+                    }else if ([CSRUtilities belongToSceneRemoteFourKeys:deviceDict[@"`c_shortName`"]]
+                              || [CSRUtilities belongToSceneRemoteFourKeysV:deviceDict[@"`c_shortName`"]]) {
                         NSInteger s1 = [deviceDict[@"`c_deviceid_1`"] integerValue];
                         NSInteger s2 = [deviceDict[@"`c_deviceid_2`"] integerValue];
                         NSInteger s3 = [deviceDict[@"`c_deviceid_3`"] integerValue];
                         NSInteger s4 = [deviceDict[@"`c_deviceid_4`"] integerValue];
                         deviceEntity.remoteBranch = [NSString stringWithFormat:@"01%@02%@03%@04%@",[CSRUtilities exchangePositionOfDeviceId:s1],[CSRUtilities exchangePositionOfDeviceId:s2],[CSRUtilities exchangePositionOfDeviceId:s3],[CSRUtilities exchangePositionOfDeviceId:s4]];
-                    }else if ([CSRUtilities belongToSceneRemoteSixKeys:deviceDict[@"`c_shortName`"]]) {
+                    }else if ([CSRUtilities belongToSceneRemoteSixKeys:deviceDict[@"`c_shortName`"]]
+                              || [CSRUtilities belongToSceneRemoteSixKeysV:deviceDict[@"`c_shortName`"]]) {
                         NSInteger s1 = [deviceDict[@"`c_deviceid_1`"] integerValue];
                         NSInteger s2 = [deviceDict[@"`c_deviceid_2`"] integerValue];
                         NSInteger s3 = [deviceDict[@"`c_deviceid_3`"] integerValue];
@@ -980,7 +985,7 @@
                 sceneObj.iconID = sceneDict[@"`c_resIndex`"];
                 sceneObj.sceneName = sceneDict[@"`c_name`"];
                 sceneObj.rcIndex = sceneDict[@"`c_csrsceneid`"];
-                sceneObj.srDeviceId = @(-1);
+                sceneObj.srDeviceId = sceneDict[@"`c_csrdeviceid`"];
                 sceneObj.enumMethod = @(NO);
                 
                 NSMutableArray *members = [NSMutableArray new];

@@ -8,7 +8,7 @@ workspace 'AcTECBLE.xcworkspace'
 
 target 'AcTECBLE' do
     project 'AcTECBLE.xcodeproj'
-    pod 'AFNetworking','~>2.5.3'
+    pod 'AFNetworking','~>2.5.3',:subspecs => ['Reachability', 'Serialization', 'Security', 'NSURLSession', 'NSURLConnection']
     pod 'OpenSSL'
     pod 'PureLayout'
     pod 'OHMySQL'
