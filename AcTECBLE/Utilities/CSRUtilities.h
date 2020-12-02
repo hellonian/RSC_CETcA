@@ -119,6 +119,7 @@
 + (BOOL)belongToSocketTwoChannel:(NSString *)shortName;
 + (BOOL)belongToTwoChannelSwitch:(NSString *)shortName;
 + (BOOL)belongToDALDevice:(NSString *)shortName;
++ (BOOL)belongtoDALIDeviceTwo:(NSString *)shortName;
 + (BOOL)belongToCWRemote:(NSString *)shortName;
 + (BOOL)belongToRGBRemote:(NSString *)shortName;
 + (BOOL)belongToRGBCWRemote:(NSString *)shortName;
@@ -135,6 +136,7 @@
 + (BOOL)belongToNearbyFunctionDevice:(NSString *)shortName;
 + (BOOL)belongToMusicController:(NSString *)shortName;
 + (BOOL)belongToMusicControlRemote:(NSString *)shortName;
++ (BOOL)belongToMusicControlRemoteV:(NSString *)shortName;
 + (BOOL)belongToHOneChannelCurtainController:(NSString *)shortName;
 + (BOOL)belongToSonosMusicController:(NSString *)shortName;
 + (BOOL)belongToSceneRemoteSixKeysV:(NSString *)shortName;

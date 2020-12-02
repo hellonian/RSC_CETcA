@@ -95,6 +95,16 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
 @property (weak, nonatomic) IBOutlet UIButton *remoteBtn32;
 @property (weak, nonatomic) IBOutlet UIButton *remoteBtn33;
 @property (weak, nonatomic) IBOutlet UIImageView *musicRemoteBgImageView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *mcKeyOneLeftConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *mcKeyTwoTopConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *mcKeyTwoRightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *mcKeyThreeLeftConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *mcKeyThreeTopConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *mcKeyFourTopConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *mcKeyFourRightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *mcKeyFiveLeftConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *mcKeySixRightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *mcKeySixBottomConstraint;
 
 @property (nonatomic,strong) MBProgressHUD *updatingHud;
 @property (nonatomic, strong) UIAlertController *mcuAlert;
@@ -382,7 +392,8 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                 _keyOneTopConstraint.constant = 212;
             }
             _keyOneLeftConstraint.constant = 127;
-        }else if ([CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]) {
+        }else if ([CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]
+                  || [CSRUtilities belongToMusicControlRemoteV:deviceEntity.shortName]) {
             [self.view addSubview:self.mcrView];
             [self.mcrView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
             [self.mcrView autoAlignAxisToSuperviewAxis:ALAxisVertical];
@@ -465,6 +476,38 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             _remoteBtn29.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
             _remoteBtn29.titleLabel.numberOfLines = 2;
             _remoteBtn29.titleLabel.textAlignment = NSTextAlignmentCenter;
+            
+            if ([CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]) {
+                _musicRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg"];
+                [_remoteBtn30 setImage:[UIImage imageNamed:@"remotescenebtn_default"] forState:UIControlStateNormal];
+                [_remoteBtn30 setImage:[UIImage imageNamed:@"remotescenebtn_highlighted"] forState:UIControlStateHighlighted];
+                [_remoteBtn30 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
+                _mcKeyOneLeftConstraint.constant = 79;
+                [_remoteBtn31 setImage:[UIImage imageNamed:@"remotescenebtn_default"] forState:UIControlStateNormal];
+                [_remoteBtn31 setImage:[UIImage imageNamed:@"remotescenebtn_highlighted"] forState:UIControlStateHighlighted];
+                [_remoteBtn31 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
+                _mcKeyTwoTopConstraint.constant = 56;
+                _mcKeyTwoRightConstraint.constant = 79;
+                [_remoteBtn32 setImage:[UIImage imageNamed:@"remotescenebtn_default"] forState:UIControlStateNormal];
+                [_remoteBtn32 setImage:[UIImage imageNamed:@"remotescenebtn_highlighted"] forState:UIControlStateHighlighted];
+                [_remoteBtn32 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
+                _mcKeyThreeTopConstraint.constant = 133;
+                _mcKeyThreeLeftConstraint.constant = 79;
+                [_remoteBtn33 setImage:[UIImage imageNamed:@"remotescenebtn_default"] forState:UIControlStateNormal];
+                [_remoteBtn33 setImage:[UIImage imageNamed:@"remotescenebtn_highlighted"] forState:UIControlStateHighlighted];
+                [_remoteBtn33 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
+                _mcKeyFourTopConstraint.constant = 133;
+                _mcKeyFourRightConstraint.constant = 79;
+                [_remoteBtn28 setImage:[UIImage imageNamed:@"remotescenebtn_default"] forState:UIControlStateNormal];
+                [_remoteBtn28 setImage:[UIImage imageNamed:@"remotescenebtn_highlighted"] forState:UIControlStateHighlighted];
+                [_remoteBtn28 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
+                _mcKeyFiveLeftConstraint.constant = 79;
+                [_remoteBtn29 setImage:[UIImage imageNamed:@"remotescenebtn_default"] forState:UIControlStateNormal];
+                [_remoteBtn29 setImage:[UIImage imageNamed:@"remotescenebtn_highlighted"] forState:UIControlStateHighlighted];
+                [_remoteBtn29 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
+                _mcKeySixRightConstraint.constant = 79;
+                _mcKeySixBottomConstraint.constant = 56;
+            }
             
             UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn28 addGestureRecognizer:longPressGesture];
@@ -602,19 +645,19 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         || [CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]
         || [CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
         || [CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]
-        || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]) {
+        || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]
+        || [CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]) {
         _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotesceneeditbg"];
     }else if ([CSRUtilities belongToRGBRemote:deviceEntity.shortName]
               || [CSRUtilities belongToCWRemote:deviceEntity.shortName]
               || [CSRUtilities belongToRGBCWRemote:deviceEntity.shortName]) {
         _mainRemoteBgImageView.image = [UIImage imageNamed:@"remotemaineditbg"];
-    }else if ([CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]) {
-        _musicRemoteBgImageView.image = [UIImage imageNamed:@"remotesceneeditbg"];
     }else if ([CSRUtilities belongToSceneRemoteTwoKeysV:deviceEntity.shortName]
               || [CSRUtilities belongToSceneRemoteFourKeysV:deviceEntity.shortName]) {
         _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vte"];
     }else if ([CSRUtilities belongToSceneRemoteThreeKeysV:deviceEntity.shortName]
-              || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]) {
+              || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]
+              || [CSRUtilities belongToMusicControlRemoteV:deviceEntity.shortName]) {
         _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vse"];
     }
 }
@@ -629,19 +672,19 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         || [CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]
         || [CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
         || [CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]
-        || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]) {
+        || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]
+        || [CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]) {
         _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg"];
     }else if ([CSRUtilities belongToRGBRemote:deviceEntity.shortName]
               || [CSRUtilities belongToCWRemote:deviceEntity.shortName]
               || [CSRUtilities belongToRGBCWRemote:deviceEntity.shortName]) {
         _mainRemoteBgImageView.image = [UIImage imageNamed:@"remotemainbg"];
-    }else if ([CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]) {
-        _musicRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg"];
     }else if ([CSRUtilities belongToSceneRemoteTwoKeysV:deviceEntity.shortName]
               || [CSRUtilities belongToSceneRemoteFourKeysV:deviceEntity.shortName]) {
         _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vt"];
     }else if ([CSRUtilities belongToSceneRemoteThreeKeysV:deviceEntity.shortName]
-              || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]) {
+              || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]
+              || [CSRUtilities belongToMusicControlRemoteV:deviceEntity.shortName]) {
         _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vs"];
     }
 }

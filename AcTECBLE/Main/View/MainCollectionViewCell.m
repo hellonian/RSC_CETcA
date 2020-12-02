@@ -312,7 +312,8 @@
                   || [CSRUtilities belongToSceneRemoteThreeKeysV:deviceEntity.shortName]
                   || [CSRUtilities belongToSceneRemoteTwoKeysV:deviceEntity.shortName]
                   || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]
-                  || [CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]) {
+                  || [CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]
+                  || [CSRUtilities belongToMusicControlRemoteV:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"mainremoteroom"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = YES;
@@ -350,6 +351,13 @@
         }else if ([CSRUtilities belongToSonosMusicController:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"room_sonos"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"module", @"Localizable");
+            self.levelLabel.hidden = YES;
+            self.level2Label.hidden = YES;
+            self.level3Label.hidden = YES;
+            self.levelTextTopCon.constant = 0;
+        }else if ([CSRUtilities belongtoDALIDeviceTwo:deviceEntity.shortName]) {
+            self.iconView.image = [UIImage imageNamed:@"dimmersingle"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable");
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
@@ -491,6 +499,13 @@
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
             self.levelTextTopCon.constant = 0;
+        }else if ([CSRUtilities belongtoDALIDeviceTwo:device.deviceShortName]) {
+            self.iconView.image = [UIImage imageNamed:@"Device_Dimmer"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable");
+            self.levelLabel.hidden = YES;
+            self.level2Label.hidden = YES;
+            self.level3Label.hidden = YES;
+            self.levelTextTopCon.constant = 0;
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
@@ -538,7 +553,8 @@
         appearanceShortname = [appearanceShortname stringByTrimmingCharactersInSet:[NSCharacterSet controlCharacterSet]];
         self.nameLabel.text = appearanceShortname;
         self.kindLabel.text = [NSString stringWithFormat:@"%@",[device.uuid.UUIDString substringFromIndex:24]];
-        if ([CSRUtilities belongToDimmer:appearanceShortname]) {
+        if ([CSRUtilities belongToDimmer:appearanceShortname]
+            || [CSRUtilities belongtoDALIDeviceTwo:appearanceShortname]) {
             if ([appearanceShortname isEqualToString:@"SD350"]||[appearanceShortname isEqualToString:@"SSD150"]) {
                 self.iconView.image = [UIImage imageNamed:@"Device_socket1"];
             }else {
@@ -602,7 +618,8 @@
                   || [CSRUtilities belongToSceneRemoteThreeKeysV:appearanceShortname]
                   || [CSRUtilities belongToSceneRemoteTwoKeysV:appearanceShortname]
                   || [CSRUtilities belongToSceneRemoteOneKeyV:appearanceShortname]
-                  || [CSRUtilities belongToMusicControlRemote:appearanceShortname]) {
+                  || [CSRUtilities belongToMusicControlRemote:appearanceShortname]
+                  || [CSRUtilities belongToMusicControlRemoteV:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_mainremote"];
         }else if ([CSRUtilities belongToLCDRemote:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"Device_lcdremote"];

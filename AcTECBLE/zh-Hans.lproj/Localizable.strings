@@ -222,3 +222,4 @@
 "connected" = "已连接";
 "not_connected" = "未连接";
 "lan_connection_fail" = "局域网连接失败，请重试或更换路由器后重试。";
+"long_press_for_dimming" = "长按调光";

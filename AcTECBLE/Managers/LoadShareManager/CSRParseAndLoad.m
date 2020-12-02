@@ -219,6 +219,12 @@
             deviceEntity.bleFirVersion = deviceDict[@"bleFirVersion"];
             deviceEntity.bleHwVersion = deviceDict[@"bleHwVersion"];
             deviceEntity.hwVersion = deviceDict[@"hwVersion"];
+            deviceEntity.ipAddress = deviceDict[@"ipAddress"];
+            deviceEntity.port = deviceDict[@"port"];
+            deviceEntity.mcSonosInfoVersion = deviceDict[@"mcSonosInfoVersion"];
+            deviceEntity.subnetMask = deviceDict[@"subnetMask"];
+            deviceEntity.gateway = deviceDict[@"gateway"];
+            deviceEntity.dns = deviceDict[@"dns"];
             
             NSMutableArray *rgbScenes = [NSMutableArray new];
             if (parsingDictionary[@"rgbScene_list"]) {
@@ -247,6 +253,24 @@
                 }
             }
             [deviceEntity addRgbScenes:[NSSet setWithArray:rgbScenes]];
+            
+            NSMutableArray *sonoss = [NSMutableArray new];
+            if (parsingDictionary[@"sonoss"]) {
+                for (NSDictionary *sonosDict in parsingDictionary[@"sonoss"]) {
+                    if ([sonosDict[@"deviceID"] isEqualToNumber:deviceDict[@"deviceID"]]) {
+                        SonosEntity *sonosObj = [NSEntityDescription insertNewObjectForEntityForName:@"SonosEntity" inManagedObjectContext:managedObjectContext];
+                        sonosObj.deviceID = sonosDict[@"deviceID"];
+                        sonosObj.channel = sonosDict[@"channel"];
+                        sonosObj.infoVersion = sonosDict[@"infoVersion"];
+                        sonosObj.modelNumber = sonosDict[@"modelNumber"];
+                        sonosObj.modelType = sonosDict[@"modelType"];
+                        sonosObj.name = sonosDict[@"name"];
+                        [sonoss addObject:sonosObj];
+                    }
+                }
+            }
+            [deviceEntity addSonoss:[NSSet setWithArray:sonoss]];
+            
             if (self.sharePlace) {
                 [self.sharePlace addDevicesObject:deviceEntity];
             }
@@ -424,6 +448,7 @@
     NSMutableArray *gatewayArray = [NSMutableArray new];
     NSMutableArray *restArray = [NSMutableArray new];
     NSMutableArray *rgbSceneArray = [NSMutableArray new];
+    NSMutableArray *sonossArray = [NSMutableArray new];
     
     ///////////////////PlaceNamePassword//////////////////////////////////////
     CSRPlaceEntity *place = [CSRAppStateManager sharedInstance].selectedPlace;
@@ -496,7 +521,13 @@
                                           @"mcuSVersion":(device.mcuSVersion)?(device.mcuSVersion):@0,
                                           @"bleFirVersion":(device.bleFirVersion)?(device.bleFirVersion):@0,
                                           @"bleHwVersion":(device.bleHwVersion)?(device.bleHwVersion):@0,
-                                          @"hwVersion":(device.hwVersion)?(device.hwVersion):@0
+                                          @"hwVersion":(device.hwVersion)?(device.hwVersion):@0,
+                                          @"ipAddress":(device.ipAddress)?(device.ipAddress):@"",
+                                          @"port":(device.port)?(device.port):@0,
+                                          @"mcSonosInfoVersion":(device.mcSonosInfoVersion)?(device.mcSonosInfoVersion):@0,
+                                          @"subnetMask":(device.subnetMask)?(device.subnetMask):@"",
+                                          @"gateway":(device.gateway)?device.gateway:@"",
+                                          @"dns":(device.dns)?device.dns:@""
                                           }];
                 
                 if (device.rgbScenes && [device.rgbScenes count]>0) {
@@ -522,6 +553,18 @@
                     }
                 }
                 
+                if (device.sonoss && [device.sonoss count]>0) {
+                    for (SonosEntity *sonos in device.sonoss) {
+                        [sonossArray addObject:@{@"deviceID":(sonos.deviceID)?(sonos.deviceID):@0,
+                                                 @"channel":(sonos.channel)?(sonos.channel):@0,
+                                                 @"infoVersion":(sonos.infoVersion)?(sonos.infoVersion):@0,
+                                                 @"modelNumber":(sonos.modelNumber)?(sonos.modelNumber):@0,
+                                                 @"modelType":(sonos.modelType)?(sonos.modelType):@0,
+                                                 @"name":(sonos.name)?(sonos.name):@""
+                                                }];
+                    }
+                }
+                
             }
         }
         if (rgbSceneArray) {
@@ -530,6 +573,10 @@
         if (devicesArray) {
             [jsonDictionary setObject:devicesArray forKey:@"devices_list"];
         }
+    
+    if (sonossArray) {
+        [jsonDictionary setObject:sonossArray forKey:@"sonoss"];
+    }
         
         ///////////////////Areas//////////////////////////////////////
         

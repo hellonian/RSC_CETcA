@@ -371,7 +371,7 @@
             _label2.text = ([member.eveD0 integerValue] & 0x02) ? @"Play":@"Stop";
         }
         
-        if (et & 0x03) {
+        if (et & 0x08) {
             NSInteger ic = ([member.eveD0 integerValue] & 0xe0) >> 5;
             if (ic < 5) {
                 if ([_label2.text length] > 0) {

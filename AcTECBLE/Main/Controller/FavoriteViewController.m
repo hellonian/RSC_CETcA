@@ -115,13 +115,49 @@
             [[SoundListenTool sharedInstance] stopRecord:_deviceId];
         }
         
-        [[LightModelApi sharedInstance] setLevel:_deviceId level:rgbSceneEntity.level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+        if ([_deviceId integerValue] > 32768) {
+            [[LightModelApi sharedInstance] setLevel:_deviceId level:rgbSceneEntity.level success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
+                
+            } failure:^(NSError * _Nullable error) {
+                DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+                model.isleave = YES;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":_deviceId}];
+            }];
             
-        } failure:^(NSError * _Nullable error) {
             DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-            model.isleave = YES;
+            if ([rgbSceneEntity.level integerValue]==0) {
+                model.powerState = @0;
+                model.channel1PowerState = 0;
+                model.level = @0;
+                model.channel1Level = 0;
+            }else {
+                model.powerState = @(1);
+                model.channel1PowerState = 1;
+                model.level = @([rgbSceneEntity.level integerValue]);
+                model.channel1Level = [rgbSceneEntity.level integerValue];
+            }
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":_deviceId}];
-        }];
+        }else {
+            [[LightModelApi sharedInstance] setLevel:_deviceId level:rgbSceneEntity.level success:nil failure:nil];
+            CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:_deviceId];
+            for (CSRDeviceEntity *member in area.devices) {
+                DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:member.deviceId];
+                if ([rgbSceneEntity.level integerValue]==0) {
+                    model.powerState = @0;
+                    model.channel1PowerState = 0;
+                    model.level = @0;
+                    model.channel1Level = 0;
+                }else {
+                    model.powerState = @(1);
+                    model.channel1PowerState = 1;
+                    model.level = @([rgbSceneEntity.level integerValue]);
+                    model.channel1Level = [rgbSceneEntity.level integerValue];
+                }
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":_deviceId}];
+            }
+        }
+        
+        [NSThread sleepForTimeInterval:0.3];
         
         if ([rgbSceneEntity.eventType boolValue]) {
            
@@ -133,14 +169,8 @@
             [[DeviceModelManager sharedInstance] invalidateColofulTimerWithDeviceId:_deviceId];
             
             UIColor *color = [UIColor colorWithHue:[rgbSceneEntity.hueA floatValue] saturation:[rgbSceneEntity.colorSat floatValue] brightness:1.0 alpha:1.0];
-            [[LightModelApi sharedInstance] setColor:_deviceId color:color duration:@0 success:^(NSNumber * _Nullable deviceId, UIColor * _Nullable color, NSNumber * _Nullable powerState, NSNumber * _Nullable colorTemperature, NSNumber * _Nullable supports) {
-                
-            } failure:^(NSError * _Nullable error) {
-                DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
-                model.isleave = YES;
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":_deviceId}];
-            }];
             
+            [[DeviceModelManager sharedInstance] setColorWithDeviceId:_deviceId withColor:color];
         }
     }
     

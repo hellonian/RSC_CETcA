@@ -860,7 +860,8 @@
                   || [CSRUtilities belongToSceneRemoteThreeKeysV:deviceEntity.shortName]
                   || [CSRUtilities belongToSceneRemoteTwoKeysV:deviceEntity.shortName]
                   || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]
-                  || [CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]) {
+                  || [CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]
+                  || [CSRUtilities belongToMusicControlRemoteV:deviceEntity.shortName]) {
             RemoteMainVC *rmvc = [[RemoteMainVC alloc] init];
             rmvc.deviceId = mainCell.deviceId;
             rmvc.reloadDataHandle = ^{

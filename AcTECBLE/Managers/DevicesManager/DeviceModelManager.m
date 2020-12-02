@@ -721,19 +721,38 @@
             model.isleave = YES;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@(1)}];
         }];
+        
+        DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
+        model.powerState = @1;
+        CGFloat red,green,blue,alpha;
+        if ([color getRed:&red green:&green blue:&blue alpha:&alpha]) {
+            model.red = @(red * 255);
+            model.green = @(green * 255);
+            model.blue = @(blue * 255);
+        }
     }else {
         groupControlling = YES;
         [[LightModelApi sharedInstance] setColor:deviceId color:color duration:@0 success:nil failure:nil];
+        
+        CSRAreaEntity *area = [[CSRDatabaseManager sharedInstance] getAreaEntityWithId:deviceId];
+        for (CSRDeviceEntity *member in area.devices) {
+            for (DeviceModel *model in _allDevices) {
+                if ([model.deviceId isEqualToNumber:member.deviceId]) {
+                    model.powerState = @1;
+                    CGFloat red,green,blue,alpha;
+                    if ([color getRed:&red green:&green blue:&blue alpha:&alpha]) {
+                        model.red = @(red * 255);
+                        model.green = @(green * 255);
+                        model.blue = @(blue * 255);
+                    }
+                    model.supports = @0;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceId,@"channel":@1}];
+                    break;
+                }
+            }
+        }
     }
     
-    DeviceModel *model = [self getDeviceModelByDeviceId:deviceId];
-    model.powerState = @1;
-    CGFloat red,green,blue,alpha;
-    if ([color getRed:&red green:&green blue:&blue alpha:&alpha]) {
-        model.red = @(red * 255);
-        model.green = @(green * 255);
-        model.blue = @(blue * 255);
-    }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceId,@"channel":@1}];
 }
 

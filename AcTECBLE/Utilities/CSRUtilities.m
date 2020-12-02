@@ -1165,6 +1165,7 @@
         || [kThreeChannelSwitchs containsObject:shortName]
         || [kMusicController containsObject:shortName]
         || [kMusicControlRemote containsObject:shortName]
+        || [kMusicControlRemoteV containsObject:shortName]
         || [kThreeChannelDimmers containsObject:shortName]
         || [kHOneChannelCurtainController containsObject:shortName]
         || [kSonosMusicController containsObject:shortName]
@@ -1172,7 +1173,8 @@
         || [kSceneRemotesFourKeysV containsObject:shortName]
         || [kSceneRemotesThreeKeysV containsObject:shortName]
         || [kSceneRemotesTwoKeysV containsObject:shortName]
-        || [kSceneRemotesOneKeyV containsObject:shortName]) {
+        || [kSceneRemotesOneKeyV containsObject:shortName]
+        || [kDALIDeviceTwo containsObject:shortName]) {
         return YES;
     }
     return NO;
@@ -1257,6 +1259,13 @@
 
 + (BOOL)belongToDALDevice:(NSString *)shortName {
     if ([kDALDevice containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongtoDALIDeviceTwo:(NSString *)shortName {
+    if ([kDALIDeviceTwo containsObject:shortName]) {
         return YES;
     }
     return NO;
@@ -1373,6 +1382,13 @@
     return NO;
 }
 
++ (BOOL)belongToMusicControlRemoteV:(NSString *)shortName {
+    if ([kMusicControlRemoteV containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
 + (BOOL)belongToHOneChannelCurtainController:(NSString *)shortName {
     if ([kHOneChannelCurtainController containsObject:shortName]) {
         return YES;
@@ -1432,11 +1448,7 @@
 
 //十进制数转十六进制字符串
 + (NSString *)stringWithHexNumber:(NSUInteger)hexNumber {
-    
-    char hexChar[6];
-    sprintf(hexChar, "%x", (int)hexNumber);
-    
-    NSString *hexString = [NSString stringWithCString:hexChar encoding:NSUTF8StringEncoding];
+    NSString *hexString = [NSString stringWithFormat:@"%lx", (unsigned long)hexNumber];
     if (hexString.length == 1) {
         hexString = [NSString stringWithFormat:@"0%@",hexString];
     }

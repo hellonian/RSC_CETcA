@@ -757,6 +757,15 @@ static DataModelManager *manager = nil;
         }
     }
     
+    else if ([dataStr hasPrefix:@"eb59"]) {
+        if ([data length] == 3) {
+            Byte *byte = (Byte *)[data bytes];
+            if (byte[2] == 1) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"DALITWOLONGPRESSEND" object:self userInfo:@{@"deviceId":sourceDeviceId}];
+            }
+        }
+    }
+    
 }
 
 - (void)didReceiveStreamData:(NSNumber *)deviceId streamNumber:(NSNumber *)streamNumber data:(NSData *)data {

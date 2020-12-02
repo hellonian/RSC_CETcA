@@ -3,7 +3,7 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -24,6 +24,16 @@
                 <outlet property="keyTwoTopConstraint" destination="E5X-6R-WlG" id="eNi-wi-29N"/>
                 <outlet property="macAddressLabel" destination="AGj-iT-LR1" id="VKG-YQ-5Oz"/>
                 <outlet property="mainRemoteBgImageView" destination="OoD-I3-xn6" id="bXh-WK-Qe8"/>
+                <outlet property="mcKeyFiveLeftConstraint" destination="1B5-OX-Wl6" id="e2g-l1-P90"/>
+                <outlet property="mcKeyFourRightConstraint" destination="WMi-gU-bgG" id="g4c-ta-VOW"/>
+                <outlet property="mcKeyFourTopConstraint" destination="wc1-w3-0qP" id="ZQU-9O-g7k"/>
+                <outlet property="mcKeyOneLeftConstraint" destination="tj0-yD-div" id="uc9-G2-bQH"/>
+                <outlet property="mcKeySixBottomConstraint" destination="Pen-xX-ul4" id="b0D-a6-I0R"/>
+                <outlet property="mcKeySixRightConstraint" destination="vDU-22-oAF" id="gdI-DU-edn"/>
+                <outlet property="mcKeyThreeLeftConstraint" destination="YQu-P6-non" id="dm7-gE-XQc"/>
+                <outlet property="mcKeyThreeTopConstraint" destination="9Pj-k5-lxK" id="W2F-Dw-Pc5"/>
+                <outlet property="mcKeyTwoRightConstraint" destination="Bpe-bu-tmT" id="E6z-3f-F6d"/>
+                <outlet property="mcKeyTwoTopConstraint" destination="WmH-V4-7ql" id="SP9-cv-nwc"/>
                 <outlet property="mcrView" destination="zr4-2H-Vmk" id="doc-hq-DfG"/>
                 <outlet property="musicRemoteBgImageView" destination="p68-Ie-R7Q" id="Ysv-Wf-FXy"/>
                 <outlet property="nameTf" destination="UuL-In-9bd" id="IbN-wL-jK2"/>
@@ -427,84 +437,67 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="320"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="remotescenebg" translatesAutoresizingMaskIntoConstraints="NO" id="p68-Ie-R7Q">
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="remotescenebg_vs" translatesAutoresizingMaskIntoConstraints="NO" id="p68-Ie-R7Q">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="320"/>
                 </imageView>
                 <button opaque="NO" tag="18" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tmq-13-C0p">
-                    <rect key="frame" x="79" y="56" width="67" height="52"/>
+                    <rect key="frame" x="20" y="56" width="67" height="52"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="67" id="NDN-Vi-t9t"/>
                         <constraint firstAttribute="height" constant="52" id="YeU-y7-d2m"/>
                     </constraints>
-                    <inset key="titleEdgeInsets" minX="-67" minY="0.0" maxX="0.0" maxY="0.0"/>
-                    <state key="normal" image="remotescenebtn_default"/>
-                    <state key="highlighted" title="开/关" image="remotescenebtn_highlighted"/>
+                    <state key="highlighted" title="开/关"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="F5R-t6-jAb"/>
                     </connections>
                 </button>
                 <button opaque="NO" tag="19" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="e5L-ub-Q1k">
-                    <rect key="frame" x="174" y="56" width="67" height="52"/>
+                    <rect key="frame" x="20" y="212" width="67" height="52"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="67" id="GsZ-ne-x8n"/>
                         <constraint firstAttribute="height" constant="52" id="KnM-ok-aAO"/>
                     </constraints>
-                    <inset key="titleEdgeInsets" minX="-67" minY="0.0" maxX="0.0" maxY="0.0"/>
-                    <state key="normal" image="remotescenebtn_default"/>
-                    <state key="highlighted" title="静音" image="remotescenebtn_highlighted"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="A6b-bi-8S8"/>
                     </connections>
                 </button>
                 <button opaque="NO" tag="20" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="As5-tk-Rz5">
-                    <rect key="frame" x="79" y="133" width="67" height="52"/>
+                    <rect key="frame" x="126" y="56" width="67" height="52"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="52" id="8py-zk-L4M"/>
                         <constraint firstAttribute="width" constant="67" id="ZC5-ME-CNa"/>
                     </constraints>
-                    <inset key="titleEdgeInsets" minX="-67" minY="0.0" maxX="0.0" maxY="0.0"/>
-                    <state key="normal" image="remotescenebtn_default"/>
-                    <state key="highlighted" title="上一首" image="remotescenebtn_highlighted"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="8qo-kC-hwl"/>
                     </connections>
                 </button>
                 <button opaque="NO" tag="21" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jsg-Ej-sxG">
-                    <rect key="frame" x="174" y="133" width="67" height="52"/>
+                    <rect key="frame" x="127" y="212" width="67" height="52"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="67" id="mjB-Op-oVv"/>
                         <constraint firstAttribute="height" constant="52" id="s2D-vY-oPC"/>
                     </constraints>
-                    <inset key="titleEdgeInsets" minX="-67" minY="0.0" maxX="0.0" maxY="0.0"/>
-                    <state key="normal" image="remotescenebtn_default"/>
-                    <state key="highlighted" image="remotescenebtn_highlighted"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="QHa-NZ-TKh"/>
                     </connections>
                 </button>
                 <button opaque="NO" tag="22" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6jW-pj-RSx">
-                    <rect key="frame" x="79" y="212" width="67" height="52"/>
+                    <rect key="frame" x="233" y="212" width="67" height="52"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="67" id="OWx-8F-MW3"/>
                         <constraint firstAttribute="height" constant="52" id="gec-Ml-QL2"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                    <inset key="titleEdgeInsets" minX="-67" minY="0.0" maxX="0.0" maxY="0.0"/>
-                    <state key="normal" image="remotescenebtn_default"/>
-                    <state key="highlighted" image="remotescenebtn_highlighted"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="Pgf-db-hid"/>
                     </connections>
                 </button>
                 <button opaque="NO" tag="23" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="idd-Nj-7fz">
-                    <rect key="frame" x="174" y="212" width="67" height="52"/>
+                    <rect key="frame" x="233" y="56" width="67" height="52"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="52" id="TlN-gp-5Ob"/>
                         <constraint firstAttribute="width" constant="67" id="vor-KX-i3K"/>
                     </constraints>
-                    <inset key="titleEdgeInsets" minX="-67" minY="0.0" maxX="0.0" maxY="0.0"/>
-                    <state key="normal" image="remotescenebtn_default"/>
-                    <state key="highlighted" image="remotescenebtn_highlighted"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="wIu-eO-ZX1"/>
                     </connections>
@@ -513,21 +506,21 @@
             <viewLayoutGuide key="safeArea" id="OLi-0a-KIj"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="6jW-pj-RSx" firstAttribute="leading" secondItem="zr4-2H-Vmk" secondAttribute="leading" constant="79" id="1B5-OX-Wl6"/>
+                <constraint firstItem="6jW-pj-RSx" firstAttribute="leading" secondItem="zr4-2H-Vmk" secondAttribute="leading" constant="233" id="1B5-OX-Wl6"/>
                 <constraint firstItem="tmq-13-C0p" firstAttribute="top" secondItem="zr4-2H-Vmk" secondAttribute="top" constant="56" id="6FN-wG-c1G"/>
-                <constraint firstItem="As5-tk-Rz5" firstAttribute="top" secondItem="zr4-2H-Vmk" secondAttribute="top" constant="133" id="9Pj-k5-lxK"/>
+                <constraint firstItem="As5-tk-Rz5" firstAttribute="top" secondItem="zr4-2H-Vmk" secondAttribute="top" constant="56" id="9Pj-k5-lxK"/>
                 <constraint firstItem="p68-Ie-R7Q" firstAttribute="leading" secondItem="OLi-0a-KIj" secondAttribute="leading" id="AET-yR-aen"/>
-                <constraint firstAttribute="trailing" secondItem="e5L-ub-Q1k" secondAttribute="trailing" constant="79" id="Bpe-bu-tmT"/>
-                <constraint firstAttribute="bottom" secondItem="idd-Nj-7fz" secondAttribute="bottom" constant="56" id="Pen-xX-ul4"/>
+                <constraint firstAttribute="trailing" secondItem="e5L-ub-Q1k" secondAttribute="trailing" constant="233" id="Bpe-bu-tmT"/>
+                <constraint firstAttribute="bottom" secondItem="idd-Nj-7fz" secondAttribute="bottom" constant="212" id="Pen-xX-ul4"/>
                 <constraint firstAttribute="bottom" secondItem="6jW-pj-RSx" secondAttribute="bottom" constant="56" id="Ueh-HD-9yb"/>
-                <constraint firstAttribute="trailing" secondItem="jsg-Ej-sxG" secondAttribute="trailing" constant="79" id="WMi-gU-bgG"/>
-                <constraint firstItem="e5L-ub-Q1k" firstAttribute="top" secondItem="zr4-2H-Vmk" secondAttribute="top" constant="56" id="WmH-V4-7ql"/>
-                <constraint firstItem="As5-tk-Rz5" firstAttribute="leading" secondItem="zr4-2H-Vmk" secondAttribute="leading" constant="79" id="YQu-P6-non"/>
+                <constraint firstAttribute="trailing" secondItem="jsg-Ej-sxG" secondAttribute="trailing" constant="126" id="WMi-gU-bgG"/>
+                <constraint firstItem="e5L-ub-Q1k" firstAttribute="top" secondItem="zr4-2H-Vmk" secondAttribute="top" constant="212" id="WmH-V4-7ql"/>
+                <constraint firstItem="As5-tk-Rz5" firstAttribute="leading" secondItem="zr4-2H-Vmk" secondAttribute="leading" constant="126" id="YQu-P6-non"/>
                 <constraint firstItem="p68-Ie-R7Q" firstAttribute="top" secondItem="zr4-2H-Vmk" secondAttribute="top" id="hSU-EY-tBL"/>
                 <constraint firstItem="p68-Ie-R7Q" firstAttribute="bottom" secondItem="OLi-0a-KIj" secondAttribute="bottom" id="ogi-oz-V33"/>
-                <constraint firstItem="tmq-13-C0p" firstAttribute="leading" secondItem="zr4-2H-Vmk" secondAttribute="leading" constant="79" id="tj0-yD-div"/>
-                <constraint firstAttribute="trailing" secondItem="idd-Nj-7fz" secondAttribute="trailing" constant="79" id="vDU-22-oAF"/>
-                <constraint firstItem="jsg-Ej-sxG" firstAttribute="top" secondItem="zr4-2H-Vmk" secondAttribute="top" constant="133" id="wc1-w3-0qP"/>
+                <constraint firstItem="tmq-13-C0p" firstAttribute="leading" secondItem="zr4-2H-Vmk" secondAttribute="leading" constant="20" id="tj0-yD-div"/>
+                <constraint firstAttribute="trailing" secondItem="idd-Nj-7fz" secondAttribute="trailing" constant="20" id="vDU-22-oAF"/>
+                <constraint firstItem="jsg-Ej-sxG" firstAttribute="top" secondItem="zr4-2H-Vmk" secondAttribute="top" constant="212" id="wc1-w3-0qP"/>
                 <constraint firstItem="p68-Ie-R7Q" firstAttribute="trailing" secondItem="OLi-0a-KIj" secondAttribute="trailing" id="xIZ-7h-lXp"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -545,6 +538,7 @@
         <image name="remotebtn9_highlighted" width="58" height="58"/>
         <image name="remotemainbg" width="320" height="320"/>
         <image name="remotescenebg" width="280" height="280"/>
+        <image name="remotescenebg_vs" width="280" height="280"/>
         <image name="remotescenebtn_default" width="68" height="52"/>
         <image name="remotescenebtn_highlighted" width="68" height="52"/>
         <systemColor name="systemBackgroundColor">

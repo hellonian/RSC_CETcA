@@ -222,3 +222,4 @@
 "connected" = "Connected";
 "not_connected" = "Not connected";
 "lan_connection_fail" = "LAN connection failed, please try again or replace router.";
+"long_press_for_dimming" = "Long press for dimming";

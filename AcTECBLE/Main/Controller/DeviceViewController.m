@@ -32,6 +32,7 @@
     NSTimer *timer;
     
     BOOL tapLimimte;
+    NSInteger dalitwoEndCount;
 }
 
 @property (weak, nonatomic) IBOutlet UITextField *nameTF;
@@ -342,6 +343,27 @@
             [self addSubViewChannelTwoBrightnessView];
             [self addSubViewChannelThreeBrightnessView];
             _scrollView.contentSize = CGSizeMake(1, 514);
+        }
+        
+        else if ([CSRUtilities belongtoDALIDeviceTwo:_deviceEn.shortName]) {
+            UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+            btn.backgroundColor = [UIColor whiteColor];
+            [btn setTitle:AcTECLocalizedStringFromTable(@"long_press_for_dimming", @"Localizable") forState:UIControlStateNormal];
+            [btn setTitleColor:ColorWithAlpha(77, 77, 77, 1) forState:UIControlStateNormal];
+            [btn setTitleColor:DARKORAGE forState:UIControlStateHighlighted];
+            [btn.titleLabel setFont:[UIFont systemFontOfSize:14]];
+            [btn addTarget:self action:@selector(dalitwoTouchDownAction) forControlEvents:UIControlEventTouchDown];
+            [btn addTarget:self action:@selector(dalitwoTouchUpAction) forControlEvents:UIControlEventTouchUpInside];
+            [btn addTarget:self action:@selector(dalitwoTouchUpAction) forControlEvents:UIControlEventTouchUpOutside];
+            [_scrollView addSubview:btn];
+            [btn autoSetDimension:ALDimensionHeight toSize:44];
+            [btn autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_topView withOffset:20.0];
+            [btn autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+            [btn autoAlignAxisToSuperviewAxis:ALAxisVertical];
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(dalitwoLongPressEnd:)
+                                                         name:@"DALITWOLONGPRESSEND"
+                                                       object:nil];
         }
         
         self.navigationItem.title = _deviceEn.name;
@@ -1755,6 +1777,38 @@
         [self.colorSaturationSlider setValue:saturation animated:NO];
         self.colorSaturationLabel.text = [NSString stringWithFormat:@"%.f%%",saturation*100];
         [self.colorSquareView locationPickView:hue colorSaturation:saturation];
+    }
+}
+
+- (void)dalitwoTouchDownAction {
+    Byte byte[] = {0xea, 0x53, 0x00};
+    NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+}
+
+- (void)dalitwoTouchUpAction {
+    [self performSelector:@selector(dalitwoLongPressEndDelay) withObject:nil afterDelay:0.5];
+    dalitwoEndCount = 0;
+    Byte byte[] = {0xea, 0x53, 0x01};
+    NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+}
+
+- (void)dalitwoLongPressEnd:(NSNotification *)notification {
+    NSDictionary *dic = notification.userInfo;
+    NSNumber *deviceId = dic[@"deviceId"];
+    if ([deviceId isEqualToNumber:_deviceId]) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(dalitwoLongPressEndDelay) object:nil];
+    }
+}
+
+- (void)dalitwoLongPressEndDelay {
+    dalitwoEndCount ++;
+    if (dalitwoEndCount < 6) {
+        [self performSelector:@selector(dalitwoLongPressEndDelay) withObject:nil afterDelay:0.5];
+        Byte byte[] = {0xea, 0x53, 0x01};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
     }
 }
 

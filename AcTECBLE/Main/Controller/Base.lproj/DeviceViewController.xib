@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -71,8 +71,8 @@
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-            <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.95294117649999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
+            <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.95294117649999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <point key="canvasLocation" x="398" y="719"/>
         </view>
         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jqF-CI-kaG">
@@ -133,6 +133,7 @@
                     </constraints>
                 </view>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="ZQP-ff-JEG"/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="9GB-aW-U5B" firstAttribute="centerY" secondItem="Whw-sT-xn2" secondAttribute="centerY" id="0QS-bn-i6D"/>
@@ -162,7 +163,6 @@
                 <constraint firstItem="Whw-sT-xn2" firstAttribute="leading" secondItem="jqF-CI-kaG" secondAttribute="leading" constant="20" id="z12-9N-ce1"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="ZQP-ff-JEG"/>
             <point key="canvasLocation" x="-350.39999999999998" y="434.03298350824593"/>
         </view>
         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9f4-UH-vng">
@@ -195,6 +195,7 @@
                     </constraints>
                 </imageView>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="fQp-rD-ORk"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstItem="fQp-rD-ORk" firstAttribute="bottom" secondItem="b4F-Y7-1Xh" secondAttribute="bottom" constant="14" id="5AL-cu-Uph"/>
@@ -208,7 +209,6 @@
                 <constraint firstItem="lRY-vT-dpa" firstAttribute="top" secondItem="9f4-UH-vng" secondAttribute="top" constant="12" id="n0a-sJ-rrf"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="fQp-rD-ORk"/>
             <point key="canvasLocation" x="-351.19999999999999" y="663.86806596701649"/>
         </view>
         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Brightness" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ClO-Me-qxg">
@@ -236,14 +236,14 @@
                         <constraint firstAttribute="height" constant="1" id="grD-xT-qjm"/>
                     </constraints>
                 </view>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TJZ-ln-bUz">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TJZ-ln-bUz">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                     <connections>
                         <action selector="colorTemperatureChange:" destination="-1" eventType="touchUpInside" id="MR0-m5-His"/>
                         <action selector="touchUpOutside:" destination="-1" eventType="touchDown" id="ARK-3n-Tqh"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eM6-4o-bOF">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eM6-4o-bOF">
                     <rect key="frame" x="0.0" y="45" width="375" height="36"/>
                     <connections>
                         <action selector="colorTemperatureReset:" destination="-1" eventType="touchUpInside" id="FvE-8c-daL"/>
@@ -263,6 +263,7 @@
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="EDv-Yp-aQC"/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="OV2-JY-QYi" secondAttribute="trailing" constant="20" symbolic="YES" id="8BT-SI-7vZ"/>
@@ -285,7 +286,6 @@
                 <constraint firstItem="eM6-4o-bOF" firstAttribute="top" secondItem="KWq-79-Y9M" secondAttribute="bottom" id="wWZ-yM-Cp6"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="EDv-Yp-aQC"/>
             <point key="canvasLocation" x="-364" y="822"/>
         </view>
         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aeO-cQ-osv">
@@ -318,6 +318,7 @@
                     </constraints>
                 </imageView>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="f3W-9B-rjJ"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstItem="hT1-IF-PjE" firstAttribute="centerY" secondItem="aeO-cQ-osv" secondAttribute="centerY" id="00p-2I-ULj"/>
@@ -330,7 +331,6 @@
                 <constraint firstItem="7rO-QC-fW4" firstAttribute="top" secondItem="aeO-cQ-osv" secondAttribute="top" constant="14" id="tnU-ae-fwJ"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="f3W-9B-rjJ"/>
             <point key="canvasLocation" x="-360" y="933"/>
         </view>
         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Color" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H8t-il-Prv">
@@ -359,6 +359,7 @@
                     </constraints>
                 </imageView>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="xtR-kJ-LdS"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstItem="Gpo-yK-A1c" firstAttribute="top" secondItem="h1H-8v-hXO" secondAttribute="top" constant="14" id="NXH-Qh-NSE"/>
@@ -369,7 +370,6 @@
                 <constraint firstItem="Gpo-yK-A1c" firstAttribute="leading" secondItem="h1H-8v-hXO" secondAttribute="leading" constant="14" id="je7-Fk-vlj"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="xtR-kJ-LdS"/>
             <point key="canvasLocation" x="-359" y="1089"/>
         </view>
         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Color Saturation" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xVp-9l-H0g">
@@ -408,6 +408,7 @@
                     </constraints>
                 </imageView>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="koS-Km-CKs"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="qgh-p1-B7s" secondAttribute="trailing" constant="20" id="9ED-h9-Ngg"/>
@@ -421,7 +422,6 @@
                 <constraint firstItem="qgh-p1-B7s" firstAttribute="leading" secondItem="PxM-qS-HHZ" secondAttribute="trailing" constant="8" id="xc8-mK-wDR"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="koS-Km-CKs"/>
             <point key="canvasLocation" x="-359" y="1240"/>
         </view>
         <view contentMode="scaleToFill" id="Ucl-OD-InQ">
@@ -451,11 +451,11 @@
                 </label>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TqL-cL-yZd">
                     <rect key="frame" x="20" y="44" width="349" height="1"/>
+                    <viewLayoutGuide key="safeArea" id="g30-no-v7J"/>
                     <color key="backgroundColor" red="0.90196078430000004" green="0.90196078430000004" blue="0.90196078430000004" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="1" id="eiX-kr-DgJ"/>
                     </constraints>
-                    <viewLayoutGuide key="safeArea" id="g30-no-v7J"/>
                 </view>
                 <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uSK-va-Om2">
                     <rect key="frame" x="6" y="51" width="32" height="32"/>
@@ -480,11 +480,11 @@
                 </label>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sSn-YI-90e">
                     <rect key="frame" x="20" y="89" width="349" height="1"/>
+                    <viewLayoutGuide key="safeArea" id="Jhj-YS-aFq"/>
                     <color key="backgroundColor" red="0.90196078430000004" green="0.90196078430000004" blue="0.90196078430000004" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="1" id="evX-I2-acg"/>
                     </constraints>
-                    <viewLayoutGuide key="safeArea" id="Jhj-YS-aFq"/>
                 </view>
                 <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PfW-f7-sjR">
                     <rect key="frame" x="6" y="96" width="32" height="32"/>
@@ -499,7 +499,7 @@
                     </connections>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="group  (0~15) :" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LpE-ya-LiW">
-                    <rect key="frame" x="44" y="102" width="96.5" height="20"/>
+                    <rect key="frame" x="44" y="102" width="96" height="20"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="20" id="hPp-EX-aws"/>
                     </constraints>
@@ -509,11 +509,11 @@
                 </label>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="haQ-4n-gYs">
                     <rect key="frame" x="20" y="134" width="349" height="1"/>
+                    <viewLayoutGuide key="safeArea" id="xBP-Gd-NTT"/>
                     <color key="backgroundColor" red="0.90196078430000004" green="0.90196078430000004" blue="0.90196078430000004" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="1" id="bNz-Ud-x9G"/>
                     </constraints>
-                    <viewLayoutGuide key="safeArea" id="xBP-Gd-NTT"/>
                 </view>
                 <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TxB-ch-pdB">
                     <rect key="frame" x="6" y="141" width="32" height="32"/>
@@ -528,7 +528,7 @@
                     </connections>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="scene (0~15) :" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qpW-jT-WeJ">
-                    <rect key="frame" x="44" y="147" width="93.5" height="20"/>
+                    <rect key="frame" x="44" y="147" width="93" height="20"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="20" id="ged-oV-5tP"/>
                     </constraints>
@@ -547,7 +547,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZHX-fe-bw0">
-                    <rect key="frame" x="146.5" y="97" width="97" height="30"/>
+                    <rect key="frame" x="146" y="97" width="97" height="30"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="5Hs-St-2Lo"/>
                         <constraint firstAttribute="width" constant="97" id="vCt-bm-wuB"/>
@@ -557,7 +557,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aRi-58-uKR">
-                    <rect key="frame" x="143.5" y="142" width="97" height="30"/>
+                    <rect key="frame" x="143" y="142" width="97" height="30"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="5dK-vJ-1lN"/>
                         <constraint firstAttribute="width" constant="97" id="ABa-zI-3Pz"/>
@@ -567,6 +567,7 @@
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="4Y2-dt-dA0"/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="PfW-f7-sjR" firstAttribute="leading" secondItem="4Y2-dt-dA0" secondAttribute="leading" constant="6" id="0pF-0T-1y1"/>
@@ -603,7 +604,6 @@
                 <constraint firstItem="haQ-4n-gYs" firstAttribute="leading" secondItem="Ucl-OD-InQ" secondAttribute="leading" constant="20" id="yQX-LF-Wyp"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="4Y2-dt-dA0"/>
             <point key="canvasLocation" x="-359.19999999999999" y="1397.001499250375"/>
         </view>
         <view contentMode="scaleToFill" id="kQj-SV-fbG">
@@ -622,7 +622,7 @@
                     </connections>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ON/OFF mode" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vaJ-RI-Ns1">
-                    <rect key="frame" x="44" y="12" width="93" height="20"/>
+                    <rect key="frame" x="44" y="12" width="92" height="20"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="20" id="Bgd-Ml-tF3"/>
                     </constraints>
@@ -691,6 +691,7 @@
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="6ok-Vh-EN9"/>
             <constraints>
                 <constraint firstItem="lRs-Jl-CfF" firstAttribute="centerY" secondItem="szi-ej-BCk" secondAttribute="centerY" id="5lv-yy-FJG"/>
                 <constraint firstItem="vaJ-RI-Ns1" firstAttribute="centerY" secondItem="jvg-5P-2JL" secondAttribute="centerY" id="6R7-zd-SKv"/>
@@ -713,7 +714,6 @@
                 <constraint firstItem="d83-Jj-AHV" firstAttribute="centerY" secondItem="Yxl-tb-xob" secondAttribute="centerY" id="vYA-LI-C2W"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="6ok-Vh-EN9"/>
             <point key="canvasLocation" x="-359" y="1727"/>
         </view>
         <view contentMode="scaleToFill" id="fP3-U5-xuL">
@@ -741,7 +741,7 @@
                         <constraint firstAttribute="height" constant="1" id="bCF-V2-sab"/>
                     </constraints>
                 </view>
-                <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hVU-jX-KKC">
+                <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hVU-jX-KKC">
                     <rect key="frame" x="0.0" y="0.0" width="261" height="44"/>
                     <state key="normal" title="ON/OFF mode">
                         <color key="titleColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -750,7 +750,7 @@
                         <action selector="selectPulseWidthAction:" destination="-1" eventType="touchUpInside" id="W93-ZD-9B5"/>
                     </connections>
                 </button>
-                <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pLf-su-PzH">
+                <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pLf-su-PzH">
                     <rect key="frame" x="0.0" y="45" width="261" height="44"/>
                     <state key="normal" title="pulse width 1s">
                         <color key="titleColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -759,7 +759,7 @@
                         <action selector="selectPulseWidthAction:" destination="-1" eventType="touchUpInside" id="LT1-3j-xFf"/>
                     </connections>
                 </button>
-                <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eu8-A4-nY5">
+                <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eu8-A4-nY5">
                     <rect key="frame" x="0.0" y="90" width="261" height="44"/>
                     <state key="normal" title="pulse width 6s">
                         <color key="titleColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -768,7 +768,7 @@
                         <action selector="selectPulseWidthAction:" destination="-1" eventType="touchUpInside" id="q60-ze-3e6"/>
                     </connections>
                 </button>
-                <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xUc-Ex-DNe">
+                <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xUc-Ex-DNe">
                     <rect key="frame" x="0.0" y="135" width="261" height="44"/>
                     <state key="normal" title="pulse width 9s">
                         <color key="titleColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -778,6 +778,7 @@
                     </connections>
                 </button>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="MKD-di-9wk"/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="PNP-Bi-xtW" firstAttribute="leading" secondItem="MKD-di-9wk" secondAttribute="leading" id="10i-AY-BLo"/>
@@ -807,7 +808,6 @@
                 <constraint firstItem="PNP-Bi-xtW" firstAttribute="top" secondItem="eu8-A4-nY5" secondAttribute="bottom" id="ysr-9d-bN1"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="MKD-di-9wk"/>
             <point key="canvasLocation" x="-442" y="1965"/>
         </view>
         <view contentMode="scaleToFill" id="sAd-Ek-V0c">
@@ -840,7 +840,7 @@
                     <color key="textColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TW7-g1-Xt5">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TW7-g1-Xt5">
                     <rect key="frame" x="0.0" y="1" width="375" height="40"/>
                     <connections>
                         <action selector="ganjiedianRowTapAction:" destination="-1" eventType="touchUpInside" id="A4w-jw-Qgd"/>
@@ -854,6 +854,7 @@
                     </constraints>
                 </imageView>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="aid-GB-vcD"/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstAttribute="bottom" secondItem="NqI-o9-19F" secondAttribute="bottom" constant="12" id="8x2-aQ-U2W"/>
@@ -873,7 +874,6 @@
                 <constraint firstItem="XiP-KF-p6c" firstAttribute="leading" secondItem="sAd-Ek-V0c" secondAttribute="leading" constant="20" id="x1b-EE-og3"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="aid-GB-vcD"/>
             <point key="canvasLocation" x="-354" y="1832"/>
         </view>
         <view contentMode="scaleToFill" id="fW3-dS-QMe">
@@ -888,7 +888,7 @@
                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="1" id="yq3-jp-ZqT"/>
                     </constraints>
                 </view>
-                <button opaque="NO" tag="10" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7iE-Ef-emQ">
+                <button opaque="NO" tag="10" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7iE-Ef-emQ">
                     <rect key="frame" x="0.0" y="45" width="380" height="44"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="44" id="zq3-8I-d3m"/>
@@ -950,7 +950,7 @@
                         <constraint firstAttribute="height" constant="1" id="sRr-gQ-yex"/>
                     </constraints>
                 </view>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LaI-r3-tNR">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LaI-r3-tNR">
                     <rect key="frame" x="0.0" y="244" width="380" height="44"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
@@ -1000,7 +1000,7 @@
                     <color key="textColor" red="0.30196078430000001" green="0.30196078430000001" blue="0.30196078430000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <button opaque="NO" tag="12" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kBu-go-7KO">
+                <button opaque="NO" tag="12" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kBu-go-7KO">
                     <rect key="frame" x="320.5" y="142" width="30" height="30"/>
                     <color key="backgroundColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
@@ -1045,7 +1045,7 @@
                         <constraint firstAttribute="width" constant="15" id="UCO-ic-0JI"/>
                     </constraints>
                 </imageView>
-                <button opaque="NO" tag="11" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sO6-V8-TmG">
+                <button opaque="NO" tag="11" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sO6-V8-TmG">
                     <rect key="frame" x="229.5" y="142" width="30" height="30"/>
                     <color key="backgroundColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
@@ -1067,6 +1067,7 @@
                     </connections>
                 </button>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="Qz0-92-yRL"/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="xN2-xZ-2pV" firstAttribute="leading" secondItem="aRX-Hr-8Kd" secondAttribute="trailing" id="35T-QT-Nyg"/>
@@ -1120,7 +1121,6 @@
                 <constraint firstItem="WN2-qO-iIS" firstAttribute="leading" secondItem="Qz0-92-yRL" secondAttribute="leading" constant="20" id="zsc-wf-TGn"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="Qz0-92-yRL"/>
             <point key="canvasLocation" x="-347.19999999999999" y="2207.4962518740631"/>
         </view>
         <view contentMode="scaleToFill" id="bmJ-vm-WfN">
@@ -1141,6 +1141,7 @@
                     </connections>
                 </switch>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="t5j-d8-zoW"/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="5mj-l3-Ap2" firstAttribute="centerY" secondItem="kxz-Bc-WGF" secondAttribute="centerY" id="24o-ap-kVY"/>
@@ -1151,7 +1152,6 @@
                 <constraint firstItem="kxz-Bc-WGF" firstAttribute="leading" secondItem="bmJ-vm-WfN" secondAttribute="leading" constant="20" id="yhJ-WW-vZ9"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="t5j-d8-zoW"/>
             <point key="canvasLocation" x="-347.19999999999999" y="2445.8770614692658"/>
         </view>
         <view contentMode="scaleToFill" id="eJP-eI-J7S">
@@ -1172,6 +1172,7 @@
                     </connections>
                 </switch>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="xwX-uS-OAU"/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="7Bh-yY-Sg8" firstAttribute="centerY" secondItem="hTp-1y-F5S" secondAttribute="centerY" id="Iq0-rJ-jiS"/>
@@ -1182,7 +1183,6 @@
                 <constraint firstItem="7Bh-yY-Sg8" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="hTp-1y-F5S" secondAttribute="trailing" constant="8" symbolic="YES" id="zVO-x2-yhN"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="xwX-uS-OAU"/>
             <point key="canvasLocation" x="-347" y="2559"/>
         </view>
         <view contentMode="scaleToFill" id="jnV-y6-Uw6">
@@ -1203,6 +1203,7 @@
                     </connections>
                 </switch>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="zeh-MB-1TS"/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="6yN-cV-sdK" firstAttribute="centerY" secondItem="2ra-QN-6fV" secondAttribute="centerY" id="7Wa-Ei-NPW"/>
@@ -1213,7 +1214,6 @@
                 <constraint firstItem="6yN-cV-sdK" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="2ra-QN-6fV" secondAttribute="trailing" constant="8" symbolic="YES" id="zSh-AO-r2g"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="zeh-MB-1TS"/>
             <point key="canvasLocation" x="-347" y="2647"/>
         </view>
         <view contentMode="scaleToFill" id="RYI-ox-GgF">
@@ -1247,6 +1247,7 @@
                     </constraints>
                 </imageView>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="ixr-j1-73z"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="y2N-Pk-tZx" secondAttribute="trailing" constant="20" id="6f6-w1-Vgd"/>
@@ -1260,7 +1261,6 @@
                 <constraint firstAttribute="trailing" secondItem="NNG-Vp-1fW" secondAttribute="trailing" constant="68" id="tgH-hu-6KK"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="ixr-j1-73z"/>
             <point key="canvasLocation" x="-337" y="2744"/>
         </view>
         <view contentMode="scaleToFill" id="Nhj-ED-Ydb">
@@ -1294,6 +1294,7 @@
                     </constraints>
                 </imageView>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="QaL-hE-H0D"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstItem="a7r-CR-nDh" firstAttribute="top" secondItem="Nhj-ED-Ydb" secondAttribute="top" constant="12" id="7N7-cI-OYP"/>
@@ -1307,7 +1308,6 @@
                 <constraint firstItem="QaL-hE-H0D" firstAttribute="bottom" secondItem="fCO-wm-P5K" secondAttribute="bottom" constant="14" id="whJ-VV-HMP"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="QaL-hE-H0D"/>
             <point key="canvasLocation" x="-337" y="2835"/>
         </view>
     </objects>
