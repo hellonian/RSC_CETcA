@@ -649,7 +649,7 @@ static DataModelManager *manager = nil;
             NSInteger mcSong = byte[7];
             NSInteger seq = byte[9] + mcChannelValid*100;
             DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sourceDeviceId];
-            if (seq && (seq-model.primordial)<0 && (seq-model.primordial)>-10) {
+            if (byte[9] != 0 && (seq-model.primordial)<0 && (seq-model.primordial)>-10) {
                 return;
             }
             model.primordial = seq;
@@ -753,15 +753,6 @@ static DataModelManager *manager = nil;
                 if ([deviceEntity.mcSonosInfoVersion integerValue] < newVersion) {
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshAllInfo" object:self userInfo:@{@"deviceId":sourceDeviceId}];
                 }
-            }
-        }
-    }
-    
-    else if ([dataStr hasPrefix:@"eb59"]) {
-        if ([data length] == 3) {
-            Byte *byte = (Byte *)[data bytes];
-            if (byte[2] == 1) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"DALITWOLONGPRESSEND" object:self userInfo:@{@"deviceId":sourceDeviceId}];
             }
         }
     }

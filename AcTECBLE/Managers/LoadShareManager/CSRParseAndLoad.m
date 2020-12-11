@@ -225,6 +225,12 @@
             deviceEntity.subnetMask = deviceDict[@"subnetMask"];
             deviceEntity.gateway = deviceDict[@"gateway"];
             deviceEntity.dns = deviceDict[@"dns"];
+            deviceEntity.keyNameOne = deviceDict[@"keyNameOne"];
+            deviceEntity.keyNameTwo = deviceDict[@"keyNameTwo"];
+            deviceEntity.keyNameThree = deviceDict[@"keyNameThree"];
+            deviceEntity.keyNameFour = deviceDict[@"keyNameFour"];
+            deviceEntity.keyNameFive = deviceDict[@"keyNameFive"];
+            deviceEntity.keyNameSix = deviceDict[@"keyNameSix"];
             
             NSMutableArray *rgbScenes = [NSMutableArray new];
             if (parsingDictionary[@"rgbScene_list"]) {
@@ -527,7 +533,13 @@
                                           @"mcSonosInfoVersion":(device.mcSonosInfoVersion)?(device.mcSonosInfoVersion):@0,
                                           @"subnetMask":(device.subnetMask)?(device.subnetMask):@"",
                                           @"gateway":(device.gateway)?device.gateway:@"",
-                                          @"dns":(device.dns)?device.dns:@""
+                                          @"dns":(device.dns)?device.dns:@"",
+                                          @"keyNameOne":(device.keyNameOne)?device.keyNameOne:@"",
+                                          @"keyNameTwo":(device.keyNameTwo)?device.keyNameTwo:@"",
+                                          @"keyNameThree":(device.keyNameThree)?device.keyNameThree:@"",
+                                          @"keyNameFour":(device.keyNameFour)?device.keyNameFour:@"",
+                                          @"keyNameFive":(device.keyNameFive)?device.keyNameFive:@"",
+                                          @"keyNameSix":(device.keyNameSix)?device.keyNameSix:@""
                                           }];
                 
                 if (device.rgbScenes && [device.rgbScenes count]>0) {

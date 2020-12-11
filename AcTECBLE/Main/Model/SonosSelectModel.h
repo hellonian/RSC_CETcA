@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL channelState;
 @property (nonatomic, assign) NSInteger source;
 @property (nonatomic, assign) NSInteger dataValid;
+@property (nonatomic, assign) BOOL selected;
 
 @end
 

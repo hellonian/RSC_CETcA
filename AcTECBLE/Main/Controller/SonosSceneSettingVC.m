@@ -17,8 +17,10 @@
 #import "SonosSelectModel.h"
 #import "DataModelManager.h"
 #import "SocketConnectionTool.h"
+#import "SonosSceneSettingCell.h"
+#import "UIViewController+BackButtonHandler.h"
 
-@interface SonosSceneSettingVC ()<SelectionListViewDelegate, UITableViewDelegate, UITableViewDataSource>
+@interface SonosSceneSettingVC ()<SelectionListViewDelegate, UITableViewDelegate, UITableViewDataSource, SonosSceneSettingCellDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *dataMutAry;
@@ -28,6 +30,7 @@
 @property (nonatomic,strong) UIView *translucentBgView;
 @property (nonatomic,strong) UIActivityIndicatorView *indicatorView;
 @property (nonatomic, strong) SocketConnectionTool *socketTool;
+@property (nonatomic, strong) NSIndexPath *operatingIndexPath;
 
 @end
 
@@ -51,14 +54,55 @@
     
     self.view.backgroundColor = ColorWithAlpha(234, 238, 243, 1);
     
-    UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addChannelAction)];
-    self.navigationItem.rightBarButtonItem = add;
+//    UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addChannelAction)];
+//    self.navigationItem.rightBarButtonItem = add;
+    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
+    self.navigationItem.rightBarButtonItem = done;
     
     _dataMutAry = [[NSMutableArray alloc] init];
-    SonosSelectModel *m = [[SonosSelectModel alloc] init];
-    m.deviceID = _deviceID;
-    m.channel = @(-1);
-    [_dataMutAry addObject:m];
+//    SonosSelectModel *m = [[SonosSelectModel alloc] init];
+//    m.deviceID = _deviceID;
+//    m.channel = @(-1);
+//    [_dataMutAry addObject:m];
+    if (_deviceID) {
+        CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
+        if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
+            if ([device.sonoss count] > 0) {
+                for (SonosEntity *s in device.sonoss) {
+                    SonosSelectModel *m = [[SonosSelectModel alloc] init];
+                    m.deviceID = s.deviceID;
+                    m.channel = s.channel;
+                    m.name = s.name;
+                    m.selected = NO;
+                    m.play = YES;
+                    m.voice = 50;
+                    [_dataMutAry addObject:m];
+                }
+            }
+        }else if ([CSRUtilities belongToMusicController:device.shortName]) {
+            DeviceModel *dm = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceID];
+            if (dm.mcLiveChannels > 0) {
+                for (int i=0; i<16; i++) {
+                    if (((dm.mcLiveChannels & (NSInteger)pow(2, i))>>i) == 1) {
+                        SonosSelectModel *m = [[SonosSelectModel alloc] init];
+                        m.deviceID = _deviceID;
+                        m.channel = @(i);
+                        m.name = [NSString stringWithFormat:@"Channel %d",i];
+                        m.selected = NO;
+                        m.play = YES;
+                        m.voice = 50;
+                        [_dataMutAry addObject:m];
+                    }
+                }
+            }else {
+                [self showLoading];
+                [self performSelector:@selector(scanOnlineChannelTimeOut) withObject:nil afterDelay:10];
+                Byte byte[] = {0xea, 0x82, 0x00};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceID data:cmd];
+            }
+         }
+    }
     
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     _tableView.delegate = self;
@@ -72,77 +116,85 @@
     
 }
 
-- (void)addChannelAction {
-    [_didChannels removeAllObjects];
-    NSInteger count = 0;
-    for (SonosSelectModel *m in _dataMutAry) {
-        if ([m.channel integerValue] != -1) {
-            NSString *hex = [CSRUtilities stringWithHexNumber:[m.channel integerValue]];
-            NSString *bin = [CSRUtilities getBinaryByhex:hex];
-            for (int i=0; i<[bin length]; i++) {
-                NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
-                if ([bit boolValue]) {
-                    [_didChannels addObject:@(i)];
-                    count ++;
-                }
-            }
-        }
-    }
-    
-    CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
-    if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
-        if (count < [device.sonoss count] && [_dataMutAry count] < [device.sonoss count]) {
-            SonosSelectModel *m = [[SonosSelectModel alloc] init];
-            m.deviceID = _deviceID;
-            m.channel = @(-1);
-            [_dataMutAry addObject:m];
-            [_tableView reloadData];
-        }
-    }else if ([CSRUtilities belongToMusicController:device.shortName]) {
-        DeviceModel *dm = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceID];
-        NSString *hex = [CSRUtilities stringWithHexNumber:dm.mcLiveChannels];
-        NSString *bin = [CSRUtilities getBinaryByhex:hex];
-        NSInteger mCount = 0;
-        for (int i=0; i<[bin length]; i++) {
-            NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
-            if ([bit boolValue]) {
-                mCount ++;
-            }
-        }
-        if (count < mCount && [_dataMutAry count] < mCount) {
-            SonosSelectModel *m = [[SonosSelectModel alloc] init];
-            m.deviceID = _deviceID;
-            m.channel = @(-1);
-            [_dataMutAry addObject:m];
-            [_tableView reloadData];
-        }
-    }
-    
-}
+//- (void)addChannelAction {
+//    [_didChannels removeAllObjects];
+//    NSInteger count = 0;
+//    for (SonosSelectModel *m in _dataMutAry) {
+//        if ([m.channel integerValue] != -1) {
+//            NSString *hex = [CSRUtilities stringWithHexNumber:[m.channel integerValue]];
+//            NSString *bin = [CSRUtilities getBinaryByhex:hex];
+//            for (int i=0; i<[bin length]; i++) {
+//                NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
+//                if ([bit boolValue]) {
+//                    [_didChannels addObject:@(i)];
+//                    count ++;
+//                }
+//            }
+//        }
+//    }
+//
+//    CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
+//    if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
+//        if (count < [device.sonoss count] && [_dataMutAry count] < [device.sonoss count]) {
+//            SonosSelectModel *m = [[SonosSelectModel alloc] init];
+//            m.deviceID = _deviceID;
+//            m.channel = @(-1);
+//            [_dataMutAry addObject:m];
+//            [_tableView reloadData];
+//        }
+//    }else if ([CSRUtilities belongToMusicController:device.shortName]) {
+//        DeviceModel *dm = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceID];
+//        NSString *hex = [CSRUtilities stringWithHexNumber:dm.mcLiveChannels];
+//        NSString *bin = [CSRUtilities getBinaryByhex:hex];
+//        NSInteger mCount = 0;
+//        for (int i=0; i<[bin length]; i++) {
+//            NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
+//            if ([bit boolValue]) {
+//                mCount ++;
+//            }
+//        }
+//        if (count < mCount && [_dataMutAry count] < mCount) {
+//            SonosSelectModel *m = [[SonosSelectModel alloc] init];
+//            m.deviceID = _deviceID;
+//            m.channel = @(-1);
+//            [_dataMutAry addObject:m];
+//            [_tableView reloadData];
+//        }
+//    }
+//
+//}
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+//    return [_dataMutAry count];
+//}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+//    CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
+//    if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
+//        return 6;
+//    }else {
+//        return 7;
+//    }
     return [_dataMutAry count];
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
-    if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
-        return 6;
-    }else {
-        return 7;
-    }
-    
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return 30;
-}
+//- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+//    return 30;
+//}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 44;
+//    return 44;
+    SonosSelectModel *ssm = [_dataMutAry objectAtIndex:indexPath.row];
+    if (ssm.selected) {
+        return 137;
+    }else {
+        return 44;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    /*
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SONOSSCENESETTINGCELL"];
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"SONOSSCENESETTINGCELL"];
@@ -318,9 +370,31 @@
             break;
     }
     return cell;
+     */
+    
+    SonosSelectModel *ssm = [_dataMutAry objectAtIndex:indexPath.row];
+    if (!ssm.selected) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"unselectedcell"];
+        if (!cell) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"unselectedcell"];
+            cell.imageView.image = [UIImage imageNamed:@"To_select"];
+            cell.textLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+        }
+        cell.textLabel.text = ssm.name;
+        return cell;
+    }else {
+        SonosSceneSettingCell *cell = [tableView dequeueReusableCellWithIdentifier:@"selectedcell"];
+        if (!cell) {
+            cell = [[[NSBundle mainBundle] loadNibNamed:@"SonosSceneSettingCell" owner:self options:nil] firstObject];
+            cell.delegate = self;
+        }
+        [cell configureCellWithSonosSelectModel:ssm indexPath:indexPath];
+        return cell;
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    /*
     _operatingSection = indexPath.section;
     SonosSelectModel *m = [_dataMutAry objectAtIndex:indexPath.section];
     if (indexPath.row == 0) {
@@ -554,6 +628,93 @@
             [self.view addSubview:_selectionView];
         }
     }
+     */
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    SonosSelectModel *ssm = [_dataMutAry objectAtIndex:indexPath.row];
+    if (!ssm.selected) {
+        ssm.selected = YES;
+        [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+    }
+    
+}
+
+- (void)unSelectAction:(NSIndexPath *)indexPath {
+    SonosSelectModel *ssm = [_dataMutAry objectAtIndex:indexPath.row];
+    ssm.selected = NO;
+    [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+}
+
+- (void)setPlayAction:(NSIndexPath *)indexPath {
+    SonosSelectModel *ssm = [_dataMutAry objectAtIndex:indexPath.row];
+    ssm.play = !ssm.play;
+    [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+}
+
+- (void)setVoiceAction:(NSIndexPath *)indexPath {
+    _operatingIndexPath = indexPath;
+    SonosSelectModel *ssm = [_dataMutAry objectAtIndex:indexPath.row];
+    [self.view addSubview:self.translucentBgView];
+    UIView *sView = [[UIView alloc] initWithFrame:CGRectMake(0, HEIGHT - 80, WIDTH, 60)];
+    sView.backgroundColor = ColorWithAlpha(246, 246, 246, 0.96);
+    UISlider *slider = [[UISlider alloc] initWithFrame:CGRectMake(60, 20, WIDTH-90, 20)];
+    slider.tintColor = DARKORAGE;
+    slider.minimumValue = 0;
+    slider.maximumValue = 100;
+    slider.value = ssm.voice;
+    [slider addTarget:self action:@selector(voiceAction:) forControlEvents:UIControlEventValueChanged];
+    [slider addTarget:self action:@selector(voiceUpAction:) forControlEvents:UIControlEventTouchUpInside];
+    [slider addTarget:self action:@selector(voiceUpAction:) forControlEvents:UIControlEventTouchUpOutside];
+    [sView addSubview:slider];
+    UIImageView *imgV = [[UIImageView alloc] initWithFrame:CGRectMake(30, 19, 22, 22)];
+    imgV.image = [UIImage imageNamed:@"Ico_voice"];
+    [sView addSubview:imgV];
+    [self.view addSubview:sView];
+}
+
+- (void)setSelectAction:(NSIndexPath *)indexPath {
+    _operatingIndexPath = indexPath;
+    CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
+    if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
+        if ([device.remoteBranch length]>0) {
+            NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:device.remoteBranch];
+            if ([jsonDictionary count]>0) {
+                NSArray *songs = jsonDictionary[@"song"];
+                if ([songs count] > 0) {
+                    CGFloat w = WIDTH * 0.618;
+                    CGFloat sh = w/0.618;
+                    CGFloat mh = [songs count]*44+90;
+                    CGFloat h = sh > mh ? mh : sh;
+                    NSMutableArray *ary = [[NSMutableArray alloc] init];
+                    for (NSDictionary *dic in songs) {
+                        SelectionListModel *slm = [[SelectionListModel alloc] init];
+                        slm.value = [dic[@"id"] integerValue];
+                        slm.name = dic[@"name"];
+                        [ary addObject:slm];
+                    }
+                    [self.view addSubview:self.translucentBgView];
+                    _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((WIDTH-w)/2.0, (HEIGHT-h)/2.0, w, h) dataArray:ary tite:@"Select Music" mode:SelectionListViewSelectionMode_Music];
+                    _selectionView.delegate = self;
+                    [self.view addSubview:_selectionView];
+                }
+            }
+        }
+    }else if ([CSRUtilities belongToMusicController:device.shortName]) {
+        CGFloat w = WIDTH * 0.618;
+        CGFloat sh = w/0.618;
+        CGFloat mh = 8*44+90;
+        CGFloat h = sh > mh ? mh : sh;
+        NSMutableArray *ary = [[NSMutableArray alloc] init];
+        for (int i = 0; i < 8; i ++) {
+            SelectionListModel *slm = [[SelectionListModel alloc] init];
+            slm.value = i;
+            slm.name = AUDIOSOURCES[i];
+            [ary addObject:slm];
+        }
+        [self.view addSubview:self.translucentBgView];
+        _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((WIDTH-w)/2.0, (HEIGHT-h)/2.0, w, h) dataArray:ary tite:@"Select Audio Source" mode:SelectionListViewSelectionMode_Source];
+        _selectionView.delegate = self;
+        [self.view addSubview:_selectionView];
+    }
 }
 
 - (void)selectionListViewCancelAction {
@@ -582,12 +743,18 @@
             [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:ind] withRowAnimation:UITableViewRowAnimationNone];
         }
     }else if (mode == SelectionListViewSelectionMode_Music) {
+        /*
         SelectionListModel *slm = [ary firstObject];
         SonosSelectModel *m = [_dataMutAry objectAtIndex:_operatingSection];
         m.songNumber = slm.value;
         m.dataValid += 64;
         NSIndexPath *ind = [NSIndexPath indexPathForRow:1 inSection:_operatingSection];
         [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:ind] withRowAnimation:UITableViewRowAnimationNone];
+         */
+        SelectionListModel *slm = [ary firstObject];
+        SonosSelectModel *m = [_dataMutAry objectAtIndex:_operatingIndexPath.row];
+        m.songNumber = slm.value;
+        [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:_operatingIndexPath] withRowAnimation:UITableViewRowAnimationNone];
     }else if (mode == SelectionListViewSelectionMode_Cycle) {
         SelectionListModel *slm = [ary firstObject];
         SonosSelectModel *m = [_dataMutAry objectAtIndex:_operatingSection];
@@ -596,12 +763,18 @@
         NSIndexPath *ind = [NSIndexPath indexPathForRow:3 inSection:_operatingSection];
         [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:ind] withRowAnimation:UITableViewRowAnimationNone];
     }else if (mode == SelectionListViewSelectionMode_Source) {
+        /*
         SelectionListModel *slm = [ary firstObject];
         SonosSelectModel *m = [_dataMutAry objectAtIndex:_operatingSection];
         m.source = slm.value;
         m.dataValid += 4;
         NSIndexPath *ind = [NSIndexPath indexPathForRow:1 inSection:_operatingSection];
         [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:ind] withRowAnimation:UITableViewRowAnimationNone];
+         */
+        SelectionListModel *slm = [ary firstObject];
+        SonosSelectModel *m = [_dataMutAry objectAtIndex:_operatingIndexPath.row];
+        m.source = slm.value;
+        [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:_operatingIndexPath] withRowAnimation:UITableViewRowAnimationNone];
     }else if (mode == SelectionListViewSelectionMode_PlayStop) {
         SelectionListModel *slm = [ary firstObject];
         SonosSelectModel *m = [_dataMutAry objectAtIndex:_operatingSection];
@@ -632,13 +805,19 @@
 }
 
 - (void)voiceAction:(UISlider *)slider {
+    /*
     SonosSelectModel *m = [_dataMutAry objectAtIndex:_operatingSection];
     m.voice = (NSInteger)slider.value;
     NSIndexPath *ind = [NSIndexPath indexPathForRow:5 inSection:_operatingSection];
     [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:ind] withRowAnimation:UITableViewRowAnimationNone];
+     */
+    SonosSelectModel *ssm = [_dataMutAry objectAtIndex:_operatingIndexPath.row];
+    ssm.voice = (NSInteger)slider.value;
+    [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:_operatingIndexPath] withRowAnimation:UITableViewRowAnimationNone];
 }
 
 - (void)voiceUpAction:(UISlider *)slider {
+    /*
     SonosSelectModel *m = [_dataMutAry objectAtIndex:_operatingSection];
     m.voice = (NSInteger)slider.value;
     m.dataValid += 32;
@@ -647,15 +826,70 @@
     [slider removeFromSuperview];
     [_translucentBgView removeFromSuperview];
     _translucentBgView = nil;
+     */
+    SonosSelectModel *ssm = [_dataMutAry objectAtIndex:_operatingIndexPath.row];
+    ssm.voice = (NSInteger)slider.value;
+    [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:_operatingIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+    [slider.superview removeFromSuperview];
+    [_translucentBgView removeFromSuperview];
+    _translucentBgView = nil;
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
+//- (void)viewWillDisappear:(BOOL)animated {
+//    if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
+//        if (self.sonosSceneSettingHandle) {
+//            self.sonosSceneSettingHandle(_dataMutAry);
+//        }
+//    }
+//    [super viewWillDisappear:animated];
+//}
+- (BOOL)navigationShouldPopOnBackButton {
+    NSLog(@"navigationShouldPopOnBackButton");
+    if (self.sonosSceneSettingHandle) {
+        [_dataMutAry removeAllObjects];
+        self.sonosSceneSettingHandle(_dataMutAry);
+    }
+    return YES;
+}
+
+- (void)doneAction {
+    NSString *string;
+    for (SonosSelectModel *ssm in _dataMutAry) {
+        if (ssm.selected && ssm.play) {
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:ssm.deviceID];
+            if ([CSRUtilities belongToMusicController:device.shortName]) {
+                if (ssm.source == -1) {
+                    if ([string length]>0) {
+                        string = [NSString stringWithFormat:@"%@、%@", string, ssm.name];
+                    }else {
+                        string = [NSString stringWithFormat:@"The source of %@", ssm.name];
+                    }
+                }
+            }else if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
+                if (ssm.songNumber == -1) {
+                    if ([string length]>0) {
+                        string = [NSString stringWithFormat:@"%@、%@",string, ssm.name];
+                    }else {
+                        string = [NSString stringWithFormat:@"The music of %@", ssm.name];
+                    }
+                }
+            }
+        }
+    }
+    if ([string length]>0) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"%@ wasn't be selected, please click done after selecting!", string] preferredStyle:UIAlertControllerStyleAlert];
+        [alert.view setTintColor:DARKORAGE];
+        UIAlertAction *yes = [UIAlertAction actionWithTitle:@"Go back to select" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        [alert addAction:yes];
+        [self presentViewController:alert animated:YES completion:nil];
+    }else {
         if (self.sonosSceneSettingHandle) {
             self.sonosSceneSettingHandle(_dataMutAry);
         }
+        [self.navigationController popViewControllerAnimated:YES];
     }
-    [super viewWillDisappear:animated];
 }
 
 - (void)showLoading {
@@ -700,6 +934,7 @@
         [self hideLoading];
         DeviceModel *dm = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceID];
         if (dm.mcLiveChannels > 0) {
+            /*
             NSMutableArray *ary = [[NSMutableArray alloc] init];
             NSString *hex = [CSRUtilities stringWithHexNumber:dm.mcLiveChannels];
             NSString *bin = [CSRUtilities getBinaryByhex:hex];
@@ -720,6 +955,21 @@
             _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((WIDTH-w)/2.0, (HEIGHT-h)/2.0, w, h) dataArray:ary tite:@"Select Channel" mode:SelectionListViewSelectionMode_Sonos];
             _selectionView.delegate = self;
             [self.view addSubview:_selectionView];
+             */
+            [_dataMutAry removeAllObjects];
+            for (int i=0; i<16; i++) {
+                if (((dm.mcLiveChannels & (NSInteger)pow(2, i))>>i) == 1) {
+                    SonosSelectModel *m = [[SonosSelectModel alloc] init];
+                    m.deviceID = _deviceID;
+                    m.channel = @(i);
+                    m.name = [NSString stringWithFormat:@"Channel %d",i];
+                    m.selected = NO;
+                    m.play = YES;
+                    m.voice = 50;
+                    [_dataMutAry addObject:m];
+                }
+            }
+            [_tableView reloadData];
         }else {
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"m_select_error_alert", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
             [alert.view setTintColor:DARKORAGE];

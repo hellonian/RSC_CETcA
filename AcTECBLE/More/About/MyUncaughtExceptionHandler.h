@@ -13,8 +13,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MyUncaughtExceptionHandler : NSObject
 
 + (void)setDefaultHandler;
-+ (NSUncaughtExceptionHandler *)getHandler;
-+ (void)TakeException:(NSException *) exception;
 
 @end
 

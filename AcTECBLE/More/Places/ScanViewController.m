@@ -241,7 +241,7 @@
                     NSData *fileData = [NSMutableData dataWithData:[receiveData subdataWithRange:NSMakeRange(8, fileLength)]];
                     if (firstFile) {
                         NSString *jsonString = [[NSString alloc] initWithData:fileData encoding:NSUTF8StringEncoding];
-                        NBSLog(@"ajsonString>> %@",jsonString);
+//                        NBSLog(@"ajsonString>> %@",jsonString);
                         NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:jsonString];
                         [self.files addObject:jsonDictionary];
                         

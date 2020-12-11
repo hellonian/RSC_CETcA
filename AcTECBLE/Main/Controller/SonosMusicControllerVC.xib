@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -11,6 +11,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SonosMusicControllerVC">
             <connections>
                 <outlet property="listView" destination="Zu7-ox-rrT" id="uD4-sV-FIo"/>
+                <outlet property="netWorkSettingBtn" destination="1gB-l3-Orz" id="jkE-s0-9NN"/>
                 <outlet property="noneView" destination="PLB-Cg-iqg" id="2q0-Nd-7hG"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -20,7 +21,7 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1gB-l3-Orz">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1gB-l3-Orz">
                     <rect key="frame" x="151.5" y="822" width="111" height="30"/>
                     <state key="normal" title="Network Setting">
                         <color key="titleColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -65,9 +66,10 @@ Click the network Settings, enter the account number and password, and set the d
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </tableView>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <color key="backgroundColor" red="0.86274509799999999" green="0.86274509799999999" blue="0.86274509799999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="Q5M-cg-NOt" firstAttribute="bottom" secondItem="1gB-l3-Orz" secondAttribute="bottom" constant="10" id="6b8-zV-a7T"/>
+                <constraint firstItem="Q5M-cg-NOt" firstAttribute="bottom" secondItem="1gB-l3-Orz" secondAttribute="bottom" priority="250" constant="10" id="6b8-zV-a7T"/>
                 <constraint firstItem="1gB-l3-Orz" firstAttribute="top" secondItem="Zu7-ox-rrT" secondAttribute="bottom" constant="10" id="Ahm-FL-1Wn"/>
                 <constraint firstItem="Zu7-ox-rrT" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="EPt-46-pKv"/>
                 <constraint firstItem="Zu7-ox-rrT" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="Rtq-v1-AlX"/>
@@ -78,7 +80,6 @@ Click the network Settings, enter the account number and password, and set the d
                 <constraint firstItem="1gB-l3-Orz" firstAttribute="top" secondItem="PLB-Cg-iqg" secondAttribute="bottom" constant="10" id="vbV-EG-AIg"/>
                 <constraint firstItem="Zu7-ox-rrT" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" id="y0t-4F-MvX"/>
             </constraints>
-            <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <point key="canvasLocation" x="56.521739130434788" y="-169.41964285714286"/>
         </view>
     </objects>

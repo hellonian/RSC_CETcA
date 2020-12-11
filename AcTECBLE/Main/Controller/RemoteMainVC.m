@@ -40,7 +40,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
     UIGestureRecognizerState currentState;
     NSTimer *timer;
     int tapCount;
-    NSInteger tapTag;
+    UIButton *lasTapBtn;
     NSData *applyCmd;
     NSInteger retryCount;
     
@@ -233,7 +233,12 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
             [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
-            
+            [_remoteBtn18 setTitle:deviceEntity.keyNameOne forState:UIControlStateNormal];
+            [_remoteBtn19 setTitle:deviceEntity.keyNameTwo forState:UIControlStateNormal];
+            [_remoteBtn20 setTitle:deviceEntity.keyNameThree forState:UIControlStateNormal];
+            [_remoteBtn21 setTitle:deviceEntity.keyNameFour forState:UIControlStateNormal];
+            [_remoteBtn22 setTitle:deviceEntity.keyNameFive forState:UIControlStateNormal];
+            [_remoteBtn23 setTitle:deviceEntity.keyNameSix forState:UIControlStateNormal];
             UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn18 addGestureRecognizer:gesture17];
             UILongPressGestureRecognizer *gesture18 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
@@ -269,7 +274,10 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
             [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
-            
+            [_remoteBtn18 setTitle:deviceEntity.keyNameOne forState:UIControlStateNormal];
+            [_remoteBtn19 setTitle:deviceEntity.keyNameTwo forState:UIControlStateNormal];
+            [_remoteBtn20 setTitle:deviceEntity.keyNameThree forState:UIControlStateNormal];
+            [_remoteBtn21 setTitle:deviceEntity.keyNameFour forState:UIControlStateNormal];
             UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn18 addGestureRecognizer:gesture17];
             UILongPressGestureRecognizer *gesture18 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
@@ -305,7 +313,9 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
             [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
-            
+            [_remoteBtn18 setTitle:deviceEntity.keyNameOne forState:UIControlStateNormal];
+            [_remoteBtn19 setTitle:deviceEntity.keyNameTwo forState:UIControlStateNormal];
+            [_remoteBtn20 setTitle:deviceEntity.keyNameThree forState:UIControlStateNormal];
             UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn18 addGestureRecognizer:gesture17];
             UILongPressGestureRecognizer *gesture18 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
@@ -343,7 +353,8 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
             [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
-            
+            [_remoteBtn18 setTitle:deviceEntity.keyNameOne forState:UIControlStateNormal];
+            [_remoteBtn19 setTitle:deviceEntity.keyNameTwo forState:UIControlStateNormal];
             UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn18 addGestureRecognizer:gesture17];
             UILongPressGestureRecognizer *gesture18 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
@@ -376,7 +387,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
             [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
-            
+            [_remoteBtn18 setTitle:deviceEntity.keyNameOne forState:UIControlStateNormal];
             UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn18 addGestureRecognizer:gesture17];
             
@@ -645,8 +656,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         || [CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]
         || [CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
         || [CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]
-        || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]
-        || [CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]) {
+        || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]) {
         _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotesceneeditbg"];
     }else if ([CSRUtilities belongToRGBRemote:deviceEntity.shortName]
               || [CSRUtilities belongToCWRemote:deviceEntity.shortName]
@@ -656,9 +666,12 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
               || [CSRUtilities belongToSceneRemoteFourKeysV:deviceEntity.shortName]) {
         _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vte"];
     }else if ([CSRUtilities belongToSceneRemoteThreeKeysV:deviceEntity.shortName]
-              || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]
-              || [CSRUtilities belongToMusicControlRemoteV:deviceEntity.shortName]) {
+              || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]) {
         _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vse"];
+    }else if ([CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]) {
+        _musicRemoteBgImageView.image = [UIImage imageNamed:@"remotesceneeditbg"];
+    }else if ([CSRUtilities belongToMusicControlRemoteV:deviceEntity.shortName]) {
+        _musicRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vse"];
     }
 }
 
@@ -672,8 +685,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         || [CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]
         || [CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
         || [CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]
-        || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]
-        || [CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]) {
+        || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]) {
         _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg"];
     }else if ([CSRUtilities belongToRGBRemote:deviceEntity.shortName]
               || [CSRUtilities belongToCWRemote:deviceEntity.shortName]
@@ -683,9 +695,12 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
               || [CSRUtilities belongToSceneRemoteFourKeysV:deviceEntity.shortName]) {
         _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vt"];
     }else if ([CSRUtilities belongToSceneRemoteThreeKeysV:deviceEntity.shortName]
-              || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]
-              || [CSRUtilities belongToMusicControlRemoteV:deviceEntity.shortName]) {
+              || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]) {
         _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vs"];
+    }else if ([CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]) {
+        _musicRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg"];
+    }else if ([CSRUtilities belongToMusicControlRemoteV:deviceEntity.shortName]) {
+        _musicRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vs"];
     }
 }
 
@@ -827,11 +842,11 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [self presentViewController:nav animated:YES completion:nil];
         }
     }else {
-        if (tapTag == sender.tag || tapTag == 0) {
-            if (tapTag==0) {
-                tapTag = sender.tag;
+        if (lasTapBtn.tag == sender.tag || !lasTapBtn) {
+            if (!lasTapBtn) {
+                lasTapBtn = sender;
             }
-            tapCount++;
+            tapCount ++;
             [NSObject cancelPreviousPerformRequestsWithTarget:self];
             [self performSelector:@selector(detalyTapAction) withObject:nil afterDelay:0.6f];
         }
@@ -840,7 +855,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
 
 - (void)detalyTapAction {
     NSInteger sw = -1;
-    switch (tapTag) {
+    switch (lasTapBtn.tag) {
         case 7:
             sw = 7;
             break;
@@ -919,9 +934,19 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         Byte byte[] = {0xb6, 0x05, 0x12, sw, 0x00, l, h};
         NSData *cmd = [[NSData alloc] initWithBytes:byte length:7];
         [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+        
+        lasTapBtn.selected = YES;
+        for (UIView *sview in [lasTapBtn.superview subviews]) {
+            if ([sview isKindOfClass:[UIButton class]]) {
+                UIButton *btn = (UIButton *)sview;
+                if (btn.tag != lasTapBtn.tag && btn.selected) {
+                    btn.selected = NO;
+                }
+            }
+        }
     }
     tapCount = 0;
-    tapTag = 0;
+    lasTapBtn = nil;
 }
 
 - (void)selectDevice:(UIButton *)sender {
@@ -1142,17 +1167,24 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             break;
     }
     if (sw != -1) {
-        if (gesture.state == UIGestureRecognizerStateBegan) {
-            Byte byte[] = {0xb6, 0x05, 0x12, sw, 0x01, 0x00, 0x00};
-            NSData *cmd = [[NSData alloc] initWithBytes:byte length:7];
-            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-            [self.beganLongpressGestures addObject:@(sw)];
+        if (editing) {
+            if (gesture.state == UIGestureRecognizerStateBegan) {
+                [self renameKey:gesture.view];
+            }
+            
         }else {
-            Byte byte[] = {0xb6, 0x05, 0x12, sw, 0x02, 0x00, 0x00};
-            NSData *cmd = [[NSData alloc] initWithBytes:byte length:7];
-            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-            static int i=0;
-            [self checkeStopLongPressGesture:@(sw) num:i];
+            if (gesture.state == UIGestureRecognizerStateBegan) {
+                Byte byte[] = {0xb6, 0x05, 0x12, sw, 0x01, 0x00, 0x00};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:7];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                [self.beganLongpressGestures addObject:@(sw)];
+            }else {
+                Byte byte[] = {0xb6, 0x05, 0x12, sw, 0x02, 0x00, 0x00};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:7];
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                static int i=0;
+                [self checkeStopLongPressGesture:@(sw) num:i];
+            }
         }
     }
 }
@@ -1341,6 +1373,57 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
 - (void)hudWasHidden:(MBProgressHUD *)hud {
     [hud removeFromSuperview];
     hud = nil;
+}
+
+- (void)renameKey:(UIView *)key {
+    if (key.tag == 1 || key.tag == 2 || key.tag == 3 || key.tag == 4 || key.tag == 5 || key.tag == 6) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+            NSMutableAttributedString *hogan = [[NSMutableAttributedString alloc] initWithString:AcTECLocalizedStringFromTable(@"Rename", @"Localizable")];
+            [hogan addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1] range:NSMakeRange(0, [[hogan string] length])];
+            [alert setValue:hogan forKey:@"attributedTitle"];
+            [alert.view setTintColor:DARKORAGE];
+            UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+            UIAlertAction *confirm = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Save", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                UITextField *renameTextField = alert.textFields.firstObject;
+                if (![CSRUtilities isStringEmpty:renameTextField.text]){
+                    UIButton *button = (UIButton *)key;
+                    [button setTitle:renameTextField.text forState:UIControlStateNormal];
+                    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:self.deviceId];
+                    switch (key.tag) {
+                        case 1:
+                            deviceEntity.keyNameOne = renameTextField.text;
+                            break;
+                        case 2:
+                            deviceEntity.keyNameTwo = renameTextField.text;
+                            break;
+                        case 3:
+                            deviceEntity.keyNameThree = renameTextField.text;
+                            break;
+                        case 4:
+                            deviceEntity.keyNameFour = renameTextField.text;
+                            break;
+                        case 5:
+                            deviceEntity.keyNameFive = renameTextField.text;
+                            break;
+                        case 6:
+                            deviceEntity.keyNameSix = renameTextField.text;
+                            break;
+                        default:
+                            break;
+                    }
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                    
+                }
+            }];
+            [alert addAction:cancel];
+            [alert addAction:confirm];
+            
+            [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+
+            }];
+            
+            [self presentViewController:alert animated:YES completion:nil];
+    }
 }
 
 @end

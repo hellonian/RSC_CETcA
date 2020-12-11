@@ -32,7 +32,6 @@
     NSTimer *timer;
     
     BOOL tapLimimte;
-    NSInteger dalitwoEndCount;
 }
 
 @property (weak, nonatomic) IBOutlet UITextField *nameTF;
@@ -360,10 +359,6 @@
             [btn autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_topView withOffset:20.0];
             [btn autoPinEdgeToSuperviewEdge:ALEdgeLeft];
             [btn autoAlignAxisToSuperviewAxis:ALAxisVertical];
-            [[NSNotificationCenter defaultCenter] addObserver:self
-                                                     selector:@selector(dalitwoLongPressEnd:)
-                                                         name:@"DALITWOLONGPRESSEND"
-                                                       object:nil];
         }
         
         self.navigationItem.title = _deviceEn.name;
@@ -394,6 +389,7 @@
                 NSDictionary *dic = (NSDictionary *)responseObject;
                 latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
                 downloadAddress = dic[@"Download_address"];
+                NSLog(@"%@  %ld", _deviceEn.mcuSVersion, latestMCUSVersion);
                 if ([_deviceEn.mcuSVersion integerValue] != 0 && [_deviceEn.mcuSVersion integerValue]<latestMCUSVersion) {
                     updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
                     [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
@@ -1781,35 +1777,15 @@
 }
 
 - (void)dalitwoTouchDownAction {
-    Byte byte[] = {0xea, 0x53, 0x00};
+    Byte byte[] = {0xea, 0x59, 0x00};
     NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
     [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
 }
 
 - (void)dalitwoTouchUpAction {
-    [self performSelector:@selector(dalitwoLongPressEndDelay) withObject:nil afterDelay:0.5];
-    dalitwoEndCount = 0;
-    Byte byte[] = {0xea, 0x53, 0x01};
+    Byte byte[] = {0xea, 0x59, 0x01};
     NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
     [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-}
-
-- (void)dalitwoLongPressEnd:(NSNotification *)notification {
-    NSDictionary *dic = notification.userInfo;
-    NSNumber *deviceId = dic[@"deviceId"];
-    if ([deviceId isEqualToNumber:_deviceId]) {
-        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(dalitwoLongPressEndDelay) object:nil];
-    }
-}
-
-- (void)dalitwoLongPressEndDelay {
-    dalitwoEndCount ++;
-    if (dalitwoEndCount < 6) {
-        [self performSelector:@selector(dalitwoLongPressEndDelay) withObject:nil afterDelay:0.5];
-        Byte byte[] = {0xea, 0x53, 0x01};
-        NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
-        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-    }
 }
 
 @end

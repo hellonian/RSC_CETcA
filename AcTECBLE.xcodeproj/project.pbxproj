@@ -161,6 +161,7 @@
 		2EC4D19324F790380053C261 /* RippleAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC4D19224F790380053C261 /* RippleAnimationView.m */; };
 		2EC73CF62124197700850882 /* ColorSquare.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC73CF52124197700850882 /* ColorSquare.m */; };
 		2EC7D0DE21E6F549007F44C1 /* PowerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC7D0DD21E6F549007F44C1 /* PowerModel.m */; };
+		2EC8FD152580AC740041F945 /* UIViewController+BackButtonHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC8FD132580AC740041F945 /* UIViewController+BackButtonHandler.m */; };
 		2EC92CE524C8304000AD53CF /* MyUncaughtExceptionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC92CE424C8304000AD53CF /* MyUncaughtExceptionHandler.m */; };
 		2EC92CE924C833CE00AD53CF /* ShowExceptionLogVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC92CE724C833CE00AD53CF /* ShowExceptionLogVC.m */; };
 		2EC92CEA24C833CE00AD53CF /* ShowExceptionLogVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EC92CE824C833CE00AD53CF /* ShowExceptionLogVC.xib */; };
@@ -168,6 +169,8 @@
 		2ED3963C204D09A00068B666 /* TimerEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963B204D09A00068B666 /* TimerEntity.m */; };
 		2ED3963F204D09D20068B666 /* TimerDeviceEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */; };
 		2ED50B73256796F700E67AEB /* UpdataMCUTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED50B72256796F700E67AEB /* UpdataMCUTool.m */; };
+		2EDAA539257E156900290366 /* SonosSceneSettingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EDAA537257E156900290366 /* SonosSceneSettingCell.m */; };
+		2EDAA53A257E156900290366 /* SonosSceneSettingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EDAA538257E156900290366 /* SonosSceneSettingCell.xib */; };
 		2EDF04DB213D14CA00B9E92F /* SRGBSceneDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF04D9213D14CA00B9E92F /* SRGBSceneDetailViewController.m */; };
 		2EDF04E0213D151300B9E92F /* MRGBSceneDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EDF04DE213D151300B9E92F /* MRGBSceneDetailViewController.m */; };
 		2EE50F2D20DA3E3D00B484F7 /* LightSensorSettingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EE50F2F20DA3E3D00B484F7 /* LightSensorSettingViewController.xib */; };
@@ -652,6 +655,8 @@
 		2EC73CF52124197700850882 /* ColorSquare.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColorSquare.m; sourceTree = "<group>"; };
 		2EC7D0DC21E6F549007F44C1 /* PowerModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PowerModel.h; sourceTree = "<group>"; };
 		2EC7D0DD21E6F549007F44C1 /* PowerModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PowerModel.m; sourceTree = "<group>"; };
+		2EC8FD132580AC740041F945 /* UIViewController+BackButtonHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+BackButtonHandler.m"; sourceTree = "<group>"; };
+		2EC8FD142580AC740041F945 /* UIViewController+BackButtonHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+BackButtonHandler.h"; sourceTree = "<group>"; };
 		2EC92CE324C8304000AD53CF /* MyUncaughtExceptionHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyUncaughtExceptionHandler.h; sourceTree = "<group>"; };
 		2EC92CE424C8304000AD53CF /* MyUncaughtExceptionHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyUncaughtExceptionHandler.m; sourceTree = "<group>"; };
 		2EC92CE624C833CE00AD53CF /* ShowExceptionLogVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShowExceptionLogVC.h; sourceTree = "<group>"; };
@@ -666,6 +671,9 @@
 		2ED3963E204D09D20068B666 /* TimerDeviceEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimerDeviceEntity.m; sourceTree = "<group>"; };
 		2ED50B71256796F700E67AEB /* UpdataMCUTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UpdataMCUTool.h; sourceTree = "<group>"; };
 		2ED50B72256796F700E67AEB /* UpdataMCUTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UpdataMCUTool.m; sourceTree = "<group>"; };
+		2EDAA536257E156800290366 /* SonosSceneSettingCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SonosSceneSettingCell.h; sourceTree = "<group>"; };
+		2EDAA537257E156900290366 /* SonosSceneSettingCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SonosSceneSettingCell.m; sourceTree = "<group>"; };
+		2EDAA538257E156900290366 /* SonosSceneSettingCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SonosSceneSettingCell.xib; sourceTree = "<group>"; };
 		2EDF04D8213D14CA00B9E92F /* SRGBSceneDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SRGBSceneDetailViewController.h; sourceTree = "<group>"; };
 		2EDF04D9213D14CA00B9E92F /* SRGBSceneDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SRGBSceneDetailViewController.m; sourceTree = "<group>"; };
 		2EDF04DD213D151300B9E92F /* MRGBSceneDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MRGBSceneDetailViewController.h; sourceTree = "<group>"; };
@@ -962,6 +970,8 @@
 		0DFC7A1C1B38645300E1BC46 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				2EC8FD142580AC740041F945 /* UIViewController+BackButtonHandler.h */,
+				2EC8FD132580AC740041F945 /* UIViewController+BackButtonHandler.m */,
 				CE96B5241B57AC48009BAF5A /* CBPeripheral+Info.h */,
 				CE96B5251B57AC48009BAF5A /* CBPeripheral+Info.m */,
 				2E37075620CE647A000AF696 /* NSBundle+AppLanguageSwitch.h */,
@@ -1260,6 +1270,9 @@
 				2EC4D19224F790380053C261 /* RippleAnimationView.m */,
 				2E972B3E254AB17E0089EE88 /* SelectionListView.h */,
 				2E972B3F254AB17E0089EE88 /* SelectionListView.m */,
+				2EDAA536257E156800290366 /* SonosSceneSettingCell.h */,
+				2EDAA537257E156900290366 /* SonosSceneSettingCell.m */,
+				2EDAA538257E156900290366 /* SonosSceneSettingCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1621,6 +1634,7 @@
 				2EB3C2CA251D7D6D002FFD1D /* SonosMusicControllerVC.xib in Resources */,
 				2EF332562045031300565374 /* HelpViewController.xib in Resources */,
 				2EC92CEA24C833CE00AD53CF /* ShowExceptionLogVC.xib in Resources */,
+				2EDAA53A257E156900290366 /* SonosSceneSettingCell.xib in Resources */,
 				2E1C839E20CFD782009BCC6D /* PlaceDetailsViewController.xib in Resources */,
 				2E2E70B31FF5DE60002D1C1D /* ErrorCodes.strings in Resources */,
 				2E7DBC0724E630E700A36905 /* MusicControllerVC.xib in Resources */,
@@ -1773,6 +1787,7 @@
 				2E2E70A61FF5DE60002D1C1D /* DataModelManager.m in Sources */,
 				2E5F120D23BDD22F0018EF16 /* LCDRemoteMemberCell.m in Sources */,
 				F4C85EA71CB3EE0E003E1FF3 /* CSRControllerEntity+CoreDataProperties.m in Sources */,
+				2EDAA539257E156900290366 /* SonosSceneSettingCell.m in Sources */,
 				2EAD479C1FFC76F3007D45E9 /* GallreyDropView.m in Sources */,
 				2E4BBD4F22811FC7005650F8 /* CSRGaiaGattCommand.m in Sources */,
 				2EC7D0DE21E6F549007F44C1 /* PowerModel.m in Sources */,
@@ -1815,6 +1830,7 @@
 				2E2000AC2018227E000AD8C3 /* SceneMemberEntity.m in Sources */,
 				CED2FE4E1BF25CF4004957C8 /* CSRmeshStyleKit.m in Sources */,
 				0D835B7C1B9749E700FF4376 /* CSRBridgeRoaming.m in Sources */,
+				2EC8FD152580AC740041F945 /* UIViewController+BackButtonHandler.m in Sources */,
 				2E972B40254AB17E0089EE88 /* SelectionListView.m in Sources */,
 				0D835B7D1B9749E700FF4376 /* CSRBluetoothLE.m in Sources */,
 				0D835B7E1B9749E700FF4376 /* CSRmeshSettings.m in Sources */,
@@ -2306,7 +2322,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 6;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2366,7 +2382,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 6;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;

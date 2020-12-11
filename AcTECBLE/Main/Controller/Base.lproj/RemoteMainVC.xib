@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -180,17 +180,6 @@
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="r89-wu-xNE"/>
                     </connections>
                 </button>
-                <button opaque="NO" tag="8" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZiF-4Z-HoX">
-                    <rect key="frame" x="219" y="101.5" width="58" height="58"/>
-                    <constraints>
-                        <constraint firstAttribute="width" secondItem="ZiF-4Z-HoX" secondAttribute="height" multiplier="1:1" id="V4U-yP-5F5"/>
-                    </constraints>
-                    <state key="normal" image="remotebtn8_default"/>
-                    <state key="highlighted" image="remotebtn8_highlighted"/>
-                    <connections>
-                        <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="ReY-K5-Yaz"/>
-                    </connections>
-                </button>
                 <button opaque="NO" tag="9" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AIS-Nt-sOz">
                     <rect key="frame" x="219" y="160.5" width="58" height="58"/>
                     <constraints>
@@ -282,6 +271,17 @@
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="gtS-kK-nfd"/>
                     </connections>
                 </button>
+                <button opaque="NO" tag="8" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZiF-4Z-HoX">
+                    <rect key="frame" x="219" y="101.5" width="58" height="58"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="ZiF-4Z-HoX" secondAttribute="height" multiplier="1:1" id="V4U-yP-5F5"/>
+                    </constraints>
+                    <state key="normal" image="remotebtn8_default"/>
+                    <state key="highlighted" image="remotebtn8_highlighted"/>
+                    <connections>
+                        <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="ReY-K5-Yaz"/>
+                    </connections>
+                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="N9U-44-ww8"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -343,8 +343,12 @@
                         <constraint firstAttribute="width" constant="67" id="0Lo-cS-66I"/>
                         <constraint firstAttribute="height" constant="52" id="Ya7-XP-kXf"/>
                     </constraints>
-                    <state key="normal" image="remotescenebtn_default"/>
-                    <state key="highlighted" image="remotescenebtn_highlighted"/>
+                    <state key="normal" backgroundImage="remotescenebtn_default">
+                        <color key="titleColor" red="0.74509803921568629" green="0.74509803921568629" blue="0.74509803921568629" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <state key="selected" backgroundImage="remotescenebtn_highlighted">
+                        <color key="titleColor" red="0.25490196078431371" green="0.36078431372549019" blue="0.6470588235294118" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="nwL-CO-dYJ"/>
                     </connections>
@@ -355,8 +359,12 @@
                         <constraint firstAttribute="width" constant="67" id="9JE-YM-KKL"/>
                         <constraint firstAttribute="height" constant="52" id="lzv-qf-2xc"/>
                     </constraints>
-                    <state key="normal" image="remotescenebtn_default"/>
-                    <state key="highlighted" image="remotescenebtn_highlighted"/>
+                    <state key="normal" backgroundImage="remotescenebtn_default">
+                        <color key="titleColor" red="0.74509803919999995" green="0.74509803919999995" blue="0.74509803919999995" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <state key="selected" backgroundImage="remotescenebtn_highlighted">
+                        <color key="titleColor" red="0.25490196079999999" green="0.36078431370000003" blue="0.64705882349999999" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="OTZ-cr-zaK"/>
                     </connections>
@@ -367,8 +375,12 @@
                         <constraint firstAttribute="height" constant="52" id="Bfr-oJ-xLe"/>
                         <constraint firstAttribute="width" constant="67" id="KYw-jy-cpo"/>
                     </constraints>
-                    <state key="normal" image="remotescenebtn_default"/>
-                    <state key="highlighted" image="remotescenebtn_highlighted"/>
+                    <state key="normal" backgroundImage="remotescenebtn_default">
+                        <color key="titleColor" red="0.74509803919999995" green="0.74509803919999995" blue="0.74509803919999995" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <state key="selected" backgroundImage="remotescenebtn_highlighted">
+                        <color key="titleColor" red="0.25490196079999999" green="0.36078431370000003" blue="0.64705882349999999" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="7Al-mz-nqF"/>
                     </connections>
@@ -379,8 +391,12 @@
                         <constraint firstAttribute="width" constant="67" id="LZJ-rJ-wSk"/>
                         <constraint firstAttribute="height" constant="52" id="Xpf-yh-qlY"/>
                     </constraints>
-                    <state key="normal" image="remotescenebtn_default"/>
-                    <state key="highlighted" image="remotescenebtn_highlighted"/>
+                    <state key="normal" backgroundImage="remotescenebtn_default">
+                        <color key="titleColor" red="0.74509803919999995" green="0.74509803919999995" blue="0.74509803919999995" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <state key="selected" backgroundImage="remotescenebtn_highlighted">
+                        <color key="titleColor" red="0.25490196079999999" green="0.36078431370000003" blue="0.64705882349999999" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="54u-Wc-qNi"/>
                     </connections>
@@ -391,8 +407,12 @@
                         <constraint firstAttribute="height" constant="52" id="27e-T9-coe"/>
                         <constraint firstAttribute="width" constant="67" id="kQ3-Aq-Ida"/>
                     </constraints>
-                    <state key="normal" image="remotescenebtn_default"/>
-                    <state key="highlighted" image="remotescenebtn_highlighted"/>
+                    <state key="normal" backgroundImage="remotescenebtn_default">
+                        <color key="titleColor" red="0.74509803919999995" green="0.74509803919999995" blue="0.74509803919999995" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <state key="selected" backgroundImage="remotescenebtn_highlighted">
+                        <color key="titleColor" red="0.25490196079999999" green="0.36078431370000003" blue="0.64705882349999999" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="tfz-Ef-YvS"/>
                     </connections>
@@ -403,8 +423,12 @@
                         <constraint firstAttribute="width" constant="67" id="2lD-li-0we"/>
                         <constraint firstAttribute="height" constant="52" id="md9-4n-K2P"/>
                     </constraints>
-                    <state key="normal" image="remotescenebtn_default"/>
-                    <state key="highlighted" image="remotescenebtn_highlighted"/>
+                    <state key="normal" backgroundImage="remotescenebtn_default">
+                        <color key="titleColor" red="0.74509803921568629" green="0.74509803921568629" blue="0.74509803921568629" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <state key="selected" backgroundImage="remotescenebtn_highlighted">
+                        <color key="titleColor" red="0.25490196078431371" green="0.36078431372549019" blue="0.6470588235294118" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="9E2-uD-gqU"/>
                     </connections>
@@ -446,7 +470,6 @@
                         <constraint firstAttribute="width" constant="67" id="NDN-Vi-t9t"/>
                         <constraint firstAttribute="height" constant="52" id="YeU-y7-d2m"/>
                     </constraints>
-                    <state key="highlighted" title="开/关"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="F5R-t6-jAb"/>
                     </connections>

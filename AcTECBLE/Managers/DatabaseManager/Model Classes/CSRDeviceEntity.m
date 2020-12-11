@@ -46,5 +46,11 @@
 @dynamic subnetMask;
 @dynamic gateway;
 @dynamic dns;
+@dynamic keyNameOne;
+@dynamic keyNameTwo;
+@dynamic keyNameThree;
+@dynamic keyNameFour;
+@dynamic keyNameFive;
+@dynamic keyNameSix;
 
 @end

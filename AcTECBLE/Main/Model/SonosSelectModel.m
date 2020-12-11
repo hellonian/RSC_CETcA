@@ -10,4 +10,14 @@
 
 @implementation SonosSelectModel
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        _source = -1;
+        _songNumber = -1;
+    }
+    return self;
+}
+
 @end

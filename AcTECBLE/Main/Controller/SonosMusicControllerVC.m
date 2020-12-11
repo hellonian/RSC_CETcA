@@ -14,11 +14,17 @@
 #import "NetworkSettingVC.h"
 #import "MusicControllerVC.h"
 #import "SocketConnectionTool.h"
+#import "AFHTTPSessionManager.h"
+#import "PureLayout.h"
 
 @interface SonosMusicControllerVC ()<UITableViewDelegate, UITableViewDataSource, SocketConnectionToolDelegate>
 {
     NSData *retryCmd;
     NSInteger retryCount;
+    
+    NSInteger latestMCUSVersion;
+    NSString *downloadAddress;
+    UIButton *updateMCUBtn;
 }
 @property (nonatomic, strong) UIButton *titleBtn;
 @property (nonatomic, copy) NSString *originalName;
@@ -29,6 +35,9 @@
 @property (nonatomic, strong) NSMutableArray *infoQueue;
 
 @property (nonatomic, strong) SocketConnectionTool *socketTool;
+@property (weak, nonatomic) IBOutlet UIButton *netWorkSettingBtn;
+@property (nonatomic,strong) UIView *translucentBgView;
+@property (nonatomic,strong) UIActivityIndicatorView *indicatorView;
 
 @end
 
@@ -83,6 +92,38 @@
         Byte byte[] = {0xea, 0x77, 0x07};
         NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
         [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+        
+        if ([device.hwVersion integerValue] == 2) {
+            NSMutableString *mutStr = [NSMutableString stringWithString:device.shortName];
+            NSRange range = {0,device.shortName.length};
+            [mutStr replaceOccurrencesOfString:@"/" withString:@"" options:NSLiteralSearch range:range];
+            NSString *urlString = [NSString stringWithFormat:@"http://39.108.152.134/MCU/%@/%@.php",mutStr,mutStr];
+            AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
+            sessionManager.responseSerializer.acceptableContentTypes = nil;
+            sessionManager.requestSerializer.cachePolicy = NSURLRequestReloadIgnoringCacheData;
+            [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+                NSDictionary *dic = (NSDictionary *)responseObject;
+                latestMCUSVersion = [dic[@"mcu_software_version"] integerValue];
+                downloadAddress = dic[@"Download_address"];
+                NSLog(@"mcuSVersion:%@  latestMCUSVersion:%ld",device.mcuSVersion, latestMCUSVersion);
+                if ([device.mcuSVersion integerValue] != 0 && [device.mcuSVersion integerValue]<latestMCUSVersion) {
+                    updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
+                    updateMCUBtn.enabled = NO;
+                    [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
+                    [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
+                    [updateMCUBtn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+                    [updateMCUBtn addTarget:self action:@selector(askUpdateMCU) forControlEvents:UIControlEventTouchUpInside];
+                    [self.view addSubview:updateMCUBtn];
+                    [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+                    [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeRight];
+                    [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom];
+                    [updateMCUBtn autoSetDimension:ALDimensionHeight toSize:44.0];
+                    [_netWorkSettingBtn autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:updateMCUBtn withOffset:-10.0];
+                }
+            } failure:^(NSURLSessionDataTask *task, NSError *error) {
+                NSLog(@"%@",error);
+            }];
+        }
     }
 }
 
@@ -385,6 +426,9 @@
         }else if (type == 7) {
             BOOL status = [userInfo[@"staus"] boolValue];
             if (!status) {
+                if (updateMCUBtn) {
+                    updateMCUBtn.enabled = NO;
+                }
                 [self refreshMCChannelsByBluetooth];
             }
         }
@@ -408,11 +452,17 @@
         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"channel" ascending:YES];
         [_listDataAry sortUsingDescriptors:[NSArray arrayWithObject:sort]];
         [_listView reloadData];
+        if (updateMCUBtn) {
+            updateMCUBtn.enabled = YES;
+        }
     }
 }
 
 - (void)socketConnectFail:(NSNumber *)deviceID {
     if ([deviceID isEqualToNumber:_deviceId]) {
+        if (updateMCUBtn) {
+            updateMCUBtn.enabled = NO;
+        }
         [self refreshMCChannelsByBluetooth];
     }
 }
@@ -423,5 +473,56 @@
     [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
 }
 
+- (void)askUpdateMCU {
+    [self showLoading];
+    NSDictionary *dic = @{@"type":@1,@"version":@(latestMCUSVersion),@"url":downloadAddress};
+    NSString *jsString = [CSRUtilities convertToJsonData2:dic];
+    NSData *jsData = [jsString dataUsingEncoding:NSUTF8StringEncoding];
+    [self.socketTool updateMCU:jsData];
+}
+
+- (void)updateMCUResult:(BOOL)result {
+    [self hideLoading];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:result? AcTECLocalizedStringFromTable(@"Success", @"Localizable"):AcTECLocalizedStringFromTable(@"fail", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+    [alert.view setTintColor:DARKORAGE];
+    UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [alert addAction:yes];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (UIView *)translucentBgView {
+    if (!_translucentBgView) {
+        _translucentBgView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        _translucentBgView.backgroundColor = [UIColor blackColor];
+        _translucentBgView.alpha = 0.4;
+    }
+    return _translucentBgView;
+}
+
+- (UIActivityIndicatorView *)indicatorView {
+    if (!_indicatorView) {
+        _indicatorView = [[UIActivityIndicatorView alloc] init];
+        _indicatorView.hidesWhenStopped = YES;
+        _indicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+    }
+    return _indicatorView;
+}
+
+- (void)showLoading {
+    [self.view addSubview:self.translucentBgView];
+    [self.view addSubview:self.indicatorView];
+    [self.indicatorView autoCenterInSuperview];
+    [self.indicatorView startAnimating];
+}
+
+- (void)hideLoading {
+    [self.indicatorView stopAnimating];
+    [self.indicatorView removeFromSuperview];
+    [self.translucentBgView removeFromSuperview];
+    self.indicatorView = nil;
+    self.translucentBgView = nil;
+}
 
 @end

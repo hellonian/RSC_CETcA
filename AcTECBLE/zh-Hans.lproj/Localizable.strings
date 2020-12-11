@@ -216,7 +216,7 @@
 "check_lan" = "请检查双方网络和路由器状态。";
 "retry" = "重试";
 "set_wallpaper" = "设置壁纸";
-"m_select_error_alert" = "无法选择，未获取到当前音乐控制器的通道信息。";
+"m_select_error_alert" = "未获取到当前音乐控制器的通道信息。";
 "module" = "模块";
 "networking_setting" = "网络设置";
 "connected" = "已连接";

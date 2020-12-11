@@ -46,6 +46,12 @@
 @property (nonatomic, retain) NSString * subnetMask;
 @property (nonatomic, retain) NSString * gateway;
 @property (nonatomic, retain) NSString * dns;
+@property (nonatomic, retain) NSString * keyNameOne;
+@property (nonatomic, retain) NSString * keyNameTwo;
+@property (nonatomic, retain) NSString * keyNameThree;
+@property (nonatomic, retain) NSString * keyNameFour;
+@property (nonatomic, retain) NSString * keyNameFive;
+@property (nonatomic, retain) NSString * keyNameSix;
 
 @end
 

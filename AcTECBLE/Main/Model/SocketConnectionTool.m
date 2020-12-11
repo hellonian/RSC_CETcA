@@ -166,6 +166,16 @@
                     [self writeData:data];
                 }
             }
+        }else if (cmdByte[0] == 0x04 && cmdByte[1] == 0x80) {
+            NSString *json = [[NSString alloc] initWithData:[self.receiveData subdataWithRange:NSMakeRange(12, [self.receiveData length] - 14)] encoding:NSUTF8StringEncoding];
+            
+            NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:json];
+            if ([jsonDictionary count] > 0) {
+                BOOL success = [jsonDictionary[@"success"] boolValue];
+                if (self.delegate && [self.delegate respondsToSelector:@selector(updateMCUResult:)]) {
+                    [self.delegate updateMCUResult:success];
+                }
+            }
         }
         
         
@@ -184,6 +194,25 @@
 
 - (void)writeData:(NSData *)data {
     [self.tcpSocketManager writeData:data withTimeout:-1 tag:0];
+}
+
+- (void)updateMCU:(NSData *)jsData {
+    NSInteger s0 = (self.sourceAddress & 0xFF00) >> 8;
+    NSInteger s1 = self.sourceAddress & 0x00FF;
+    NSInteger frameNumber = [self getFrameNumber];
+    NSInteger length = [jsData length] + 14;
+    NSInteger l0 = (length & 0xFF000000) >> 24;
+    NSInteger l1 = (length & 0x00FF0000) >> 16;
+    NSInteger l2 = (length & 0x0000FF00) >> 8;
+    NSInteger l3 = length & 0x000000FF;
+    Byte b[] = {0xa5, frameNumber, l3, l2, l1, l0, s1, s0, 0x01, 0x00, 0x03, 0x00};
+    NSMutableData *mData = [[NSMutableData alloc] initWithBytes:b length:12];
+    [mData appendData:jsData];
+    int sum = [CSRUtilities atFromData:mData];
+    Byte w[] = {sum, 0xfe};
+    NSData *wData = [[NSData alloc] initWithBytes:w length:2];
+    [mData appendData:wData];
+    [self writeData:mData];
 }
 
 @end

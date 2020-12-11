@@ -14,6 +14,7 @@
 @optional
 - (void)saveSonosInfo:(NSNumber *_Nullable)deviceID;
 - (void)socketConnectFail:(NSNumber *_Nullable)deviceID;
+- (void)updateMCUResult:(BOOL)result;
 
 @end
 
@@ -31,6 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)connentHost:(NSString *)host prot:(uint16_t)port;
 - (NSInteger)getFrameNumber;
 - (void)writeData:(NSData *)data;
+- (void)updateMCU:(NSData *)jsData;
 
 @end
 

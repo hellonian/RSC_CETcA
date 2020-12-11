@@ -216,7 +216,7 @@
 "check_lan" = "Please check both sides of the network and the status of the router.";
 "retry" = "Retry";
 "set_wallpaper" = "Set Wallpaper";
-"m_select_error_alert" = "Unable to select, did not get channel information for current music controller.";
+"m_select_error_alert" = "Did not get channel information for current music controller.";
 "module" = "Module";
 "networking_setting" = "Networking Setting";
 "connected" = "Connected";

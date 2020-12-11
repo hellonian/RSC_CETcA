@@ -622,33 +622,32 @@
     SceneMemberEntity *m = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
     m.sceneID = _sceneIndex;
     m.deviceID = model.deviceID;
-    m.channel = model.channel;
-    m.eveType = @(model.dataValid + pow(2, 7));
+    m.channel = @(pow(2, [model.channel integerValue]));
     
     NSInteger status;
     CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:model.deviceID];
     if ([CSRUtilities belongToSonosMusicController:de.shortName]) {
-        NSInteger cy;
-        if (model.cycle > 1) {
-            cy = model.cycle+1;
+        if (model.play) {
+            m.eveType = @(226);
         }else {
-            cy = model.cycle;
+            m.eveType = @(130);
         }
-        status = 1 + model.play*2 + cy*32;
+        
+        status = model.play*2+1;
     }else {
-        status = model.channelState + model.play*2 + model.source*4 + (model.cycle+1)*32;
+        if (model.play) {
+            m.eveType = @(166);
+        }else {
+            m.eveType = @(130);
+        }
+        status = model.play*2 + model.source*4+1;
     }
     
     m.eveD0 = @(status);
-    NSInteger vo = model.play ? model.voice : 0;
-    NSInteger voice = model.mute + vo*2;
-    m.eveD1 = @(voice);
+    m.eveD1 = @(model.voice*2);
     m.eveD2 = @(model.songNumber);
     m.eveD3 = @0;
-    DeviceModel *device = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:model.deviceID];
-    if (device) {
-        m.kindString = device.shortName;
-    }
+    m.kindString = de.shortName;
     SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
     [sceneEntity addMembersObject:m];
     [[CSRDatabaseManager sharedInstance] saveContext];

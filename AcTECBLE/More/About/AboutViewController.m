@@ -8,10 +8,7 @@
 
 #import "AboutViewController.h"
 
-#import "DataModelManager.h"
 #import "PureLayout.h"
-
-#import "MyUncaughtExceptionHandler.h"
 #import "ShowExceptionLogVC.h"
 
 @interface AboutViewController ()
@@ -79,11 +76,9 @@
     NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     NSString *dataPath = [path stringByAppendingPathComponent:@"Exception.txt"];
     NSData *data = [NSData dataWithContentsOfFile:dataPath];
-    if (data != nil) {
-        ShowExceptionLogVC *svc = [[ShowExceptionLogVC alloc] init];
-        svc.path = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        [self.navigationController pushViewController:svc animated:YES];
-    }
+    ShowExceptionLogVC *svc = [[ShowExceptionLogVC alloc] init];
+    svc.path = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    [self.navigationController pushViewController:svc animated:YES];
 }
 
 @end
