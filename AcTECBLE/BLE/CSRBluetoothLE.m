@@ -48,6 +48,7 @@
 
 @property (nonatomic, strong) NSMutableArray *collectionPeripherals;
 @property (nonatomic, assign) BOOL startCollect;
+@property (nonatomic, strong) NSString *macformcuupdateConnection;
 
 @end
 
@@ -135,7 +136,6 @@
     // Connect peripheral without checking how many are connected
 -(void) connectPeripheralNoCheck:(CBPeripheral *) peripheral {
     if ([peripheral state]!=CBPeripheralStateConnected) {
-//        NSLog(@"connectPeripheralNoCheck");
         [centralManager connectPeripheral:peripheral options:nil];
     }
     if (_isForGAIA) {
@@ -159,6 +159,24 @@
     }
 }
 
+- (void)disconnectPeripheralForMCUUpdate:(NSString *)mac {
+    _startCollect = NO;
+    _macformcuupdateConnection = mac;
+    if ([_connectedPeripherals count]>0) {
+        for (CBPeripheral *peripheral in _connectedPeripherals) {
+            [centralManager cancelPeripheralConnection:peripheral];
+        }
+    }
+}
+
+- (void)cancelMCUUpdate {
+    _startCollect = YES;
+    _macformcuupdateConnection = nil;
+}
+
+- (void)successMCUUpdate {
+    _macformcuupdateConnection = nil;
+}
 
     //============================================================================
     // With exception of connected peripheral, remove all discovered peripherals
@@ -179,7 +197,10 @@
     @synchronized(self) {
         if ([centralManager state] == CBCentralManagerStatePoweredOn) {
             //////////////////////////////////////////////////////////////////
-            _startCollect = YES;
+            if (!_macformcuupdateConnection) {
+                _startCollect = YES;
+            }
+            
             if (_isUpdateFW) {
                 [_foundPeripherals removeAllObjects];
             }
@@ -198,6 +219,7 @@
 -(void) stopScan {
     @synchronized(self) {
         _startCollect = NO;
+        _macformcuupdateConnection = nil;
         [centralManager stopScan];
     }
     NSLog (@"Stop Scan");
@@ -361,6 +383,10 @@
                     [self.collectionPeripherals addObject:dic];
                 }
                 
+            }else if (_macformcuupdateConnection) {
+                if ([peripheral.uuidString length]>11 && [[peripheral.uuidString substringToIndex:12] isEqualToString:_macformcuupdateConnection]) {
+                    [[CSRBridgeRoaming sharedInstance] didDiscoverBridgeDevice:central peripheral:peripheral advertisment:advertisementData RSSI:RSSI];
+                }
             }
             
             
@@ -492,7 +518,10 @@
             
             //#ifdef  BRIDGE_DISCONNECT_ALERT
             NSLog (@"BRIDGE DISCONNECTED : %@",peripheral.name);
-            _startCollect = YES;
+            if (!_macformcuupdateConnection) {
+                _startCollect = YES;
+            }
+            
             //#endif
             
             // Call up Bridge Select View

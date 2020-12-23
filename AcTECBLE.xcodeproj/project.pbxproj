@@ -41,7 +41,6 @@
 		2E159F30248643D6001E126C /* RemoteMainVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E159F32248643D6001E126C /* RemoteMainVC.xib */; };
 		2E159F372486442A001E126C /* RemoteLCDVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E159F392486442A001E126C /* RemoteLCDVC.xib */; };
 		2E18B21F25232D5D0044D2E0 /* NetworkSettingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E18B21D25232D5D0044D2E0 /* NetworkSettingVC.m */; };
-		2E18B22025232D5D0044D2E0 /* NetworkSettingVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E18B21E25232D5D0044D2E0 /* NetworkSettingVC.xib */; };
 		2E192D192572479E001161FF /* MusicControllerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E192D182572479E001161FF /* MusicControllerVC.m */; };
 		2E1C839E20CFD782009BCC6D /* PlaceDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E1C83A020CFD782009BCC6D /* PlaceDetailsViewController.xib */; };
 		2E2000A920182260000AD8C3 /* SceneEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2000A820182260000AD8C3 /* SceneEntity.m */; };
@@ -72,6 +71,7 @@
 		2E2E70B21FF5DE60002D1C1D /* PCM.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70721FF5DE60002D1C1D /* PCM.m */; };
 		2E2E70B31FF5DE60002D1C1D /* ErrorCodes.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2E2E70731FF5DE60002D1C1D /* ErrorCodes.strings */; };
 		2E2E70B51FF5DE60002D1C1D /* UpdateDeviceModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70771FF5DE60002D1C1D /* UpdateDeviceModel.m */; };
+		2E2EE78B258C5F51008A238B /* SonosMusicControllerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E2EE78D258C5F51008A238B /* SonosMusicControllerVC.xib */; };
 		2E3417BE23A7276A000D1A52 /* RemoteMainVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3417BC23A7276A000D1A52 /* RemoteMainVC.m */; };
 		2E35F74C222A7E41001D9342 /* GroupControlView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E35F74B222A7E41001D9342 /* GroupControlView.m */; };
 		2E3630FB2199666F00EF22DD /* FanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E3630F92199666F00EF22DD /* FanViewController.m */; };
@@ -112,6 +112,7 @@
 		2E5F120E23BDD22F0018EF16 /* LCDRemoteMemberCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E5F120C23BDD22F0018EF16 /* LCDRemoteMemberCell.xib */; };
 		2E63A54321E328B800FCE49D /* SocketPowerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E63A54121E328B800FCE49D /* SocketPowerCell.m */; };
 		2E63A54421E328B800FCE49D /* SocketPowerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E63A54221E328B800FCE49D /* SocketPowerCell.xib */; };
+		2E64573F258D8B820014F0A7 /* NetworkSettingVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E645741258D8B820014F0A7 /* NetworkSettingVC.xib */; };
 		2E6750BC2493601C004FA52F /* SceneMemberCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E6750BE2493601C004FA52F /* SceneMemberCell.xib */; };
 		2E6A02131F39884500111312 /* TabBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A020E1F39884500111312 /* TabBarButton.m */; };
 		2E6A02141F39884500111312 /* TabBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A02101F39884500111312 /* TabBarView.m */; };
@@ -149,7 +150,6 @@
 		2EB246B62282CD8B00DFF5D3 /* CSRCallbacks.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB246B52282CD8B00DFF5D3 /* CSRCallbacks.m */; };
 		2EB246B92282CEB500DFF5D3 /* CSRBLEUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB246B82282CEB500DFF5D3 /* CSRBLEUtil.m */; };
 		2EB3C2C9251D7D6D002FFD1D /* SonosMusicControllerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB3C2C7251D7D6D002FFD1D /* SonosMusicControllerVC.m */; };
-		2EB3C2CA251D7D6D002FFD1D /* SonosMusicControllerVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EB3C2C8251D7D6D002FFD1D /* SonosMusicControllerVC.xib */; };
 		2EBB39952490D5B000243D5F /* SceneMemberCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EBB39932490D5B000243D5F /* SceneMemberCell.m */; };
 		2EBB39982490F4AC00243D5F /* SceneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EBB39972490F4AC00243D5F /* SceneViewController.xib */; };
 		2EBBA91D21D7442E00D2E7DA /* SocketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EBBA91B21D7442E00D2E7DA /* SocketViewController.m */; };
@@ -277,7 +277,6 @@
 		2E159F36248643E8001E126C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/RemoteMainVC.strings"; sourceTree = "<group>"; };
 		2E18B21C25232D5D0044D2E0 /* NetworkSettingVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkSettingVC.h; sourceTree = "<group>"; };
 		2E18B21D25232D5D0044D2E0 /* NetworkSettingVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NetworkSettingVC.m; sourceTree = "<group>"; };
-		2E18B21E25232D5D0044D2E0 /* NetworkSettingVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NetworkSettingVC.xib; sourceTree = "<group>"; };
 		2E192D182572479E001161FF /* MusicControllerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicControllerVC.m; sourceTree = "<group>"; };
 		2E1C839F20CFD782009BCC6D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PlaceDetailsViewController.xib; sourceTree = "<group>"; };
 		2E1F6FC321C9F61C00915FFF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PlaceDetailsViewController.strings; sourceTree = "<group>"; };
@@ -333,6 +332,9 @@
 		2E2E70731FF5DE60002D1C1D /* ErrorCodes.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = ErrorCodes.strings; sourceTree = "<group>"; };
 		2E2E70761FF5DE60002D1C1D /* UpdateDeviceModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateDeviceModel.h; sourceTree = "<group>"; };
 		2E2E70771FF5DE60002D1C1D /* UpdateDeviceModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateDeviceModel.m; sourceTree = "<group>"; };
+		2E2EE78C258C5F51008A238B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/SonosMusicControllerVC.xib; sourceTree = "<group>"; };
+		2E2EE78E258C5F58008A238B /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SonosMusicControllerVC.strings; sourceTree = "<group>"; };
+		2E2EE790258C5F5D008A238B /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SonosMusicControllerVC.strings"; sourceTree = "<group>"; };
 		2E3417BB23A7276A000D1A52 /* RemoteMainVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteMainVC.h; sourceTree = "<group>"; };
 		2E3417BC23A7276A000D1A52 /* RemoteMainVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteMainVC.m; sourceTree = "<group>"; };
 		2E35F74A222A7E41001D9342 /* GroupControlView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GroupControlView.h; sourceTree = "<group>"; };
@@ -422,6 +424,9 @@
 		2E63A54021E328B800FCE49D /* SocketPowerCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SocketPowerCell.h; sourceTree = "<group>"; };
 		2E63A54121E328B800FCE49D /* SocketPowerCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SocketPowerCell.m; sourceTree = "<group>"; };
 		2E63A54221E328B800FCE49D /* SocketPowerCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SocketPowerCell.xib; sourceTree = "<group>"; };
+		2E645740258D8B820014F0A7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/NetworkSettingVC.xib; sourceTree = "<group>"; };
+		2E645743258D8B880014F0A7 /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/NetworkSettingVC.strings; sourceTree = "<group>"; };
+		2E645745258D8B8C0014F0A7 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/NetworkSettingVC.strings"; sourceTree = "<group>"; };
 		2E6750BD2493601C004FA52F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/SceneMemberCell.xib; sourceTree = "<group>"; };
 		2E6A020D1F39884500111312 /* TabBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarButton.h; sourceTree = "<group>"; };
 		2E6A020E1F39884500111312 /* TabBarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarButton.m; sourceTree = "<group>"; };
@@ -524,7 +529,6 @@
 		2EB3C2C5251D7C26002FFD1D /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/CurtainViewController.strings"; sourceTree = "<group>"; };
 		2EB3C2C6251D7D6D002FFD1D /* SonosMusicControllerVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SonosMusicControllerVC.h; sourceTree = "<group>"; };
 		2EB3C2C7251D7D6D002FFD1D /* SonosMusicControllerVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SonosMusicControllerVC.m; sourceTree = "<group>"; };
-		2EB3C2C8251D7D6D002FFD1D /* SonosMusicControllerVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SonosMusicControllerVC.xib; sourceTree = "<group>"; };
 		2EBB39922490D5B000243D5F /* SceneMemberCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneMemberCell.h; sourceTree = "<group>"; };
 		2EBB39932490D5B000243D5F /* SceneMemberCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneMemberCell.m; sourceTree = "<group>"; };
 		2EBB39972490F4AC00243D5F /* SceneViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SceneViewController.xib; sourceTree = "<group>"; };
@@ -1178,10 +1182,10 @@
 				2E7DBC0524E630E700A36905 /* MusicControllerVC.xib */,
 				2EB3C2C6251D7D6D002FFD1D /* SonosMusicControllerVC.h */,
 				2EB3C2C7251D7D6D002FFD1D /* SonosMusicControllerVC.m */,
-				2EB3C2C8251D7D6D002FFD1D /* SonosMusicControllerVC.xib */,
+				2E2EE78D258C5F51008A238B /* SonosMusicControllerVC.xib */,
 				2E18B21C25232D5D0044D2E0 /* NetworkSettingVC.h */,
 				2E18B21D25232D5D0044D2E0 /* NetworkSettingVC.m */,
-				2E18B21E25232D5D0044D2E0 /* NetworkSettingVC.xib */,
+				2E645741258D8B820014F0A7 /* NetworkSettingVC.xib */,
 				2EF73AE9254FFC9B0003E636 /* SonosSceneSettingVC.h */,
 				2EF73AEA254FFC9B0003E636 /* SonosSceneSettingVC.m */,
 			);
@@ -1609,7 +1613,7 @@
 				2E3B9680200F3847000BD086 /* MainViewController.xib in Resources */,
 				2EF332512045030100565374 /* LanguageViewController.xib in Resources */,
 				2E2E708D1FF5DE60002D1C1D /* PlacesViewController.xib in Resources */,
-				2E18B22025232D5D0044D2E0 /* NetworkSettingVC.xib in Resources */,
+				2E64573F258D8B820014F0A7 /* NetworkSettingVC.xib in Resources */,
 				2E9622BF20C913530097C617 /* Localizable.strings in Resources */,
 				2E3BED3A21DF329100E7078C /* PowerViewController.xib in Resources */,
 				2EE757D72010B23100FB75C5 /* SceneCollectionViewCell.xib in Resources */,
@@ -1631,8 +1635,8 @@
 				2EF57E2E24CA7404003D908A /* AboutViewController.xib in Resources */,
 				2E6BD80420D0AD6D00036CA2 /* RemoteSettingViewController.xib in Resources */,
 				2E706CFF212A7278008D0EC4 /* GalleryViewController.xib in Resources */,
-				2EB3C2CA251D7D6D002FFD1D /* SonosMusicControllerVC.xib in Resources */,
 				2EF332562045031300565374 /* HelpViewController.xib in Resources */,
+				2E2EE78B258C5F51008A238B /* SonosMusicControllerVC.xib in Resources */,
 				2EC92CEA24C833CE00AD53CF /* ShowExceptionLogVC.xib in Resources */,
 				2EDAA53A257E156900290366 /* SonosSceneSettingCell.xib in Resources */,
 				2E1C839E20CFD782009BCC6D /* PlaceDetailsViewController.xib in Resources */,
@@ -1888,6 +1892,16 @@
 			name = PlaceDetailsViewController.xib;
 			sourceTree = "<group>";
 		};
+		2E2EE78D258C5F51008A238B /* SonosMusicControllerVC.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E2EE78C258C5F51008A238B /* Base */,
+				2E2EE78E258C5F58008A238B /* English */,
+				2E2EE790258C5F5D008A238B /* zh-Hans */,
+			);
+			name = SonosMusicControllerVC.xib;
+			sourceTree = "<group>";
+		};
 		2E37075020CE4C16000AF696 /* DeviceViewController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -2047,6 +2061,16 @@
 				2EF4D11722E592B90058484E /* zh-Hans */,
 			);
 			name = SocketViewController.xib;
+			sourceTree = "<group>";
+		};
+		2E645741258D8B820014F0A7 /* NetworkSettingVC.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E645740258D8B820014F0A7 /* Base */,
+				2E645743258D8B880014F0A7 /* English */,
+				2E645745258D8B8C0014F0A7 /* zh-Hans */,
+			);
+			name = NetworkSettingVC.xib;
 			sourceTree = "<group>";
 		};
 		2E6750BE2493601C004FA52F /* SceneMemberCell.xib */ = {
@@ -2322,7 +2346,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2344,7 +2368,7 @@
 					"$(inherited)",
 					"\"${PODS_ROOT}/OpenSSL/lib\"",
 				);
-				MARKETING_VERSION = 3.0.4;
+				MARKETING_VERSION = 3.0.5;
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-isystem",
@@ -2382,7 +2406,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2404,7 +2428,7 @@
 					"$(inherited)",
 					"\"${PODS_ROOT}/OpenSSL/lib\"",
 				);
-				MARKETING_VERSION = 3.0.4;
+				MARKETING_VERSION = 3.0.5;
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-isystem",

@@ -44,6 +44,8 @@
 @property (nonatomic, assign) NSInteger mcVoice;
 @property (nonatomic, assign) NSInteger mcSong;
 @property (nonatomic, strong) NSString *songName;
+@property (nonatomic, assign) NSInteger curtainRange;
+@property (nonatomic, assign) NSInteger curtainDirection;
 
 @end
 

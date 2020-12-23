@@ -223,3 +223,17 @@
 "not_connected" = "Not connected";
 "lan_connection_fail" = "LAN connection failed, please try again or replace router.";
 "long_press_for_dimming" = "Long press for dimming";
+"mcu_connetion_alert" = "Unable to connect to the target device, please cancel or approach the device to continue trying.";
+"continue" = "Continue";
+"fail_ssid_password" = "Failed to send SSID and password.";
+"fail_connection" = "No feedback of device network connection results received. (The SSID and password have been sent successfully.)";
+"mcu_read_version_fail" = "The MCU upgrade was successful, but the updated MCU version number could not be read from the device.";
+"mcu_update_success" = "MCU upgraded successfully.";
+"mcu_version_less" = "The MCU upgrade was successful, but the version read from the device after the upgrade is still less than or equal to the pre-upgrade version.";
+"mcu_update_timeout" = "MCU upgrade timeout.";
+"mcu_not_respond_request" = "The device did not respond to an upgrade request from the phone to the device.";
+"mcu_update_failed" = "MCU upgrade failed.";
+"mcu_length_exceeded" = "MCU upgrade package length exceeded maximum.";
+"mcu_not_respond_query" = "The device did not respond to a query about the received status of current page during upgrade.";
+"mcu_resends_fail" = "The number of the current page data resends has reached 20 but has not been successful during upgrade.";
+"mcu_end_fail" = "The device did not respond to an instruction to end the upgrade.";

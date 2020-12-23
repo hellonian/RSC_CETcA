@@ -137,9 +137,13 @@
     CSRDeviceEntity *deviceEntity = self.dataArray[indexPath.row];
     if ([deviceEntity.shortName isEqualToString:@"RB01"] || [deviceEntity.shortName isEqualToString:@"R5BSBH"] || [deviceEntity.shortName isEqualToString:@"5BCBH"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_fremote"];
-    }else if ([deviceEntity.shortName isEqualToString:@"RB02"]||[deviceEntity.shortName isEqualToString:@"RB06"]||[deviceEntity.shortName isEqualToString:@"RSBH"]||[deviceEntity.shortName isEqualToString:@"1BMBH"]) {
+    }else if ([deviceEntity.shortName isEqualToString:@"RB02"]
+              ||[deviceEntity.shortName isEqualToString:@"RB06"]
+              ||[deviceEntity.shortName isEqualToString:@"RSBH"]
+              ||[deviceEntity.shortName isEqualToString:@"1BMBH"]
+              ||[deviceEntity.shortName isEqualToString:@"RB08"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_sremote"];
-    }else if ([deviceEntity.shortName isEqualToString:@"RB04"]|| [deviceEntity.shortName isEqualToString:@"RB07"]||[deviceEntity.shortName isEqualToString:@"RSIBH"]) {
+    }else if ([deviceEntity.shortName isEqualToString:@"RB04"] || [deviceEntity.shortName isEqualToString:@"RB07"]||[deviceEntity.shortName isEqualToString:@"RSIBH"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_bajiao"];
     }else if ([deviceEntity.shortName isEqualToString:@"R9BSBH"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_fremote"];
@@ -147,7 +151,23 @@
         cell.imageView.image = [UIImage imageNamed:@"Setting_rb05"];
     }else if ([deviceEntity.shortName isEqualToString:@"RB09"]||[deviceEntity.shortName isEqualToString:@"5RSIBH"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_bajiao"];
-    }else if ([deviceEntity.shortName isEqualToString:@"6RSIBH"]) {
+    }else if ([deviceEntity.shortName isEqualToString:@"6RSIBH"]
+              || [deviceEntity.shortName isEqualToString:@"H1RSMB"]
+              || [deviceEntity.shortName isEqualToString:@"H2RSMB"]
+              || [deviceEntity.shortName isEqualToString:@"H3RSMB"]
+              || [deviceEntity.shortName isEqualToString:@"H4RSMB"]
+              || [deviceEntity.shortName isEqualToString:@"H5RSMB"]
+              || [deviceEntity.shortName isEqualToString:@"H6RSMB"]
+              || [deviceEntity.shortName isEqualToString:@"H1CSWB"]
+              || [deviceEntity.shortName isEqualToString:@"H2CSWB"]
+              || [deviceEntity.shortName isEqualToString:@"H3CSWB"]
+              || [deviceEntity.shortName isEqualToString:@"H4CSWB"]
+              || [deviceEntity.shortName isEqualToString:@"H6CSWB"]
+              || [deviceEntity.shortName isEqualToString:@"H1CSB"]
+              || [deviceEntity.shortName isEqualToString:@"H2CSB"]
+              || [deviceEntity.shortName isEqualToString:@"H3CSB"]
+              || [deviceEntity.shortName isEqualToString:@"H4CSB"]
+              || [deviceEntity.shortName isEqualToString:@"H6CSB"]) {
         cell.imageView.image = [UIImage imageNamed:@"Setting_bajiao"];
     }
     cell.textLabel.text = deviceEntity.name;

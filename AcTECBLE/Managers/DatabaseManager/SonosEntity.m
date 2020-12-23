@@ -16,5 +16,6 @@
 @dynamic modelType;
 @dynamic modelNumber;
 @dynamic name;
+@dynamic alive;
 
 @end

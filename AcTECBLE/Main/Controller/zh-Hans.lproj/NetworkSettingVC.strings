@@ -1,0 +1,21 @@
+
+/* Class = "UILabel"; text = "IP"; ObjectID = "3Oe-BY-LOo"; */
+"3Oe-BY-LOo.text" = "IP地址";
+
+/* Class = "UILabel"; text = "Network Status"; ObjectID = "AOY-ce-Z39"; */
+"AOY-ce-Z39.text" = "网络状态";
+
+/* Class = "UILabel"; text = "Subnet mask"; ObjectID = "Irj-r4-SdV"; */
+"Irj-r4-SdV.text" = "子网掩码";
+
+/* Class = "UILabel"; text = "WLAN"; ObjectID = "aS7-Vr-5zu"; */
+"aS7-Vr-5zu.text" = "无线局域网";
+
+/* Class = "UILabel"; text = "Connection status"; ObjectID = "npB-f8-67x"; */
+"npB-f8-67x.text" = "连接状态";
+
+/* Class = "UILabel"; text = "Gateway"; ObjectID = "r9G-Y2-PsO"; */
+"r9G-Y2-PsO.text" = "路由器";
+
+/* Class = "UILabel"; text = "DNS"; ObjectID = "wIf-2k-GWW"; */
+"wIf-2k-GWW.text" = "DNS服务器";

@@ -1037,6 +1037,8 @@
         }
         model.powerState = @(model.channel1PowerState || model.channel2PowerState);
         model.level = @(model.channel1Level > model.channel2Level ? model.channel1Level : model.channel2Level);
+        model.curtainRange = [userInfo[@"CURTAINRANGE"] integerValue];
+        model.curtainDirection = [userInfo[@"CURTAINDIRECTION"] integerValue];
     }else if ([CSRUtilities belongToOneChannelCurtainController:model.shortName]
               || [CSRUtilities belongToHOneChannelCurtainController:model.shortName]) {
         if ([channel integerValue] == 2) {
@@ -1045,6 +1047,8 @@
             model.powerState = state;
             model.level = level;
         }
+        model.curtainRange = [userInfo[@"CURTAINRANGE"] integerValue];
+        model.curtainDirection = [userInfo[@"CURTAINDIRECTION"] integerValue];
     }else {
         model.powerState = @(model.channel1PowerState);
         model.level = @(model.channel1Level > 3 ? model.channel1Level : 3);
@@ -1664,9 +1668,9 @@
             device.ipAddress = ip;
             [[CSRDatabaseManager sharedInstance] saveContext];
             
-            Byte byte[] = {0xea, 0x77, 0x03};
-            NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
-            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceID data:cmd];
+//            Byte byte[] = {0xea, 0x77, 0x03};
+//            NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+//            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceID data:cmd];
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshNetworkConnectionStatus"
                                                                 object:self

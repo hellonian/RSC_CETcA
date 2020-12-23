@@ -420,6 +420,7 @@
         _label3.text = @"";
         
         NSInteger et = [member.eveType integerValue];
+        /*
         if (et & 0x40) {
             if ([device.remoteBranch length]>0) {
                 NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:device.remoteBranch];
@@ -459,7 +460,28 @@
         }else if (et & 0x20) {
             NSInteger iv = ([member.eveD1 integerValue] & 0xfe) >> 1;
             _label3.text = [NSString stringWithFormat:@"%ld",iv];
+        }*/
+        if (et == 130) {
+            _label2.text = @"Stop";
+        }else if (et == 226) {
+            if ([device.remoteBranch length]>0) {
+                NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:device.remoteBranch];
+                if ([jsonDictionary count]>0) {
+                    NSArray *songs = jsonDictionary[@"song"];
+                    for (NSDictionary *dic in songs) {
+                        NSInteger n = [dic[@"id"] integerValue];
+                        if (n == [member.eveD2 integerValue]) {
+                            _label1.text = dic[@"name"];
+                            break;
+                        }
+                    }
+                }
+            }
+            _label2.text = @"Play";
+            NSInteger iv = ([member.eveD1 integerValue] & 0xfe) >> 1;
+            _label3.text = [NSString stringWithFormat:@"%ld",iv];
         }
+        
     }
 }
 

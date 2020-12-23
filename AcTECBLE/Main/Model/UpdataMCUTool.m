@@ -57,7 +57,7 @@
         _sendCount ++;
     }else {
         //提示升级失败——无法进入升级
-        [self toolDelegateUpdateConclusion:@"设备未响应升级开始命令"];
+        [self toolDelegateUpdateConclusion:AcTECLocalizedStringFromTable(@"mcu_not_respond_request", @"Localizable")];
     }
 }
 
@@ -85,10 +85,10 @@
             [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(endOperationTimeOutMethod) object:nil];
             if (byte[2] == 0x01) {
                 //升级成功
-                [self toolDelegateUpdateConclusion:@"升级成功"];
+                [self toolDelegateUpdateConclusion:AcTECLocalizedStringFromTable(@"mcu_update_success", @"Localizable")];
             }else {
                 //升级失败
-                [self toolDelegateUpdateConclusion:@"升级失败"];
+                [self toolDelegateUpdateConclusion:AcTECLocalizedStringFromTable(@"mcu_update_failed", @"Localizable")];
             }
             _sendCount = 0;
             [self performSelector:@selector(readVersionTimeOutMethod) withObject:nil afterDelay:3.0];
@@ -130,7 +130,7 @@
         _pageCount = [data length] / 128 + 1;
         if (_pageCount > 256) {
             //提示升级失败——包长度超出
-            [self toolDelegateUpdateConclusion:@"下载的升级包长度超出"];
+            [self toolDelegateUpdateConclusion:AcTECLocalizedStringFromTable(@"mcu_length_exceeded", @"Localizable")];
             return;
         }
         _currentPage = 0;
@@ -175,7 +175,7 @@
         _sendCount ++;
     }else {
         //提示升级失败——无法查询当前页结果
-        [self toolDelegateUpdateConclusion:@"设备未响应查询当前页是否成功的命令"];
+        [self toolDelegateUpdateConclusion:AcTECLocalizedStringFromTable(@"mcu_not_respond_query", @"Localizable")];
     }
 }
 
@@ -221,7 +221,7 @@
             _retryCount ++;
         }else {
             //提示升级失败——单页重发次数已达20次
-            [self toolDelegateUpdateConclusion:@"当前页重复次数已达20次仍然未成功"];
+            [self toolDelegateUpdateConclusion:AcTECLocalizedStringFromTable(@"mcu_resends_fail", @"Localizable")];
         }
     }else {
         //下一页
@@ -252,7 +252,7 @@
         _sendCount ++;
     }else {
         //提示升级失败——最后发送结束命令未得到设备相应
-        [self toolDelegateUpdateConclusion:@"设备未响应退出升级的命令"];
+        [self toolDelegateUpdateConclusion:AcTECLocalizedStringFromTable(@"mcu_end_fail", @"Localizable")];
         _sendCount = 0;
         [self performSelector:@selector(readVersionTimeOutMethod) withObject:nil afterDelay:3.0];
         Byte byte[] = {0xea, 0x35};
@@ -263,13 +263,14 @@
 
 - (void)readVersionTimeOutMethod {
     if (_sendCount < 3) {
+        _sendCount ++;
         [self performSelector:@selector(readVersionTimeOutMethod) withObject:nil afterDelay:3.0];
         Byte byte[] = {0xea, 0x35};
         NSData *cmd = [[NSData alloc] initWithBytes:byte length:2];
         [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceID data:cmd];
     }else {
         //读取版本超时
-        [self toolDelegateUpdateConclusion:@"设备未响应读取版本的命令"];
+        [self toolDelegateUpdateConclusion:AcTECLocalizedStringFromTable(@"mcu_read_version_fail", @"Localizable")];
     }
 }
 
@@ -281,10 +282,10 @@
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(readVersionTimeOutMethod) object:nil];
         if (higher) {
             //版本更新
-            [self toolDelegateUpdateConclusion:@"MCU版本号已更新"];
+            [self toolDelegateUpdateConclusion:AcTECLocalizedStringFromTable(@"mcu_update_success", @"Localizable")];
         }else {
             //版本一样或更旧
-            [self toolDelegateUpdateConclusion:@"MCU版本号小于或等于升级之前"];
+            [self toolDelegateUpdateConclusion:AcTECLocalizedStringFromTable(@"mcu_version_less", @"Localizable")];
         }
     }
 }

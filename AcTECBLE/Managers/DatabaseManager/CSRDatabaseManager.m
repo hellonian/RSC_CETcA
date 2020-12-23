@@ -1230,7 +1230,7 @@
     }
 }
 
-- (SonosEntity *)saveNewSonos:(NSNumber *)deviceID channel:(NSNumber *)channel infoVersion:(NSNumber *)infoVersion modelType:(NSNumber *)modelType modelNumber:(NSNumber *)modelNumber name:(NSString *)name {
+- (SonosEntity *)saveNewSonos:(NSNumber *)deviceID channel:(NSNumber *)channel infoVersion:(NSNumber *)infoVersion modelType:(NSNumber *)modelType modelNumber:(NSNumber *)modelNumber name:(NSString *)name alive:(NSNumber *)alive{
     __block CSRDeviceEntity *sDeviceEntity;
     [[CSRAppStateManager sharedInstance].selectedPlace.devices enumerateObjectsUsingBlock:^(CSRDeviceEntity * _Nonnull obj, BOOL * _Nonnull stop) {
         if ([obj.deviceId isEqualToNumber:deviceID]) {
@@ -1256,6 +1256,7 @@
         newSonosEntity.modelType = modelType;
         newSonosEntity.modelNumber = modelNumber;
         newSonosEntity.name = name;
+        newSonosEntity.alive = alive;
         
         [sDeviceEntity addSonossObject:newSonosEntity];
         [self saveContext];

@@ -82,4 +82,8 @@
 
 @property(nonatomic, assign) BOOL isNearbyFunction;
 
+- (void)disconnectPeripheralForMCUUpdate:(NSString *)mac;
+- (void)cancelMCUUpdate;
+- (void)successMCUUpdate;
+
 @end

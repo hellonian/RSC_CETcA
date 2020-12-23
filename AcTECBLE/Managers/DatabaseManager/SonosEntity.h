@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, retain) NSNumber * modelNumber;
 @property (nonatomic, retain) NSNumber * modelType;
 @property (nonatomic, retain) NSString * name;
+@property (nonatomic, retain) NSNumber * alive;
 
 @end
 

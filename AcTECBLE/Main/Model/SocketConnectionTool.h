@@ -28,11 +28,15 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSMutableData *receiveData;
 @property (nonatomic, strong) NSNumber *deviceID;
 @property (nonatomic, weak) id<SocketConnectionToolDelegate> delegate;
+@property (nonatomic, assign) BOOL hasConnected;
+@property (nonatomic, strong) NSString *sHost;
+@property (nonatomic, assign) uint16_t sPort;
 
 - (void)connentHost:(NSString *)host prot:(uint16_t)port;
 - (NSInteger)getFrameNumber;
 - (void)writeData:(NSData *)data;
 - (void)updateMCU:(NSData *)jsData;
+- (void)getDeviceList;
 
 @end
 

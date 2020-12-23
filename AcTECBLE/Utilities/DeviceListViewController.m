@@ -281,30 +281,34 @@
             NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sceneID" ascending:YES];
             [sceneMutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             for (SceneEntity *scene in sceneMutableArray) {
-                SceneListSModel *model = [[SceneListSModel alloc] init];
-                model.sceneId = scene.sceneID;
-                model.iconId = scene.iconID;
-                model.sceneName = scene.sceneName;
-                model.memnbers = scene.members;
-                model.rcIndex = scene.rcIndex;
-                if ([_originalMembers count]>0) {
-                    __block BOOL exist = NO;
-                    [_originalMembers enumerateObjectsUsingBlock:^(SelectModel  *sMod, NSUInteger idx, BOOL * _Nonnull stop) {
-                        if ([sMod.channel isEqualToNumber:scene.rcIndex]) {
-                            exist = YES;
-                            [_selectedDevices addObject:sMod];
-                            *stop = YES;
+                if ([scene.srDeviceId integerValue]>0) {
+                    
+                }else {
+                    SceneListSModel *model = [[SceneListSModel alloc] init];
+                    model.sceneId = scene.sceneID;
+                    model.iconId = scene.iconID;
+                    model.sceneName = scene.sceneName;
+                    model.memnbers = scene.members;
+                    model.rcIndex = scene.rcIndex;
+                    if ([_originalMembers count]>0) {
+                        __block BOOL exist = NO;
+                        [_originalMembers enumerateObjectsUsingBlock:^(SelectModel  *sMod, NSUInteger idx, BOOL * _Nonnull stop) {
+                            if ([sMod.channel isEqualToNumber:scene.rcIndex]) {
+                                exist = YES;
+                                [_selectedDevices addObject:sMod];
+                                *stop = YES;
+                            }
+                        }];
+                        if (exist) {
+                            model.isSelected = YES;
+                        }else {
+                            model.isSelected = NO;
                         }
-                    }];
-                    if (exist) {
-                        model.isSelected = YES;
                     }else {
                         model.isSelected = NO;
                     }
-                }else {
-                    model.isSelected = NO;
+                    [_devicesCollectionView.dataArray addObject:model];
                 }
-                [_devicesCollectionView.dataArray addObject:model];
             }
         }
         
@@ -965,7 +969,7 @@
                     [self.view addSubview:self.translucentBgView];
                     [self.view addSubview:self.mcChannelSelectedView];
                     [self.mcChannelSelectedView autoCenterInSuperview];
-                    [self.mcChannelSelectedView autoSetDimensionsToSize:CGSizeMake(271, 255)];
+                    [self.mcChannelSelectedView autoSetDimensionsToSize:CGSizeMake(271, 165)];
                     [self removeOtherSeletedDevice:mainCell.deviceId];
                     self.navigationItem.rightBarButtonItem.enabled = NO;
                 }else if ([CSRUtilities belongToSonosMusicController:deviceE.shortName]) {
@@ -1698,7 +1702,7 @@
         titleLabel.textAlignment = NSTextAlignmentCenter;
         [_mcChannelSelectedView addSubview:titleLabel];
         
-        for (int i = 0; i < 4; i ++) {
+        for (int i = 0; i < 2; i ++) {
             for (int j = 0; j < 4; j ++) {
                 UIButton *btn = [[UIButton alloc] init];
                 btn.frame = CGRectMake(j*68, 31+i*45, 67, 44);
@@ -1712,7 +1716,7 @@
             }
         }
         
-        UIButton *cancel = [[UIButton alloc] initWithFrame:CGRectMake(0, 211, 135, 44)];
+        UIButton *cancel = [[UIButton alloc] initWithFrame:CGRectMake(0, 121, 135, 44)];
         cancel.tag = 41;
         [cancel setTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") forState:UIControlStateNormal];
         [cancel setTitleColor:DARKORAGE forState:UIControlStateNormal];
@@ -1721,13 +1725,13 @@
         [cancel addTarget:self action:@selector(channelViewTouchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
         [_mcChannelSelectedView addSubview:cancel];
         
-        UIView *line4 = [[UIView alloc] initWithFrame:CGRectMake(135, 211, 1, 44)];
+        UIView *line4 = [[UIView alloc] initWithFrame:CGRectMake(135, 121, 1, 44)];
         line4.backgroundColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1];
         [_mcChannelSelectedView addSubview:line4];
         
         UIButton *save = [UIButton buttonWithType:UIButtonTypeCustom];
         save.tag = 42;
-        [save setFrame:CGRectMake(136, 211, 135, 44)];
+        [save setFrame:CGRectMake(136, 121, 135, 44)];
         [save setTitle:AcTECLocalizedStringFromTable(@"Save", @"Localizable") forState:UIControlStateNormal];
         [save setTitleColor:DARKORAGE forState:UIControlStateNormal];
         [save addTarget:self action:@selector(mcChannelViewSaveAction:) forControlEvents:UIControlEventTouchUpInside];

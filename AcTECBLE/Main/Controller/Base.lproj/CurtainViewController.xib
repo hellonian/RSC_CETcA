@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -120,6 +121,7 @@
                             </constraints>
                         </view>
                     </subviews>
+                    <viewLayoutGuide key="safeArea" id="jaa-7j-Qr9"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="IIj-bC-sch" secondAttribute="trailing" id="1A9-gT-nqj"/>
@@ -144,7 +146,6 @@
                         <constraint firstItem="WZW-IE-Sh1" firstAttribute="leading" secondItem="PMS-Yf-4B9" secondAttribute="leading" id="nKc-Wy-4nf"/>
                         <constraint firstAttribute="height" constant="90" id="uQN-WR-M60"/>
                     </constraints>
-                    <viewLayoutGuide key="safeArea" id="jaa-7j-Qr9"/>
                 </view>
                 <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="255" minValue="0.0" maxValue="255" translatesAutoresizingMaskIntoConstraints="NO" id="huh-A0-6YH">
                     <rect key="frame" x="73" y="549.5" width="229.5" height="31"/>
@@ -181,7 +182,7 @@
                     </connections>
                 </segmentedControl>
                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cme-Kv-heh">
-                    <rect key="frame" x="127.5" y="607" width="120" height="30"/>
+                    <rect key="frame" x="127" y="607" width="120" height="30"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="4X5-cF-DCN"/>
                         <constraint firstAttribute="width" constant="120" id="gV2-G8-W62"/>
@@ -198,6 +199,7 @@
                     </connections>
                 </button>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.95294117649999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="6uP-lv-0Rm" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="69e-mu-Rcv"/>
@@ -226,7 +228,6 @@
                 <constraint firstItem="huh-A0-6YH" firstAttribute="top" secondItem="irT-NK-eAB" secondAttribute="bottom" constant="30" id="yWx-3m-Lm1"/>
                 <constraint firstItem="PMS-Yf-4B9" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="ylu-s3-vMB"/>
             </constraints>
-            <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <point key="canvasLocation" x="-15.199999999999999" y="62.518740629685162"/>
         </view>
         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Ep-Cs-fWo">
@@ -277,7 +278,7 @@
                         <constraint firstAttribute="height" constant="14" id="qDr-af-w7N"/>
                     </constraints>
                 </imageView>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="olo-bp-0xf">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="olo-bp-0xf">
                     <rect key="frame" x="0.0" y="90" width="375" height="44"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="44" id="Qww-ck-SLi"/>
@@ -287,7 +288,8 @@
                     </connections>
                 </button>
             </subviews>
-            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+            <viewLayoutGuide key="safeArea" id="mKz-12-75J"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="H4y-ho-szH" firstAttribute="centerY" secondItem="dc3-po-pGH" secondAttribute="centerY" id="6Yh-NT-iKH"/>
                 <constraint firstItem="7O5-9N-Cac" firstAttribute="top" secondItem="3Ep-Cs-fWo" secondAttribute="top" constant="30" id="9uC-FY-qTZ"/>
@@ -308,7 +310,6 @@
                 <constraint firstItem="dc3-po-pGH" firstAttribute="leading" secondItem="3Ep-Cs-fWo" secondAttribute="leading" constant="20" id="vcy-kV-zoR"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="mKz-12-75J"/>
             <userDefinedRuntimeAttributes>
                 <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                     <integer key="value" value="10"/>
@@ -324,5 +325,8 @@
         <image name="curtainHClose" width="38" height="38"/>
         <image name="curtainHOpen" width="38" height="38"/>
         <image name="curtainPause" width="38" height="38"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

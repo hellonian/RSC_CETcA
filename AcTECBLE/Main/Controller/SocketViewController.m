@@ -17,6 +17,7 @@
 #import "PureLayout.h"
 #import "DataModelManager.h"
 #import "UpdataMCUTool.h"
+#import "CSRBluetoothLE.h"
 
 @interface SocketViewController ()<UITextFieldDelegate,MBProgressHUDDelegate,UpdataMCUToolDelegate>
 {
@@ -54,6 +55,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *abnormalImageView1;
 @property (weak, nonatomic) IBOutlet UIImageView *abnormalImageView2;
 @property (nonatomic, strong) UIAlertController *mcuAlert;
+@property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 
 @end
 
@@ -147,7 +149,7 @@
                     [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
                     [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
                     [updateMCUBtn setTitleColor:DARKORAGE forState:UIControlStateNormal];
-                    [updateMCUBtn addTarget:self action:@selector(askUpdateMCU) forControlEvents:UIControlEventTouchUpInside];
+                    [updateMCUBtn addTarget:self action:@selector(disconnectForMCUUpdate) forControlEvents:UIControlEventTouchUpInside];
                     [self.view addSubview:updateMCUBtn];
                     [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft];
                     [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeRight];
@@ -158,6 +160,57 @@
                 NSLog(@"%@",error);
             }];
         }
+    }
+}
+
+- (void)disconnectForMCUUpdate {
+    CSRDeviceEntity *curtainEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+    if ([curtainEntity.uuid length] == 36) {
+        [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+        [[UIApplication sharedApplication].keyWindow addSubview:self.indicatorView];
+        [self.indicatorView autoCenterInSuperview];
+        [self.indicatorView startAnimating];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(BridgeConnectedNotification:)
+                                                     name:@"BridgeConnectedNotification"
+                                                   object:nil];
+        [[CSRBluetoothLE sharedInstance] disconnectPeripheralForMCUUpdate:[curtainEntity.uuid substringFromIndex:24]];
+        [self performSelector:@selector(connectForMCUUpdateDelayMethod) withObject:nil afterDelay:10.0];
+    }
+}
+
+- (void)connectForMCUUpdateDelayMethod {
+    _mcuAlert = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"mcu_connetion_alert", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+    [_mcuAlert.view setTintColor:DARKORAGE];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        [[CSRBluetoothLE sharedInstance] cancelMCUUpdate];
+        [self.indicatorView stopAnimating];
+        [self.indicatorView removeFromSuperview];
+        [self.translucentBgView removeFromSuperview];
+        _indicatorView = nil;
+        _translucentBgView = nil;
+    }];
+    UIAlertAction *conti = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"continue", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self performSelector:@selector(connectForMCUUpdateDelayMethod) withObject:nil afterDelay:10.0];
+    }];
+    [_mcuAlert addAction:cancel];
+    [_mcuAlert addAction:conti];
+    [self presentViewController:_mcuAlert animated:YES completion:nil];
+}
+
+- (void)BridgeConnectedNotification:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    CBPeripheral *peripheral = userInfo[@"peripheral"];
+    NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
+    CSRDeviceEntity *curtainEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+    NSString *deviceUuidString = [curtainEntity.uuid substringFromIndex:24];
+    if ([adUuidString isEqualToString:deviceUuidString]) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(connectForMCUUpdateDelayMethod) object:nil];
+        if (_mcuAlert) {
+            [_mcuAlert dismissViewControllerAnimated:YES completion:nil];
+            _mcuAlert = nil;
+        }
+        [self askUpdateMCU];
     }
 }
 
@@ -184,7 +237,9 @@
     if (!_updatingHud) {
         [timer invalidate];
         timer = nil;
-        [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+        [self.indicatorView stopAnimating];
+        [self.indicatorView removeFromSuperview];
+        _indicatorView = nil;
         _updatingHud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
         _updatingHud.mode = MBProgressHUDModeAnnularDeterminate;
         _updatingHud.delegate = self;
@@ -213,6 +268,8 @@
         }else {
             [_mcuAlert setMessage:value];
         }
+        [[CSRBluetoothLE sharedInstance] successMCUUpdate];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"BridgeConnectedNotification" object:nil];
     }
 }
 
@@ -616,6 +673,15 @@
     if (channel) {
         [[DataModelApi sharedInstance] sendData:_deviceId data:[CSRUtilities dataForHexString:[NSString stringWithFormat:@"ea47%@0%d%@",channel,enable,[CSRUtilities stringWithHexNumber:[Pvalue integerValue]]]] success:nil failure:nil];
     }
+}
+
+- (UIActivityIndicatorView *)indicatorView {
+    if (!_indicatorView) {
+        _indicatorView = [[UIActivityIndicatorView alloc] init];
+        _indicatorView.hidesWhenStopped = YES;
+        _indicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+    }
+    return _indicatorView;
 }
 
 @end

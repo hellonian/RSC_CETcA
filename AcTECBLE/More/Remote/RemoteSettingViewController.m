@@ -21,6 +21,7 @@
 #import "DeviceModelManager.h"
 #import "AFHTTPSessionManager.h"
 #import "UpdataMCUTool.h"
+#import "CSRBluetoothLE.h"
 
 #import "SelectModel.h"
 
@@ -127,6 +128,7 @@
 
 @property (nonatomic,strong) NSMutableArray *settingSelectMutArray;
 @property (nonatomic, strong) UIAlertController *mcuAlert;
+@property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 
 @end
 
@@ -253,7 +255,11 @@
             }
         }
         
-    }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]||[_remoteEntity.shortName isEqualToString:@"1BMBH"]) {
+    }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]
+              ||[_remoteEntity.shortName isEqualToString:@"RB06"]
+              ||[_remoteEntity.shortName isEqualToString:@"RSBH"]
+              ||[_remoteEntity.shortName isEqualToString:@"1BMBH"]
+              ||[_remoteEntity.shortName isEqualToString:@"RB08"]) {
         if ([self.remoteEntity.shortName isEqualToString:@"RB02"]) {
             _practicalityImageView.image = [UIImage imageNamed:@"rb02"];
         }else {
@@ -609,7 +615,13 @@
               || [self.remoteEntity.shortName isEqualToString:@"H3CSB"]
               || [self.remoteEntity.shortName isEqualToString:@"H4CSB"]
               || [self.remoteEntity.shortName isEqualToString:@"H6CSB"]
-              || [self.remoteEntity.shortName isEqualToString:@"KT6RS"]) {
+              || [self.remoteEntity.shortName isEqualToString:@"KT6RS"]
+              || [self.remoteEntity.shortName isEqualToString:@"H1RSMB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H2RSMB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H3RSMB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H4RSMB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H5RSMB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H6RSMB"]) {
         _practicalityImageView.image = [UIImage imageNamed:@"bajiao"];
         keyCount = 6;
         UIButton *btn = [[UIButton alloc] initWithFrame:CGRectZero];
@@ -706,7 +718,7 @@
                 [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
                 [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
                 [updateMCUBtn setTitleColor:DARKORAGE forState:UIControlStateNormal];
-                [updateMCUBtn addTarget:self action:@selector(askUpdateMCU) forControlEvents:UIControlEventTouchUpInside];
+                [updateMCUBtn addTarget:self action:@selector(disconnectForMCUUpdate) forControlEvents:UIControlEventTouchUpInside];
                 [_customContentView addSubview:updateMCUBtn];
                 [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft];
                 [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeRight];
@@ -719,6 +731,56 @@
     }
     
 }
+
+- (void)disconnectForMCUUpdate {
+    if ([_remoteEntity.uuid length] == 36) {
+        [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+        [[UIApplication sharedApplication].keyWindow addSubview:self.indicatorView];
+        [self.indicatorView autoCenterInSuperview];
+        [self.indicatorView startAnimating];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(BridgeConnectedNotification:)
+                                                     name:@"BridgeConnectedNotification"
+                                                   object:nil];
+        [[CSRBluetoothLE sharedInstance] disconnectPeripheralForMCUUpdate:[_remoteEntity.uuid substringFromIndex:24]];
+        [self performSelector:@selector(connectForMCUUpdateDelayMethod) withObject:nil afterDelay:10.0];
+    }
+}
+
+- (void)connectForMCUUpdateDelayMethod {
+    _mcuAlert = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"mcu_connetion_alert", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+    [_mcuAlert.view setTintColor:DARKORAGE];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        [[CSRBluetoothLE sharedInstance] cancelMCUUpdate];
+        [self.indicatorView stopAnimating];
+        [self.indicatorView removeFromSuperview];
+        [self.translucentBgView removeFromSuperview];
+        _indicatorView = nil;
+        _translucentBgView = nil;
+    }];
+    UIAlertAction *conti = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"continue", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self performSelector:@selector(connectForMCUUpdateDelayMethod) withObject:nil afterDelay:10.0];
+    }];
+    [_mcuAlert addAction:cancel];
+    [_mcuAlert addAction:conti];
+    [self presentViewController:_mcuAlert animated:YES completion:nil];
+}
+
+- (void)BridgeConnectedNotification:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    CBPeripheral *peripheral = userInfo[@"peripheral"];
+    NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
+    NSString *deviceUuidString = [_remoteEntity.uuid substringFromIndex:24];
+    if ([adUuidString isEqualToString:deviceUuidString]) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(connectForMCUUpdateDelayMethod) object:nil];
+        if (_mcuAlert) {
+            [_mcuAlert dismissViewControllerAnimated:YES completion:nil];
+            _mcuAlert = nil;
+        }
+        [self askUpdateMCU];
+    }
+}
+
 - (void)askUpdateMCU {
     [UpdataMCUTool sharedInstace].toolDelegate = self;
     [[UpdataMCUTool sharedInstace] askUpdateMCU:_remoteEntity.deviceId downloadAddress:downloadAddress latestMCUSVersion:latestMCUSVersion];
@@ -726,7 +788,8 @@
 
 - (void)starteUpdateHud {
     if (!_updatingHud) {
-        [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+        [self.indicatorView stopAnimating];
+        [self.indicatorView removeFromSuperview];
         _updatingHud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
         _updatingHud.mode = MBProgressHUDModeAnnularDeterminate;
         _updatingHud.delegate = self;
@@ -755,7 +818,18 @@
         }else {
             [_mcuAlert setMessage:value];
         }
+        [[CSRBluetoothLE sharedInstance] successMCUUpdate];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"BridgeConnectedNotification" object:nil];
     }
+}
+
+- (UIActivityIndicatorView *)indicatorView {
+    if (!_indicatorView) {
+        _indicatorView = [[UIActivityIndicatorView alloc] init];
+        _indicatorView.hidesWhenStopped = YES;
+        _indicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+    }
+    return _indicatorView;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -826,7 +900,11 @@
             }else {
                 _contentViewHeight.constant = safeHeight;
             }
-        }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]||[self.remoteEntity.shortName isEqualToString:@"RB06"]||[self.remoteEntity.shortName isEqualToString:@"RSBH"]||[self.remoteEntity.shortName isEqualToString:@"1BMBH"]) {
+        }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]
+                  ||[self.remoteEntity.shortName isEqualToString:@"RB06"]
+                  ||[self.remoteEntity.shortName isEqualToString:@"RSBH"]
+                  ||[self.remoteEntity.shortName isEqualToString:@"1BMBH"]
+                  ||[self.remoteEntity.shortName isEqualToString:@"RB08"]) {
             if (safeHeight <= 371.5) {
                 _contentViewHeight.constant = 371.5;
             }else {
@@ -864,7 +942,13 @@
                   || [self.remoteEntity.shortName isEqualToString:@"H3CSB"]
                   || [self.remoteEntity.shortName isEqualToString:@"H4CSB"]
                   || [self.remoteEntity.shortName isEqualToString:@"H6CSB"]
-                  || [self.remoteEntity.shortName isEqualToString:@"KT6RS"]) {
+                  || [self.remoteEntity.shortName isEqualToString:@"KT6RS"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H1RSMB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H2RSMB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H3RSMB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H4RSMB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H5RSMB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H6RSMB"]) {
             if (safeHeight <= 580) {
                 _contentViewHeight.constant = 580;
             }else {
@@ -1380,7 +1464,13 @@
               || [self.remoteEntity.shortName isEqualToString:@"H3CSB"]
               || [self.remoteEntity.shortName isEqualToString:@"H4CSB"]
               || [self.remoteEntity.shortName isEqualToString:@"H6CSB"]
-              || [self.remoteEntity.shortName isEqualToString:@"KT6RS"]) {
+              || [self.remoteEntity.shortName isEqualToString:@"KT6RS"]
+              || [self.remoteEntity.shortName isEqualToString:@"H1RSMB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H2RSMB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H3RSMB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H4RSMB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H5RSMB"]
+              || [self.remoteEntity.shortName isEqualToString:@"H6RSMB"]) {
         NSString *cmd = @"9b1f06";
         for (SelectModel *mod in _settingSelectMutArray) {
             NSString *sw = [CSRUtilities stringWithHexNumber:[mod.sourceID integerValue]];
@@ -1576,7 +1666,10 @@
                     }
                     
                 });
-            }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]||[_remoteEntity.shortName isEqualToString:@"1BMBH"]) {
+            }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]
+                      ||[_remoteEntity.shortName isEqualToString:@"RB06"]
+                      ||[_remoteEntity.shortName isEqualToString:@"RSBH"]
+                      ||[_remoteEntity.shortName isEqualToString:@"1BMBH"]) {
                 NSString *cmdStr;
                 SelectModel *mod = [_settingSelectMutArray objectAtIndex:0];
                 NSString *rc = [CSRUtilities exchangePositionOfDeviceId:[mod.channel integerValue]];
@@ -1737,7 +1830,12 @@
                         }];
                     });
                 }];
-            }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"S10IB-H2"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]||[_remoteEntity.shortName isEqualToString:@"1BMBH"]) {
+            }else if ([_remoteEntity.shortName isEqualToString:@"RB02"]
+                      ||[_remoteEntity.shortName isEqualToString:@"S10IB-H2"]
+                      ||[_remoteEntity.shortName isEqualToString:@"RB06"]
+                      ||[_remoteEntity.shortName isEqualToString:@"RSBH"]
+                      ||[_remoteEntity.shortName isEqualToString:@"1BMBH"]
+                      ||[_remoteEntity.shortName isEqualToString:@"RB08"]) {
                 
                 NSString *cmd = @"9b0601";
                 for (SelectModel *mod in _settingSelectMutArray) {
@@ -1876,7 +1974,8 @@
         || [_remoteEntity.shortName isEqualToString:@"R9BSBH"]
         || [_remoteEntity.shortName isEqualToString:@"R5BSBH"]
         || [_remoteEntity.shortName isEqualToString:@"5BCBH"]
-        || [_remoteEntity.shortName isEqualToString:@"RB05"]) {
+        || [_remoteEntity.shortName isEqualToString:@"RB05"]
+        ||[_remoteEntity.shortName isEqualToString:@"RB08"]) {
         _hub.label.text = AcTECLocalizedStringFromTable(@"RemoteOpenAlert", @"Localizable");
     }
     timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerOutWaiting) userInfo:nil repeats:YES];
@@ -2264,7 +2363,8 @@
         || [_remoteEntity.shortName isEqualToString:@"R9BSBH"]
         || [_remoteEntity.shortName isEqualToString:@"R5BSBH"]
         || [_remoteEntity.shortName isEqualToString:@"5BCBH"]
-        || [_remoteEntity.shortName isEqualToString:@"RB05"]) {
+        || [_remoteEntity.shortName isEqualToString:@"RB05"]
+        ||[_remoteEntity.shortName isEqualToString:@"RB08"]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"remotereadalert", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
         [alert.view setTintColor:DARKORAGE];
         UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
@@ -2332,7 +2432,11 @@
                     }
                 }
             }
-        }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]||[_remoteEntity.shortName isEqualToString:@"RB06"]||[_remoteEntity.shortName isEqualToString:@"RSBH"]||[_remoteEntity.shortName isEqualToString:@"1BMBH"]) {
+        }else if ([self.remoteEntity.shortName isEqualToString:@"RB02"]
+                  ||[_remoteEntity.shortName isEqualToString:@"RB06"]
+                  ||[_remoteEntity.shortName isEqualToString:@"RSBH"]
+                  ||[_remoteEntity.shortName isEqualToString:@"1BMBH"]
+                  ||[_remoteEntity.shortName isEqualToString:@"RB08"]) {
             SelectModel *mod = [[SelectModel alloc] init];
             mod.sourceID = @(1);
             mod.channel = @(0);
@@ -2569,7 +2673,13 @@
                   || [self.remoteEntity.shortName isEqualToString:@"H3CSB"]
                   || [self.remoteEntity.shortName isEqualToString:@"H4CSB"]
                   || [self.remoteEntity.shortName isEqualToString:@"H6CSB"]
-                  || [self.remoteEntity.shortName isEqualToString:@"KT6RS"]) {
+                  || [self.remoteEntity.shortName isEqualToString:@"KT6RS"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H1RSMB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H2RSMB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H3RSMB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H4RSMB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H5RSMB"]
+                  || [self.remoteEntity.shortName isEqualToString:@"H6RSMB"]) {
             for (int i=0; i<6; i++) {
                 SelectModel *mod = [[SelectModel alloc] init];
                 mod.sourceID = @(i+1);

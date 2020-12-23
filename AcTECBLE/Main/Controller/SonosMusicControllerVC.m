@@ -25,6 +25,8 @@
     NSInteger latestMCUSVersion;
     NSString *downloadAddress;
     UIButton *updateMCUBtn;
+    
+    NSInteger refreshWaiting;
 }
 @property (nonatomic, strong) UIButton *titleBtn;
 @property (nonatomic, copy) NSString *originalName;
@@ -38,6 +40,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *netWorkSettingBtn;
 @property (nonatomic,strong) UIView *translucentBgView;
 @property (nonatomic,strong) UIActivityIndicatorView *indicatorView;
+@property (nonatomic, assign) NSInteger sendCount;
+@property (nonatomic, strong) UIAlertController *afterAlert;
 
 @end
 
@@ -186,39 +190,59 @@
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
         CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
         if (model) {
-            if (model.mcExistChannels != 0) {
-                _noneView.hidden = YES;
-                _listView.hidden = NO;
-                
-                NSString *hex = [CSRUtilities stringWithHexNumber:model.mcExistChannels];
-                NSString *bin = [CSRUtilities getBinaryByhex:hex];
-                for (int i = 0; i < [bin length]; i ++) {
-                    NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
-                    
-                    if ([bit boolValue]) {
-                        if ([device.sonoss count] > 0) {
-                            BOOL exist = NO;
-                            for (SonosEntity *so in device.sonoss) {
-                                if ([so.channel isEqualToNumber:@(i)]) {
-                                    exist = YES;
-                                    break;
-                                }
+            if (refreshWaiting == 1) {
+                for (int i=0; i<8; i++) {
+                    if (model.mcLiveChannels & (1 << i)) {
+                        for (SonosEntity *so in device.sonoss) {
+                            if ([so.channel isEqualToNumber:@(i)]) {
+                                so.alive = @(1);
+                                break;
                             }
-                            if (!exist) {
-                                [self.infoQueue addObject:@(i)];
-                            }
-                        }else {
-                            [self.infoQueue addObject:@(i)];
                         }
                     }
                 }
-                [self nextOperation];
+                _listDataAry = [[device.sonoss allObjects] mutableCopy];
+                NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"channel" ascending:YES];
+                [_listDataAry sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+                [_listView reloadData];
+                refreshWaiting = 0;
+            }else if (refreshWaiting == 2) {
+                [self.socketTool connentHost:device.ipAddress prot:8888];
+                refreshWaiting = 0;
             }else {
-                _noneView.hidden = NO;
-                _listView.hidden = YES;
+                if (model.mcExistChannels != 0) {
+                    _noneView.hidden = YES;
+                    _listView.hidden = NO;
+                    
+                    NSString *hex = [CSRUtilities stringWithHexNumber:model.mcExistChannels];
+                    NSString *bin = [CSRUtilities getBinaryByhex:hex];
+                    for (int i = 0; i < [bin length]; i ++) {
+                        NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
+                        
+                        if ([bit boolValue]) {
+                            if ([device.sonoss count] > 0) {
+                                BOOL exist = NO;
+                                for (SonosEntity *so in device.sonoss) {
+                                    if ([so.channel isEqualToNumber:@(i)]) {
+                                        exist = YES;
+                                        break;
+                                    }
+                                }
+                                if (!exist) {
+                                    [self.infoQueue addObject:@(i)];
+                                }
+                            }else {
+                                [self.infoQueue addObject:@(i)];
+                            }
+                        }
+                    }
+                    [self nextOperation];
+                }else {
+                    _noneView.hidden = NO;
+                    _listView.hidden = YES;
+                }
             }
         }
-        
     }
 }
 
@@ -275,6 +299,11 @@
     }
     SonosEntity *s = [_listDataAry objectAtIndex:indexPath.row];
     cell.textLabel.text = s.name;
+    if ([s.alive boolValue]) {
+        cell.textLabel.textColor = ColorWithAlpha(77, 77, 77, 1);
+    }else {
+        cell.textLabel.textColor = ColorWithAlpha(210, 210, 210, 1);
+    }
     switch ([s.modelNumber integerValue]) {
         case 120:
             cell.detailTextLabel.text = @"Connect:Amp";
@@ -350,6 +379,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
     SonosEntity *s = [_listDataAry objectAtIndex:indexPath.row];
     MusicControllerVC *mvc = [[MusicControllerVC alloc] init];
     mvc.deviceId = _deviceId;
@@ -381,14 +411,16 @@
 }
 
 - (void)refreshInfo {
-    [_listDataAry removeAllObjects];
-    [_listView reloadData];
-    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-    deviceEntity.mcSonosInfoVersion = @(-1);
-    [[CSRDatabaseManager sharedInstance] saveContext];
-    Byte byte[] = {0xea, 0x87};
-    NSData *cmd = [[NSData alloc] initWithBytes:byte length:2];
-    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+//    [_listDataAry removeAllObjects];
+//    [_listView reloadData];
+//    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+//    deviceEntity.mcSonosInfoVersion = @(-1);
+//    [[CSRDatabaseManager sharedInstance] saveContext];
+//    Byte byte[] = {0xea, 0x87};
+//    NSData *cmd = [[NSData alloc] initWithBytes:byte length:2];
+//    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+    refreshWaiting = 1;
+    [self refreshMCChannelsByBluetooth];
 }
 
 - (void)refreshAllInfo:(NSNotification *)notification {
@@ -409,9 +441,13 @@
             model.mcExistChannels = 0;
         }
         
-        Byte byte[] = {0xea, 0x77, 0x07};
-        NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
-        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+        if ([self.socketTool.tcpSocketManager isConnected]) {
+            [self.socketTool getDeviceList];
+        }else {
+            Byte byte[] = {0xea, 0x77, 0x07};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+        }
     }
 }
 
@@ -421,14 +457,17 @@
     NSInteger type = [userInfo[@"type"] integerValue];
     if ([deviceId isEqualToNumber:_deviceId]) {
         if (type == 1) {
-            NSString *status = userInfo[@"staus"];
-            [self.socketTool connentHost:status prot:8888];
+            refreshWaiting = 2;
+            [self refreshMCChannelsByBluetooth];
+//            NSString *status = userInfo[@"staus"];
+//            [self.socketTool connentHost:status prot:8888];
         }else if (type == 7) {
             BOOL status = [userInfo[@"staus"] boolValue];
             if (!status) {
                 if (updateMCUBtn) {
                     updateMCUBtn.enabled = NO;
                 }
+                refreshWaiting = 0;
                 [self refreshMCChannelsByBluetooth];
             }
         }
@@ -447,6 +486,7 @@
 - (void)saveSonosInfo:(NSNumber *)deviceID {
     if ([deviceID isEqualToNumber:_deviceId]) {
         _noneView.hidden = YES;
+        _listView.hidden = NO;
         CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
         _listDataAry = [[device.sonoss allObjects] mutableCopy];
         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"channel" ascending:YES];
@@ -474,6 +514,7 @@
 }
 
 - (void)askUpdateMCU {
+    [self performSelector:@selector(askUpdateMCUDelay) withObject:nil afterDelay:40.0];
     [self showLoading];
     NSDictionary *dic = @{@"type":@1,@"version":@(latestMCUSVersion),@"url":downloadAddress};
     NSString *jsString = [CSRUtilities convertToJsonData2:dic];
@@ -482,14 +523,96 @@
 }
 
 - (void)updateMCUResult:(BOOL)result {
-    [self hideLoading];
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:result? AcTECLocalizedStringFromTable(@"Success", @"Localizable"):AcTECLocalizedStringFromTable(@"fail", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
-    [alert.view setTintColor:DARKORAGE];
-    UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    if (result) {
+        [updateMCUBtn removeFromSuperview];
+        updateMCUBtn = nil;
         
-    }];
-    [alert addAction:yes];
-    [self presentViewController:alert animated:YES completion:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedMCUVersionData:) name:@"receivedMCUVersionData" object:nil];
+        
+        _sendCount = 0;
+        [self performSelector:@selector(readVersionTimeOutMethod) withObject:nil afterDelay:3.0];
+        Byte byte[] = {0xea, 0x35};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:2];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+    }else {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(askUpdateMCUDelay) object:nil];
+        [self hideLoading];
+        if (!_afterAlert) {
+            _afterAlert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"fail", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+            [_afterAlert.view setTintColor:DARKORAGE];
+            UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                
+            }];
+            [_afterAlert addAction:yes];
+            [self presentViewController:_afterAlert animated:YES completion:nil];
+        }else {
+            [_afterAlert setMessage:AcTECLocalizedStringFromTable(@"fail", @"Localizable")];
+        }
+    }
+}
+
+- (void)readVersionTimeOutMethod {
+    if (_sendCount < 3) {
+        _sendCount ++;
+        [self performSelector:@selector(readVersionTimeOutMethod) withObject:nil afterDelay:3.0];
+        Byte byte[] = {0xea, 0x35};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:2];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+    }else {
+        //读取版本超时
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(askUpdateMCUDelay) object:nil];
+        [self hideLoading];
+        if (!_afterAlert) {
+            _afterAlert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"mcu_read_version_fail", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+            [_afterAlert.view setTintColor:DARKORAGE];
+            UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                
+            }];
+            [_afterAlert addAction:yes];
+            [self presentViewController:_afterAlert animated:YES completion:nil];
+        }else {
+            [_afterAlert setMessage:AcTECLocalizedStringFromTable(@"mcu_read_version_fail", @"Localizable")];
+        }
+    }
+}
+
+- (void)receivedMCUVersionData:(NSNotification *)notification {
+    NSDictionary *dic = notification.userInfo;
+    NSNumber *sourceDeviceId = dic[@"deviceId"];
+    BOOL higher = [dic[@"higher"] boolValue];
+    if ([sourceDeviceId isEqualToNumber:_deviceId]) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(readVersionTimeOutMethod) object:nil];
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(askUpdateMCUDelay) object:nil];
+        [self hideLoading];
+        if (higher) {
+            //版本更新
+            if (!_afterAlert) {
+                _afterAlert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"mcu_update_success", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+                [_afterAlert.view setTintColor:DARKORAGE];
+                UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                    [self hideLoading];
+                }];
+                [_afterAlert addAction:yes];
+                [self presentViewController:_afterAlert animated:YES completion:nil];
+            }else {
+                [_afterAlert setMessage:AcTECLocalizedStringFromTable(@"mcu_update_success", @"Localizable")];
+            }
+        }else {
+            //版本一样或更旧
+            if (!_afterAlert) {
+                _afterAlert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"mcu_version_less", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+                [_afterAlert.view setTintColor:DARKORAGE];
+                UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                    [self hideLoading];
+                }];
+                [_afterAlert addAction:yes];
+                [self presentViewController:_afterAlert animated:YES completion:nil];
+            }else {
+                [_afterAlert setMessage:AcTECLocalizedStringFromTable(@"mcu_version_less", @"Localizable")];
+            }
+        }
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"receivedMCUVersionData" object:nil];
+    }
 }
 
 - (UIView *)translucentBgView {
@@ -511,8 +634,8 @@
 }
 
 - (void)showLoading {
-    [self.view addSubview:self.translucentBgView];
-    [self.view addSubview:self.indicatorView];
+    [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+    [[UIApplication sharedApplication].keyWindow addSubview:self.indicatorView];
     [self.indicatorView autoCenterInSuperview];
     [self.indicatorView startAnimating];
 }
@@ -523,6 +646,21 @@
     [self.translucentBgView removeFromSuperview];
     self.indicatorView = nil;
     self.translucentBgView = nil;
+}
+
+- (void)askUpdateMCUDelay {
+    [self hideLoading];
+    if (!_afterAlert) {
+        _afterAlert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"mcu_update_timeout", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+        [_afterAlert.view setTintColor:DARKORAGE];
+        UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        [_afterAlert addAction:yes];
+        [self presentViewController:_afterAlert animated:YES completion:nil];
+    }else {
+        [_afterAlert setMessage:AcTECLocalizedStringFromTable(@"mcu_update_timeout", @"Localizable")];
+    }
 }
 
 @end

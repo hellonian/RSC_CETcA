@@ -35,6 +35,7 @@
                 <outlet property="daliSceneLab" destination="aRi-58-uKR" id="yEQ-Nk-SQP"/>
                 <outlet property="daliSceneSelectBtn" destination="TxB-ch-pdB" id="MkI-3x-asi"/>
                 <outlet property="dalinView" destination="Ucl-OD-InQ" id="oaX-2N-dZC"/>
+                <outlet property="dalispowerBtn" destination="tg3-cS-Uk9" id="4Yg-Cz-ypd"/>
                 <outlet property="dropDownImageView" destination="THZ-yy-Ft5" id="xcs-VO-zxm"/>
                 <outlet property="ganjiedianCustomView" destination="fP3-U5-xuL" id="rmM-Dj-PFA"/>
                 <outlet property="ganjiedianRowView" destination="sAd-Ek-V0c" id="uEx-De-lic"/>
@@ -132,6 +133,20 @@
                         <constraint firstAttribute="height" constant="20" id="LRP-2f-whv"/>
                     </constraints>
                 </view>
+                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tg3-cS-Uk9">
+                    <rect key="frame" x="0.0" y="109" width="392" height="40"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <state key="normal" title="ON/OFF">
+                        <color key="titleColor" red="0.30196078431372547" green="0.30196078431372547" blue="0.30196078431372547" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <state key="highlighted">
+                        <color key="titleColor" red="0.91764705879999997" green="0.36862745099999999" blue="0.070588235289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </state>
+                    <connections>
+                        <action selector="dalitwoPowerAction:" destination="-1" eventType="touchUpInside" id="Xdb-Ph-klg"/>
+                    </connections>
+                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="ZQP-ff-JEG"/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -145,7 +160,9 @@
                 <constraint firstAttribute="trailing" secondItem="4m7-Pn-lZ6" secondAttribute="trailing" id="Ji8-7g-A85"/>
                 <constraint firstItem="g45-W0-rBI" firstAttribute="leading" secondItem="jqF-CI-kaG" secondAttribute="leading" constant="20" id="OUl-YJ-YuZ"/>
                 <constraint firstItem="PKw-Xf-A9J" firstAttribute="top" secondItem="4m7-Pn-lZ6" secondAttribute="bottom" constant="12" id="RXI-fV-AJy"/>
+                <constraint firstItem="ZQP-ff-JEG" firstAttribute="bottom" secondItem="tg3-cS-Uk9" secondAttribute="bottom" id="UDH-fy-Umk"/>
                 <constraint firstItem="Whw-sT-xn2" firstAttribute="top" secondItem="j3Q-k4-krO" secondAttribute="bottom" constant="12" id="YMg-fb-aGl"/>
+                <constraint firstItem="tg3-cS-Uk9" firstAttribute="top" secondItem="j3Q-k4-krO" secondAttribute="bottom" id="bDF-eS-m2B"/>
                 <constraint firstItem="8OA-6x-p45" firstAttribute="top" secondItem="g45-W0-rBI" secondAttribute="top" id="bmP-bo-Qq6"/>
                 <constraint firstItem="j3Q-k4-krO" firstAttribute="leading" secondItem="jqF-CI-kaG" secondAttribute="leading" id="egN-JK-6Bz"/>
                 <constraint firstItem="4m7-Pn-lZ6" firstAttribute="leading" secondItem="jqF-CI-kaG" secondAttribute="leading" constant="20" id="g0M-XA-dzb"/>
@@ -156,8 +173,10 @@
                 <constraint firstItem="PKw-Xf-A9J" firstAttribute="leading" secondItem="jqF-CI-kaG" secondAttribute="leading" constant="20" id="puA-Ne-Ylo"/>
                 <constraint firstItem="8OA-6x-p45" firstAttribute="leading" secondItem="g45-W0-rBI" secondAttribute="trailing" id="sJ7-UT-lnT"/>
                 <constraint firstAttribute="trailing" secondItem="j3Q-k4-krO" secondAttribute="trailing" id="sr8-Wg-XPY"/>
+                <constraint firstItem="tg3-cS-Uk9" firstAttribute="trailing" secondItem="ZQP-ff-JEG" secondAttribute="trailing" id="vUk-p2-T0Z"/>
                 <constraint firstItem="j3Q-k4-krO" firstAttribute="top" secondItem="PKw-Xf-A9J" secondAttribute="bottom" constant="12" id="viC-Uw-U39"/>
                 <constraint firstItem="4m7-Pn-lZ6" firstAttribute="top" secondItem="jqF-CI-kaG" secondAttribute="top" constant="44" id="wDn-yt-wSZ"/>
+                <constraint firstItem="tg3-cS-Uk9" firstAttribute="leading" secondItem="ZQP-ff-JEG" secondAttribute="leading" id="wyT-oJ-3VU"/>
                 <constraint firstAttribute="trailing" secondItem="AK8-j8-AgG" secondAttribute="trailing" constant="20" id="xOG-O2-aSF"/>
                 <constraint firstItem="AK8-j8-AgG" firstAttribute="leading" secondItem="PKw-Xf-A9J" secondAttribute="trailing" id="yzE-wv-JQw"/>
                 <constraint firstItem="Whw-sT-xn2" firstAttribute="leading" secondItem="jqF-CI-kaG" secondAttribute="leading" constant="20" id="z12-9N-ce1"/>

@@ -18,6 +18,7 @@
 #import "AFHTTPSessionManager.h"
 #import <MBProgressHUD.h>
 #import "UpdataMCUTool.h"
+#import "CSRBluetoothLE.h"
 
 #define pi 3.14159265358979323846
 
@@ -108,6 +109,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
 
 @property (nonatomic,strong) MBProgressHUD *updatingHud;
 @property (nonatomic, strong) UIAlertController *mcuAlert;
+@property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 
 @end
 
@@ -558,7 +560,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                     [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
                     [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
                     [updateMCUBtn setTitleColor:DARKORAGE forState:UIControlStateNormal];
-                    [updateMCUBtn addTarget:self action:@selector(askUpdateMCU) forControlEvents:UIControlEventTouchUpInside];
+                    [updateMCUBtn addTarget:self action:@selector(disconnectForMCUUpdate) forControlEvents:UIControlEventTouchUpInside];
                     [self.view addSubview:updateMCUBtn];
                     [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft];
                     [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeRight];
@@ -733,7 +735,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             svc.srDeviceId = _deviceId;
             CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
             if (deviceEntity.remoteBranch > 0) {
-                NSLog(@"%@", deviceEntity.remoteBranch);
                 svc.sceneIndex = @([self exchangePositionOfDeviceIdString:[deviceEntity.remoteBranch substringWithRange:NSMakeRange((sender.tag-1)*6+2, 4)]]);
             }else {
                 svc.sceneIndex = @0;
@@ -1329,6 +1330,57 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
     }
 }
 
+- (void)disconnectForMCUUpdate {
+    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+    if ([deviceEntity.uuid length] == 36) {
+        [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+        [[UIApplication sharedApplication].keyWindow addSubview:self.indicatorView];
+        [self.indicatorView autoCenterInSuperview];
+        [self.indicatorView startAnimating];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(BridgeConnectedNotification:)
+                                                     name:@"BridgeConnectedNotification"
+                                                   object:nil];
+        [[CSRBluetoothLE sharedInstance] disconnectPeripheralForMCUUpdate:[deviceEntity.uuid substringFromIndex:24]];
+        [self performSelector:@selector(connectForMCUUpdateDelayMethod) withObject:nil afterDelay:10.0];
+    }
+}
+
+- (void)connectForMCUUpdateDelayMethod {
+    _mcuAlert = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"mcu_connetion_alert", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+    [_mcuAlert.view setTintColor:DARKORAGE];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        [[CSRBluetoothLE sharedInstance] cancelMCUUpdate];
+        [self.indicatorView stopAnimating];
+        [self.indicatorView removeFromSuperview];
+        [self.translucentBgView removeFromSuperview];
+        _indicatorView = nil;
+        _translucentBgView = nil;
+    }];
+    UIAlertAction *conti = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"continue", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self performSelector:@selector(connectForMCUUpdateDelayMethod) withObject:nil afterDelay:10.0];
+    }];
+    [_mcuAlert addAction:cancel];
+    [_mcuAlert addAction:conti];
+    [self presentViewController:_mcuAlert animated:YES completion:nil];
+}
+
+- (void)BridgeConnectedNotification:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    CBPeripheral *peripheral = userInfo[@"peripheral"];
+    NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
+    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+    NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
+    if ([adUuidString isEqualToString:deviceUuidString]) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(connectForMCUUpdateDelayMethod) object:nil];
+        if (_mcuAlert) {
+            [_mcuAlert dismissViewControllerAnimated:YES completion:nil];
+            _mcuAlert = nil;
+        }
+        [self askUpdateMCU];
+    }
+}
+
 - (void)askUpdateMCU {
     [UpdataMCUTool sharedInstace].toolDelegate = self;
     [[UpdataMCUTool sharedInstace] askUpdateMCU:_deviceId downloadAddress:downloadAddress latestMCUSVersion:latestMCUSVersion];
@@ -1338,7 +1390,9 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
     if (!_updatingHud) {
         [timer invalidate];
         timer = nil;
-        [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+        [self.indicatorView stopAnimating];
+        [self.indicatorView removeFromSuperview];
+        _indicatorView = nil;
         _updatingHud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
         _updatingHud.mode = MBProgressHUDModeAnnularDeterminate;
         _updatingHud.delegate = self;
@@ -1367,6 +1421,8 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         }else {
             [_mcuAlert setMessage:value];
         }
+        [[CSRBluetoothLE sharedInstance] successMCUUpdate];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"BridgeConnectedNotification" object:nil];
     }
 }
 
@@ -1424,6 +1480,15 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             
             [self presentViewController:alert animated:YES completion:nil];
     }
+}
+
+- (UIActivityIndicatorView *)indicatorView {
+    if (!_indicatorView) {
+        _indicatorView = [[UIActivityIndicatorView alloc] init];
+        _indicatorView.hidesWhenStopped = YES;
+        _indicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+    }
+    return _indicatorView;
 }
 
 @end

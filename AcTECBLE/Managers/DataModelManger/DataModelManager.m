@@ -326,21 +326,36 @@ static DataModelManager *manager = nil;
     }
     
     else if ([dataStr hasPrefix:@"7a"] && dataStr.length >= 14) {
-        NSInteger seq = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(12, 2)]];
-        NSNumber *channel = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(10, 2)]] + 1);
-        if (seq) {
-            seq = [channel integerValue]*100+seq;
-        }
+//        NSInteger seq = [CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(12, 2)]];
+//        NSNumber *channel = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(10, 2)]] + 1);
+//        if (seq) {
+//            seq = [channel integerValue]*100+seq;
+//        }
+//        DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sourceDeviceId];
+//        if (seq && (seq - model.primordial) < 0 && (seq - model.primordial) >-10) {
+//            return;
+//        }
+//        model.primordial = seq;
+//
+//        NSNumber *state = @([[dataStr substringWithRange:NSMakeRange(6, 2)] boolValue]);
+//        NSNumber *level = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(8, 2)]]);
+//
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"multichannelActionCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"channel":channel,@"level":level,@"state":state}];
+        
+        Byte *bytes = (Byte *)[data bytes];
+        NSInteger channel = bytes[5];
+        NSInteger seq = bytes[6] + bytes[5] * 100;
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sourceDeviceId];
-        if (seq && (seq - model.primordial) < 0 && (seq - model.primordial) >-10) {
+        if (bytes[6] != 0 && (seq - model.primordial) < 0 && (seq - model.primordial) > -10) {
             return;
         }
         model.primordial = seq;
+        NSInteger state = bytes[3];
+        NSInteger level = bytes[4];
+        NSInteger direction = bytes[2];
+        NSInteger total = bytes[7] + bytes[8] * 256;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"multichannelActionCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"channel":@(channel+1),@"level":@(level),@"state":@(state),@"CURTAINDIRECTION":@(direction),@"CURTAINRANGE":@(total)}];
         
-        NSNumber *state = @([[dataStr substringWithRange:NSMakeRange(6, 2)] boolValue]);
-        NSNumber *level = @([CSRUtilities numberWithHexString:[dataStr substringWithRange:NSMakeRange(8, 2)]]);
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"multichannelActionCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"channel":channel,@"level":level,@"state":state}];
     }
     
     else if ([dataStr hasPrefix:@"9d"] ) {
@@ -727,7 +742,12 @@ static DataModelManager *manager = nil;
                 NSInteger number = nbyte[0] & 0x7F;
                 NSString *name = [[NSString alloc] initWithData:[namedata subdataWithRange:NSMakeRange(1, [namedata length]-1)] encoding:NSUTF8StringEncoding];
                 NSLog(@"%ld  %ld  %@  %@",type, number, name, namedata);
-                [[CSRDatabaseManager sharedInstance] saveNewSonos:sourceDeviceId channel:@(byte[2]) infoVersion:@(byte[5]) modelType:@(type) modelNumber:@(number) name:name];
+                DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sourceDeviceId];
+                BOOL alive = NO;
+                if (model.mcLiveChannels & (1 << byte[2])) {
+                    alive = YES;
+                }
+                [[CSRDatabaseManager sharedInstance] saveNewSonos:sourceDeviceId channel:@(byte[2]) infoVersion:@(byte[5]) modelType:@(type) modelNumber:@(number) name:name alive:@(alive)];
                 
                 [ded removeObjectForKey:@(byte[2])];
                 if ([ded count] == 0) {

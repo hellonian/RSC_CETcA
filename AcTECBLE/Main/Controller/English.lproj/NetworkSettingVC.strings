@@ -1,0 +1,21 @@
+
+/* Class = "UILabel"; text = "IP"; ObjectID = "3Oe-BY-LOo"; */
+"3Oe-BY-LOo.text" = "IP";
+
+/* Class = "UILabel"; text = "Network Status"; ObjectID = "AOY-ce-Z39"; */
+"AOY-ce-Z39.text" = "Network Status";
+
+/* Class = "UILabel"; text = "Subnet mask"; ObjectID = "Irj-r4-SdV"; */
+"Irj-r4-SdV.text" = "Subnet mask";
+
+/* Class = "UILabel"; text = "WLAN"; ObjectID = "aS7-Vr-5zu"; */
+"aS7-Vr-5zu.text" = "WLAN";
+
+/* Class = "UILabel"; text = "Connection status"; ObjectID = "npB-f8-67x"; */
+"npB-f8-67x.text" = "Connection status";
+
+/* Class = "UILabel"; text = "Gateway"; ObjectID = "r9G-Y2-PsO"; */
+"r9G-Y2-PsO.text" = "Gateway";
+
+/* Class = "UILabel"; text = "DNS"; ObjectID = "wIf-2k-GWW"; */
+"wIf-2k-GWW.text" = "DNS";

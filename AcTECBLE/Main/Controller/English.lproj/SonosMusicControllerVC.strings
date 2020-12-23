@@ -1,0 +1,6 @@
+
+/* Class = "UIButton"; normalTitle = "Network Setting"; ObjectID = "1gB-l3-Orz"; */
+"1gB-l3-Orz.normalTitle" = "Network Setting";
+
+/* Class = "UILabel"; text = "You can connect up to 8 SONOS.\nClick the network Settings, enter the password, and set the docking module, smartphone or tablet, SONO audio。The docking module will automatically add SONOS audio in the same network. "; ObjectID = "ImZ-g2-imT"; */
+"ImZ-g2-imT.text" = "You can connect up to 8 SONOS stereos. \n Click Network Settings, enter the password. Set the docking module, smartphone or tablet, and SONOS audio in the same network. The docking module will automatically add SONOS audio.";
