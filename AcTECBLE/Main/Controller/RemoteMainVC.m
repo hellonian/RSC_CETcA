@@ -805,32 +805,50 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         }else if (sender.tag == 18 || sender.tag == 19 || sender.tag == 20 || sender.tag == 21 || sender.tag == 22 || sender.tag == 23) {
             DeviceListViewController *list = [[DeviceListViewController alloc] init];
             list.selectMode = DeviceListSelectMode_MusicController;
-            list.originalMembers = [NSMutableArray arrayWithObject:[_settingSelectMutArray firstObject]];
+            
+            SelectModel *originalM = [_settingSelectMutArray firstObject];
+            if ([originalM.deviceID integerValue] != 0) {
+                list.originalMembers = [NSMutableArray arrayWithObject:[_settingSelectMutArray firstObject]];
+            }
             [list getSelectedDevices:^(NSArray *devices) {
-                if (!_activityIndicator) {
-                    [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
-                    _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-                    [[UIApplication sharedApplication].keyWindow addSubview:_activityIndicator];
-                    [_activityIndicator autoCenterInSuperview];
-                    [_activityIndicator startAnimating];
-                }
-                [self performSelector:@selector(configureMusicRemoteTimeOut) withObject:nil afterDelay:10.0f];
-                retryCount = 0;
+                
                 if ([devices count] > 0) {
                     SelectModel *mod = devices[0];
-                    
-                    [_settingSelectMutArray addObject:mod];
-                    
-                    NSInteger sDeviceID = [mod.deviceID integerValue];
-                    NSInteger d0 = (sDeviceID & 0xFF00) >> 8;
-                    NSInteger d1 = sDeviceID & 0x00FF;
-                    
-                    NSInteger sChannel = [mod.channel integerValue];
-                    
-                    Byte byte[] = {0xb6, 0x07, 0x1c, 0x00, 0x01, d1, d0, sChannel/256, sChannel%256};
-                    applyCmd = [[NSData alloc] initWithBytes:byte length:9];
-                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:applyCmd];
+                    SelectModel *originalM = [_settingSelectMutArray firstObject];
+                    if (![originalM.deviceID isEqualToNumber:mod.deviceID] || ![originalM.channel isEqualToNumber:mod.channel]) {
+                        if (!_activityIndicator) {
+                            [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+                            _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+                            [[UIApplication sharedApplication].keyWindow addSubview:_activityIndicator];
+                            [_activityIndicator autoCenterInSuperview];
+                            [_activityIndicator startAnimating];
+                        }
+                        [self performSelector:@selector(configureMusicRemoteTimeOut) withObject:nil afterDelay:10.0f];
+                        retryCount = 0;
+                        
+                        [_settingSelectMutArray addObject:mod];
+                        
+                        NSInteger sDeviceID = [mod.deviceID integerValue];
+                        NSInteger d0 = (sDeviceID & 0xFF00) >> 8;
+                        NSInteger d1 = sDeviceID & 0x00FF;
+                        
+                        NSInteger sChannel = [mod.channel integerValue];
+                        
+                        Byte byte[] = {0xb6, 0x07, 0x1c, 0x00, 0x01, d1, d0, sChannel/256, sChannel%256};
+                        applyCmd = [[NSData alloc] initWithBytes:byte length:9];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:applyCmd];
+                    }
                 }else {
+                    if (!_activityIndicator) {
+                        [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+                        _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+                        [[UIApplication sharedApplication].keyWindow addSubview:_activityIndicator];
+                        [_activityIndicator autoCenterInSuperview];
+                        [_activityIndicator startAnimating];
+                    }
+                    [self performSelector:@selector(configureMusicRemoteTimeOut) withObject:nil afterDelay:10.0f];
+                    retryCount = 0;
+                    
                     Byte byte[] = {0xb6, 0x07, 0x1c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
                     applyCmd = [[NSData alloc] initWithBytes:byte length:9];
                     [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:applyCmd];

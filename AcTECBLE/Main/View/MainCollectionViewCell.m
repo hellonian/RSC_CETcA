@@ -564,7 +564,11 @@
             self.iconView.image = [UIImage imageNamed:@"Device_Switch"];
         }else if ([appearanceShortname containsString:@"RB01"] || [appearanceShortname containsString:@"R5BSBH"] || [appearanceShortname containsString:@"5BCBH"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote1"];
-        }else if ([appearanceShortname containsString:@"RB02"]||[appearanceShortname isEqualToString:@"RB06"]||[appearanceShortname isEqualToString:@"RSBH"]||[appearanceShortname isEqualToString:@"1BMBH"]) {
+        }else if ([appearanceShortname containsString:@"RB02"]
+                  ||[appearanceShortname isEqualToString:@"RB06"]
+                  ||[appearanceShortname isEqualToString:@"RSBH"]
+                  ||[appearanceShortname isEqualToString:@"1BMBH"]
+                  ||[appearanceShortname isEqualToString:@"RB08"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote2"];
         }else if ([appearanceShortname containsString:@"RB04"] || [appearanceShortname containsString:@"RSIBH"] || [appearanceShortname containsString:@"RB07"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_bajiao"];
@@ -582,7 +586,13 @@
                   || [appearanceShortname isEqualToString:@"H3CSB"]
                   || [appearanceShortname isEqualToString:@"H4CSB"]
                   || [appearanceShortname isEqualToString:@"H6CSB"]
-                  || [appearanceShortname isEqualToString:@"KT6RS"]) {
+                  || [appearanceShortname isEqualToString:@"KT6RS"]
+                  || [appearanceShortname isEqualToString:@"H1RSMB"]
+                  || [appearanceShortname isEqualToString:@"H2RSMB"]
+                  || [appearanceShortname isEqualToString:@"H3RSMB"]
+                  || [appearanceShortname isEqualToString:@"H4RSMB"]
+                  || [appearanceShortname isEqualToString:@"H5RSMB"]
+                  || [appearanceShortname isEqualToString:@"H6RSMB"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_mainremote"];
         }else if ([CSRUtilities belongToLightSensor:appearanceShortname]){
             self.iconView.image = [UIImage imageNamed:@"Device_Sensor"];
@@ -822,10 +832,29 @@
             }
         }
     }else {
-        self.nameLabel.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
-        self.levelLabel.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
-        self.level2Label.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
-        self.level3Label.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
+        if (!([CSRUtilities belongToSceneRemoteOneKey:model.shortName]
+            || [CSRUtilities belongToSceneRemoteTwoKeys:model.shortName]
+            || [CSRUtilities belongToSceneRemoteThreeKeys:model.shortName]
+            || [CSRUtilities belongToSceneRemoteFourKeys:model.shortName]
+            || [CSRUtilities belongToSceneRemoteSixKeys:model.shortName]
+            || [CSRUtilities belongToSceneRemoteOneKeyV:model.shortName]
+            || [CSRUtilities belongToSceneRemoteTwoKeysV:model.shortName]
+            || [CSRUtilities belongToSceneRemoteThreeKeysV:model.shortName]
+            || [CSRUtilities belongToSceneRemoteFourKeysV:model.shortName]
+            || [CSRUtilities belongToSceneRemoteSixKeysV:model.shortName]
+            || [CSRUtilities belongToMusicController:model.shortName]
+            || [CSRUtilities belongToMusicControlRemote:model.shortName]
+            || [CSRUtilities belongToMusicControlRemoteV:model.shortName]
+            || [CSRUtilities belongToSonosMusicController:model.shortName]
+            || [CSRUtilities belongToRGBRemote:model.shortName]
+            || [CSRUtilities belongToRGBCWRemote:model.shortName]
+            || [CSRUtilities belongToCWRemote:model.shortName]
+            || [CSRUtilities belongToLCDRemote:model.shortName])) {
+            self.nameLabel.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
+            self.levelLabel.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
+            self.level2Label.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
+            self.level3Label.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
+        }
     }
 }
 
@@ -926,7 +955,9 @@
                         &&![CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]
                         &&![CSRUtilities belongToLCDRemote:deviceEntity.shortName]
                         &&![CSRUtilities belongToMusicController:deviceEntity.shortName]
-                        &&![CSRUtilities belongToSonosMusicController:deviceEntity.shortName]) {
+                        &&![CSRUtilities belongToSonosMusicController:deviceEntity.shortName]
+                        &&![CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]
+                        &&![CSRUtilities belongToMusicControlRemoteV:deviceEntity.shortName]) {
                         if ([CSRUtilities belongToOneChannelCurtainController:deviceEntity.shortName]
                             || [CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName]) {
                             if (!deviceEntity.remoteBranch || deviceEntity.remoteBranch.length == 0) {

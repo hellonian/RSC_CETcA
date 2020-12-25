@@ -718,6 +718,10 @@
                     [_devicesCollectionView.dataArray addObject:singleDevice];
                 }
             }
+            
+            if ([_originalMembers count] > 0) {
+                [_selectedDevices addObjectsFromArray:_originalMembers];
+            }
         }
     }else if (self.selectMode == DeviceListSelectMode_SingleRegardlessChannelPlus) {
         NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];

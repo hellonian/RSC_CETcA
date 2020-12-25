@@ -198,6 +198,7 @@
                 [self performSelector:@selector(sendwifiDelay) withObject:nil afterDelay:2];
                 [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
             }else if (sort == 121) {
+                retrCount = 0;
                 [self performSelector:@selector(connectionDelay) withObject:nil afterDelay:10];
             }
             
@@ -246,14 +247,22 @@
 }
 
 - (void)connectionDelay {
-    [self hideLoading];
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"fail_connection", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
-    [alert.view setTintColor:DARKORAGE];
-    UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        
-    }];
-    [alert addAction:yes];
-    [self presentViewController:alert animated:YES completion:nil];
+    if (retrCount < 4) {
+        retrCount ++;
+        [self performSelector:@selector(connectionDelay) withObject:nil afterDelay:3];
+        Byte byte[] = {0xea, 0x77, 0x07};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+    }else {
+        [self hideLoading];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"fail_connection", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+        [alert.view setTintColor:DARKORAGE];
+        UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+
+        }];
+        [alert addAction:yes];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
 }
 
 - (void)refreshNetworkConnectionStatus:(NSNotification *)notification {
