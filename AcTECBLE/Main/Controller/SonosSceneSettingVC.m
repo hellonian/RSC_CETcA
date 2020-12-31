@@ -14,7 +14,6 @@
 #import "PureLayout.h"
 #import "CSRUtilities.h"
 #import "CSRConstants.h"
-#import "SonosSelectModel.h"
 #import "DataModelManager.h"
 #import "SocketConnectionTool.h"
 #import "SonosSceneSettingCell.h"
@@ -54,54 +53,73 @@
     
     self.view.backgroundColor = ColorWithAlpha(234, 238, 243, 1);
     
-//    UIBarButtonItem *add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addChannelAction)];
-//    self.navigationItem.rightBarButtonItem = add;
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
     self.navigationItem.rightBarButtonItem = done;
     
     _dataMutAry = [[NSMutableArray alloc] init];
-//    SonosSelectModel *m = [[SonosSelectModel alloc] init];
-//    m.deviceID = _deviceID;
-//    m.channel = @(-1);
-//    [_dataMutAry addObject:m];
-    if (_deviceID) {
-        CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
-        if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
-            if ([device.sonoss count] > 0) {
-                for (SonosEntity *s in device.sonoss) {
-                    SonosSelectModel *m = [[SonosSelectModel alloc] init];
-                    m.deviceID = s.deviceID;
-                    m.channel = s.channel;
-                    m.name = s.name;
-                    m.selected = NO;
-                    m.play = YES;
-                    m.voice = 50;
-                    [_dataMutAry addObject:m];
+    if (_source == 1) {
+        SonosSelectModel *m = [[SonosSelectModel alloc] init];
+        m.deviceID = _sModel.deviceID;
+        m.channel = _sModel.channel;
+        m.selected = _sModel.selected;
+        m.play = _sModel.play;
+        m.voice = _sModel.voice;
+        m.reSetting = _sModel.reSetting;
+        m.songNumber = _sModel.songNumber;
+        if (_deviceID) {
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
+            if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
+                if ([device.sonoss count] > 0) {
+                    for (SonosEntity *s in device.sonoss) {
+                        if ([s.channel integerValue]==[_sModel.channel integerValue]) {
+                            m.name = s.name;
+                            break;
+                        }
+                    }
                 }
             }
-        }else if ([CSRUtilities belongToMusicController:device.shortName]) {
-            DeviceModel *dm = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceID];
-            if (dm.mcLiveChannels > 0) {
-                for (int i=0; i<16; i++) {
-                    if (((dm.mcLiveChannels & (NSInteger)pow(2, i))>>i) == 1) {
+        }
+        [_dataMutAry addObject:m];
+    }else {
+        if (_deviceID) {
+            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
+            if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
+                if ([device.sonoss count] > 0) {
+                    for (SonosEntity *s in device.sonoss) {
                         SonosSelectModel *m = [[SonosSelectModel alloc] init];
-                        m.deviceID = _deviceID;
-                        m.channel = @(i);
-                        m.name = [NSString stringWithFormat:@"Channel %d",i];
+                        m.deviceID = s.deviceID;
+                        m.channel = s.channel;
+                        m.name = s.name;
                         m.selected = NO;
                         m.play = YES;
                         m.voice = 50;
                         [_dataMutAry addObject:m];
                     }
                 }
-            }else {
-                [self showLoading];
-                [self performSelector:@selector(scanOnlineChannelTimeOut) withObject:nil afterDelay:10];
-                Byte byte[] = {0xea, 0x82, 0x00};
-                NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
-                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceID data:cmd];
+            }else if ([CSRUtilities belongToMusicController:device.shortName]) {
+                DeviceModel *dm = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceID];
+                if (dm.mcLiveChannels > 0) {
+                    for (int i=0; i<16; i++) {
+                        if (((dm.mcLiveChannels & (NSInteger)pow(2, i))>>i) == 1) {
+                            SonosSelectModel *m = [[SonosSelectModel alloc] init];
+                            m.deviceID = _deviceID;
+                            m.channel = @(i);
+                            m.name = [NSString stringWithFormat:@"Channel %d",i];
+                            m.selected = NO;
+                            m.play = YES;
+                            m.voice = 50;
+                            [_dataMutAry addObject:m];
+                        }
+                    }
+                }else {
+                    [self showLoading];
+                    [self performSelector:@selector(scanOnlineChannelTimeOut) withObject:nil afterDelay:10];
+                    Byte byte[] = {0xea, 0x82, 0x00};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceID data:cmd];
+                }
             }
-         }
+        }
     }
     
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
@@ -845,41 +863,50 @@
 //}
 - (BOOL)navigationShouldPopOnBackButton {
     NSLog(@"navigationShouldPopOnBackButton");
-    if (self.sonosSceneSettingHandle) {
-        [_dataMutAry removeAllObjects];
-        self.sonosSceneSettingHandle(_dataMutAry);
+    if (_source != 1) {
+        if (self.sonosSceneSettingHandle) {
+            [_dataMutAry removeAllObjects];
+            self.sonosSceneSettingHandle(_dataMutAry);
+        }
     }
     return YES;
 }
 
 - (void)doneAction {
     NSString *string;
+    CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
     for (SonosSelectModel *ssm in _dataMutAry) {
         if (ssm.selected && ssm.play) {
-            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:ssm.deviceID];
-            if ([CSRUtilities belongToMusicController:device.shortName]) {
+            if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
+                if (ssm.songNumber == -1) {
+                    if ([string length]>0) {
+                        string = [NSString stringWithFormat:@"%@、%@", string, ssm.name];
+                    }else {
+                        string = ssm.name;
+                    }
+                }
+            }else if ([CSRUtilities belongToMusicController:device.shortName]) {
                 if (ssm.source == -1) {
                     if ([string length]>0) {
                         string = [NSString stringWithFormat:@"%@、%@", string, ssm.name];
                     }else {
-                        string = [NSString stringWithFormat:@"The source of %@", ssm.name];
-                    }
-                }
-            }else if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
-                if (ssm.songNumber == -1) {
-                    if ([string length]>0) {
-                        string = [NSString stringWithFormat:@"%@、%@",string, ssm.name];
-                    }else {
-                        string = [NSString stringWithFormat:@"The music of %@", ssm.name];
+                        string = ssm.name;
                     }
                 }
             }
         }
     }
     if ([string length]>0) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"%@ wasn't be selected, please click done after selecting!", string] preferredStyle:UIAlertControllerStyleAlert];
+        NSString *message;
+        CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
+        if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
+            message = [NSString stringWithFormat:@"%@ %@",string, AcTECLocalizedStringFromTable(@"music_of", @"Localizable")];
+        }else if ([CSRUtilities belongToMusicController:device.shortName]) {
+            message = [NSString stringWithFormat:@"%@ %@",string, AcTECLocalizedStringFromTable(@"source_of", @"Localizable")];
+        }
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleAlert];
         [alert.view setTintColor:DARKORAGE];
-        UIAlertAction *yes = [UIAlertAction actionWithTitle:@"Go back to select" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"go_back_select", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
         }];
         [alert addAction:yes];

@@ -12,7 +12,7 @@
 "Wx4-gU-2a7.text" = "照明";
 
 /* Class = "UILabel"; text = "Name"; ObjectID = "YCz-NL-HpX"; */
-"YCz-NL-HpX.text" = "标签";
+"YCz-NL-HpX.text" = "名称";
 
 /* Class = "UILabel"; text = "ON/OFF"; ObjectID = "nZ7-Of-cRa"; */
 "nZ7-Of-cRa.text" = "开/关";

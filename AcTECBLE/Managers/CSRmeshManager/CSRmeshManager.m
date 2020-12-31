@@ -225,6 +225,22 @@
                     }
                     [deviceEntity addRgbScenesObject:rgbScenetity];
                 }
+            }else if ([CSRUtilities belongToSceneRemoteSixKeys:deviceEntity.shortName]
+                      || [CSRUtilities belongToSceneRemoteFourKeys:deviceEntity.shortName]
+                      || [CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]
+                      || [CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
+                      || [CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]
+                      || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]
+                      || [CSRUtilities belongToSceneRemoteFourKeysV:deviceEntity.shortName]
+                      || [CSRUtilities belongToSceneRemoteThreeKeysV:deviceEntity.shortName]
+                      || [CSRUtilities belongToSceneRemoteTwoKeysV:deviceEntity.shortName]
+                      || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]) {
+                deviceEntity.keyNameOne = AcTECLocalizedStringFromTable(@"Scene1", @"Localizable");
+                deviceEntity.keyNameTwo = AcTECLocalizedStringFromTable(@"Scene2", @"Localizable");
+                deviceEntity.keyNameThree = AcTECLocalizedStringFromTable(@"Scene3", @"Localizable");
+                deviceEntity.keyNameFour = AcTECLocalizedStringFromTable(@"Scene4", @"Localizable");
+                deviceEntity.keyNameFive = AcTECLocalizedStringFromTable(@"Scene5", @"Localizable");
+                deviceEntity.keyNameSix = AcTECLocalizedStringFromTable(@"Scene6", @"Localizable");
             }
  
             [[CSRAppStateManager sharedInstance].selectedPlace addDevicesObject:deviceEntity];

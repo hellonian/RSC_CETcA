@@ -13,7 +13,6 @@
 @dynamic deviceID;
 @dynamic kindString;
 @dynamic sceneID;
-@dynamic editing;
 @dynamic eveType;
 @dynamic sortID;
 @dynamic channel;

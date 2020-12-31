@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SonosSelectModel.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -15,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) NSNumber *deviceID;
 @property (nonatomic, copy) void(^sonosSceneSettingHandle)(NSArray *sModels);
+@property (nonatomic, assign) NSInteger source;
+@property (nonatomic, strong) SonosSelectModel *sModel;
 
 @end
 

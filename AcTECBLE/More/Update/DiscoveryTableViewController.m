@@ -22,6 +22,9 @@
 #import "DataModelManager.h"
 
 @interface DiscoveryTableViewController ()<CSRBluetoothLEDelegate,OTAUDelegate,CSRUpdateManagerDelegate>
+{
+    NSInteger retrycout;
+}
 
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)NSMutableArray *uuids;
@@ -48,6 +51,7 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange) name:ZZAppLanguageDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(afterGetVersion:) name:@"reGetDataForPlaceChanged" object:nil];
     self.navigationItem.title = AcTECLocalizedStringFromTable(@"BTVersion", @"Localizable");
     if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
         UIButton *btn = [[UIButton alloc] init];
@@ -68,34 +72,6 @@
     _uuids = [[NSMutableArray alloc] init];
     _appAllDevcies = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
     
-    NSArray *connectedPeripherals = [[CSRBluetoothLE sharedInstance] connectedPeripherals];
-    for (CBPeripheral *peripheral in connectedPeripherals) {
-        __block CSRDeviceEntity *connectDevice;
-        [_appAllDevcies enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
-            NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
-//            NSLog(@"nn: %@  %@",adUuidString,deviceUuidString);
-            if ([adUuidString isEqualToString:deviceUuidString]) {
-                connectDevice = deviceEntity;
-                *stop = YES;
-            }
-        }];
-        if (connectDevice) {
-            UpdateDeviceModel *model = [[UpdateDeviceModel alloc] init];
-            model.peripheral = peripheral;
-            model.name = connectDevice.name;
-            model.connected = YES;
-            model.kind = connectDevice.shortName;
-            model.deviceId = connectDevice.deviceId;
-            model.bleHwVersion = connectDevice.bleHwVersion;
-            model.bleFVersion = connectDevice.bleFirVersion;
-            model.fVersion = connectDevice.firVersion;
-            model.hVersion = connectDevice.hwVersion;
-            [_dataArray addObject:model];
-            [self.tableView reloadData];
-        }
-    }
-    
     NSString *urlString = @"http://39.108.152.134/firware.php";
     AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
     sessionManager.responseSerializer.acceptableContentTypes = nil;
@@ -103,18 +79,37 @@
     [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         _latestDic = nil;
         _latestDic = (NSDictionary *)responseObject;
-        if ([_dataArray count]>0) {
-            for (UpdateDeviceModel *model in _dataArray) {
-                NSInteger lastestVersion = [[_latestDic objectForKey:model.kind] integerValue];
-                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:model.deviceId];
-                if (deviceEntity.firVersion && [deviceEntity.firVersion integerValue] < lastestVersion) {
-                    model.needUpdate = YES;
-                }else {
-                    model.needUpdate = NO;
+        
+        NSArray *connectedPeripherals = [[CSRBluetoothLE sharedInstance] connectedPeripherals];
+        for (CBPeripheral *peripheral in connectedPeripherals) {
+            __block CSRDeviceEntity *connectDevice;
+            [_appAllDevcies enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+                NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
+                NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
+                if ([adUuidString isEqualToString:deviceUuidString]) {
+                    NSInteger lastestVersion = [[_latestDic objectForKey:deviceEntity.shortName] integerValue];
+                    if (deviceEntity.firVersion && [deviceEntity.firVersion integerValue] < lastestVersion) {
+                        connectDevice = deviceEntity;
+                    }
+                    *stop = YES;
                 }
+            }];
+            if (connectDevice) {
+                UpdateDeviceModel *model = [[UpdateDeviceModel alloc] init];
+                model.peripheral = peripheral;
+                model.name = connectDevice.name;
+                model.connected = YES;
+                model.kind = connectDevice.shortName;
+                model.deviceId = connectDevice.deviceId;
+                model.bleHwVersion = connectDevice.bleHwVersion;
+                model.bleFVersion = connectDevice.bleFirVersion;
+                model.fVersion = connectDevice.firVersion;
+                model.hVersion = connectDevice.hwVersion;
+                [_dataArray addObject:model];
+                [self.tableView reloadData];
             }
-            [self.tableView reloadData];
         }
+        
         [[CSRBluetoothLE sharedInstance] setIsUpdateFW:YES];
         [[CSRBluetoothLE sharedInstance] setBleDelegate:self];
         [[CSRBluetoothLE sharedInstance] startScan];
@@ -142,7 +137,10 @@
             NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
             NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
             if ([adUuidString isEqualToString:deviceUuidString]) {
-                connectDevice = deviceEntity;
+                NSInteger lastestVersion = [[_latestDic objectForKey:connectDevice.shortName] integerValue];
+                if (connectDevice.firVersion && [connectDevice.firVersion integerValue] < lastestVersion) {
+                    connectDevice = deviceEntity;
+                }
                 *stop = YES;
             }
         }];
@@ -157,14 +155,7 @@
             model.bleFVersion = connectDevice.bleFirVersion;
             model.fVersion = connectDevice.firVersion;
             model.hVersion = connectDevice.hwVersion;
-            NSInteger lastestVersion = [[_latestDic objectForKey:connectDevice.shortName] integerValue];
-            if (connectDevice.firVersion && [connectDevice.firVersion integerValue] < lastestVersion) {
-                model.needUpdate = YES;
-            }else {
-                model.needUpdate = NO;
-            }
             [_dataArray addObject:model];
-            
         }
     }
     [self.refreshControl endRefreshing];
@@ -251,11 +242,6 @@
     NSInteger s2 = [CSRUtilities numberWithHexString:[s substringWithRange:NSMakeRange(2, 2)]];
     bleFString = [NSString stringWithFormat:@"%ld%ld",s1,s2];
     cell.detailTextLabel.text = [NSString stringWithFormat:@"V%@.%@.%@.%@",[CSRUtilities stringWithHexNumber:[model.bleHwVersion integerValue]],bleFString,model.hVersion,model.fVersion];
-    if (model.needUpdate) {
-        cell.textLabel.textColor = DARKORAGE;
-    }else {
-        cell.textLabel.textColor = [UIColor blackColor];
-    }
     
     return cell;
 }
@@ -263,7 +249,17 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     UpdateDeviceModel *model = [self.dataArray objectAtIndex:indexPath.row];
-    if (model.needUpdate) {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    
+    NSMutableAttributedString *attributedTitle = [[NSMutableAttributedString alloc] initWithString:AcTECLocalizedStringFromTable(@"upgrade_ble_firmware", @"Localizable")];
+    [attributedTitle addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] range:NSMakeRange(0, [[attributedTitle string] length])];
+    [alert setValue:attributedTitle forKey:@"attributedTitle"];
+    
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [cancel setValue:DARKORAGE forKey:@"titleTextColor"];
+    UIAlertAction *confirm = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [UIApplication sharedApplication].idleTimerDisabled = YES;
         _customizeHud = [[CustomizeProgressHud alloc] initWithFrame:CGRectZero];
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -291,13 +287,11 @@
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             
         }];
-    }else {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"蓝牙固件已经是最新版本。" preferredStyle:UIAlertControllerStyleAlert];
-        [alert.view setTintColor:DARKORAGE];
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:nil];
-        [alert addAction:okAction];
-        [self presentViewController:alert animated:YES completion:nil];
-    }
+    }];
+    [confirm setValue:DARKORAGE forKey:@"titleTextColor"];
+    [alert addAction:cancel];
+    [alert addAction:confirm];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)downloadfirware:(NSString *)urlString :(UpdateDeviceModel *)model {
@@ -392,44 +386,56 @@
 }
 
 - (void)discoveryDidRefresh:(CBPeripheral *)peripheral {
-    for (CSRDeviceEntity *deviceEntity in _appAllDevcies) {
-        NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
-        NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
-        if ([adUuidString isEqualToString:deviceUuidString]) {
-            UpdateDeviceModel *model = [[UpdateDeviceModel alloc] init];
-            model.peripheral = peripheral;
-            model.name = deviceEntity.name;
-            model.deviceId = deviceEntity.deviceId;
-            model.connected = NO;
-            model.kind = deviceEntity.shortName;
-            model.bleHwVersion = deviceEntity.bleHwVersion;
-            model.bleFVersion = deviceEntity.bleFirVersion;
-            model.fVersion = deviceEntity.firVersion;
-            model.hVersion = deviceEntity.hwVersion;
-            NSInteger lastestVersion = [[_latestDic objectForKey:deviceEntity.shortName] integerValue];
-            if (deviceEntity.firVersion && [deviceEntity.firVersion integerValue] < lastestVersion) {
-                model.needUpdate = YES;
-            }else {
-                model.needUpdate = NO;
-            }
-            
-            if (![_uuids containsObject:peripheral.uuidString]) {
+    if (![_uuids containsObject:peripheral.uuidString]) {
+        for (CSRDeviceEntity *deviceEntity in _appAllDevcies) {
+            NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
+            NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
+            if ([adUuidString isEqualToString:deviceUuidString]) {
+                NSInteger lastestVersion = [[_latestDic objectForKey:deviceEntity.shortName] integerValue];
+                if (deviceEntity.firVersion && [deviceEntity.firVersion integerValue] < lastestVersion) {
+                    UpdateDeviceModel *model = [[UpdateDeviceModel alloc] init];
+                    model.peripheral = peripheral;
+                    model.name = deviceEntity.name;
+                    model.deviceId = deviceEntity.deviceId;
+                    model.connected = NO;
+                    model.kind = deviceEntity.shortName;
+                    model.bleHwVersion = deviceEntity.bleHwVersion;
+                    model.bleFVersion = deviceEntity.bleFirVersion;
+                    model.fVersion = deviceEntity.firVersion;
+                    model.hVersion = deviceEntity.hwVersion;
+                    
+                    [_dataArray addObject:model];
+                    [self.tableView reloadData];
+                }
                 [_uuids addObject:peripheral.uuidString];
-                [_dataArray addObject:model];
-                [self.tableView reloadData];
+                break;
             }
-            break;
         }
+        
     }
+    
 }
 
-- (void)regetVersion {
-    [self.tableView reloadData];
-    [_customizeHud removeFromSuperview];
-    _customizeHud = nil;
-    [_translucentBgView removeFromSuperview];
-    _translucentBgView = nil;
-    [UIApplication sharedApplication].idleTimerDisabled = NO;
+- (void)regetVersion:(NSString *)uuidstring {
+    UpdateDeviceModel *targetModel;
+    for (UpdateDeviceModel *model in _dataArray) {
+        if ([[model.peripheral.uuidString substringToIndex:12] isEqualToString:uuidstring]) {
+            targetModel = model;
+            _targetDeviceId = model.deviceId;
+        }
+    }
+    if (targetModel) {
+        [_dataArray removeObject:targetModel];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    }
+    
+    retrycout = 0;
+    [self performSelector:@selector(getVersionDelayMethod) withObject:nil afterDelay:2.0];
+    Byte byte[] = {0x88, 0x01, 0x00};
+    NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:self.targetDeviceId data:cmd];
 }
 
 - (void)updateProgressDelegteMethod:(CGFloat)percentage {
@@ -644,16 +650,32 @@
 }
 
 - (void)tidyUp {
-    
     [[CSRGaiaManager sharedInstance] disconnect];
     [CSRGaiaManager sharedInstance].delegate = nil;
     [CSRGaiaManager sharedInstance].updateInProgress = NO;
     [[CSRBluetoothLE sharedInstance] setIsForGAIA:NO];
     
-    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:self.targetDeviceId];
-    deviceEntity.firVersion = nil;
-    [[CSRDatabaseManager sharedInstance] saveContext];
-    [self getVersion:self.targetDeviceId];
+    
+    if (self.targetDeviceId) {
+        UpdateDeviceModel *targetModel;
+        for (UpdateDeviceModel *model in _dataArray) {
+            if ([model.deviceId isEqualToNumber:self.targetDeviceId]) {
+                targetModel = model;
+                break;
+            }
+        }
+        if (targetModel) {
+            [_dataArray removeObject:targetModel];
+            [self.tableView reloadData];
+        }
+    }
+    
+    retrycout = 0;
+    [self performSelector:@selector(getVersionDelayMethod) withObject:nil afterDelay:2.0];
+    Byte byte[] = {0x88, 0x01, 0x00};
+    NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:self.targetDeviceId data:cmd];
+    
 }
 
 - (void)abortTidyUp {
@@ -669,34 +691,35 @@
     NSLog(@"didWarmBoot");
 }
 
-- (void)getVersion: (NSNumber *)deviceId {
-    [[DataModelManager shareInstance] sendCmdData:@"880100" toDeviceId:deviceId];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:self.targetDeviceId];
-        if (deviceEntity) {
-//            NSInteger lastestVersion = [[_latestDic objectForKey:deviceEntity.shortName] integerValue];
-            if (!deviceEntity.firVersion) {
-                [self getVersion:deviceId];
-            }else {
-                for (UpdateDeviceModel *model in _dataArray) {
-                    if ([model.deviceId isEqualToNumber:deviceId]) {
-                        model.needUpdate = NO;
-                        model.bleHwVersion = deviceEntity.bleHwVersion;
-                        model.bleFVersion = deviceEntity.bleFirVersion;
-                        model.fVersion = deviceEntity.firVersion;
-                        model.hVersion = deviceEntity.hwVersion;
-                        [self.tableView reloadData];
-                        break;
-                    }
-                }
-                [_customizeHud removeFromSuperview];
-                _customizeHud = nil;
-                [_translucentBgView removeFromSuperview];
-                _translucentBgView = nil;
-                [UIApplication sharedApplication].idleTimerDisabled = NO;
-            }
+- (void)getVersionDelayMethod {
+    if (retrycout < 3) {
+        retrycout ++;
+        [self performSelector:@selector(getVersionDelayMethod) withObject:nil afterDelay:2.0];
+        Byte byte[] = {0x88, 0x01, 0x00};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:self.targetDeviceId data:cmd];
+    }else {
+        [_customizeHud removeFromSuperview];
+        _customizeHud = nil;
+        [_translucentBgView removeFromSuperview];
+        _translucentBgView = nil;
+        [UIApplication sharedApplication].idleTimerDisabled = NO;
+    }
+}
+
+- (void)afterGetVersion:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *uDeviceID = userInfo[@"deviceId"];
+    if (self.targetDeviceId) {
+        if ([uDeviceID isEqualToNumber:self.targetDeviceId]) {
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(getVersionDelayMethod) object:nil];
+            [_customizeHud removeFromSuperview];
+            _customizeHud = nil;
+            [_translucentBgView removeFromSuperview];
+            _translucentBgView = nil;
+            [UIApplication sharedApplication].idleTimerDisabled = NO;
         }
-    });
+    }
 }
 
 @end

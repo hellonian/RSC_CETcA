@@ -29,6 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSData *binData;
 @property (nonatomic, assign) NSInteger currentPage;
 @property (nonatomic, assign) NSInteger retryCount;
+@property (nonatomic, assign) NSInteger pageLength;
 
 + (instancetype)sharedInstace;
 - (void)askUpdateMCU:(NSNumber *)deviceId downloadAddress:(NSString *)downloadAddress latestMCUSVersion:(NSInteger)latestMCUSVersion;

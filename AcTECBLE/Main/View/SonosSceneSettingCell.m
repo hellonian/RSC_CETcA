@@ -38,7 +38,7 @@
         _voicetitle.textColor = ColorWithAlpha(77, 77, 77, 1);
         _selecttitle.textColor = ColorWithAlpha(77, 77, 77, 1);
         _voiceLabel.text = [NSString stringWithFormat:@"%ld", model.voice];
-        if ([CSRUtilities belongToSonosMusicController:device.shortName] && model.source != -1) {
+        if ([CSRUtilities belongToSonosMusicController:device.shortName] && model.songNumber != -1) {
             if ([device.remoteBranch length]>0) {
                 NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:device.remoteBranch];
                 if ([jsonDictionary count]>0) {
@@ -65,6 +65,11 @@
         _selectLabel.text = @"";
         _voiceBtn.enabled = NO;
         _selectBtn.enabled = NO;
+    }
+    if (model.reSetting) {
+        _channelSelectBtn.enabled = NO;
+    }else {
+        _channelSelectBtn.enabled = YES;
     }
 }
 

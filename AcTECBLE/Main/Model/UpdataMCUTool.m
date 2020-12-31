@@ -37,7 +37,28 @@
     _deviceID = deviceId;
     _downloadAddress = downloadAddress;
     _latestMCUVersion = latestMCUSVersion;
-    [self sendAskUpdateCmd];
+    [self sendPageLengthCmd];
+}
+
+- (void)sendPageLengthCmd {
+    _sendCount = 0;
+    [self performSelector:@selector(pageLengthCmdTimeOutMethod) withObject:nil afterDelay:3.0];
+    Byte byte[] = {0xea, 0x36, 0x00};
+    NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceID data:cmd];
+}
+
+- (void)pageLengthCmdTimeOutMethod {
+    if (_sendCount < 3) {
+        [self performSelector:@selector(pageLengthCmdTimeOutMethod) withObject:nil afterDelay:3.0];
+        Byte byte[] = {0xea, 0x36, 0x00};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceID data:cmd];
+        _sendCount ++;
+    }else {
+        _pageLength = 128;
+        [self sendAskUpdateCmd];
+    }
 }
 
 - (void)sendAskUpdateCmd {
@@ -95,6 +116,10 @@
             Byte byte[] = {0xea, 0x35};
             NSData *cmd = [[NSData alloc] initWithBytes:byte length:2];
             [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceID data:cmd];
+        }else if (byte[1] == 0x36) {
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(pageLengthCmdTimeOutMethod) object:nil];
+            _pageLength = byte[2]*256+byte[1];
+            [self sendAskUpdateCmd];
         }
     }
 }
@@ -127,7 +152,7 @@
     if (data) {
         NSLog(@">>>>> %ld", [data length]);
         _binData = data;
-        _pageCount = [data length] / 128 + 1;
+        _pageCount = [data length] / _pageLength + 1;
         if (_pageCount > 256) {
             //提示升级失败——包长度超出
             [self toolDelegateUpdateConclusion:AcTECLocalizedStringFromTable(@"mcu_length_exceeded", @"Localizable")];
@@ -142,12 +167,12 @@
     _sendCount = 0;
     [self performSelector:@selector(nextPageOperationTimeOutMethod) withObject:nil afterDelay:2.0];
     _retryCount = 0;
-    NSInteger rest = [_binData length] - 128 * _currentPage;
-    NSInteger cpLenth = 128;
-    if (rest <= 128) {
+    NSInteger rest = [_binData length] - _pageLength * _currentPage;
+    NSInteger cpLenth = _pageLength;
+    if (rest <= _pageLength) {
         cpLenth = rest;
     }
-    NSData *pageData = [_binData subdataWithRange:NSMakeRange(128 * _currentPage, cpLenth)];
+    NSData *pageData = [_binData subdataWithRange:NSMakeRange(_pageLength * _currentPage, cpLenth)];
     
     for (int i = 0; i <= [pageData length] / 6; i ++) {
         NSInteger bagRest = [pageData length] - 6 * i;
@@ -180,12 +205,12 @@
 }
 
 - (void)checkPage:(NSInteger)value {
-    NSInteger rest = [_binData length] - 128 * _currentPage;
-    NSInteger cpLenth = 128;
-    if (rest <= 128) {
+    NSInteger rest = [_binData length] - _pageLength * _currentPage;
+    NSInteger cpLenth = _pageLength;
+    if (rest <= _pageLength) {
         cpLenth = rest;
     }
-    NSData *pageData = [_binData subdataWithRange:NSMakeRange(128 * _currentPage, cpLenth)];
+    NSData *pageData = [_binData subdataWithRange:NSMakeRange(_pageLength * _currentPage, cpLenth)];
     
     BOOL exit = NO;
     for (int i = 0; i <= [pageData length] / 6; i ++) {

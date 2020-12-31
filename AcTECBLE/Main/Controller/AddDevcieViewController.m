@@ -285,7 +285,7 @@
                     [_customizeHud removeFromSuperview];
                     _customizeHud = nil;
                     [self.translucentBgView removeFromSuperview];
-                    self.translucentBgView = nil;
+                    _translucentBgView = nil;
                     [self addVCBackAction];
                 });
                 
@@ -293,7 +293,7 @@
                 [_customizeHud removeFromSuperview];
                 _customizeHud = nil;
                 [self.translucentBgView removeFromSuperview];
-                self.translucentBgView = nil;
+                _translucentBgView = nil;
                 _customizeHud = nil;
             }
         }
@@ -312,7 +312,7 @@
         [_customizeHud removeFromSuperview];
         _customizeHud = nil;
         [self.translucentBgView removeFromSuperview];
-        self.translucentBgView = nil;
+        _translucentBgView = nil;
     });
 }
 
@@ -353,15 +353,17 @@
         
         [[CSRDevicesManager sharedInstance] associateDeviceFromCSRDeviceManager:_selectedDevice.deviceHash authorisationCode:nil uuidString:_selectedDevice.uuid.UUIDString];
         
-        _customizeHud = [[CustomizeProgressHud alloc] initWithFrame:CGRectZero];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
-            [[UIApplication sharedApplication].keyWindow addSubview:_customizeHud];
-            [_customizeHud autoCenterInSuperview];
-            [_customizeHud autoSetDimensionsToSize:CGSizeMake(270, 130)];
-            _customizeHud.text = AcTECLocalizedStringFromTable(@"Associating", @"Localizable");;
-            [_customizeHud updateProgress:0];
-        });
+        if (!_customizeHud) {
+            _customizeHud = [[CustomizeProgressHud alloc] initWithFrame:CGRectZero];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+                [[UIApplication sharedApplication].keyWindow addSubview:_customizeHud];
+                [_customizeHud autoCenterInSuperview];
+                [_customizeHud autoSetDimensionsToSize:CGSizeMake(270, 130)];
+                _customizeHud.text = AcTECLocalizedStringFromTable(@"Associating", @"Localizable");;
+                [_customizeHud updateProgress:0];
+            });
+        }
     }
 }
 

@@ -57,7 +57,7 @@
 "eu8-A4-nY5.normalTitle" = "6s 脉冲模式";
 
 /* Class = "UILabel"; text = "Name"; ObjectID = "g45-W0-rBI"; */
-"g45-W0-rBI.text" = "标签";
+"g45-W0-rBI.text" = "名称";
 
 /* Class = "UILabel"; text = "6500K"; ObjectID = "gaa-Nj-7D5"; */
 "gaa-Nj-7D5.text" = "6500K";

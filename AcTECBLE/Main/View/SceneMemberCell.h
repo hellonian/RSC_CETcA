@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol SceneMemberCellDelegate <NSObject>
 
-- (void)removeSceneMember:(SceneMemberEntity *)mSceneMember;
+
 
 @end
 
@@ -28,7 +28,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UILabel *label2;
 @property (weak, nonatomic) IBOutlet UIImageView *imgv3;
 @property (weak, nonatomic) IBOutlet UILabel *label3;
-@property (weak, nonatomic) IBOutlet UIButton *removeBtn;
 @property (nonatomic, strong) SceneMemberEntity *mSceneMember;
 @property (nonatomic, weak) id<SceneMemberCellDelegate> cellDelegate;
 

@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic,strong)NSNumber *deviceId;
 @property (nonatomic,copy) void (^reloadDataHandle)(void);
+@property (nonatomic, assign) NSInteger source;
 
 @end
 

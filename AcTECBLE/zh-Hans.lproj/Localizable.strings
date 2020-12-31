@@ -71,7 +71,7 @@
 "Timer" = "定时器";
 "Remote" = "遥控器";
 "LightSensor" = "光感";
-"BTVersion" = "固件";
+"BTVersion" = "固件升级";
 "Language" = "语言";
 "Help" = "帮助";
 "About" = "关于";
@@ -198,7 +198,7 @@
 "removeSceneMemberAlert" = "确定将该设备从场景中移除吗？";
 "key" = "按键";
 "more" = "更多";
-"nearbyDevices" = "附近的设备";
+"nearbyDevices" = "配对重置";
 "controlOptions" = "控制选项";
 "nearbyAlert" = "60秒内断电并通电设备。";
 "select_the_channel" = "选择通道";
@@ -237,3 +237,9 @@
 "mcu_not_respond_query" = "MCU升级过程，查询当前页的接收状态未得到设备响应。";
 "mcu_resends_fail" = "MCU升级过程，当前页的数据重发次数已达20次仍未成功。";
 "mcu_end_fail" = "设备未响应结束升级的指令。";
+"upgrade_ble_firmware" = "确定升级所选设备的蓝牙固件？";
+"go_back_select" = "返回";
+"source_of" = "的音源未选择，请选择后再点击完成按钮！";
+"music_of" = "的歌曲未选择，请选择后再点击完成按钮！";
+"Scene5" = "场景5";
+"Scene6" = "场景6";

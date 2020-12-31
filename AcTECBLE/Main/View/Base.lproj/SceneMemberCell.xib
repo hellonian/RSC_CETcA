@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -75,20 +75,16 @@
                         <color key="textColor" red="0.39215686274509803" green="0.39215686274509803" blue="0.39215686274509803" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WXY-nH-0a2">
-                        <rect key="frame" x="296" y="0.0" width="60" height="60"/>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Indicator" translatesAutoresizingMaskIntoConstraints="NO" id="WLQ-mI-13p">
+                        <rect key="frame" x="332" y="23" width="9" height="14"/>
                         <constraints>
-                            <constraint firstAttribute="width" secondItem="WXY-nH-0a2" secondAttribute="height" multiplier="1:1" id="Rh5-kK-fiW"/>
+                            <constraint firstAttribute="height" constant="14" id="ItY-tZ-rXr"/>
+                            <constraint firstAttribute="width" constant="9" id="Qk6-3A-fKg"/>
                         </constraints>
-                        <state key="normal" image="trashcan">
-                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        </state>
-                        <connections>
-                            <action selector="removeAction:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="gZq-yM-9Yf"/>
-                        </connections>
-                    </button>
+                    </imageView>
                 </subviews>
                 <constraints>
+                    <constraint firstAttribute="trailing" secondItem="WLQ-mI-13p" secondAttribute="trailing" constant="15" id="1mP-sH-dUL"/>
                     <constraint firstItem="GkJ-TN-mXE" firstAttribute="height" secondItem="bOj-BI-A4e" secondAttribute="height" id="1rE-Av-6FZ"/>
                     <constraint firstAttribute="trailing" secondItem="GkJ-TN-mXE" secondAttribute="trailing" id="2jK-r1-Y6s"/>
                     <constraint firstItem="VlC-gW-dlS" firstAttribute="width" secondItem="LNW-7W-Q4I" secondAttribute="width" id="3Yh-xK-JKU"/>
@@ -104,19 +100,17 @@
                     <constraint firstItem="RnF-kS-BWX" firstAttribute="leading" secondItem="VlC-gW-dlS" secondAttribute="trailing" id="Jlm-Ux-nZV"/>
                     <constraint firstItem="LNW-7W-Q4I" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="KkY-NG-QcX"/>
                     <constraint firstItem="XSQ-h2-kUY" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="9" id="L0D-xN-3Ln"/>
-                    <constraint firstItem="WXY-nH-0a2" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="O1v-RZ-uJl"/>
                     <constraint firstItem="bOj-BI-A4e" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="5" id="PQq-9d-GFE"/>
                     <constraint firstAttribute="bottom" secondItem="VlC-gW-dlS" secondAttribute="bottom" id="Ph4-0A-M4O"/>
                     <constraint firstItem="RnF-kS-BWX" firstAttribute="height" secondItem="bOj-BI-A4e" secondAttribute="height" id="TVP-Xk-KyY"/>
-                    <constraint firstAttribute="trailing" secondItem="WXY-nH-0a2" secondAttribute="trailing" id="Vdu-tl-7kr"/>
                     <constraint firstItem="ayW-qT-FX0" firstAttribute="centerY" secondItem="RnF-kS-BWX" secondAttribute="centerY" id="XV4-6x-DWL"/>
                     <constraint firstItem="GkJ-TN-mXE" firstAttribute="leading" secondItem="bOj-BI-A4e" secondAttribute="trailing" constant="5" id="bjO-36-pgD"/>
                     <constraint firstItem="ayW-qT-FX0" firstAttribute="leading" secondItem="RnF-kS-BWX" secondAttribute="trailing" constant="5" id="jVG-oa-D4J"/>
                     <constraint firstItem="7Yn-C8-mkK" firstAttribute="leading" secondItem="i7R-EW-RES" secondAttribute="trailing" constant="5" id="kgK-F1-YnZ"/>
+                    <constraint firstItem="WLQ-mI-13p" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="lwu-Uy-59p"/>
                     <constraint firstItem="GkJ-TN-mXE" firstAttribute="centerY" secondItem="bOj-BI-A4e" secondAttribute="centerY" id="mIL-f7-WLQ"/>
                     <constraint firstItem="RnF-kS-BWX" firstAttribute="top" secondItem="i7R-EW-RES" secondAttribute="bottom" constant="5" id="nFZ-mx-4Wi"/>
                     <constraint firstItem="VlC-gW-dlS" firstAttribute="height" secondItem="LNW-7W-Q4I" secondAttribute="height" id="nde-Bc-Xzu"/>
-                    <constraint firstAttribute="bottom" secondItem="WXY-nH-0a2" secondAttribute="bottom" id="snL-kt-Xmx"/>
                     <constraint firstItem="bOj-BI-A4e" firstAttribute="leading" secondItem="LNW-7W-Q4I" secondAttribute="trailing" id="uvT-qO-8bO"/>
                     <constraint firstItem="i7R-EW-RES" firstAttribute="height" secondItem="bOj-BI-A4e" secondAttribute="height" id="x0s-8G-Bdc"/>
                     <constraint firstItem="XSQ-h2-kUY" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="xgW-4x-Erw"/>
@@ -135,12 +129,11 @@
                 <outlet property="label2" destination="7Yn-C8-mkK" id="59H-cj-dUo"/>
                 <outlet property="label3" destination="ayW-qT-FX0" id="y6k-Nk-loX"/>
                 <outlet property="nameLabel" destination="LNW-7W-Q4I" id="sjS-Gn-BFQ"/>
-                <outlet property="removeBtn" destination="WXY-nH-0a2" id="2xO-ON-ncF"/>
             </connections>
             <point key="canvasLocation" x="8.6956521739130448" y="158.03571428571428"/>
         </tableViewCell>
     </objects>
     <resources>
-        <image name="trashcan" width="21.5" height="21.5"/>
+        <image name="Indicator" width="9" height="14"/>
     </resources>
 </document>

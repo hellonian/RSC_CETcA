@@ -198,7 +198,7 @@
 "removeSceneMemberAlert" = "Are you sure remove the scene member？";
 "key" = "Key";
 "more" = "More";
-"nearbyDevices" = "Nearby devices";
+"nearbyDevices" = "Match Reset";
 "controlOptions" = "Control options";
 "nearbyAlert" = "Power off and power the device within 60 seconds.";
 "select_the_channel" = "Select The Channel";
@@ -237,3 +237,9 @@
 "mcu_not_respond_query" = "The device did not respond to a query about the received status of current page during upgrade.";
 "mcu_resends_fail" = "The number of the current page data resends has reached 20 but has not been successful during upgrade.";
 "mcu_end_fail" = "The device did not respond to an instruction to end the upgrade.";
+"upgrade_ble_firmware" = "Are you sure you want to upgrade the Bluetooth firmware of the selected device?";
+"go_back_select" = "Go back to select";
+"source_of" = "'s source wasn't be selected, please click done after selecting!";
+"music_of" = "'s music wasn't be selected, please click done after selecting!";
+"Scene5" = "Scene5";
+"Scene6" = "Scene6";

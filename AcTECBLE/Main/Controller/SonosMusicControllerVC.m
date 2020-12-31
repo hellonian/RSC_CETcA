@@ -16,8 +16,9 @@
 #import "SocketConnectionTool.h"
 #import "AFHTTPSessionManager.h"
 #import "PureLayout.h"
+#import <MBProgressHUD.h>
 
-@interface SonosMusicControllerVC ()<UITableViewDelegate, UITableViewDataSource, SocketConnectionToolDelegate>
+@interface SonosMusicControllerVC ()<UITableViewDelegate, UITableViewDataSource, SocketConnectionToolDelegate, MBProgressHUDDelegate>
 {
     NSData *retryCmd;
     NSInteger retryCount;
@@ -39,9 +40,9 @@
 @property (nonatomic, strong) SocketConnectionTool *socketTool;
 @property (weak, nonatomic) IBOutlet UIButton *netWorkSettingBtn;
 @property (nonatomic,strong) UIView *translucentBgView;
-@property (nonatomic,strong) UIActivityIndicatorView *indicatorView;
 @property (nonatomic, assign) NSInteger sendCount;
 @property (nonatomic, strong) UIAlertController *afterAlert;
+@property (nonatomic, strong) MBProgressHUD *updatingHud;
 
 @end
 
@@ -492,9 +493,12 @@
         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"channel" ascending:YES];
         [_listDataAry sortUsingDescriptors:[NSArray arrayWithObject:sort]];
         [_listView reloadData];
-        if (updateMCUBtn) {
-            updateMCUBtn.enabled = YES;
-        }
+    }
+}
+
+- (void)enableMCUUpdateBtn {
+    if (updateMCUBtn) {
+        updateMCUBtn.enabled = YES;
     }
 }
 
@@ -514,16 +518,59 @@
 }
 
 - (void)askUpdateMCU {
-    [self performSelector:@selector(askUpdateMCUDelay) withObject:nil afterDelay:40.0];
-    [self showLoading];
+    [self performSelector:@selector(askUpdateMCUDelay) withObject:nil afterDelay:60.0];
+    [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
+    if (!_updatingHud) {
+        _updatingHud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
+        _updatingHud.mode = MBProgressHUDModeAnnularDeterminate;
+        _updatingHud.delegate = self;
+    }
     NSDictionary *dic = @{@"type":@1,@"version":@(latestMCUSVersion),@"url":downloadAddress};
     NSString *jsString = [CSRUtilities convertToJsonData2:dic];
     NSData *jsData = [jsString dataUsingEncoding:NSUTF8StringEncoding];
     [self.socketTool updateMCU:jsData];
 }
 
-- (void)updateMCUResult:(BOOL)result {
+- (void)freshHudProgress:(CGFloat)progress {
+    if (_updatingHud) {
+        _updatingHud.progress = progress;
+    }
+}
+
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+    [hud removeFromSuperview];
+    hud = nil;
+}
+
+- (void)sendedDownloadAddress:(BOOL)result {
     if (result) {
+        [self freshHudProgress:0.23];
+    }else {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(askUpdateMCUDelay) object:nil];
+        if (_updatingHud) {
+            [_updatingHud hideAnimated:YES];
+        }
+        [self.translucentBgView removeFromSuperview];
+        _translucentBgView = nil;
+        if (!_afterAlert) {
+            _afterAlert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"fail", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+            [_afterAlert.view setTintColor:DARKORAGE];
+            UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                
+            }];
+            [_afterAlert addAction:yes];
+            [self presentViewController:_afterAlert animated:YES completion:nil];
+        }else {
+            [_afterAlert setMessage:AcTECLocalizedStringFromTable(@"fail", @"Localizable")];
+        }
+    }
+}
+
+- (void)updateMCUResult:(BOOL)result {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(askUpdateMCUDelay) object:nil];
+    if (result) {
+        [self freshHudProgress:0.78];
+        
         [updateMCUBtn removeFromSuperview];
         updateMCUBtn = nil;
         
@@ -535,8 +582,11 @@
         NSData *cmd = [[NSData alloc] initWithBytes:byte length:2];
         [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
     }else {
-        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(askUpdateMCUDelay) object:nil];
-        [self hideLoading];
+        if (_updatingHud) {
+            [_updatingHud hideAnimated:YES];
+        }
+        [self.translucentBgView removeFromSuperview];
+        _translucentBgView = nil;
         if (!_afterAlert) {
             _afterAlert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"fail", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
             [_afterAlert.view setTintColor:DARKORAGE];
@@ -561,7 +611,11 @@
     }else {
         //读取版本超时
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(askUpdateMCUDelay) object:nil];
-        [self hideLoading];
+        if (_updatingHud) {
+            [_updatingHud hideAnimated:YES];
+        }
+        [self.translucentBgView removeFromSuperview];
+        _translucentBgView = nil;
         if (!_afterAlert) {
             _afterAlert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"mcu_read_version_fail", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
             [_afterAlert.view setTintColor:DARKORAGE];
@@ -582,15 +636,19 @@
     BOOL higher = [dic[@"higher"] boolValue];
     if ([sourceDeviceId isEqualToNumber:_deviceId]) {
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(readVersionTimeOutMethod) object:nil];
-        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(askUpdateMCUDelay) object:nil];
-        [self hideLoading];
+        [self freshHudProgress:1.0];
+        if (_updatingHud) {
+            [_updatingHud hideAnimated:YES];
+        }
+        [self.translucentBgView removeFromSuperview];
+        _translucentBgView = nil;
         if (higher) {
             //版本更新
             if (!_afterAlert) {
                 _afterAlert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"mcu_update_success", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
                 [_afterAlert.view setTintColor:DARKORAGE];
                 UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-                    [self hideLoading];
+                    
                 }];
                 [_afterAlert addAction:yes];
                 [self presentViewController:_afterAlert animated:YES completion:nil];
@@ -603,7 +661,7 @@
                 _afterAlert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"mcu_version_less", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
                 [_afterAlert.view setTintColor:DARKORAGE];
                 UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-                    [self hideLoading];
+                    
                 }];
                 [_afterAlert addAction:yes];
                 [self presentViewController:_afterAlert animated:YES completion:nil];
@@ -624,32 +682,12 @@
     return _translucentBgView;
 }
 
-- (UIActivityIndicatorView *)indicatorView {
-    if (!_indicatorView) {
-        _indicatorView = [[UIActivityIndicatorView alloc] init];
-        _indicatorView.hidesWhenStopped = YES;
-        _indicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
-    }
-    return _indicatorView;
-}
-
-- (void)showLoading {
-    [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
-    [[UIApplication sharedApplication].keyWindow addSubview:self.indicatorView];
-    [self.indicatorView autoCenterInSuperview];
-    [self.indicatorView startAnimating];
-}
-
-- (void)hideLoading {
-    [self.indicatorView stopAnimating];
-    [self.indicatorView removeFromSuperview];
-    [self.translucentBgView removeFromSuperview];
-    self.indicatorView = nil;
-    self.translucentBgView = nil;
-}
-
 - (void)askUpdateMCUDelay {
-    [self hideLoading];
+    if (_updatingHud) {
+        [_updatingHud hideAnimated:YES];
+    }
+    [self.translucentBgView removeFromSuperview];
+    _translucentBgView = nil;
     if (!_afterAlert) {
         _afterAlert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"mcu_update_timeout", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
         [_afterAlert.view setTintColor:DARKORAGE];

@@ -15,7 +15,8 @@
 - (void)saveSonosInfo:(NSNumber *_Nullable)deviceID;
 - (void)socketConnectFail:(NSNumber *_Nullable)deviceID;
 - (void)updateMCUResult:(BOOL)result;
-
+- (void)enableMCUUpdateBtn;
+- (void)sendedDownloadAddress:(BOOL)result;
 @end
 
 NS_ASSUME_NONNULL_BEGIN

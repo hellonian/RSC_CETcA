@@ -6,7 +6,7 @@
 "2re-sp-GQ7.normalTitle" = "+";
 
 /* Class = "UILabel"; text = "Name"; ObjectID = "3S5-Q7-Z6k"; */
-"3S5-Q7-Z6k.text" = "标签";
+"3S5-Q7-Z6k.text" = "名称";
 
 /* Class = "UILabel"; text = "Power"; ObjectID = "4c3-6s-6gE"; */
 "4c3-6s-6gE.text" = "用电量";

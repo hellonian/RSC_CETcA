@@ -14,7 +14,6 @@
 @property (nonatomic, retain) NSNumber *deviceID;
 @property (nonatomic, retain) NSString *kindString;
 @property (nonatomic, retain) NSNumber *sceneID;
-@property (nonatomic, retain) NSNumber *editing;
 @property (nonatomic, retain) NSNumber *eveType;
 @property (nonatomic, retain) NSNumber *sortID;
 @property (nonatomic, retain) NSNumber *channel;

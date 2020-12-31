@@ -606,36 +606,13 @@
             
             [[CSRBluetoothLE sharedInstance] setTargetPeripheral:nil];
             [[CSRBluetoothLE sharedInstance] setTargetService:nil];
-            NSArray *devices = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
-            for (CSRDeviceEntity *deviceEntity in devices) {
-                NSString *adUuidString = [_targetPeripheral.uuidString substringToIndex:12];
-                NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
-                if ([adUuidString isEqualToString:deviceUuidString]) {
-                    deviceEntity.firVersion = nil;
-                    deviceEntity.cvVersion = nil;
-                    [[CSRDatabaseManager sharedInstance] saveContext];
-                    [self getVersion:deviceEntity.deviceId];
-                    break;
-                }
+            
+            if (self.otauDelegate && [self.otauDelegate respondsToSelector:@selector(regetVersion:)]) {
+                [self.otauDelegate regetVersion:[_targetPeripheral.uuidString substringToIndex:12]];
             }
         }
     }
     otauRunning = NO;
-}
-
-- (void)getVersion: (NSNumber *)deviceId {
-    [[DataModelManager shareInstance] sendCmdData:@"880100" toDeviceId:deviceId];
-    __weak OTAU *weakself = self;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
-        if (!deviceEntity.firVersion && !deviceEntity.cvVersion) {
-            [weakself getVersion:deviceId];
-        }else {
-            if (self.otauDelegate && [self.otauDelegate respondsToSelector:@selector(regetVersion)]) {
-                [self.otauDelegate regetVersion];
-            }
-        }
-    });
 }
 
 - (BOOL)enterBoot {

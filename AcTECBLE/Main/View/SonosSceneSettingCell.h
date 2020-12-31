@@ -33,6 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UIButton *selectBtn;
 @property (nonatomic, weak) id <SonosSceneSettingCellDelegate> delegate;
 @property (nonatomic, strong) NSIndexPath *cellIndexPath;
+@property (weak, nonatomic) IBOutlet UIButton *channelSelectBtn;
 
 - (void)configureCellWithSonosSelectModel:(SonosSelectModel *)model indexPath:(NSIndexPath *)indexPath;
 

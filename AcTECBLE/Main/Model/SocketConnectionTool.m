@@ -32,16 +32,7 @@
         [self.tcpSocketManager connectToHost:host onPort:port withTimeout:5 error:&connectError];
     }else {
         _hasConnected = YES;
-        Byte sByte[2];
-        sByte[0] = (self.sourceAddress & 0xFF00) >> 8;
-        sByte[1] = self.sourceAddress & 0x00FF;
-        NSInteger frameNumber = [self getFrameNumber];
-        Byte b[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, sByte[1], sByte[0], 0x01, 0x00, 0x01, 0x10};
-        NSData *d = [[NSData alloc] initWithBytes:b length:12];
-        int sum = [CSRUtilities atFromData:d];
-        Byte byte[] = {0xa5, frameNumber, 0x0e, 0x00, 0x00, 0x00, sByte[1], sByte[0], 0x01, 0x00, 0x01, 0x10, sum, 0xfe};
-        NSData *data = [[NSData alloc] initWithBytes:byte length:14];
-        [self writeData:data];
+        [self getDeviceList];
         
         [self.tcpSocketManager readDataWithTimeout:-1 tag:0];
     }
@@ -83,7 +74,8 @@
         if ((cmdByte[0] == 0x01 && cmdByte[1] == 0x80)
             || (cmdByte[0] == 0x01 && cmdByte[1] == 0x90)
             || (cmdByte[0] == 0x02 && cmdByte[1] == 0x90)
-            || (cmdByte[0] == 0x03 && cmdByte[1] == 0x10)) {
+            || (cmdByte[0] == 0x03 && cmdByte[1] == 0x10)
+            || (cmdByte[0] == 0x03 && cmdByte[1] == 0x80)) {
             Byte frameNumberByte[1];
             [data getBytes:frameNumberByte range:NSMakeRange(1, 1)];
             if (frameNumberByte[0] == self.frameNumber) {
@@ -116,10 +108,12 @@
                 Byte sourceByte[2];
                 [self.receiveData getBytes:sourceByte range:NSMakeRange(8, 2)];
                 self.sourceAddress = sourceByte[0] + sourceByte[1]*256;
-                
                 [self getDeviceList];
                 
             }else if (cmdByte[0] == 0x01 && cmdByte[1] == 0x90) {
+                if (self.delegate && [self.delegate respondsToSelector:@selector(enableMCUUpdateBtn)]) {
+                    [self.delegate enableMCUUpdateBtn];
+                }
                 NSString *json = [[NSString alloc] initWithData:[self.receiveData subdataWithRange:NSMakeRange(12, [self.receiveData length] - 14)] encoding:NSUTF8StringEncoding];
                 NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:json];
                 if ([jsonDictionary count] > 0) {
@@ -197,6 +191,16 @@
                     BOOL success = [jsonDictionary[@"success"] boolValue];
                     if (self.delegate && [self.delegate respondsToSelector:@selector(updateMCUResult:)]) {
                         [self.delegate updateMCUResult:success];
+                    }
+                }
+            }else if (cmdByte[0] == 0x03 && cmdByte[1] == 0x80) {
+                NSString *json = [[NSString alloc] initWithData:[self.receiveData subdataWithRange:NSMakeRange(12, [self.receiveData length] - 14)] encoding:NSUTF8StringEncoding];
+                
+                NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:json];
+                if ([jsonDictionary count] > 0) {
+                    BOOL success = [jsonDictionary[@"success"] boolValue];
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(sendedDownloadAddress:)]) {
+                        [self.delegate sendedDownloadAddress:success];
                     }
                 }
             }

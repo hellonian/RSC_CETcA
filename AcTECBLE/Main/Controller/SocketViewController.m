@@ -64,13 +64,20 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    UIButton *btn = [[UIButton alloc] init];
-    [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
-    [btn setTitle:AcTECLocalizedStringFromTable(@"Back", @"Localizable") forState:UIControlStateNormal];
-    [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
-    [btn addTarget:self action:@selector(closeAction) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
-    self.navigationItem.leftBarButtonItem = back;
+    if (_source == 1) {
+        UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"Done", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
+        self.navigationItem.rightBarButtonItem = done;
+        self.nameTf.enabled = NO;
+    }else {
+        UIButton *btn = [[UIButton alloc] init];
+        [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
+        [btn setTitle:AcTECLocalizedStringFromTable(@"Back", @"Localizable") forState:UIControlStateNormal];
+        [btn setTitleColor:DARKORAGE forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(closeAction) forControlEvents:UIControlEventTouchUpInside];
+        UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:btn];
+        self.navigationItem.leftBarButtonItem = back;
+    }
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(setPowerStateSuccess:)
                                                  name:@"setPowerStateSuccess"
@@ -682,6 +689,13 @@
         _indicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
     }
     return _indicatorView;
+}
+
+- (void)doneAction {
+    if (self.reloadDataHandle) {
+        self.reloadDataHandle();
+    }
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

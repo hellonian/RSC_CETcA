@@ -278,7 +278,7 @@ static DataModelManager *manager = nil;
         deviceEntity.bleHwVersion = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:bleHardwareVersion]];
         deviceEntity.bleFirVersion = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:blefirwareVersion]];
         [[CSRDatabaseManager sharedInstance] saveContext];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"reGetDataForPlaceChanged" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"reGetDataForPlaceChanged" object:nil userInfo:@{@"deviceId":sourceDeviceId}];
     }
     
     //获取遥控器电量
@@ -490,7 +490,7 @@ static DataModelManager *manager = nil;
         }
     }
     
-    else if ([dataStr hasPrefix:@"eb30"]||[dataStr hasPrefix:@"eb32"]||[dataStr hasPrefix:@"eb33"]) {
+    else if ([dataStr hasPrefix:@"eb30"]||[dataStr hasPrefix:@"eb32"]||[dataStr hasPrefix:@"eb33"]||[dataStr hasPrefix:@"eb36"]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"MCUUpdateDataCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"MCUUpdateDataCall":data}];
     }
     

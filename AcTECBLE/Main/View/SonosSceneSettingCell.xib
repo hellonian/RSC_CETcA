@@ -201,6 +201,7 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
             <connections>
+                <outlet property="channelSelectBtn" destination="Bvx-Ci-UwB" id="9IH-8R-2wD"/>
                 <outlet property="nameLabel" destination="Rc0-ZA-Hzq" id="NOu-G0-G6p"/>
                 <outlet property="playLabel" destination="tgq-pm-o9o" id="d6d-QA-bGe"/>
                 <outlet property="playtitle" destination="6ax-PC-4qr" id="ybV-u5-Gsz"/>

@@ -37,7 +37,7 @@ typedef enum OtauErrorTypes {
 
 @protocol OTAUDelegate <NSObject>
 
-- (void)regetVersion;
+- (void)regetVersion:(NSString *)uuidstring;
 - (void)updateProgressDelegteMethod:(CGFloat)percentage;
 
 @end

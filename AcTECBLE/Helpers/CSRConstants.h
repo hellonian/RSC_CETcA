@@ -60,7 +60,7 @@
 #define kLCDRemote @[@"GR1000B"]
 
 #define kSocketsOneChannel @[@"PS2400B",@"SR2400",@"SSR1200",@"GP10B",@"P2400",@"H1PPWVBX",@"PP10B",@"TP10B",@"KBSKTREL"]
-#define kSocketsTwoChannel @[@"P2400B-H",@"P2400B-H2",@"P2400B",@"H2PPHB-WH",@"K2PPHB",@"K2PPHBX",@"H2PPWHB"]
+#define kSocketsTwoChannel @[@"P2400B-H",@"P2400B-H2",@"P2400B",@"H2PPHB-WH",@"K2PPHB",@"K2PPHBX",@"H2PPWHB",@"H2PPHB"]
 
 #define kTwoChannelSwitchs @[@"GS20B-2G",@"ES500B-2G",@"TS20B-2G",@"PS20B-2G",@"TS8B-2G",@"PS8B-2G"]
 

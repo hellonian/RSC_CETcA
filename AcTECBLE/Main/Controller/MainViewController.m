@@ -82,7 +82,6 @@
 @property (nonatomic,strong) UIAlertController *sceneSetfailureAlert;
 
 @property (nonatomic,strong) NSMutableDictionary *semaphores;
-@property (weak, nonatomic) IBOutlet UILabel *connectedPLable;
 
 @property (nonatomic, strong) NSMutableArray *selects;
 @property (nonatomic, strong) NSMutableArray *srScenes;
@@ -1482,16 +1481,10 @@
 }
 
 - (void)bridgeConnectedNotification:(NSNotification *)notification {
-    NSDictionary *dic = notification.userInfo;
-    CBPeripheral *per = dic[@"peripheral"];
-    _connectedPLable.text = [NSString stringWithFormat:@"%@ %@",per.name,per.uuidString];
-    _connectedPLable.textColor = [UIColor whiteColor];
     [_mainCollectionView reloadData];
 }
 
 - (void)bridgeDisconnectedNotification:(NSNotification *)notification {
-    _connectedPLable.text = @"Bluetooth is not connected! ";
-    _connectedPLable.textColor = DARKORAGE;
     for (id obj in _mainCollectionView.dataArray) {
         if ([obj isKindOfClass:[CSRDeviceEntity class]]) {
             CSRDeviceEntity *d = (CSRDeviceEntity *)obj;
@@ -1653,8 +1646,6 @@
         }
     }
     [_mainCollectionView reloadData];
-    _connectedPLable.text = @"Bluetooth is not connected! ";
-    _connectedPLable.textColor = DARKORAGE;
 }
 
 @end

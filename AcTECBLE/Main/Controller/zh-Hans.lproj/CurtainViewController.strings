@@ -6,7 +6,7 @@
 "U6M-dH-5cU.text" = "设置";
 
 /* Class = "UILabel"; text = "Name"; ObjectID = "XKo-p8-b4L"; */
-"XKo-p8-b4L.text" = "标签";
+"XKo-p8-b4L.text" = "名称";
 
 /* Class = "UIButton"; normalTitle = "Setting"; ObjectID = "cme-Kv-heh"; */
 "cme-Kv-heh.normalTitle" = "设置";

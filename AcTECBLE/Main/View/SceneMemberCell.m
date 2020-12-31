@@ -485,13 +485,6 @@
     }
 }
 
-- (IBAction)removeAction:(UIButton *)sender {
-    if (self.cellDelegate && [self.cellDelegate respondsToSelector:@selector(removeSceneMember:)]) {
-        [self.cellDelegate removeSceneMember:_mSceneMember];
-    }
-}
-
-
 - (NSString *)fixBinStringEightLenth:(NSString *)bin {
     switch ([bin length]) {
         case 7:

@@ -3,7 +3,7 @@
 "177-z9-DiB.text" = "MAC";
 
 /* Class = "UILabel"; text = "Name"; ObjectID = "MT6-cq-JjY"; */
-"MT6-cq-JjY.text" = "标签";
+"MT6-cq-JjY.text" = "名称";
 
 /* Class = "UILabel"; text = "Control smart panel"; ObjectID = "waD-gy-O5f"; */
 "waD-gy-O5f.text" = "智能面板";
