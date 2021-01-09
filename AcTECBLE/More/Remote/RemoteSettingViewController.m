@@ -803,24 +803,30 @@
 }
 
 - (void)updateSuccess:(NSString *)value {
-    if (_updatingHud) {
-        [_updatingHud hideAnimated:YES];
+    if (_indicatorView) {
+        [_indicatorView removeFromSuperview];
+        _indicatorView = nil;
+    }
+    if (_translucentBgView) {
         [self.translucentBgView removeFromSuperview];
         self.translucentBgView = nil;
+    }
+    if (_updatingHud) {
+        [_updatingHud hideAnimated:YES];
         [updateMCUBtn removeFromSuperview];
         updateMCUBtn = nil;
-        if (!_mcuAlert) {
-            _mcuAlert = [UIAlertController alertControllerWithTitle:nil message:value preferredStyle:UIAlertControllerStyleAlert];
-            [_mcuAlert.view setTintColor:DARKORAGE];
-            UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
-            [_mcuAlert addAction:cancel];
-            [self presentViewController:_mcuAlert animated:YES completion:nil];
-        }else {
-            [_mcuAlert setMessage:value];
-        }
-        [[CSRBluetoothLE sharedInstance] successMCUUpdate];
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"BridgeConnectedNotification" object:nil];
     }
+    if (!_mcuAlert) {
+        _mcuAlert = [UIAlertController alertControllerWithTitle:nil message:value preferredStyle:UIAlertControllerStyleAlert];
+        [_mcuAlert.view setTintColor:DARKORAGE];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+        [_mcuAlert addAction:cancel];
+        [self presentViewController:_mcuAlert animated:YES completion:nil];
+    }else {
+        [_mcuAlert setMessage:value];
+    }
+    [[CSRBluetoothLE sharedInstance] successMCUUpdate];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"BridgeConnectedNotification" object:nil];
 }
 
 - (UIActivityIndicatorView *)indicatorView {

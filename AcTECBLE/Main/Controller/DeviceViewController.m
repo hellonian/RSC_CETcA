@@ -117,7 +117,6 @@
     // Do any additional setup after loading the view from its nib.
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange:) name:ZZAppLanguageDidChangeNotification object:nil];
-    
     _scrollView = [[UIScrollView alloc] init];
     _scrollView.userInteractionEnabled = YES;
     [self.view addSubview:_scrollView];
@@ -550,28 +549,34 @@
 }
 
 - (void)updateSuccess:(NSString *)value {
-    if (_updatingHud) {
-        [_updatingHud hideAnimated:YES];
+    if (_indicatorView) {
+        [_indicatorView removeFromSuperview];
+        _indicatorView = nil;
+    }
+    if (_translucentBgView) {
         [self.translucentBgView removeFromSuperview];
         self.translucentBgView = nil;
+    }
+    if (_updatingHud) {
+        [_updatingHud hideAnimated:YES];
         [updateMCUBtn removeFromSuperview];
         updateMCUBtn = nil;
         if (([_deviceEn.shortName isEqualToString:@"SD350"]||[_deviceEn.shortName isEqualToString:@"SSD150"])) {
             timer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(timerMethod:) userInfo:nil repeats:YES];
             [timer fire];
         }
-        if (!_mcuAlert) {
-            _mcuAlert = [UIAlertController alertControllerWithTitle:nil message:value preferredStyle:UIAlertControllerStyleAlert];
-            [_mcuAlert.view setTintColor:DARKORAGE];
-            UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
-            [_mcuAlert addAction:cancel];
-            [self presentViewController:_mcuAlert animated:YES completion:nil];
-        }else {
-            [_mcuAlert setMessage:value];
-        }
-        [[CSRBluetoothLE sharedInstance] successMCUUpdate];
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"BridgeConnectedNotification" object:nil];
     }
+    if (!_mcuAlert) {
+        _mcuAlert = [UIAlertController alertControllerWithTitle:nil message:value preferredStyle:UIAlertControllerStyleAlert];
+        [_mcuAlert.view setTintColor:DARKORAGE];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+        [_mcuAlert addAction:cancel];
+        [self presentViewController:_mcuAlert animated:YES completion:nil];
+    }else {
+        [_mcuAlert setMessage:value];
+    }
+    [[CSRBluetoothLE sharedInstance] successMCUUpdate];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"BridgeConnectedNotification" object:nil];
 }
 
 - (void)addSubviewBrightnessView {

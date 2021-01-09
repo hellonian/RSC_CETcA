@@ -27,7 +27,6 @@
     self = [super init];
     if (self) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MCUUpdateDataCall:) name:@"MCUUpdateDataCall" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedMCUVersionData:) name:@"receivedMCUVersionData" object:nil];
     }
     return self;
 }
@@ -85,8 +84,10 @@
 - (void)MCUUpdateDataCall:(NSNotification *)notification {
     NSDictionary *dic = notification.userInfo;
     NSNumber *mucDeviceId = dic[@"deviceId"];
+    NSData *data = dic[@"MCUUpdateDataCall"];
+    
     if ([mucDeviceId isEqualToNumber:_deviceID]) {
-        NSData *data = dic[@"MCUUpdateDataCall"];
+        
         Byte *byte = (Byte *)[data bytes];
         if (byte[1] == 0x30) {
             if (byte[2] == 0x01) {
@@ -99,8 +100,9 @@
         }else if (byte[1] == 0x33) {
             if (byte[2] == _currentPage) {
                 [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(nextPageOperationTimeOutMethod) object:nil];
-                NSInteger value = byte[3] + byte[4] * 256 + byte[5] * 256 * 256;
-                [self checkPage:value];
+                NSInteger lValue = byte[3] + byte[4] * 256 + byte[5] * 256 * 256 + byte[6] * 256 * 256 * 256;
+                NSInteger hValue =  byte[7] + byte[8] * 256 + byte[9] * 256 * 256;
+                [self checkPage:lValue :hValue];
             }
         }else if (byte[1] == 0x32) {
             [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(endOperationTimeOutMethod) object:nil];
@@ -118,7 +120,7 @@
             [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceID data:cmd];
         }else if (byte[1] == 0x36) {
             [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(pageLengthCmdTimeOutMethod) object:nil];
-            _pageLength = byte[2]*256+byte[1];
+            _pageLength = byte[2]*256+byte[3];
             [self sendAskUpdateCmd];
         }
     }
@@ -164,8 +166,7 @@
 }
 
 - (void)nextPageOperation {
-    _sendCount = 0;
-    [self performSelector:@selector(nextPageOperationTimeOutMethod) withObject:nil afterDelay:2.0];
+    
     _retryCount = 0;
     NSInteger rest = [_binData length] - _pageLength * _currentPage;
     NSInteger cpLenth = _pageLength;
@@ -174,7 +175,8 @@
     }
     NSData *pageData = [_binData subdataWithRange:NSMakeRange(_pageLength * _currentPage, cpLenth)];
     
-    for (int i = 0; i <= [pageData length] / 6; i ++) {
+    NSInteger n = cpLenth%6 != 0 ? cpLenth/6 : cpLenth/6-1;
+    for (int i = 0; i <= n; i ++) {
         NSInteger bagRest = [pageData length] - 6 * i;
         NSInteger cbLenth = 6;
         if (bagRest <= 6) {
@@ -189,6 +191,8 @@
         
         [NSThread sleepForTimeInterval:0.05];
     }
+    _sendCount = 0;
+    [self performSelector:@selector(nextPageOperationTimeOutMethod) withObject:nil afterDelay:2.0];
 }
 
 - (void)nextPageOperationTimeOutMethod {
@@ -204,7 +208,8 @@
     }
 }
 
-- (void)checkPage:(NSInteger)value {
+- (void)checkPage:(NSInteger)lValue :(NSInteger)hValue{
+    
     NSInteger rest = [_binData length] - _pageLength * _currentPage;
     NSInteger cpLenth = _pageLength;
     if (rest <= _pageLength) {
@@ -213,36 +218,96 @@
     NSData *pageData = [_binData subdataWithRange:NSMakeRange(_pageLength * _currentPage, cpLenth)];
     
     BOOL exit = NO;
-    for (int i = 0; i <= [pageData length] / 6; i ++) {
-        if (!((value & (NSInteger)pow(2, i)) >> i)) {
-            exit = YES;
-            break;
+    
+    if (cpLenth <= 192) {
+        NSInteger n = cpLenth%6 != 0 ? cpLenth/6 : cpLenth/6-1;
+        for (int i=0; i<=n; i++) {
+            if (!(lValue & (NSInteger)pow(2, i)) >> i) {
+                exit = YES;
+                break;
+            }
+        }
+    }else {
+        for (int i=0; i<32; i++) {
+            if (!(lValue & (NSInteger)pow(2, i)) >> i) {
+                exit = YES;
+                break;
+            }
+        }
+        if (!exit) {
+            NSInteger n = cpLenth%6 != 0 ? cpLenth/6-32 : cpLenth/6-32-1;
+            for (int i=0; i<=n; i++) {
+                if (!(hValue & (NSInteger)pow(2, i)) >> i) {
+                    exit = YES;
+                    break;
+                }
+            }
         }
     }
+    
     if (exit) {
         //页内有重发
         if (_retryCount < 20) {
-            _sendCount = 0;
-            [self performSelector:@selector(nextPageOperationTimeOutMethod) withObject:nil afterDelay:2.0];
             
-            for (int i = 0; i <= [pageData length] / 6; i ++) {
-                if (!((value & (NSInteger)pow(2, i)) >> i)) {
-                    NSInteger bagRest = [pageData length] - 6 * i;
-                    NSInteger cbLenth = 6;
-                    if (bagRest <= 6) {
-                        cbLenth = bagRest;
+            if (cpLenth <= 192) {
+                NSInteger n = cpLenth%6 != 0 ? cpLenth/6 : cpLenth/6-1;
+                for (int i=0; i<=n; i++) {
+                    if (!(lValue & (NSInteger)pow(2, i)) >> i) {
+                        NSInteger bagRest = [pageData length] - 6 * i;
+                        NSInteger cbLenth = 6;
+                        if (bagRest <= 6) {
+                            cbLenth = bagRest;
+                        }
+                        NSData *bagData = [pageData subdataWithRange:NSMakeRange(6 * i, cbLenth)];
+                        Byte byte[] = {0xea, 0x31, _currentPage, i};
+                        NSData *head = [[NSData alloc] initWithBytes:byte length:4];
+                        NSMutableData *bagCmd = [[NSMutableData alloc] initWithData:head];
+                        [bagCmd appendData:bagData];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceID data:bagCmd];
+                        
+                        [NSThread sleepForTimeInterval:0.05];
                     }
-                    NSData *bagData = [pageData subdataWithRange:NSMakeRange(6 * i, cbLenth)];
-                    Byte byte[] = {0xea, 0x31, _currentPage, i};
-                    NSData *head = [[NSData alloc] initWithBytes:byte length:4];
-                    NSMutableData *bagCmd = [[NSMutableData alloc] initWithData:head];
-                    [bagCmd appendData:bagData];
-                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceID data:bagCmd];
-                    
-                    [NSThread sleepForTimeInterval:0.05];
+                }
+            }else {
+                for (int i=0; i<32; i++) {
+                    if (!(lValue & (NSInteger)pow(2, i)) >> i) {
+                        NSInteger bagRest = [pageData length] - 6 * i;
+                        NSInteger cbLenth = 6;
+                        if (bagRest <= 6) {
+                            cbLenth = bagRest;
+                        }
+                        NSData *bagData = [pageData subdataWithRange:NSMakeRange(6 * i, cbLenth)];
+                        Byte byte[] = {0xea, 0x31, _currentPage, i};
+                        NSData *head = [[NSData alloc] initWithBytes:byte length:4];
+                        NSMutableData *bagCmd = [[NSMutableData alloc] initWithData:head];
+                        [bagCmd appendData:bagData];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceID data:bagCmd];
+                        
+                        [NSThread sleepForTimeInterval:0.05];
+                    }
+                }
+                NSInteger n = cpLenth%6 != 0 ? cpLenth/6-32 : cpLenth/6-32-1;
+                for (int i=0; i<=n; i++) {
+                    if (!(hValue & (NSInteger)pow(2, i)) >> i) {
+                        NSInteger bagRest = [pageData length] - 6 * (i+32);
+                        NSInteger cbLenth = 6;
+                        if (bagRest <= 6) {
+                            cbLenth = bagRest;
+                        }
+                        NSData *bagData = [pageData subdataWithRange:NSMakeRange(6 * (i+32), cbLenth)];
+                        Byte byte[] = {0xea, 0x31, _currentPage, (i+32)};
+                        NSData *head = [[NSData alloc] initWithBytes:byte length:4];
+                        NSMutableData *bagCmd = [[NSMutableData alloc] initWithData:head];
+                        [bagCmd appendData:bagData];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceID data:bagCmd];
+                        
+                        [NSThread sleepForTimeInterval:0.05];
+                    }
                 }
             }
             
+            _sendCount = 0;
+            [self performSelector:@selector(nextPageOperationTimeOutMethod) withObject:nil afterDelay:2.0];
             _retryCount ++;
         }else {
             //提示升级失败——单页重发次数已达20次
@@ -251,6 +316,7 @@
     }else {
         //下一页
         if (_currentPage == _pageCount-1) {
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedMCUVersionData:) name:@"receivedMCUVersionData" object:nil];
             //数据发送完毕
             _sendCount = 0;
             [self performSelector:@selector(endOperationTimeOutMethod) withObject:nil afterDelay:3.0];
@@ -304,6 +370,7 @@
     NSNumber *sourceDeviceId = dic[@"deviceId"];
     BOOL higher = [dic[@"higher"] boolValue];
     if ([sourceDeviceId isEqualToNumber:_deviceID]) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"receivedMCUVersionData" object:nil];
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(readVersionTimeOutMethod) object:nil];
         if (higher) {
             //版本更新

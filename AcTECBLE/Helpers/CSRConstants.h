@@ -97,9 +97,23 @@
 #define kMusicControlRemoteV @[@"PR6BEM",@"PR6B-M"]
 #define kSonosMusicController @[@"MTCPB-M2"]
 
+#define kPIRDevice @[@"SI08B"]
+
 #define PLAYMODE @[AcTECLocalizedStringFromTable(@"single_cycle", @"Localizable"),AcTECLocalizedStringFromTable(@"loop_playback", @"Localizable"),AcTECLocalizedStringFromTable(@"random", @"Localizable"),AcTECLocalizedStringFromTable(@"order", @"Localizable")]
 #define PLAYMODE_SONOS @[AcTECLocalizedStringFromTable(@"single", @"Localizable"),AcTECLocalizedStringFromTable(@"single_cycle", @"Localizable"),AcTECLocalizedStringFromTable(@"random", @"Localizable"),AcTECLocalizedStringFromTable(@"order", @"Localizable")]
 #define AUDIOSOURCES @[@"FM",@"DVD",@"MP3",@"AUX",@"NET RADIO",@"CLOUD MUSIC",@"AIRPLAY",@"DLNA"]
+
+#define E_series_dimmer @[@"D350B"]
+#define E_series_single_wire_switch @[@"S350B"]
+#define E_series_knob_dimmer @[@"D350SB"]
+#define T_series_panel @[@"TS5B", @"TS8B-2G", @"TS12B-3G", @"TD300B", @"TD400B-2G", @"TD400B-3G"]
+#define P_series_panel @[@"PS5B", @"PS8B-2G", @"PS12B-3G", @"PD300B", @"PD400B-2G", @"PD400B-3G"]
+#define IEM_LED_driver @[@"IEM-12B-TW", @"IEM-12B-RGBCW", @"IEM-25B-TW"]
+#define LIM_LED_driver @[@"LI-45B"]
+#define IE_LED_driver @[@"IE-RGBCW", @"IE-CW"]
+#define C3AB_LED_driver @[@"C3AB-CW", @"C3AB-RGB", @"C3AB-RGBCW"]
+#define C2AB_LED_driver @[@"C2AB"]
+#define hidden_controller @[@"S10IB", @"D300IB", @"D0/1-10IB", @"DDSB", @"RB04", @"C300IB", @"RB07"]
 
 #pragma mark - Notifications
 

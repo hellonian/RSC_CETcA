@@ -1174,7 +1174,8 @@
         || [kSceneRemotesThreeKeysV containsObject:shortName]
         || [kSceneRemotesTwoKeysV containsObject:shortName]
         || [kSceneRemotesOneKeyV containsObject:shortName]
-        || [kDALIDeviceTwo containsObject:shortName]) {
+        || [kDALIDeviceTwo containsObject:shortName]
+        || [kPIRDevice containsObject:shortName]) {
         return YES;
     }
     return NO;
@@ -1434,6 +1435,13 @@
     return NO;
 }
 
++ (BOOL)belongToPIRDevice:(NSString *)shortName {
+    if ([kPIRDevice containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
 //十六进制字符串转十进制数据
 + (NSInteger)numberWithHexString:(NSString *)hexString {
     
@@ -1666,6 +1674,73 @@
         value /= 2;
     }
     return string;
+}
+
++ (BOOL)belongToESeriesDimmer:(NSString *)shortName {
+    if ([E_series_dimmer containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
++ (BOOL)belongToESeriesSingleWireSwitch:(NSString *)shortName {
+    if ([E_series_single_wire_switch containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
++ (BOOL)belongToESeriesKnobDimmer:(NSString *)shortName {
+    if ([E_series_knob_dimmer containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
++ (BOOL)belongToTSeriesPanel:(NSString *)shortName {
+    if ([T_series_panel containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
++ (BOOL)belongToPSeriesPanel:(NSString *)shortName {
+    if ([P_series_panel containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
++ (BOOL)belongToIEMLEDDriver:(NSString *)shortName {
+    if ([IEM_LED_driver containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
++ (BOOL)belongToLIMLEDDriver:(NSString *)shortName {
+    if ([LIM_LED_driver containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
++ (BOOL)belongToIELEDDriver:(NSString *)shortName {
+    if ([IE_LED_driver containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
++ (BOOL)belongToC3ABLEDDriver:(NSString *)shortName {
+    if ([C3AB_LED_driver containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
++ (BOOL)belongToC2ABLEDDriver:(NSString *)shortName {
+    if ([C2AB_LED_driver containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
++ (BOOL)belongToHiddenController:(NSString *)shortName {
+    if ([hidden_controller containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
 }
 
 @end

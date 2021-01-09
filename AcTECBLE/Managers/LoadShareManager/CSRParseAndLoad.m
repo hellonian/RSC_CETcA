@@ -1033,16 +1033,18 @@
                 if (![sceneDict[@"`c_isCustom`"] boolValue]) {
                     if ([sceneDict[@"`c_resIndex`"] intValue] == 0) {
                         sceneObj.sceneID = @0;
+                        sceneObj.sceneName = @"Home";
                     }else if ([sceneDict[@"`c_resIndex`"] intValue] == 1) {
                         sceneObj.sceneID = @1;
+                        sceneObj.sceneName = @"Away";
                     }else {
                         sceneObj.sceneID = sceneDict[@"`_id`"];
                     }
                 }else {
                     sceneObj.sceneID = sceneDict[@"`_id`"];
+                    sceneObj.sceneName = sceneDict[@"`c_name`"];
                 }
                 sceneObj.iconID = sceneDict[@"`c_resIndex`"];
-                sceneObj.sceneName = sceneDict[@"`c_name`"];
                 sceneObj.rcIndex = sceneDict[@"`c_csrsceneid`"];
                 sceneObj.srDeviceId = sceneDict[@"`c_csrdeviceid`"];
                 sceneObj.enumMethod = @(NO);

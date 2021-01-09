@@ -21,7 +21,6 @@
 - (void)mainCollectionViewDelegateSelectAction:(id)cell;
 - (void)mainCollectionViewDelegateClickEmptyGroupCellAction:(NSIndexPath *)cellIndexPath;
 - (void)mainCollectionViewCellDelegateSceneCellTapAction:(NSNumber *)sceneId;
-- (void)mainCollectionViewCellDelegateCurtainTapAction:(CSRDeviceEntity *)deviceEntity;
 - (void)mainCollectionViewCellDelegateTwoFingersTapAction:(NSNumber *)groupId;
 
 @end

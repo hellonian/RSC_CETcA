@@ -1161,38 +1161,42 @@
 #pragma mark - timer
 
 - (void)timerDeviceEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId {
-    for (TimerEntity *timer in [CSRAppStateManager sharedInstance].selectedPlace.timers) {
-        NSMutableArray *ary = [[NSMutableArray alloc] init];
-        for (TimerDeviceEntity  *timerDevice in timer.timerDevices) {
-            if ([timerDevice.deviceID isEqualToNumber:deviceId]) {
-                [ary addObject:timerDevice];
+    if (deviceId) {
+        for (TimerEntity *timer in [CSRAppStateManager sharedInstance].selectedPlace.timers) {
+            NSMutableArray *ary = [[NSMutableArray alloc] init];
+            for (TimerDeviceEntity  *timerDevice in timer.timerDevices) {
+                if ([timerDevice.deviceID isEqualToNumber:deviceId]) {
+                    [ary addObject:timerDevice];
+                }
+            }
+            for (TimerDeviceEntity  *timerDevice in ary) {
+                [timer removeTimerDevicesObject:timerDevice];
+                [self.managedObjectContext deleteObject:timerDevice];
+            }
+            if (timer.timerDevices.count == 0) {
+                [self.managedObjectContext deleteObject:timer];
             }
         }
-        for (TimerDeviceEntity  *timerDevice in ary) {
-            [timer removeTimerDevicesObject:timerDevice];
-            [self.managedObjectContext deleteObject:timerDevice];
-        }
-        if (timer.timerDevices.count == 0) {
-            [self.managedObjectContext deleteObject:timer];
-        }
+        [self saveContext];
     }
-    [self saveContext];
 }
 
 - (void)dropEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId {
-    for (GalleryEntity *gallery in [CSRAppStateManager sharedInstance].selectedPlace.gallerys) {
-        NSMutableArray *ary = [[NSMutableArray alloc] init];
-        for (DropEntity *drop in gallery.drops) {
-            if ([drop.deviceID isEqualToNumber:deviceId]) {
-                [ary addObject:drop];
+    if (deviceId) {
+        for (GalleryEntity *gallery in [CSRAppStateManager sharedInstance].selectedPlace.gallerys) {
+            NSMutableArray *ary = [[NSMutableArray alloc] init];
+            for (DropEntity *drop in gallery.drops) {
+                if ([drop.deviceID isEqualToNumber:deviceId]) {
+                    [ary addObject:drop];
+                }
+            }
+            for (DropEntity *drop in ary) {
+                [gallery removeDropsObject:drop];
+                [self.managedObjectContext deleteObject:drop];
             }
         }
-        for (DropEntity *drop in ary) {
-            [gallery removeDropsObject:drop];
-            [self.managedObjectContext deleteObject:drop];
-        }
+        [self saveContext];
     }
-    [self saveContext];
 }
 
 - (void)sceneMemberEntityDeleteWhenDeleteDeviceEntity:(NSNumber *)deviceId {
@@ -1216,16 +1220,18 @@
 #pragma mark - sonos
 
 - (void)cleanSonos:(NSNumber *)deviceID {
-    for (CSRDeviceEntity *deviceEntity in [CSRAppStateManager sharedInstance].selectedPlace.devices) {
-        if ([deviceEntity.deviceId isEqualToNumber:deviceID]) {
-            if ([deviceEntity.sonoss count]>0) {
-                [deviceEntity removeSonoss:deviceEntity.sonoss];
+    if (deviceID) {
+        for (CSRDeviceEntity *deviceEntity in [CSRAppStateManager sharedInstance].selectedPlace.devices) {
+            if ([deviceEntity.deviceId isEqualToNumber:deviceID]) {
+                if ([deviceEntity.sonoss count]>0) {
+                    [deviceEntity removeSonoss:deviceEntity.sonoss];
+                }
+                for (SonosEntity *sonosEntity in deviceEntity.sonoss) {
+                    [self.managedObjectContext deleteObject:sonosEntity];
+                }
+                [self saveContext];
+                break;
             }
-            for (SonosEntity *sonosEntity in deviceEntity.sonoss) {
-                [self.managedObjectContext deleteObject:sonosEntity];
-            }
-            [self saveContext];
-            break;
         }
     }
 }

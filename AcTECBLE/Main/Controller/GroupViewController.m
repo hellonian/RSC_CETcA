@@ -170,7 +170,6 @@
         deviceModel.deviceId = device.deviceId;
         deviceModel.deviceName = device.name;
         deviceModel.deviceShortName = device.shortName;
-        deviceModel.curtainDirection = device.remoteBranch;
         [_devicesCollectionView.dataArray addObject:deviceModel];
     }];
 }

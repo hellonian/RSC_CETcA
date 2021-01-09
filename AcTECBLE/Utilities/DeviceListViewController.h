@@ -33,6 +33,7 @@ typedef void(^DeviceListSelectedHandle)(NSArray *devices);
 @property (nonatomic,strong)NSArray *originalMembers;
 @property (nonatomic,strong)NSNumber *sourceID;
 @property (nonatomic,strong)NSString *remoteBranch;
+@property (nonatomic, assign) NSInteger source;
 
 - (void)getSelectedDevices:(DeviceListSelectedHandle)handle;
 

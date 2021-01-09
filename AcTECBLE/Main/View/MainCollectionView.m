@@ -165,12 +165,6 @@
     }
 }
 
-- (void)superCollectionViewCellDelegateCurtainTapAction:(CSRDeviceEntity *)deviceEntity {
-    if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewCellDelegateCurtainTapAction:)]) {
-        [self.mainDelegate mainCollectionViewCellDelegateCurtainTapAction:deviceEntity];
-    }
-}
-
 - (void)superCollectionViewCellDelegateTwoFingersTapAction:(NSNumber *)groupId {
     if (self.mainDelegate && [self.mainDelegate respondsToSelector:@selector(mainCollectionViewCellDelegateTwoFingersTapAction:)]) {
         [self.mainDelegate mainCollectionViewCellDelegateTwoFingersTapAction:groupId];

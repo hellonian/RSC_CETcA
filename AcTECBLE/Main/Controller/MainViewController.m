@@ -50,6 +50,8 @@
 #import "MusicControllerVC.h"
 #import "SonosMusicControllerVC.h"
 
+#import "PIRDeviceVC.h"
+
 @interface MainViewController ()<MainCollectionViewDelegate,PlaceColorIconPickerViewDelegate,MBProgressHUDDelegate>
 {
     NSNumber *selectedSceneId;
@@ -74,9 +76,6 @@
 @property (nonatomic,strong) MBProgressHUD *hud;
 
 @property (weak, nonatomic) IBOutlet TopImageView *topImageView;
-
-@property (nonatomic,strong) UIView *curtainKindView;
-@property (nonatomic,strong) CSRDeviceEntity *selectedCurtainDeviceEntity;
 
 @property (nonatomic,strong) MBProgressHUD *sceneSettingHud;
 @property (nonatomic,strong) UIAlertController *sceneSetfailureAlert;
@@ -784,33 +783,21 @@
                   || [CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName]
                   || [CSRUtilities belongToHOneChannelCurtainController:deviceEntity.shortName]) {
             
-            if (([CSRUtilities belongToOneChannelCurtainController:deviceEntity.shortName]
-                 || [CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName])
-                && deviceEntity.remoteBranch.length == 0) {
-                _selectedCurtainDeviceEntity = deviceEntity;
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
-                    [[UIApplication sharedApplication].keyWindow addSubview:self.curtainKindView];
-                    [self.curtainKindView autoCenterInSuperview];
-                    [self.curtainKindView autoSetDimensionsToSize:CGSizeMake(271, 166)];
-                });
+            CurtainViewController *curtainVC = [[CurtainViewController alloc] init];
+            curtainVC.deviceId = mainCell.deviceId;
+            __weak MainViewController *weakSelf = self;
+            curtainVC.reloadDataHandle = ^{
+                [weakSelf getMainDataArray];
+            };
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:curtainVC];
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
             }else {
-                CurtainViewController *curtainVC = [[CurtainViewController alloc] init];
-                curtainVC.deviceId = mainCell.deviceId;
-                __weak MainViewController *weakSelf = self;
-                curtainVC.reloadDataHandle = ^{
-                    [weakSelf getMainDataArray];
-                };
-                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:curtainVC];
-                if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
-                    nav.modalPresentationStyle = UIModalPresentationFullScreen;
-                }else {
-                    nav.modalPresentationStyle = UIModalPresentationPopover;
-                }
-                [self presentViewController:nav animated:YES completion:nil];
-                nav.popoverPresentationController.sourceRect = mainCell.bounds;
-                nav.popoverPresentationController.sourceView = mainCell;
+                nav.modalPresentationStyle = UIModalPresentationPopover;
             }
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
             
         }else if ([CSRUtilities belongToFanController:deviceEntity.shortName]) {
             FanViewController *fanVC = [[FanViewController alloc] init];
@@ -912,6 +899,21 @@
                 [self getMainDataArray];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:sonosVC];
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
+        }else if ([CSRUtilities belongToPIRDevice:deviceEntity.shortName]) {
+            PIRDeviceVC *pirvc = [[PIRDeviceVC alloc] init];
+            pirvc.deviceId = mainCell.deviceId;
+            pirvc.reloadDataHandle = ^{
+                [self getMainDataArray];
+            };
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:pirvc];
             if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
                 nav.modalPresentationStyle = UIModalPresentationFullScreen;
             }else {
@@ -1166,40 +1168,6 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
-- (void)mainCollectionViewCellDelegateCurtainTapAction:(CSRDeviceEntity *)deviceEntity {
-
-    _selectedCurtainDeviceEntity = deviceEntity;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
-        [[UIApplication sharedApplication].keyWindow addSubview:self.curtainKindView];
-        [self.curtainKindView autoCenterInSuperview];
-        [self.curtainKindView autoSetDimensionsToSize:CGSizeMake(271, 166)];
-    });
-}
-
-- (void)selectTypeOfCurtain:(UIButton *)sender {
-    
-    if (sender.tag == 11) {
-        _selectedCurtainDeviceEntity.remoteBranch = @"ch";
-    }else if (sender.tag == 22) {
-        _selectedCurtainDeviceEntity.remoteBranch = @"cv";
-    }else if (sender.tag == 33) {
-        _selectedCurtainDeviceEntity.remoteBranch = @"chh";
-    }else if (sender.tag == 44) {
-        _selectedCurtainDeviceEntity.remoteBranch = @"cvv";
-    }
-    [[CSRDatabaseManager sharedInstance] saveContext];
-    
-    [self getMainDataArray];
-    
-    _selectedCurtainDeviceEntity = nil;
-    
-    [self.curtainKindView removeFromSuperview];
-    self.curtainKindView = nil;
-    [self.translucentBgView removeFromSuperview];
-    self.translucentBgView = nil;
-}
-
 #pragma mark - notification
 
 - (void)deleteStatus:(NSNotification *)notification
@@ -1395,51 +1363,6 @@
         _translucentBgView.alpha = 0.4;
     }
     return _translucentBgView;
-}
-
-- (UIView *)curtainKindView {
-    if (!_curtainKindView) {
-        _curtainKindView = [[UIView alloc] initWithFrame:CGRectZero];
-        _curtainKindView.backgroundColor = [UIColor whiteColor];
-        _curtainKindView.alpha = 0.9;
-        _curtainKindView.layer.cornerRadius = 14;
-        _curtainKindView.layer.masksToBounds = YES;
-        
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 271, 30)];
-        titleLabel.text = AcTECLocalizedStringFromTable(@"ChooseTypeOfCurtain", @"Localizable");
-        titleLabel.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
-        titleLabel.textAlignment = NSTextAlignmentCenter;
-        [_curtainKindView addSubview:titleLabel];
-        
-        UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 30, 271, 1)];
-        line.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
-        [_curtainKindView addSubview:line];
-        
-        UIButton *horizontalBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 31, 135, 135)];
-        [horizontalBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
-        [_curtainKindView addSubview:horizontalBtn];
-        
-        UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(135, 31, 1, 135)];
-        line1.backgroundColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
-        [_curtainKindView addSubview:line1];
-        
-        UIButton *verticalBtn = [[UIButton alloc] initWithFrame:CGRectMake(136, 31, 135, 135)];
-        [verticalBtn addTarget:self action:@selector(selectTypeOfCurtain:) forControlEvents:UIControlEventTouchUpInside];
-        [_curtainKindView addSubview:verticalBtn];
-        
-        if ([CSRUtilities belongToOneChannelCurtainController:_selectedCurtainDeviceEntity.shortName]) {
-            horizontalBtn.tag = 11;
-            [horizontalBtn setImage:[UIImage imageNamed:@"curtainHImage"] forState:UIControlStateNormal];
-            verticalBtn.tag = 22;
-            [verticalBtn setImage:[UIImage imageNamed:@"curtainVImage"] forState:UIControlStateNormal];
-        }else if ([CSRUtilities belongToTwoChannelCurtainController:_selectedCurtainDeviceEntity.shortName]) {
-            horizontalBtn.tag = 33;
-            [horizontalBtn setImage:[UIImage imageNamed:@"curtainHHImage"] forState:UIControlStateNormal];
-            verticalBtn.tag = 44;
-            [verticalBtn setImage:[UIImage imageNamed:@"curtainVVImage"] forState:UIControlStateNormal];
-        }
-    }
-    return _curtainKindView;
 }
 
 - (NSMutableDictionary *)semaphores {

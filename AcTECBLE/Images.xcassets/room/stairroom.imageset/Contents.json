@@ -1,23 +1,23 @@
 {
   "images" : [
     {
+      "filename" : "画板 29.png",
       "idiom" : "universal",
-      "filename" : "Area_Basement.png",
       "scale" : "1x"
     },
     {
+      "filename" : "画板 29@2x.png",
       "idiom" : "universal",
-      "filename" : "Area_Basement@2x.png",
       "scale" : "2x"
     },
     {
+      "filename" : "画板 29@3x.png",
       "idiom" : "universal",
-      "filename" : "Area_Basement@3x.png",
       "scale" : "3x"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   }
 }

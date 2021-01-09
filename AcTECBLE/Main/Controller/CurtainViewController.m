@@ -99,17 +99,10 @@
         self.macAddressLabel.text = doneTitle;
         self.controllChannel = 1;
         if ([CSRUtilities belongToOneChannelCurtainController:_curtainEntity.shortName]) {
-            if ([_curtainEntity.remoteBranch isEqualToString:@"ch"]) {
-                self.channelSelectSeg.hidden = YES;
-                self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainHImage"];
-                [self.openBtn setImage:[UIImage imageNamed:@"curtainHOpen"] forState:UIControlStateNormal];
-                [self.closeBtn setImage:[UIImage imageNamed:@"curtainHClose"] forState:UIControlStateNormal];
-            }else if ([_curtainEntity.remoteBranch isEqualToString:@"cv"]) {
-                self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainVImage"];
-                self.channelSelectSeg.hidden = YES;
-                [self.openBtn setImage:[UIImage imageNamed:@"curtainVOpen"] forState:UIControlStateNormal];
-                [self.closeBtn setImage:[UIImage imageNamed:@"curtainVClose"] forState:UIControlStateNormal];
-            }
+            self.channelSelectSeg.hidden = YES;
+            self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainHImage"];
+            [self.openBtn setImage:[UIImage imageNamed:@"curtainHOpen"] forState:UIControlStateNormal];
+            [self.closeBtn setImage:[UIImage imageNamed:@"curtainHClose"] forState:UIControlStateNormal];
             
             DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
             if ([_curtainEntity.shortName isEqualToString:@"C300IB"] || [_curtainEntity.shortName isEqualToString:@"C300IBH"]/*旧设备*/) {
@@ -119,15 +112,9 @@
             }
             
         }else if ([CSRUtilities belongToTwoChannelCurtainController:_curtainEntity.shortName]) {
-            if ([_curtainEntity.remoteBranch isEqualToString:@"chh"]) {
-                self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainHHImage"];
-                [self.openBtn setImage:[UIImage imageNamed:@"curtainHOpen"] forState:UIControlStateNormal];
-                [self.closeBtn setImage:[UIImage imageNamed:@"curtainHClose"] forState:UIControlStateNormal];
-            }else if ([_curtainEntity.remoteBranch isEqualToString:@"cvv"]) {
-                self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainVVImage"];
-                [self.openBtn setImage:[UIImage imageNamed:@"curtainVOpen"] forState:UIControlStateNormal];
-                [self.closeBtn setImage:[UIImage imageNamed:@"curtainVClose"] forState:UIControlStateNormal];
-            }
+            self.curtainTypeImageView.image = [UIImage imageNamed:@"curtainHImage"];
+            [self.openBtn setImage:[UIImage imageNamed:@"curtainHOpen"] forState:UIControlStateNormal];
+            [self.closeBtn setImage:[UIImage imageNamed:@"curtainHClose"] forState:UIControlStateNormal];
             
             DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
             [_curtainSlider setValue:model.channel1Level animated:YES];
@@ -249,24 +236,30 @@
 }
 
 - (void)updateSuccess:(NSString *)value {
-    if (_updatingHud) {
-        [_updatingHud hideAnimated:YES];
+    if (_indicatorView) {
+        [_indicatorView removeFromSuperview];
+        _indicatorView = nil;
+    }
+    if (_translucentBgView) {
         [self.translucentBgView removeFromSuperview];
         self.translucentBgView = nil;
+    }
+    if (_updatingHud) {
+        [_updatingHud hideAnimated:YES];
         [updateMCUBtn removeFromSuperview];
         updateMCUBtn = nil;
-        if (!_mcuAlert) {
-            _mcuAlert = [UIAlertController alertControllerWithTitle:nil message:value preferredStyle:UIAlertControllerStyleAlert];
-            [_mcuAlert.view setTintColor:DARKORAGE];
-            UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
-            [_mcuAlert addAction:cancel];
-            [self presentViewController:_mcuAlert animated:YES completion:nil];
-        }else {
-            [_mcuAlert setMessage:value];
-        }
-        [[CSRBluetoothLE sharedInstance] successMCUUpdate];
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"BridgeConnectedNotification" object:nil];
     }
+    if (!_mcuAlert) {
+        _mcuAlert = [UIAlertController alertControllerWithTitle:nil message:value preferredStyle:UIAlertControllerStyleAlert];
+        [_mcuAlert.view setTintColor:DARKORAGE];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+        [_mcuAlert addAction:cancel];
+        [self presentViewController:_mcuAlert animated:YES completion:nil];
+    }else {
+        [_mcuAlert setMessage:value];
+    }
+    [[CSRBluetoothLE sharedInstance] successMCUUpdate];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"BridgeConnectedNotification" object:nil];
 }
 
 - (void)closeAction {

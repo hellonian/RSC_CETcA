@@ -40,6 +40,8 @@
 		2E06A4FF20205B0E007B8BEA /* GroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E06A4FD20205B0E007B8BEA /* GroupViewController.m */; };
 		2E159F30248643D6001E126C /* RemoteMainVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E159F32248643D6001E126C /* RemoteMainVC.xib */; };
 		2E159F372486442A001E126C /* RemoteLCDVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E159F392486442A001E126C /* RemoteLCDVC.xib */; };
+		2E187CA825A567C3000425EC /* PIRDeviceVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E187CA625A567C3000425EC /* PIRDeviceVC.m */; };
+		2E187CA925A567C3000425EC /* PIRDeviceVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E187CA725A567C3000425EC /* PIRDeviceVC.xib */; };
 		2E18B21F25232D5D0044D2E0 /* NetworkSettingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E18B21D25232D5D0044D2E0 /* NetworkSettingVC.m */; };
 		2E192D192572479E001161FF /* MusicControllerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E192D182572479E001161FF /* MusicControllerVC.m */; };
 		2E1C839E20CFD782009BCC6D /* PlaceDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E1C83A020CFD782009BCC6D /* PlaceDetailsViewController.xib */; };
@@ -275,6 +277,9 @@
 		2E159F31248643D6001E126C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/RemoteMainVC.xib; sourceTree = "<group>"; };
 		2E159F34248643E6001E126C /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/RemoteMainVC.strings; sourceTree = "<group>"; };
 		2E159F36248643E8001E126C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/RemoteMainVC.strings"; sourceTree = "<group>"; };
+		2E187CA525A567C3000425EC /* PIRDeviceVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PIRDeviceVC.h; sourceTree = "<group>"; };
+		2E187CA625A567C3000425EC /* PIRDeviceVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PIRDeviceVC.m; sourceTree = "<group>"; };
+		2E187CA725A567C3000425EC /* PIRDeviceVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PIRDeviceVC.xib; sourceTree = "<group>"; };
 		2E18B21C25232D5D0044D2E0 /* NetworkSettingVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkSettingVC.h; sourceTree = "<group>"; };
 		2E18B21D25232D5D0044D2E0 /* NetworkSettingVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NetworkSettingVC.m; sourceTree = "<group>"; };
 		2E192D182572479E001161FF /* MusicControllerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicControllerVC.m; sourceTree = "<group>"; };
@@ -1188,6 +1193,9 @@
 				2E645741258D8B820014F0A7 /* NetworkSettingVC.xib */,
 				2EF73AE9254FFC9B0003E636 /* SonosSceneSettingVC.h */,
 				2EF73AEA254FFC9B0003E636 /* SonosSceneSettingVC.m */,
+				2E187CA525A567C3000425EC /* PIRDeviceVC.h */,
+				2E187CA625A567C3000425EC /* PIRDeviceVC.m */,
+				2E187CA725A567C3000425EC /* PIRDeviceVC.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1635,6 +1643,7 @@
 				2EF57E2E24CA7404003D908A /* AboutViewController.xib in Resources */,
 				2E6BD80420D0AD6D00036CA2 /* RemoteSettingViewController.xib in Resources */,
 				2E706CFF212A7278008D0EC4 /* GalleryViewController.xib in Resources */,
+				2E187CA925A567C3000425EC /* PIRDeviceVC.xib in Resources */,
 				2EF332562045031300565374 /* HelpViewController.xib in Resources */,
 				2E2EE78B258C5F51008A238B /* SonosMusicControllerVC.xib in Resources */,
 				2EC92CEA24C833CE00AD53CF /* ShowExceptionLogVC.xib in Resources */,
@@ -1781,6 +1790,7 @@
 				2E2E708C1FF5DE60002D1C1D /* PlacesViewController.m in Sources */,
 				2EBBA91D21D7442E00D2E7DA /* SocketViewController.m in Sources */,
 				2EF7182C1FFB265A00901918 /* DropEntity.m in Sources */,
+				2E187CA825A567C3000425EC /* PIRDeviceVC.m in Sources */,
 				2E5C130C23C05EC200A13994 /* LCDSelectModel.m in Sources */,
 				F4658A201C99747A00C284F4 /* CSRDeviceEventsEntity.m in Sources */,
 				2E2E70AD1FF5DE60002D1C1D /* TimeSchedule.m in Sources */,
@@ -2253,7 +2263,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -2346,8 +2356,8 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				CURRENT_PROJECT_VERSION = 24;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2406,7 +2416,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 24;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;

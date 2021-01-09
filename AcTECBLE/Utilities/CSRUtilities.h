@@ -144,6 +144,19 @@
 + (BOOL)belongToSceneRemoteThreeKeysV:(NSString *)shortName;
 + (BOOL)belongToSceneRemoteTwoKeysV:(NSString *)shortName;
 + (BOOL)belongToSceneRemoteOneKeyV:(NSString *)shortName;
++ (BOOL)belongToPIRDevice:(NSString *)shortName;
+
++ (BOOL)belongToESeriesDimmer:(NSString *)shortName;
++ (BOOL)belongToESeriesSingleWireSwitch:(NSString *)shortName;
++ (BOOL)belongToESeriesKnobDimmer:(NSString *)shortName;
++ (BOOL)belongToTSeriesPanel:(NSString *)shortName;
++ (BOOL)belongToPSeriesPanel:(NSString *)shortName;
++ (BOOL)belongToIEMLEDDriver:(NSString *)shortName;
++ (BOOL)belongToLIMLEDDriver:(NSString *)shortName;
++ (BOOL)belongToIELEDDriver:(NSString *)shortName;
++ (BOOL)belongToC3ABLEDDriver:(NSString *)shortName;
++ (BOOL)belongToC2ABLEDDriver:(NSString *)shortName;
++ (BOOL)belongToHiddenController:(NSString *)shortName;
 
 + (NSString *)convertToJsonData:(NSDictionary *)dict;
 + (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString;

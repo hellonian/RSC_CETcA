@@ -777,6 +777,13 @@ static DataModelManager *manager = nil;
         }
     }
     
+    else if ([dataStr hasPrefix:@"eb8a"]) {
+        if ([data length] == 6) {
+            Byte *byte = (Byte *)[data bytes];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"PIRCALL" object:self userInfo:@{@"DEVICEID":sourceDeviceId, @"CONFIGID":@(byte[2]), @"VALUELOW":@(byte[4]), @"VALUEHIGH":@(byte[5])}];
+        }
+    }
+    
 }
 
 - (void)didReceiveStreamData:(NSNumber *)deviceId streamNumber:(NSNumber *)streamNumber data:(NSData *)data {
