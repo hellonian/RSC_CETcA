@@ -262,6 +262,8 @@
               ||[_remoteEntity.shortName isEqualToString:@"RB08"]) {
         if ([self.remoteEntity.shortName isEqualToString:@"RB02"]) {
             _practicalityImageView.image = [UIImage imageNamed:@"rb02"];
+        }else if ([self.remoteEntity.shortName isEqualToString:@"RB08"]) {
+            _practicalityImageView.image = [UIImage imageNamed:@"rb08"];
         }else {
             _practicalityImageView.image = [UIImage imageNamed:@"rb06"];
         }

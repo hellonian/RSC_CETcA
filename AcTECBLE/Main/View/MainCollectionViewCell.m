@@ -326,7 +326,7 @@
             self.level3Label.hidden = YES;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName]) {
-            if ([CSRUtilities belongToPSeriesPanel:deviceEntity.shortName]) {
+            if ([CSRUtilities belongToTSeriesPanel:deviceEntity.shortName]) {
                 self.iconView.image = [UIImage imageNamed:@"room_T_panel"];
             }else if ([CSRUtilities belongToPSeriesPanel:deviceEntity.shortName]) {
                 self.iconView.image = [UIImage imageNamed:@"room_P_panel"];
@@ -405,7 +405,7 @@
             self.level3Label.hidden = NO;
             self.levelTextTopCon.constant = -14.0;
         }else if ([CSRUtilities belongToMusicController:deviceEntity.shortName]) {
-            self.iconView.image = [UIImage imageNamed:@"room_bajiao"];
+            self.iconView.image = [UIImage imageNamed:@"room_hidden_controller"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
@@ -426,7 +426,7 @@
             self.level3Label.hidden = YES;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToPIRDevice:deviceEntity.shortName]) {
-            self.iconView.image = [UIImage imageNamed:@"room_bajiao"];
+            self.iconView.image = [UIImage imageNamed:@"room_hidden_controller"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"Controller", @"Localizable");
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
@@ -711,15 +711,18 @@
         }else if ([appearanceShortname containsString:@"RB02"]
                   ||[appearanceShortname isEqualToString:@"RB06"]
                   ||[appearanceShortname isEqualToString:@"RSBH"]
-                  ||[appearanceShortname isEqualToString:@"1BMBH"]
-                  ||[appearanceShortname isEqualToString:@"RB08"]) {
+                  ||[appearanceShortname isEqualToString:@"1BMBH"]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Remote2"];
-        }else if ([appearanceShortname containsString:@"RB04"] || [appearanceShortname containsString:@"RSIBH"] || [appearanceShortname containsString:@"RB07"]) {
+        }else if ([appearanceShortname containsString:@"RB04"]
+                  || [appearanceShortname containsString:@"RSIBH"]
+                  || [appearanceShortname containsString:@"RB07"]) {
             self.iconView.image = [UIImage imageNamed:@"device_hidden_controller"];
         }else if ([appearanceShortname containsString:@"R9BSBH"]) {
             self.iconView.image = [UIImage imageNamed:@"device_round_five_key_remote"];
         }else if ([appearanceShortname containsString:@"RB05"]) {
             self.iconView.image = [UIImage imageNamed:@"device_square_five_key_remote"];
+        }else if ([appearanceShortname containsString:@"RB08"]) {
+            self.iconView.image = [UIImage imageNamed:@"device_E_knob"];
         }else if ([appearanceShortname isEqualToString:@"H1CSWB"]
                   || [appearanceShortname isEqualToString:@"H2CSWB"]
                   || [appearanceShortname isEqualToString:@"H3CSWB"]
@@ -819,7 +822,7 @@
         }else if ([CSRUtilities belongToThreeChannelDimmer:appearanceShortname]) {
             if ([CSRUtilities belongToTSeriesPanel:appearanceShortname]) {
                 self.iconView.image = [UIImage imageNamed:@"device_T_panel"];
-            }else if ([CSRUtilities belongToTSeriesPanel:appearanceShortname]) {
+            }else if ([CSRUtilities belongToPSeriesPanel:appearanceShortname]) {
                 self.iconView.image = [UIImage imageNamed:@"device_P_panel"];
             }else {
                 self.iconView.image = [UIImage imageNamed:@"device_dimmer3"];

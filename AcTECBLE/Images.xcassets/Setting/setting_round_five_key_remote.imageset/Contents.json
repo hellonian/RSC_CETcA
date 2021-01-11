@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "room_bajiao.png",
+      "filename" : "setting_round_five_key_remote.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "room_bajiao@2x.png",
+      "filename" : "setting_round_five_key_remote@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "room_bajiao@3x.png",
+      "filename" : "setting_round_five_key_remote@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
