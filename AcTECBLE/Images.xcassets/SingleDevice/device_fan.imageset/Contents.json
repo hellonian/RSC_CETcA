@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "画板 97.png",
+      "filename" : "device_fan.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "画板 97@2x.png",
+      "filename" : "device_fan@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "画板 97@3x.png",
+      "filename" : "device_fan@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

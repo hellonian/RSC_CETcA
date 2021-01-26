@@ -19,6 +19,7 @@
 @property (nonatomic, strong) UILabel *alertLabel;
 @property (nonatomic, strong) UILabel *countdownLabel;
 @property (nonatomic, strong) NSTimer *countdownTimer;
+@property (nonatomic, strong) UIButton *cancel;
 
 @end
 
@@ -79,7 +80,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    [self performSelector:@selector(connectTimeOut) withObject:nil afterDelay:30.0];
+    [self performSelector:@selector(connectTimeOut) withObject:nil afterDelay:15.0];
     [self showLoading];
     [[CSRBluetoothLE sharedInstance] connectPeripheralNoCheck:[_dataArray objectAtIndex:indexPath.row]];
 }
@@ -133,6 +134,15 @@
     self.alertLabel.text = AcTECLocalizedStringFromTable(@"nearbyAlert", @"Localizable");
     _countdownTimer = [NSTimer timerWithTimeInterval:1.0 target:self selector:@selector(countdownMethod) userInfo:nil repeats:YES];
     [[NSRunLoop mainRunLoop] addTimer:_countdownTimer forMode:NSRunLoopCommonModes];
+    
+    _cancel = [[UIButton alloc] initWithFrame:CGRectZero];
+    [_cancel setTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") forState:UIControlStateNormal];
+    [_cancel addTarget:self action:@selector(cancelAction) forControlEvents:UIControlEventTouchUpInside];
+    [[UIApplication sharedApplication].keyWindow addSubview:_cancel];
+    [_cancel autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.view];
+    [_cancel autoPinEdge:ALEdgeLeft toEdge:ALEdgeLeft ofView:self.view];
+    [_cancel autoPinEdge:ALEdgeRight toEdge:ALEdgeRight ofView:self.view];
+    [_cancel autoSetDimension:ALDimensionHeight toSize:44];
 }
 
 - (void)showLoading {
@@ -164,7 +174,8 @@
 - (UILabel *)alertLabel {
     if (!_alertLabel) {
         _alertLabel = [[UILabel alloc] init];
-        _alertLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+        _alertLabel.textColor = [UIColor whiteColor];
+        _alertLabel.numberOfLines = 0;
         _alertLabel.textAlignment = NSTextAlignmentCenter;
     }
     return _alertLabel;
@@ -184,9 +195,10 @@
     [self.indicatorView removeFromSuperview];
     self.indicatorView = nil;
     [[UIApplication sharedApplication].keyWindow addSubview:self.alertLabel];
-    [self.alertLabel autoresizesSubviews];
-    self.alertLabel.text = AcTECLocalizedStringFromTable(@"fail", @"Localizable");
-    [self performSelector:@selector(cHideTranslucentBgView) withObject:nil afterDelay:2.0];
+    [self.alertLabel autoCenterInSuperview];
+    [self.alertLabel autoSetDimensionsToSize:CGSizeMake(250, 100)];
+    self.alertLabel.text = AcTECLocalizedStringFromTable(@"mcu_connetion_alert", @"Localizable");
+    [self performSelector:@selector(cHideTranslucentBgView) withObject:nil afterDelay:3.0];
 }
 
 - (void)cHideTranslucentBgView {
@@ -212,10 +224,16 @@
     [self.alertLabel removeFromSuperview];
     [self.countdownLabel removeFromSuperview];
     [self.translucentBgView removeFromSuperview];
+    [_cancel removeFromSuperview];
     self.alertLabel = nil;
     self.countdownLabel = nil;
     self.translucentBgView = nil;
+    _cancel = nil;
     [[CSRBluetoothLE sharedInstance] stopScan];
+}
+
+- (void)cancelAction {
+    [self rHideTranslucentBgView];
 }
 
 /*

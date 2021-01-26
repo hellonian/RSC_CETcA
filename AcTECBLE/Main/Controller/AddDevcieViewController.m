@@ -14,6 +14,7 @@
 #import "CSRConstants.h"
 #import "CustomizeProgressHud.h"
 #import "PureLayout.h"
+#import "CSRUtilities.h"
 
 @interface AddDevcieViewController ()<MBProgressHUDDelegate,MainCollectionViewDelegate>
 {
@@ -279,22 +280,35 @@
         
         [_customizeHud updateProgress:completed];
         if (completed>=1) {
-            if ([_mainCollectionView.dataArray count] == 0) {
-                
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSString *name = [[NSString alloc] initWithData:_selectedDevice.appearanceShortname encoding:NSUTF8StringEncoding];
+            name = [name stringByTrimmingCharactersInSet:[NSCharacterSet controlCharacterSet]];
+            if ([CSRUtilities belongToSceneRemoteSixKeys:name]
+                || [CSRUtilities belongToSceneRemoteFourKeys:name]
+                || [CSRUtilities belongToSceneRemoteThreeKeys:name]
+                || [CSRUtilities belongToSceneRemoteTwoKeys:name]
+                || [CSRUtilities belongToSceneRemoteOneKey:name]
+                || [CSRUtilities belongToSceneRemoteSixKeysV:name]
+                || [CSRUtilities belongToSceneRemoteFourKeysV:name]
+                || [CSRUtilities belongToSceneRemoteThreeKeysV:name]
+                || [CSRUtilities belongToSceneRemoteTwoKeysV:name]
+                || [CSRUtilities belongToSceneRemoteOneKeyV:name]) {
+                [self performSelector:@selector(waitSceneRemoteConfigurationTimeOut) withObject:nil afterDelay:30.0];
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(waitSceneRemoteConfiguration:) name:@"SCENEREMOTEDIDCONFIGURED" object:nil];
+            }else {
+                if ([_mainCollectionView.dataArray count] == 0) {
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        [_customizeHud removeFromSuperview];
+                        _customizeHud = nil;
+                        [self.translucentBgView removeFromSuperview];
+                        _translucentBgView = nil;
+                        [self addVCBackAction];
+                    });
+                }else {
                     [_customizeHud removeFromSuperview];
                     _customizeHud = nil;
                     [self.translucentBgView removeFromSuperview];
                     _translucentBgView = nil;
-                    [self addVCBackAction];
-                });
-                
-            }else {
-                [_customizeHud removeFromSuperview];
-                _customizeHud = nil;
-                [self.translucentBgView removeFromSuperview];
-                _translucentBgView = nil;
-                _customizeHud = nil;
+                }
             }
         }
         
@@ -307,6 +321,7 @@
 
 - (void)deviceAssociationFailed:(NSNotification *)notification
 {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(waitSceneRemoteConfigurationTimeOut) object:nil];
     _customizeHud.text = [NSString stringWithFormat:@"Association error: %@", notification.userInfo[@"error"]];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [_customizeHud removeFromSuperview];
@@ -314,6 +329,39 @@
         [self.translucentBgView removeFromSuperview];
         _translucentBgView = nil;
     });
+}
+
+- (void)waitSceneRemoteConfiguration:(NSNotification *)notification {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"SCENEREMOTEDIDCONFIGURED" object:nil];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(waitSceneRemoteConfigurationTimeOut) object:nil];
+    if (_customizeHud) {
+        [_customizeHud removeFromSuperview];
+        _customizeHud = nil;
+        [self.translucentBgView removeFromSuperview];
+        _translucentBgView = nil;
+    }
+    
+    if ([_mainCollectionView.dataArray count] == 0) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self addVCBackAction];
+        });
+    }
+}
+
+- (void)waitSceneRemoteConfigurationTimeOut {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"SCENEREMOTEDIDCONFIGURED" object:nil];
+    if (_customizeHud) {
+        [_customizeHud removeFromSuperview];
+        _customizeHud = nil;
+        [self.translucentBgView removeFromSuperview];
+        _translucentBgView = nil;
+    }
+    
+    if ([_mainCollectionView.dataArray count] == 0) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self addVCBackAction];
+        });
+    }
 }
 
 #pragma mark - MainCollectionViewDelegate

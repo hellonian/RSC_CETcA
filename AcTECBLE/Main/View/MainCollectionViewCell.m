@@ -810,7 +810,7 @@
                   || [CSRUtilities belongToMusicControlRemoteV:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"device_P_panel"];
         }else if ([CSRUtilities belongToLCDRemote:appearanceShortname]) {
-            self.iconView.image = [UIImage imageNamed:@"Device_lcdremote"];
+            self.iconView.image = [UIImage imageNamed:@"device_LCD_panel"];
         }else if ([CSRUtilities belongToThreeChannelSwitch:appearanceShortname]) {
             if ([CSRUtilities belongToTSeriesPanel:appearanceShortname]) {
                 self.iconView.image = [UIImage imageNamed:@"device_T_panel"];
@@ -986,40 +986,62 @@
                 self.nameLabel.textColor = ColorWithAlpha(77, 77, 77, 1);
             }
         }else {
-            if (![model.powerState boolValue]) {
-                if ([_groupId isEqualToNumber:@1000] || [_groupId isEqualToNumber:@2000]) {
-                    self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
-                    self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
-                }else {
-                    self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
-                }
-                
-                if ([CSRUtilities belongToDimmer:model.shortName]
-                    || [CSRUtilities belongToCWDevice:model.shortName]
-                    || [CSRUtilities belongToRGBDevice:model.shortName]
-                    || [CSRUtilities belongToRGBCWDevice:model.shortName]
-                    || [CSRUtilities belongToTwoChannelDimmer:model.shortName]) {
-                    self.levelLabel.text = @"0%";
-                }
-                
+            if ([CSRUtilities belongToSceneRemoteOneKey:model.shortName]
+                || [CSRUtilities belongToSceneRemoteTwoKeys:model.shortName]
+                || [CSRUtilities belongToSceneRemoteThreeKeys:model.shortName]
+                || [CSRUtilities belongToSceneRemoteFourKeys:model.shortName]
+                || [CSRUtilities belongToSceneRemoteSixKeys:model.shortName]
+                || [CSRUtilities belongToSceneRemoteOneKeyV:model.shortName]
+                || [CSRUtilities belongToSceneRemoteTwoKeysV:model.shortName]
+                || [CSRUtilities belongToSceneRemoteThreeKeysV:model.shortName]
+                || [CSRUtilities belongToSceneRemoteFourKeysV:model.shortName]
+                || [CSRUtilities belongToSceneRemoteSixKeysV:model.shortName]
+                || [CSRUtilities belongToMusicController:model.shortName]
+                || [CSRUtilities belongToMusicControlRemote:model.shortName]
+                || [CSRUtilities belongToMusicControlRemoteV:model.shortName]
+                || [CSRUtilities belongToSonosMusicController:model.shortName]
+                || [CSRUtilities belongToRGBRemote:model.shortName]
+                || [CSRUtilities belongToRGBCWRemote:model.shortName]
+                || [CSRUtilities belongToCWRemote:model.shortName]
+                || [CSRUtilities belongToLCDRemote:model.shortName]
+                || [CSRUtilities belongToPIRDevice:model.shortName]) {
+                self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
             }else {
-                if ([_groupId isEqualToNumber:@1000]  || [_groupId isEqualToNumber:@2000]) {
-                    self.nameLabel.textColor = DARKORAGE;
-                    self.levelLabel.textColor = DARKORAGE;
-                }else {
-                    self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
-                }
-                
-                if ([CSRUtilities belongToDimmer:model.shortName]
-                    || [CSRUtilities belongToCWDevice:model.shortName]
-                    || [CSRUtilities belongToRGBDevice:model.shortName]
-                    || [CSRUtilities belongToRGBCWDevice:model.shortName]
-                    || [CSRUtilities belongToTwoChannelDimmer:model.shortName]) {
-                    if ([model.level floatValue]/255.0*100>0 && [model.level floatValue]/255.0*100 < 1.0) {
-                        self.levelLabel.text = @"1%";
-                        return;
+                if (![model.powerState boolValue]) {
+                    if ([_groupId isEqualToNumber:@1000] || [_groupId isEqualToNumber:@2000]) {
+                        self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+                        self.levelLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
+                    }else {
+                        self.backgroundColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
                     }
-                    self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level floatValue]/255.0*100];
+                    
+                    if ([CSRUtilities belongToDimmer:model.shortName]
+                        || [CSRUtilities belongToCWDevice:model.shortName]
+                        || [CSRUtilities belongToRGBDevice:model.shortName]
+                        || [CSRUtilities belongToRGBCWDevice:model.shortName]
+                        || [CSRUtilities belongToTwoChannelDimmer:model.shortName]) {
+                        self.levelLabel.text = @"0%";
+                    }
+                    
+                }else {
+                    if ([_groupId isEqualToNumber:@1000]  || [_groupId isEqualToNumber:@2000]) {
+                        self.nameLabel.textColor = DARKORAGE;
+                        self.levelLabel.textColor = DARKORAGE;
+                    }else {
+                        self.backgroundColor = [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
+                    }
+                    
+                    if ([CSRUtilities belongToDimmer:model.shortName]
+                        || [CSRUtilities belongToCWDevice:model.shortName]
+                        || [CSRUtilities belongToRGBDevice:model.shortName]
+                        || [CSRUtilities belongToRGBCWDevice:model.shortName]
+                        || [CSRUtilities belongToTwoChannelDimmer:model.shortName]) {
+                        if ([model.level floatValue]/255.0*100>0 && [model.level floatValue]/255.0*100 < 1.0) {
+                            self.levelLabel.text = @"1%";
+                            return;
+                        }
+                        self.levelLabel.text = [NSString stringWithFormat:@"%.f%%",[model.level floatValue]/255.0*100];
+                    }
                 }
             }
         }

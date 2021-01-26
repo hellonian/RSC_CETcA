@@ -1018,6 +1018,10 @@
                         NSInteger s5 = [deviceDict[@"`c_deviceid_5`"] integerValue];
                         NSInteger s6 = [deviceDict[@"`c_deviceid_6`"] integerValue];
                         deviceEntity.remoteBranch = [NSString stringWithFormat:@"01%@02%@03%@04%@05%@06%@",[CSRUtilities exchangePositionOfDeviceId:s1],[CSRUtilities exchangePositionOfDeviceId:s2],[CSRUtilities exchangePositionOfDeviceId:s3],[CSRUtilities exchangePositionOfDeviceId:s4],[CSRUtilities exchangePositionOfDeviceId:s5],[CSRUtilities exchangePositionOfDeviceId:s6]];
+                    }else if ([CSRUtilities belongToMusicControlRemote:deviceDict[@"`c_shortName`"]]
+                              || [CSRUtilities belongToMusicControlRemoteV:deviceDict[@"`c_shortName`"]]) {
+                        NSInteger s1 = [deviceDict[@"`c_deviceid_1`"] integerValue];
+                        deviceEntity.remoteBranch = [NSString stringWithFormat:@"%@0000",[CSRUtilities exchangePositionOfDeviceId:s1]];
                     }
                     
                     if (self.sharePlace) {

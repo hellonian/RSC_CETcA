@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -85,7 +85,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="UuL-In-9bd">
-                            <rect key="frame" x="58" y="12" width="336" height="20"/>
+                            <rect key="frame" x="78" y="12" width="316" height="20"/>
                             <color key="textColor" red="0.58823529409999997" green="0.58823529409999997" blue="0.58823529409999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits"/>
@@ -135,27 +135,16 @@
                         <constraint firstAttribute="height" relation="lessThanOrEqual" constant="90" id="nWb-kF-IXP"/>
                         <constraint firstItem="AGj-iT-LR1" firstAttribute="bottom" secondItem="177-z9-DiB" secondAttribute="bottom" id="q8m-6E-cyK"/>
                         <constraint firstItem="ekb-4V-YLV" firstAttribute="top" secondItem="MT6-cq-JjY" secondAttribute="bottom" constant="12" id="qi7-uj-AoK"/>
-                        <constraint firstItem="UuL-In-9bd" firstAttribute="leading" secondItem="MT6-cq-JjY" secondAttribute="trailing" id="r6T-bB-Kgi"/>
+                        <constraint firstItem="UuL-In-9bd" firstAttribute="leading" secondItem="MT6-cq-JjY" secondAttribute="trailing" constant="20" id="r6T-bB-Kgi"/>
                         <constraint firstItem="AGj-iT-LR1" firstAttribute="leading" secondItem="177-z9-DiB" secondAttribute="trailing" id="rBT-pY-BtO"/>
                         <constraint firstItem="AGj-iT-LR1" firstAttribute="top" secondItem="177-z9-DiB" secondAttribute="top" id="wei-Tq-q7c"/>
                         <constraint firstItem="zdH-xq-cY3" firstAttribute="top" secondItem="177-z9-DiB" secondAttribute="bottom" constant="12" id="z3o-e2-thd"/>
                     </constraints>
                 </view>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Control smart panel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="waD-gy-O5f">
-                    <rect key="frame" x="20" y="154" width="104" height="21"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="21" id="KCe-YZ-OXC"/>
-                    </constraints>
-                    <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                    <color key="textColor" red="0.58823529409999997" green="0.58823529409999997" blue="0.58823529409999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                    <nil key="highlightedColor"/>
-                </label>
             </subviews>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.95294117649999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="waD-gy-O5f" firstAttribute="top" secondItem="8Fw-EQ-Xc4" secondAttribute="bottom" constant="20" id="2xu-nM-8Jd"/>
-                <constraint firstItem="waD-gy-O5f" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="20" id="Om2-Xj-hPg"/>
                 <constraint firstItem="8Fw-EQ-Xc4" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="hUS-s9-DMH"/>
                 <constraint firstItem="8Fw-EQ-Xc4" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" id="odf-3j-mnT"/>
                 <constraint firstItem="8Fw-EQ-Xc4" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="tD2-nV-7sQ"/>
@@ -343,10 +332,10 @@
                         <constraint firstAttribute="width" constant="67" id="0Lo-cS-66I"/>
                         <constraint firstAttribute="height" constant="52" id="Ya7-XP-kXf"/>
                     </constraints>
-                    <state key="normal" backgroundImage="remotescenebtn_default">
+                    <state key="normal" backgroundImage="sr_T_one_default">
                         <color key="titleColor" red="0.74509803921568629" green="0.74509803921568629" blue="0.74509803921568629" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
-                    <state key="selected" backgroundImage="remotescenebtn_highlighted">
+                    <state key="selected" backgroundImage="sr_T_one_selected">
                         <color key="titleColor" red="0.25490196078431371" green="0.36078431372549019" blue="0.6470588235294118" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
                     <connections>
@@ -359,10 +348,10 @@
                         <constraint firstAttribute="width" constant="67" id="9JE-YM-KKL"/>
                         <constraint firstAttribute="height" constant="52" id="lzv-qf-2xc"/>
                     </constraints>
-                    <state key="normal" backgroundImage="remotescenebtn_default">
+                    <state key="normal" backgroundImage="sr_T_three_default">
                         <color key="titleColor" red="0.74509803919999995" green="0.74509803919999995" blue="0.74509803919999995" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
-                    <state key="selected" backgroundImage="remotescenebtn_highlighted">
+                    <state key="selected" backgroundImage="sr_T_three_selected">
                         <color key="titleColor" red="0.25490196079999999" green="0.36078431370000003" blue="0.64705882349999999" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
                     <connections>
@@ -375,10 +364,10 @@
                         <constraint firstAttribute="height" constant="52" id="Bfr-oJ-xLe"/>
                         <constraint firstAttribute="width" constant="67" id="KYw-jy-cpo"/>
                     </constraints>
-                    <state key="normal" backgroundImage="remotescenebtn_default">
+                    <state key="normal" backgroundImage="sr_T_four_default">
                         <color key="titleColor" red="0.74509803919999995" green="0.74509803919999995" blue="0.74509803919999995" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
-                    <state key="selected" backgroundImage="remotescenebtn_highlighted">
+                    <state key="selected" backgroundImage="sr_T_four_selected">
                         <color key="titleColor" red="0.25490196079999999" green="0.36078431370000003" blue="0.64705882349999999" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
                     <connections>
@@ -391,10 +380,10 @@
                         <constraint firstAttribute="width" constant="67" id="LZJ-rJ-wSk"/>
                         <constraint firstAttribute="height" constant="52" id="Xpf-yh-qlY"/>
                     </constraints>
-                    <state key="normal" backgroundImage="remotescenebtn_default">
+                    <state key="normal" backgroundImage="sr_T_five_default">
                         <color key="titleColor" red="0.74509803919999995" green="0.74509803919999995" blue="0.74509803919999995" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
-                    <state key="selected" backgroundImage="remotescenebtn_highlighted">
+                    <state key="selected" backgroundImage="sr_T_five_selected">
                         <color key="titleColor" red="0.25490196079999999" green="0.36078431370000003" blue="0.64705882349999999" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
                     <connections>
@@ -407,10 +396,10 @@
                         <constraint firstAttribute="height" constant="52" id="27e-T9-coe"/>
                         <constraint firstAttribute="width" constant="67" id="kQ3-Aq-Ida"/>
                     </constraints>
-                    <state key="normal" backgroundImage="remotescenebtn_default">
+                    <state key="normal" backgroundImage="sr_T_six_default">
                         <color key="titleColor" red="0.74509803919999995" green="0.74509803919999995" blue="0.74509803919999995" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
-                    <state key="selected" backgroundImage="remotescenebtn_highlighted">
+                    <state key="selected" backgroundImage="sr_T_six_selected">
                         <color key="titleColor" red="0.25490196079999999" green="0.36078431370000003" blue="0.64705882349999999" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
                     <connections>
@@ -423,10 +412,10 @@
                         <constraint firstAttribute="width" constant="67" id="2lD-li-0we"/>
                         <constraint firstAttribute="height" constant="52" id="md9-4n-K2P"/>
                     </constraints>
-                    <state key="normal" backgroundImage="remotescenebtn_default">
+                    <state key="normal" backgroundImage="sr_T_Two_default">
                         <color key="titleColor" red="0.74509803921568629" green="0.74509803921568629" blue="0.74509803921568629" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
-                    <state key="selected" backgroundImage="remotescenebtn_highlighted">
+                    <state key="selected" backgroundImage="sr_T_Two_selected">
                         <color key="titleColor" red="0.25490196078431371" green="0.36078431372549019" blue="0.6470588235294118" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
                     <connections>
@@ -470,6 +459,8 @@
                         <constraint firstAttribute="width" constant="67" id="NDN-Vi-t9t"/>
                         <constraint firstAttribute="height" constant="52" id="YeU-y7-d2m"/>
                     </constraints>
+                    <state key="normal" backgroundImage="sr_P_play_default"/>
+                    <state key="selected" backgroundImage="sr_P_play_selected"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="F5R-t6-jAb"/>
                     </connections>
@@ -480,6 +471,8 @@
                         <constraint firstAttribute="width" constant="67" id="GsZ-ne-x8n"/>
                         <constraint firstAttribute="height" constant="52" id="KnM-ok-aAO"/>
                     </constraints>
+                    <state key="normal" backgroundImage="sr_P_mute_default"/>
+                    <state key="selected" backgroundImage="sr_P_mute_selected"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="A6b-bi-8S8"/>
                     </connections>
@@ -490,6 +483,8 @@
                         <constraint firstAttribute="height" constant="52" id="8py-zk-L4M"/>
                         <constraint firstAttribute="width" constant="67" id="ZC5-ME-CNa"/>
                     </constraints>
+                    <state key="normal" backgroundImage="sr_P_prev_default"/>
+                    <state key="selected" backgroundImage="sr_P_prev_selected"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="8qo-kC-hwl"/>
                     </connections>
@@ -500,6 +495,8 @@
                         <constraint firstAttribute="width" constant="67" id="mjB-Op-oVv"/>
                         <constraint firstAttribute="height" constant="52" id="s2D-vY-oPC"/>
                     </constraints>
+                    <state key="normal" backgroundImage="sr_P_next_default"/>
+                    <state key="selected" backgroundImage="sr_P_next_selected"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="QHa-NZ-TKh"/>
                     </connections>
@@ -511,6 +508,8 @@
                         <constraint firstAttribute="height" constant="52" id="gec-Ml-QL2"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                    <state key="normal" backgroundImage="sr_P_voldown_default"/>
+                    <state key="selected" backgroundImage="sr_P_voldown_selected"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="Pgf-db-hid"/>
                     </connections>
@@ -521,6 +520,8 @@
                         <constraint firstAttribute="height" constant="52" id="TlN-gp-5Ob"/>
                         <constraint firstAttribute="width" constant="67" id="vor-KX-i3K"/>
                     </constraints>
+                    <state key="normal" backgroundImage="sr_P_volup_default"/>
+                    <state key="selected" backgroundImage="sr_P_volup_selected"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="wIu-eO-ZX1"/>
                     </connections>
@@ -562,8 +563,30 @@
         <image name="remotemainbg" width="320" height="320"/>
         <image name="remotescenebg" width="280" height="280"/>
         <image name="remotescenebg_vs" width="280" height="280"/>
-        <image name="remotescenebtn_default" width="68" height="52"/>
-        <image name="remotescenebtn_highlighted" width="68" height="52"/>
+        <image name="sr_P_mute_default" width="60" height="46"/>
+        <image name="sr_P_mute_selected" width="60" height="46"/>
+        <image name="sr_P_next_default" width="60" height="46"/>
+        <image name="sr_P_next_selected" width="60" height="46"/>
+        <image name="sr_P_play_default" width="60" height="46"/>
+        <image name="sr_P_play_selected" width="60" height="46"/>
+        <image name="sr_P_prev_default" width="60" height="46"/>
+        <image name="sr_P_prev_selected" width="60" height="46"/>
+        <image name="sr_P_voldown_default" width="60" height="46"/>
+        <image name="sr_P_voldown_selected" width="60" height="46"/>
+        <image name="sr_P_volup_default" width="60" height="46"/>
+        <image name="sr_P_volup_selected" width="60" height="46"/>
+        <image name="sr_T_Two_default" width="60" height="46"/>
+        <image name="sr_T_Two_selected" width="60" height="46"/>
+        <image name="sr_T_five_default" width="60" height="46"/>
+        <image name="sr_T_five_selected" width="60" height="46"/>
+        <image name="sr_T_four_default" width="60" height="46"/>
+        <image name="sr_T_four_selected" width="60" height="46"/>
+        <image name="sr_T_one_default" width="60" height="46"/>
+        <image name="sr_T_one_selected" width="60" height="46"/>
+        <image name="sr_T_six_default" width="60" height="46"/>
+        <image name="sr_T_six_selected" width="60" height="46"/>
+        <image name="sr_T_three_default" width="60" height="46"/>
+        <image name="sr_T_three_selected" width="60" height="46"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

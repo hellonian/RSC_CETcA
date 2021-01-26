@@ -74,11 +74,19 @@
     [_sceneMemberList registerNib:[UINib nibWithNibName:@"SceneMemberCell" bundle:nil] forCellReuseIdentifier:@"SCENEMEMBERCELL"];
     
     _members = [[NSMutableArray alloc] init];
-    if ([_sceneIndex integerValue] != 0) {
+    
+    if (_sceneIndex) {
         SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
         if (sceneEntity) {
-            if (sceneEntity.sceneName) {
-                self.navigationItem.title = sceneEntity.sceneName;
+            if (_srDeviceId) {
+                CSRDeviceEntity *d = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_srDeviceId];
+                if (d) {
+                    self.navigationItem.title = [NSString stringWithFormat:@"%@ - %@ %ld",d.name,AcTECLocalizedStringFromTable(@"key", @"Localizable"),(long)_keyNumber];
+                }
+            }else {
+                if (sceneEntity.sceneName) {
+                    self.navigationItem.title = sceneEntity.sceneName;
+                }
             }
             
             if ([sceneEntity.members count]>0) {
@@ -86,22 +94,7 @@
                 [_sceneMemberList reloadData];
             }
         }
-    }else {
-        CSRDeviceEntity *d = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_srDeviceId];
-        if (d) {
-            self.navigationItem.title = [NSString stringWithFormat:@"%@ - %@ %ld",d.name,AcTECLocalizedStringFromTable(@"key", @"Localizable"),(long)_keyNumber];
-        }
-        
-        _sceneIndex = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"SceneEntity_sceneIndex"];
-        SceneEntity *scene = [NSEntityDescription insertNewObjectForEntityForName:@"SceneEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
-        scene.rcIndex = _sceneIndex;
-        scene.sceneID = [[CSRDatabaseManager sharedInstance] getNextFreeIDOfType:@"SceneEntity_sceneID"];
-        scene.srDeviceId = _srDeviceId;
-        [[CSRAppStateManager sharedInstance].selectedPlace addScenesObject:scene];
-        [[CSRDatabaseManager sharedInstance] saveContext];
     }
-    
-    
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -146,23 +139,6 @@
 
 - (void)closeAction {
     if (_forSceneRemote) {
-        if ([_members count] == 0) {
-            SceneEntity *scene = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
-            if (scene) {
-                [[CSRAppStateManager sharedInstance].selectedPlace removeScenesObject:scene];
-                [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:scene];
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            }
-            
-            if (self.sceneRemoteHandle) {
-                self.sceneRemoteHandle(_keyNumber, 0);
-            }
-            
-        }else {
-            if (self.sceneRemoteHandle) {
-                self.sceneRemoteHandle(_keyNumber, [_sceneIndex integerValue]);
-            }
-        }
         [self.navigationController popViewControllerAnimated:YES];
     }else {
         [self dismissViewControllerAnimated:YES completion:nil];

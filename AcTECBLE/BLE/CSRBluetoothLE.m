@@ -198,6 +198,7 @@
         if ([centralManager state] == CBCentralManagerStatePoweredOn) {
             //////////////////////////////////////////////////////////////////
             if (!_macformcuupdateConnection) {
+                [self.collectionPeripherals removeAllObjects];
                 _startCollect = YES;
             }
             

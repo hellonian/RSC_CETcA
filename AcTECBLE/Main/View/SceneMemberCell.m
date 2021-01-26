@@ -31,7 +31,17 @@
     _nameLabel.text = deviceEntity.name;
     _label3.textColor = [UIColor colorWithRed:100/255.0 green:100/255.0 blue:100/255.0 alpha:1];
     if ([CSRUtilities belongToSwitch:member.kindString]) {
-        _icon.image = [UIImage imageNamed:@"icon_switch1"];
+        if ([CSRUtilities belongToESeriesSingleWireSwitch:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_E_press"];
+        }else if ([CSRUtilities belongToTSeriesPanel:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_T_panel"];
+        }else if ([CSRUtilities belongToPSeriesPanel:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_P_panel"];
+        }else if ([CSRUtilities belongToHiddenController:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_hidden_controller"];
+        }else {
+            _icon.image = [UIImage imageNamed:@"icon_switch1"];
+        }
         _channelLabel.hidden = YES;
         _imgv2.hidden = YES;
         _label2.hidden = YES;
@@ -44,7 +54,13 @@
             _label1.text = @"OFF";
         }
     }else if ([CSRUtilities belongToTwoChannelSwitch:member.kindString]) {
-        _icon.image = [UIImage imageNamed:@"icon_switch2"];
+        if ([CSRUtilities belongToTSeriesPanel:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_T_panel"];
+        }else if ([CSRUtilities belongToPSeriesPanel:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_P_panel"];
+        }else {
+            _icon.image = [UIImage imageNamed:@"icon_switch1"];
+        }
         _channelLabel.hidden = NO;
         _imgv2.hidden = YES;
         _label2.hidden = YES;
@@ -62,7 +78,13 @@
             _label1.text = @"OFF";
         }
     }else if ([CSRUtilities belongToThreeChannelSwitch:member.kindString]) {
-        _icon.image = [UIImage imageNamed:@"icon_switch3"];
+        if ([CSRUtilities belongToTSeriesPanel:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_T_panel"];
+        }else if ([CSRUtilities belongToPSeriesPanel:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_P_panel"];
+        }else {
+            _icon.image = [UIImage imageNamed:@"icon_switch1"];
+        }
         _channelLabel.hidden = NO;
         _imgv2.hidden = YES;
         _label2.hidden = YES;
@@ -83,6 +105,19 @@
         }
     }else if ([CSRUtilities belongToDimmer:member.kindString]) {
         _icon.image = [UIImage imageNamed:@"icon_dimmer1"];
+        if ([CSRUtilities belongToESeriesDimmer:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_E_press"];
+        }else if ([CSRUtilities belongToESeriesKnobDimmer:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_E_knob"];
+        }else if ([CSRUtilities belongToTSeriesPanel:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_T_panel"];
+        }else if ([CSRUtilities belongToPSeriesPanel:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_P_panel"];
+        }else if ([CSRUtilities belongToHiddenController:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_hidden_controller"];
+        }else {
+            _icon.image = [UIImage imageNamed:@"icon_dimmer1"];
+        }
         _channelLabel.hidden = YES;
         _imgv3.hidden = YES;
         _label3.hidden = YES;
@@ -99,7 +134,13 @@
             _label2.text = [NSString stringWithFormat:@"%.f %%",[member.eveD0 integerValue]/255.0*100];
         }
     }else if ([CSRUtilities belongToTwoChannelDimmer:member.kindString]) {
-        _icon.image = [UIImage imageNamed:@"icon_dimmer2"];
+        if ([CSRUtilities belongToTSeriesPanel:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_T_panel"];
+        }else if ([CSRUtilities belongToPSeriesPanel:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_P_panel"];
+        }else {
+            _icon.image = [UIImage imageNamed:@"icon_dimmer1"];
+        }
         _channelLabel.hidden = NO;
         _imgv3.hidden = YES;
         _label3.hidden = YES;
@@ -122,6 +163,13 @@
         }
     }else if ([CSRUtilities belongToThreeChannelDimmer:member.kindString]) {
         _icon.image = [UIImage imageNamed:@"icon_dimmer3"];
+        if ([CSRUtilities belongToTSeriesPanel:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_T_panel"];
+        }else if ([CSRUtilities belongToPSeriesPanel:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_P_panel"];
+        }else {
+            _icon.image = [UIImage imageNamed:@"icon_dimmer1"];
+        }
         _channelLabel.hidden = NO;
         _imgv3.hidden = YES;
         _label3.hidden = YES;
@@ -145,7 +193,18 @@
             _label2.text = [NSString stringWithFormat:@"%.f %%",[member.eveD0 integerValue]/255.0*100];
         }
     }else if ([CSRUtilities belongToCWDevice:member.kindString]) {
-        _icon.image = [UIImage imageNamed:@"icon_rgb"];
+        if ([CSRUtilities belongToIEMLEDDriver:deviceEntity.shortName]
+            || [CSRUtilities belongToIELEDDriver:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_IE_driver"];
+        }else if ([CSRUtilities belongToLIMLEDDriver:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_LIM_driver"];
+        }else if ([CSRUtilities belongToC3ABLEDDriver:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_C3AB_driver"];
+        }else if ([CSRUtilities belongToC2ABLEDDriver:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_C2AB_driver"];
+        }else {
+            _icon.image = [UIImage imageNamed:@"icon_LED_strip"];
+        }
         _channelLabel.hidden = YES;
         _imgv1.image = [UIImage imageNamed:@"Ico_power"];
         if ([member.eveType integerValue] == 17) {
@@ -166,7 +225,18 @@
             _label3.text = [NSString stringWithFormat:@"%ld K",[member.eveD2 integerValue]*256+[member.eveD1 integerValue]];
         }
     }else if ([CSRUtilities belongToRGBDevice:member.kindString]) {
-        _icon.image = [UIImage imageNamed:@"icon_rgb"];
+        if ([CSRUtilities belongToIEMLEDDriver:deviceEntity.shortName]
+            || [CSRUtilities belongToIELEDDriver:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_IE_driver"];
+        }else if ([CSRUtilities belongToLIMLEDDriver:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_LIM_driver"];
+        }else if ([CSRUtilities belongToC3ABLEDDriver:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_C3AB_driver"];
+        }else if ([CSRUtilities belongToC2ABLEDDriver:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_C2AB_driver"];
+        }else {
+            _icon.image = [UIImage imageNamed:@"icon_LED_strip"];
+        }
         _channelLabel.hidden = YES;
         _imgv1.image = [UIImage imageNamed:@"Ico_power"];
         if ([member.eveType integerValue] == 17) {
@@ -188,7 +258,18 @@
             _label3.textColor = [UIColor colorWithRed:[member.eveD1 integerValue]/255.0 green:[member.eveD2 integerValue]/255.0 blue:[member.eveD3 integerValue]/255.0 alpha:1];
         }
     }else if ([CSRUtilities belongToRGBCWDevice:member.kindString]) {
-        _icon.image = [UIImage imageNamed:@"icon_rgb"];
+        if ([CSRUtilities belongToIEMLEDDriver:deviceEntity.shortName]
+            || [CSRUtilities belongToIELEDDriver:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_IE_driver"];
+        }else if ([CSRUtilities belongToLIMLEDDriver:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_LIM_driver"];
+        }else if ([CSRUtilities belongToC3ABLEDDriver:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_C3AB_driver"];
+        }else if ([CSRUtilities belongToC2ABLEDDriver:deviceEntity.shortName]) {
+            _icon.image = [UIImage imageNamed:@"icon_C2AB_driver"];
+        }else {
+            _icon.image = [UIImage imageNamed:@"icon_LED_strip"];
+        }
         _channelLabel.hidden = YES;
         _imgv1.image = [UIImage imageNamed:@"Ico_power"];
         if ([member.eveType integerValue] == 17) {
@@ -220,7 +301,7 @@
             _label3.textColor = [UIColor colorWithRed:[member.eveD1 integerValue]/255.0 green:[member.eveD2 integerValue]/255.0 blue:[member.eveD3 integerValue]/255.0 alpha:1];
         }
     }else if ([CSRUtilities belongToSocketOneChannel:member.kindString]) {
-        _icon.image = [UIImage imageNamed:@"icon_socket1"];
+        _icon.image = [UIImage imageNamed:@"icon_socket"];
         _channelLabel.hidden = YES;
         _imgv2.hidden = NO;
         _label2.hidden = NO;
@@ -239,7 +320,7 @@
             _label2.text = @"OFF";
         }
     }else if ([CSRUtilities belongToSocketTwoChannel:member.kindString]) {
-        _icon.image = [UIImage imageNamed:@"icon_socket2"];
+        _icon.image = [UIImage imageNamed:@"icon_socket"];
         _channelLabel.hidden = NO;
         _imgv2.hidden = NO;
         _label2.hidden = NO;
@@ -330,7 +411,7 @@
             _label3.text = @"OFF";
         }
     }else if ([CSRUtilities belongToMusicController:member.kindString]) {
-        _icon.image = [UIImage imageNamed:@"icon_bajiao"];
+        _icon.image = [UIImage imageNamed:@"icon_hidden_controller"];
         _channelLabel.hidden = NO;
         _imgv2.hidden = NO;
         _label2.hidden = NO;

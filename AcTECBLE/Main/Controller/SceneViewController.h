@@ -16,7 +16,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL forSceneRemote;
 @property (nonatomic, assign) NSInteger keyNumber;
 @property (nonatomic, assign) NSNumber *srDeviceId;
-@property (nonatomic, copy) void (^sceneRemoteHandle)(NSInteger keyNumber, NSInteger sceneIndex);
 
 @end
 

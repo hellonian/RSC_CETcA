@@ -21,11 +21,12 @@
 #import "CSRGaiaManager.h"
 #import "DataModelManager.h"
 
-@interface DiscoveryTableViewController ()<CSRBluetoothLEDelegate,OTAUDelegate,CSRUpdateManagerDelegate>
+@interface DiscoveryTableViewController ()<CSRBluetoothLEDelegate,OTAUDelegate,CSRUpdateManagerDelegate,UITableViewDelegate, UITableViewDataSource>
 {
     NSInteger retrycout;
 }
 
+@property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)NSMutableArray *uuids;
 @property (nonatomic,strong)NSArray *appAllDevcies;
@@ -71,6 +72,14 @@
     _dataArray = [[NSMutableArray alloc] init];
     _uuids = [[NSMutableArray alloc] init];
     _appAllDevcies = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
+    
+    self.view.backgroundColor = ColorWithAlpha(220, 220, 220, 1);
+    _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+    _tableView.delegate = self;
+    _tableView.dataSource = self;
+    _tableView.backgroundView = [[UIView alloc] init];
+    _tableView.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:_tableView];
     
     NSString *urlString = @"http://39.108.152.134/firware.php";
     AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
@@ -158,7 +167,7 @@
             [_dataArray addObject:model];
         }
     }
-    [self.refreshControl endRefreshing];
+    [self.tableView.refreshControl endRefreshing];
     [self.tableView reloadData];
     [[CSRBluetoothLE sharedInstance] stopScan];
     [[CSRBluetoothLE sharedInstance] startScan];;
@@ -206,6 +215,10 @@
 }
 
 #pragma mark - Table view data source
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 0.01f;
+}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;

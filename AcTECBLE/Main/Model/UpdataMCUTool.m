@@ -216,20 +216,19 @@
         cpLenth = rest;
     }
     NSData *pageData = [_binData subdataWithRange:NSMakeRange(_pageLength * _currentPage, cpLenth)];
-    
     BOOL exit = NO;
     
     if (cpLenth <= 192) {
         NSInteger n = cpLenth%6 != 0 ? cpLenth/6 : cpLenth/6-1;
         for (int i=0; i<=n; i++) {
-            if (!(lValue & (NSInteger)pow(2, i)) >> i) {
+            if (!((lValue & (NSInteger)pow(2, i)) >> i)) {
                 exit = YES;
                 break;
             }
         }
     }else {
         for (int i=0; i<32; i++) {
-            if (!(lValue & (NSInteger)pow(2, i)) >> i) {
+            if (!((lValue & (NSInteger)pow(2, i)) >> i)) {
                 exit = YES;
                 break;
             }
@@ -237,7 +236,7 @@
         if (!exit) {
             NSInteger n = cpLenth%6 != 0 ? cpLenth/6-32 : cpLenth/6-32-1;
             for (int i=0; i<=n; i++) {
-                if (!(hValue & (NSInteger)pow(2, i)) >> i) {
+                if (!((hValue & (NSInteger)pow(2, i)) >> i)) {
                     exit = YES;
                     break;
                 }
@@ -252,7 +251,7 @@
             if (cpLenth <= 192) {
                 NSInteger n = cpLenth%6 != 0 ? cpLenth/6 : cpLenth/6-1;
                 for (int i=0; i<=n; i++) {
-                    if (!(lValue & (NSInteger)pow(2, i)) >> i) {
+                    if (!((lValue & (NSInteger)pow(2, i)) >> i)) {
                         NSInteger bagRest = [pageData length] - 6 * i;
                         NSInteger cbLenth = 6;
                         if (bagRest <= 6) {
@@ -270,7 +269,7 @@
                 }
             }else {
                 for (int i=0; i<32; i++) {
-                    if (!(lValue & (NSInteger)pow(2, i)) >> i) {
+                    if (!((lValue & (NSInteger)pow(2, i)) >> i)) {
                         NSInteger bagRest = [pageData length] - 6 * i;
                         NSInteger cbLenth = 6;
                         if (bagRest <= 6) {
@@ -288,7 +287,7 @@
                 }
                 NSInteger n = cpLenth%6 != 0 ? cpLenth/6-32 : cpLenth/6-32-1;
                 for (int i=0; i<=n; i++) {
-                    if (!(hValue & (NSInteger)pow(2, i)) >> i) {
+                    if (!((hValue & (NSInteger)pow(2, i)) >> i)) {
                         NSInteger bagRest = [pageData length] - 6 * (i+32);
                         NSInteger cbLenth = 6;
                         if (bagRest <= 6) {

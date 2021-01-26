@@ -123,7 +123,7 @@
     if (!_hud) {
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            _hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            _hud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
             _hud.mode = MBProgressHUDModeIndeterminate;
             _hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
             _hud.bezelView.backgroundColor = [UIColor clearColor];
@@ -134,6 +134,9 @@
         });
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             if (_hud) {
+                [_hud hideAnimated:YES];
+                [_hud removeFromSuperview];
+                _hud = nil;
                 UIViewController *mvc = [UIApplication sharedApplication].keyWindow.rootViewController;
                 if ([mvc isKindOfClass:[MainTabBarController class]]) {
                     _alertController = [UIAlertController alertControllerWithTitle:@"" message:@"" preferredStyle:UIAlertControllerStyleAlert];
@@ -146,9 +149,7 @@
                     [_alertController setValue:attributedMessage forKey:@"attributedMessage"];
                     [_alertController.view setTintColor:DARKORAGE];
                     UIAlertAction *rescan = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        [_hud hideAnimated:YES];
-                        [_hud removeFromSuperview];
-                        _hud = nil;
+                        
                     }];
     //                UIAlertAction *exit = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Exit", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
     //                    [self exitApplication];

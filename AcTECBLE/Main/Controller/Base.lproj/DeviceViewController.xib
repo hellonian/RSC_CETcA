@@ -106,7 +106,7 @@
                     </connections>
                 </switch>
                 <textField opaque="NO" clipsSubviews="YES" tag="11" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="8OA-6x-p45">
-                    <rect key="frame" x="58" y="12" width="314" height="20"/>
+                    <rect key="frame" x="78" y="12" width="294" height="20"/>
                     <color key="textColor" red="0.58823529411764708" green="0.58823529411764708" blue="0.58823529411764708" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits"/>
@@ -171,7 +171,7 @@
                 <constraint firstItem="AK8-j8-AgG" firstAttribute="top" secondItem="PKw-Xf-A9J" secondAttribute="top" id="jhQ-Tf-R1r"/>
                 <constraint firstAttribute="trailing" secondItem="9GB-aW-U5B" secondAttribute="trailing" constant="20" id="kJh-ZP-tRB"/>
                 <constraint firstItem="PKw-Xf-A9J" firstAttribute="leading" secondItem="jqF-CI-kaG" secondAttribute="leading" constant="20" id="puA-Ne-Ylo"/>
-                <constraint firstItem="8OA-6x-p45" firstAttribute="leading" secondItem="g45-W0-rBI" secondAttribute="trailing" id="sJ7-UT-lnT"/>
+                <constraint firstItem="8OA-6x-p45" firstAttribute="leading" secondItem="g45-W0-rBI" secondAttribute="trailing" constant="20" id="sJ7-UT-lnT"/>
                 <constraint firstAttribute="trailing" secondItem="j3Q-k4-krO" secondAttribute="trailing" id="sr8-Wg-XPY"/>
                 <constraint firstItem="tg3-cS-Uk9" firstAttribute="trailing" secondItem="ZQP-ff-JEG" secondAttribute="trailing" id="vUk-p2-T0Z"/>
                 <constraint firstItem="j3Q-k4-krO" firstAttribute="top" secondItem="PKw-Xf-A9J" secondAttribute="bottom" constant="12" id="viC-Uw-U39"/>

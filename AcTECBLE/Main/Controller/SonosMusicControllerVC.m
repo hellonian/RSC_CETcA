@@ -269,7 +269,9 @@
         [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:retryCmd];
         retryCount ++;
     }else {
-        [self.infoQueue removeObjectAtIndex:0];
+        if ([self.infoQueue count]>0) {
+            [self.infoQueue removeObjectAtIndex:0];
+        }
         [self nextOperation];
     }
 }
@@ -549,6 +551,7 @@
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(askUpdateMCUDelay) object:nil];
         if (_updatingHud) {
             [_updatingHud hideAnimated:YES];
+            _updatingHud = nil;
         }
         [self.translucentBgView removeFromSuperview];
         _translucentBgView = nil;
@@ -584,6 +587,7 @@
     }else {
         if (_updatingHud) {
             [_updatingHud hideAnimated:YES];
+            _updatingHud = nil;
         }
         [self.translucentBgView removeFromSuperview];
         _translucentBgView = nil;
@@ -613,6 +617,7 @@
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(askUpdateMCUDelay) object:nil];
         if (_updatingHud) {
             [_updatingHud hideAnimated:YES];
+            _updatingHud = nil;
         }
         [self.translucentBgView removeFromSuperview];
         _translucentBgView = nil;
@@ -639,6 +644,7 @@
         [self freshHudProgress:1.0];
         if (_updatingHud) {
             [_updatingHud hideAnimated:YES];
+            _updatingHud = nil;
         }
         [self.translucentBgView removeFromSuperview];
         _translucentBgView = nil;
@@ -685,6 +691,7 @@
 - (void)askUpdateMCUDelay {
     if (_updatingHud) {
         [_updatingHud hideAnimated:YES];
+        _updatingHud = nil;
     }
     [self.translucentBgView removeFromSuperview];
     _translucentBgView = nil;

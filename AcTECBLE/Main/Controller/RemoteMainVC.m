@@ -19,6 +19,7 @@
 #import <MBProgressHUD.h>
 #import "UpdataMCUTool.h"
 #import "CSRBluetoothLE.h"
+#import "CSRAppStateManager.h"
 
 #define pi 3.14159265358979323846
 
@@ -227,20 +228,17 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         }else if ([CSRUtilities belongToSceneRemoteSixKeys:deviceEntity.shortName]
                 || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]) {
             _mType = MainRemoteType_SceneSix;
-            if ([deviceEntity.remoteBranch length] != 36) {
-                deviceEntity.remoteBranch = @"010000020000030000040000050000060000";
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            }
+            
             [self.view addSubview:self.sceneView2];
             [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
             [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
-            [_remoteBtn18 setTitle:deviceEntity.keyNameOne forState:UIControlStateNormal];
-            [_remoteBtn19 setTitle:deviceEntity.keyNameTwo forState:UIControlStateNormal];
-            [_remoteBtn20 setTitle:deviceEntity.keyNameThree forState:UIControlStateNormal];
-            [_remoteBtn21 setTitle:deviceEntity.keyNameFour forState:UIControlStateNormal];
-            [_remoteBtn22 setTitle:deviceEntity.keyNameFive forState:UIControlStateNormal];
-            [_remoteBtn23 setTitle:deviceEntity.keyNameSix forState:UIControlStateNormal];
+//            [_remoteBtn18 setTitle:deviceEntity.keyNameOne forState:UIControlStateNormal];
+//            [_remoteBtn19 setTitle:deviceEntity.keyNameTwo forState:UIControlStateNormal];
+//            [_remoteBtn20 setTitle:deviceEntity.keyNameThree forState:UIControlStateNormal];
+//            [_remoteBtn21 setTitle:deviceEntity.keyNameFour forState:UIControlStateNormal];
+//            [_remoteBtn22 setTitle:deviceEntity.keyNameFive forState:UIControlStateNormal];
+//            [_remoteBtn23 setTitle:deviceEntity.keyNameSix forState:UIControlStateNormal];
             UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn18 addGestureRecognizer:gesture17];
             UILongPressGestureRecognizer *gesture18 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
@@ -263,23 +261,31 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                 _keyFourTopConstraint.constant = 212;
                 _keyFiveLeftConstraint.constant = 126;
                 _keySixRightConstraint.constant = 20;
+                [_remoteBtn18 setBackgroundImage:[UIImage imageNamed:@"sr_P_one_default"] forState:UIControlStateNormal];
+                [_remoteBtn18 setBackgroundImage:[UIImage imageNamed:@"sr_P_one_selected"] forState:UIControlStateSelected];
+                [_remoteBtn19 setBackgroundImage:[UIImage imageNamed:@"sr_P_three_default"] forState:UIControlStateNormal];
+                [_remoteBtn19 setBackgroundImage:[UIImage imageNamed:@"sr_P_three_selected"] forState:UIControlStateSelected];
+                [_remoteBtn20 setBackgroundImage:[UIImage imageNamed:@"sr_P_five_default"] forState:UIControlStateNormal];
+                [_remoteBtn20 setBackgroundImage:[UIImage imageNamed:@"sr_P_five_selected"] forState:UIControlStateSelected];
+                [_remoteBtn21 setBackgroundImage:[UIImage imageNamed:@"sr_P_two_default"] forState:UIControlStateNormal];
+                [_remoteBtn21 setBackgroundImage:[UIImage imageNamed:@"sr_P_two_selected"] forState:UIControlStateSelected];
+                [_remoteBtn22 setBackgroundImage:[UIImage imageNamed:@"sr_P_four_default"] forState:UIControlStateNormal];
+                [_remoteBtn22 setBackgroundImage:[UIImage imageNamed:@"sr_P_four_selected"] forState:UIControlStateSelected];
+                [_remoteBtn23 setBackgroundImage:[UIImage imageNamed:@"sr_P_six_default"] forState:UIControlStateNormal];
+                [_remoteBtn23 setBackgroundImage:[UIImage imageNamed:@"sr_P_six_selected"] forState:UIControlStateSelected];
             }
-            
+            NSLog(@"~~~~~~~~~~~> %@",deviceEntity.remoteBranch);
         }else if ([CSRUtilities belongToSceneRemoteFourKeys:deviceEntity.shortName]
                   || [CSRUtilities belongToSceneRemoteFourKeysV:deviceEntity.shortName]) {
             _mType = MainRemoteType_SceneFour;
-            if ([deviceEntity.remoteBranch length] != 24) {
-                deviceEntity.remoteBranch = @"010000020000030000040000";
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            }
             [self.view addSubview:self.sceneView2];
             [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
             [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
-            [_remoteBtn18 setTitle:deviceEntity.keyNameOne forState:UIControlStateNormal];
-            [_remoteBtn19 setTitle:deviceEntity.keyNameTwo forState:UIControlStateNormal];
-            [_remoteBtn20 setTitle:deviceEntity.keyNameThree forState:UIControlStateNormal];
-            [_remoteBtn21 setTitle:deviceEntity.keyNameFour forState:UIControlStateNormal];
+//            [_remoteBtn18 setTitle:deviceEntity.keyNameOne forState:UIControlStateNormal];
+//            [_remoteBtn19 setTitle:deviceEntity.keyNameTwo forState:UIControlStateNormal];
+//            [_remoteBtn20 setTitle:deviceEntity.keyNameThree forState:UIControlStateNormal];
+//            [_remoteBtn21 setTitle:deviceEntity.keyNameFour forState:UIControlStateNormal];
             UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn18 addGestureRecognizer:gesture17];
             UILongPressGestureRecognizer *gesture18 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
@@ -303,21 +309,25 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                 _keyThreeTopConstraint.constant = 212;
                 _keyFourRightConstraint.constant = 46;
                 _keyFourTopConstraint.constant = 212;
+                [_remoteBtn18 setBackgroundImage:[UIImage imageNamed:@"sr_P_one_default"] forState:UIControlStateNormal];
+                [_remoteBtn18 setBackgroundImage:[UIImage imageNamed:@"sr_P_one_selected"] forState:UIControlStateSelected];
+                [_remoteBtn19 setBackgroundImage:[UIImage imageNamed:@"sr_P_three_default"] forState:UIControlStateNormal];
+                [_remoteBtn19 setBackgroundImage:[UIImage imageNamed:@"sr_P_three_selected"] forState:UIControlStateSelected];
+                [_remoteBtn20 setBackgroundImage:[UIImage imageNamed:@"sr_P_two_default"] forState:UIControlStateNormal];
+                [_remoteBtn20 setBackgroundImage:[UIImage imageNamed:@"sr_P_two_selected"] forState:UIControlStateSelected];
+                [_remoteBtn21 setBackgroundImage:[UIImage imageNamed:@"sr_P_four_default"] forState:UIControlStateNormal];
+                [_remoteBtn21 setBackgroundImage:[UIImage imageNamed:@"sr_P_four_selected"] forState:UIControlStateSelected];
             }
         }else if ([CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]
                   || [CSRUtilities belongToSceneRemoteThreeKeysV:deviceEntity.shortName]) {
             _mType = MainRemoteType_SceneThree;
-            if ([deviceEntity.remoteBranch length] != 18) {
-                deviceEntity.remoteBranch = @"010000020000030000";
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            }
             [self.view addSubview:self.sceneView2];
             [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
             [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
-            [_remoteBtn18 setTitle:deviceEntity.keyNameOne forState:UIControlStateNormal];
-            [_remoteBtn19 setTitle:deviceEntity.keyNameTwo forState:UIControlStateNormal];
-            [_remoteBtn20 setTitle:deviceEntity.keyNameThree forState:UIControlStateNormal];
+//            [_remoteBtn18 setTitle:deviceEntity.keyNameOne forState:UIControlStateNormal];
+//            [_remoteBtn19 setTitle:deviceEntity.keyNameTwo forState:UIControlStateNormal];
+//            [_remoteBtn20 setTitle:deviceEntity.keyNameThree forState:UIControlStateNormal];
             UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn18 addGestureRecognizer:gesture17];
             UILongPressGestureRecognizer *gesture18 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
@@ -343,20 +353,22 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                 _keyTwoTopConstraint.constant = 212;
                 _keyThreeLeftConstraint.constant = 233;
                 _keyThreeTopConstraint.constant = 212;
+                [_remoteBtn18 setBackgroundImage:[UIImage imageNamed:@"sr_P_one_default"] forState:UIControlStateNormal];
+                [_remoteBtn18 setBackgroundImage:[UIImage imageNamed:@"sr_P_one_selected"] forState:UIControlStateSelected];
+                [_remoteBtn19 setBackgroundImage:[UIImage imageNamed:@"sr_P_two_default"] forState:UIControlStateNormal];
+                [_remoteBtn19 setBackgroundImage:[UIImage imageNamed:@"sr_P_two_selected"] forState:UIControlStateSelected];
+                [_remoteBtn20 setBackgroundImage:[UIImage imageNamed:@"sr_P_three_default"] forState:UIControlStateNormal];
+                [_remoteBtn20 setBackgroundImage:[UIImage imageNamed:@"sr_P_three_selected"] forState:UIControlStateSelected];
             }
         }else if ([CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
                   || [CSRUtilities belongToSceneRemoteTwoKeysV:deviceEntity.shortName]) {
             _mType = MainRemoteType_SceneTwo;
-            if ([deviceEntity.remoteBranch length] != 12) {
-                deviceEntity.remoteBranch = @"010000020000";
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            }
             [self.view addSubview:self.sceneView2];
             [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
             [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
-            [_remoteBtn18 setTitle:deviceEntity.keyNameOne forState:UIControlStateNormal];
-            [_remoteBtn19 setTitle:deviceEntity.keyNameTwo forState:UIControlStateNormal];
+//            [_remoteBtn18 setTitle:deviceEntity.keyNameOne forState:UIControlStateNormal];
+//            [_remoteBtn19 setTitle:deviceEntity.keyNameTwo forState:UIControlStateNormal];
             UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn18 addGestureRecognizer:gesture17];
             UILongPressGestureRecognizer *gesture18 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
@@ -377,19 +389,19 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                 _keyOneTopConstraint.constant = 212;
                 _keyTwoRightConstraint.constant = 46;
                 _keyTwoTopConstraint.constant = 212;
+                [_remoteBtn18 setBackgroundImage:[UIImage imageNamed:@"sr_P_one_default"] forState:UIControlStateNormal];
+                [_remoteBtn18 setBackgroundImage:[UIImage imageNamed:@"sr_P_one_selected"] forState:UIControlStateSelected];
+                [_remoteBtn19 setBackgroundImage:[UIImage imageNamed:@"sr_P_two_default"] forState:UIControlStateNormal];
+                [_remoteBtn19 setBackgroundImage:[UIImage imageNamed:@"sr_P_two_selected"] forState:UIControlStateSelected];
             }
         }else if ([CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]
                   || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]) {
             _mType = MainRemoteType_SceneOne;
-            if ([deviceEntity.remoteBranch length] != 6) {
-                deviceEntity.remoteBranch = @"010000";
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            }
             [self.view addSubview:self.sceneView2];
             [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
             [self.sceneView2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [self.sceneView2 autoSetDimensionsToSize:CGSizeMake(320, 320)];
-            [_remoteBtn18 setTitle:deviceEntity.keyNameOne forState:UIControlStateNormal];
+//            [_remoteBtn18 setTitle:deviceEntity.keyNameOne forState:UIControlStateNormal];
             UILongPressGestureRecognizer *gesture17 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn18 addGestureRecognizer:gesture17];
             
@@ -403,15 +415,18 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                 _keyOneTopConstraint.constant = 133;
             }else if ([CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]) {
                 _keyOneTopConstraint.constant = 212;
+                [_remoteBtn18 setBackgroundImage:[UIImage imageNamed:@"sr_P_one_default"] forState:UIControlStateNormal];
+                [_remoteBtn18 setBackgroundImage:[UIImage imageNamed:@"sr_P_one_selected"] forState:UIControlStateSelected];
             }
             _keyOneLeftConstraint.constant = 127;
+            
         }else if ([CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]
                   || [CSRUtilities belongToMusicControlRemoteV:deviceEntity.shortName]) {
             [self.view addSubview:self.mcrView];
             [self.mcrView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
             [self.mcrView autoAlignAxisToSuperviewAxis:ALAxisVertical];
             [self.mcrView autoSetDimensionsToSize:CGSizeMake(320, 320)];
-            
+            /*
             NSMutableAttributedString *psn = [[NSMutableAttributedString alloc] initWithString:@"开/关\nPlay/Stop"];
             [psn addAttribute:NSForegroundColorAttributeName value:ColorWithAlpha(190, 190, 190, 1) range:NSMakeRange(0, [psn length])];
             [psn addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:16.0] range:NSMakeRange(0, 3)];
@@ -420,7 +435,7 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             NSMutableAttributedString *psh = [[NSMutableAttributedString alloc] initWithAttributedString:psn];
             [psh addAttribute:NSForegroundColorAttributeName value:ColorWithAlpha(65, 92, 165, 1) range:NSMakeRange(0, [psh length])];
             [_remoteBtn30 setAttributedTitle:psh forState:UIControlStateHighlighted];
-            
+
             _remoteBtn30.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
             _remoteBtn30.titleLabel.numberOfLines = 2;
             _remoteBtn30.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -489,35 +504,35 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             _remoteBtn29.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
             _remoteBtn29.titleLabel.numberOfLines = 2;
             _remoteBtn29.titleLabel.textAlignment = NSTextAlignmentCenter;
-            
+            */
             if ([CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]) {
                 _musicRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg"];
-                [_remoteBtn30 setImage:[UIImage imageNamed:@"remotescenebtn_default"] forState:UIControlStateNormal];
-                [_remoteBtn30 setImage:[UIImage imageNamed:@"remotescenebtn_highlighted"] forState:UIControlStateHighlighted];
-                [_remoteBtn30 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
+                [_remoteBtn30 setBackgroundImage:[UIImage imageNamed:@"sr_T_play_default"] forState:UIControlStateNormal];
+                [_remoteBtn30 setBackgroundImage:[UIImage imageNamed:@"sr_T_play_selected"] forState:UIControlStateSelected];
+//                [_remoteBtn30 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
                 _mcKeyOneLeftConstraint.constant = 79;
-                [_remoteBtn31 setImage:[UIImage imageNamed:@"remotescenebtn_default"] forState:UIControlStateNormal];
-                [_remoteBtn31 setImage:[UIImage imageNamed:@"remotescenebtn_highlighted"] forState:UIControlStateHighlighted];
-                [_remoteBtn31 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
+                [_remoteBtn31 setBackgroundImage:[UIImage imageNamed:@"sr_T_mute_default"] forState:UIControlStateNormal];
+                [_remoteBtn31 setBackgroundImage:[UIImage imageNamed:@"sr_T_mute_selected"] forState:UIControlStateSelected];
+//                [_remoteBtn31 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
                 _mcKeyTwoTopConstraint.constant = 56;
                 _mcKeyTwoRightConstraint.constant = 79;
-                [_remoteBtn32 setImage:[UIImage imageNamed:@"remotescenebtn_default"] forState:UIControlStateNormal];
-                [_remoteBtn32 setImage:[UIImage imageNamed:@"remotescenebtn_highlighted"] forState:UIControlStateHighlighted];
-                [_remoteBtn32 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
+                [_remoteBtn32 setBackgroundImage:[UIImage imageNamed:@"sr_T_prev_default"] forState:UIControlStateNormal];
+                [_remoteBtn32 setBackgroundImage:[UIImage imageNamed:@"sr_T_prev_selected"] forState:UIControlStateSelected];
+//                [_remoteBtn32 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
                 _mcKeyThreeTopConstraint.constant = 133;
                 _mcKeyThreeLeftConstraint.constant = 79;
-                [_remoteBtn33 setImage:[UIImage imageNamed:@"remotescenebtn_default"] forState:UIControlStateNormal];
-                [_remoteBtn33 setImage:[UIImage imageNamed:@"remotescenebtn_highlighted"] forState:UIControlStateHighlighted];
-                [_remoteBtn33 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
+                [_remoteBtn33 setBackgroundImage:[UIImage imageNamed:@"sr_T_next_default"] forState:UIControlStateNormal];
+                [_remoteBtn33 setBackgroundImage:[UIImage imageNamed:@"sr_T_next_selected"] forState:UIControlStateSelected];
+//                [_remoteBtn33 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
                 _mcKeyFourTopConstraint.constant = 133;
                 _mcKeyFourRightConstraint.constant = 79;
-                [_remoteBtn28 setImage:[UIImage imageNamed:@"remotescenebtn_default"] forState:UIControlStateNormal];
-                [_remoteBtn28 setImage:[UIImage imageNamed:@"remotescenebtn_highlighted"] forState:UIControlStateHighlighted];
-                [_remoteBtn28 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
+                [_remoteBtn28 setBackgroundImage:[UIImage imageNamed:@"sr_T_voldown_default"] forState:UIControlStateNormal];
+                [_remoteBtn28 setBackgroundImage:[UIImage imageNamed:@"sr_T_voldown_selected"] forState:UIControlStateSelected];
+//                [_remoteBtn28 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
                 _mcKeyFiveLeftConstraint.constant = 79;
-                [_remoteBtn29 setImage:[UIImage imageNamed:@"remotescenebtn_default"] forState:UIControlStateNormal];
-                [_remoteBtn29 setImage:[UIImage imageNamed:@"remotescenebtn_highlighted"] forState:UIControlStateHighlighted];
-                [_remoteBtn29 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
+                [_remoteBtn29 setBackgroundImage:[UIImage imageNamed:@"sr_T_volup_default"] forState:UIControlStateNormal];
+                [_remoteBtn29 setBackgroundImage:[UIImage imageNamed:@"sr_T_volup_selected"] forState:UIControlStateSelected];
+//                [_remoteBtn29 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
                 _mcKeySixRightConstraint.constant = 79;
                 _mcKeySixBottomConstraint.constant = 56;
             }
@@ -729,79 +744,16 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                     
                     [self presentViewController:alert animated:YES completion:nil];
         }else if (sender.tag == 1 || sender.tag == 2 || sender.tag == 3 || sender.tag == 4 || sender.tag == 5 || sender.tag == 6) {
-            SceneViewController *svc = [[SceneViewController alloc] init];
-            svc.forSceneRemote = YES;
-            svc.keyNumber = sender.tag;
-            svc.srDeviceId = _deviceId;
             CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-            if (deviceEntity.remoteBranch > 0) {
+            if ([deviceEntity.remoteBranch length] >= sender.tag * 6) {
+                SceneViewController *svc = [[SceneViewController alloc] init];
+                svc.forSceneRemote = YES;
+                svc.keyNumber = sender.tag;
+                svc.srDeviceId = _deviceId;
                 svc.sceneIndex = @([self exchangePositionOfDeviceIdString:[deviceEntity.remoteBranch substringWithRange:NSMakeRange((sender.tag-1)*6+2, 4)]]);
-            }else {
-                svc.sceneIndex = @0;
+                [self.navigationController pushViewController:svc animated:YES];
             }
             
-            svc.sceneRemoteHandle = ^(NSInteger keyNumber, NSInteger sceneIndex) {
-                if (!_activityIndicator) {
-                    [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
-                    _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-                    [[UIApplication sharedApplication].keyWindow addSubview:_activityIndicator];
-                    [_activityIndicator autoCenterInSuperview];
-                    [_activityIndicator startAnimating];
-                }
-                
-                Byte b[] = {};
-                b[0] = (Byte)((sceneIndex & 0xFF00) >> 8);
-                b[1] = (Byte)(sceneIndex & 0x00FF);
-                Byte byte[] = {0x9b, 0x06, 0x01, keyNumber, b[1], b[0], 0x00, 0x00};
-                NSData *cmd = [[NSData alloc] initWithBytes:byte length:8];
-                [[DataModelApi sharedInstance] sendData:_deviceId data:cmd success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-                    NSString *br = [CSRUtilities hexStringForData:[data subdataWithRange:NSMakeRange(3, 3)]];
-                    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-                    if ([deviceEntity.remoteBranch length] > 0) {
-                        deviceEntity.remoteBranch = [deviceEntity.remoteBranch stringByReplacingCharactersInRange:NSMakeRange(6*(keyNumber-1), 6) withString:br];
-                        [[CSRDatabaseManager sharedInstance] saveContext];
-                    }
-                    
-                    if (_activityIndicator) {
-                        [_activityIndicator stopAnimating];
-                        [_activityIndicator removeFromSuperview];
-                        _activityIndicator = nil;
-                        [self.translucentBgView removeFromSuperview];
-                        self.translucentBgView = nil;
-                    }
-                } failure:^(NSError * _Nonnull error) {
-                    [[DataModelApi sharedInstance] sendData:_deviceId data:cmd success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
-                        NSString *br = [CSRUtilities hexStringForData:[data subdataWithRange:NSMakeRange(3, 3)]];
-                        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-                        if ([deviceEntity.remoteBranch length] > 0) {
-                            deviceEntity.remoteBranch = [deviceEntity.remoteBranch stringByReplacingCharactersInRange:NSMakeRange(6*(keyNumber-1), 6) withString:br];
-                            [[CSRDatabaseManager sharedInstance] saveContext];
-                        }
-                        
-                        if (_activityIndicator) {
-                            [_activityIndicator stopAnimating];
-                            [_activityIndicator removeFromSuperview];
-                            _activityIndicator = nil;
-                            [self.translucentBgView removeFromSuperview];
-                            self.translucentBgView = nil;
-                        }
-                    } failure:^(NSError * _Nonnull error) {
-                        if (_activityIndicator) {
-                            [_activityIndicator stopAnimating];
-                            [_activityIndicator removeFromSuperview];
-                            _activityIndicator = nil;
-                            [self.translucentBgView removeFromSuperview];
-                            self.translucentBgView = nil;
-                        }
-                        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:[NSString stringWithFormat:@"%@: %@",AcTECLocalizedStringFromTable(@"Error", @"Localizable"),AcTECLocalizedStringFromTable(@"notRespond", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
-                        [alert.view setTintColor:DARKORAGE];
-                        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
-                        [alert addAction:cancel];
-                        [self presentViewController:alert animated:YES completion:nil];
-                    }];
-                }];
-            };
-            [self.navigationController pushViewController:svc animated:YES];
         }else if (sender.tag == 18 || sender.tag == 19 || sender.tag == 20 || sender.tag == 21 || sender.tag == 22 || sender.tag == 23) {
             DeviceListViewController *list = [[DeviceListViewController alloc] init];
             list.selectMode = DeviceListSelectMode_MusicController;
@@ -1187,17 +1139,16 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
     }
     if (sw != -1) {
         if (editing) {
-            if (gesture.state == UIGestureRecognizerStateBegan) {
-                [self renameKey:gesture.view];
-            }
-            
+//            if (gesture.state == UIGestureRecognizerStateBegan) {
+//                [self renameKey:gesture.view];
+//            }
         }else {
             if (gesture.state == UIGestureRecognizerStateBegan) {
                 Byte byte[] = {0xb6, 0x05, 0x12, sw, 0x01, 0x00, 0x00};
                 NSData *cmd = [[NSData alloc] initWithBytes:byte length:7];
                 [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
                 [self.beganLongpressGestures addObject:@(sw)];
-            }else {
+            }else if (gesture.state == UIGestureRecognizerStateEnded) {
                 Byte byte[] = {0xb6, 0x05, 0x12, sw, 0x02, 0x00, 0x00};
                 NSData *cmd = [[NSData alloc] initWithBytes:byte length:7];
                 [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];

@@ -43,6 +43,7 @@
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     _tableView.delegate = self;
     _tableView.dataSource = self;
+    _tableView.rowHeight = 58;
     _tableView.backgroundView = [[UIView alloc] init];
     _tableView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_tableView];

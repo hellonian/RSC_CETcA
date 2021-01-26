@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -34,7 +34,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="YnJ-RD-iHh">
-                            <rect key="frame" x="58" y="12" width="336" height="18.5"/>
+                            <rect key="frame" x="78" y="12" width="316" height="18.5"/>
                             <color key="textColor" red="0.58823529409999997" green="0.58823529409999997" blue="0.58823529409999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits"/>
@@ -47,11 +47,12 @@
                             </constraints>
                         </view>
                     </subviews>
+                    <viewLayoutGuide key="safeArea" id="POH-aK-5wB"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="YnJ-RD-iHh" secondAttribute="trailing" constant="20" id="IJj-Vp-cog"/>
                         <constraint firstAttribute="height" constant="45" id="L99-Wm-sF1"/>
-                        <constraint firstItem="YnJ-RD-iHh" firstAttribute="leading" secondItem="Z9m-rq-gYG" secondAttribute="trailing" id="MOh-ll-7KF"/>
+                        <constraint firstItem="YnJ-RD-iHh" firstAttribute="leading" secondItem="Z9m-rq-gYG" secondAttribute="trailing" constant="20" id="MOh-ll-7KF"/>
                         <constraint firstItem="YnJ-RD-iHh" firstAttribute="bottom" secondItem="Z9m-rq-gYG" secondAttribute="bottom" id="MT0-hg-wWu"/>
                         <constraint firstItem="YnJ-RD-iHh" firstAttribute="top" secondItem="Z9m-rq-gYG" secondAttribute="top" id="fdI-2T-Mgs"/>
                         <constraint firstItem="Z9m-rq-gYG" firstAttribute="leading" secondItem="M1g-Ww-gRT" secondAttribute="leading" constant="20" id="jid-yR-pcE"/>
@@ -60,7 +61,6 @@
                         <constraint firstAttribute="trailing" secondItem="oD9-yZ-kI5" secondAttribute="trailing" id="vdj-AG-fXC"/>
                         <constraint firstAttribute="bottom" secondItem="oD9-yZ-kI5" secondAttribute="bottom" id="xbE-JK-Mpv"/>
                     </constraints>
-                    <viewLayoutGuide key="safeArea" id="POH-aK-5wB"/>
                 </view>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="qk2-e1-GFn">
                     <rect key="frame" x="0.0" y="301" width="414" height="595"/>
@@ -86,7 +86,7 @@
                         <constraint firstAttribute="width" constant="120" id="z6B-mM-xRM"/>
                     </constraints>
                     <state key="normal" title="同步设备" image="icon_wifi">
-                        <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <color key="titleColor" systemColor="darkTextColor"/>
                     </state>
                     <connections>
                         <action selector="updateConfiguration:" destination="-1" eventType="touchUpInside" id="YXb-G8-0ac"/>
@@ -100,7 +100,7 @@
                         <constraint firstAttribute="height" constant="30" id="9HM-ae-CAu"/>
                     </constraints>
                     <state key="normal" title="同步图库" image="icon_wifi">
-                        <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <color key="titleColor" systemColor="darkTextColor"/>
                     </state>
                     <connections>
                         <action selector="updateIconLibrary:" destination="-1" eventType="touchUpInside" id="rzF-wh-shm"/>
@@ -114,7 +114,7 @@
                         <constraint firstAttribute="width" constant="120" id="fcm-Uq-jwG"/>
                     </constraints>
                     <state key="normal" title="同步壁纸" image="icon_wifi">
-                        <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <color key="titleColor" systemColor="darkTextColor"/>
                     </state>
                     <connections>
                         <action selector="synchronizeWallpaper:" destination="-1" eventType="touchUpInside" id="rwv-Jn-BDi"/>
@@ -127,6 +127,7 @@
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.95294117649999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="qk2-e1-GFn" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="04B-lO-i1s"/>
@@ -148,11 +149,13 @@
                 <constraint firstItem="qk2-e1-GFn" firstAttribute="top" secondItem="M1g-Ww-gRT" secondAttribute="bottom" id="rjA-ua-8JE"/>
                 <constraint firstItem="m6O-cE-aWz" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" constant="14" id="s6N-Pc-Fzs"/>
             </constraints>
-            <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <point key="canvasLocation" x="131.8840579710145" y="152.67857142857142"/>
         </view>
     </objects>
     <resources>
         <image name="icon_wifi" width="20" height="20"/>
+        <systemColor name="darkTextColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

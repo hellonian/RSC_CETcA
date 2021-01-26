@@ -91,7 +91,7 @@
 #define kDALIDeviceTwo @[@"DDSB2"]
 
 #define kFadeDevice @[@"TD300B", @"TD400B-2G", @"TD400B-3G",@"PD400B-2G"]
-#define kNearbyFunctionDevices @[@"LI-45B", @"IE-CW", @"IE-RGBCW", @"C2AB"]
+#define kNearbyFunctionDevices @[@"LI-45B", @"IE-CW", @"IE-RGBCW", @"C2AB", @"RGBCW", @"RGB", @"CW"]
 #define kMusicController @[@"MRS485IB"]
 #define kMusicControlRemote @[@"TRM6B-BO", @"TR6BEM", @"TR6B-M"]
 #define kMusicControlRemoteV @[@"PR6BEM",@"PR6B-M"]

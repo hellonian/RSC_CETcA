@@ -20,6 +20,11 @@
 
 
 @interface CSRmeshManager : NSObject <MeshServiceApiDelegate, AttentionModelApiDelegate, BearerModelApiDelegate, ConfigModelApiDelegate, MeshServiceApiDelegate, FirmwareModelApiDelegate, GroupModelApiDelegate, LightModelApiDelegate, PowerModelApiDelegate, DataModelApiDelegate, PingModelApiDelegate, BatteryModelApiDelegate, SensorModelApiDelegate, ActuatorModelApiDelegate>
+{
+    NSData *applyCmd;
+    NSInteger retryCount;
+    NSNumber *applyDeviceID;
+}
 
 + (id) sharedInstance;
 - (void)setUpDelegates;

@@ -275,8 +275,6 @@
 		2E0AA21C2126758F00DB45EB /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/RemoteSettingViewController.strings"; sourceTree = "<group>"; };
 		2E112AE8252074F100553CEE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/RemoteLCDVC.xib; sourceTree = "<group>"; };
 		2E159F31248643D6001E126C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/RemoteMainVC.xib; sourceTree = "<group>"; };
-		2E159F34248643E6001E126C /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/RemoteMainVC.strings; sourceTree = "<group>"; };
-		2E159F36248643E8001E126C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/RemoteMainVC.strings"; sourceTree = "<group>"; };
 		2E187CA525A567C3000425EC /* PIRDeviceVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PIRDeviceVC.h; sourceTree = "<group>"; };
 		2E187CA625A567C3000425EC /* PIRDeviceVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PIRDeviceVC.m; sourceTree = "<group>"; };
 		2E187CA725A567C3000425EC /* PIRDeviceVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PIRDeviceVC.xib; sourceTree = "<group>"; };
@@ -426,6 +424,8 @@
 		2E5F120A23BDD22F0018EF16 /* LCDRemoteMemberCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LCDRemoteMemberCell.h; sourceTree = "<group>"; };
 		2E5F120B23BDD22F0018EF16 /* LCDRemoteMemberCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LCDRemoteMemberCell.m; sourceTree = "<group>"; };
 		2E5F120C23BDD22F0018EF16 /* LCDRemoteMemberCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LCDRemoteMemberCell.xib; sourceTree = "<group>"; };
+		2E62ED8225B6B46A0072777D /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/RemoteMainVC.strings; sourceTree = "<group>"; };
+		2E62ED8425B6B47A0072777D /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/RemoteMainVC.strings"; sourceTree = "<group>"; };
 		2E63A54021E328B800FCE49D /* SocketPowerCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SocketPowerCell.h; sourceTree = "<group>"; };
 		2E63A54121E328B800FCE49D /* SocketPowerCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SocketPowerCell.m; sourceTree = "<group>"; };
 		2E63A54221E328B800FCE49D /* SocketPowerCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SocketPowerCell.xib; sourceTree = "<group>"; };
@@ -1868,8 +1868,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				2E159F31248643D6001E126C /* Base */,
-				2E159F34248643E6001E126C /* English */,
-				2E159F36248643E8001E126C /* zh-Hans */,
+				2E62ED8225B6B46A0072777D /* English */,
+				2E62ED8425B6B47A0072777D /* zh-Hans */,
 			);
 			name = RemoteMainVC.xib;
 			sourceTree = "<group>";
@@ -2356,7 +2356,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 31;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2416,7 +2416,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 31;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;

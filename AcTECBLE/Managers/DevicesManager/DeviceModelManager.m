@@ -36,6 +36,10 @@
     
     BOOL appControlling;
     BOOL groupControlling;
+    
+    NSData *applyCmd;
+    NSInteger applyRetryCount;
+    NSNumber *applyDeviceID;
 }
 
 @property (nonatomic, strong) NSMutableDictionary *mcNameDataDic;
@@ -1560,9 +1564,12 @@
                     NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
                     if ([bit boolValue]) {
                         if (channel == i) {
+                            applyRetryCount = 0;
+                            applyDeviceID = deviceID;
+                            [self performSelector:@selector(getSongNameDelayMethod) withObject:nil afterDelay:8];
                             Byte byte[] = {0xea, 0x81, channel, 0x00, 0x00};
-                            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
-                            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceID data:cmd];
+                            applyCmd = [[NSData alloc] initWithBytes:byte length:5];
+                            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceID data:applyCmd];
                         }
                         break;
                     }
@@ -1570,6 +1577,14 @@
             }
             break;
         }
+    }
+}
+
+- (void)getSongNameDelayMethod {
+    if (applyRetryCount < 4) {
+        applyRetryCount ++;
+        [self performSelector:@selector(getSongNameDelayMethod) withObject:nil afterDelay:8];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:applyDeviceID data:applyCmd];
     }
 }
 
@@ -1581,54 +1596,69 @@
 }
 
 - (void)postSongNameDeviceID:(NSNumber *)deviceID channel:(NSInteger)channel count:(NSInteger)count index:(NSInteger)index encoding:(NSInteger)encoding data:(NSData *)data {
-    
-    NSMutableArray *ary = [self.mcNameDataDic objectForKey:deviceID];
-    if (!ary) {
-        [self performSelector:@selector(clearMCName) withObject:nil afterDelay:5.0];
-        ary = [[NSMutableArray alloc] init];
-        [ary addObject:@{@"channel":@(channel),@"count":@(count),@"index":@(index),@"encoding":@(encoding),@"data":data}];
-        [self.mcNameDataDic setObject:ary forKey:deviceID];
-    }else {
-        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(clearMCName) object:nil];
-        [self performSelector:@selector(clearMCName) withObject:nil afterDelay:5.0];
-        BOOL compliance = YES;
-        for (NSDictionary *dic in ary) {
-            if (channel != [dic[@"channel"] integerValue] || count != [dic[@"count"] integerValue] || index == [dic[@"index"] integerValue] || encoding != [dic[@"encoding"] integerValue]) {
-                compliance = NO;
+    DeviceModel *model = [self getDeviceModelByDeviceId:deviceID];
+    if (model.mcCurrentChannel != -1) {
+        NSString *hex = [CSRUtilities stringWithHexNumber:model.mcCurrentChannel];
+        NSString *bin = [CSRUtilities getBinaryByhex:hex];
+        for (int i = 0; i < [bin length]; i ++) {
+            NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
+            if ([bit boolValue]) {
+                if (channel == i) {
+                    NSMutableArray *ary = [self.mcNameDataDic objectForKey:deviceID];
+                    if (!ary) {
+                        [self performSelector:@selector(clearMCName) withObject:nil afterDelay:5.0];
+                        ary = [[NSMutableArray alloc] init];
+                        [ary addObject:@{@"channel":@(channel),@"count":@(count),@"index":@(index),@"encoding":@(encoding),@"data":data}];
+                        [self.mcNameDataDic setObject:ary forKey:deviceID];
+                    }else {
+                        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(clearMCName) object:nil];
+                        [self performSelector:@selector(clearMCName) withObject:nil afterDelay:5.0];
+                        BOOL compliance = YES;
+                        for (NSDictionary *dic in ary) {
+                            if (channel != [dic[@"channel"] integerValue] || count != [dic[@"count"] integerValue] || index == [dic[@"index"] integerValue] || encoding != [dic[@"encoding"] integerValue]) {
+                                compliance = NO;
+                                break;
+                            }
+                        }
+                        if (compliance) {
+                            [ary addObject:@{@"channel":@(channel),@"count":@(count),@"index":@(index),@"encoding":@(encoding),@"data":data}];
+
+                        }
+                    }
+                    
+                    if ([ary count] == count) {
+                        NSMutableData *nameData = [[NSMutableData alloc] init];
+                        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+                        [ary sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+                        for (NSDictionary *dic in ary) {
+                            [nameData appendData:dic[@"data"]];
+                        }
+                        
+                        NSInteger encoding = [ary[0][@"encoding"] integerValue];
+                        NSString *name;
+                        if (encoding == 0) {
+                            NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+                            name = [[NSString alloc] initWithData:nameData encoding:enc];
+                            
+                        }else if (encoding == 1) {
+                            name = [[NSString alloc] initWithData:nameData encoding:NSUTF8StringEncoding];
+                        }
+                        
+                        model.songName = name;
+                        NSLog(@"~~> %@   %@",nameData, name);
+                        [self.mcNameDataDic removeObjectForKey:deviceID];
+                        
+                        if ([deviceID isEqualToNumber:applyDeviceID]) {
+                            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(getSongNameDelayMethod) object:nil];
+                        }
+                        
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshMCSongName" object:self userInfo:@{@"deviceId":deviceID}];
+                    }
+                }
                 break;
             }
         }
-        if (compliance) {
-            [ary addObject:@{@"channel":@(channel),@"count":@(count),@"index":@(index),@"encoding":@(encoding),@"data":data}];
-
-        }
     }
-    
-    if ([ary count] == count) {
-        NSMutableData *nameData = [[NSMutableData alloc] init];
-        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
-        [ary sortUsingDescriptors:[NSArray arrayWithObject:sort]];
-        for (NSDictionary *dic in ary) {
-            [nameData appendData:dic[@"data"]];
-        }
-        
-        NSInteger encoding = [ary[0][@"encoding"] integerValue];
-        NSString *name;
-        if (encoding == 0) {
-            NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
-            name = [[NSString alloc] initWithData:nameData encoding:enc];
-            
-        }else if (encoding == 1) {
-            name = [[NSString alloc] initWithData:nameData encoding:NSUTF8StringEncoding];
-        }
-        DeviceModel *model = [self getDeviceModelByDeviceId:deviceID];
-        model.songName = name;
-        NSLog(@"~~> %@   %@",nameData, name);
-        [self.mcNameDataDic removeObjectForKey:deviceID];
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshMCSongName" object:self userInfo:@{@"deviceId":deviceID,@"channel":@(channel)}];
-    }
-    
 }
 
 - (void)clearMCName {

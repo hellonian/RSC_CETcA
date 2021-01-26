@@ -255,8 +255,10 @@ static DataModelManager *manager = nil;
     
     //遥控器设置反馈
     else if ([dataStr hasPrefix:@"b0"]) {
-        NSString *suffixStr = [dataStr substringWithRange:NSMakeRange(6, 2)];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"settingRemoteCall" object:nil userInfo:@{@"settingRemoteCall":suffixStr}];
+        if ([data length] == 4) {
+            Byte *byte = (Byte *)[data bytes];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"CALLBACKOFREMOTECONFIGURATION" object:nil userInfo:@{@"STATE":@(byte[3]),@"DEVICEID":sourceDeviceId}];
+        }
     }
     
     //获取固件版本
@@ -741,7 +743,6 @@ static DataModelManager *manager = nil;
                 NSInteger type = nbyte[0] >> 7;
                 NSInteger number = nbyte[0] & 0x7F;
                 NSString *name = [[NSString alloc] initWithData:[namedata subdataWithRange:NSMakeRange(1, [namedata length]-1)] encoding:NSUTF8StringEncoding];
-                NSLog(@"%ld  %ld  %@  %@",type, number, name, namedata);
                 DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:sourceDeviceId];
                 BOOL alive = NO;
                 if (model.mcLiveChannels & (1 << byte[2])) {
@@ -778,9 +779,14 @@ static DataModelManager *manager = nil;
     }
     
     else if ([dataStr hasPrefix:@"eb8a"]) {
-        if ([data length] == 6) {
-            Byte *byte = (Byte *)[data bytes];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"PIRCALL" object:self userInfo:@{@"DEVICEID":sourceDeviceId, @"CONFIGID":@(byte[2]), @"VALUELOW":@(byte[4]), @"VALUEHIGH":@(byte[5])}];
+        if ([data length] == 8) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"PIRCALL" object:self userInfo:@{@"DEVICEID":sourceDeviceId, @"DATA":data}];
+        }
+    }
+    
+    else if ([dataStr hasPrefix:@"eb89"]) {
+        if ([data length] == 10 || [data length] == 6) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"PIRCALL" object:self userInfo:@{@"DEVICEID":sourceDeviceId, @"DATA":data}];
         }
     }
     

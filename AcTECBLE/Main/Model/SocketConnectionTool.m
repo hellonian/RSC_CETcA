@@ -64,8 +64,16 @@
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
-    NSLog(@"readData: %@",data);
-    
+    NSLog(@"readData长度： %ld", [data length]);
+    NSInteger n = [data length]/24+1;
+    if ([data length]%24 == 0 && n > 1) {
+        n = n-1;
+    }
+    for (int i = 0; i<[data length]/24; i++) {
+        NSInteger l = [data length] - 24*i;
+        l = l > 24 ? 24 : l;
+        NSLog(@"readData: %@",[data subdataWithRange:NSMakeRange(24*i, l)]);
+    }
     Byte headByte[1];
     [data getBytes:headByte range:NSMakeRange(0, 1)];
     if (headByte[0] == 0xa5) {

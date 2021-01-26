@@ -710,16 +710,13 @@
                         for (SelectModel *sMod in _originalMembers) {
                             if ([sMod.deviceID isEqualToNumber:deviceEntity.deviceId]) {
                                 singleDevice.isSelected = YES;
+                                [_selectedDevices addObjectsFromArray:_originalMembers];
                                 break;
                             }
                         }
                     }
                     [_devicesCollectionView.dataArray addObject:singleDevice];
                 }
-            }
-            
-            if ([_originalMembers count] > 0) {
-                [_selectedDevices addObjectsFromArray:_originalMembers];
             }
         }
     }else if (self.selectMode == DeviceListSelectMode_SingleRegardlessChannelPlus) {

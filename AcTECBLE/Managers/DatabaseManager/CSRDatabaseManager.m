@@ -506,14 +506,17 @@
 }
 
 - (SceneEntity *)getSceneEntityWithRcIndexId:(NSNumber *)rcIndex{
-    __block SceneEntity *foundSceneEntity = nil;
-    [[CSRAppStateManager sharedInstance].selectedPlace.scenes enumerateObjectsUsingBlock:^(SceneEntity * _Nonnull obj, BOOL * _Nonnull stop) {
-        if ([obj.rcIndex isEqualToNumber:rcIndex]) {
-            foundSceneEntity = obj;
-            *stop = YES;
-        }
-    }];
-    return foundSceneEntity;
+    if (rcIndex) {
+        __block SceneEntity *foundSceneEntity = nil;
+        [[CSRAppStateManager sharedInstance].selectedPlace.scenes enumerateObjectsUsingBlock:^(SceneEntity * _Nonnull obj, BOOL * _Nonnull stop) {
+            if ([obj.rcIndex isEqualToNumber:rcIndex]) {
+                foundSceneEntity = obj;
+                *stop = YES;
+            }
+        }];
+        return foundSceneEntity;
+    }
+    return nil;
 }
 
 - (NSNumber *)getNextFreeIDOfType:(NSString *)typeString {

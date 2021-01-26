@@ -324,6 +324,14 @@
 }
 
 - (void)getSceneDataArray {
+    NSLog(@"scene: %lu",(unsigned long)[[CSRAppStateManager sharedInstance].selectedPlace.scenes count]);
+    NSMutableArray *ary = [[NSMutableArray alloc] init];
+    for (SceneEntity *sceneEntity in [CSRAppStateManager sharedInstance].selectedPlace.scenes) {
+        for (SceneMemberEntity *m in sceneEntity.members) {
+            [ary addObject:m];
+        }
+    }
+    NSLog(@"member: %lu", (unsigned long)[ary count]);
     [_sceneCollectionView.dataArray removeAllObjects];
     NSMutableArray *sceneMutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.scenes allObjects] mutableCopy];
     if (sceneMutableArray != nil || [sceneMutableArray count] !=0) {
@@ -542,6 +550,7 @@
         return;
     }
 }
+
 - (void)showControlMaskLayerWithAlpha:(CGFloat)percentage text:(NSString*)text {
     if (!_maskLayer.superview) {
         [[UIApplication sharedApplication].keyWindow addSubview:self.maskLayer];
@@ -1189,7 +1198,6 @@
             }
             
             [[CSRDatabaseManager sharedInstance] dropEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
-            [[CSRDatabaseManager sharedInstance] sceneMemberEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
             [[CSRDatabaseManager sharedInstance] timerDeviceEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
             if ([CSRUtilities belongToSceneRemoteSixKeys:deleteDeviceEntity.shortName]
                 || [CSRUtilities belongToSceneRemoteFourKeys:deleteDeviceEntity.shortName]
@@ -1202,6 +1210,8 @@
                 || [CSRUtilities belongToSceneRemoteTwoKeysV:deleteDeviceEntity.shortName]
                 || [CSRUtilities belongToSceneRemoteOneKeyV:deleteDeviceEntity.shortName]) {
                 [self removeSceneAfterSceneRemoteDelete:deleteDeviceEntity.deviceId];
+            }else {
+                [[CSRDatabaseManager sharedInstance] sceneMemberEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
             }
             [[CSRAppStateManager sharedInstance].selectedPlace removeDevicesObject:deleteDeviceEntity];
             [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:deleteDeviceEntity];
@@ -1263,7 +1273,6 @@
                                                              }
                                                              
                                                              [[CSRDatabaseManager sharedInstance] dropEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
-                                                             [[CSRDatabaseManager sharedInstance] sceneMemberEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
                                                              [[CSRDatabaseManager sharedInstance] timerDeviceEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
                                                              if ([CSRUtilities belongToSceneRemoteSixKeys:deleteDeviceEntity.shortName]
                                                                  || [CSRUtilities belongToSceneRemoteFourKeys:deleteDeviceEntity.shortName]
@@ -1276,6 +1285,8 @@
                                                                  || [CSRUtilities belongToSceneRemoteTwoKeysV:deleteDeviceEntity.shortName]
                                                                  || [CSRUtilities belongToSceneRemoteOneKeyV:deleteDeviceEntity.shortName]) {
                                                                  [self removeSceneAfterSceneRemoteDelete:deleteDeviceEntity.deviceId];
+                                                             }else {
+                                                                 [[CSRDatabaseManager sharedInstance] sceneMemberEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
                                                              }
                                                              
                                                              [[CSRAppStateManager sharedInstance].selectedPlace removeDevicesObject:deleteDeviceEntity];
@@ -1451,6 +1462,13 @@
     if ([self.selects count] > 0) {
         [self nextOperation];
     }else {
+        if ([self.srScenes count] > 0) {
+            for (SceneEntity *srs in self.srScenes) {
+                [[CSRAppStateManager sharedInstance].selectedPlace removeScenesObject:srs];
+                [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:srs];
+            }
+            [[CSRDatabaseManager sharedInstance] saveContext];
+        }
         if (_hud) {
             [_hud hideAnimated:YES];
             _hud = nil;
@@ -1509,17 +1527,15 @@
     }else {
         SceneMemberEntity *m = [self.selects firstObject];
         [self.selects removeObject:m];
-        SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:m.sceneID];
-        [s removeMembersObject:m];
         [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:m];
         [[CSRDatabaseManager sharedInstance] saveContext];
         
         if (![self nextOperation]) {
             for (SceneEntity *srs in self.srScenes) {
+                [[CSRAppStateManager sharedInstance].selectedPlace removeScenesObject:srs];
                 [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:srs];
             }
             [[CSRDatabaseManager sharedInstance] saveContext];
-            
             if (_hud) {
                 [_hud hideAnimated:YES];
                 _hud = nil;
@@ -1539,17 +1555,15 @@
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(removeSceneIDTimeOut) object:nil];
         
         [self.selects removeObject:m];
-        SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:m.sceneID];
-        [s removeMembersObject:m];
         [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:m];
         [[CSRDatabaseManager sharedInstance] saveContext];
         
         if (![self nextOperation]) {
             for (SceneEntity *srs in self.srScenes) {
+                [[CSRAppStateManager sharedInstance].selectedPlace removeScenesObject:srs];
                 [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:srs];
             }
             [[CSRDatabaseManager sharedInstance] saveContext];
-            
             if (_hud) {
                 [_hud hideAnimated:YES];
                 _hud = nil;
