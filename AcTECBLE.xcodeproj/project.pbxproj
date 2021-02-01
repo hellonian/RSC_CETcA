@@ -336,8 +336,6 @@
 		2E2E70761FF5DE60002D1C1D /* UpdateDeviceModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateDeviceModel.h; sourceTree = "<group>"; };
 		2E2E70771FF5DE60002D1C1D /* UpdateDeviceModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateDeviceModel.m; sourceTree = "<group>"; };
 		2E2EE78C258C5F51008A238B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/SonosMusicControllerVC.xib; sourceTree = "<group>"; };
-		2E2EE78E258C5F58008A238B /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SonosMusicControllerVC.strings; sourceTree = "<group>"; };
-		2E2EE790258C5F5D008A238B /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SonosMusicControllerVC.strings"; sourceTree = "<group>"; };
 		2E3417BB23A7276A000D1A52 /* RemoteMainVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteMainVC.h; sourceTree = "<group>"; };
 		2E3417BC23A7276A000D1A52 /* RemoteMainVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteMainVC.m; sourceTree = "<group>"; };
 		2E35F74A222A7E41001D9342 /* GroupControlView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GroupControlView.h; sourceTree = "<group>"; };
@@ -414,6 +412,8 @@
 		2E5A58762137896500E416F9 /* RGBDeviceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RGBDeviceViewController.m; sourceTree = "<group>"; };
 		2E5A587A21378B6800E416F9 /* MusicViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MusicViewController.h; sourceTree = "<group>"; };
 		2E5A587B21378B6800E416F9 /* MusicViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MusicViewController.m; sourceTree = "<group>"; };
+		2E5BD1DF25C7AA1C001B0577 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SonosMusicControllerVC.strings"; sourceTree = "<group>"; };
+		2E5BD1E325C7AA83001B0577 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SonosMusicControllerVC.strings; sourceTree = "<group>"; };
 		2E5C130A23C05EC200A13994 /* LCDSelectModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LCDSelectModel.h; sourceTree = "<group>"; };
 		2E5C130B23C05EC200A13994 /* LCDSelectModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LCDSelectModel.m; sourceTree = "<group>"; };
 		2E5D671E25248F29000E5376 /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/FadeViewController.strings; sourceTree = "<group>"; };
@@ -1906,8 +1906,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				2E2EE78C258C5F51008A238B /* Base */,
-				2E2EE78E258C5F58008A238B /* English */,
-				2E2EE790258C5F5D008A238B /* zh-Hans */,
+				2E5BD1DF25C7AA1C001B0577 /* zh-Hans */,
+				2E5BD1E325C7AA83001B0577 /* en */,
 			);
 			name = SonosMusicControllerVC.xib;
 			sourceTree = "<group>";
@@ -2356,7 +2356,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 32;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2416,7 +2416,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 32;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;

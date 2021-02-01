@@ -18,7 +18,7 @@
 #import "PureLayout.h"
 #import <MBProgressHUD.h>
 
-@interface SonosMusicControllerVC ()<UITableViewDelegate, UITableViewDataSource, SocketConnectionToolDelegate, MBProgressHUDDelegate>
+@interface SonosMusicControllerVC ()<UITableViewDelegate, UITableViewDataSource, SocketConnectionToolDelegate, MBProgressHUDDelegate, UITextFieldDelegate>
 {
     NSData *retryCmd;
     NSInteger retryCount;
@@ -38,11 +38,12 @@
 @property (nonatomic, strong) NSMutableArray *infoQueue;
 
 @property (nonatomic, strong) SocketConnectionTool *socketTool;
-@property (weak, nonatomic) IBOutlet UIButton *netWorkSettingBtn;
 @property (nonatomic,strong) UIView *translucentBgView;
 @property (nonatomic, assign) NSInteger sendCount;
 @property (nonatomic, strong) UIAlertController *afterAlert;
 @property (nonatomic, strong) MBProgressHUD *updatingHud;
+@property (weak, nonatomic) IBOutlet UITextField *nameTF;
+@property (weak, nonatomic) IBOutlet UILabel *macAddressLabel;
 
 @end
 
@@ -51,9 +52,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    if (@available(iOS 11.0, *)) {
-        self.additionalSafeAreaInsets = UIEdgeInsetsMake(-35, 0, 0, 0);
-    }
     UIButton *btn = [[UIButton alloc] init];
     [btn setImage:[UIImage imageNamed:@"Btn_back"] forState:UIControlStateNormal];
     [btn setTitle:AcTECLocalizedStringFromTable(@"Back", @"Localizable") forState:UIControlStateNormal];
@@ -65,13 +63,6 @@
     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:AcTECLocalizedStringFromTable(@"refresh", @"Localizable") style:UIBarButtonItemStylePlain target:self action:@selector(refreshInfo)];
     self.navigationItem.rightBarButtonItem = item;
     
-    _titleBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [_titleBtn addTarget:self action:@selector(rename) forControlEvents:UIControlEventTouchUpInside];
-    [_titleBtn setTitleColor:[UIColor colorWithRed:80/255.0 green:80/255.0 blue:80/255.0 alpha:1] forState:UIControlStateNormal];
-    [_titleBtn.titleLabel setFont:[UIFont boldSystemFontOfSize:17]];
-    [_titleBtn sizeToFit];
-    self.navigationItem.titleView = _titleBtn;
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshNetworkConnectionStatus:) name:@"refreshNetworkConnectionStatus" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshMCChannels:) name:@"refreshMCChannels" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshSonosInfo:) name:@"refreshSonosInfo" object:nil];
@@ -79,6 +70,8 @@
     
     _listView.delegate = self;
     _listView.dataSource = self;
+//    _listView.backgroundView = [[UIView alloc] init];
+//    _listView.backgroundColor = [UIColor clearColor];
     
     if (_deviceId) {
         CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
@@ -93,6 +86,24 @@
         }else {
             _listView.hidden = YES;
         }
+        
+        self.navigationItem.title = device.name;
+        self.nameTF.text = device.name;
+        self.originalName = device.name;
+        self.nameTF.delegate = self;
+        
+        NSString *macAddr = [device.uuid substringFromIndex:24];
+        NSString *doneTitle = @"";
+        int count = 0;
+        for (int i = 0; i<macAddr.length; i++) {
+            count ++;
+            doneTitle = [doneTitle stringByAppendingString:[macAddr substringWithRange:NSMakeRange(i, 1)]];
+            if (count == 2 && i<macAddr.length-1) {
+                doneTitle = [NSString stringWithFormat:@"%@:", doneTitle];
+                count = 0;
+            }
+        }
+        self.macAddressLabel.text = doneTitle;
         
         Byte byte[] = {0xea, 0x77, 0x07};
         NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
@@ -123,7 +134,7 @@
                     [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeRight];
                     [updateMCUBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom];
                     [updateMCUBtn autoSetDimension:ALDimensionHeight toSize:44.0];
-                    [_netWorkSettingBtn autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:updateMCUBtn withOffset:-10.0];
+                    [_listView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:updateMCUBtn withOffset:-10.0];
                 }
             } failure:^(NSURLSessionDataTask *task, NSError *error) {
                 NSLog(@"%@",error);
@@ -136,38 +147,31 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)rename {
-    CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-    if (device) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"" preferredStyle:UIAlertControllerStyleAlert];
-            NSMutableAttributedString *hogan = [[NSMutableAttributedString alloc] initWithString:AcTECLocalizedStringFromTable(@"Rename", @"Localizable")];
-            [hogan addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:60/255.0 green:60/255.0 blue:60/255.0 alpha:1] range:NSMakeRange(0, [[hogan string] length])];
-            [alert setValue:hogan forKey:@"attributedTitle"];
-            [alert.view setTintColor:DARKORAGE];
-            UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
-            UIAlertAction *confirm = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Save", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                UITextField *renameTextField = alert.textFields.firstObject;
-                if (![CSRUtilities isStringEmpty:renameTextField.text] && ![renameTextField.text isEqualToString:_originalName]){
-                    
-                    [_titleBtn setTitle:renameTextField.text forState:UIControlStateNormal];
-                    device.name = renameTextField.text;
-                    [[CSRDatabaseManager sharedInstance] saveContext];
-                    _originalName = renameTextField.text;
-                    if (self.reloadDataHandle) {
-                        self.reloadDataHandle();
-                    }
-                    
-                }
-            }];
-            [alert addAction:cancel];
-            [alert addAction:confirm];
-            
-            [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-                textField.text = device.name;
-                self.originalName = device.name;
-            }];
-            
-            [self presentViewController:alert animated:YES completion:nil];
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    textField.backgroundColor = [UIColor colorWithRed:230/255.0 green:230/255.0 blue:230/255.0 alpha:1];
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    textField.backgroundColor = [UIColor whiteColor];
+    [textField resignFirstResponder];
+    return YES;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    [self saveNickName];
+}
+
+- (void)saveNickName {
+    if (![_nameTF.text isEqualToString:_originalName] && _nameTF.text.length > 0) {
+        self.navigationItem.title = _nameTF.text;
+        CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:self.deviceId];
+        deviceEntity.name = _nameTF.text;
+        [[CSRDatabaseManager sharedInstance] saveContext];
+        _originalName = _nameTF.text;
+        if (self.reloadDataHandle) {
+            self.reloadDataHandle();
+        }
     }
 }
 
@@ -288,6 +292,10 @@
         _listDataAry = [[NSMutableArray alloc] init];
     }
     return _listDataAry;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 0.01f;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {

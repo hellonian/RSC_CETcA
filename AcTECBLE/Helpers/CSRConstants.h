@@ -67,7 +67,7 @@
 #define kOneChannelSwitchs @[@"S6AB",@"TS5B"]//实体按键控制反馈使用52开头协议，区别于普通单路调光器的87开头协议
 #define kOneChannelDimmers @[@"GD400B",@"TD400B",@"DM300BH",@"TD300B",@"PD300B"]//实体按键控制反馈使用52开头协议，区别于普通单路调光器的87开头协议
 #define kTwoChannelDimmers @[@"D200IB-2G",@"D200GB-2G",@"GD400B-2G",@"ED500B-2G",@"D300IB-2G",@"TD400B-2G",@"PD400B-2G",@"KT2DS"]
-#define kThreeChannelDimmers @[@"TD400B-3G",@"PD400B-3G"]
+#define kThreeChannelDimmers @[@"TD400B-3G",@"PD400B-3G",@"KT3DS"]
 
 #define kThreeChannelSwitchs @[@"TS10B-3G",@"TS18B-3G",@"PS18B-3G",@"TS12B-3G",@"PS12B-3G"]
 

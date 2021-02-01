@@ -1,15 +1,15 @@
 
 /* Class = "UILabel"; text = "Devices"; ObjectID = "4RL-MR-xUV"; */
-"4RL-MR-xUV.text" = "已添加的设备";
+"4RL-MR-xUV.text" = "Devices";
 
 /* Class = "UILabel"; text = "Name"; ObjectID = "85F-kr-VLV"; */
-"85F-kr-VLV.text" = "名称";
+"85F-kr-VLV.text" = "Name";
 
 /* Class = "UILabel"; text = "MAC"; ObjectID = "CLp-6F-rZ1"; */
 "CLp-6F-rZ1.text" = "MAC";
 
 /* Class = "UILabel"; text = "You can connect up to 8 SONOS stereos. \nClick Network Settings, enter the password. Set the docking module, smartphone or tablet, and SONOS audio in the same network. The docking module will automatically add SONOS audio."; ObjectID = "ImZ-g2-imT"; */
-"ImZ-g2-imT.text" = "您最多可以连接8个SONOS音响。\n单击网络设置，输入密码，将对接模块、智能手机或平板电脑、SONOS音响设置在同一个网络下，对接模块会自动添加SONOS音响。";
+"ImZ-g2-imT.text" = "You can connect up to 8 SONOS stereos. \nClick Network Settings, enter the password. Set the docking module, smartphone or tablet, and SONOS audio in the same network. The docking module will automatically add SONOS audio.";
 
 /* Class = "UILabel"; text = "Network setting"; ObjectID = "wVd-h1-NMj"; */
-"wVd-h1-NMj.text" = "网络设置";
+"wVd-h1-NMj.text" = "Network setting";
