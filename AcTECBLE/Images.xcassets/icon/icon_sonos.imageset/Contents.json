@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "icon_sonos.png",
+      "filename" : "画板 143.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "icon_sonos@2x.png",
+      "filename" : "画板 143@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "icon_sonos@3x.png",
+      "filename" : "画板 143@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

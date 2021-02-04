@@ -58,28 +58,32 @@
     
     _dataMutAry = [[NSMutableArray alloc] init];
     if (_source == 1) {
-        SonosSelectModel *m = [[SonosSelectModel alloc] init];
-        m.deviceID = _sModel.deviceID;
-        m.channel = _sModel.channel;
-        m.selected = _sModel.selected;
-        m.play = _sModel.play;
-        m.voice = _sModel.voice;
-        m.reSetting = _sModel.reSetting;
-        m.songNumber = _sModel.songNumber;
-        if (_deviceID) {
-            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
-            if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
-                if ([device.sonoss count] > 0) {
-                    for (SonosEntity *s in device.sonoss) {
-                        if ([s.channel integerValue]==[_sModel.channel integerValue]) {
-                            m.name = s.name;
-                            break;
+        if ([_sModels count]>0) {
+            for (SonosSelectModel *smodel in _sModels) {
+                SonosSelectModel *m = [[SonosSelectModel alloc] init];
+                m.deviceID = smodel.deviceID;
+                m.channel = smodel.channel;
+                m.selected = smodel.selected;
+                m.play = smodel.play;
+                m.voice = smodel.voice;
+                m.reSetting = smodel.reSetting;
+                m.songNumber = smodel.songNumber;
+                if (_deviceID) {
+                    CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];
+                    if ([CSRUtilities belongToSonosMusicController:device.shortName]) {
+                        if ([device.sonoss count] > 0) {
+                            for (SonosEntity *s in device.sonoss) {
+                                if ([s.channel integerValue]==[smodel.channel integerValue]) {
+                                    m.name = s.name;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
+                [_dataMutAry addObject:m];
             }
         }
-        [_dataMutAry addObject:m];
     }else {
         if (_deviceID) {
             CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceID];

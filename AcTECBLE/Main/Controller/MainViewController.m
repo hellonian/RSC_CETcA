@@ -953,12 +953,7 @@
         GroupViewController *gvc = [[GroupViewController alloc] init];
         __weak MainViewController *weakSelf = self;
         gvc.handle = ^{
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [weakSelf getMainDataArray];
-            });
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [weakSelf getMainDataArray];
-            });
+            [weakSelf getMainDataArray];
         };
         gvc.isCreateNewArea = NO;
         gvc.isFromEmptyGroup = NO;
@@ -1013,7 +1008,6 @@
                                                                     
                                                                     [_areaEntity removeDevicesObject:deviceEntity];
                                                                 }
-                                                                
                                                                 
                                                                 NSMutableData *myData = (NSMutableData*)[CSRUtilities dataForHexString:deviceEntity.groups];
                                                                 uint16_t desiredValue = [groupId unsignedShortValue];

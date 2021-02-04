@@ -7,7 +7,6 @@
 //
 
 #import "SceneViewController.h"
-#import "SceneMemberCell.h"
 #import "SceneMemberEntity.h"
 #import "CSRDatabaseManager.h"
 #import "DeviceListViewController.h"
@@ -23,8 +22,9 @@
 #import "FanViewController.h"
 #import "SocketViewController.h"
 #import "SonosSceneSettingVC.h"
+#import "SceneMemberExpandModel.h"
 
-@interface SceneViewController ()<UITableViewDelegate,UITableViewDataSource,SceneMemberCellDelegate>
+@interface SceneViewController ()<UITableViewDelegate,UITableViewDataSource>
 {
     NSInteger retryCount;
     NSData *retryCmd;
@@ -39,6 +39,7 @@
 @property (nonatomic,strong) UIView *translucentBgView;
 @property (nonatomic,strong) UIActivityIndicatorView *indicatorView;
 @property (nonatomic, strong) SceneMemberEntity *mMemberToApply;
+@property (nonatomic, assign) BOOL isResetting;
 
 @end
 
@@ -68,10 +69,9 @@
     
     _sceneMemberList.dataSource = self;
     _sceneMemberList.delegate = self;
-    _sceneMemberList.rowHeight = 60.0f;
+    _sceneMemberList.rowHeight = 56.0f;
     _sceneMemberList.backgroundView = [[UIView alloc] init];
     _sceneMemberList.backgroundColor = [UIColor clearColor];
-    [_sceneMemberList registerNib:[UINib nibWithNibName:@"SceneMemberCell" bundle:nil] forCellReuseIdentifier:@"SCENEMEMBERCELL"];
     
     _members = [[NSMutableArray alloc] init];
     
@@ -90,10 +90,77 @@
             }
             
             if ([sceneEntity.members count]>0) {
-                _members = [[sceneEntity.members allObjects] mutableCopy];
-                [_sceneMemberList reloadData];
+                for (SceneMemberEntity *memberEntity in sceneEntity.members) {
+                    [self addMemberToMembers:memberEntity];
+                }
             }
         }
+    }
+}
+
+- (void)addMemberToMembers:(SceneMemberEntity *)memberEntity {
+    SceneMemberExpandModel *model;
+    for (SceneMemberExpandModel *eModel in _members) {
+        if ([eModel.deviceID isEqualToNumber:memberEntity.deviceID]) {
+            model = eModel;
+            break;
+        }
+    }
+    if (!model) {
+        model = [[SceneMemberExpandModel alloc] init];
+        model.deviceID = memberEntity.deviceID;
+        model.kindString = memberEntity.kindString;
+        model.sceneID = memberEntity.sceneID;
+        [_members addObject:model];
+    }
+    if ([memberEntity.channel integerValue] == 1) {
+        model.eve1Type = [memberEntity.eveType integerValue];
+        model.eve1D0 = [memberEntity.eveD0 integerValue];
+        model.eve1D1 = [memberEntity.eveD1 integerValue];
+        model.eve1D2 = [memberEntity.eveD2 integerValue];
+        model.eve1D3 = [memberEntity.eveD3 integerValue];
+    }else if ([memberEntity.channel integerValue] == 2) {
+        model.eve2Type = [memberEntity.eveType integerValue];
+        model.eve2D0 = [memberEntity.eveD0 integerValue];
+        model.eve2D1 = [memberEntity.eveD1 integerValue];
+        model.eve2D2 = [memberEntity.eveD2 integerValue];
+        model.eve2D3 = [memberEntity.eveD3 integerValue];
+    }else if ([memberEntity.channel integerValue] == 4) {
+        model.eve3Type = [memberEntity.eveType integerValue];
+        model.eve3D0 = [memberEntity.eveD0 integerValue];
+        model.eve3D1 = [memberEntity.eveD1 integerValue];
+        model.eve3D2 = [memberEntity.eveD2 integerValue];
+        model.eve3D3 = [memberEntity.eveD3 integerValue];
+    }else if ([memberEntity.channel integerValue] == 8) {
+        model.eve4Type = [memberEntity.eveType integerValue];
+        model.eve4D0 = [memberEntity.eveD0 integerValue];
+        model.eve4D1 = [memberEntity.eveD1 integerValue];
+        model.eve4D2 = [memberEntity.eveD2 integerValue];
+        model.eve4D3 = [memberEntity.eveD3 integerValue];
+    }else if ([memberEntity.channel integerValue] == 16) {
+        model.eve5Type = [memberEntity.eveType integerValue];
+        model.eve5D0 = [memberEntity.eveD0 integerValue];
+        model.eve5D1 = [memberEntity.eveD1 integerValue];
+        model.eve5D2 = [memberEntity.eveD2 integerValue];
+        model.eve5D3 = [memberEntity.eveD3 integerValue];
+    }else if ([memberEntity.channel integerValue] == 32) {
+        model.eve6Type = [memberEntity.eveType integerValue];
+        model.eve6D0 = [memberEntity.eveD0 integerValue];
+        model.eve6D1 = [memberEntity.eveD1 integerValue];
+        model.eve6D2 = [memberEntity.eveD2 integerValue];
+        model.eve6D3 = [memberEntity.eveD3 integerValue];
+    }else if ([memberEntity.channel integerValue] == 64) {
+        model.eve7Type = [memberEntity.eveType integerValue];
+        model.eve7D0 = [memberEntity.eveD0 integerValue];
+        model.eve7D1 = [memberEntity.eveD1 integerValue];
+        model.eve7D2 = [memberEntity.eveD2 integerValue];
+        model.eve7D3 = [memberEntity.eveD3 integerValue];
+    }else if ([memberEntity.channel integerValue] == 128) {
+        model.eve8Type = [memberEntity.eveType integerValue];
+        model.eve8D0 = [memberEntity.eveD0 integerValue];
+        model.eve8D1 = [memberEntity.eveD1 integerValue];
+        model.eve8D2 = [memberEntity.eveD2 integerValue];
+        model.eve8D3 = [memberEntity.eveD3 integerValue];
     }
 }
 
@@ -101,11 +168,440 @@
     return [_members count];
 }
 
-- (SceneMemberCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    SceneMemberCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SCENEMEMBERCELL" forIndexPath:indexPath];
-    cell.cellDelegate = self;
-    SceneMemberEntity *member = [_members objectAtIndex:indexPath.row];
-    [cell configureCellWithSceneMember:member];
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
+        cell.textLabel.textColor = ColorWithAlpha(77, 77, 77, 1);
+        cell.detailTextLabel.textColor = ColorWithAlpha(150, 150, 150, 1);
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    SceneMemberExpandModel *member = [_members objectAtIndex:indexPath.row];
+    CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
+    cell.textLabel.text = deviceEntity.name;
+    if ([CSRUtilities belongToSwitch:member.kindString]) {
+        if ([CSRUtilities belongToESeriesSingleWireSwitch:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_E_press"];
+        }else if ([CSRUtilities belongToTSeriesPanel:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_T_panel"];
+        }else if ([CSRUtilities belongToPSeriesPanel:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_P_panel"];
+        }else if ([CSRUtilities belongToHiddenController:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_hidden_controller"];
+        }else {
+            cell.imageView.image = [UIImage imageNamed:@"icon_switch1"];
+        }
+        if (member.eve1Type == 16) {
+            cell.detailTextLabel.text = @"ON";
+        }else {
+            cell.detailTextLabel.text = @"OFF";
+        }
+    }else if ([CSRUtilities belongToTwoChannelSwitch:member.kindString]
+              || [CSRUtilities belongToThreeChannelSwitch:member.kindString]) {
+        if ([CSRUtilities belongToTSeriesPanel:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_T_panel"];
+        }else if ([CSRUtilities belongToPSeriesPanel:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_P_panel"];
+        }else {
+            cell.imageView.image = [UIImage imageNamed:@"icon_switch1"];
+        }
+        NSString *detailText = @"";
+        if (member.eve1Type) {
+            if (member.eve1Type == 16) {
+                detailText = @"ON";
+            }else {
+                detailText = @"OFF";
+            }
+        }
+        if (member.eve2Type) {
+            if (member.eve2Type == 16) {
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | ON",detailText] : @"ON";
+            }else {
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | OFF",detailText] : @"OFF";
+            }
+        }
+        if (member.eve3Type) {
+            if (member.eve3Type == 16) {
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | ON",detailText] : @"ON";
+            }else {
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | OFF",detailText] : @"OFF";
+            }
+        }
+        cell.detailTextLabel.text = detailText;
+    }else if ([CSRUtilities belongToDimmer:member.kindString]) {
+        if ([CSRUtilities belongToESeriesDimmer:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_E_press"];
+        }else if ([CSRUtilities belongToESeriesKnobDimmer:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_E_knob"];
+        }else if ([CSRUtilities belongToTSeriesPanel:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_T_panel"];
+        }else if ([CSRUtilities belongToPSeriesPanel:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_P_panel"];
+        }else if ([CSRUtilities belongToHiddenController:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_hidden_controller"];
+        }else {
+            cell.imageView.image = [UIImage imageNamed:@"icon_dimmer1"];
+        }
+        if (member.eve1Type == 17) {
+            cell.detailTextLabel.text = @"OFF";
+        }else if (member.eve1Type == 18) {
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"%.f%%",member.eve1D0/255.0*100];
+        }
+    }else if ([CSRUtilities belongToTwoChannelDimmer:member.kindString]
+              || [CSRUtilities belongToThreeChannelDimmer:member.kindString]) {
+        if ([CSRUtilities belongToTSeriesPanel:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_T_panel"];
+        }else if ([CSRUtilities belongToPSeriesPanel:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_P_panel"];
+        }else {
+            cell.imageView.image = [UIImage imageNamed:@"icon_dimmer1"];
+        }
+        NSString *detailText = @"";
+        if (member.eve1Type) {
+            if (member.eve1Type == 17) {
+                detailText = @"OFF";
+            }else if (member.eve1Type == 18) {
+                detailText = [NSString stringWithFormat:@"%.f%%",member.eve1D0/255.0*100];
+            }
+        }
+        if (member.eve2Type) {
+            if (member.eve2Type == 17) {
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | OFF", detailText] : @"OFF";
+            }else if (member.eve2Type == 18) {
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %.f%%", detailText, member.eve2D0/255.0*100] : [NSString stringWithFormat:@"%.f%%", member.eve2D0/255.0*100];
+            }
+        }
+        if (member.eve3Type) {
+            if (member.eve3Type == 17) {
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | OFF", detailText] : @"OFF";
+            }else if (member.eve3Type == 18) {
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %.f%%", detailText, member.eve3D0/255.0*100] : [NSString stringWithFormat:@"%.f%%", member.eve3D0/255.0*100];
+            }
+        }
+        cell.detailTextLabel.text = detailText;
+    }else if ([CSRUtilities belongToCWDevice:member.kindString]) {
+        if ([CSRUtilities belongToIEMLEDDriver:member.kindString]
+            || [CSRUtilities belongToIELEDDriver:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_IE_driver"];
+        }else if ([CSRUtilities belongToLIMLEDDriver:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_LIM_driver"];
+        }else if ([CSRUtilities belongToC3ABLEDDriver:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_C3AB_driver"];
+        }else if ([CSRUtilities belongToC2ABLEDDriver:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_C2AB_driver"];
+        }else {
+            cell.imageView.image = [UIImage imageNamed:@"icon_LED_strip"];
+        }
+        if (member.eve1Type == 17) {
+            cell.detailTextLabel.text = @"OFF";
+        }else if (member.eve1Type == 25) {
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"%ldK %.f%%", member.eve1D2*256+member.eve1D1, member.eve1D0/255.0*100];
+        }
+    }else if ([CSRUtilities belongToRGBDevice:member.kindString]) {
+        if ([CSRUtilities belongToIEMLEDDriver:member.kindString]
+            || [CSRUtilities belongToIELEDDriver:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_IE_driver"];
+        }else if ([CSRUtilities belongToLIMLEDDriver:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_LIM_driver"];
+        }else if ([CSRUtilities belongToC3ABLEDDriver:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_C3AB_driver"];
+        }else if ([CSRUtilities belongToC2ABLEDDriver:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_C2AB_driver"];
+        }else {
+            cell.imageView.image = [UIImage imageNamed:@"icon_LED_strip"];
+        }
+        
+        if (member.eve1Type == 17) {
+            cell.detailTextLabel.text = @"OFF";
+        }else if (member.eve1Type == 20) {
+            NSMutableAttributedString *detailText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"● %.f%%", member.eve1D0/255.0*100]];
+            [detailText addAttribute:NSForegroundColorAttributeName value:ColorWithAlpha(member.eve1D1, member.eve1D2, member.eve1D3, 1) range:NSMakeRange(0, 1)];
+            cell.detailTextLabel.attributedText = detailText;
+        }
+    }else if ([CSRUtilities belongToRGBCWDevice:member.kindString]) {
+        if ([CSRUtilities belongToIEMLEDDriver:member.kindString]
+            || [CSRUtilities belongToIELEDDriver:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_IE_driver"];
+        }else if ([CSRUtilities belongToLIMLEDDriver:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_LIM_driver"];
+        }else if ([CSRUtilities belongToC3ABLEDDriver:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_C3AB_driver"];
+        }else if ([CSRUtilities belongToC2ABLEDDriver:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_C2AB_driver"];
+        }else {
+            cell.imageView.image = [UIImage imageNamed:@"icon_LED_strip"];
+        }
+        if (member.eve1Type == 17) {
+            cell.detailTextLabel.text = @"OFF";
+        }else if (member.eve1Type == 25) {
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"%ldK %.f%%", member.eve1D2*256+member.eve1D1, member.eve1D0/255.0*100];
+        }else if (member.eve1Type == 20) {
+            NSMutableAttributedString *detailText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"● %.f%%", member.eve1D0/255.0*100]];
+            [detailText addAttribute:NSForegroundColorAttributeName value:ColorWithAlpha(member.eve1D1, member.eve1D2, member.eve1D3, 1) range:NSMakeRange(0, 1)];
+            cell.detailTextLabel.attributedText = detailText;
+        }
+    }else if ([CSRUtilities belongToSocketTwoChannel:member.kindString]) {
+        cell.imageView.image = [UIImage imageNamed:@"icon_socket"];
+        NSString *detailText = @"";
+        if (member.eve1D0) {
+            detailText = @"ON";
+        }else {
+            detailText = @"OFF";
+        }
+        if (member.eve1D1) {
+            detailText = [NSString stringWithFormat:@"%@, %@", detailText, AcTECLocalizedStringFromTable(@"bh_open", @"Localizable")];
+        }else {
+            detailText = [NSString stringWithFormat:@"%@, %@", detailText, AcTECLocalizedStringFromTable(@"bh_shut", @"Localizable")];
+        }
+        cell.detailTextLabel.text = detailText;
+    }else if ([CSRUtilities belongToSocketTwoChannel:member.kindString]) {
+        cell.imageView.image = [UIImage imageNamed:@"icon_socket"];
+        NSString *detailText = @"";
+        if (member.eve1Type) {
+            if (member.eve1D0) {
+                detailText = @"ON";
+            }else {
+                detailText = @"OFF";
+            }
+            if (member.eve1D1) {
+                detailText = [NSString stringWithFormat:@"%@, %@", detailText, AcTECLocalizedStringFromTable(@"bh_open", @"Localizable")];
+            }else {
+                detailText = [NSString stringWithFormat:@"%@, %@", detailText, AcTECLocalizedStringFromTable(@"bh_shut", @"Localizable")];
+            }
+        }
+        if (member.eve2Type) {
+            if (member.eve2D0) {
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | ON", detailText] : @"ON";
+            }else {
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | OFF", detailText] : @"OFF";
+            }
+            if (member.eve2D1) {
+                detailText = [NSString stringWithFormat:@"%@, %@", detailText, AcTECLocalizedStringFromTable(@"bh_open", @"Localizable")];
+            }else {
+                detailText = [NSString stringWithFormat:@"%@, %@", detailText, AcTECLocalizedStringFromTable(@"bh_shut", @"Localizable")];
+            }
+        }
+        cell.detailTextLabel.text = detailText;
+    }else if ([CSRUtilities belongToOneChannelCurtainController:member.kindString]
+              || [CSRUtilities belongToHOneChannelCurtainController:member.kindString]) {
+        cell.imageView.image = [UIImage imageNamed:@"icon_curtain"];
+        if (member.eve1Type == 17) {
+            cell.detailTextLabel.text = @"OFF";
+        }else if (member.eve1Type == 18) {
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"%.f%%",member.eve1D0/255.0*100];
+        }
+    }else if ([CSRUtilities belongToTwoChannelCurtainController:member.kindString]) {
+        cell.imageView.image = [UIImage imageNamed:@"icon_curtain"];
+        NSString *detailText = @"";
+        if (member.eve1Type) {
+            if (member.eve1Type == 17) {
+                detailText = @"OFF";
+            }else if (member.eve1Type == 18) {
+                detailText = [NSString stringWithFormat:@"%.f %%",member.eve1D0/255.0*100];
+            }
+        }
+        if (member.eve2Type) {
+            if (member.eve2Type == 17) {
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | OFF", detailText] : @"OFF";
+            }else if (member.eve2Type == 18) {
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %.f%%", detailText, member.eve2D0/255.0*100] : [NSString stringWithFormat:@"%.f%%", member.eve2D0/255.0*100];
+            }
+        }
+        cell.detailTextLabel.text = detailText;
+    }else if ([CSRUtilities belongToFanController:member.kindString]) {
+        cell.imageView.image = [UIImage imageNamed:@"icon_fan"];
+        NSString *detailText = @"";
+        if (member.eve1D0) {
+            if (member.eve1D1 == 0) {
+                detailText = AcTECLocalizedStringFromTable(@"low", @"Localizable");
+            }else if (member.eve1D1 == 1) {
+                detailText = AcTECLocalizedStringFromTable(@"medium", @"Localizable");
+            }else if (member.eve1D1 == 2) {
+                detailText = AcTECLocalizedStringFromTable(@"high", @"Localizable");
+            }
+        }else {
+            detailText = @"OFF";
+        }
+        if (member.eve1D2) {
+            detailText = [NSString stringWithFormat:@"%@, %@",detailText, AcTECLocalizedStringFromTable(@"light_on", @"Localizable")];
+        }else {
+            detailText = [NSString stringWithFormat:@"%@, %@",detailText, AcTECLocalizedStringFromTable(@"light_off", @"Localizable")];
+        }
+        cell.detailTextLabel.text = detailText;
+    }else if ([CSRUtilities belongToSonosMusicController:member.kindString]) {
+        cell.imageView.image = [UIImage imageNamed:@"icon_sonos"];
+        NSString *detailText = @"";
+        if (member.eve1Type) {
+            if (member.eve1Type == 130) {
+                detailText = @"STOP";
+            }else if (member.eve1Type == 226) {
+                NSString *song= @"";
+                if ([deviceEntity.remoteBranch length]>0) {
+                    NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:deviceEntity.remoteBranch];
+                    if ([jsonDictionary count]>0) {
+                        NSArray *songs = jsonDictionary[@"song"];
+                        for (NSDictionary *dic in songs) {
+                            NSInteger n = [dic[@"id"] integerValue];
+                            if (n == member.eve1D2) {
+                                song = dic[@"name"];
+                                break;
+                            }
+                        }
+                    }
+                }
+                detailText = [NSString stringWithFormat:@"%@, %ld%%", song, (member.eve1D1 & 0xfe)>>1];
+            }
+        }
+        if (member.eve2Type) {
+            if (member.eve2Type == 130) {
+                detailText = [NSString stringWithFormat:@"%@ | STOP",detailText];
+            }else if (member.eve2Type == 226) {
+                NSString *song= @"";
+                if ([deviceEntity.remoteBranch length]>0) {
+                    NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:deviceEntity.remoteBranch];
+                    if ([jsonDictionary count]>0) {
+                        NSArray *songs = jsonDictionary[@"song"];
+                        for (NSDictionary *dic in songs) {
+                            NSInteger n = [dic[@"id"] integerValue];
+                            if (n == member.eve2D2) {
+                                song = dic[@"name"];
+                                break;
+                            }
+                        }
+                    }
+                }
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %ld%%", detailText, song, (member.eve2D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %ld%%", song, (member.eve2D1 & 0xfe)>>1];
+            }
+        }
+        if (member.eve3Type) {
+            if (member.eve3Type == 130) {
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | STOP",detailText] : @"STOP";
+            }else if (member.eve3Type == 226) {
+                NSString *song= @"";
+                if ([deviceEntity.remoteBranch length]>0) {
+                    NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:deviceEntity.remoteBranch];
+                    if ([jsonDictionary count]>0) {
+                        NSArray *songs = jsonDictionary[@"song"];
+                        for (NSDictionary *dic in songs) {
+                            NSInteger n = [dic[@"id"] integerValue];
+                            if (n == member.eve3D2) {
+                                song = dic[@"name"];
+                                break;
+                            }
+                        }
+                    }
+                }
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %ld%%", detailText, song, (member.eve3D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %ld%%", song, (member.eve3D1 & 0xfe)>>1];
+            }
+        }
+        if (member.eve4Type) {
+            if (member.eve4Type == 130) {
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | STOP",detailText] : @"STOP";
+            }else if (member.eve4Type == 226) {
+                NSString *song= @"";
+                if ([deviceEntity.remoteBranch length]>0) {
+                    NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:deviceEntity.remoteBranch];
+                    if ([jsonDictionary count]>0) {
+                        NSArray *songs = jsonDictionary[@"song"];
+                        for (NSDictionary *dic in songs) {
+                            NSInteger n = [dic[@"id"] integerValue];
+                            if (n == member.eve4D2) {
+                                song = dic[@"name"];
+                                break;
+                            }
+                        }
+                    }
+                }
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %ld%%", detailText, song, (member.eve4D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %ld%%", song, (member.eve4D1 & 0xfe)>>1];
+            }
+        }
+        if (member.eve5Type) {
+            if (member.eve5Type == 130) {
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | STOP",detailText] : @"STOP";
+            }else if (member.eve5Type == 226) {
+                NSString *song= @"";
+                if ([deviceEntity.remoteBranch length]>0) {
+                    NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:deviceEntity.remoteBranch];
+                    if ([jsonDictionary count]>0) {
+                        NSArray *songs = jsonDictionary[@"song"];
+                        for (NSDictionary *dic in songs) {
+                            NSInteger n = [dic[@"id"] integerValue];
+                            if (n == member.eve5D2) {
+                                song = dic[@"name"];
+                                break;
+                            }
+                        }
+                    }
+                }
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %ld%%", detailText, song, (member.eve5D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %ld%%", song, (member.eve5D1 & 0xfe)>>1];
+            }
+        }
+        if (member.eve6Type) {
+            if (member.eve6Type == 130) {
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | STOP",detailText] : @"STOP";
+            }else if (member.eve6Type == 226) {
+                NSString *song= @"";
+                if ([deviceEntity.remoteBranch length]>0) {
+                    NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:deviceEntity.remoteBranch];
+                    if ([jsonDictionary count]>0) {
+                        NSArray *songs = jsonDictionary[@"song"];
+                        for (NSDictionary *dic in songs) {
+                            NSInteger n = [dic[@"id"] integerValue];
+                            if (n == member.eve6D2) {
+                                song = dic[@"name"];
+                                break;
+                            }
+                        }
+                    }
+                }
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %ld%%", detailText, song, (member.eve6D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %ld%%", song, (member.eve6D1 & 0xfe)>>1];
+            }
+        }
+        if (member.eve7Type) {
+            if (member.eve7Type == 130) {
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | STOP",detailText] : @"STOP";
+            }else if (member.eve7Type == 226) {
+                NSString *song= @"";
+                if ([deviceEntity.remoteBranch length]>0) {
+                    NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:deviceEntity.remoteBranch];
+                    if ([jsonDictionary count]>0) {
+                        NSArray *songs = jsonDictionary[@"song"];
+                        for (NSDictionary *dic in songs) {
+                            NSInteger n = [dic[@"id"] integerValue];
+                            if (n == member.eve7D2) {
+                                song = dic[@"name"];
+                                break;
+                            }
+                        }
+                    }
+                }
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %ld%%", detailText, song, (member.eve7D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %ld%%", song, (member.eve7D1 & 0xfe)>>1];
+            }
+        }
+        if (member.eve8Type) {
+            if (member.eve8Type == 130) {
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | STOP",detailText] : @"STOP";
+            }else if (member.eve8Type == 226) {
+                NSString *song= @"";
+                if ([deviceEntity.remoteBranch length]>0) {
+                    NSDictionary *jsonDictionary = [CSRUtilities dictionaryWithJsonString:deviceEntity.remoteBranch];
+                    if ([jsonDictionary count]>0) {
+                        NSArray *songs = jsonDictionary[@"song"];
+                        for (NSDictionary *dic in songs) {
+                            NSInteger n = [dic[@"id"] integerValue];
+                            if (n == member.eve8D2) {
+                                song = dic[@"name"];
+                                break;
+                            }
+                        }
+                    }
+                }
+                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %ld%%", detailText, song, (member.eve8D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %ld%%", song, (member.eve8D1 & 0xfe)>>1];
+            }
+        }
+        cell.detailTextLabel.text = detailText;
+    }
+    
     return cell;
 }
 
@@ -128,7 +624,7 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        SceneMemberEntity *member = [_members objectAtIndex:indexPath.row];
+        SceneMemberExpandModel *member = [_members objectAtIndex:indexPath.row];
         [self removeSceneMember:member];
     }
 }
@@ -146,6 +642,7 @@
 }
 
 - (void)addClick {
+    _isResetting = NO;
     DeviceListViewController *list = [[DeviceListViewController alloc] init];
     list.selectMode = DeviceListSelectMode_Multiple;
     list.originalMembers = _members;
@@ -611,7 +1108,6 @@
         }else {
             m.eveType = @(130);
         }
-        
         status = model.play*2+1;
     }else {
         if (model.play) {
@@ -639,38 +1135,33 @@
     NSNumber *deviceID = userInfo[@"deviceId"];
     NSNumber *sceneID = userInfo[@"index"];
     if (_mDeviceToApplay && [_mDeviceToApplay.deviceId isEqualToNumber:deviceID] && [sceneID isEqualToNumber:_sceneIndex]) {
-        if (_mMemberToApply) {
-            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(reSettingOperationDelayMethod) object:nil];
-            if ([userInfo[@"state"] boolValue]) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(setSceneIDTimerOut) object:nil];
+        SceneMemberEntity *m = [self.selects firstObject];
+        [self.selects removeObject:m];
+        if ([userInfo[@"state"] boolValue]) {
+            if (_isResetting) {
                 [[CSRDatabaseManager sharedInstance] saveContext];
-                [_sceneMemberList reloadData];
             }
-            _mDeviceToApplay = nil;
-            [self hideLoading];
+            [self addMemberToMembers:m];
+            [_sceneMemberList reloadData];
         }else {
-            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(setSceneIDTimerOut) object:nil];
-            SceneMemberEntity *m = [self.selects firstObject];
-            [self.selects removeObject:m];
-            if ([userInfo[@"state"] boolValue]) {
-                [_members addObject:m];
-                [_sceneMemberList reloadData];
-            }else {
-                [self.fails addObject:[m.deviceID copy]];
+            [self.fails addObject:[m.deviceID copy]];
+            if (!_isResetting) {
                 SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
                 [s removeMembersObject:m];
                 [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:m];
                 [[CSRDatabaseManager sharedInstance] saveContext];
             }
-            
-            _mDeviceToApplay = nil;
-            
-            if (![self nextOperation]) {
-                if ([self.fails count] > 0) {
-                    [self hideLoading];
-                    [self showFailAler];
-                }else {
-                    [self hideLoading];
-                }
+        }
+        
+        _mDeviceToApplay = nil;
+        
+        if (![self nextOperation]) {
+            if ([self.fails count] > 0) {
+                [self hideLoading];
+                [self showFailAler];
+            }else {
+                [self hideLoading];
             }
         }
     }
@@ -685,10 +1176,12 @@
         SceneMemberEntity *m = [self.selects firstObject];
         [self.selects removeObject:m];
         [self.fails addObject:[m.deviceID copy]];
-        SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
-        [s removeMembersObject:m];
-        [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:m];
-        [[CSRDatabaseManager sharedInstance] saveContext];
+        if (!_isResetting) {
+            SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+            [s removeMembersObject:m];
+            [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:m];
+            [[CSRDatabaseManager sharedInstance] saveContext];
+        }
         
         _mDeviceToApplay = nil;
         
@@ -748,47 +1241,243 @@
     return _indicatorView;
 }
 
-- (void)removeSceneMember:(SceneMemberEntity *)mSceneMember {
+- (void)removeSceneMember:(SceneMemberExpandModel *)member {
+    
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"removeSceneMemberAlert", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
     [alert.view setTintColor:DARKORAGE];
-    UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self showLoading];
-        [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
-        _mMemberToApply = mSceneMember;
-        _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mSceneMember.deviceID];
-        
-        NSInteger s = [_sceneIndex integerValue];
-        Byte b[] = {};
-        b[0] = (Byte)((s & 0xFF00)>>8);
-        b[1] = (Byte)(s & 0x00FF);
-        
-        if ([CSRUtilities belongToTwoChannelSwitch:mSceneMember.kindString]
-            || [CSRUtilities belongToThreeChannelSwitch:mSceneMember.kindString]
-            || [CSRUtilities belongToTwoChannelDimmer:mSceneMember.kindString]
-            || [CSRUtilities belongToSocketTwoChannel:mSceneMember.kindString]
-            || [CSRUtilities belongToTwoChannelCurtainController:mSceneMember.kindString]
-            || [CSRUtilities belongToThreeChannelDimmer:mSceneMember.kindString]
-            || [CSRUtilities belongToMusicController:mSceneMember.kindString]
-            || [CSRUtilities belongToSonosMusicController:mSceneMember.kindString]) {
-            Byte byte[] = {0x5d, 0x03, [mSceneMember.channel integerValue], b[1], b[0]};
+    
+    if (member.eve1Type) {
+        NSString *title = AcTECLocalizedStringFromTable(@"Yes", @"Localizable");
+        if ([CSRUtilities belongToTwoChannelSwitch:member.kindString]
+            || [CSRUtilities belongToThreeChannelSwitch:member.kindString]
+            || [CSRUtilities belongToTwoChannelDimmer:member.kindString]
+            || [CSRUtilities belongToSocketTwoChannel:member.kindString]
+            || [CSRUtilities belongToTwoChannelCurtainController:member.kindString]
+            || [CSRUtilities belongToThreeChannelDimmer:member.kindString]
+            || [CSRUtilities belongToMusicController:member.kindString]
+            || [CSRUtilities belongToSonosMusicController:member.kindString]) {
+            title = @"1";
+        }
+        UIAlertAction *eve1 = [UIAlertAction actionWithTitle:title style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self showLoading];
+            [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
+            _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
+            SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                    _mMemberToApply = sme;
+                    break;
+                }
+            }
+            NSInteger s = [_sceneIndex integerValue];
+            Byte b[] = {};
+            b[0] = (Byte)((s & 0xFF00)>>8);
+            b[1] = (Byte)(s & 0x00FF);
+            
+            if ([CSRUtilities belongToTwoChannelSwitch:member.kindString]
+                || [CSRUtilities belongToThreeChannelSwitch:member.kindString]
+                || [CSRUtilities belongToTwoChannelDimmer:member.kindString]
+                || [CSRUtilities belongToSocketTwoChannel:member.kindString]
+                || [CSRUtilities belongToTwoChannelCurtainController:member.kindString]
+                || [CSRUtilities belongToThreeChannelDimmer:member.kindString]
+                || [CSRUtilities belongToMusicController:member.kindString]
+                || [CSRUtilities belongToSonosMusicController:member.kindString]) {
+                Byte byte[] = {0x5d, 0x03, 0x01, b[1], b[0]};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+                retryCount = 0;
+                retryCmd = cmd;
+                retryDeviceId = member.deviceID;
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+            }else {
+                Byte byte[] = {0x98, 0x02, b[1], b[0]};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                retryCount = 0;
+                retryCmd = cmd;
+                retryDeviceId = member.deviceID;
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+            }
+        }];
+        [alert addAction:eve1];
+    }
+    if (member.eve2Type) {
+        UIAlertAction *eve2 = [UIAlertAction actionWithTitle:@"2" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self showLoading];
+            [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
+            _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
+            SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 2) {
+                    _mMemberToApply = sme;
+                    break;
+                }
+            }
+            NSInteger s = [_sceneIndex integerValue];
+            Byte b[] = {};
+            b[0] = (Byte)((s & 0xFF00)>>8);
+            b[1] = (Byte)(s & 0x00FF);
+            Byte byte[] = {0x5d, 0x03, 0x02, b[1], b[0]};
             NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
             retryCount = 0;
             retryCmd = cmd;
-            retryDeviceId = mSceneMember.deviceID;
-            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:mSceneMember.deviceID data:cmd];
-        }else {
-            Byte byte[] = {0x98, 0x02, b[1], b[0]};
-            NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+            retryDeviceId = member.deviceID;
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+        }];
+        [alert addAction:eve2];
+    }
+    if (member.eve3Type) {
+        UIAlertAction *eve3 = [UIAlertAction actionWithTitle:@"3" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self showLoading];
+            [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
+            _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
+            SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 4) {
+                    _mMemberToApply = sme;
+                    break;
+                }
+            }
+            NSInteger s = [_sceneIndex integerValue];
+            Byte b[] = {};
+            b[0] = (Byte)((s & 0xFF00)>>8);
+            b[1] = (Byte)(s & 0x00FF);
+            Byte byte[] = {0x5d, 0x03, 0x04, b[1], b[0]};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
             retryCount = 0;
             retryCmd = cmd;
-            retryDeviceId = mSceneMember.deviceID;
-            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:mSceneMember.deviceID data:cmd];
-        }
-    }];
+            retryDeviceId = member.deviceID;
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+        }];
+        [alert addAction:eve3];
+    }
+    if (member.eve4Type) {
+        UIAlertAction *eve4 = [UIAlertAction actionWithTitle:@"4" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self showLoading];
+            [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
+            _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
+            SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 8) {
+                    _mMemberToApply = sme;
+                    break;
+                }
+            }
+            NSInteger s = [_sceneIndex integerValue];
+            Byte b[] = {};
+            b[0] = (Byte)((s & 0xFF00)>>8);
+            b[1] = (Byte)(s & 0x00FF);
+            Byte byte[] = {0x5d, 0x03, 0x08, b[1], b[0]};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+            retryCount = 0;
+            retryCmd = cmd;
+            retryDeviceId = member.deviceID;
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+        }];
+        [alert addAction:eve4];
+    }
+    if (member.eve5Type) {
+        UIAlertAction *eve5 = [UIAlertAction actionWithTitle:@"5" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self showLoading];
+            [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
+            _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
+            SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 16) {
+                    _mMemberToApply = sme;
+                    break;
+                }
+            }
+            NSInteger s = [_sceneIndex integerValue];
+            Byte b[] = {};
+            b[0] = (Byte)((s & 0xFF00)>>8);
+            b[1] = (Byte)(s & 0x00FF);
+            Byte byte[] = {0x5d, 0x03, 0x10, b[1], b[0]};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+            retryCount = 0;
+            retryCmd = cmd;
+            retryDeviceId = member.deviceID;
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+        }];
+        [alert addAction:eve5];
+    }
+    if (member.eve6Type) {
+        UIAlertAction *eve6 = [UIAlertAction actionWithTitle:@"6" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self showLoading];
+            [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
+            _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
+            SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 32) {
+                    _mMemberToApply = sme;
+                    break;
+                }
+            }
+            NSInteger s = [_sceneIndex integerValue];
+            Byte b[] = {};
+            b[0] = (Byte)((s & 0xFF00)>>8);
+            b[1] = (Byte)(s & 0x00FF);
+            Byte byte[] = {0x5d, 0x03, 0x20, b[1], b[0]};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+            retryCount = 0;
+            retryCmd = cmd;
+            retryDeviceId = member.deviceID;
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+        }];
+        [alert addAction:eve6];
+    }
+    if (member.eve7Type) {
+        UIAlertAction *eve7 = [UIAlertAction actionWithTitle:@"7" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self showLoading];
+            [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
+            _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
+            SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 64) {
+                    _mMemberToApply = sme;
+                    break;
+                }
+            }
+            NSInteger s = [_sceneIndex integerValue];
+            Byte b[] = {};
+            b[0] = (Byte)((s & 0xFF00)>>8);
+            b[1] = (Byte)(s & 0x00FF);
+            Byte byte[] = {0x5d, 0x03, 0x40, b[1], b[0]};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+            retryCount = 0;
+            retryCmd = cmd;
+            retryDeviceId = member.deviceID;
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+        }];
+        [alert addAction:eve7];
+    }
+    if (member.eve8Type) {
+        UIAlertAction *eve8 = [UIAlertAction actionWithTitle:@"8" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self showLoading];
+            [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
+            _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
+            SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 128) {
+                    _mMemberToApply = sme;
+                    break;
+                }
+            }
+            NSInteger s = [_sceneIndex integerValue];
+            Byte b[] = {};
+            b[0] = (Byte)((s & 0xFF00)>>8);
+            b[1] = (Byte)(s & 0x00FF);
+            Byte byte[] = {0x5d, 0x03, 0x80, b[1], b[0]};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+            retryCount = 0;
+            retryCmd = cmd;
+            retryDeviceId = member.deviceID;
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+        }];
+        [alert addAction:eve8];
+    }
+    
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        
+
     }];
-    [alert addAction:yes];
     [alert addAction:cancel];
     [self presentViewController:alert animated:YES completion:nil];
 }
@@ -803,13 +1492,14 @@
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:[NSString stringWithFormat:@"%@ %@",_mDeviceToApplay.name,AcTECLocalizedStringFromTable(@"removescenefail", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
         [alert.view setTintColor:DARKORAGE];
         UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self removeMemberFromMembers:_mMemberToApply];
+            [_sceneMemberList reloadData];
+            
             SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
             [s removeMembersObject:_mMemberToApply];
             [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:_mMemberToApply];
             [[CSRDatabaseManager sharedInstance] saveContext];
             
-            [_members removeObject:_mMemberToApply];
-            [_sceneMemberList reloadData];
             _mMemberToApply = nil;
         }];
         UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -828,20 +1518,83 @@
     if (_mDeviceToApplay && [_mDeviceToApplay.deviceId isEqualToNumber:deviceID] && [sceneID isEqualToNumber:_sceneIndex]) {
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(removeSceneIDTimerOut) object:nil];
         
+        [self removeMemberFromMembers:_mMemberToApply];
+        [_sceneMemberList reloadData];
+        
         SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
         [s removeMembersObject:_mMemberToApply];
         [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:_mMemberToApply];
         [[CSRDatabaseManager sharedInstance] saveContext];
         
-        [_members removeObject:_mMemberToApply];
-        [_sceneMemberList reloadData];
         _mMemberToApply = nil;
         [self hideLoading];
     }
 }
 
+- (void)removeMemberFromMembers:(SceneMemberEntity *)memberEntity {
+    for (SceneMemberExpandModel *eModel in _members) {
+        if ([eModel.deviceID isEqualToNumber:memberEntity.deviceID]) {
+            if ([memberEntity.channel integerValue] == 1) {
+                eModel.eve1Type = 0;
+                eModel.eve1D0 = 0;
+                eModel.eve1D1 = 0;
+                eModel.eve1D2 = 0;
+                eModel.eve1D3 = 0;
+            }else if ([memberEntity.channel integerValue] == 2) {
+                eModel.eve2Type = 0;
+                eModel.eve2D0 = 0;
+                eModel.eve2D1 = 0;
+                eModel.eve2D2 = 0;
+                eModel.eve2D3 = 0;
+            }else if ([memberEntity.channel integerValue] == 4) {
+                eModel.eve3Type = 0;
+                eModel.eve3D0 = 0;
+                eModel.eve3D1 = 0;
+                eModel.eve3D2 = 0;
+                eModel.eve3D3 = 0;
+            }else if ([memberEntity.channel integerValue] == 8) {
+                eModel.eve4Type = 0;
+                eModel.eve4D0 = 0;
+                eModel.eve4D1 = 0;
+                eModel.eve4D2 = 0;
+                eModel.eve4D3 = 0;
+            }else if ([memberEntity.channel integerValue] == 16) {
+                eModel.eve5Type = 0;
+                eModel.eve5D0 = 0;
+                eModel.eve5D1 = 0;
+                eModel.eve5D2 = 0;
+                eModel.eve5D3 = 0;
+            }else if ([memberEntity.channel integerValue] == 32) {
+                eModel.eve6Type = 0;
+                eModel.eve6D0 = 0;
+                eModel.eve6D1 = 0;
+                eModel.eve6D2 = 0;
+                eModel.eve6D3 = 0;
+            }else if ([memberEntity.channel integerValue] == 64) {
+                eModel.eve7Type = 0;
+                eModel.eve7D0 = 0;
+                eModel.eve7D1 = 0;
+                eModel.eve7D2 = 0;
+                eModel.eve7D3 = 0;
+            }else if ([memberEntity.channel integerValue] == 128) {
+                eModel.eve8Type = 0;
+                eModel.eve8D0 = 0;
+                eModel.eve8D1 = 0;
+                eModel.eve8D2 = 0;
+                eModel.eve8D3 = 0;
+            }
+            if (!eModel.eve1Type && !eModel.eve2Type && !eModel.eve3Type && !eModel.eve4Type && !eModel.eve5Type && !eModel.eve6Type && !eModel.eve7Type && !eModel.eve8Type) {
+                [_members removeObject:eModel];
+            }
+            break;
+        }
+    }
+}
+
 - (void)reSetting:(NSInteger )row {
-    SceneMemberEntity *member = [_members objectAtIndex:row];
+    [self.selects removeAllObjects];
+    _isResetting = YES;
+    SceneMemberExpandModel *member = [_members objectAtIndex:row];
     if ([CSRUtilities belongToOneChannelCurtainController:member.kindString]
         || [CSRUtilities belongToTwoChannelCurtainController:member.kindString]
         || [CSRUtilities belongToHOneChannelCurtainController:member.kindString]) {
@@ -870,36 +1623,122 @@
         };
         [self.navigationController pushViewController:svc animated:YES];
     }else if ([CSRUtilities belongToSonosMusicController:member.kindString]) {
+        SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
         SonosSceneSettingVC *sssvc = [[SonosSceneSettingVC alloc] init];
         sssvc.deviceID = member.deviceID;
         sssvc.source = 1;
-        SonosSelectModel *model = [[SonosSelectModel alloc] init];
-        model.reSetting = YES;
-        model.selected = YES;
-        model.deviceID = member.deviceID;
-        for (int i=0; i<8; i++) {
-            if (([member.channel integerValue] & (NSInteger)pow(2, i))>>i == 1) {
-                model.channel = @(i);
-                break;
-            }
+        NSMutableArray *smodels = [[NSMutableArray alloc] init];
+        if (member.eve1Type) {
+            SonosSelectModel *model = [[SonosSelectModel alloc] init];
+            model.reSetting = YES;
+            model.selected = YES;
+            model.deviceID = member.deviceID;
+            model.channel = @(0);
+            model.play = member.eve1Type == 226 ? YES : NO;
+            model.voice = member.eve1D1/2;
+            model.songNumber = member.eve1D2;
+            [smodels addObject:model];
         }
-        model.play = [member.eveType integerValue] == 226 ? YES : NO;
-        model.voice = [member.eveD1 integerValue]/2;
-        model.songNumber = [member.eveD2 integerValue];
-        sssvc.sModel = model;
+        if (member.eve2Type) {
+            SonosSelectModel *model = [[SonosSelectModel alloc] init];
+            model.reSetting = YES;
+            model.selected = YES;
+            model.deviceID = member.deviceID;
+            model.channel = @(1);
+            model.play = member.eve2Type == 226 ? YES : NO;
+            model.voice = member.eve2D1/2;
+            model.songNumber = member.eve2D2;
+            [smodels addObject:model];
+        }
+        if (member.eve3Type) {
+            SonosSelectModel *model = [[SonosSelectModel alloc] init];
+            model.reSetting = YES;
+            model.selected = YES;
+            model.deviceID = member.deviceID;
+            model.channel = @(2);
+            model.play = member.eve3Type == 226 ? YES : NO;
+            model.voice = member.eve3D1/2;
+            model.songNumber = member.eve3D2;
+            [smodels addObject:model];
+        }
+        if (member.eve4Type) {
+            SonosSelectModel *model = [[SonosSelectModel alloc] init];
+            model.reSetting = YES;
+            model.selected = YES;
+            model.deviceID = member.deviceID;
+            model.channel = @(3);
+            model.play = member.eve4Type == 226 ? YES : NO;
+            model.voice = member.eve4D1/2;
+            model.songNumber = member.eve4D2;
+            [smodels addObject:model];
+        }
+        if (member.eve5Type) {
+            SonosSelectModel *model = [[SonosSelectModel alloc] init];
+            model.reSetting = YES;
+            model.selected = YES;
+            model.deviceID = member.deviceID;
+            model.channel = @(4);
+            model.play = member.eve5Type == 226 ? YES : NO;
+            model.voice = member.eve5D1/2;
+            model.songNumber = member.eve5D2;
+            [smodels addObject:model];
+        }
+        if (member.eve6Type) {
+            SonosSelectModel *model = [[SonosSelectModel alloc] init];
+            model.reSetting = YES;
+            model.selected = YES;
+            model.deviceID = member.deviceID;
+            model.channel = @(5);
+            model.play = member.eve6Type == 226 ? YES : NO;
+            model.voice = member.eve6D1/2;
+            model.songNumber = member.eve6D2;
+            [smodels addObject:model];
+        }
+        if (member.eve7Type) {
+            SonosSelectModel *model = [[SonosSelectModel alloc] init];
+            model.reSetting = YES;
+            model.selected = YES;
+            model.deviceID = member.deviceID;
+            model.channel = @(6);
+            model.play = member.eve7Type == 226 ? YES : NO;
+            model.voice = member.eve7D1/2;
+            model.songNumber = member.eve7D2;
+            [smodels addObject:model];
+        }
+        if (member.eve8Type) {
+            SonosSelectModel *model = [[SonosSelectModel alloc] init];
+            model.reSetting = YES;
+            model.selected = YES;
+            model.deviceID = member.deviceID;
+            model.channel = @(7);
+            model.play = member.eve8Type == 226 ? YES : NO;
+            model.voice = member.eve8D1/2;
+            model.songNumber = member.eve8D2;
+            [smodels addObject:model];
+        }
+        sssvc.sModels = smodels;
         sssvc.sonosSceneSettingHandle = ^(NSArray * _Nonnull sModels) {
-            SonosSelectModel *sm = [sModels firstObject];
-            if (sm.play != model.play || sm.voice != model.voice || sm.songNumber != model.songNumber) {
-                if (sm.play) {
-                    member.eveType = @(226);
-                }else {
-                    member.eveType = @(130);
+            for (SonosSelectModel *sm in sModels) {
+                for (SonosSelectModel *m  in smodels) {
+                    if (m.play != sm.play || m.voice != sm.voice || m.songNumber != sm.songNumber) {
+                        for (SceneMemberEntity *sme in sceneEntity.members) {
+                            if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == pow(2, [sm.channel integerValue])) {
+                                if (sm.play) {
+                                    sme.eveType = @(226);
+                                }else {
+                                    sme.eveType = @(130);
+                                }
+                                sme.eveD0 = @(sm.play*2+1);
+                                sme.eveD1 = @(sm.voice*2);
+                                sme.eveD2 = @(sm.songNumber);
+                                [self.selects addObject:sme];
+                                break;
+                            }
+                        }
+                    }
                 }
-                member.eveD0 = @(sm.play*2+1);
-                member.eveD1 = @(sm.voice*2);
-                member.eveD2 = @(sm.songNumber);
-                [self reSettingOperation:member];
             }
+            [self nextOperation];
         };
         [self.navigationController pushViewController:sssvc animated:YES];
     }else {
@@ -907,7 +1746,6 @@
         dvc.deviceId = member.deviceID;
         dvc.source = 1;
         dvc.reloadDataHandle = ^{
-            NSLog(@">> %@",member.deviceID);
             if ([CSRUtilities belongToSwitch:member.kindString]
                 || [CSRUtilities belongToTwoChannelSwitch:member.kindString]
                 || [CSRUtilities belongToThreeChannelSwitch:member.kindString]) {
@@ -929,316 +1767,436 @@
     }
 }
 
-- (void)reSettingSwitch:(SceneMemberEntity *)member {
+- (void)reSettingSwitch:(SceneMemberExpandModel *)member {
+    [self showLoading];
     DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:member.deviceID];
-    if ([member.channel integerValue] == 1) {
-        if ([member.eveType integerValue] == 17) {
+    SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+    if (member.eve1Type) {
+        if (member.eve1Type == 17) {
             if (model.channel1PowerState) {
-                member.eveType = @(16);
-                [self reSettingOperation:member];
+                for (SceneMemberEntity *sme in sceneEntity.members) {
+                    if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                        sme.eveType = @(16);
+                        [self.selects addObject:sme];
+                        break;
+                    }
+                }
             }
-        }else if ([member.eveType integerValue] == 16) {
+        }else if (member.eve1Type == 16) {
             if (!model.channel1PowerState) {
-                member.eveType = @(17);
-                [self reSettingOperation:member];
-            }
-        }
-    }else if ([member.channel integerValue] == 2) {
-        if ([member.eveType integerValue] == 17) {
-            if (model.channel2PowerState) {
-                member.eveType = @(16);
-                [self reSettingOperation:member];
-            }
-        }else if ([member.eveType integerValue] == 16) {
-            if (!model.channel2PowerState) {
-                member.eveType = @(17);
-                [self reSettingOperation:member];
-            }
-        }
-    }else if ([member.channel integerValue] == 4) {
-        if ([member.eveType integerValue] == 17) {
-            if (model.channel3PowerState) {
-                member.eveType = @(16);
-                [self reSettingOperation:member];
-            }
-        }else if ([member.eveType integerValue] == 16) {
-            if (!model.channel3PowerState) {
-                member.eveType = @(17);
-                [self reSettingOperation:member];
+                for (SceneMemberEntity *sme in sceneEntity.members) {
+                    if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                        sme.eveType = @(17);
+                        [self.selects addObject:sme];
+                        break;
+                    }
+                }
             }
         }
     }
-}
-
-- (void)reSettingDimmer:(SceneMemberEntity *)member {
-    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:member.deviceID];
-    if ([member.channel integerValue] == 1) {
-        if ([member.eveType integerValue] == 17) {
-            if (model.channel1PowerState) {
-                member.eveType = @(18);
-                member.eveD0 = @(model.channel1Level);
-                [self reSettingOperation:member];
-            }
-        }else if ([member.eveType integerValue] == 18) {
-            if (!model.channel1PowerState) {
-                member.eveType = @(17);
-                member.eveD0 = @(0);
-                [self reSettingOperation:member];
-            }else if ([member.eveD0 integerValue] != model.channel1Level) {
-                member.eveD0 = @(model.channel1Level);
-                [self reSettingOperation:member];
-            }
-        }
-    }else if ([member.channel integerValue] == 2) {
-        if ([member.eveType integerValue] == 17) {
+    if (member.eve2Type) {
+        if (member.eve2Type == 17) {
             if (model.channel2PowerState) {
-                member.eveType = @(18);
-                member.eveD0 = @(model.channel2Level);
-                [self reSettingOperation:member];
+                for (SceneMemberEntity *sme in sceneEntity.members) {
+                    if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 2) {
+                        sme.eveType = @(16);
+                        [self.selects addObject:sme];
+                        break;
+                    }
+                }
             }
-        }else if ([member.eveType integerValue] == 18) {
+        }else if (member.eve2Type == 16) {
             if (!model.channel2PowerState) {
-                member.eveType = @(17);
-                member.eveD0 = @(0);
-                [self reSettingOperation:member];
-            }else if ([member.eveD0 integerValue] != model.channel2Level) {
-                member.eveD0 = @(model.channel2Level);
-                [self reSettingOperation:member];
-            }
-        }
-    }else if ([member.channel integerValue] == 4) {
-        if ([member.eveType integerValue] == 17) {
-            if (model.channel3PowerState) {
-                member.eveType = @(18);
-                member.eveD0 = @(model.channel3Level);
-                [self reSettingOperation:member];
-            }
-        }else if ([member.eveType integerValue] == 18) {
-            if (!model.channel3PowerState) {
-                member.eveType = @(17);
-                member.eveD0 = @(0);
-                [self reSettingOperation:member];
-            }else if ([member.eveD0 integerValue] != model.channel3Level) {
-                member.eveD0 = @(model.channel3Level);
-                [self reSettingOperation:member];
+                for (SceneMemberEntity *sme in sceneEntity.members) {
+                    if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 2) {
+                        sme.eveType = @(17);
+                        [self.selects addObject:sme];
+                        break;
+                    }
+                }
             }
         }
     }
+    if (member.eve3Type) {
+        if (member.eve3Type == 17) {
+            if (model.channel3PowerState) {
+                for (SceneMemberEntity *sme in sceneEntity.members) {
+                    if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 4) {
+                        sme.eveType = @(16);
+                        [self.selects addObject:sme];
+                        break;
+                    }
+                }
+            }
+        }else if (member.eve3Type == 16) {
+            if (!model.channel3PowerState) {
+                for (SceneMemberEntity *sme in sceneEntity.members) {
+                    if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 4) {
+                        sme.eveType = @(17);
+                        [self.selects addObject:sme];
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    [self nextOperation];
 }
 
-- (void)reSettingCW:(SceneMemberEntity *)member {
+- (void)reSettingDimmer:(SceneMemberExpandModel *)member {
+    [self showLoading];
     DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:member.deviceID];
-    if ([member.eveType integerValue] == 17) {
+    SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+    if (member.eve1Type) {
+        if (member.eve1Type == 17) {
+            if (model.channel1PowerState) {
+                for (SceneMemberEntity *sme in sceneEntity.members) {
+                    if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                        sme.eveType = @(18);
+                        sme.eveD0 = @(model.channel1Level);
+                        [self.selects addObject:sme];
+                        break;
+                    }
+                }
+            }
+        }else if (member.eve1Type == 18) {
+            if (!model.channel1PowerState) {
+                for (SceneMemberEntity *sme in sceneEntity.members) {
+                    if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                        sme.eveType = @(17);
+                        sme.eveD0 = @(0);
+                        [self.selects addObject:sme];
+                        break;
+                    }
+                }
+            }else if (model.channel1Level != member.eve1D0) {
+                for (SceneMemberEntity *sme in sceneEntity.members) {
+                    if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                        sme.eveD0 = @(model.channel1Level);
+                        [self.selects addObject:sme];
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    if (member.eve2Type) {
+        if (member.eve2Type == 17) {
+            if (model.channel2PowerState) {
+                for (SceneMemberEntity *sme in sceneEntity.members) {
+                    if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 2) {
+                        sme.eveType = @(18);
+                        sme.eveD0 = @(model.channel2Level);
+                        [self.selects addObject:sme];
+                        break;
+                    }
+                }
+            }
+        }else if (member.eve2Type == 18) {
+            if (!model.channel2PowerState) {
+                for (SceneMemberEntity *sme in sceneEntity.members) {
+                    if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 2) {
+                        sme.eveType = @(17);
+                        sme.eveD0 = @(0);
+                        [self.selects addObject:sme];
+                        break;
+                    }
+                }
+            }else if (model.channel2Level != member.eve2D0) {
+                for (SceneMemberEntity *sme in sceneEntity.members) {
+                    if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 2) {
+                        sme.eveD0 = @(model.channel2Level);
+                        [self.selects addObject:sme];
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    if (member.eve3Type) {
+        if (member.eve3Type == 17) {
+            if (model.channel3PowerState) {
+                for (SceneMemberEntity *sme in sceneEntity.members) {
+                    if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 4) {
+                        sme.eveType = @(18);
+                        sme.eveD0 = @(model.channel3Level);
+                        [self.selects addObject:sme];
+                        break;
+                    }
+                }
+            }
+        }else if (member.eve3Type == 18) {
+            if (!model.channel3PowerState) {
+                for (SceneMemberEntity *sme in sceneEntity.members) {
+                    if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 4) {
+                        sme.eveType = @(17);
+                        sme.eveD0 = @(0);
+                        [self.selects addObject:sme];
+                        break;
+                    }
+                }
+            }else if (model.channel3Level != member.eve3D0) {
+                for (SceneMemberEntity *sme in sceneEntity.members) {
+                    if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 4) {
+                        sme.eveD0 = @(model.channel3Level);
+                        [self.selects addObject:sme];
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    [self nextOperation];
+}
+
+- (void)reSettingCW:(SceneMemberExpandModel *)member {
+    [self showLoading];
+    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:member.deviceID];
+    SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+    if (member.eve1Type == 17) {
         if (model.channel1PowerState) {
-            member.eveType = @(25);
-            member.eveD0 = @(model.channel1Level);
-            NSInteger c = [model.colorTemperature integerValue];
-            member.eveD2 = @((c & 0xFF00) >> 8);
-            member.eveD1 = @(c & 0x00FF);
-            [self reSettingOperation:member];
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                    sme.eveType = @(25);
+                    sme.eveD0 = @(model.channel1Level);
+                    NSInteger c = [model.colorTemperature integerValue];
+                    sme.eveD2 = @((c & 0xFF00) >> 8);
+                    sme.eveD1 = @(c & 0x00FF);
+                    [self.selects addObject:sme];
+                    break;
+                }
+            }
         }
-    }else if ([member.eveType integerValue] == 25) {
+    }else if (member.eve1Type == 25) {
         if (!model.channel1PowerState) {
-            member.eveType = @(17);
-            member.eveD0 = @0;
-            member.eveD1 = @0;
-            member.eveD2 = @0;
-            [self reSettingOperation:member];
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                    sme.eveType = @(17);
+                    sme.eveD0 = @0;
+                    sme.eveD1 = @0;
+                    sme.eveD2 = @0;
+                    [self.selects addObject:sme];
+                    break;
+                }
+            }
         }else {
             NSInteger c = [model.colorTemperature integerValue];
             NSInteger l = (c & 0xFF00) >> 8;
             NSInteger h = c & 0x00FF;
-            if ([member.eveD0 integerValue] != model.channel1Level || [member.eveD2 integerValue] != l || [member.eveD1 integerValue] != h) {
-                member.eveD0 = @(model.channel1Level);
-                member.eveD2 = @(l);
-                member.eveD1 = @(h);
-                [self reSettingOperation:member];
-            }
-        }
-    }
-}
-
-- (void)reSettingRGB:(SceneMemberEntity *)member {
-    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:member.deviceID];
-    if ([member.eveType integerValue] == 17) {
-        if (model.channel1PowerState) {
-            member.eveType = @(20);
-            member.eveD0 = @(model.channel1Level);
-            member.eveD1 = model.red;
-            member.eveD2 = model.green;
-            member.eveD3 = model.blue;
-            [self reSettingOperation:member];
-        }
-    }else if ([member.eveType integerValue] == 20) {
-        if (!model.channel1PowerState) {
-            member.eveType = @(17);
-            member.eveD0 = @0;
-            member.eveD1 = @0;
-            member.eveD2 = @0;
-            member.eveD3 = @0;
-            [self reSettingOperation:member];
-        }else if ([member.eveD0 integerValue] != model.channel1Level || [member.eveD1 integerValue] != [model.red integerValue] || [member.eveD2 integerValue] != [model.green integerValue] || [member.eveD3 integerValue] != [model.blue integerValue]) {
-            member.eveD0 = @(model.channel1Level);
-            member.eveD1 = model.red;
-            member.eveD2 = model.green;
-            member.eveD3 = model.blue;
-            [self reSettingOperation:member];
-        }
-    }
-}
-
-- (void)reSettingRGBCW:(SceneMemberEntity *)member {
-    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:member.deviceID];
-    if ([member.eveType integerValue] == 17) {
-        if (model.channel1PowerState) {
-            if ([model.supports integerValue] == 0) {
-                member.eveType = @(20);
-                member.eveD0 = @(model.channel1Level);
-                member.eveD1 = model.red;
-                member.eveD2 = model.green;
-                member.eveD3 = model.blue;
-                [self reSettingOperation:member];
-            }else if ([model.supports integerValue] == 1) {
-                member.eveType = @(25);
-                member.eveD0 = @(model.channel1Level);
-                NSInteger c = [model.colorTemperature integerValue];
-                member.eveD2 = @((c & 0xFF00) >> 8);
-                member.eveD1 = @(c & 0x00FF);
-                [self reSettingOperation:member];
-            }
-        }
-    }else if ([member.eveType integerValue] == 20 || [member.eveType integerValue] == 25) {
-        if (!model.channel1PowerState) {
-            member.eveType = @(17);
-            member.eveD0 = @0;
-            member.eveD1 = @0;
-            member.eveD2 = @0;
-            member.eveD3 = @0;
-            [self reSettingOperation:member];
-        }else if ([member.eveType integerValue] == 20) {
-            if ([model.supports integerValue] == 1) {
-                member.eveType = @(25);
-                member.eveD0 = @(model.channel1Level);
-                NSInteger c = [model.colorTemperature integerValue];
-                member.eveD2 = @((c & 0xFF00) >> 8);
-                member.eveD1 = @(c & 0x00FF);
-                [self reSettingOperation:member];
-            }else if ([model.supports integerValue] == 0) {
-                if ([member.eveD0 integerValue] != model.channel1Level || [member.eveD1 integerValue] != [model.red integerValue] || [member.eveD2 integerValue] != [model.green integerValue] || [member.eveD3 integerValue] != [model.blue integerValue]) {
-                    member.eveD0 = @(model.channel1Level);
-                    member.eveD1 = model.red;
-                    member.eveD2 = model.green;
-                    member.eveD3 = model.blue;
-                    [self reSettingOperation:member];
-                }
-            }
-        }else if ([member.eveType integerValue] == 25) {
-            if ([model.supports integerValue] == 0) {
-                member.eveType = @(20);
-                member.eveD0 = @(model.channel1Level);
-                member.eveD1 = model.red;
-                member.eveD2 = model.green;
-                member.eveD3 = model.blue;
-                [self reSettingOperation:member];
-            }else if ([model.supports integerValue] == 1) {
-                NSInteger c = [model.colorTemperature integerValue];
-                NSInteger l = (c & 0xFF00) >> 8;
-                NSInteger h = c & 0x00FF;
-                if ([member.eveD0 integerValue] != model.channel1Level || [member.eveD2 integerValue] != l || [member.eveD1 integerValue] != h) {
-                    member.eveD0 = @(model.channel1Level);
-                    member.eveD2 = @(l);
-                    member.eveD1 = @(h);
-                    [self reSettingOperation:member];
+            if (member.eve1D0 != model.channel1Level || member.eve1D2 != l || member.eve1D1 != h) {
+                for (SceneMemberEntity *sme in sceneEntity.members) {
+                    if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                        sme.eveD0 = @(model.channel1Level);
+                        sme.eveD2 = @(l);
+                        sme.eveD1 = @(h);
+                        [self.selects addObject:sme];
+                        break;
+                    }
                 }
             }
         }
     }
+    [self nextOperation];
 }
 
-- (void)reSettingSocket:(SceneMemberEntity *)member {
-    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:member.deviceID];
-    if ([member.channel integerValue] == 1) {
-        if ([member.eveD0 integerValue] != model.channel1PowerState || [member.eveD1 integerValue] != model.childrenState1) {
-            member.eveD0 = @(model.channel1PowerState);
-            member.eveD1 = @(model.childrenState1);
-            [self reSettingOperation:member];
-        }
-    }else if ([member.channel integerValue] == 2) {
-        if ([member.eveD0 integerValue] != model.channel2PowerState || [member.eveD1 integerValue] != model.childrenState2) {
-            member.eveD0 = @(model.channel2PowerState);
-            member.eveD1 = @(model.childrenState2);
-            [self reSettingOperation:member];
-        }
-    }
-}
-
-- (void)reSettingFan:(SceneMemberEntity *)member {
-    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:member.deviceID];
-    if ([member.eveD0 boolValue] != model.fanState || [member.eveD1 integerValue] != model.fansSpeed || [member.eveD2 boolValue] != model.lampState) {
-        member.eveD0 = @(model.fanState);
-        member.eveD1 = @(model.fansSpeed);
-        member.eveD2 = @(model.lampState);
-        [self reSettingOperation:member];
-    }
-}
-
-- (void)reSettingOperation:(SceneMemberEntity *)member {
+- (void)reSettingRGB:(SceneMemberExpandModel *)member {
     [self showLoading];
-    [self performSelector:@selector(reSettingOperationDelayMethod) withObject:nil afterDelay:10];
-    _mMemberToApply = member;
-    _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
-    
-    NSInteger s = [_sceneIndex integerValue];
-    Byte b[] = {};
-    b[0] = (Byte)((s & 0xFF00)>>8);
-    b[1] = (Byte)(s & 0x00FF);
-    
-    NSInteger e = [member.eveType integerValue];
-    NSInteger d0 = [member.eveD0 integerValue];
-    NSInteger d1 = [member.eveD1 integerValue];
-    NSInteger d2 = [member.eveD2 integerValue];
-    NSInteger d3 = [member.eveD3 integerValue];
-    
-    if ([CSRUtilities belongToTwoChannelSwitch:member.kindString]
-        || [CSRUtilities belongToThreeChannelSwitch:member.kindString]
-        || [CSRUtilities belongToTwoChannelDimmer:member.kindString]
-        || [CSRUtilities belongToSocketTwoChannel:member.kindString]
-        || [CSRUtilities belongToTwoChannelCurtainController:member.kindString]
-        || [CSRUtilities belongToThreeChannelDimmer:member.kindString]
-        || [CSRUtilities belongToMusicController:member.kindString]
-        || [CSRUtilities belongToSonosMusicController:member.kindString]) {
-        Byte byte[] = {0x59, 0x08, [member.channel integerValue], b[1], b[0], e, d0, d1, d2, d3};
-        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
-        retryCount = 0;
-        retryCmd = cmd;
-        retryDeviceId = member.deviceID;
-        NSLog(@"%@",cmd);
-        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
-    }else {
-        Byte byte[] = {0x93, 0x07, b[1], b[0], e, d0, d1, d2, d3};
-        NSData *cmd = [[NSData alloc] initWithBytes:byte length:9];
-        retryCount = 0;
-        retryCmd = cmd;
-        retryDeviceId = member.deviceID;
-        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:member.deviceID];
+    SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+    if (member.eve1Type == 17) {
+        if (model.channel1PowerState) {
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                    sme.eveType = @(20);
+                    sme.eveD0 = @(model.channel1Level);
+                    sme.eveD1 = model.red;
+                    sme.eveD2 = model.green;
+                    sme.eveD3 = model.blue;
+                    [self.selects addObject:sme];
+                    break;
+                }
+            }
+        }
+    }else if (member.eve1Type == 20) {
+        if (!model.channel1PowerState) {
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                    sme.eveType = @(17);
+                    sme.eveD0 = @0;
+                    sme.eveD1 = @0;
+                    sme.eveD2 = @0;
+                    sme.eveD3 = @0;
+                    [self.selects addObject:sme];
+                    break;
+                }
+            }
+        }else {
+            if (member.eve1D0 != model.channel1Level || member.eve1D1 != [model.red integerValue] || member.eve1D2 != [model.green integerValue] || member.eve1D3 != [model.green integerValue]) {
+                for (SceneMemberEntity *sme in sceneEntity.members) {
+                    if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                        sme.eveD0 = @(model.channel1Level);
+                        sme.eveD1 = model.red;
+                        sme.eveD2 = model.green;
+                        sme.eveD3 = model.blue;
+                        [self.selects addObject:sme];
+                        break;
+                    }
+                }
+            }
+        }
     }
+    [self nextOperation];
 }
 
-- (void)reSettingOperationDelayMethod {
-    if (retryCount < 1) {
-        [self performSelector:@selector(reSettingOperationDelayMethod) withObject:nil afterDelay:10];
-        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:retryDeviceId data:retryCmd];
-        retryCount ++;
-    }else {
-        [self hideLoading];
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:[NSString stringWithFormat:@"%@ %@",_mDeviceToApplay.name,AcTECLocalizedStringFromTable(@"removescenefail", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
-        [alert.view setTintColor:DARKORAGE];
-        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-            _mMemberToApply = nil;
-        }];
-        [alert addAction:cancel];
-        [self presentViewController:alert animated:YES completion:nil];
+- (void)reSettingRGBCW:(SceneMemberExpandModel *)member {
+    [self showLoading];
+    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:member.deviceID];
+    SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+    if (member.eve1Type == 17) {
+        if (model.channel1PowerState) {
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                    if ([model.supports integerValue] == 0) {
+                        sme.eveType = @(20);
+                        sme.eveD0 = @(model.channel1Level);
+                        sme.eveD1 = model.red;
+                        sme.eveD2 = model.green;
+                        sme.eveD3 = model.blue;
+                    }else if ([model.supports integerValue] == 1) {
+                        sme.eveType = @(25);
+                        sme.eveD0 = @(model.channel1Level);
+                        NSInteger c = [model.colorTemperature integerValue];
+                        sme.eveD2 = @((c & 0xFF00) >> 8);
+                        sme.eveD1 = @(c & 0x00FF);
+                    }
+                    [self.selects addObject:sme];
+                    break;
+                }
+            }
+        }
+    }else if (member.eve1Type == 20 || member.eve1Type == 25) {
+        if (!model.channel1PowerState) {
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                    sme.eveType = @(17);
+                    sme.eveD0 = @0;
+                    sme.eveD1 = @0;
+                    sme.eveD2 = @0;
+                    sme.eveD3 = @0;
+                    [self.selects addObject:sme];
+                    break;
+                }
+            }
+        }else {
+            if (member.eve1Type == 20) {
+                if ([model.supports integerValue] == 1) {
+                    for (SceneMemberEntity *sme in sceneEntity.members) {
+                        if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                            sme.eveType = @(25);
+                            sme.eveD0 = @(model.channel1Level);
+                            NSInteger c = [model.colorTemperature integerValue];
+                            sme.eveD2 = @((c & 0xFF00) >> 8);
+                            sme.eveD1 = @(c & 0x00FF);
+                            [self.selects addObject:sme];
+                            break;
+                        }
+                    }
+                }else if ([model.supports integerValue] == 0) {
+                    if (member.eve1D0 != model.channel1Level || member.eve1D1 != [model.red integerValue] || member.eve1D2 != [model.green integerValue] || member.eve1D3 != [model.green integerValue]) {
+                        for (SceneMemberEntity *sme in sceneEntity.members) {
+                            if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                                sme.eveD0 = @(model.channel1Level);
+                                sme.eveD1 = model.red;
+                                sme.eveD2 = model.green;
+                                sme.eveD3 = model.blue;
+                                [self.selects addObject:sme];
+                                break;
+                            }
+                        }
+                    }
+                }
+            }else if (member.eve1Type == 25) {
+                if ([model.supports integerValue] == 0) {
+                    for (SceneMemberEntity *sme in sceneEntity.members) {
+                        if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                            sme.eveType = @(20);
+                            sme.eveD0 = @(model.channel1Level);
+                            sme.eveD1 = model.red;
+                            sme.eveD2 = model.green;
+                            sme.eveD3 = model.blue;
+                            [self.selects addObject:sme];
+                            break;
+                        }
+                    }
+                }else if ([model.supports integerValue] == 1) {
+                    NSInteger c = [model.colorTemperature integerValue];
+                    NSInteger l = (c & 0xFF00) >> 8;
+                    NSInteger h = c & 0x00FF;
+                    if (member.eve1D0 != model.channel1Level || member.eve1D2 != l || member.eve1D1 != h) {
+                        for (SceneMemberEntity *sme in sceneEntity.members) {
+                            if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                                sme.eveD0 = @(model.channel1Level);
+                                sme.eveD2 = @(l);
+                                sme.eveD1 = @(h);
+                                [self.selects addObject:sme];
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
+    [self nextOperation];
+}
+
+- (void)reSettingSocket:(SceneMemberExpandModel *)member {
+    [self showLoading];
+    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:member.deviceID];
+    SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+    if (member.eve1Type) {
+        if (member.eve1D0 != model.channel1PowerState || member.eve1D1 != model.childrenState1) {
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                    sme.eveD0 = @(model.channel1PowerState);
+                    sme.eveD1 = @(model.childrenState1);
+                    [self.selects addObject:sme];
+                    break;
+                }
+            }
+        }
+    }
+    if (member.eve2Type) {
+        if (member.eve2D0 != model.channel2PowerState || member.eve2D1 != model.childrenState2) {
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                    sme.eveD0 = @(model.channel2PowerState);
+                    sme.eveD1 = @(model.childrenState2);
+                    [self.selects addObject:sme];
+                    break;
+                }
+            }
+        }
+    }
+    [self nextOperation];
+}
+
+- (void)reSettingFan:(SceneMemberExpandModel *)member {
+    [self showLoading];
+    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:member.deviceID];
+    SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
+    if (member.eve1D0 != model.fanState || member.eve1D1 != model.fansSpeed || member.eve1D2 != model.lampState) {
+        for (SceneMemberEntity *sme in sceneEntity.members) {
+            if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                sme.eveD0 = @(model.fanState);
+                sme.eveD1 = @(model.fansSpeed);
+                sme.eveD2 = @(model.lampState);
+                [self.selects addObject:sme];
+                break;
+            }
+        }
+    }
+    [self nextOperation];
 }
 
 @end

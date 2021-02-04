@@ -1510,6 +1510,37 @@
                 }];
             });
         }];
+    }else if ([_remoteEntity.shortName isEqualToString:@"RB08"]) {
+        NSString *cmd = @"9b1f01";
+        for (SelectModel *mod in _settingSelectMutArray) {
+            NSString *sw = [CSRUtilities stringWithHexNumber:[mod.sourceID integerValue]];
+            NSString *rc = [CSRUtilities exchangePositionOfDeviceId:[mod.channel integerValue]];
+            NSString *dst = [CSRUtilities exchangePositionOfDeviceId:[mod.deviceID integerValue]];
+            cmd = [NSString stringWithFormat:@"%@%@%@%@",cmd,sw,rc,dst];
+        }
+        [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+            _remoteEntity.remoteBranch = cmd;
+            [[CSRDatabaseManager sharedInstance] saveContext];
+            _setSuccess = YES;
+            [_hub hideAnimated:YES];
+            [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+            [timer invalidate];
+            timer = nil;
+        } failure:^(NSError * _Nonnull error) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
+                    _remoteEntity.remoteBranch = cmd;
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                    _setSuccess = YES;
+                    [_hub hideAnimated:YES];
+                    [self showTextHud:AcTECLocalizedStringFromTable(@"Success", @"Localizable")];
+                    [timer invalidate];
+                    timer = nil;
+                } failure:^(NSError * _Nonnull error) {
+                    
+                }];
+            });
+        }];
     }else {
         if (/*[[CSRAppStateManager sharedInstance].selectedPlace.color boolValue]*/
             [_remoteEntity.cvVersion integerValue] < 18) {
@@ -1842,9 +1873,7 @@
                       ||[_remoteEntity.shortName isEqualToString:@"S10IB-H2"]
                       ||[_remoteEntity.shortName isEqualToString:@"RB06"]
                       ||[_remoteEntity.shortName isEqualToString:@"RSBH"]
-                      ||[_remoteEntity.shortName isEqualToString:@"1BMBH"]
-                      ||[_remoteEntity.shortName isEqualToString:@"RB08"]) {
-                
+                      ||[_remoteEntity.shortName isEqualToString:@"1BMBH"]) {
                 NSString *cmd = @"9b0601";
                 for (SelectModel *mod in _settingSelectMutArray) {
                     NSString *sw = [CSRUtilities stringWithHexNumber:[mod.sourceID integerValue]];
@@ -1852,7 +1881,6 @@
                     NSString *dst = [CSRUtilities exchangePositionOfDeviceId:[mod.deviceID integerValue]];
                     cmd = [NSString stringWithFormat:@"%@%@%@%@",cmd,sw,rc,dst];
                 }
-                
                 [[DataModelApi sharedInstance] sendData:_remoteEntity.deviceId data:[CSRUtilities dataForHexString:cmd] success:^(NSNumber * _Nonnull deviceId, NSData * _Nonnull data) {
                     _remoteEntity.remoteBranch = cmd;
                     [[CSRDatabaseManager sharedInstance] saveContext];

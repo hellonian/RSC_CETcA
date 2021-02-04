@@ -70,8 +70,6 @@
     
     _listView.delegate = self;
     _listView.dataSource = self;
-//    _listView.backgroundView = [[UIView alloc] init];
-//    _listView.backgroundColor = [UIColor clearColor];
     
     if (_deviceId) {
         CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];

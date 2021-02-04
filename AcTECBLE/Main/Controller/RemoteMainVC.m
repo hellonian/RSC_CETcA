@@ -61,6 +61,10 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
 @property (weak, nonatomic) IBOutlet UIImageView *mainRemoteBgImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *sceneRemoteBgImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *circleImageView;
+@property (weak, nonatomic) IBOutlet UIButton *remoteBtn7;
+@property (weak, nonatomic) IBOutlet UIButton *remoteBtn8;
+@property (weak, nonatomic) IBOutlet UIButton *remoteBtn9;
+@property (weak, nonatomic) IBOutlet UIButton *remoteBtn10;
 @property (weak, nonatomic) IBOutlet UIButton *remoteBtn11;
 @property (weak, nonatomic) IBOutlet UIButton *remoteBtn12;
 @property (weak, nonatomic) IBOutlet UIButton *remoteBtn13;
@@ -155,19 +159,12 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [self prepare1:deviceEntity];
             _circleImageView.image = [UIImage imageNamed:@"remotecirclergb"];
             [_remoteBtn11 setImage:[UIImage imageNamed:@"remotebtn0_default"] forState:UIControlStateNormal];
-            [_remoteBtn11 setImage:[UIImage imageNamed:@"remotebtn0_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn12 setImage:[UIImage imageNamed:@"remotebtn1_default"] forState:UIControlStateNormal];
-            [_remoteBtn12 setImage:[UIImage imageNamed:@"remotebtn1_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn13 setImage:[UIImage imageNamed:@"remotebtn2_default"] forState:UIControlStateNormal];
-            [_remoteBtn13 setImage:[UIImage imageNamed:@"remotebtn2_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn14 setImage:[UIImage imageNamed:@"remotebtn3_default"] forState:UIControlStateNormal];
-            [_remoteBtn14 setImage:[UIImage imageNamed:@"remotebtn3_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn15 setImage:[UIImage imageNamed:@"remotebtn4_default"] forState:UIControlStateNormal];
-            [_remoteBtn15 setImage:[UIImage imageNamed:@"remotebtn4_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn16 setImage:[UIImage imageNamed:@"remotebtn6_default"] forState:UIControlStateNormal];
-            [_remoteBtn16 setImage:[UIImage imageNamed:@"remotebtn6_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn17 setImage:[UIImage imageNamed:@"remotebtn5_default"] forState:UIControlStateNormal];
-            [_remoteBtn17 setImage:[UIImage imageNamed:@"remotebtn5_highlighted"] forState:UIControlStateHighlighted];
             UILongPressGestureRecognizer *gesture11 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn11 addGestureRecognizer:gesture11];
             UILongPressGestureRecognizer *gesture12 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
@@ -181,19 +178,12 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [self prepare1:deviceEntity];
             _circleImageView.image = [UIImage imageNamed:@"remotecirclergb"];
             [_remoteBtn11 setImage:[UIImage imageNamed:@"remotebtn11_default"] forState:UIControlStateNormal];
-            [_remoteBtn11 setImage:[UIImage imageNamed:@"remotebtn11_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn12 setImage:[UIImage imageNamed:@"remotebtn12_default"] forState:UIControlStateNormal];
-            [_remoteBtn12 setImage:[UIImage imageNamed:@"remotebtn12_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn13 setImage:[UIImage imageNamed:@"remotebtn13_default"] forState:UIControlStateNormal];
-            [_remoteBtn13 setImage:[UIImage imageNamed:@"remotebtn13_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn14 setImage:[UIImage imageNamed:@"remotebtn1_default"] forState:UIControlStateNormal];
-            [_remoteBtn14 setImage:[UIImage imageNamed:@"remotebtn1_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn15 setImage:[UIImage imageNamed:@"remotebtn2_default"] forState:UIControlStateNormal];
-            [_remoteBtn15 setImage:[UIImage imageNamed:@"remotebtn2_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn16 setImage:[UIImage imageNamed:@"remotebtn0_default"] forState:UIControlStateNormal];
-            [_remoteBtn16 setImage:[UIImage imageNamed:@"remotebtn0_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn17 setImage:[UIImage imageNamed:@"remotebtn5_default"] forState:UIControlStateNormal];
-            [_remoteBtn17 setImage:[UIImage imageNamed:@"remotebtn5_highlighted"] forState:UIControlStateHighlighted];
             UILongPressGestureRecognizer *gesture14 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn14 addGestureRecognizer:gesture14];
             UILongPressGestureRecognizer *gesture15 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
@@ -205,17 +195,11 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             [self prepare1:deviceEntity];
             _circleImageView.image = [UIImage imageNamed:@"remotecirclecw"];
             [_remoteBtn11 setImage:[UIImage imageNamed:@"remotebtn16_default"] forState:UIControlStateNormal];
-            [_remoteBtn11 setImage:[UIImage imageNamed:@"remotebtn16_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn12 setImage:[UIImage imageNamed:@"remotebtn14_default"] forState:UIControlStateNormal];
-            [_remoteBtn12 setImage:[UIImage imageNamed:@"remotebtn14_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn13 setImage:[UIImage imageNamed:@"remotebtn1_default"] forState:UIControlStateNormal];
-            [_remoteBtn13 setImage:[UIImage imageNamed:@"remotebtn1_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn14 setImage:[UIImage imageNamed:@"remotebtn6_default"] forState:UIControlStateNormal];
-            [_remoteBtn14 setImage:[UIImage imageNamed:@"remotebtn6_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn15 setImage:[UIImage imageNamed:@"remotebtn15_default"] forState:UIControlStateNormal];
-            [_remoteBtn15 setImage:[UIImage imageNamed:@"remotebtn15_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn16 setImage:[UIImage imageNamed:@"remotebtn2_default"] forState:UIControlStateNormal];
-            [_remoteBtn16 setImage:[UIImage imageNamed:@"remotebtn2_highlighted"] forState:UIControlStateHighlighted];
             [_remoteBtn17 removeFromSuperview];
             UILongPressGestureRecognizer *gesture12 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longpressAction:)];
             [_remoteBtn12 addGestureRecognizer:gesture12];
@@ -679,6 +663,10 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
               || [CSRUtilities belongToCWRemote:deviceEntity.shortName]
               || [CSRUtilities belongToRGBCWRemote:deviceEntity.shortName]) {
         _mainRemoteBgImageView.image = [UIImage imageNamed:@"remotemaineditbg"];
+        [_remoteBtn7 setImage:[UIImage imageNamed:@"remotebtn7_highlighted"] forState:UIControlStateNormal];
+        [_remoteBtn8 setImage:[UIImage imageNamed:@"remotebtn8_highlighted"] forState:UIControlStateNormal];
+        [_remoteBtn9 setImage:[UIImage imageNamed:@"remotebtn9_highlighted"] forState:UIControlStateNormal];
+        [_remoteBtn10 setImage:[UIImage imageNamed:@"remotebtn10_highlighted"] forState:UIControlStateNormal];
     }else if ([CSRUtilities belongToSceneRemoteTwoKeysV:deviceEntity.shortName]
               || [CSRUtilities belongToSceneRemoteFourKeysV:deviceEntity.shortName]) {
         _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vte"];
@@ -708,6 +696,10 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
               || [CSRUtilities belongToCWRemote:deviceEntity.shortName]
               || [CSRUtilities belongToRGBCWRemote:deviceEntity.shortName]) {
         _mainRemoteBgImageView.image = [UIImage imageNamed:@"remotemainbg"];
+        [_remoteBtn7 setImage:[UIImage imageNamed:@"remotebtn7_default"] forState:UIControlStateNormal];
+        [_remoteBtn8 setImage:[UIImage imageNamed:@"remotebtn8_default"] forState:UIControlStateNormal];
+        [_remoteBtn9 setImage:[UIImage imageNamed:@"remotebtn9_default"] forState:UIControlStateNormal];
+        [_remoteBtn10 setImage:[UIImage imageNamed:@"remotebtn10_default"] forState:UIControlStateNormal];
     }else if ([CSRUtilities belongToSceneRemoteTwoKeysV:deviceEntity.shortName]
               || [CSRUtilities belongToSceneRemoteFourKeysV:deviceEntity.shortName]) {
         _sceneRemoteBgImageView.image = [UIImage imageNamed:@"remotescenebg_vt"];

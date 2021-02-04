@@ -369,10 +369,34 @@
                 i++;
                 [weakself getMcuSVersion:deviceId];
             }else {
-                [self sceneRemoteConfigureSceneIndex:deviceId];
+                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+                if ([CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]
+                    || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]
+                    || [CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
+                    || [CSRUtilities belongToSceneRemoteTwoKeysV:deviceEntity.shortName]
+                    || [CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]
+                    || [CSRUtilities belongToSceneRemoteThreeKeysV:deviceEntity.shortName]
+                    || [CSRUtilities belongToSceneRemoteFourKeys:deviceEntity.shortName]
+                    || [CSRUtilities belongToSceneRemoteFourKeysV:deviceEntity.shortName]
+                    || [CSRUtilities belongToSceneRemoteSixKeys:deviceEntity.shortName]
+                    || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]) {
+                    [self sceneRemoteConfigureSceneIndex:deviceId];
+                }
             }
         }else {
-            [self sceneRemoteConfigureSceneIndex:deviceId];
+            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceId];
+            if ([CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemoteTwoKeysV:deviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemoteThreeKeysV:deviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemoteFourKeys:deviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemoteFourKeysV:deviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemoteSixKeys:deviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]) {
+                [self sceneRemoteConfigureSceneIndex:deviceId];
+            }
         }
     });
 }

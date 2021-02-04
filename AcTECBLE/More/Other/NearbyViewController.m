@@ -20,6 +20,7 @@
 @property (nonatomic, strong) UILabel *countdownLabel;
 @property (nonatomic, strong) NSTimer *countdownTimer;
 @property (nonatomic, strong) UIButton *cancel;
+@property (nonatomic, strong) UILabel *noneLabel;
 
 @end
 
@@ -34,6 +35,17 @@
     self.navigationItem.title = AcTECLocalizedStringFromTable(@"nearbyDevices", @"Localizable");
     
     _dataArray = [[NSMutableArray alloc] init];
+    
+    _noneLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    _noneLabel.text = AcTECLocalizedStringFromTable(@"match_reset_none_alert", @"Localizable");
+    _noneLabel.font = [UIFont systemFontOfSize:14];
+    _noneLabel.textColor = ColorWithAlpha(77, 77, 77, 1);
+    _noneLabel.textAlignment = NSTextAlignmentCenter;
+    _noneLabel.numberOfLines = 0;
+    [self.view addSubview:_noneLabel];
+    [_noneLabel autoCenterInSuperview];
+    [_noneLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
+    [_noneLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:50];
     
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     _tableView.delegate = self;
@@ -97,6 +109,7 @@
         
         if (!exist) {
             [_dataArray addObject:peripheral];
+            _noneLabel.hidden = YES;
             [self.tableView reloadData];
         }
     }else if ([[peripheral.uuidString substringWithRange:NSMakeRange(13, 1)] integerValue] == 0) {
@@ -109,6 +122,9 @@
         }
         if (exist) {
             [_dataArray removeObject:peripheral];
+            if ([_dataArray count] == 0) {
+                _noneLabel.hidden = NO;
+            }
             [self.tableView reloadData];
             
             [_countdownTimer invalidate];

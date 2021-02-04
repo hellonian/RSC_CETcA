@@ -38,6 +38,7 @@
                 <outlet property="musicRemoteBgImageView" destination="p68-Ie-R7Q" id="Ysv-Wf-FXy"/>
                 <outlet property="nameTf" destination="UuL-In-9bd" id="IbN-wL-jK2"/>
                 <outlet property="nameView" destination="8Fw-EQ-Xc4" id="X6U-Jl-X18"/>
+                <outlet property="remoteBtn10" destination="Nk8-E2-Zdz" id="G2k-hQ-41X"/>
                 <outlet property="remoteBtn11" destination="pNx-i0-hfD" id="Zl3-Sm-Cxi"/>
                 <outlet property="remoteBtn12" destination="uBb-Ao-mDc" id="oyX-Dt-3cQ"/>
                 <outlet property="remoteBtn13" destination="nxp-pb-AZ5" id="4zh-Gj-YHx"/>
@@ -57,6 +58,9 @@
                 <outlet property="remoteBtn31" destination="e5L-ub-Q1k" id="E9j-bH-HWp"/>
                 <outlet property="remoteBtn32" destination="As5-tk-Rz5" id="e9k-h5-399"/>
                 <outlet property="remoteBtn33" destination="jsg-Ej-sxG" id="pS3-37-UIF"/>
+                <outlet property="remoteBtn7" destination="tjQ-QN-sMD" id="hmP-PB-wEQ"/>
+                <outlet property="remoteBtn8" destination="ZiF-4Z-HoX" id="ksp-3M-JyH"/>
+                <outlet property="remoteBtn9" destination="AIS-Nt-sOz" id="d47-a3-v5g"/>
                 <outlet property="sceneRemoteBgImageView" destination="nwn-Zd-fva" id="fA6-T9-6DZ"/>
                 <outlet property="sceneView1" destination="t1S-gb-fEa" id="EnX-yD-gw4"/>
                 <outlet property="sceneView2" destination="mEz-d0-cpB" id="wNK-YO-weh"/>
@@ -164,7 +168,7 @@
                         <constraint firstAttribute="width" secondItem="tjQ-QN-sMD" secondAttribute="height" multiplier="1:1" id="fal-m5-ZuV"/>
                     </constraints>
                     <state key="normal" image="remotebtn7_default"/>
-                    <state key="highlighted" image="remotebtn7_highlighted"/>
+                    <state key="selected" image="remotebtn7_highlighted"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="r89-wu-xNE"/>
                     </connections>
@@ -175,7 +179,7 @@
                         <constraint firstAttribute="width" secondItem="AIS-Nt-sOz" secondAttribute="height" multiplier="1:1" id="qXr-95-1M1"/>
                     </constraints>
                     <state key="normal" image="remotebtn9_default"/>
-                    <state key="highlighted" image="remotebtn9_highlighted"/>
+                    <state key="selected" image="remotebtn9_highlighted"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="Fte-cA-fxd"/>
                     </connections>
@@ -186,7 +190,7 @@
                         <constraint firstAttribute="width" secondItem="Nk8-E2-Zdz" secondAttribute="height" multiplier="1:1" id="xgY-7U-1W7"/>
                     </constraints>
                     <state key="normal" image="remotebtn10_default"/>
-                    <state key="highlighted" image="remotebtn10_highlighted"/>
+                    <state key="selected" image="remotebtn10_highlighted"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="cew-V6-0eI"/>
                     </connections>
@@ -266,7 +270,7 @@
                         <constraint firstAttribute="width" secondItem="ZiF-4Z-HoX" secondAttribute="height" multiplier="1:1" id="V4U-yP-5F5"/>
                     </constraints>
                     <state key="normal" image="remotebtn8_default"/>
-                    <state key="highlighted" image="remotebtn8_highlighted"/>
+                    <state key="selected" image="remotebtn8_highlighted"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="ReY-K5-Yaz"/>
                     </connections>

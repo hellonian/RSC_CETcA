@@ -284,7 +284,6 @@
                                                                     
                                                                     CSRAreaEntity *areaEntity = [[[CSRDatabaseManager sharedInstance] fetchObjectsWithEntityName:@"CSRAreaEntity" withPredicate:@"areaID == %@", areaValue] firstObject];
                                                                     if (areaEntity) {
-                                                                        
                                                                         [_areaEntity removeDevicesObject:deviceEntity];
                                                                     }
                                                                     
@@ -301,6 +300,10 @@
                                                                     [[CSRDatabaseManager sharedInstance] saveContext];
                                                                 }
                                                                 [self.groupRemoveDevices addObject:deviceEntity];
+                        
+                                                                if (self.handle) {
+                                                                    self.handle();
+                                                                }
                                                             }
                                                             failure:^(NSError * _Nullable error) {
                                                                 NSLog(@">>>>> mesh timeout");
@@ -442,6 +445,9 @@
                                                                     [_areaEntity addDevicesObject:deviceEntity];
                                                                 }
                                                                 [[CSRDatabaseManager sharedInstance] saveContext];
+                                                                if (self.handle) {
+                                                                    self.handle();
+                                                                }
                                                             }
                                                             failure:^(NSError * _Nullable error) {
                                                                 NSLog(@"mesh timeout");
@@ -450,12 +456,6 @@
                 }
             }
         }
-    }
-    
-//    [NSThread sleepForTimeInterval:1.0];
-    
-    if (self.handle) {
-        self.handle();
     }
 }
 

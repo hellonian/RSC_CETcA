@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "icon_socket.png",
+      "filename" : "画板 130.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "icon_socket@2x.png",
+      "filename" : "画板 130@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "icon_socket@3x.png",
+      "filename" : "画板 130@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

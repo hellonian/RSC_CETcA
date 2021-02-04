@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "icon_dimmer.png",
+      "filename" : "画板 149.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "icon_dimmer-1.png",
+      "filename" : "画板 149@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "icon_dimmer-2.png",
+      "filename" : "画板 149@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

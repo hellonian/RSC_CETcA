@@ -1564,6 +1564,8 @@
                     NSString *bit = [bin substringWithRange:NSMakeRange([bin length]-1-i, 1)];
                     if ([bit boolValue]) {
                         if (channel == i) {
+                            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(getSongNameDelayMethod) object:nil];
+                            [self.mcNameDataDic removeAllObjects];
                             applyRetryCount = 0;
                             applyDeviceID = deviceID;
                             [self performSelector:@selector(getSongNameDelayMethod) withObject:nil afterDelay:8];
@@ -1584,7 +1586,29 @@
     if (applyRetryCount < 4) {
         applyRetryCount ++;
         [self performSelector:@selector(getSongNameDelayMethod) withObject:nil afterDelay:8];
-        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:applyDeviceID data:applyCmd];
+        NSMutableArray *ary = [self.mcNameDataDic objectForKey:applyDeviceID];
+        if (ary) {
+            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+            [ary sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+            NSInteger count = [ary[0][@"count"] integerValue];
+            for (int i=1; i<=count; i++) {
+                int idx = 0;
+                for (NSDictionary *dic in ary) {
+                    if ([dic[@"index"] intValue] == i) {
+                        idx = i;
+                        break;
+                    }
+                }
+                if (idx) {
+                    Byte *bytes = (Byte *)[applyCmd bytes];
+                    Byte cbyte[] = {0xea, 0x81, bytes[2], 0x00, idx};
+                    NSData *cmd = [[NSData alloc] initWithBytes:cbyte length:5];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:applyDeviceID data:cmd];
+                }
+            }
+        }else {
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:applyDeviceID data:applyCmd];
+        }
     }
 }
 
@@ -1606,13 +1630,10 @@
                 if (channel == i) {
                     NSMutableArray *ary = [self.mcNameDataDic objectForKey:deviceID];
                     if (!ary) {
-                        [self performSelector:@selector(clearMCName) withObject:nil afterDelay:5.0];
                         ary = [[NSMutableArray alloc] init];
                         [ary addObject:@{@"channel":@(channel),@"count":@(count),@"index":@(index),@"encoding":@(encoding),@"data":data}];
                         [self.mcNameDataDic setObject:ary forKey:deviceID];
                     }else {
-                        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(clearMCName) object:nil];
-                        [self performSelector:@selector(clearMCName) withObject:nil afterDelay:5.0];
                         BOOL compliance = YES;
                         for (NSDictionary *dic in ary) {
                             if (channel != [dic[@"channel"] integerValue] || count != [dic[@"count"] integerValue] || index == [dic[@"index"] integerValue] || encoding != [dic[@"encoding"] integerValue]) {

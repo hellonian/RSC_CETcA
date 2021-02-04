@@ -38,6 +38,8 @@
 @property (nonatomic,strong) NSString *sourceFilePath;
 @property (nonatomic,strong) NSNumber *targetDeviceId;
 
+@property (nonatomic, strong) UILabel *noneLabel;
+
 @end
 
 @implementation DiscoveryTableViewController
@@ -45,11 +47,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    if (@available(iOS 11.0, *)) {
+        self.additionalSafeAreaInsets = UIEdgeInsetsMake(-35, 0, 0, 0);
+    }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(languageChange) name:ZZAppLanguageDidChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(afterGetVersion:) name:@"reGetDataForPlaceChanged" object:nil];
@@ -74,12 +74,25 @@
     _appAllDevcies = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
     
     self.view.backgroundColor = ColorWithAlpha(220, 220, 220, 1);
+    
+    _noneLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    _noneLabel.text = AcTECLocalizedStringFromTable(@"update_view_none_alert", @"Localizable");
+    _noneLabel.font = [UIFont systemFontOfSize:14];
+    _noneLabel.textColor = ColorWithAlpha(77, 77, 77, 1);
+    _noneLabel.textAlignment = NSTextAlignmentCenter;
+    _noneLabel.numberOfLines = 0;
+    [self.view addSubview:_noneLabel];
+    [_noneLabel autoCenterInSuperview];
+    [_noneLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
+    [_noneLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:50];
+    
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     _tableView.delegate = self;
     _tableView.dataSource = self;
     _tableView.backgroundView = [[UIView alloc] init];
     _tableView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_tableView];
+    [_tableView autoPinEdgesToSuperviewEdges];
     
     NSString *urlString = @"http://39.108.152.134/firware.php";
     AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
@@ -115,6 +128,7 @@
                 model.fVersion = connectDevice.firVersion;
                 model.hVersion = connectDevice.hwVersion;
                 [_dataArray addObject:model];
+                _noneLabel.hidden = YES;
                 [self.tableView reloadData];
             }
         }
@@ -168,6 +182,11 @@
         }
     }
     [self.tableView.refreshControl endRefreshing];
+    if ([_dataArray count] > 0) {
+        _noneLabel.hidden = YES;
+    }else {
+        _noneLabel.hidden = NO;
+    }
     [self.tableView reloadData];
     [[CSRBluetoothLE sharedInstance] stopScan];
     [[CSRBluetoothLE sharedInstance] startScan];;
@@ -418,7 +437,8 @@
                     model.hVersion = deviceEntity.hwVersion;
                     
                     [_dataArray addObject:model];
-                    [self.tableView reloadData];
+                    _noneLabel.hidden = YES;
+                    [_tableView reloadData];
                 }
                 [_uuids addObject:peripheral.uuidString];
                 break;
@@ -440,6 +460,9 @@
     if (targetModel) {
         [_dataArray removeObject:targetModel];
         dispatch_async(dispatch_get_main_queue(), ^{
+            if ([_dataArray count] == 0) {
+                _noneLabel.hidden = NO;
+            }
             [self.tableView reloadData];
         });
     }
@@ -679,6 +702,9 @@
         }
         if (targetModel) {
             [_dataArray removeObject:targetModel];
+            if ([_dataArray count] == 0) {
+                _noneLabel.hidden = NO;
+            }
             [self.tableView reloadData];
         }
     }

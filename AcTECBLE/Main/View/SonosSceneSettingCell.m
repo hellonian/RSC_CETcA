@@ -67,9 +67,9 @@
         _selectBtn.enabled = NO;
     }
     if (model.reSetting) {
-        _channelSelectBtn.enabled = NO;
+        _channelSelectBtn.hidden = YES;
     }else {
-        _channelSelectBtn.enabled = YES;
+        _channelSelectBtn.hidden = NO;
     }
 }
 
