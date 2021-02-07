@@ -1592,18 +1592,19 @@
             [ary sortUsingDescriptors:[NSArray arrayWithObject:sort]];
             NSInteger count = [ary[0][@"count"] integerValue];
             for (int i=1; i<=count; i++) {
-                int idx = 0;
+                BOOL idx = NO;
                 for (NSDictionary *dic in ary) {
                     if ([dic[@"index"] intValue] == i) {
-                        idx = i;
+                        idx = YES;
                         break;
                     }
                 }
-                if (idx) {
+                if (!idx) {
                     Byte *bytes = (Byte *)[applyCmd bytes];
-                    Byte cbyte[] = {0xea, 0x81, bytes[2], 0x00, idx};
+                    Byte cbyte[] = {0xea, 0x81, bytes[2], 0x01, i};
                     NSData *cmd = [[NSData alloc] initWithBytes:cbyte length:5];
                     [[DataModelManager shareInstance] sendDataByBlockDataTransfer:applyDeviceID data:cmd];
+                    [NSThread sleepForTimeInterval:0.5];
                 }
             }
         }else {
@@ -1646,7 +1647,7 @@
 
                         }
                     }
-                    
+                    NSLog(@"%@", ary);
                     if ([ary count] == count) {
                         NSMutableData *nameData = [[NSMutableData alloc] init];
                         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];

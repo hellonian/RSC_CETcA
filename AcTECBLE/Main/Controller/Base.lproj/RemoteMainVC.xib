@@ -488,7 +488,7 @@
                         <constraint firstAttribute="width" constant="67" id="ZC5-ME-CNa"/>
                     </constraints>
                     <state key="normal" backgroundImage="sr_P_prev_default"/>
-                    <state key="selected" backgroundImage="sr_P_prev_selected"/>
+                    <state key="highlighted" backgroundImage="sr_P_prev_selected"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="8qo-kC-hwl"/>
                     </connections>
@@ -500,7 +500,7 @@
                         <constraint firstAttribute="height" constant="52" id="s2D-vY-oPC"/>
                     </constraints>
                     <state key="normal" backgroundImage="sr_P_next_default"/>
-                    <state key="selected" backgroundImage="sr_P_next_selected"/>
+                    <state key="highlighted" backgroundImage="sr_P_next_selected"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="QHa-NZ-TKh"/>
                     </connections>
@@ -513,7 +513,7 @@
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                     <state key="normal" backgroundImage="sr_P_voldown_default"/>
-                    <state key="selected" backgroundImage="sr_P_voldown_selected"/>
+                    <state key="highlighted" backgroundImage="sr_P_voldown_selected"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="Pgf-db-hid"/>
                     </connections>
@@ -525,7 +525,7 @@
                         <constraint firstAttribute="width" constant="67" id="vor-KX-i3K"/>
                     </constraints>
                     <state key="normal" backgroundImage="sr_P_volup_default"/>
-                    <state key="selected" backgroundImage="sr_P_volup_selected"/>
+                    <state key="highlighted" backgroundImage="sr_P_volup_selected"/>
                     <connections>
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="wIu-eO-ZX1"/>
                     </connections>

@@ -501,21 +501,21 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                 _mcKeyTwoTopConstraint.constant = 56;
                 _mcKeyTwoRightConstraint.constant = 79;
                 [_remoteBtn32 setBackgroundImage:[UIImage imageNamed:@"sr_T_prev_default"] forState:UIControlStateNormal];
-                [_remoteBtn32 setBackgroundImage:[UIImage imageNamed:@"sr_T_prev_selected"] forState:UIControlStateSelected];
+                [_remoteBtn32 setBackgroundImage:[UIImage imageNamed:@"sr_T_prev_selected"] forState:UIControlStateHighlighted];
 //                [_remoteBtn32 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
                 _mcKeyThreeTopConstraint.constant = 133;
                 _mcKeyThreeLeftConstraint.constant = 79;
                 [_remoteBtn33 setBackgroundImage:[UIImage imageNamed:@"sr_T_next_default"] forState:UIControlStateNormal];
-                [_remoteBtn33 setBackgroundImage:[UIImage imageNamed:@"sr_T_next_selected"] forState:UIControlStateSelected];
+                [_remoteBtn33 setBackgroundImage:[UIImage imageNamed:@"sr_T_next_selected"] forState:UIControlStateHighlighted];
 //                [_remoteBtn33 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
                 _mcKeyFourTopConstraint.constant = 133;
                 _mcKeyFourRightConstraint.constant = 79;
                 [_remoteBtn28 setBackgroundImage:[UIImage imageNamed:@"sr_T_voldown_default"] forState:UIControlStateNormal];
-                [_remoteBtn28 setBackgroundImage:[UIImage imageNamed:@"sr_T_voldown_selected"] forState:UIControlStateSelected];
+                [_remoteBtn28 setBackgroundImage:[UIImage imageNamed:@"sr_T_voldown_selected"] forState:UIControlStateHighlighted];
 //                [_remoteBtn28 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
                 _mcKeyFiveLeftConstraint.constant = 79;
                 [_remoteBtn29 setBackgroundImage:[UIImage imageNamed:@"sr_T_volup_default"] forState:UIControlStateNormal];
-                [_remoteBtn29 setBackgroundImage:[UIImage imageNamed:@"sr_T_volup_selected"] forState:UIControlStateSelected];
+                [_remoteBtn29 setBackgroundImage:[UIImage imageNamed:@"sr_T_volup_selected"] forState:UIControlStateHighlighted];
 //                [_remoteBtn29 setTitleEdgeInsets:UIEdgeInsetsMake(0, -67, 0, 0)];
                 _mcKeySixRightConstraint.constant = 79;
                 _mcKeySixBottomConstraint.constant = 56;
@@ -898,14 +898,30 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         NSData *cmd = [[NSData alloc] initWithBytes:byte length:7];
         [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
         
-        lasTapBtn.selected = YES;
-        for (UIView *sview in [lasTapBtn.superview subviews]) {
-            if ([sview isKindOfClass:[UIButton class]]) {
-                UIButton *btn = (UIButton *)sview;
-                if (btn.tag != lasTapBtn.tag && btn.selected) {
-                    btn.selected = NO;
+        if (lasTapBtn.tag == 1 || lasTapBtn.tag == 2 || lasTapBtn.tag == 3 || lasTapBtn.tag == 4 || lasTapBtn.tag == 5 || lasTapBtn.tag == 6) {
+            lasTapBtn.selected = YES;
+            for (UIView *sview in [lasTapBtn.superview subviews]) {
+                if ([sview isKindOfClass:[UIButton class]]) {
+                    UIButton *btn = (UIButton *)sview;
+                    if (btn.tag != lasTapBtn.tag && btn.selected) {
+                        btn.selected = NO;
+                    }
                 }
             }
+        }else if (lasTapBtn.tag == 7 || lasTapBtn.tag == 8 || lasTapBtn.tag == 9 || lasTapBtn.tag == 10) {
+            lasTapBtn.selected = YES;
+            for (UIView *sview in [lasTapBtn.superview subviews]) {
+                if ([sview isKindOfClass:[UIButton class]]) {
+                    UIButton *btn = (UIButton *)sview;
+                    if (btn.tag == 7 || btn.tag == 8 || btn.tag == 9 || btn.tag == 10) {
+                        if (btn.tag != lasTapBtn.tag && btn.selected) {
+                            btn.selected = NO;
+                        }
+                    }
+                }
+            }
+        }else if (lasTapBtn.tag == 18 || lasTapBtn.tag == 19) {
+            lasTapBtn.selected = !lasTapBtn.selected;
         }
     }
     tapCount = 0;

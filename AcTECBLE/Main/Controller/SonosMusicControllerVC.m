@@ -193,21 +193,19 @@
         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
         CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
         if (model) {
-            if (refreshWaiting == 1) {
-                for (int i=0; i<8; i++) {
-                    if (model.mcLiveChannels & (1 << i)) {
-                        for (SonosEntity *so in device.sonoss) {
-                            if ([so.channel isEqualToNumber:@(i)]) {
-                                so.alive = @(1);
-                                break;
-                            }
-                        }
+            for (int i=0; i<8; i++) {
+                for (SonosEntity *so in device.sonoss) {
+                    if ([so.channel isEqualToNumber:@(i)]) {
+                        so.alive = @(model.mcLiveChannels & (1 << i));
+                        break;
                     }
                 }
-                _listDataAry = [[device.sonoss allObjects] mutableCopy];
-                NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"channel" ascending:YES];
-                [_listDataAry sortUsingDescriptors:[NSArray arrayWithObject:sort]];
-                [_listView reloadData];
+            }
+            _listDataAry = [[device.sonoss allObjects] mutableCopy];
+            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"channel" ascending:YES];
+            [_listDataAry sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+            [_listView reloadData];
+            if (refreshWaiting == 1) {
                 refreshWaiting = 0;
             }else if (refreshWaiting == 2) {
                 [self.socketTool connentHost:device.ipAddress prot:8888];
@@ -343,6 +341,9 @@
             break;
         case 14:
             cell.detailTextLabel.text = @"Beam";
+            break;
+        case 16:
+            cell.detailTextLabel.text = @"Amp";
             break;
         case 17:
             cell.detailTextLabel.text = @"Move";

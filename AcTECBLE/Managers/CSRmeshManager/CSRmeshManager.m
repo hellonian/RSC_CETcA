@@ -555,11 +555,10 @@
         NSNumber *state = userInfo[@"STATE"];
         if ([state boolValue]) {
             CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:applyDeviceID];
-            deviceEntity.remoteBranch = [NSString stringWithFormat:@"%@%@%@%@%@%@",[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(3, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(8, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(13, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(18, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(23, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(28, 3)]]];
-            [[CSRDatabaseManager sharedInstance] saveContext];
             
             Byte *byte = (Byte *)[applyCmd bytes];
             if ([applyCmd length] == 33) {
+                deviceEntity.remoteBranch = [NSString stringWithFormat:@"%@%@%@%@%@%@",[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(3, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(8, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(13, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(18, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(23, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(28, 3)]]];
                 NSInteger index1 = byte[4] + byte[5] * 256;
                 [self createSceneEntity:index1];
                 NSInteger index2 = byte[9] + byte[10] * 256;
@@ -573,6 +572,7 @@
                 NSInteger index6 = byte[29] + byte[30] * 256;
                 [self createSceneEntity:index6];
             }else if ([applyCmd length] == 28) {
+                deviceEntity.remoteBranch = [NSString stringWithFormat:@"%@%@%@%@%@",[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(3, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(8, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(13, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(18, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(23, 3)]]];
                 NSInteger index1 = byte[4] + byte[5] * 256;
                 [self createSceneEntity:index1];
                 NSInteger index2 = byte[9] + byte[10] * 256;
@@ -584,6 +584,7 @@
                 NSInteger index5 = byte[24] + byte[25] * 256;
                 [self createSceneEntity:index5];
             }else if ([applyCmd length] == 23) {
+                deviceEntity.remoteBranch = [NSString stringWithFormat:@"%@%@%@%@",[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(3, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(8, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(13, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(18, 3)]]];
                 NSInteger index1 = byte[4] + byte[5] * 256;
                 [self createSceneEntity:index1];
                 NSInteger index2 = byte[9] + byte[10] * 256;
@@ -593,6 +594,7 @@
                 NSInteger index4 = byte[19] + byte[20] * 256;
                 [self createSceneEntity:index4];
             }else if ([applyCmd length] == 18) {
+                deviceEntity.remoteBranch = [NSString stringWithFormat:@"%@%@%@",[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(3, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(8, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(13, 3)]]];
                 NSInteger index1 = byte[4] + byte[5] * 256;
                 [self createSceneEntity:index1];
                 NSInteger index2 = byte[9] + byte[10] * 256;
@@ -600,15 +602,17 @@
                 NSInteger index3 = byte[14] + byte[15] * 256;
                 [self createSceneEntity:index3];
             }else if ([applyCmd length] == 13) {
+                deviceEntity.remoteBranch = [NSString stringWithFormat:@"%@%@",[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(3, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(8, 3)]]];
                 NSInteger index1 = byte[4] + byte[5] * 256;
                 [self createSceneEntity:index1];
                 NSInteger index2 = byte[9] + byte[10] * 256;
                 [self createSceneEntity:index2];
             }else if ([applyCmd length] == 8) {
+                deviceEntity.remoteBranch = [NSString stringWithFormat:@"%@",[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(3, 3)]]];
                 NSInteger index1 = byte[4] + byte[5] * 256;
                 [self createSceneEntity:index1];
             }
-            
+            [[CSRDatabaseManager sharedInstance] saveContext];
         }
         
         [[NSNotificationCenter defaultCenter] removeObserver:self

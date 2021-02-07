@@ -19,5 +19,7 @@
 @property (nonatomic,strong) NSNumber *fVersion;
 @property (nonatomic,strong) NSNumber *hVersion;
 @property (nonatomic,strong) NSNumber *bleFVersion;
+@property (nonatomic,strong) NSNumber *fmcuVersion;
+@property (nonatomic,strong) NSNumber *hmcuVersion;
 
 @end

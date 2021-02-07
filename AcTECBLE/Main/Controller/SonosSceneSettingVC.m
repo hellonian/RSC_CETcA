@@ -857,16 +857,7 @@
     _translucentBgView = nil;
 }
 
-//- (void)viewWillDisappear:(BOOL)animated {
-//    if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound) {
-//        if (self.sonosSceneSettingHandle) {
-//            self.sonosSceneSettingHandle(_dataMutAry);
-//        }
-//    }
-//    [super viewWillDisappear:animated];
-//}
 - (BOOL)navigationShouldPopOnBackButton {
-    NSLog(@"navigationShouldPopOnBackButton");
     if (_source != 1) {
         if (self.sonosSceneSettingHandle) {
             [_dataMutAry removeAllObjects];
