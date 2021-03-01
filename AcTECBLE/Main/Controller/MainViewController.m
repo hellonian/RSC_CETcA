@@ -98,7 +98,7 @@
     self.navigationItem.rightBarButtonItem = edit;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reGetDataForPlaceChanged) name:@"reGetDataForPlaceChanged" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CBCentralManagerStatePoweredOff:) name:@"CBCentralManagerStatePoweredOff" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CBCentralManagerStatePoweredOff:) name:@"CBCentralManagerStatePoweredOff" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeConnectedNotification:) name:@"BridgeConnectedNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeDisconnectedNotification:) name:@"BridgeDisconnectedNotification" object:nil];
     
@@ -1567,7 +1567,7 @@
         }
     }
 }
-
+/*
 - (void)CBCentralManagerStatePoweredOff:(NSNotification *)notification {
     for (id obj in _mainCollectionView.dataArray) {
         if ([obj isKindOfClass:[CSRDeviceEntity class]]) {
@@ -1577,6 +1577,6 @@
         }
     }
     [_mainCollectionView reloadData];
-}
+}*/
 
 @end

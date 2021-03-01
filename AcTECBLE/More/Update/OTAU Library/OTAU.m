@@ -902,7 +902,6 @@ const uint8_t sharedSecretKey[] = {
         NSLog(@"%@",[message capitalizedString]);
     }
     otauRunning = NO;
-    [[CSRBluetoothLE sharedInstance] setIsUpdateFW:NO];
 }
 
 - (void)updateProgressDelegteMethod:(CGFloat)percentage {

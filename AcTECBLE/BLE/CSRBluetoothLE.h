@@ -73,6 +73,7 @@
 
 @property (nonatomic,assign) BOOL isForGAIA;
 @property (nonatomic,strong) NSMutableDictionary *listening;
+@property (nonatomic, strong) NSString *macformcuupdateConnection;
 
 - (CBService *)findService:(NSString *)service_uuid;
 - (CBCharacteristic *)findCharacteristic:(CBService *)service
@@ -85,5 +86,7 @@
 - (void)disconnectPeripheralForMCUUpdate:(NSString *)mac;
 - (void)cancelMCUUpdate;
 - (void)successMCUUpdate;
+- (void)disconnectPeripheralForOTAUConnectedcase:(NSString *)mac;
+- (void)cancelDisconnectPeripheralForOTAUConnectedcase;
 
 @end

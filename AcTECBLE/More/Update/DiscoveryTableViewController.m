@@ -21,7 +21,9 @@
 #import "CSRGaiaManager.h"
 #import "DataModelManager.h"
 
-@interface DiscoveryTableViewController ()<CSRBluetoothLEDelegate,OTAUDelegate,CSRUpdateManagerDelegate,UITableViewDelegate, UITableViewDataSource>
+#import "UpdataMCUTool.h"
+
+@interface DiscoveryTableViewController ()<CSRBluetoothLEDelegate,OTAUDelegate,CSRUpdateManagerDelegate,UITableViewDelegate, UITableViewDataSource,UpdataMCUToolDelegate>
 {
     NSInteger retrycout;
 }
@@ -36,9 +38,12 @@
 
 @property (nonatomic,assign) BOOL isDataEndPointAvailabile;
 @property (nonatomic,strong) NSString *sourceFilePath;
-@property (nonatomic,strong) NSNumber *targetDeviceId;
 
 @property (nonatomic, strong) UILabel *noneLabel;
+
+@property (nonatomic, strong) UIAlertController *mcuAlert;
+@property (nonatomic,strong) UpdateDeviceModel *targetModel;
+@property (nonatomic, assign) BOOL otauConnectedCase;
 
 @end
 
@@ -94,7 +99,7 @@
     [self.view addSubview:_tableView];
     [_tableView autoPinEdgesToSuperviewEdges];
     
-    NSString *urlString = @"http://39.108.152.134/firware.php";
+    NSString *urlString = @"http://39.108.152.134/ble_mcu_info.php";
     AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
     sessionManager.responseSerializer.acceptableContentTypes = nil;
     sessionManager.requestSerializer.cachePolicy = NSURLRequestReloadIgnoringCacheData;
@@ -104,32 +109,76 @@
         
         NSArray *connectedPeripherals = [[CSRBluetoothLE sharedInstance] connectedPeripherals];
         for (CBPeripheral *peripheral in connectedPeripherals) {
-            __block CSRDeviceEntity *connectDevice;
-            [_appAllDevcies enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-                NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
-                NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
-                if ([adUuidString isEqualToString:deviceUuidString]) {
-                    NSInteger lastestVersion = [[_latestDic objectForKey:deviceEntity.shortName] integerValue];
-                    if (deviceEntity.firVersion && [deviceEntity.firVersion integerValue] < lastestVersion) {
-                        connectDevice = deviceEntity;
+            if ([peripheral.uuidString length] == 14) {
+                [_appAllDevcies enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+                    if ([deviceEntity.uuid length] == 36) {
+                        NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
+                        NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
+                        if ([adUuidString isEqualToString:deviceUuidString]) {
+                            NSInteger devhversion = [[[_latestDic objectForKey:deviceEntity.shortName] objectForKey:@"device_hardware_version"] integerValue];
+                            NSInteger devfversion = [[[_latestDic objectForKey:deviceEntity.shortName] objectForKey:@"device_software_version"] integerValue];
+                            NSInteger mcuhversion = [[[_latestDic objectForKey:deviceEntity.shortName] objectForKey:@"mcu_hardware_version"] integerValue];
+                            NSInteger mcufversion = [[[_latestDic objectForKey:deviceEntity.shortName] objectForKey:@"mcu_software_version"] integerValue];
+                            NSInteger un = 0;
+                            if ([deviceEntity.hwVersion integerValue] == devhversion) {
+                                if ([deviceEntity.firVersion integerValue] < devfversion) {
+                                    if ([deviceEntity.mcuHVersion integerValue] == mcuhversion) {
+                                        if ([deviceEntity.mcuSVersion integerValue] < mcufversion) {
+                                            if ([deviceEntity.bleHwVersion integerValue] >= 16 && [deviceEntity.bleHwVersion integerValue] < 32) {
+                                                un = 4;
+                                            }else if ([deviceEntity.bleHwVersion integerValue] >= 32 && [deviceEntity.bleHwVersion integerValue] < 48) {
+                                                un = 5;
+                                            }
+                                        }else {
+                                            if ([deviceEntity.bleHwVersion integerValue] >= 16 && [deviceEntity.bleHwVersion integerValue] < 32) {
+                                                un = 1;
+                                            }else if ([deviceEntity.bleHwVersion integerValue] >= 32 && [deviceEntity.bleHwVersion integerValue] < 48) {
+                                                un = 2;
+                                            }
+                                        }
+                                    }else {
+                                        if ([deviceEntity.bleHwVersion integerValue] >= 16 && [deviceEntity.bleHwVersion integerValue] < 32) {
+                                            un = 1;
+                                        }else if ([deviceEntity.bleHwVersion integerValue] >= 32 && [deviceEntity.bleHwVersion integerValue] < 48) {
+                                            un = 2;
+                                        }
+                                    }
+                                }else {
+                                    if ([deviceEntity.mcuHVersion integerValue] == mcuhversion) {
+                                        if ([deviceEntity.mcuSVersion integerValue] < mcufversion) {
+                                            un = 3;
+                                        }
+                                    }
+                                }
+                            }else {
+                                if ([deviceEntity.mcuHVersion integerValue] == mcuhversion) {
+                                    if ([deviceEntity.mcuSVersion integerValue] < mcufversion) {
+                                        un = 3;
+                                    }
+                                }
+                            }
+                            if (un != 0) {
+                                UpdateDeviceModel *model = [[UpdateDeviceModel alloc] init];
+                                model.peripheral = peripheral;
+                                model.name = deviceEntity.name;
+                                model.connected = YES;
+                                model.kind = deviceEntity.shortName;
+                                model.deviceId = deviceEntity.deviceId;
+                                model.bleHwVersion = deviceEntity.bleHwVersion;
+                                model.bleFVersion = deviceEntity.bleFirVersion;
+                                model.fVersion = deviceEntity.firVersion;
+                                model.hVersion = deviceEntity.hwVersion;
+                                model.hmcuVersion = deviceEntity.mcuHVersion;
+                                model.fmcuVersion = deviceEntity.mcuSVersion;
+                                model.updateNumber = un;
+                                [_dataArray addObject:model];
+                                _noneLabel.hidden = YES;
+                                [self.tableView reloadData];
+                            }
+                            *stop = YES;
+                        }
                     }
-                    *stop = YES;
-                }
-            }];
-            if (connectDevice) {
-                UpdateDeviceModel *model = [[UpdateDeviceModel alloc] init];
-                model.peripheral = peripheral;
-                model.name = connectDevice.name;
-                model.connected = YES;
-                model.kind = connectDevice.shortName;
-                model.deviceId = connectDevice.deviceId;
-                model.bleHwVersion = connectDevice.bleHwVersion;
-                model.bleFVersion = connectDevice.bleFirVersion;
-                model.fVersion = connectDevice.firVersion;
-                model.hVersion = connectDevice.hwVersion;
-                [_dataArray addObject:model];
-                _noneLabel.hidden = YES;
-                [self.tableView reloadData];
+                }];
             }
         }
         
@@ -138,6 +187,11 @@
         [[CSRBluetoothLE sharedInstance] startScan];
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"%@",error);
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"check_network", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+        [alert.view setTintColor:DARKORAGE];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+        [alert addAction:cancel];
+        [self presentViewController:alert animated:YES completion:nil];
     }];
     
     self.isDataEndPointAvailabile = NO;
@@ -155,30 +209,76 @@
     [[[CSRBluetoothLE sharedInstance] foundPeripherals] removeAllObjects];
     NSArray *connectedPeripherals = [[CSRBluetoothLE sharedInstance] connectedPeripherals];
     for (CBPeripheral *peripheral in connectedPeripherals) {
-        __block CSRDeviceEntity *connectDevice;
-        [_appAllDevcies enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
-            NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
-            if ([adUuidString isEqualToString:deviceUuidString]) {
-                NSInteger lastestVersion = [[_latestDic objectForKey:connectDevice.shortName] integerValue];
-                if (connectDevice.firVersion && [connectDevice.firVersion integerValue] < lastestVersion) {
-                    connectDevice = deviceEntity;
+        if ([peripheral.uuidString length] == 14) {
+            [_appAllDevcies enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
+                if ([deviceEntity.uuid length] == 36) {
+                    NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
+                    NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
+                    if ([adUuidString isEqualToString:deviceUuidString]) {
+                        NSInteger devhversion = [[[_latestDic objectForKey:deviceEntity.shortName] objectForKey:@"device_hardware_version"] integerValue];
+                        NSInteger devfversion = [[[_latestDic objectForKey:deviceEntity.shortName] objectForKey:@"device_software_version"] integerValue];
+                        NSInteger mcuhversion = [[[_latestDic objectForKey:deviceEntity.shortName] objectForKey:@"mcu_hardware_version"] integerValue];
+                        NSInteger mcufversion = [[[_latestDic objectForKey:deviceEntity.shortName] objectForKey:@"mcu_software_version"] integerValue];
+                        NSInteger un = 0;
+                        if ([deviceEntity.hwVersion integerValue] == devhversion) {
+                            if ([deviceEntity.firVersion integerValue] < devfversion) {
+                                if ([deviceEntity.mcuHVersion integerValue] == mcuhversion) {
+                                    if ([deviceEntity.mcuSVersion integerValue] < mcufversion) {
+                                        if ([deviceEntity.bleHwVersion integerValue] >= 16 && [deviceEntity.bleHwVersion integerValue] < 32) {
+                                            un = 4;
+                                        }else if ([deviceEntity.bleHwVersion integerValue] >= 32 && [deviceEntity.bleHwVersion integerValue] < 48) {
+                                            un = 5;
+                                        }
+                                    }else {
+                                        if ([deviceEntity.bleHwVersion integerValue] >= 16 && [deviceEntity.bleHwVersion integerValue] < 32) {
+                                            un = 1;
+                                        }else if ([deviceEntity.bleHwVersion integerValue] >= 32 && [deviceEntity.bleHwVersion integerValue] < 48) {
+                                            un = 2;
+                                        }
+                                    }
+                                }else {
+                                    if ([deviceEntity.bleHwVersion integerValue] >= 16 && [deviceEntity.bleHwVersion integerValue] < 32) {
+                                        un = 1;
+                                    }else if ([deviceEntity.bleHwVersion integerValue] >= 32 && [deviceEntity.bleHwVersion integerValue] < 48) {
+                                        un = 2;
+                                    }
+                                }
+                            }else {
+                                if ([deviceEntity.mcuHVersion integerValue] == mcuhversion) {
+                                    if ([deviceEntity.mcuSVersion integerValue] < mcufversion) {
+                                        un = 3;
+                                    }
+                                }
+                            }
+                        }else {
+                            if ([deviceEntity.mcuHVersion integerValue] == mcuhversion) {
+                                if ([deviceEntity.mcuSVersion integerValue] < mcufversion) {
+                                    un = 3;
+                                }
+                            }
+                        }
+                        if (un != 0) {
+                            UpdateDeviceModel *model = [[UpdateDeviceModel alloc] init];
+                            model.peripheral = peripheral;
+                            model.name = deviceEntity.name;
+                            model.connected = YES;
+                            model.kind = deviceEntity.shortName;
+                            model.deviceId = deviceEntity.deviceId;
+                            model.bleHwVersion = deviceEntity.bleHwVersion;
+                            model.bleFVersion = deviceEntity.bleFirVersion;
+                            model.fVersion = deviceEntity.firVersion;
+                            model.hVersion = deviceEntity.hwVersion;
+                            model.hmcuVersion = deviceEntity.mcuHVersion;
+                            model.fmcuVersion = deviceEntity.mcuSVersion;
+                            model.updateNumber = un;
+                            [_dataArray addObject:model];
+                            _noneLabel.hidden = YES;
+                            [self.tableView reloadData];
+                        }
+                        *stop = YES;
+                    }
                 }
-                *stop = YES;
-            }
-        }];
-        if (connectDevice) {
-            UpdateDeviceModel *model = [[UpdateDeviceModel alloc] init];
-            model.peripheral = peripheral;
-            model.name = connectDevice.name;
-            model.connected = YES;
-            model.kind = connectDevice.shortName;
-            model.deviceId = connectDevice.deviceId;
-            model.bleHwVersion = connectDevice.bleHwVersion;
-            model.bleFVersion = connectDevice.bleFirVersion;
-            model.fVersion = connectDevice.firVersion;
-            model.hVersion = connectDevice.hwVersion;
-            [_dataArray addObject:model];
+            }];
         }
     }
     [self.tableView.refreshControl endRefreshing];
@@ -189,7 +289,7 @@
     }
     [self.tableView reloadData];
     [[CSRBluetoothLE sharedInstance] stopScan];
-    [[CSRBluetoothLE sharedInstance] startScan];;
+    [[CSRBluetoothLE sharedInstance] startScan];
     
 }
 
@@ -252,29 +352,17 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"dicoveryListCell"];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        cell.detailTextLabel.numberOfLines = 0;
     }
     UpdateDeviceModel *model = [self.dataArray objectAtIndex:indexPath.row];
     cell.textLabel.text = model.name;
-    NSString *bleFString = @"";
-    NSString *s = [CSRUtilities stringWithHexNumber:[model.bleFVersion integerValue]];
-    switch ([s length]) {
-        case 3:
-            s = [NSString stringWithFormat:@"0%@",s];
-            break;
-        case 2:
-            s = [NSString stringWithFormat:@"00%@",s];
-            break;
-        case 1:
-            s = [NSString stringWithFormat:@"000%@",s];
-            break;
-        default:
-            break;
+    if (model.updateNumber == 1 || model.updateNumber == 2) {
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"ble: %@", model.fVersion];
+    }else if (model.updateNumber == 3) {
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"mcu: %@", model.fmcuVersion];
+    }else if (model.updateNumber == 4 || model.updateNumber == 5) {
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"ble: %@\nmcu: %@", model.fVersion, model.fmcuVersion];
     }
-    NSInteger s1 = [CSRUtilities numberWithHexString:[s substringWithRange:NSMakeRange(0, 2)]];
-    NSInteger s2 = [CSRUtilities numberWithHexString:[s substringWithRange:NSMakeRange(2, 2)]];
-    bleFString = [NSString stringWithFormat:@"%ld%ld",s1,s2];
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"V%@.%@.%@.%@",[CSRUtilities stringWithHexNumber:[model.bleHwVersion integerValue]],bleFString,model.hVersion,model.fVersion];
-    
     return cell;
 }
 
@@ -306,19 +394,16 @@
             _customizeHud.text = @"Updating...";
             [_customizeHud updateProgress:0];
         });
-        
-        NSString *urlString = [NSString stringWithFormat:@"http://39.108.152.134/Firmware/%@/%@.php",model.kind,model.kind];
-        AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
-        sessionManager.responseSerializer.acceptableContentTypes = nil;
-        sessionManager.requestSerializer.cachePolicy = NSURLRequestReloadIgnoringCacheData;
-        __weak DiscoveryTableViewController *weakSelf = self;
-        [sessionManager GET:urlString parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
-            NSDictionary *dic = (NSDictionary *)responseObject;
-            NSString *downloadAddress = dic[@"Download_address"];
-            [weakSelf downloadfirware:downloadAddress :model];
-        } failure:^(NSURLSessionDataTask *task, NSError *error) {
-            
-        }];
+        self.targetModel = model;
+        if (model.updateNumber == 1 || model.updateNumber == 4 || model.updateNumber == 2 || model.updateNumber == 5) {
+            [self downloadfirware:[[_latestDic objectForKey:model.kind] objectForKey:@"ble_download_address"] :model];
+        }else if (model.updateNumber == 3) {
+            if (model.connected) {
+                [self askUpdateMCU];
+            }else {
+                [self disconnectForMCUUpdate];
+            }
+        }
     }];
     [confirm setValue:DARKORAGE forKey:@"titleTextColor"];
     [alert addAction:cancel];
@@ -341,30 +426,29 @@
         }
         NSLog(@"downloadTaskWithRequest: %@",path);
         dispatch_async(dispatch_get_main_queue(), ^{
-            [_customizeHud updateProgress:0.1];
+            if (_targetModel.updateNumber == 4 || _targetModel.updateNumber == 5) {
+                [_customizeHud updateProgress:0.1*0.5];
+            }else {
+                [_customizeHud updateProgress:0.1];
+            }
         });
         
-        if (([model.bleHwVersion integerValue] >= 16 && [model.bleHwVersion integerValue] < 32)|| ([model.kind isEqualToString:@"S350B"] || [model.kind isEqualToString:@"S2400IB"] || [model.kind isEqualToString:@"S2400IB-Q"] || [model.kind isEqualToString:@"D350SB"] || [model.kind isEqualToString:@"D350B"] || [model.kind isEqualToString:@"D300IB-T2"] || [model.kind isEqualToString:@"D350SB-Q2"] || [model.kind isEqualToString:@"D300SB"] || [model.kind isEqualToString:@"D350SB-Q"] || [model.kind isEqualToString:@"D300IB-Q"] || [model.kind isEqualToString:@"RB01"] || [model.kind isEqualToString:@"RB05"] || [model.kind isEqualToString:@"D300IB"])) {
+        if (model.updateNumber == 1 || model.updateNumber == 4) {
             [[CSRBluetoothLE sharedInstance] setIsForGAIA:NO];
             [[OTAU shareInstance] setSourceFilePath:path];
             if (model.connected) {
-                CBUUID *uuid = [CBUUID UUIDWithString:serviceApplicationOtauUuid];
-                CBUUID *bl_uuid = [CBUUID UUIDWithString:serviceBootOtauUuid];
-                for (CBService *service in model.peripheral.services) {
-                    if ([service.UUID isEqual:uuid] || [service.UUID isEqual:bl_uuid]) {
-                        [[CSRBluetoothLE sharedInstance] setTargetPeripheral:model.peripheral];
-                        [[CSRBluetoothLE sharedInstance] setDiscoveredChars:[NSNumber numberWithBool:YES]];
-                        [[OTAU shareInstance] initOTAU:model.peripheral];
-                        break;
-                    }
-                }
+                _otauConnectedCase = YES;
+                [[NSNotificationCenter defaultCenter] addObserver:self
+                                                         selector:@selector(BridgeConnectedNotification:)
+                                                             name:@"BridgeConnectedNotification"
+                                                           object:nil];
+                [[CSRBluetoothLE sharedInstance] disconnectPeripheralForOTAUConnectedcase:[model.peripheral.uuidString substringToIndex:12]];
             }else {
                 [[CSRBluetoothLE sharedInstance] setSecondConnectBool:NO];
                 [[CSRBluetoothLE sharedInstance] connectPeripheralNoCheck:model.peripheral];
             }
-        }else if ([model.bleHwVersion integerValue] >= 32 && [model.bleHwVersion integerValue] < 48) {
+        }else if (model.updateNumber == 2 || model.updateNumber == 5) {
             self.sourceFilePath = path;
-            self.targetDeviceId = model.deviceId;
             [[CSRBluetoothLE sharedInstance] setIsForGAIA:YES];
             self.isDataEndPointAvailabile = false;
             [CSRGaiaManager sharedInstance].delegate = self;
@@ -373,6 +457,7 @@
                 CBUUID *uuid = [CBUUID UUIDWithString:UUID_GAIA_SERVICE];
                 for (CBService *service in model.peripheral.services) {
                     if ([service.UUID isEqual:uuid]) {
+                        [[CSRBluetoothLE sharedInstance] setTargetPeripheral:model.peripheral];
                         [[CSRGaia sharedInstance] connectPeripheral:[[CSRBluetoothLE sharedInstance] targetPeripheral]];
                         [[CSRGaiaManager sharedInstance] connect];
                         [[CSRGaiaManager sharedInstance] setDataEndPointMode:true];
@@ -387,7 +472,13 @@
         return [NSURL fileURLWithPath:path];
         
     } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-        
+        if (error) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"unable_get_firmware", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+            [alert.view setTintColor:DARKORAGE];
+            UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+            [alert addAction:cancel];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
     }];
     [task resume];
     
@@ -400,7 +491,11 @@
         NSLog(@"已完成大小:%lld  总大小:%lld", progress.completedUnitCount, progress.totalUnitCount);
         NSLog(@"进度:%0.2f%%", progress.fractionCompleted * 100);
         dispatch_async(dispatch_get_main_queue(), ^{
-            [_customizeHud updateProgress:progress.fractionCompleted * 0.1];
+            if (_targetModel.updateNumber == 4 || _targetModel.updateNumber == 5) {
+                [_customizeHud updateProgress:progress.fractionCompleted * 0.1 * 0.5];
+            }else {
+                [_customizeHud updateProgress:progress.fractionCompleted * 0.1];
+            }
         });
     }
 }
@@ -418,65 +513,97 @@
 }
 
 - (void)discoveryDidRefresh:(CBPeripheral *)peripheral {
-    if (![_uuids containsObject:peripheral.uuidString]) {
-        for (CSRDeviceEntity *deviceEntity in _appAllDevcies) {
-            NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
-            NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
-            if ([adUuidString isEqualToString:deviceUuidString]) {
-                NSInteger lastestVersion = [[_latestDic objectForKey:deviceEntity.shortName] integerValue];
-                if (deviceEntity.firVersion && [deviceEntity.firVersion integerValue] < lastestVersion) {
-                    UpdateDeviceModel *model = [[UpdateDeviceModel alloc] init];
-                    model.peripheral = peripheral;
-                    model.name = deviceEntity.name;
-                    model.deviceId = deviceEntity.deviceId;
-                    model.connected = NO;
-                    model.kind = deviceEntity.shortName;
-                    model.bleHwVersion = deviceEntity.bleHwVersion;
-                    model.bleFVersion = deviceEntity.bleFirVersion;
-                    model.fVersion = deviceEntity.firVersion;
-                    model.hVersion = deviceEntity.hwVersion;
-                    
-                    [_dataArray addObject:model];
-                    _noneLabel.hidden = YES;
-                    [_tableView reloadData];
+    if ([peripheral.uuidString length] == 14) {
+        if (![_uuids containsObject:peripheral.uuidString]) {
+            for (CSRDeviceEntity *deviceEntity in _appAllDevcies) {
+                if ([deviceEntity.uuid length] == 36) {
+                    NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
+                    NSString *deviceUuidString = [deviceEntity.uuid substringFromIndex:24];
+                    if ([adUuidString isEqualToString:deviceUuidString]) {
+                        [_uuids addObject:peripheral.uuidString];
+                        NSInteger devhversion = [[[_latestDic objectForKey:deviceEntity.shortName] objectForKey:@"device_hardware_version"] integerValue];
+                        NSInteger devfversion = [[[_latestDic objectForKey:deviceEntity.shortName] objectForKey:@"device_software_version"] integerValue];
+                        NSInteger mcuhversion = [[[_latestDic objectForKey:deviceEntity.shortName] objectForKey:@"mcu_hardware_version"] integerValue];
+                        NSInteger mcufversion = [[[_latestDic objectForKey:deviceEntity.shortName] objectForKey:@"mcu_software_version"] integerValue];
+                        NSInteger un = 0;
+                        if ([deviceEntity.hwVersion integerValue] == devhversion) {
+                            if ([deviceEntity.firVersion integerValue] < devfversion) {
+                                if ([deviceEntity.mcuHVersion integerValue] == mcuhversion) {
+                                    if ([deviceEntity.mcuSVersion integerValue] < mcufversion) {
+                                        if ([deviceEntity.bleHwVersion integerValue] >= 16 && [deviceEntity.bleHwVersion integerValue] < 32) {
+                                            un = 4;
+                                        }else if ([deviceEntity.bleHwVersion integerValue] >= 32 && [deviceEntity.bleHwVersion integerValue] < 48) {
+                                            un = 5;
+                                        }
+                                    }else {
+                                        if ([deviceEntity.bleHwVersion integerValue] >= 16 && [deviceEntity.bleHwVersion integerValue] < 32) {
+                                            un = 1;
+                                        }else if ([deviceEntity.bleHwVersion integerValue] >= 32 && [deviceEntity.bleHwVersion integerValue] < 48) {
+                                            un = 2;
+                                        }
+                                    }
+                                }else {
+                                    if ([deviceEntity.bleHwVersion integerValue] >= 16 && [deviceEntity.bleHwVersion integerValue] < 32) {
+                                        un = 1;
+                                    }else if ([deviceEntity.bleHwVersion integerValue] >= 32 && [deviceEntity.bleHwVersion integerValue] < 48) {
+                                        un = 2;
+                                    }
+                                }
+                            }else {
+                                if ([deviceEntity.mcuHVersion integerValue] == mcuhversion) {
+                                    if ([deviceEntity.mcuSVersion integerValue] < mcufversion) {
+                                        un = 3;
+                                    }
+                                }
+                            }
+                        }else {
+                            if ([deviceEntity.mcuHVersion integerValue] == mcuhversion) {
+                                if ([deviceEntity.mcuSVersion integerValue] < mcufversion) {
+                                    un = 3;
+                                }
+                            }
+                        }
+                        if (un != 0) {
+                            UpdateDeviceModel *model = [[UpdateDeviceModel alloc] init];
+                            model.peripheral = peripheral;
+                            model.name = deviceEntity.name;
+                            model.connected = NO;
+                            model.kind = deviceEntity.shortName;
+                            model.deviceId = deviceEntity.deviceId;
+                            model.bleHwVersion = deviceEntity.bleHwVersion;
+                            model.bleFVersion = deviceEntity.bleFirVersion;
+                            model.fVersion = deviceEntity.firVersion;
+                            model.hVersion = deviceEntity.hwVersion;
+                            model.hmcuVersion = deviceEntity.mcuHVersion;
+                            model.fmcuVersion = deviceEntity.mcuSVersion;
+                            model.updateNumber = un;
+                            [_dataArray addObject:model];
+                            _noneLabel.hidden = YES;
+                            [self.tableView reloadData];
+                        }
+                        break;
+                    }
                 }
-                [_uuids addObject:peripheral.uuidString];
-                break;
             }
         }
-        
     }
-    
 }
 
 - (void)regetVersion:(NSString *)uuidstring {
-    UpdateDeviceModel *targetModel;
-    for (UpdateDeviceModel *model in _dataArray) {
-        if ([[model.peripheral.uuidString substringToIndex:12] isEqualToString:uuidstring]) {
-            targetModel = model;
-            _targetDeviceId = model.deviceId;
-        }
-    }
-    if (targetModel) {
-        [_dataArray removeObject:targetModel];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if ([_dataArray count] == 0) {
-                _noneLabel.hidden = NO;
-            }
-            [self.tableView reloadData];
-        });
-    }
-    
     retrycout = 0;
     [self performSelector:@selector(getVersionDelayMethod) withObject:nil afterDelay:2.0];
     Byte byte[] = {0x88, 0x01, 0x00};
     NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
-    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:self.targetDeviceId data:cmd];
+    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:self.targetModel.deviceId data:cmd];
 }
 
 - (void)updateProgressDelegteMethod:(CGFloat)percentage {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_customizeHud updateProgress:percentage];
+        if (_targetModel.updateNumber == 4 || _targetModel.updateNumber == 5) {
+            [_customizeHud updateProgress:percentage*0.5];
+        }else {
+            [_customizeHud updateProgress:percentage];
+        }
     });
 }
 
@@ -597,13 +724,12 @@
 }
 
 - (void)didMakeProgress:(double)value eta:(NSString *)eta {
-//    self.updateProgressView.progress = value / 100;
-//
-//    self.title = [NSString stringWithFormat:@"%.2f%% Complete", value];
-//    self.timeLeftLabel.text = eta;
-//    NSLog(@"%@\n%@",[NSString stringWithFormat:@"%.2f%% Complete", value],eta);
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_customizeHud updateProgress:value];
+        if (_targetModel.updateNumber == 4 || _targetModel.updateNumber == 5) {
+            [_customizeHud updateProgress:value*0.5];
+        }else {
+            [_customizeHud updateProgress:value];
+        }
     });
 }
 
@@ -691,30 +817,23 @@
     [CSRGaiaManager sharedInstance].updateInProgress = NO;
     [[CSRBluetoothLE sharedInstance] setIsForGAIA:NO];
     
-    
-    if (self.targetDeviceId) {
-        UpdateDeviceModel *targetModel;
-        for (UpdateDeviceModel *model in _dataArray) {
-            if ([model.deviceId isEqualToNumber:self.targetDeviceId]) {
-                targetModel = model;
-                break;
-            }
-        }
-        if (targetModel) {
-            [_dataArray removeObject:targetModel];
-            if ([_dataArray count] == 0) {
-                _noneLabel.hidden = NO;
-            }
-            [self.tableView reloadData];
-        }
+    if (_targetModel.connected) {
+        CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_targetModel.deviceId];
+        [[CSRBluetoothLE sharedInstance] setMacformcuupdateConnection:[de.uuid substringFromIndex:24]];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            retrycout = 0;
+            [self performSelector:@selector(getVersionDelayMethod) withObject:nil afterDelay:2.0];
+            Byte byte[] = {0x88, 0x01, 0x00};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:self.targetModel.deviceId data:cmd];
+        });
+    }else {
+        retrycout = 0;
+        [self performSelector:@selector(getVersionDelayMethod) withObject:nil afterDelay:2.0];
+        Byte byte[] = {0x88, 0x01, 0x00};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:self.targetModel.deviceId data:cmd];
     }
-    
-    retrycout = 0;
-    [self performSelector:@selector(getVersionDelayMethod) withObject:nil afterDelay:2.0];
-    Byte byte[] = {0x88, 0x01, 0x00};
-    NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
-    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:self.targetDeviceId data:cmd];
-    
 }
 
 - (void)abortTidyUp {
@@ -736,7 +855,7 @@
         [self performSelector:@selector(getVersionDelayMethod) withObject:nil afterDelay:2.0];
         Byte byte[] = {0x88, 0x01, 0x00};
         NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
-        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:self.targetDeviceId data:cmd];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:self.targetModel.deviceId data:cmd];
     }else {
         [_customizeHud removeFromSuperview];
         _customizeHud = nil;
@@ -749,16 +868,129 @@
 - (void)afterGetVersion:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *uDeviceID = userInfo[@"deviceId"];
-    if (self.targetDeviceId) {
-        if ([uDeviceID isEqualToNumber:self.targetDeviceId]) {
+    if (self.targetModel) {
+        if ([uDeviceID isEqualToNumber:self.targetModel.deviceId]) {
             [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(getVersionDelayMethod) object:nil];
-            [_customizeHud removeFromSuperview];
-            _customizeHud = nil;
-            [_translucentBgView removeFromSuperview];
-            _translucentBgView = nil;
-            [UIApplication sharedApplication].idleTimerDisabled = NO;
+            
+            if (self.targetModel.updateNumber == 4 || self.targetModel.updateNumber == 5) {
+                if (self.targetModel.connected) {
+                    [self askUpdateMCU];
+                }else {
+                    [self disconnectForMCUUpdate];
+                }
+            }else {
+                [_dataArray removeObject:self.targetModel];
+                if ([_dataArray count] == 0) {
+                    _noneLabel.hidden = NO;
+                }
+                [self.tableView reloadData];
+                [_customizeHud removeFromSuperview];
+                _customizeHud = nil;
+                [_translucentBgView removeFromSuperview];
+                _translucentBgView = nil;
+                [UIApplication sharedApplication].idleTimerDisabled = NO;
+            }
         }
     }
+}
+
+- (void)disconnectForMCUUpdate {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(BridgeConnectedNotification:)
+                                                 name:@"BridgeConnectedNotification"
+                                               object:nil];
+    CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_targetModel.deviceId];
+    [[CSRBluetoothLE sharedInstance] disconnectPeripheralForMCUUpdate:[de.uuid substringFromIndex:24]];
+    [self performSelector:@selector(connectForMCUUpdateDelayMethod) withObject:nil afterDelay:10.0];
+}
+
+- (void)connectForMCUUpdateDelayMethod {
+    _mcuAlert = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"mcu_connetion_alert", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+    [_mcuAlert.view setTintColor:DARKORAGE];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        [[CSRBluetoothLE sharedInstance] cancelMCUUpdate];
+        [_customizeHud removeFromSuperview];
+        _customizeHud = nil;
+        [_translucentBgView removeFromSuperview];
+        _translucentBgView = nil;
+    }];
+    UIAlertAction *conti = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"continue", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self performSelector:@selector(connectForMCUUpdateDelayMethod) withObject:nil afterDelay:10.0];
+    }];
+    [_mcuAlert addAction:cancel];
+    [_mcuAlert addAction:conti];
+    [self presentViewController:_mcuAlert animated:YES completion:nil];
+}
+
+- (void)BridgeConnectedNotification:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    CBPeripheral *peripheral = userInfo[@"peripheral"];
+    if ([peripheral.uuidString length] == 14) {
+        if (_otauConnectedCase) {
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:@"BridgeConnectedNotification" object:nil];
+            [[CSRBluetoothLE sharedInstance] cancelDisconnectPeripheralForOTAUConnectedcase];
+            [[CSRBluetoothLE sharedInstance] setSecondConnectBool:NO];
+            [[CSRBluetoothLE sharedInstance] connectPeripheralNoCheck:_targetModel.peripheral];
+        }else {
+            CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_targetModel.deviceId];
+            if ([de.uuid length] == 36) {
+                NSString *adUuidString = [peripheral.uuidString substringToIndex:12];
+                NSString *deviceUuidString = [de.uuid substringFromIndex:24];
+                if ([adUuidString isEqualToString:deviceUuidString]) {
+                    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(connectForMCUUpdateDelayMethod) object:nil];
+                    if (_mcuAlert) {
+                        [_mcuAlert dismissViewControllerAnimated:YES completion:nil];
+                        _mcuAlert = nil;
+                    }
+                    [self askUpdateMCU];
+                }
+            }
+        }
+    }
+}
+
+- (void)askUpdateMCU {
+    [UpdataMCUTool sharedInstace].toolDelegate = self;
+    CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_targetModel.deviceId];
+    [[UpdataMCUTool sharedInstace] askUpdateMCU:_targetModel.deviceId downloadAddress:[[_latestDic objectForKey:de.shortName] objectForKey:@"mcu_download_address"] latestMCUSVersion:[[[_latestDic objectForKey:de.shortName] objectForKey:@"mcu_software_version"] integerValue]];
+}
+
+- (void)starteUpdateHud {
+    
+}
+
+- (void)updateHudProgress:(CGFloat)progress {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (_targetModel.updateNumber == 4 || _targetModel.updateNumber == 5) {
+            [_customizeHud updateProgress:progress * 0.5 + 0.5];
+        }else {
+            [_customizeHud updateProgress:progress];
+        }
+    });
+}
+
+- (void)updateSuccess:(NSString *)value {
+    [_dataArray removeObject:self.targetModel];
+    if ([_dataArray count] == 0) {
+        _noneLabel.hidden = NO;
+    }
+    [self.tableView reloadData];
+    [_customizeHud removeFromSuperview];
+    _customizeHud = nil;
+    [_translucentBgView removeFromSuperview];
+    _translucentBgView = nil;
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
+    if (!_mcuAlert) {
+        _mcuAlert = [UIAlertController alertControllerWithTitle:nil message:value preferredStyle:UIAlertControllerStyleAlert];
+        [_mcuAlert.view setTintColor:DARKORAGE];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+        [_mcuAlert addAction:cancel];
+        [self presentViewController:_mcuAlert animated:YES completion:nil];
+    }else {
+        [_mcuAlert setMessage:value];
+    }
+    [[CSRBluetoothLE sharedInstance] successMCUUpdate];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"BridgeConnectedNotification" object:nil];
 }
 
 @end

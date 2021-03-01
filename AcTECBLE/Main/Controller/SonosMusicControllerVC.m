@@ -122,7 +122,7 @@
                 NSLog(@"mcuSVersion:%@  latestMCUSVersion:%ld",device.mcuSVersion, latestMCUSVersion);
                 if ([device.mcuSVersion integerValue] != 0 && [device.mcuSVersion integerValue]<latestMCUSVersion) {
                     updateMCUBtn = [UIButton buttonWithType:UIButtonTypeSystem];
-                    updateMCUBtn.enabled = NO;
+                    updateMCUBtn.hidden = YES;
                     [updateMCUBtn setBackgroundColor:[UIColor whiteColor]];
                     [updateMCUBtn setTitle:@"UPDATE MCU" forState:UIControlStateNormal];
                     [updateMCUBtn setTitleColor:DARKORAGE forState:UIControlStateNormal];
@@ -475,7 +475,7 @@
             BOOL status = [userInfo[@"staus"] boolValue];
             if (!status) {
                 if (updateMCUBtn) {
-                    updateMCUBtn.enabled = NO;
+                    updateMCUBtn.hidden = YES;
                 }
                 refreshWaiting = 0;
                 [self refreshMCChannelsByBluetooth];
@@ -507,14 +507,14 @@
 
 - (void)enableMCUUpdateBtn {
     if (updateMCUBtn) {
-        updateMCUBtn.enabled = YES;
+        updateMCUBtn.hidden = NO;
     }
 }
 
 - (void)socketConnectFail:(NSNumber *)deviceID {
     if ([deviceID isEqualToNumber:_deviceId]) {
         if (updateMCUBtn) {
-            updateMCUBtn.enabled = NO;
+            updateMCUBtn.hidden = YES;
         }
         [self refreshMCChannelsByBluetooth];
     }

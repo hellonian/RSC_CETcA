@@ -236,7 +236,7 @@
 "mcu_not_respond_query" = "The device did not respond to a query about the received status of current page during upgrade.";
 "mcu_resends_fail" = "The number of the current page data resends has reached 20 but has not been successful during upgrade.";
 "mcu_end_fail" = "The device did not respond to an instruction to end the upgrade.";
-"upgrade_ble_firmware" = "Are you sure you want to upgrade the Bluetooth firmware of the selected device?";
+"upgrade_ble_firmware" = "Are you sure you want to upgrade the firmware of the selected device?";
 "go_back_select" = "Go back to select";
 "source_of" = "'s source wasn't be selected, please click done after selecting!";
 "music_of" = "'s music wasn't be selected, please click done after selecting!";
@@ -267,3 +267,5 @@
 "music_panel" = "music panel";
 "update_view_none_alert" = "The device that needs to be upgraded will be displayed here. Click on the device to start the upgrade. During the upgrade process, the phone should be kept close to the device.";
 "match_reset_none_alert" = "This page shows nearby devices that can be restored by power outage. Click the device and follow the prompts to restore the device to the unpaired state.";
+"unable_get_firmware" = "Unable to get the firmware package.";
+"check_network" = "Please check the cell phone network.";

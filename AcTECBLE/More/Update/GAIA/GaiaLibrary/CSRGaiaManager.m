@@ -138,7 +138,6 @@
 }
 
 - (void)disconnect {
-    [[CSRBluetoothLE sharedInstance] disconnectPeripheral:[[CSRBluetoothLE sharedInstance] targetPeripheral]];
     [[CSRGaia sharedInstance] disconnectPeripheral];
     
     self.connectedPeripheral = nil;

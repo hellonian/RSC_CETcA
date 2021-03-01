@@ -21,5 +21,6 @@
 @property (nonatomic,strong) NSNumber *bleFVersion;
 @property (nonatomic,strong) NSNumber *fmcuVersion;
 @property (nonatomic,strong) NSNumber *hmcuVersion;
+@property (nonatomic,assign) NSInteger updateNumber;//1、OTAU方式升级蓝牙固件；2、GAIA方式升级蓝牙固件；3、升级MCU固件；4、OTAU方式升级蓝牙固件 + 升级MCU固件；5、GAIA方式升级蓝牙固件 + 升级MCU固件；
 
 @end

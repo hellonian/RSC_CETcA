@@ -236,7 +236,7 @@
 "mcu_not_respond_query" = "MCU升级过程，查询当前页的接收状态未得到设备响应。";
 "mcu_resends_fail" = "MCU升级过程，当前页的数据重发次数已达20次仍未成功。";
 "mcu_end_fail" = "设备未响应结束升级的指令。";
-"upgrade_ble_firmware" = "确定升级所选设备的蓝牙固件？";
+"upgrade_ble_firmware" = "确定升级所选设备的固件？";
 "go_back_select" = "返回";
 "source_of" = "的音源未选择，请选择后再点击完成按钮！";
 "music_of" = "的歌曲未选择，请选择后再点击完成按钮！";
@@ -267,3 +267,5 @@
 "music_panel" = "音乐面板";
 "update_view_none_alert" = "需要升级的设备将显示在这里，点击设备开始升级，升级过程手机需和设备保持较近距离。";
 "match_reset_none_alert" = "此页面展示附近可通过断电进行还原的设备，点击设备按提示操作可将设备还原至未添加状态。";
+"unable_get_firmware" = "无法获取固件包。";
+"check_network" = "请检查手机网络。";

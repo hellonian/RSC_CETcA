@@ -48,7 +48,7 @@
 
 @property (nonatomic, strong) NSMutableArray *collectionPeripherals;
 @property (nonatomic, assign) BOOL startCollect;
-@property (nonatomic, strong) NSString *macformcuupdateConnection;
+@property (nonatomic, strong) NSString *macforotauconnectedcase;
 
 @end
 
@@ -178,6 +178,21 @@
     _macformcuupdateConnection = nil;
 }
 
+- (void)disconnectPeripheralForOTAUConnectedcase:(NSString *)mac {
+    _startCollect = YES;
+    _macforotauconnectedcase = mac;
+    if ([_connectedPeripherals count]>0) {
+        for (CBPeripheral *peripheral in _connectedPeripherals) {
+            [centralManager cancelPeripheralConnection:peripheral];
+        }
+    }
+}
+
+- (void)cancelDisconnectPeripheralForOTAUConnectedcase {
+    _startCollect = NO;
+    _macforotauconnectedcase = nil;
+}
+
     //============================================================================
     // With exception of connected peripheral, remove all discovered peripherals
 -(void) removeDiscoveredPeripheralsExceptConnected {
@@ -202,7 +217,7 @@
                 _startCollect = YES;
             }
             
-            if (_isUpdateFW) {
+            if (_isUpdateFW && !_macformcuupdateConnection) {
                 [_foundPeripherals removeAllObjects];
             }
             
@@ -220,7 +235,6 @@
 -(void) stopScan {
     @synchronized(self) {
         _startCollect = NO;
-        _macformcuupdateConnection = nil;
         [centralManager stopScan];
     }
     NSLog (@"Stop Scan");
@@ -275,7 +289,7 @@
     switch ([centralManager state]) {
         case CBCentralManagerStatePoweredOff: {
             NSLog(@"Central Powered OFF");
-            if (_isUpdateFW) {
+            if (_isUpdateFW && !_macformcuupdateConnection) {
                 [_foundPeripherals removeAllObjects];
                 if (_isForGAIA && self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(didPowerOff)]) {
                     [self.bleDelegate didPowerOff];
@@ -299,7 +313,7 @@
         
         case CBCentralManagerStatePoweredOn: {
             NSLog(@"Central powered ON");
-            if (_isUpdateFW) {
+            if (_isUpdateFW && _macformcuupdateConnection) {
                 [_foundPeripherals removeAllObjects];
                 if (_isForGAIA && self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(didPowerOn)]) {
                     [self.bleDelegate didPowerOn];
@@ -348,7 +362,7 @@
             [peripheral setUuidString:adString];
         }
     }
-    if (self.isUpdateFW && peripheral.name != nil) {
+    if (self.isUpdateFW && peripheral.name != nil && !_macformcuupdateConnection && !_macforotauconnectedcase) {
         if (![_foundPeripherals containsObject:peripheral]) {
             [_foundPeripherals addObject:peripheral];
             [self discoveryDidRefresh:peripheral];
@@ -381,7 +395,13 @@
                 }
                 NSDictionary *dic = @{@"RSSI":RSSI,@"peripheral":peripheral,@"advertisementData":advertisementData};
                 if (![self.collectionPeripherals containsObject:dic]) {
-                    [self.collectionPeripherals addObject:dic];
+                    if (!_macforotauconnectedcase) {
+                        [self.collectionPeripherals addObject:dic];
+                    }else {
+                        if (![[peripheral.uuidString substringToIndex:12] isEqualToString:_macforotauconnectedcase]) {
+                            [self.collectionPeripherals addObject:dic];
+                        }
+                    }
                 }
                 
             }else if (_macformcuupdateConnection) {
@@ -445,7 +465,7 @@
     [central stopScan];
     // if also connected to another Bridge then disconnect from that.
     
-    if (_isUpdateFW) {
+    if (_isUpdateFW && !_macformcuupdateConnection && !_macforotauconnectedcase) {
         if (_isForGAIA) {
             peripheral.delegate = self;
             [peripheral discoverServices:nil];
@@ -473,12 +493,11 @@
         [peripheral discoverServices:nil];
 //        [peripheral discoverServices:@[[CBUUID UUIDWithString:@"00001100-d102-11e1-9b23-00025b00a5a5"]]];
     }else {
-
-    [_connectedPeripherals addObject:peripheral];
+        [_connectedPeripherals addObject:peripheral];
     
-    peripheral.delegate=self;
+        peripheral.delegate=self;
     
-    [peripheral discoverServices:nil];
+        [peripheral discoverServices:nil];
     
 #ifdef BRIDGE_ROAMING_ENABLE
         [[CSRBridgeRoaming sharedInstance] connectedPeripheral:peripheral];
@@ -502,7 +521,7 @@
     // This callback occurs on a Successful disconnection to a Peripheral
 - (void) centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
     NSLog(@"did disconnect Peripheral %@\n",peripheral.name);
-    if(_isUpdateFW) {
+    if(_isUpdateFW && !_macformcuupdateConnection && !_macforotauconnectedcase) {
         if (_isForGAIA) {
             [self clearListeners];
             if (self.bleDelegate && [self.bleDelegate respondsToSelector:@selector(didDisconnectFromPeripheral:)]) {
@@ -541,7 +560,7 @@
     // peripheral:discoverServices initiated this callback
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
-    if (_isUpdateFW) {
+    if (_isUpdateFW && !_macformcuupdateConnection && !_macforotauconnectedcase) {
         if (error == nil) {
             if (_isForGAIA) {
                 if (peripheral.state == CBPeripheralStateConnected) {
@@ -595,11 +614,10 @@
 #define MESH_MTL_CHAR_ADVERT        @"C4EDC000-9DAF-11E3-800A-00025B000B00"
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
-    if (_isUpdateFW) {
+    if (_isUpdateFW && !_macformcuupdateConnection && !_macforotauconnectedcase) {
         if (error == nil) {
             if (_isForGAIA) {
                 for (CBCharacteristic *charateristic in service.characteristics) {
-                    NSLog(@"charateristic: %@",charateristic.UUID);
                     [peripheral discoverDescriptorsForCharacteristic:charateristic];
                 }
                 self.targetPeripheral = peripheral;
@@ -609,9 +627,6 @@
                 }
                 
             }else {
-                for (CBCharacteristic *charateristic in service.characteristics) {
-                    NSLog(@"charateristic: %@",charateristic.UUID);
-                }
                 CBUUID *uuid = [CBUUID UUIDWithString:serviceApplicationOtauUuid];
                 CBUUID *bl_uuid = [CBUUID UUIDWithString:serviceBootOtauUuid];
                 
@@ -628,7 +643,6 @@
     }else if (_isNearbyFunction) {
         for (CBCharacteristic *charateristic in service.characteristics) {
             if ([charateristic.UUID isEqual:[CBUUID UUIDWithString:@"00001101-d102-11e1-9b23-00025b00a5a5"]]) {
-                NSLog(@"发现特征");
                 [peripheral readValueForCharacteristic:charateristic];
                 Byte byte[] = {0xee, 0xaa, 0x01, 0x01};
                 NSData *data = [[NSData alloc] initWithBytes:byte length:4];
@@ -639,30 +653,32 @@
         }
     }else {
         if (error == nil && [service.UUID.UUIDString isEqualToString:@"FEF1"]) {
-                    [[MeshServiceApi sharedInstance] connectBridge:peripheral enableBridgeNotification:@([[CSRmeshSettings sharedInstance] getBleListenMode])];
+            if (_connectedPeripherals.count > 1) {
+                CBPeripheral *pe = [_connectedPeripherals objectAtIndex:_connectedPeripherals.count-2];
+                [[MeshServiceApi sharedInstance] disconnectBridge:pe];
+                [_connectedPeripherals removeObjectAtIndex:_connectedPeripherals.count-2];
+            }
+            [[MeshServiceApi sharedInstance] connectBridge:peripheral enableBridgeNotification:@([[CSRmeshSettings sharedInstance] getBleListenMode])];
                     // Inform BridgeRoaming that a peripheral has disconnected
                     
-                    for (CBCharacteristic *characteristic in service.characteristics) {
-                        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:MESH_MTL_CHAR_ADVERT]]) {
-                            [self subscribeToMeshSimNotifyChar:peripheral :characteristic];
-                        }
-                    }
+            for (CBCharacteristic *characteristic in service.characteristics) {
+                if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:MESH_MTL_CHAR_ADVERT]]) {
+                    [self subscribeToMeshSimNotifyChar:peripheral :characteristic];
+                }
+            }
                     
-                    [peripheral setIsBridgeService:@(YES)];
+            [peripheral setIsBridgeService:@(YES)];
                     
         #ifdef BRIDGE_ROAMING_ENABLE
-                    [[CSRBridgeRoaming sharedInstance] connectedPeripheral:peripheral];
+            [[CSRBridgeRoaming sharedInstance] connectedPeripheral:peripheral];
         #endif
-                    if (_connectedPeripherals.count>0) {
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"BridgeConnectedNotification" object:nil userInfo:@{@"peripheral":peripheral}];
-                    }
-                    
-        //            if ([service.UUID.UUIDString isEqualToString:@"FEF1"]) {
-                        [[DataModelManager shareInstance] setDeviceTime];
-                        [[DeviceModelManager sharedInstance] getAllDevicesState];
-        //            }
-                    
-                }
+            if (_connectedPeripherals.count>0) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"BridgeConnectedNotification" object:nil userInfo:@{@"peripheral":peripheral}];
+            }
+            
+            [[DataModelManager shareInstance] setDeviceTime];
+            [[DeviceModelManager sharedInstance] getAllDevicesState];
+        }
     }
 }
     

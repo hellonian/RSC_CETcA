@@ -38,6 +38,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *level2Label;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *levelTextTopCon;
 @property (weak, nonatomic) IBOutlet UILabel *level3Label;
+@property (nonatomic, assign) BOOL adjustableBrightness;
 
 @end
 
@@ -78,6 +79,25 @@
         self.levelTextTopCon.constant = 0;
         self.nameLabel.text = areaEntity.areaName;
         self.kindLabel.hidden = NO;
+        self.kindLabel.text = [NSString stringWithFormat:@"× %ld",[_groupMembers count]];
+        _adjustableBrightness = NO;
+        for (CSRDeviceEntity *deviceEntity in self.groupMembers) {
+            if ([CSRUtilities belongToDimmer:deviceEntity.shortName]
+                || [CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName]
+                || [CSRUtilities belongToThreeChannelDimmer:deviceEntity.shortName]
+                || [CSRUtilities belongToCWDevice:deviceEntity.shortName]
+                || [CSRUtilities belongToRGBDevice:deviceEntity.shortName]
+                || [CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
+                _adjustableBrightness = YES;
+                break;
+            }
+        }
+        if (_adjustableBrightness) {
+            self.levelLabel.hidden = NO;
+        }else {
+            self.levelLabel.hidden = YES;
+        }
+        /*
         NSString *kind=@"";
         NSInteger dimmerNum = 0;
         NSInteger switchNum = 0;
@@ -111,12 +131,12 @@
                 kind = [NSString stringWithFormat:@"%@ ×%ld",AcTECLocalizedStringFromTable(@"Controller", @"Localizable"),(long)controllerNum];
             }
         }
-        self.kindLabel.text = kind;
+        
         if ([kind containsString:AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable")]) {
             self.levelLabel.hidden = NO;
         }else {
             self.levelLabel.hidden = YES;
-        }
+        }*/
         
         if ([areaEntity.areaIconNum isEqualToNumber:@99]) {
             self.iconView.image = [UIImage imageWithData:areaEntity.areaImage];
@@ -143,6 +163,24 @@
         self.levelTextTopCon.constant = 0;
         self.nameLabel.text = model.areaName;
         self.kindLabel.hidden = NO;
+        _adjustableBrightness = NO;
+        for (CSRDeviceEntity *deviceEntity in self.groupMembers) {
+            if ([CSRUtilities belongToDimmer:deviceEntity.shortName]
+                || [CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName]
+                || [CSRUtilities belongToThreeChannelDimmer:deviceEntity.shortName]
+                || [CSRUtilities belongToCWDevice:deviceEntity.shortName]
+                || [CSRUtilities belongToRGBDevice:deviceEntity.shortName]
+                || [CSRUtilities belongToRGBCWDevice:deviceEntity.shortName]) {
+                _adjustableBrightness = YES;
+                break;
+            }
+        }
+        if (_adjustableBrightness) {
+            self.levelLabel.hidden = NO;
+        }else {
+            self.levelLabel.hidden = YES;
+        }
+        /*
         NSString *kind=@"";
         NSInteger dimmerNum = 0;
         NSInteger switchNum = 0;
@@ -181,7 +219,7 @@
             self.levelLabel.hidden = NO;
         }else {
             self.levelLabel.hidden = YES;
-        }
+        }*/
         
         if ([model.areaIconNum isEqualToNumber:@99]) {
             self.iconView.image = [UIImage imageWithData:model.areaImage];
@@ -233,6 +271,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = YES;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToSwitch:deviceEntity.shortName]) {
             if ([CSRUtilities belongToESeriesSingleWireSwitch:deviceEntity.shortName]) {
@@ -254,6 +293,7 @@
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToCWDevice:deviceEntity.shortName]
                   || [CSRUtilities belongToRGBDevice:deviceEntity.shortName]
@@ -278,6 +318,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = YES;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToOneChannelCurtainController:deviceEntity.shortName]) {
             if ([CSRUtilities belongToHiddenController:deviceEntity.shortName]) {
@@ -289,6 +330,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToHOneChannelCurtainController:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"room_curtain"];
@@ -296,6 +338,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToTwoChannelCurtainController:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"room_curtain"];
@@ -303,6 +346,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = NO;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToFanController:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"room_fan"];
@@ -310,6 +354,7 @@
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToSocketTwoChannel:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"room_socket"];
@@ -317,6 +362,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = NO;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToTwoChannelDimmer:deviceEntity.shortName]) {
             if ([CSRUtilities belongToTSeriesPanel:deviceEntity.shortName]) {
@@ -332,6 +378,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = NO;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = YES;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToSocketOneChannel:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"room_socket"];
@@ -339,6 +386,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToTwoChannelSwitch:deviceEntity.shortName]) {
             if ([CSRUtilities belongToTSeriesPanel:deviceEntity.shortName]) {
@@ -354,6 +402,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = NO;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToSceneRemoteSixKeys:deviceEntity.shortName]
                   || [CSRUtilities belongToSceneRemoteFourKeys:deviceEntity.shortName]
@@ -366,6 +415,7 @@
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToCWRemote:deviceEntity.shortName]
                   || [CSRUtilities belongToRGBRemote:deviceEntity.shortName]
@@ -381,6 +431,7 @@
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]
                   || [CSRUtilities belongToSceneRemoteFourKeysV:deviceEntity.shortName]
@@ -393,6 +444,7 @@
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToLCDRemote:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"room_LCD_panel"];
@@ -400,6 +452,7 @@
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToThreeChannelSwitch:deviceEntity.shortName]) {
             if ([CSRUtilities belongToTSeriesPanel:deviceEntity.shortName]) {
@@ -415,6 +468,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = NO;
             self.level3Label.hidden = NO;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = -14.0;
         }else if ([CSRUtilities belongToThreeChannelDimmer:deviceEntity.shortName]) {
             if ([CSRUtilities belongToTSeriesPanel:deviceEntity.shortName]) {
@@ -430,6 +484,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = NO;
             self.level3Label.hidden = NO;
+            self.adjustableBrightness = YES;
             self.levelTextTopCon.constant = -14.0;
         }else if ([CSRUtilities belongToMusicController:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"room_hidden_controller"];
@@ -437,6 +492,7 @@
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToSonosMusicController:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"room_sonos"];
@@ -444,6 +500,7 @@
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongtoDALIDeviceTwo:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"dimmersingle"];
@@ -451,6 +508,7 @@
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToPIRDevice:deviceEntity.shortName]) {
             self.iconView.image = [UIImage imageNamed:@"room_hidden_controller"];
@@ -458,6 +516,7 @@
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }
         
@@ -500,6 +559,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = YES;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToSwitch:device.deviceShortName]) {
             if ([CSRUtilities belongToESeriesSingleWireSwitch:device.deviceShortName]) {
@@ -521,6 +581,7 @@
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToCWDevice:device.deviceShortName]
                   || [CSRUtilities belongToRGBDevice:device.deviceShortName]
@@ -545,6 +606,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = YES;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToOneChannelCurtainController:device.deviceShortName]) {
             if ([CSRUtilities belongToHiddenController:device.deviceShortName]) {
@@ -556,6 +618,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToHOneChannelCurtainController:device.deviceShortName]) {
             self.iconView.image = [UIImage imageNamed:@"device_curtain"];
@@ -563,6 +626,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToTwoChannelCurtainController:device.deviceShortName]) {
             self.iconView.image = [UIImage imageNamed:@"device_curtain"];
@@ -570,6 +634,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = NO;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToFanController:device.deviceShortName]) {
             self.iconView.image = [UIImage imageNamed:@"device_fan"];
@@ -577,6 +642,7 @@
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToSocketTwoChannel:device.deviceShortName]) {
             self.iconView.image = [UIImage imageNamed:@"device_socket"];
@@ -584,6 +650,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = NO;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToTwoChannelDimmer:device.deviceShortName]) {
             if ([CSRUtilities belongToTSeriesPanel:device.deviceShortName]) {
@@ -599,6 +666,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = NO;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = YES;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToSocketOneChannel:device.deviceShortName]) {
             self.iconView.image = [UIImage imageNamed:@"device_socket"];
@@ -606,6 +674,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToTwoChannelSwitch:device.deviceShortName]) {
             if ([CSRUtilities belongToTSeriesPanel:device.deviceShortName]) {
@@ -621,6 +690,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = NO;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToThreeChannelSwitch:device.deviceShortName]) {
             if ([CSRUtilities belongToTSeriesPanel:device.deviceShortName]) {
@@ -636,6 +706,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = NO;
             self.level3Label.hidden = NO;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = -14.0;
         }else if ([CSRUtilities belongToThreeChannelDimmer:device.deviceShortName]) {
             if ([CSRUtilities belongToTSeriesPanel:device.deviceShortName]) {
@@ -651,6 +722,7 @@
             self.levelLabel.hidden = NO;
             self.level2Label.hidden = NO;
             self.level3Label.hidden = NO;
+            self.adjustableBrightness = YES;
             self.levelTextTopCon.constant = -14.0;
         }else if ([CSRUtilities belongToMusicController:device.deviceShortName]) {
             self.iconView.image = [UIImage imageNamed:@"device_hidden_controller"];
@@ -658,6 +730,7 @@
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToSonosMusicController:device.deviceShortName]) {
             self.iconView.image = [UIImage imageNamed:@"device_sonos"];
@@ -665,6 +738,7 @@
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongtoDALIDeviceTwo:device.deviceShortName]) {
             self.iconView.image = [UIImage imageNamed:@"Device_Dimmer"];
@@ -672,6 +746,7 @@
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToPIRDevice:device.deviceShortName]) {
             self.iconView.image = [UIImage imageNamed:@"device_hidden_controller"];
@@ -679,6 +754,7 @@
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }
         self.cellIndexPath = indexPath;
@@ -710,6 +786,7 @@
         self.bottomView.hidden = YES;
         self.level2Label.hidden = YES;
         self.level3Label.hidden = YES;
+        self.adjustableBrightness = NO;
         self.levelTextTopCon.constant = 0;
         return;
     }
@@ -722,6 +799,7 @@
         self.levelTextTopCon.constant = 0;
         self.groupId = @4000;
         self.deviceId = @3000;
+        self.adjustableBrightness = NO;
         NSString *appearanceShortname = [[NSString alloc] initWithData:device.appearanceShortname encoding:NSUTF8StringEncoding];
         //去除不易察觉的空格
         appearanceShortname = [appearanceShortname stringByTrimmingCharactersInSet:[NSCharacterSet controlCharacterSet]];
@@ -906,6 +984,7 @@
         self.deviceId = @1000;
         self.seleteButton.hidden = NO;
         self.seleteButton.selected = model.isSelected;
+        self.adjustableBrightness = NO;
         return;
     }
     
@@ -1241,7 +1320,7 @@
 }
 
 - (void)mainCellPanGestureAction:(UIPanGestureRecognizer *)sender {
-    if (![self.groupId isEqualToNumber:@4000] && ([self.kindLabel.text containsString:AcTECLocalizedStringFromTable(@"Dimmer", @"Localizable")])) {
+    if (![self.groupId isEqualToNumber:@4000] && _adjustableBrightness) {
         CGPoint translation = [sender translationInView:self];
         CGPoint touchPoint = [sender locationInView:self.superview];
         
