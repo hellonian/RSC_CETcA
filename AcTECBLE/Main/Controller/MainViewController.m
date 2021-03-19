@@ -50,7 +50,8 @@
 #import "MusicControllerVC.h"
 #import "SonosMusicControllerVC.h"
 
-#import "PIRDeviceVC.h"
+//#import "PIRDeviceVC.h"
+#import "PIRViewController.h"
 
 @interface MainViewController ()<MainCollectionViewDelegate,PlaceColorIconPickerViewDelegate,MBProgressHUDDelegate>
 {
@@ -252,7 +253,7 @@
     if (mutableArray != nil || [mutableArray count] != 0) {
 //        __block BOOL isOldCVesion = NO;
         [mutableArray enumerateObjectsUsingBlock:^(CSRDeviceEntity *deviceEntity, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSLog(@"~~~~~> %@  %@  %@  %@",deviceEntity.name,deviceEntity.cvVersion,deviceEntity.deviceId,deviceEntity.uuid);
+            NSLog(@"~~~~~> %@  %@  %@  %@  %@",deviceEntity.name,deviceEntity.firVersion,deviceEntity.mcuSVersion,deviceEntity.deviceId,deviceEntity.uuid);
             if ([CSRUtilities belongToMainVCDevice: deviceEntity.shortName]) {
                 if (![deviceIdWasInAreaArray containsObject:deviceEntity.deviceId]) {
                     deviceEntity.isEditting = @(_mainCVEditting);
@@ -856,7 +857,9 @@
                   || [CSRUtilities belongToSceneRemoteTwoKeysV:deviceEntity.shortName]
                   || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]
                   || [CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]
-                  || [CSRUtilities belongToMusicControlRemoteV:deviceEntity.shortName]) {
+                  || [CSRUtilities belongToMusicControlRemoteV:deviceEntity.shortName]
+                  || [CSRUtilities belongToSceneRemotesEightKeysM:deviceEntity.shortName]
+                  || [CSRUtilities belongToSceneRemotesEightKeysSM:deviceEntity.shortName]) {
             RemoteMainVC *rmvc = [[RemoteMainVC alloc] init];
             rmvc.deviceId = mainCell.deviceId;
             rmvc.reloadDataHandle = ^{
@@ -917,7 +920,7 @@
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
         }else if ([CSRUtilities belongToPIRDevice:deviceEntity.shortName]) {
-            PIRDeviceVC *pirvc = [[PIRDeviceVC alloc] init];
+            PIRViewController *pirvc = [[PIRViewController alloc] init];
             pirvc.deviceId = mainCell.deviceId;
             pirvc.reloadDataHandle = ^{
                 [self getMainDataArray];
@@ -1202,7 +1205,9 @@
                 || [CSRUtilities belongToSceneRemoteFourKeysV:deleteDeviceEntity.shortName]
                 || [CSRUtilities belongToSceneRemoteThreeKeysV:deleteDeviceEntity.shortName]
                 || [CSRUtilities belongToSceneRemoteTwoKeysV:deleteDeviceEntity.shortName]
-                || [CSRUtilities belongToSceneRemoteOneKeyV:deleteDeviceEntity.shortName]) {
+                || [CSRUtilities belongToSceneRemoteOneKeyV:deleteDeviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemotesEightKeysM:deleteDeviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemotesEightKeysSM:deleteDeviceEntity.shortName]) {
                 [self removeSceneAfterSceneRemoteDelete:deleteDeviceEntity.deviceId];
             }else {
                 [[CSRDatabaseManager sharedInstance] sceneMemberEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
@@ -1228,7 +1233,9 @@
             || [CSRUtilities belongToSceneRemoteFourKeysV:deleteDeviceShortName]
             || [CSRUtilities belongToSceneRemoteThreeKeysV:deleteDeviceShortName]
             || [CSRUtilities belongToSceneRemoteTwoKeysV:deleteDeviceShortName]
-            || [CSRUtilities belongToSceneRemoteOneKeyV:deleteDeviceShortName])) {
+            || [CSRUtilities belongToSceneRemoteOneKeyV:deleteDeviceShortName]
+              || [CSRUtilities belongToSceneRemotesEightKeysM:deleteDeviceShortName]
+              || [CSRUtilities belongToSceneRemotesEightKeysSM:deleteDeviceShortName])) {
             if (_hud) {
                 [_hud hideAnimated:YES];
                 _hud = nil;
@@ -1277,7 +1284,9 @@
                                                                  || [CSRUtilities belongToSceneRemoteFourKeysV:deleteDeviceEntity.shortName]
                                                                  || [CSRUtilities belongToSceneRemoteThreeKeysV:deleteDeviceEntity.shortName]
                                                                  || [CSRUtilities belongToSceneRemoteTwoKeysV:deleteDeviceEntity.shortName]
-                                                                 || [CSRUtilities belongToSceneRemoteOneKeyV:deleteDeviceEntity.shortName]) {
+                                                                 || [CSRUtilities belongToSceneRemoteOneKeyV:deleteDeviceEntity.shortName]
+                                                                 || [CSRUtilities belongToSceneRemotesEightKeysM:deleteDeviceEntity.shortName]
+                                                                 || [CSRUtilities belongToSceneRemotesEightKeysSM:deleteDeviceEntity.shortName]) {
                                                                  [self removeSceneAfterSceneRemoteDelete:deleteDeviceEntity.deviceId];
                                                              }else {
                                                                  [[CSRDatabaseManager sharedInstance] sceneMemberEntityDeleteWhenDeleteDeviceEntity:deleteDeviceEntity.deviceId];
@@ -1301,7 +1310,9 @@
                                                                || [CSRUtilities belongToSceneRemoteFourKeysV:deleteDeviceEntity.shortName]
                                                                || [CSRUtilities belongToSceneRemoteThreeKeysV:deleteDeviceEntity.shortName]
                                                                || [CSRUtilities belongToSceneRemoteTwoKeysV:deleteDeviceEntity.shortName]
-                                                               || [CSRUtilities belongToSceneRemoteOneKeyV:deleteDeviceEntity.shortName])) {
+                                                               || [CSRUtilities belongToSceneRemoteOneKeyV:deleteDeviceEntity.shortName]
+                                                               || [CSRUtilities belongToSceneRemotesEightKeysM:deleteDeviceEntity.shortName]
+                                                               || [CSRUtilities belongToSceneRemotesEightKeysSM:deleteDeviceEntity.shortName])) {
                                                              if (_hud) {
                                                                  [_hud hideAnimated:YES];
                                                                  _hud = nil;

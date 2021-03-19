@@ -790,6 +790,19 @@ static DataModelManager *manager = nil;
         }
     }
     
+    else if ([dataStr hasPrefix:@"eb8b01"]) {
+        if ([data length] >= 5) {
+            Byte *byte = (Byte *)[data bytes];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"PIRTRIGGERCALL" object:self userInfo:@{@"DEVICEID":sourceDeviceId, @"TRIGGET":@(byte[3]), @"STATE":@(byte[4])}];
+        }
+    }
+    
+    else if ([dataStr hasPrefix:@"eb8b05"]) {
+        if ([data length] >= 6) {
+            Byte *byte = (Byte *)[data bytes];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"PIRACTIONCALL" object:self userInfo:@{@"DEVICEID":sourceDeviceId, @"TRIGGET":@(byte[3]),@"ACTION":@(byte[4]),@"STATE":@(byte[5])}];
+        }
+    }
 }
 
 - (void)didReceiveStreamData:(NSNumber *)deviceId streamNumber:(NSNumber *)streamNumber data:(NSData *)data {

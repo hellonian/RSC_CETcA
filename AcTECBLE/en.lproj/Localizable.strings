@@ -269,3 +269,14 @@
 "match_reset_none_alert" = "This page shows nearby devices that can be restored by power outage. Click the device and follow the prompts to restore the device to the unpaired state.";
 "unable_get_firmware" = "Unable to get the firmware package.";
 "check_network" = "Please check the cell phone network.";
+"automation" = "Automation";
+"daylight_sensor" = "Daylight Sensor";
+"calibration" = "Calibration";
+"enter_lux" = "Please enter the current value of LUX";
+"enter_number_0_2000" = "Enter a number from 0 to 2000";
+"body" = "Body detected";
+"no_body" = "No body detected";
+"temperature_greater_equal" = "The temperature is greater than or equal to";
+"temperature_less" = "The temperature is less than";
+"body_sensor" = "Body sensor";
+"temperature_sensor" = "Temperature sensor";

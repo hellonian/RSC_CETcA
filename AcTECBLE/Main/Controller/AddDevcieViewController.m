@@ -291,7 +291,9 @@
                 || [CSRUtilities belongToSceneRemoteFourKeysV:name]
                 || [CSRUtilities belongToSceneRemoteThreeKeysV:name]
                 || [CSRUtilities belongToSceneRemoteTwoKeysV:name]
-                || [CSRUtilities belongToSceneRemoteOneKeyV:name]) {
+                || [CSRUtilities belongToSceneRemoteOneKeyV:name]
+                || [CSRUtilities belongToSceneRemotesEightKeysM:name]
+                || [CSRUtilities belongToSceneRemotesEightKeysSM:name]) {
                 [self performSelector:@selector(waitSceneRemoteConfigurationTimeOut) withObject:nil afterDelay:30.0];
                 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(waitSceneRemoteConfiguration:) name:@"SCENEREMOTEDIDCONFIGURED" object:nil];
             }else {

@@ -179,7 +179,8 @@
     SceneMemberExpandModel *member = [_members objectAtIndex:indexPath.row];
     CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
     cell.textLabel.text = deviceEntity.name;
-    if ([CSRUtilities belongToSwitch:member.kindString]) {
+    if ([CSRUtilities belongToSwitch:member.kindString]
+        || [CSRUtilities belongToSocketOneChannel:member.kindString]) {
         if ([CSRUtilities belongToESeriesSingleWireSwitch:member.kindString]) {
             cell.imageView.image = [UIImage imageNamed:@"icon_E_press"];
         }else if ([CSRUtilities belongToTSeriesPanel:member.kindString]) {
@@ -188,6 +189,8 @@
             cell.imageView.image = [UIImage imageNamed:@"icon_P_panel"];
         }else if ([CSRUtilities belongToHiddenController:member.kindString]) {
             cell.imageView.image = [UIImage imageNamed:@"icon_hidden_controller"];
+        }else if ([CSRUtilities belongToSocketOneChannel:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_socket"];
         }else {
             cell.imageView.image = [UIImage imageNamed:@"icon_switch1"];
         }
@@ -197,11 +200,14 @@
             cell.detailTextLabel.text = @"OFF";
         }
     }else if ([CSRUtilities belongToTwoChannelSwitch:member.kindString]
-              || [CSRUtilities belongToThreeChannelSwitch:member.kindString]) {
+              || [CSRUtilities belongToThreeChannelSwitch:member.kindString]
+              || [CSRUtilities belongToSocketTwoChannel:member.kindString]) {
         if ([CSRUtilities belongToTSeriesPanel:member.kindString]) {
             cell.imageView.image = [UIImage imageNamed:@"icon_T_panel"];
         }else if ([CSRUtilities belongToPSeriesPanel:member.kindString]) {
             cell.imageView.image = [UIImage imageNamed:@"icon_P_panel"];
+        }else if ([CSRUtilities belongToSocketTwoChannel:member.kindString]) {
+            cell.imageView.image = [UIImage imageNamed:@"icon_socket"];
         }else {
             cell.imageView.image = [UIImage imageNamed:@"icon_switch1"];
         }
@@ -340,48 +346,6 @@
             [detailText addAttribute:NSForegroundColorAttributeName value:ColorWithAlpha(member.eve1D1, member.eve1D2, member.eve1D3, 1) range:NSMakeRange(0, 1)];
             cell.detailTextLabel.attributedText = detailText;
         }
-    }else if ([CSRUtilities belongToSocketTwoChannel:member.kindString]) {
-        cell.imageView.image = [UIImage imageNamed:@"icon_socket"];
-        NSString *detailText = @"";
-        if (member.eve1D0) {
-            detailText = @"ON";
-        }else {
-            detailText = @"OFF";
-        }
-        if (member.eve1D1) {
-            detailText = [NSString stringWithFormat:@"%@, %@", detailText, AcTECLocalizedStringFromTable(@"bh_open", @"Localizable")];
-        }else {
-            detailText = [NSString stringWithFormat:@"%@, %@", detailText, AcTECLocalizedStringFromTable(@"bh_shut", @"Localizable")];
-        }
-        cell.detailTextLabel.text = detailText;
-    }else if ([CSRUtilities belongToSocketTwoChannel:member.kindString]) {
-        cell.imageView.image = [UIImage imageNamed:@"icon_socket"];
-        NSString *detailText = @"";
-        if (member.eve1Type) {
-            if (member.eve1D0) {
-                detailText = @"ON";
-            }else {
-                detailText = @"OFF";
-            }
-            if (member.eve1D1) {
-                detailText = [NSString stringWithFormat:@"%@, %@", detailText, AcTECLocalizedStringFromTable(@"bh_open", @"Localizable")];
-            }else {
-                detailText = [NSString stringWithFormat:@"%@, %@", detailText, AcTECLocalizedStringFromTable(@"bh_shut", @"Localizable")];
-            }
-        }
-        if (member.eve2Type) {
-            if (member.eve2D0) {
-                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | ON", detailText] : @"ON";
-            }else {
-                detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | OFF", detailText] : @"OFF";
-            }
-            if (member.eve2D1) {
-                detailText = [NSString stringWithFormat:@"%@, %@", detailText, AcTECLocalizedStringFromTable(@"bh_open", @"Localizable")];
-            }else {
-                detailText = [NSString stringWithFormat:@"%@, %@", detailText, AcTECLocalizedStringFromTable(@"bh_shut", @"Localizable")];
-            }
-        }
-        cell.detailTextLabel.text = detailText;
     }else if ([CSRUtilities belongToOneChannelCurtainController:member.kindString]
               || [CSRUtilities belongToHOneChannelCurtainController:member.kindString]) {
         cell.imageView.image = [UIImage imageNamed:@"icon_curtain"];
@@ -659,9 +623,11 @@
                 }else {
                     SelectModel *model = (SelectModel *)d;
                     DeviceModel *device = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:model.deviceID];
-                    if ([CSRUtilities belongToSwitch:device.shortName]) {
+                    if ([CSRUtilities belongToSwitch:device.shortName]
+                        || [CSRUtilities belongToSocketOneChannel:device.shortName]) {
                         [self createSceneMemberSwitch:device channel:1];
-                    }else if ([CSRUtilities belongToTwoChannelSwitch:device.shortName]) {
+                    }else if ([CSRUtilities belongToTwoChannelSwitch:device.shortName]
+                              || [CSRUtilities belongToSocketTwoChannel:device.shortName]) {
                         if ([model.channel integerValue] == 2) {
                             [self createSceneMemberSwitch:device channel:1];
                         }else if ([model.channel integerValue] == 3) {
@@ -729,17 +695,6 @@
                         [self createSceneMemberRGB:device];
                     }else if ([CSRUtilities belongToRGBCWDevice:device.shortName]) {
                         [self createSceneMemberRGBCW:device];
-                    }else if ([CSRUtilities belongToSocketOneChannel:device.shortName]) {
-                        [self createSceneMemberSocket:device channel:1];
-                    }else if ([CSRUtilities belongToSocketTwoChannel:device.shortName]) {
-                        if ([model.channel integerValue] == 2) {
-                            [self createSceneMemberSocket:device channel:1];
-                        }else if ([model.channel integerValue] == 3) {
-                            [self createSceneMemberSocket:device channel:2];
-                        }else if ([model.channel integerValue] == 4) {
-                            [self createSceneMemberSocket:device channel:1];
-                            [self createSceneMemberSocket:device channel:2];
-                        }
                     }else if ([CSRUtilities belongToOneChannelCurtainController:device.shortName]
                               || [CSRUtilities belongToHOneChannelCurtainController:device.shortName]) {
                         [self createSceneMemberCurtain:device channel:1];
@@ -987,29 +942,6 @@
             m.eveD3 = @0;
         }
     }
-    SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
-    [sceneEntity addMembersObject:m];
-    [[CSRDatabaseManager sharedInstance] saveContext];
-    
-    [self.selects addObject:m];
-}
-
-- (void)createSceneMemberSocket:(DeviceModel *)device channel:(int)channel {
-    SceneMemberEntity *m = [NSEntityDescription insertNewObjectForEntityForName:@"SceneMemberEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
-    m.sceneID = _sceneIndex;
-    m.kindString = device.shortName;
-    m.deviceID = device.deviceId;
-    m.channel = @(channel);
-    m.eveType = @(29);
-    if (channel == 1) {
-        m.eveD0 = @(device.channel1PowerState);
-        m.eveD1 = @(device.childrenState1);
-    }else if (channel == 2) {
-        m.eveD0 = @(device.channel2PowerState);
-        m.eveD1 = @(device.childrenState2);
-    }
-    m.eveD2 = @0;
-    m.eveD3 = @0;
     SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
     [sceneEntity addMembersObject:m];
     [[CSRDatabaseManager sharedInstance] saveContext];
@@ -1619,7 +1551,7 @@
         svc.deviceId = member.deviceID;
         svc.source = 1;
         svc.reloadDataHandle = ^{
-            [self reSettingSocket:member];
+            [self reSettingSwitch:member];
         };
         [self.navigationController pushViewController:svc animated:YES];
     }else if ([CSRUtilities belongToSonosMusicController:member.kindString]) {
@@ -2143,37 +2075,6 @@
                             }
                         }
                     }
-                }
-            }
-        }
-    }
-    [self nextOperation];
-}
-
-- (void)reSettingSocket:(SceneMemberExpandModel *)member {
-    [self showLoading];
-    DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:member.deviceID];
-    SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_sceneIndex];
-    if (member.eve1Type) {
-        if (member.eve1D0 != model.channel1PowerState || member.eve1D1 != model.childrenState1) {
-            for (SceneMemberEntity *sme in sceneEntity.members) {
-                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
-                    sme.eveD0 = @(model.channel1PowerState);
-                    sme.eveD1 = @(model.childrenState1);
-                    [self.selects addObject:sme];
-                    break;
-                }
-            }
-        }
-    }
-    if (member.eve2Type) {
-        if (member.eve2D0 != model.channel2PowerState || member.eve2D1 != model.childrenState2) {
-            for (SceneMemberEntity *sme in sceneEntity.members) {
-                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
-                    sme.eveD0 = @(model.channel2PowerState);
-                    sme.eveD1 = @(model.childrenState2);
-                    [self.selects addObject:sme];
-                    break;
                 }
             }
         }

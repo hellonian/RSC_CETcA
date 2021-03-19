@@ -22,7 +22,8 @@ typedef NS_ENUM(NSInteger,DeviceListSelectMode)
     DeviceListSelectMode_SelectCWDevice,
     DeviceListSelectMode_SingleRegardlessChannel,
     DeviceListSelectMode_MusicController,
-    DeviceListSelectMode_SingleRegardlessChannelPlus
+    DeviceListSelectMode_SingleRegardlessChannelPlus,
+    DeviceListSelectMode_Thermoregulator
 };
 
 typedef void(^DeviceListSelectedHandle)(NSArray *devices);

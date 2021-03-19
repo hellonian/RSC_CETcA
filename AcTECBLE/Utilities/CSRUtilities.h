@@ -157,6 +157,9 @@
 + (BOOL)belongToC3ABLEDDriver:(NSString *)shortName;
 + (BOOL)belongToC2ABLEDDriver:(NSString *)shortName;
 + (BOOL)belongToHiddenController:(NSString *)shortName;
++ (BOOL)belongToSceneRemotesEightKeysM:(NSString *)shortName;
++ (BOOL)belongToSceneRemotesEightKeysSM:(NSString *)shortName;
++ (BOOL)belongToThermoregulator:(NSString *)shortName;
 
 + (NSString *)convertToJsonData:(NSDictionary *)dict;
 + (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString;

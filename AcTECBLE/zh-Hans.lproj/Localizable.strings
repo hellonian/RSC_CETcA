@@ -269,3 +269,14 @@
 "match_reset_none_alert" = "此页面展示附近可通过断电进行还原的设备，点击设备按提示操作可将设备还原至未添加状态。";
 "unable_get_firmware" = "无法获取固件包。";
 "check_network" = "请检查手机网络。";
+"automation" = "自动化设置";
+"daylight_sensor" = "日光感应";
+"calibration" = "校准";
+"enter_lux" = "请输入当前的LUX值";
+"enter_number_0_2000" = "输入一个0~2000的数字";
+"body" = "有人";
+"no_body" = "无人";
+"temperature_greater_equal" = "温度大于等于";
+"temperature_less" = "温度小于";
+"body_sensor" = "人体感应";
+"temperature_sensor" = "温度感应";

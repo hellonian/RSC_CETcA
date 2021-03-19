@@ -710,7 +710,7 @@
                         for (SelectModel *sMod in _originalMembers) {
                             if ([sMod.deviceID isEqualToNumber:deviceEntity.deviceId]) {
                                 singleDevice.isSelected = YES;
-                                [_selectedDevices addObjectsFromArray:_originalMembers];
+                                [_selectedDevices addObject:sMod];
                                 break;
                             }
                         }
@@ -734,6 +734,32 @@
                 model.isSelected = NO;
                 
                 [_devicesCollectionView.dataArray addObject:model];
+            }
+        }
+    }else if (self.selectMode == DeviceListSelectMode_Thermoregulator) {
+        NSMutableArray *mutableArray = [[[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects] mutableCopy];
+        if ([mutableArray count] > 0) {
+            NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"sortId" ascending:YES];
+            [mutableArray sortUsingDescriptors:[NSArray arrayWithObject:sort]];
+            for (CSRDeviceEntity *deviceEntity in mutableArray) {
+                if ([CSRUtilities belongToThermoregulator:deviceEntity.shortName]) {
+                    SingleDeviceModel *singleDevice = [[SingleDeviceModel alloc] init];
+                    singleDevice.deviceId = deviceEntity.deviceId;
+                    singleDevice.deviceName = deviceEntity.name;
+                    singleDevice.deviceShortName = deviceEntity.shortName;
+                    singleDevice.isForList = YES;
+                    singleDevice.isSelected = NO;
+                    if ([_originalMembers count] > 0) {
+                        for (SelectModel *sMod in _originalMembers) {
+                            if ([sMod.deviceID isEqualToNumber:deviceEntity.deviceId]) {
+                                singleDevice.isSelected = YES;
+                                [_selectedDevices addObject:sMod];
+                                break;
+                            }
+                        }
+                    }
+                    [_devicesCollectionView.dataArray addObject:singleDevice];
+                }
             }
         }
     }else {
@@ -942,7 +968,8 @@
                 }
                 
             }else if (_selectMode == DeviceListSelectMode_SingleRegardlessChannel
-                      || _selectMode == DeviceListSelectMode_SingleRegardlessChannelPlus) {
+                      || _selectMode == DeviceListSelectMode_SingleRegardlessChannelPlus
+                      || _selectMode == DeviceListSelectMode_Thermoregulator) {
                 SelectModel *mod = [[SelectModel alloc] init];
                 mod.deviceID = mainCell.deviceId;
                 mod.channel = @1;
@@ -985,7 +1012,6 @@
                         mainCell.seleteButton.selected = NO;
                     }
                 }
-                
             }else {
                 CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
                 if ([CSRUtilities belongToSocketTwoChannel:deviceEntity.shortName]

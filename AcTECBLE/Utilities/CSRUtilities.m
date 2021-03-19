@@ -1175,7 +1175,9 @@
         || [kSceneRemotesTwoKeysV containsObject:shortName]
         || [kSceneRemotesOneKeyV containsObject:shortName]
         || [kDALIDeviceTwo containsObject:shortName]
-        || [kPIRDevice containsObject:shortName]) {
+        || [kPIRDevice containsObject:shortName]
+        || [kSceneRemotesEightKeysM containsObject:shortName]
+        || [kSceneRemotesEightKeysSM containsObject:shortName]) {
         return YES;
     }
     return NO;
@@ -1738,6 +1740,27 @@
 }
 + (BOOL)belongToHiddenController:(NSString *)shortName {
     if ([hidden_controller containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToSceneRemotesEightKeysM:(NSString *)shortName {
+    if ([kSceneRemotesEightKeysM containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToSceneRemotesEightKeysSM:(NSString *)shortName {
+    if ([kSceneRemotesEightKeysSM containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToThermoregulator:(NSString *)shortName {
+    if ([kThermoregulators containsObject:shortName]) {
         return YES;
     }
     return NO;

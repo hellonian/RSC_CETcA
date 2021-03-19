@@ -56,6 +56,9 @@
 #define kSceneRemotesThreeKeysV @[@"PR3B"]
 #define kSceneRemotesTwoKeysV @[@"PR2B"]
 #define kSceneRemotesOneKeyV @[@"PR1B"]
+#define kSceneRemotesEightKeysM @[@"MR8B"]
+#define kSceneRemotesEightKeysSM @[@"MRT12B"]
+#define kThermoregulators @[@"TS2412CB"]
 
 #define kLCDRemote @[@"GR1000B"]
 
@@ -79,7 +82,7 @@
 
 #define kRGBDevices @[@"RGB"]
 
-#define kRGBCWDevices @[@"RGBCW",@"IE-RGBCW",@"DNLT11W-H",@"DNLT11W",@"C2AB",@"DNLT11WH"]
+#define kRGBCWDevices @[@"RGBCW",@"IE-RGBCW",@"DNLT11W-H",@"DNLT11W",@"C2AB",@"DNLT11WH",@"KB36RGBS"]
 
 #define kOneChannelCurtainController @[@"C300IB",@"C300IBH",@"C300IB-1G",@"GC300B",@"TC300B"]
 #define kTwoChannelCurtainController @[@"C300IB-2G",@"GC600B-2G",@"TC300B-2G",@"TC600B-2G"]
@@ -91,7 +94,7 @@
 #define kDALIDeviceTwo @[@"DDSB2"]
 
 #define kFadeDevice @[@"TD300B", @"TD400B-2G", @"TD400B-3G",@"PD400B-2G"]
-#define kNearbyFunctionDevices @[@"LI-45B", @"IE-CW", @"IE-RGBCW", @"C2AB", @"RGBCW", @"RGB", @"CW"]
+#define kNearbyFunctionDevices @[@"LI-45B", @"IE-CW", @"IE-RGBCW", @"C2AB", @"RGBCW", @"RGB", @"CW",@"KB36RGBS"]
 #define kMusicController @[@"MRS485IB"]
 #define kMusicControlRemote @[@"TRM6B-BO", @"TR6BEM", @"TR6B-M"]
 #define kMusicControlRemoteV @[@"PR6BEM",@"PR6B-M"]
@@ -112,7 +115,7 @@
 #define LIM_LED_driver @[@"LI-45B",@"LIM-45BTW"]
 #define IE_LED_driver @[@"IE-RGBCW", @"IE-CW"]
 #define C3AB_LED_driver @[@"C3AB-CW", @"C3AB-RGB", @"C3AB-RGBCW"]
-#define C2AB_LED_driver @[@"C2AB"]
+#define C2AB_LED_driver @[@"C2AB",@"KB36RGBS"]
 #define hidden_controller @[@"S10IB", @"D300IB", @"D0/1-10IB", @"DDSB", @"RB04", @"C300IB", @"RB07"]
 
 #pragma mark - Notifications

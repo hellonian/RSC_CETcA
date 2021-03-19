@@ -141,9 +141,11 @@
         if ([areaEntity.areaIconNum isEqualToNumber:@99]) {
             self.iconView.image = [UIImage imageWithData:areaEntity.areaImage];
         }else {
-            NSArray *iconArray = kGroupIcons;
-            NSString *imageString = [iconArray objectAtIndex:[areaEntity.areaIconNum integerValue]];
-            self.iconView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@room",imageString]];
+            if ([areaEntity.areaIconNum integerValue] <= 16) {
+                NSArray *iconArray = kGroupIcons;
+                NSString *imageString = [iconArray objectAtIndex:[areaEntity.areaIconNum integerValue]];
+                self.iconView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@room",imageString]];
+            }
         }
         self.cellIndexPath = indexPath;
         [self adjustGroupCellBgcolorAndLevelLabel];
@@ -224,9 +226,11 @@
         if ([model.areaIconNum isEqualToNumber:@99]) {
             self.iconView.image = [UIImage imageWithData:model.areaImage];
         }else {
-            NSArray *iconArray = kGroupIcons;
-            NSString *imageString = [iconArray objectAtIndex:[model.areaIconNum integerValue]];
-            self.iconView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@room",imageString]];
+            if ([model.areaIconNum integerValue] <= 16) {
+                NSArray *iconArray = kGroupIcons;
+                NSString *imageString = [iconArray objectAtIndex:[model.areaIconNum integerValue]];
+                self.iconView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@room",imageString]];
+            }
         }
         self.cellIndexPath = indexPath;
         [self adjustGroupCellBgcolorAndLevelLabel];
@@ -511,8 +515,24 @@
             self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToPIRDevice:deviceEntity.shortName]) {
-            self.iconView.image = [UIImage imageNamed:@"room_hidden_controller"];
+            self.iconView.image = [UIImage imageNamed:@"room_pir"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"human_body_sensor", @"Localizable");
+            self.levelLabel.hidden = YES;
+            self.level2Label.hidden = YES;
+            self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
+            self.levelTextTopCon.constant = 0;
+        }else if ([CSRUtilities belongToSceneRemotesEightKeysM:deviceEntity.shortName]) {
+            self.iconView.image = [UIImage imageNamed:@"room_M_panel"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"scene_panel", @"Localizable");
+            self.levelLabel.hidden = YES;
+            self.level2Label.hidden = YES;
+            self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
+            self.levelTextTopCon.constant = 0;
+        }else if ([CSRUtilities belongToSceneRemotesEightKeysSM:deviceEntity.shortName]) {
+            self.iconView.image = [UIImage imageNamed:@"room_M_panels"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"scene_panel", @"Localizable");
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
             self.level3Label.hidden = YES;
@@ -749,7 +769,7 @@
             self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
         }else if ([CSRUtilities belongToPIRDevice:device.deviceShortName]) {
-            self.iconView.image = [UIImage imageNamed:@"device_hidden_controller"];
+            self.iconView.image = [UIImage imageNamed:@"device_pir"];
             self.kindLabel.text = AcTECLocalizedStringFromTable(@"human_body_sensor", @"Localizable");
             self.levelLabel.hidden = YES;
             self.level2Label.hidden = YES;
@@ -958,7 +978,11 @@
         }else if ([CSRUtilities belongToSonosMusicController:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"device_sonos"];
         }else if ([CSRUtilities belongToPIRDevice:appearanceShortname]) {
-            self.iconView.image = [UIImage imageNamed:@"device_hidden_controller"];
+            self.iconView.image = [UIImage imageNamed:@"device_pir"];
+        }else if ([CSRUtilities belongToSceneRemotesEightKeysM:appearanceShortname]) {
+            self.iconView.image = [UIImage imageNamed:@"device_M_panel"];
+        }else if ([CSRUtilities belongToSceneRemotesEightKeysSM:appearanceShortname]) {
+            self.iconView.image = [UIImage imageNamed:@"device_M_panels"];
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
@@ -1131,7 +1155,9 @@
                 || [CSRUtilities belongToRGBCWRemote:model.shortName]
                 || [CSRUtilities belongToCWRemote:model.shortName]
                 || [CSRUtilities belongToLCDRemote:model.shortName]
-                || [CSRUtilities belongToPIRDevice:model.shortName]) {
+                || [CSRUtilities belongToPIRDevice:model.shortName]
+                || [CSRUtilities belongToSceneRemotesEightKeysM:model.shortName]
+                || [CSRUtilities belongToSceneRemotesEightKeysSM:model.shortName]) {
                 self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
             }else {
                 if (![model.powerState boolValue]) {
@@ -1174,24 +1200,26 @@
         }
     }else {
         if (!([CSRUtilities belongToSceneRemoteOneKey:model.shortName]
-            || [CSRUtilities belongToSceneRemoteTwoKeys:model.shortName]
-            || [CSRUtilities belongToSceneRemoteThreeKeys:model.shortName]
-            || [CSRUtilities belongToSceneRemoteFourKeys:model.shortName]
-            || [CSRUtilities belongToSceneRemoteSixKeys:model.shortName]
-            || [CSRUtilities belongToSceneRemoteOneKeyV:model.shortName]
-            || [CSRUtilities belongToSceneRemoteTwoKeysV:model.shortName]
-            || [CSRUtilities belongToSceneRemoteThreeKeysV:model.shortName]
-            || [CSRUtilities belongToSceneRemoteFourKeysV:model.shortName]
-            || [CSRUtilities belongToSceneRemoteSixKeysV:model.shortName]
-            || [CSRUtilities belongToMusicController:model.shortName]
-            || [CSRUtilities belongToMusicControlRemote:model.shortName]
-            || [CSRUtilities belongToMusicControlRemoteV:model.shortName]
-            || [CSRUtilities belongToSonosMusicController:model.shortName]
-            || [CSRUtilities belongToRGBRemote:model.shortName]
-            || [CSRUtilities belongToRGBCWRemote:model.shortName]
-            || [CSRUtilities belongToCWRemote:model.shortName]
-            || [CSRUtilities belongToLCDRemote:model.shortName]
-            || [CSRUtilities belongToPIRDevice:model.shortName])) {
+              || [CSRUtilities belongToSceneRemoteTwoKeys:model.shortName]
+              || [CSRUtilities belongToSceneRemoteThreeKeys:model.shortName]
+              || [CSRUtilities belongToSceneRemoteFourKeys:model.shortName]
+              || [CSRUtilities belongToSceneRemoteSixKeys:model.shortName]
+              || [CSRUtilities belongToSceneRemoteOneKeyV:model.shortName]
+              || [CSRUtilities belongToSceneRemoteTwoKeysV:model.shortName]
+              || [CSRUtilities belongToSceneRemoteThreeKeysV:model.shortName]
+              || [CSRUtilities belongToSceneRemoteFourKeysV:model.shortName]
+              || [CSRUtilities belongToSceneRemoteSixKeysV:model.shortName]
+              || [CSRUtilities belongToMusicController:model.shortName]
+              || [CSRUtilities belongToMusicControlRemote:model.shortName]
+              || [CSRUtilities belongToMusicControlRemoteV:model.shortName]
+              || [CSRUtilities belongToSonosMusicController:model.shortName]
+              || [CSRUtilities belongToRGBRemote:model.shortName]
+              || [CSRUtilities belongToRGBCWRemote:model.shortName]
+              || [CSRUtilities belongToCWRemote:model.shortName]
+              || [CSRUtilities belongToLCDRemote:model.shortName]
+              || [CSRUtilities belongToPIRDevice:model.shortName]
+              ||[CSRUtilities belongToSceneRemotesEightKeysM:model.shortName]
+              ||[CSRUtilities belongToSceneRemotesEightKeysSM:model.shortName])) {
             self.nameLabel.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
             self.levelLabel.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
             self.level2Label.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
@@ -1300,7 +1328,9 @@
                         &&![CSRUtilities belongToSonosMusicController:deviceEntity.shortName]
                         &&![CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]
                         &&![CSRUtilities belongToMusicControlRemoteV:deviceEntity.shortName]
-                        &&![CSRUtilities belongToPIRDevice:deviceEntity.shortName]) {
+                        &&![CSRUtilities belongToPIRDevice:deviceEntity.shortName]
+                        &&![CSRUtilities belongToSceneRemotesEightKeysM:deviceEntity.shortName]
+                        &&![CSRUtilities belongToSceneRemotesEightKeysSM:deviceEntity.shortName]) {
                         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
                         [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@1 withPowerState:![model.powerState boolValue]];
                     }

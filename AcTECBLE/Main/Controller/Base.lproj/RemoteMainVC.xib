@@ -12,16 +12,38 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RemoteMainVC">
             <connections>
                 <outlet property="circleImageView" destination="nZm-tl-ybY" id="wwS-kl-cfs"/>
+                <outlet property="keyEightBottomConstraint" destination="jgv-cC-YN5" id="wrW-6A-EX1"/>
+                <outlet property="keyEightHeightConstraint" destination="Epb-kC-oQ0" id="94h-c1-mjI"/>
+                <outlet property="keyEightRightConstraint" destination="TRM-G5-A2F" id="IBg-Xh-kf9"/>
+                <outlet property="keyEightWidthConstraint" destination="Ysn-Gx-b4r" id="a9f-nJ-Uuk"/>
+                <outlet property="keyFiveBottomConstraint" destination="6s6-ed-HkY" id="kq2-qy-2vX"/>
+                <outlet property="keyFiveHeightConstraint" destination="Xpf-yh-qlY" id="fny-fT-EAr"/>
                 <outlet property="keyFiveLeftConstraint" destination="yEQ-Sr-c4b" id="Wnt-qG-oht"/>
+                <outlet property="keyFiveWidthConstraint" destination="LZJ-rJ-wSk" id="gNd-nb-NCF"/>
+                <outlet property="keyFourHeightConstraint" destination="Bfr-oJ-xLe" id="bOq-C3-fDT"/>
                 <outlet property="keyFourRightConstraint" destination="0VJ-Uw-tPH" id="ijo-sa-OA4"/>
                 <outlet property="keyFourTopConstraint" destination="Zd0-Lq-hTC" id="6NU-JW-NZo"/>
+                <outlet property="keyFourWidthConstraint" destination="KYw-jy-cpo" id="xM1-W1-LJr"/>
+                <outlet property="keyOneHeightConstraint" destination="Ya7-XP-kXf" id="3v8-gL-gv8"/>
                 <outlet property="keyOneLeftConstraint" destination="rta-EV-pLc" id="dOB-ba-GjE"/>
                 <outlet property="keyOneTopConstraint" destination="eCd-cq-QHr" id="bY6-Un-vHz"/>
+                <outlet property="keyOneWidthConstraint" destination="0Lo-cS-66I" id="Gc1-YS-XPW"/>
+                <outlet property="keySevenBottomConstraint" destination="59T-y1-d0o" id="Q8I-Ci-0h9"/>
+                <outlet property="keySevenHeightConstraint" destination="Jzl-jW-8kO" id="fnC-P2-wXj"/>
+                <outlet property="keySevenLeftConstraint" destination="dMe-Og-kIt" id="MmY-tg-Zf1"/>
+                <outlet property="keySevenWidthConstraint" destination="Aa8-N7-b74" id="rdb-Of-b2o"/>
+                <outlet property="keySixBottomConstaint" destination="949-8T-lpL" id="iZX-oK-C4a"/>
+                <outlet property="keySixHeightConstraint" destination="27e-T9-coe" id="NHZ-hs-r0w"/>
                 <outlet property="keySixRightConstraint" destination="xBj-cR-nWd" id="TkW-Eb-4VU"/>
+                <outlet property="keySixWidthConstraint" destination="kQ3-Aq-Ida" id="uGc-ze-Gjz"/>
+                <outlet property="keyThreeHeightConstraint" destination="lzv-qf-2xc" id="Ooz-SN-i6V"/>
                 <outlet property="keyThreeLeftConstraint" destination="DVo-aw-1xN" id="205-wc-dkV"/>
                 <outlet property="keyThreeTopConstraint" destination="4ea-aP-kSf" id="tBJ-Ds-WCK"/>
+                <outlet property="keyThreeWidthConstraint" destination="9JE-YM-KKL" id="UqH-zJ-CAb"/>
+                <outlet property="keyTwoHeightConstraint" destination="md9-4n-K2P" id="3Uh-GS-vIa"/>
                 <outlet property="keyTwoRightConstraint" destination="KU9-0h-Luh" id="yXo-a7-aCD"/>
                 <outlet property="keyTwoTopConstraint" destination="E5X-6R-WlG" id="eNi-wi-29N"/>
+                <outlet property="keyTwoWidthConstraint" destination="2lD-li-0we" id="GLw-4T-Krl"/>
                 <outlet property="macAddressLabel" destination="AGj-iT-LR1" id="VKG-YQ-5Oz"/>
                 <outlet property="mainRemoteBgImageView" destination="OoD-I3-xn6" id="bXh-WK-Qe8"/>
                 <outlet property="mcKeyFiveLeftConstraint" destination="1B5-OX-Wl6" id="e2g-l1-P90"/>
@@ -58,6 +80,9 @@
                 <outlet property="remoteBtn31" destination="e5L-ub-Q1k" id="E9j-bH-HWp"/>
                 <outlet property="remoteBtn32" destination="As5-tk-Rz5" id="e9k-h5-399"/>
                 <outlet property="remoteBtn33" destination="jsg-Ej-sxG" id="pS3-37-UIF"/>
+                <outlet property="remoteBtn34" destination="Sh0-Hq-uOE" id="9e2-UL-pwf"/>
+                <outlet property="remoteBtn35" destination="Taj-fe-HpF" id="Z8L-Vi-zrJ"/>
+                <outlet property="remoteBtn36" destination="b58-gF-MEb" id="sSk-Vu-Na0"/>
                 <outlet property="remoteBtn7" destination="tjQ-QN-sMD" id="hmP-PB-wEQ"/>
                 <outlet property="remoteBtn8" destination="ZiF-4Z-HoX" id="ksp-3M-JyH"/>
                 <outlet property="remoteBtn9" destination="AIS-Nt-sOz" id="d47-a3-v5g"/>
@@ -426,12 +451,61 @@
                         <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="9E2-uD-gqU"/>
                     </connections>
                 </button>
+                <button opaque="NO" tag="25" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Taj-fe-HpF">
+                    <rect key="frame" x="253" y="268" width="67" height="52"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="52" id="Epb-kC-oQ0"/>
+                        <constraint firstAttribute="width" constant="67" id="Ysn-Gx-b4r"/>
+                    </constraints>
+                    <state key="normal" backgroundImage="sr_P_eight_default">
+                        <color key="titleColor" red="0.74509803919999995" green="0.74509803919999995" blue="0.74509803919999995" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <state key="selected" backgroundImage="sr_P_eight_selected">
+                        <color key="titleColor" red="0.25490196079999999" green="0.36078431370000003" blue="0.64705882349999999" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <connections>
+                        <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="YOd-Gd-clq"/>
+                    </connections>
+                </button>
+                <button opaque="NO" tag="26" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b58-gF-MEb">
+                    <rect key="frame" x="207" y="174" width="67" height="52"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="67" id="0EE-Pw-3Xj"/>
+                        <constraint firstAttribute="height" constant="52" id="AyU-A9-odL"/>
+                    </constraints>
+                    <state key="normal" backgroundImage="sr_P_nine_default">
+                        <color key="titleColor" red="0.74509803919999995" green="0.74509803919999995" blue="0.74509803919999995" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <state key="selected" backgroundImage="sr_P_nine_selected">
+                        <color key="titleColor" red="0.25490196079999999" green="0.36078431370000003" blue="0.64705882349999999" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <connections>
+                        <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="4z2-f7-fSS"/>
+                    </connections>
+                </button>
+                <button opaque="NO" tag="24" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sh0-Hq-uOE">
+                    <rect key="frame" x="0.0" y="268" width="67" height="52"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="67" id="Aa8-N7-b74"/>
+                        <constraint firstAttribute="height" constant="52" id="Jzl-jW-8kO"/>
+                    </constraints>
+                    <state key="normal" backgroundImage="sr_P_seven_default">
+                        <color key="titleColor" red="0.74509803919999995" green="0.74509803919999995" blue="0.74509803919999995" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <state key="selected" backgroundImage="sr_P_seven_selected">
+                        <color key="titleColor" red="0.25490196079999999" green="0.36078431370000003" blue="0.64705882349999999" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <connections>
+                        <action selector="btnTouchUpInside:" destination="-1" eventType="touchUpInside" id="bQv-6W-Aeh"/>
+                    </connections>
+                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="7dv-PH-Zdt"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="kKM-1c-QF1" secondAttribute="trailing" constant="79" id="0VJ-Uw-tPH"/>
                 <constraint firstItem="azG-zw-7yb" firstAttribute="top" secondItem="mEz-d0-cpB" secondAttribute="top" constant="133" id="4ea-aP-kSf"/>
+                <constraint firstItem="7dv-PH-Zdt" firstAttribute="bottom" secondItem="Sh0-Hq-uOE" secondAttribute="bottom" id="59T-y1-d0o"/>
                 <constraint firstAttribute="bottom" secondItem="8T7-IW-tfl" secondAttribute="bottom" constant="56" id="6s6-ed-HkY"/>
                 <constraint firstAttribute="bottom" secondItem="ZPn-Fo-B4N" secondAttribute="bottom" constant="56" id="949-8T-lpL"/>
                 <constraint firstItem="nwn-Zd-fva" firstAttribute="top" secondItem="mEz-d0-cpB" secondAttribute="top" id="Abq-yf-SmH"/>
@@ -440,9 +514,14 @@
                 <constraint firstAttribute="trailing" secondItem="ECh-R7-G6c" secondAttribute="trailing" constant="79" id="KU9-0h-Luh"/>
                 <constraint firstItem="nwn-Zd-fva" firstAttribute="bottom" secondItem="7dv-PH-Zdt" secondAttribute="bottom" id="LDR-iK-Rpf"/>
                 <constraint firstItem="nwn-Zd-fva" firstAttribute="trailing" secondItem="7dv-PH-Zdt" secondAttribute="trailing" id="PLP-Vu-Ahd"/>
+                <constraint firstItem="7dv-PH-Zdt" firstAttribute="trailing" secondItem="Taj-fe-HpF" secondAttribute="trailing" id="TRM-G5-A2F"/>
                 <constraint firstItem="kKM-1c-QF1" firstAttribute="top" secondItem="mEz-d0-cpB" secondAttribute="top" constant="133" id="Zd0-Lq-hTC"/>
+                <constraint firstItem="7dv-PH-Zdt" firstAttribute="bottom" secondItem="b58-gF-MEb" secondAttribute="bottom" constant="94" id="aEN-0E-EO1"/>
+                <constraint firstItem="Sh0-Hq-uOE" firstAttribute="leading" secondItem="7dv-PH-Zdt" secondAttribute="leading" id="dMe-Og-kIt"/>
                 <constraint firstItem="qWD-88-Gch" firstAttribute="top" secondItem="mEz-d0-cpB" secondAttribute="top" constant="56" id="eCd-cq-QHr"/>
+                <constraint firstItem="7dv-PH-Zdt" firstAttribute="bottom" secondItem="Taj-fe-HpF" secondAttribute="bottom" id="jgv-cC-YN5"/>
                 <constraint firstItem="nwn-Zd-fva" firstAttribute="leading" secondItem="7dv-PH-Zdt" secondAttribute="leading" id="puV-Fm-aIe"/>
+                <constraint firstItem="7dv-PH-Zdt" firstAttribute="trailing" secondItem="b58-gF-MEb" secondAttribute="trailing" constant="46" id="rlT-jn-L3C"/>
                 <constraint firstItem="qWD-88-Gch" firstAttribute="leading" secondItem="mEz-d0-cpB" secondAttribute="leading" constant="79" id="rta-EV-pLc"/>
                 <constraint firstAttribute="trailing" secondItem="ZPn-Fo-B4N" secondAttribute="trailing" constant="79" id="xBj-cR-nWd"/>
                 <constraint firstItem="8T7-IW-tfl" firstAttribute="leading" secondItem="mEz-d0-cpB" secondAttribute="leading" constant="79" id="yEQ-Sr-c4b"/>
@@ -567,14 +646,20 @@
         <image name="remotemainbg" width="320" height="320"/>
         <image name="remotescenebg" width="280" height="280"/>
         <image name="remotescenebg_vs" width="280" height="280"/>
+        <image name="sr_P_eight_default" width="60" height="46"/>
+        <image name="sr_P_eight_selected" width="60" height="46"/>
         <image name="sr_P_mute_default" width="60" height="46"/>
         <image name="sr_P_mute_selected" width="60" height="46"/>
         <image name="sr_P_next_default" width="60" height="46"/>
         <image name="sr_P_next_selected" width="60" height="46"/>
+        <image name="sr_P_nine_default" width="60" height="46"/>
+        <image name="sr_P_nine_selected" width="60" height="46"/>
         <image name="sr_P_play_default" width="60" height="46"/>
         <image name="sr_P_play_selected" width="60" height="46"/>
         <image name="sr_P_prev_default" width="60" height="46"/>
         <image name="sr_P_prev_selected" width="60" height="46"/>
+        <image name="sr_P_seven_default" width="60" height="46"/>
+        <image name="sr_P_seven_selected" width="60" height="46"/>
         <image name="sr_P_voldown_default" width="60" height="46"/>
         <image name="sr_P_voldown_selected" width="60" height="46"/>
         <image name="sr_P_volup_default" width="60" height="46"/>

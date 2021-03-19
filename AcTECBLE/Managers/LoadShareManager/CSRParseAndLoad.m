@@ -911,7 +911,8 @@
                         }else if ([shortname isEqualToString:@"RB02"]
                                   ||[shortname isEqualToString:@"RB06"]
                                   ||[shortname isEqualToString:@"RSBH"]
-                                  ||[shortname isEqualToString:@"1BMBH"]) {
+                                  ||[shortname isEqualToString:@"1BMBH"]
+                                  ||[shortname isEqualToString:@"RB08"]) {
                             
                             NSInteger t1 = [deviceDict[@"`c_deviceType1`"] integerValue];
                             NSInteger i1 = [deviceDict[@"`c_deviceid_1`"] integerValue];

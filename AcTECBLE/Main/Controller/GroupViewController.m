@@ -86,10 +86,12 @@
             self.groupIconImageView.alpha = 0.8;
             self.groupIconImageView.image = [UIImage imageWithData:_areaEntity.areaImage];
         }else {
-            self.groupIconImageView.alpha = 1;
-            NSArray *iconArray = kGroupIcons;
-            NSString *imageString = [iconArray objectAtIndex:[_areaEntity.areaIconNum integerValue]];
-            self.groupIconImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@room_highlight",imageString]];
+            if ([_areaEntity.areaIconNum integerValue] <= 16) {
+                self.groupIconImageView.alpha = 1;
+                NSArray *iconArray = kGroupIcons;
+                NSString *imageString = [iconArray objectAtIndex:[_areaEntity.areaIconNum integerValue]];
+                self.groupIconImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@room_highlight",imageString]];
+            }
         }
         
         iconNum = _areaEntity.areaIconNum;

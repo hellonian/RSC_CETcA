@@ -379,7 +379,9 @@
                     || [CSRUtilities belongToSceneRemoteFourKeys:deviceEntity.shortName]
                     || [CSRUtilities belongToSceneRemoteFourKeysV:deviceEntity.shortName]
                     || [CSRUtilities belongToSceneRemoteSixKeys:deviceEntity.shortName]
-                    || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]) {
+                    || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]
+                    || [CSRUtilities belongToSceneRemotesEightKeysM:deviceEntity.shortName]
+                    || [CSRUtilities belongToSceneRemotesEightKeysSM:deviceEntity.shortName]) {
                     [self sceneRemoteConfigureSceneIndex:deviceId];
                 }
             }
@@ -394,7 +396,9 @@
                 || [CSRUtilities belongToSceneRemoteFourKeys:deviceEntity.shortName]
                 || [CSRUtilities belongToSceneRemoteFourKeysV:deviceEntity.shortName]
                 || [CSRUtilities belongToSceneRemoteSixKeys:deviceEntity.shortName]
-                || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]) {
+                || [CSRUtilities belongToSceneRemoteSixKeysV:deviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemotesEightKeysM:deviceEntity.shortName]
+                || [CSRUtilities belongToSceneRemotesEightKeysSM:deviceEntity.shortName]) {
                 [self sceneRemoteConfigureSceneIndex:deviceId];
             }
         }
@@ -543,6 +547,57 @@
         Byte byte[] = {0x9b, 0x06, 0x01, 0x01, (index1 & 0x00FF), (index1 & 0xFF00)>>8, 0x00, 0x00};
         applyCmd = [[NSData alloc] initWithBytes:byte length:8];
         [[DataModelManager shareInstance] sendDataByStreamDataTransfer:deviceID data:applyCmd];
+    }else if ([CSRUtilities belongToSceneRemotesEightKeysM:deviceEntity.shortName]
+              || [CSRUtilities belongToSceneRemotesEightKeysSM:deviceEntity.shortName]) {
+        NSMutableArray *allIndexs = [[NSMutableArray alloc] initWithObjects:@(0), nil];
+        for (SceneEntity *scene in [CSRAppStateManager sharedInstance].selectedPlace.scenes) {
+            [allIndexs addObject:scene.rcIndex];
+        }
+        
+        NSInteger index1 = 0;
+        while ([allIndexs containsObject:@(index1)]) {
+            index1 = arc4random()%65470+64;
+        }
+        [allIndexs addObject:@(index1)];
+        NSInteger index2 = 0;
+        while ([allIndexs containsObject:@(index2)]) {
+            index2 = arc4random()%65470+64;
+        }
+        [allIndexs addObject:@(index2)];
+        NSInteger index3 = 0;
+        while ([allIndexs containsObject:@(index3)]) {
+            index3 = arc4random()%65470+64;
+        }
+        [allIndexs addObject:@(index3)];
+        NSInteger index4 = 0;
+        while ([allIndexs containsObject:@(index4)]) {
+            index4 = arc4random()%65470+64;
+        }
+        [allIndexs addObject:@(index4)];
+        NSInteger index5 = 0;
+        while ([allIndexs containsObject:@(index5)]) {
+            index5 = arc4random()%65470+64;
+        }
+        [allIndexs addObject:@(index5)];
+        NSInteger index6 = 0;
+        while ([allIndexs containsObject:@(index6)]) {
+            index6 = arc4random()%65470+64;
+        }
+        [allIndexs addObject:@(index6)];
+        NSInteger index7 = 0;
+        while ([allIndexs containsObject:@(index7)]) {
+            index7 = arc4random()%65470+64;
+        }
+        [allIndexs addObject:@(index7)];
+        NSInteger index8 = 0;
+        while ([allIndexs containsObject:@(index8)]) {
+            index8 = arc4random()%65470+64;
+        }
+        [self performSelector:@selector(configureSceneRemoteTimeOut) withObject:nil afterDelay:15.0f];
+        retryCount = 0;
+        Byte byte[] = {0x9b, 0x29, 0x08, 0x01, (index1 & 0x00FF), (index1 & 0xFF00)>>8, 0x00, 0x00, 0x02, (index2 & 0x00FF), (index2 & 0xFF00)>>8, 0x00, 0x00, 0x03, (index3 & 0x00FF), (index3 & 0xFF00)>>8, 0x00, 0x00, 0x04, (index4 & 0x00FF), (index4 & 0xFF00)>>8, 0x00, 0x00, 0x05, (index5 & 0x00FF), (index5 & 0xFF00)>>8, 0x00, 0x00, 0x06, (index6 & 0x00FF), (index6 & 0xFF00)>>8, 0x00, 0x00, 0x07, (index7 & 0x00FF), (index7 & 0xFF00)>>8, 0x00, 0x00, 0x08, (index8 & 0x00FF), (index8 & 0xFF00)>>8, 0x00, 0x00};
+        applyCmd = [[NSData alloc] initWithBytes:byte length:43];
+        [[DataModelManager shareInstance] sendDataByStreamDataTransfer:deviceID data:applyCmd];
     }
     
 }
@@ -611,6 +666,24 @@
                 deviceEntity.remoteBranch = [NSString stringWithFormat:@"%@",[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(3, 3)]]];
                 NSInteger index1 = byte[4] + byte[5] * 256;
                 [self createSceneEntity:index1];
+            }else if ([applyCmd length] == 43) {
+                deviceEntity.remoteBranch = [NSString stringWithFormat:@"%@%@%@%@%@%@%@%@",[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(3, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(8, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(13, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(18, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(23, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(28, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(33, 3)]],[CSRUtilities hexStringFromData:[applyCmd subdataWithRange:NSMakeRange(38, 3)]]];
+                NSInteger index1 = byte[4] + byte[5] * 256;
+                [self createSceneEntity:index1];
+                NSInteger index2 = byte[9] + byte[10] * 256;
+                [self createSceneEntity:index2];
+                NSInteger index3 = byte[14] + byte[15] * 256;
+                [self createSceneEntity:index3];
+                NSInteger index4 = byte[19] + byte[20] * 256;
+                [self createSceneEntity:index4];
+                NSInteger index5 = byte[24] + byte[25] * 256;
+                [self createSceneEntity:index5];
+                NSInteger index6 = byte[29] + byte[30] * 256;
+                [self createSceneEntity:index6];
+                NSInteger index7 = byte[34] + byte[35] * 256;
+                [self createSceneEntity:index7];
+                NSInteger index8 = byte[39] + byte[40] * 256;
+                [self createSceneEntity:index8];
             }
             [[CSRDatabaseManager sharedInstance] saveContext];
         }

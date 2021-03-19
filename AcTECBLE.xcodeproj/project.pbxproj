@@ -38,6 +38,10 @@
 		0D835B951B97603600FF4376 /* CSRmesh.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CEE5E7381B398ABB0039F83C /* CSRmesh.xcdatamodeld */; };
 		0DE95D161B297FFB006D0397 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0DE95D151B297FFB006D0397 /* Images.xcassets */; };
 		2E06A4FF20205B0E007B8BEA /* GroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E06A4FD20205B0E007B8BEA /* GroupViewController.m */; };
+		2E124B1025EF3F6400C0911B /* PIRViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E124B0E25EF3F6400C0911B /* PIRViewController.m */; };
+		2E124B1125EF3F6400C0911B /* PIRViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E124B0F25EF3F6400C0911B /* PIRViewController.xib */; };
+		2E124B1525EF67C500C0911B /* PIRAutomaticSetupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E124B1325EF67C500C0911B /* PIRAutomaticSetupViewController.m */; };
+		2E124B1625EF67C500C0911B /* PIRAutomaticSetupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E124B1425EF67C500C0911B /* PIRAutomaticSetupViewController.xib */; };
 		2E159F30248643D6001E126C /* RemoteMainVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E159F32248643D6001E126C /* RemoteMainVC.xib */; };
 		2E159F372486442A001E126C /* RemoteLCDVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E159F392486442A001E126C /* RemoteLCDVC.xib */; };
 		2E187CA825A567C3000425EC /* PIRDeviceVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E187CA625A567C3000425EC /* PIRDeviceVC.m */; };
@@ -154,6 +158,10 @@
 		2EB3C2C9251D7D6D002FFD1D /* SonosMusicControllerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB3C2C7251D7D6D002FFD1D /* SonosMusicControllerVC.m */; };
 		2EBB39982490F4AC00243D5F /* SceneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EBB39972490F4AC00243D5F /* SceneViewController.xib */; };
 		2EBBA91D21D7442E00D2E7DA /* SocketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EBBA91B21D7442E00D2E7DA /* SocketViewController.m */; };
+		2EBC344F25F2079900FA887E /* PIRAutomaticDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EBC344D25F2079900FA887E /* PIRAutomaticDetailViewController.m */; };
+		2EBC345025F2079900FA887E /* PIRAutomaticDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EBC344E25F2079900FA887E /* PIRAutomaticDetailViewController.xib */; };
+		2EC0DD5925F07CF1003058A2 /* PIRDaylightSensorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC0DD5725F07CF0003058A2 /* PIRDaylightSensorViewController.m */; };
+		2EC0DD5A25F07CF1003058A2 /* PIRDaylightSensorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EC0DD5825F07CF0003058A2 /* PIRDaylightSensorViewController.xib */; };
 		2EC3893A204921C2004D822D /* TimerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC38938204921C2004D822D /* TimerTableViewCell.m */; };
 		2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EC38939204921C2004D822D /* TimerTableViewCell.xib */; };
 		2EC3893F204939CE004D822D /* TimerDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EC3893D204939CE004D822D /* TimerDetailViewController.m */; };
@@ -273,6 +281,12 @@
 		2E0AA21A2126758300DB45EB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/RemoteSettingViewController.strings; sourceTree = "<group>"; };
 		2E0AA21C2126758F00DB45EB /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/RemoteSettingViewController.strings"; sourceTree = "<group>"; };
 		2E112AE8252074F100553CEE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/RemoteLCDVC.xib; sourceTree = "<group>"; };
+		2E124B0D25EF3F6400C0911B /* PIRViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PIRViewController.h; sourceTree = "<group>"; };
+		2E124B0E25EF3F6400C0911B /* PIRViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PIRViewController.m; sourceTree = "<group>"; };
+		2E124B0F25EF3F6400C0911B /* PIRViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PIRViewController.xib; sourceTree = "<group>"; };
+		2E124B1225EF67C500C0911B /* PIRAutomaticSetupViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PIRAutomaticSetupViewController.h; sourceTree = "<group>"; };
+		2E124B1325EF67C500C0911B /* PIRAutomaticSetupViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PIRAutomaticSetupViewController.m; sourceTree = "<group>"; };
+		2E124B1425EF67C500C0911B /* PIRAutomaticSetupViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PIRAutomaticSetupViewController.xib; sourceTree = "<group>"; };
 		2E159F31248643D6001E126C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/RemoteMainVC.xib; sourceTree = "<group>"; };
 		2E187CA525A567C3000425EC /* PIRDeviceVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PIRDeviceVC.h; sourceTree = "<group>"; };
 		2E187CA625A567C3000425EC /* PIRDeviceVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PIRDeviceVC.m; sourceTree = "<group>"; };
@@ -537,6 +551,12 @@
 		2EBB39972490F4AC00243D5F /* SceneViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SceneViewController.xib; sourceTree = "<group>"; };
 		2EBBA91A21D7442E00D2E7DA /* SocketViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SocketViewController.h; sourceTree = "<group>"; };
 		2EBBA91B21D7442E00D2E7DA /* SocketViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SocketViewController.m; sourceTree = "<group>"; };
+		2EBC344C25F2079900FA887E /* PIRAutomaticDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PIRAutomaticDetailViewController.h; sourceTree = "<group>"; };
+		2EBC344D25F2079900FA887E /* PIRAutomaticDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PIRAutomaticDetailViewController.m; sourceTree = "<group>"; };
+		2EBC344E25F2079900FA887E /* PIRAutomaticDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PIRAutomaticDetailViewController.xib; sourceTree = "<group>"; };
+		2EC0DD5625F07CF0003058A2 /* PIRDaylightSensorViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PIRDaylightSensorViewController.h; sourceTree = "<group>"; };
+		2EC0DD5725F07CF0003058A2 /* PIRDaylightSensorViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PIRDaylightSensorViewController.m; sourceTree = "<group>"; };
+		2EC0DD5825F07CF0003058A2 /* PIRDaylightSensorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PIRDaylightSensorViewController.xib; sourceTree = "<group>"; };
 		2EC18BC4221D225F008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/DeviceViewController.strings; sourceTree = "<group>"; };
 		2EC18BC5221D225F008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/GroupViewController.strings; sourceTree = "<group>"; };
 		2EC18BC6221D225F008B33DC /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/RGBDeviceViewController.strings; sourceTree = "<group>"; };
@@ -1194,6 +1214,18 @@
 				2E187CA525A567C3000425EC /* PIRDeviceVC.h */,
 				2E187CA625A567C3000425EC /* PIRDeviceVC.m */,
 				2E187CA725A567C3000425EC /* PIRDeviceVC.xib */,
+				2E124B0D25EF3F6400C0911B /* PIRViewController.h */,
+				2E124B0E25EF3F6400C0911B /* PIRViewController.m */,
+				2E124B0F25EF3F6400C0911B /* PIRViewController.xib */,
+				2E124B1225EF67C500C0911B /* PIRAutomaticSetupViewController.h */,
+				2E124B1325EF67C500C0911B /* PIRAutomaticSetupViewController.m */,
+				2E124B1425EF67C500C0911B /* PIRAutomaticSetupViewController.xib */,
+				2EC0DD5625F07CF0003058A2 /* PIRDaylightSensorViewController.h */,
+				2EC0DD5725F07CF0003058A2 /* PIRDaylightSensorViewController.m */,
+				2EC0DD5825F07CF0003058A2 /* PIRDaylightSensorViewController.xib */,
+				2EBC344C25F2079900FA887E /* PIRAutomaticDetailViewController.h */,
+				2EBC344D25F2079900FA887E /* PIRAutomaticDetailViewController.m */,
+				2EBC344E25F2079900FA887E /* PIRAutomaticDetailViewController.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1627,6 +1659,7 @@
 				2E7C7B14250B6B6A00AFA845 /* NearbyViewController.xib in Resources */,
 				2EBB39982490F4AC00243D5F /* SceneViewController.xib in Resources */,
 				2E37074E20CE4C16000AF696 /* DeviceViewController.xib in Resources */,
+				2EBC345025F2079900FA887E /* PIRAutomaticDetailViewController.xib in Resources */,
 				2E5F120E23BDD22F0018EF16 /* LCDRemoteMemberCell.xib in Resources */,
 				2E6BD7FD20D09B3200036CA2 /* TimerDetailViewController.xib in Resources */,
 				2E388A74214BA91C00CBF73C /* SRGBSceneDetailViewController.xib in Resources */,
@@ -1636,6 +1669,8 @@
 				2E37075820CE8337000AF696 /* GroupViewController.xib in Resources */,
 				2E6C26E720A5845E00BDB95A /* Main.storyboard in Resources */,
 				F45350891CD8B043002D91AB /* SensorActuatorTypes.json in Resources */,
+				2E124B1125EF3F6400C0911B /* PIRViewController.xib in Resources */,
+				2E124B1625EF67C500C0911B /* PIRAutomaticSetupViewController.xib in Resources */,
 				2E7C7B18250B6B6A00AFA845 /* OtherViewController.xib in Resources */,
 				2EF57E2E24CA7404003D908A /* AboutViewController.xib in Resources */,
 				2E6BD80420D0AD6D00036CA2 /* RemoteSettingViewController.xib in Resources */,
@@ -1660,6 +1695,7 @@
 				2EC3893B204921C2004D822D /* TimerTableViewCell.xib in Resources */,
 				2E4DDCEB21F9680900B2ACF3 /* FanViewController.xib in Resources */,
 				2E4902AF224233F5003B901A /* cskey_db.json in Resources */,
+				2EC0DD5A25F07CF1003058A2 /* PIRDaylightSensorViewController.xib in Resources */,
 				2E216EEB2138F28200E545B9 /* RGBSceneCollectionViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1731,6 +1767,7 @@
 				2EE757C720102B7B00FB75C5 /* MainCollectionView.m in Sources */,
 				0D835B371B9749E600FF4376 /* CBPeripheral+Info.m in Sources */,
 				2E2E70B11FF5DE60002D1C1D /* NSMutableArray+Queue.m in Sources */,
+				2EBC344F25F2079900FA887E /* PIRAutomaticDetailViewController.m in Sources */,
 				2E3630FB2199666F00EF22DD /* FanViewController.m in Sources */,
 				2E8623492019DB28004EF0E0 /* DeviceViewController.m in Sources */,
 				0D835B851B975E8700FF4376 /* CSRSettingsEntity.m in Sources */,
@@ -1742,6 +1779,7 @@
 				2E216EEA2138F28200E545B9 /* RGBSceneCollectionViewCell.m in Sources */,
 				2E5A5873213788F900E416F9 /* FavoriteViewController.m in Sources */,
 				2E18B21F25232D5D0044D2E0 /* NetworkSettingVC.m in Sources */,
+				2E124B1525EF67C500C0911B /* PIRAutomaticSetupViewController.m in Sources */,
 				0D835B3C1B9749E600FF4376 /* CSRUtilities.m in Sources */,
 				0D835B3D1B9749E600FF4376 /* CSRmeshManager.m in Sources */,
 				2E3417BE23A7276A000D1A52 /* RemoteMainVC.m in Sources */,
@@ -1779,6 +1817,7 @@
 				2E6A021A1F39893400111312 /* MainTabBarController.m in Sources */,
 				2EC3893A204921C2004D822D /* TimerTableViewCell.m in Sources */,
 				F4658A1F1C99747A00C284F4 /* CSRDeviceEventsEntity+CoreDataProperties.m in Sources */,
+				2E124B1025EF3F6400C0911B /* PIRViewController.m in Sources */,
 				2E7C7B16250B6B6A00AFA845 /* NearbyViewController.m in Sources */,
 				0D835B561B9749E600FF4376 /* CSRCheckbox.m in Sources */,
 				2ED3963F204D09D20068B666 /* TimerDeviceEntity.m in Sources */,
@@ -1822,6 +1861,7 @@
 				2EE757D62010B23100FB75C5 /* SceneCollectionViewCell.m in Sources */,
 				2EEA427F215247180050B729 /* CurtainViewController.m in Sources */,
 				2EF5F07C1F445AC30069C594 /* ImproveTouchingExperience.m in Sources */,
+				2EC0DD5925F07CF1003058A2 /* PIRDaylightSensorViewController.m in Sources */,
 				F4C85EA81CB3EE0E003E1FF3 /* CSRControllerEntity.m in Sources */,
 				2E3B9661200F2553000BD086 /* DeviceModel.m in Sources */,
 				2EDF04E0213D151300B9E92F /* MRGBSceneDetailViewController.m in Sources */,
@@ -2344,7 +2384,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 44;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2404,7 +2444,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 44;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;

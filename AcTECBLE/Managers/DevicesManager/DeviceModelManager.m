@@ -1380,17 +1380,33 @@
                     }
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@1}];
                 }else if ([CSRUtilities belongToSocketOneChannel:model.shortName]) {
-                    model.channel1PowerState = [member.eveD0 boolValue];
-                    model.childrenState1 = [member.eveD1 boolValue];
-                    model.powerState = member.eveD0;
+                    if ([member.eveType integerValue] == 17) {
+                        model.channel1PowerState = NO;
+                        model.powerState = @0;
+                    }else if ([member.eveType integerValue] == 16) {
+                        if (!model.childrenState1) {
+                            model.channel1PowerState = YES;
+                            model.powerState = @1;
+                        }
+                    }
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@1}];
                 }else if ([CSRUtilities belongToSocketTwoChannel:model.shortName]) {
                     if ([member.channel integerValue] == 1) {
-                        model.channel1PowerState = [member.eveD0 boolValue];
-                        model.childrenState1 = [member.eveD1 boolValue];
+                        if ([member.eveType integerValue] == 17) {
+                            model.channel1PowerState = NO;
+                        }else if ([member.eveType integerValue] == 16) {
+                            if (!model.childrenState1) {
+                                model.channel1PowerState = YES;
+                            }
+                        }
                     }else if ([member.channel integerValue] == 2) {
-                        model.channel2PowerState = [member.eveD0 boolValue];
-                        model.childrenState2 = [member.eveD1 boolValue];
+                        if ([member.eveType integerValue] == 17) {
+                            model.channel2PowerState = NO;
+                        }else if ([member.eveType integerValue] == 16) {
+                            if (!model.childrenState2) {
+                                model.channel2PowerState = YES;
+                            }
+                        }
                     }
                     model.powerState = @(model.channel1PowerState || model.channel2PowerState);
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":member.deviceID,@"channel":@([member.channel integerValue]+1)}];
@@ -1670,8 +1686,10 @@
                         NSLog(@"~~> %@   %@",nameData, name);
                         [self.mcNameDataDic removeObjectForKey:deviceID];
                         
-                        if ([deviceID isEqualToNumber:applyDeviceID]) {
-                            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(getSongNameDelayMethod) object:nil];
+                        if (applyDeviceID) {
+                            if ([deviceID isEqualToNumber:applyDeviceID]) {
+                                [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(getSongNameDelayMethod) object:nil];
+                            }
                         }
                         
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshMCSongName" object:self userInfo:@{@"deviceId":deviceID}];

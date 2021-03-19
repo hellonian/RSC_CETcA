@@ -613,7 +613,7 @@
 
 #define MESH_MTL_CHAR_ADVERT        @"C4EDC000-9DAF-11E3-800A-00025B000B00"
 
-- (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {  
     if (_isUpdateFW && !_macformcuupdateConnection && !_macforotauconnectedcase) {
         if (error == nil) {
             if (_isForGAIA) {
