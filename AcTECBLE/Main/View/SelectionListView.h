@@ -17,7 +17,11 @@ typedef NS_ENUM(NSInteger, SelectionListViewSelectionMode)
     SelectionListViewSelectionMode_PlayStop = 4,
     SelectionListViewSelectionMode_NormalMute = 5,
     SelectionListViewSelectionMode_ChannelPowerState = 6,
-    SelectionListViewSelectionMode_Channel = 7
+    SelectionListViewSelectionMode_Channel = 7,
+    SelectionListViewSelectionMode_Fengsu = 8,
+    SelectionListViewSelectionMode_Wendu = 9,
+    SelectionListViewSelectionMode_Moshi = 10,
+    SelectionListViewSelectionMode_Fengxiang = 11
 };
 
 @protocol SelectionListViewDelegate <NSObject>

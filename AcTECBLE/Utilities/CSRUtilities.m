@@ -1177,7 +1177,8 @@
         || [kDALIDeviceTwo containsObject:shortName]
         || [kPIRDevice containsObject:shortName]
         || [kSceneRemotesEightKeysM containsObject:shortName]
-        || [kSceneRemotesEightKeysSM containsObject:shortName]) {
+        || [kSceneRemotesEightKeysSM containsObject:shortName]
+        || [kThermoregulators containsObject:shortName]) {
         return YES;
     }
     return NO;

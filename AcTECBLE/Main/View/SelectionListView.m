@@ -97,7 +97,11 @@
               || _sMode == SelectionListViewSelectionMode_PlayStop
               || _sMode == SelectionListViewSelectionMode_NormalMute
               || _sMode == SelectionListViewSelectionMode_ChannelPowerState
-              || _sMode == SelectionListViewSelectionMode_Channel) {
+              || _sMode == SelectionListViewSelectionMode_Channel
+              || _sMode == SelectionListViewSelectionMode_Fengsu
+              || _sMode == SelectionListViewSelectionMode_Wendu
+              || _sMode == SelectionListViewSelectionMode_Moshi
+              || _sMode == SelectionListViewSelectionMode_Fengxiang) {
         if (model.selected) {
             if ([_selectedAry count] > 0) {
                 SelectionListModel *model = [_selectedAry firstObject];

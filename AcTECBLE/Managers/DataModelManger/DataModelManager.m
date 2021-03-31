@@ -803,6 +803,18 @@ static DataModelManager *manager = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"PIRACTIONCALL" object:self userInfo:@{@"DEVICEID":sourceDeviceId, @"TRIGGET":@(byte[3]),@"ACTION":@(byte[4]),@"STATE":@(byte[5])}];
         }
     }
+    
+    else if ([dataStr hasPrefix:@"9f060101"]) {
+        if ([data length] >= 8) {
+            Byte *byte = (Byte *)[data bytes];
+            int tpower  = byte[4] & 1;
+            int tmoshi = (byte[4] & 14) >> 1;
+            int tfengxiang = (byte[4] & 240) >> 4;
+            int tfengsu = byte[5] & 7;
+            int twendu = byte[6] & 127;
+            [[DeviceModelManager sharedInstance] flashThermoregulatorState:sourceDeviceId tpower:tpower tmoshi:tmoshi tfengxiang:tfengxiang tfengsu:tfengsu twendu:twendu];
+        }
+    }
 }
 
 - (void)didReceiveStreamData:(NSNumber *)deviceId streamNumber:(NSNumber *)streamNumber data:(NSData *)data {

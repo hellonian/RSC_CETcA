@@ -1336,6 +1336,7 @@
                         model.powerState = @0;
                     }else if ([member.eveType integerValue] == 25) {
                         model.channel1PowerState = YES;
+                        model.powerState = @1;
                         model.channel1Level = [member.eveD0 integerValue];
                         model.colorTemperature = @([member.eveD2 integerValue] * 256 + [member.eveD1 integerValue]);
                         model.level = member.eveD0;
@@ -1826,6 +1827,20 @@
             CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID];
             device.remoteBranch = songs;
             [[CSRDatabaseManager sharedInstance] saveContext];
+            break;
+        }
+    }
+}
+
+- (void)flashThermoregulatorState:(NSNumber *)deviceID tpower:(int)tpower tmoshi:(int)tmoshi tfengxiang:(int)tfengxiang tfengsu:(int)tfengsu twendu:(int)twendu {
+    for (DeviceModel *model in _allDevices) {
+        if ([model.deviceId isEqualToNumber:deviceID]) {
+            model.channel1PowerState = tpower;
+            model.channel1Level = tmoshi;
+            model.blue = @(tfengxiang);
+            model.red = @(tfengsu);
+            model.green  = @(twendu);
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceID,@"channel":@1}];
             break;
         }
     }

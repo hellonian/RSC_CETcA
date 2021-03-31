@@ -206,8 +206,7 @@
                      || [kTwoChannelSwitchs containsObject:device.shortName]
                      || [kThreeChannelSwitchs containsObject:device.shortName]
                      || [kThreeChannelDimmers containsObject:device.shortName]
-                     || [kHOneChannelCurtainController containsObject:device.shortName]
-                     || [kDALIDeviceTwo containsObject:device.shortName])
+                     || [kHOneChannelCurtainController containsObject:device.shortName])
                     && ![deviceIds containsObject:device.deviceId]) {
                     SingleDeviceModel *model = [[SingleDeviceModel alloc] init];
                     model.deviceId = device.deviceId;
@@ -651,8 +650,7 @@
                     || [kMusicController containsObject:device.shortName]
                     || [kThreeChannelDimmers containsObject:device.shortName]
                     || [kHOneChannelCurtainController containsObject:device.shortName]
-                    || [kSonosMusicController containsObject:device.shortName]
-                    || [kDALIDeviceTwo containsObject:device.shortName]) {
+                    || [kSonosMusicController containsObject:device.shortName]) {
                     
                     BOOL exist = NO;
                     for (SceneMemberEntity *m in self.originalMembers) {
@@ -783,8 +781,7 @@
                     || [kTwoChannelDimmers containsObject:device.shortName]
                     || [kTwoChannelSwitchs containsObject:device.shortName]
                     || [kThreeChannelSwitchs containsObject:device.shortName]
-                    || [kThreeChannelDimmers containsObject:device.shortName]
-                    || [kDALIDeviceTwo containsObject:device.shortName]) {
+                    || [kThreeChannelDimmers containsObject:device.shortName]) {
                     SingleDeviceModel *model = [[SingleDeviceModel alloc] init];
                     model.deviceId = device.deviceId;
                     model.deviceName = device.name;

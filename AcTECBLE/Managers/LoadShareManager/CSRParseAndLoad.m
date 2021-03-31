@@ -1083,9 +1083,9 @@
                                                 
                                                 SceneMemberEntity *sceneMemberObj1 = [self creatSceneMemberObj:sceneDict[@"`_id`"] parentDict:parentDict deviceDic:deviceDict channel:@2];
                                                 if (![parentDict[@"`c_chanel2_onoff`"] boolValue]) {
-                                                    sceneMemberObj.eveType = @(17);
+                                                    sceneMemberObj1.eveType = @(17);
                                                 }else {
-                                                    sceneMemberObj.eveType = @(16);
+                                                    sceneMemberObj1.eveType = @(16);
                                                 }
                                                 [members addObject:sceneMemberObj1];
                                             }else if ([parentDict[@"`c_channel`"] integerValue] == 1) {

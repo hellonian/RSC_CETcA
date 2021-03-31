@@ -52,7 +52,8 @@
                     || [CSRUtilities belongToCWDevice:self.kindName]
                     || [CSRUtilities belongToRGBDevice:self.kindName]
                     || [CSRUtilities belongToRGBCWDevice:self.kindName]
-                    || [CSRUtilities belongToTwoChannelDimmer:_kindName]) {
+                    || [CSRUtilities belongToTwoChannelDimmer:_kindName]
+                    || [CSRUtilities belongToThreeChannelDimmer:_kindName]) {
                     [self.delegate galleryDropViewPanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId channel:_channel withPanState:sender.state];
                 }
             }
@@ -82,7 +83,8 @@
                     || [CSRUtilities belongToCWDevice:self.kindName]
                     || [CSRUtilities belongToRGBDevice:self.kindName]
                     || [CSRUtilities belongToRGBCWDevice:self.kindName]
-                    || [CSRUtilities belongToTwoChannelDimmer:_kindName]) {
+                    || [CSRUtilities belongToTwoChannelDimmer:_kindName]
+                    || [CSRUtilities belongToThreeChannelDimmer:_kindName]) {
                     [self.delegate galleryDropViewPanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId channel:_channel withPanState:sender.state];
                 }
             }
@@ -97,7 +99,8 @@
                     || [CSRUtilities belongToCWDevice:self.kindName]
                     || [CSRUtilities belongToRGBDevice:self.kindName]
                     || [CSRUtilities belongToRGBCWDevice:self.kindName]
-                    || [CSRUtilities belongToTwoChannelDimmer:_kindName]) {
+                    || [CSRUtilities belongToTwoChannelDimmer:_kindName]
+                    || [CSRUtilities belongToThreeChannelDimmer:_kindName]) {
                     [self.delegate galleryDropViewPanBrightnessWithTouchPoint:touchPoint withOrigin:self.center toLight:self.deviceId channel:_channel withPanState:sender.state];
                 }
             }

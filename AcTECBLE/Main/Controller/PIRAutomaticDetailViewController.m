@@ -24,7 +24,7 @@
     NSNumber *retryDeviceId;
 }
 @property (weak, nonatomic) IBOutlet UILabel *triggerLabel;
-@property (nonatomic, assign) int triggerNumber;//1、有人；2、无人；3、有人/无人；4、温度大于等于；5、温度小于。
+@property (nonatomic, assign) int triggerNumber;//1、有人；2、无人；3、有人/无人中的有人；4、有人/无人中的无人；5、温度大于等于；6、温度小于。
 @property (nonatomic, strong) NSMutableArray *temperatures;
 @property (nonatomic, assign) NSInteger selectedRow;
 @property (weak, nonatomic) IBOutlet UILabel *triggerTitleLabel;
@@ -40,6 +40,8 @@
 @property (nonatomic, assign) BOOL applyRepeat;
 @property (nonatomic, strong) NSMutableArray *scenes;
 @property (nonatomic, strong) NSMutableArray *sceneMembers;
+@property (nonatomic, strong) SceneMemberEntity *mMemberToApply;
+@property (nonatomic, assign) int actionIDToApply;
 
 @end
 
@@ -58,6 +60,7 @@
                                                object:nil];
     _mDic = [NSMutableDictionary new];
     _members = [NSMutableArray new];
+    _actionIDToApply = -1;
     _tableView.dataSource = self;
     _tableView.delegate = self;
     _tableView.rowHeight = 56.0f;
@@ -192,6 +195,7 @@
                             }
                         }
                         _mDic = [[NSMutableDictionary alloc] initWithDictionary:bodySensorDic];
+                        NSLog(@"%@", _mDic);
                     }
                 }
             }
@@ -215,7 +219,7 @@
                         if ([tempSensorDic count] == 2) {
                             NSArray *keys = [tempSensorDic allKeys];
                             if ([keys containsObject:@"greater"]) {
-                                _triggerNumber = 4;
+                                _triggerNumber = 5;
                                 _triggerLabel.text = [NSString stringWithFormat:@"≥%@℃",[tempSensorDic[@"greater"][@"temperature_value"] stringValue]];
                                 NSArray *greaterActions = tempSensorDic[@"greater"][@"actions"];
                                 if ([greaterActions count] > 0) {
@@ -246,7 +250,7 @@
                                     }
                                 }
                             }else if ([keys containsObject:@"less"]) {
-                                _triggerNumber = 5;
+                                _triggerNumber = 6;
                                 _triggerLabel.text = [NSString stringWithFormat:@"＜%@℃",[tempSensorDic[@"less"][@"temperature_value"] stringValue]];
                                 NSArray *lessActions = tempSensorDic[@"less"][@"actions"];
                                 if ([lessActions count] > 0) {
@@ -305,7 +309,7 @@
                         NSArray *actions = _mDic[@"no_body"][@"actions"];
                         [self sceneMemberFrom:actions];
                         [self nextMemberOperation];
-                    }else if (_triggerNumber == 3) {
+                    }else if (_triggerNumber == 3 || _triggerNumber == 4) {
                         _triggerNumber = 1;
                         NSArray *bodyActions = _mDic[@"body"][@"actions"];
                         [self sceneMemberFrom:bodyActions];
@@ -333,7 +337,7 @@
                         NSArray *actions = _mDic[@"body"][@"actions"];
                         [self sceneMemberFrom:actions];
                         [self nextMemberOperation];
-                    }else if (_triggerNumber == 3) {
+                    }else if (_triggerNumber == 3 || _triggerNumber == 4) {
                         _triggerNumber = 2;
                         NSArray *bodyActions = _mDic[@"body"][@"actions"];
                         [self sceneMemberFrom:bodyActions];
@@ -386,10 +390,10 @@
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleAlert];
         [alert.view setTintColor:DARKORAGE];
         UIAlertAction *action1 = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"temperature_greater_equal", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self showTemperaturePickAlerWithTrigger:4];
+            [self showTemperaturePickAlerWithTrigger:5];
         }];
         UIAlertAction *action2 = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"temperature_less", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self showTemperaturePickAlerWithTrigger:5];
+            [self showTemperaturePickAlerWithTrigger:6];
         }];
         UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
         
@@ -410,18 +414,18 @@
     [picker selectRow:20 inComponent:0 animated:YES];
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
     UIAlertAction *save = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Save", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        if (trigger == 4) {
-            if (_triggerNumber != 4) {
+        if (trigger == 5) {
+            if (_triggerNumber != 5) {
                 _triggerLabel.text = [NSString stringWithFormat:@"≥%@℃",[_temperatures[_selectedRow] stringValue]];
-                if (_triggerNumber == 5) {
+                if (_triggerNumber == 6) {
                     _scenes = [NSMutableArray new];
                     _members = [NSMutableArray new];
-                    _triggerNumber = 4;
+                    _triggerNumber = 5;
                     NSArray *actions = _mDic[@"less"][@"actions"];
                     [self sceneMemberFrom:actions];
                     [self nextMemberOperation];
                 }else {
-                    _triggerNumber = 4;
+                    _triggerNumber = 5;
                     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(triggerCall:) name:@"PIRTRIGGERCALL" object:nil];
                     NSInteger temp = [_temperatures[_selectedRow] integerValue];
                     if (temp < 0) {
@@ -434,18 +438,18 @@
                     [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
                 }
             }
-        }else if (trigger == 5) {
-            if (_triggerNumber != 5) {
+        }else if (trigger == 6) {
+            if (_triggerNumber != 6) {
                 _triggerLabel.text = [NSString stringWithFormat:@"＜%@℃",[_temperatures[_selectedRow] stringValue]];
-                if (_triggerNumber == 4) {
+                if (_triggerNumber == 5) {
                     _scenes = [NSMutableArray new];
                     _members = [NSMutableArray new];
-                    _triggerNumber = 5;
+                    _triggerNumber = 6;
                     NSArray *actions = _mDic[@"greater"][@"actions"];
                     [self sceneMemberFrom:actions];
                     [self nextMemberOperation];
                 }else {
-                    _triggerNumber = 5;
+                    _triggerNumber = 6;
                     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(triggerCall:) name:@"PIRTRIGGERCALL" object:nil];
                     NSInteger temp = [_temperatures[_selectedRow] integerValue];
                     if (temp < 0) {
@@ -1072,10 +1076,13 @@
 
 - (void)addMemberToMembers:(SceneMemberEntity *)memberEntity {
     SceneMemberExpandModel *model;
-    for (SceneMemberExpandModel *eModel in _members) {
-        if ([eModel.deviceID isEqualToNumber:memberEntity.deviceID]) {
-            model = eModel;
-            break;
+    for (id obj in _members) {
+        if ([obj isKindOfClass:[SceneMemberExpandModel class]]) {
+            SceneMemberExpandModel *eModel = (SceneMemberExpandModel *)obj;
+            if ([eModel.deviceID isEqualToNumber:memberEntity.deviceID]) {
+                model = eModel;
+                break;
+            }
         }
     }
     if (!model) {
@@ -1083,7 +1090,21 @@
         model.deviceID = memberEntity.deviceID;
         model.kindString = memberEntity.kindString;
         model.sceneID = memberEntity.sceneID;
-        [_members addObject:model];
+        BOOL exist = NO;
+        if ([_members count]>0) {
+            id obj = [_members lastObject];
+            if ([obj isKindOfClass:[NSString class]]) {
+                NSString *str = (NSString *)obj;
+                if ([str length]==1) {
+                    exist = YES;
+                }
+            }
+        }
+        if (exist) {
+            [_members insertObject:model atIndex:[_members count]-1];
+        }else {
+            [_members addObject:model];
+        }
     }
     if ([memberEntity.channel integerValue] == 1) {
         model.eve1Type = [memberEntity.eveType integerValue];
@@ -1141,20 +1162,11 @@
     [alert.view setTintColor:DARKORAGE];
     UIAlertAction *save = [UIAlertAction actionWithTitle:@"保存" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         uint8_t trigger = 0;
-        if (_triggerNumber == 1) {
+        if (_triggerNumber == 1 || _triggerNumber == 3) {
             trigger = 0;
-        }else if (_triggerNumber == 2) {
+        }else if (_triggerNumber == 2 || _triggerNumber == 4) {
             trigger = 1;
-        }else if (_triggerNumber == 3) {
-            NSArray *keys = [_mDic allKeys];
-            if ([keys containsObject:@"no_body"]) {
-                trigger = 1;
-            }else {
-                trigger = 0;
-            }
-        }else if (_triggerNumber == 4) {
-            trigger = 2;
-        }else if (_triggerNumber == 5) {
+        }else if (_triggerNumber == 5 || _triggerNumber == 6) {
             trigger = 2;
         }
         uint8_t act = [self getFreeActionID];
@@ -1180,7 +1192,7 @@
 
 - (uint8_t)getFreeActionID {
     if ([_mDic count]>0) {
-        if (_triggerNumber == 1) {
+        if (_triggerNumber == 1 || _triggerNumber == 3) {
             id bodys = _mDic[@"body"];
             if ([bodys isKindOfClass:[NSNumber class]]) {
                 return 0;
@@ -1189,7 +1201,7 @@
                 NSArray *actions = [bodyDic objectForKey:@"actions"];
                 return [actions count];
             }
-        }else if (_triggerNumber == 2) {
+        }else if (_triggerNumber == 2 || _triggerNumber == 4) {
             id nobodys = _mDic[@"no_body"];
             if ([nobodys isKindOfClass:[NSNumber class]]) {
                 return 0;
@@ -1198,28 +1210,7 @@
                 NSArray *actions = [nobodyDic objectForKey:@"actions"];
                 return [actions count];
             }
-        }else if (_triggerNumber == 3) {
-            NSArray *keys = [_mDic allKeys];
-            if ([keys containsObject:@"no_body"]) {
-                id nobodys = _mDic[@"no_body"];
-                if ([nobodys isKindOfClass:[NSNumber class]]) {
-                    return 0;
-                }else {
-                    NSDictionary *nobodyDic = (NSDictionary *)nobodys;
-                    NSArray *actions = [nobodyDic objectForKey:@"actions"];
-                    return [actions count];
-                }
-            }else {
-                id bodys = _mDic[@"body"];
-                if ([bodys isKindOfClass:[NSNumber class]]) {
-                    return 0;
-                }else {
-                    NSDictionary *bodyDic = (NSDictionary *)bodys;
-                    NSArray *actions = [bodyDic objectForKey:@"actions"];
-                    return [actions count];
-                }
-            }
-        }else if (_triggerNumber == 4) {
+        }else if (_triggerNumber == 5) {
             id greaters = _mDic[@"greater"];
             if ([greaters isKindOfClass:[NSNumber class]]) {
                 return 0;
@@ -1228,7 +1219,7 @@
                 NSArray *actions = [greaterDic objectForKey:@"actions"];
                 return [actions count];
             }
-        }else if (_triggerNumber == 5) {
+        }else if (_triggerNumber == 6) {
             id lesss = _mDic[@"less"];
             if ([lesss isKindOfClass:[NSNumber class]]) {
                 return 0;
@@ -1259,11 +1250,13 @@
         UISwitch *swi = [[UISwitch alloc] init];
         swi.onTintColor = DARKORAGE;
         swi.tag = 1;
-        swi.hidden = YES;
+        [swi addTarget:self action:@selector(repeatSwitch:) forControlEvents:UIControlEventValueChanged];
         [cell.contentView addSubview:swi];
         [swi autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
         [swi autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:20.0];
     }
+    UISwitch *swi = (UISwitch *)[cell.contentView viewWithTag:1];
+    swi.hidden = YES;
     id obj = [_members objectAtIndex:indexPath.row];
     if ([obj isKindOfClass:[SceneMemberExpandModel class]]) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -1392,7 +1385,7 @@
             if (member.eve1Type == 17) {
                 cell.detailTextLabel.text = @"OFF";
             }else if (member.eve1Type == 25) {
-                cell.detailTextLabel.text = [NSString stringWithFormat:@"%dK %.f%%", member.eve1D2*256+member.eve1D1, member.eve1D0/255.0*100];
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%ldK %.f%%", member.eve1D2*256+member.eve1D1, member.eve1D0/255.0*100];
             }
         }else if ([CSRUtilities belongToRGBDevice:member.kindString]) {
             if ([CSRUtilities belongToIEMLEDDriver:member.kindString]
@@ -1431,7 +1424,7 @@
             if (member.eve1Type == 17) {
                 cell.detailTextLabel.text = @"OFF";
             }else if (member.eve1Type == 25) {
-                cell.detailTextLabel.text = [NSString stringWithFormat:@"%dK %.f%%", member.eve1D2*256+member.eve1D1, member.eve1D0/255.0*100];
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%ldK %.f%%", member.eve1D2*256+member.eve1D1, member.eve1D0/255.0*100];
             }else if (member.eve1Type == 20) {
                 NSMutableAttributedString *detailText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"● %.f%%", member.eve1D0/255.0*100]];
                 [detailText addAttribute:NSForegroundColorAttributeName value:ColorWithAlpha(member.eve1D1, member.eve1D2, member.eve1D3, 1) range:NSMakeRange(0, 1)];
@@ -1504,7 +1497,7 @@
                             }
                         }
                     }
-                    detailText = [NSString stringWithFormat:@"%@, %d%%", song, (member.eve1D1 & 0xfe)>>1];
+                    detailText = [NSString stringWithFormat:@"%@, %ld%%", song, (member.eve1D1 & 0xfe)>>1];
                 }
             }
             if (member.eve2Type) {
@@ -1525,7 +1518,7 @@
                             }
                         }
                     }
-                    detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %d%%", detailText, song, (member.eve2D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %d%%", song, (member.eve2D1 & 0xfe)>>1];
+                    detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %ld%%", detailText, song, (member.eve2D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %ld%%", song, (member.eve2D1 & 0xfe)>>1];
                 }
             }
             if (member.eve3Type) {
@@ -1546,7 +1539,7 @@
                             }
                         }
                     }
-                    detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %d%%", detailText, song, (member.eve3D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %d%%", song, (member.eve3D1 & 0xfe)>>1];
+                    detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %ld%%", detailText, song, (member.eve3D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %ld%%", song, (member.eve3D1 & 0xfe)>>1];
                 }
             }
             if (member.eve4Type) {
@@ -1567,7 +1560,7 @@
                             }
                         }
                     }
-                    detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %d%%", detailText, song, (member.eve4D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %d%%", song, (member.eve4D1 & 0xfe)>>1];
+                    detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %ld%%", detailText, song, (member.eve4D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %ld%%", song, (member.eve4D1 & 0xfe)>>1];
                 }
             }
             if (member.eve5Type) {
@@ -1588,7 +1581,7 @@
                             }
                         }
                     }
-                    detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %d%%", detailText, song, (member.eve5D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %d%%", song, (member.eve5D1 & 0xfe)>>1];
+                    detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %ld%%", detailText, song, (member.eve5D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %ld%%", song, (member.eve5D1 & 0xfe)>>1];
                 }
             }
             if (member.eve6Type) {
@@ -1609,7 +1602,7 @@
                             }
                         }
                     }
-                    detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %d%%", detailText, song, (member.eve6D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %d%%", song, (member.eve6D1 & 0xfe)>>1];
+                    detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %ld%%", detailText, song, (member.eve6D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %ld%%", song, (member.eve6D1 & 0xfe)>>1];
                 }
             }
             if (member.eve7Type) {
@@ -1630,7 +1623,7 @@
                             }
                         }
                     }
-                    detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %d%%", detailText, song, (member.eve7D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %d%%", song, (member.eve7D1 & 0xfe)>>1];
+                    detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %ld%%", detailText, song, (member.eve7D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %ld%%", song, (member.eve7D1 & 0xfe)>>1];
                 }
             }
             if (member.eve8Type) {
@@ -1651,7 +1644,7 @@
                             }
                         }
                     }
-                    detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %d%%", detailText, song, (member.eve8D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %d%%", song, (member.eve8D1 & 0xfe)>>1];
+                    detailText = [detailText length] > 0 ? [NSString stringWithFormat:@"%@ | %@, %ld%%", detailText, song, (member.eve8D1 & 0xfe)>>1] : [NSString stringWithFormat:@"%@, %ld%%", song, (member.eve8D1 & 0xfe)>>1];
                 }
             }
             cell.detailTextLabel.text = detailText;
@@ -1661,12 +1654,12 @@
         NSNumber *num = (NSNumber *)obj;
         cell.imageView.image = [UIImage imageNamed:@"icon_delay"];
         cell.textLabel.text = [num stringValue];
+        cell.detailTextLabel.text = @"";
     }else if ([obj isKindOfClass:[NSString class]]) {
         cell.accessoryType = UITableViewCellAccessoryNone;
         NSString *str = (NSString *)obj;
         if ([str length] == 1) {
             cell.textLabel.text = @"是否重复";
-            UISwitch *swi = (UISwitch *)[cell.contentView viewWithTag:1];
             swi.hidden = NO;
             if ([str isEqualToString:@"Y"]) {
                 swi.on = YES;
@@ -1676,6 +1669,8 @@
         }else {
             cell.textLabel.text = str;
         }
+        cell.imageView.image = nil;
+        cell.detailTextLabel.text = @"";
     }
     return cell;
 }
@@ -1715,7 +1710,7 @@
             }else {
                 //切换至有人/无人，有人反馈失败。
             }
-        }else if ([trigger integerValue] == 1 && _triggerNumber == 3) {
+        }else if ([trigger integerValue] == 1 && _triggerNumber == 4) {
             [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRTRIGGERCALL" object:nil];
             if (![state boolValue]) {
                 if (![[_mDic allKeys] containsObject:@"no_body"]) {
@@ -1725,7 +1720,7 @@
             }else {
                 //切换至有人/无人，无人反馈失败。
             }
-        }else if ([trigger integerValue] == 2 && _triggerNumber == 4) {
+        }else if ([trigger integerValue] == 2 && _triggerNumber == 5) {
             [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRTRIGGERCALL" object:nil];
             if (![state boolValue]) {
                 if (![[_mDic allKeys] containsObject:@"greater"]) {
@@ -1735,7 +1730,7 @@
             }else {
                 //切换至温度大于等于，反馈失败。
             }
-        }else if ([trigger integerValue] == 2 && _triggerNumber == 5) {
+        }else if ([trigger integerValue] == 2 && _triggerNumber == 6) {
             [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRTRIGGERCALL" object:nil];
             if (![state boolValue]) {
                 if (![[_mDic allKeys] containsObject:@"less"]) {
@@ -1756,450 +1751,839 @@
         NSNumber *trigger = [userInfo objectForKey:@"TRIGGET"];
         NSNumber *action = [userInfo objectForKey:@"ACTION"];
         NSNumber *state = [userInfo objectForKey:@"STATE"];
-        int actionsCount = 0;
-        if ([trigger intValue] == 0 && _triggerNumber == 1 && [action intValue] == _applyAction) {
-            if (_applyAction == 255) {
-                [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
-                [_mDic setObject:@(_applyRepeat) forKey:@"repeat"];
-                if (_applyRepeat) {
-                    [_members addObject:@"Y"];
+        
+        if (_actionIDToApply != -1) {
+            if ([trigger intValue] == 0 && (_triggerNumber == 1 || _triggerNumber == 3) && [action intValue] == _actionIDToApply) {
+                if (_actionIDToApply == 255) {
+                    _actionIDToApply = -1;
+                    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
                 }else {
-                    [_members addObject:@"N"];
-                }
-                [_tableView reloadData];
-                CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-                NSMutableDictionary *bsDic;
-                if ([de.remoteBranch length] > 0) {
-                    NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
-                    if (dic) {
-                        bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
-                    }else {
-                        bsDic = [NSMutableDictionary new];
-                    }
-                    [bsDic setObject:_mDic forKey:@"body_sensor"];
-                }else {
-                    bsDic = [NSMutableDictionary new];
-                    [bsDic setObject:_mDic forKey:@"body_sensor"];
-                }
-                de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            }else {
-                if (![state boolValue]) {
-                    id obj = [_mDic objectForKey:@"body"];
-                    if (obj) {
-                        if ([obj isKindOfClass:[NSNumber class]]) {
-                            NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
-                            [_mDic setObject:@{@"actions":@[actionDic]} forKey:@"body"];
-                            actionsCount = 1;
-                        }else if ([obj isKindOfClass:[NSDictionary class]]) {
-                            NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
-                            NSDictionary *bodyDic = (NSDictionary *)obj;
-                            NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:[bodyDic objectForKey:@"actions"]];
-                            [actions addObject:actionDic];
-                            [_mDic setObject:@{@"actions":actions} forKey:@"body"];
-                            actionsCount = (int)[actions count];
+                    NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:_mDic[@"body"][@"actions"]];
+                    NSMutableDictionary *md;
+                    int index = 0;
+                    for (int i = 0; i < [actions count]; i ++) {
+                        NSDictionary *action = actions[i];
+                        int actionID = [action[@"actionID"] intValue];
+                        if (actionID > _actionIDToApply) {
+                            md = [[NSMutableDictionary alloc] initWithDictionary:action];
+                            [md setObject:@(_actionIDToApply) forKey:@"actionID"];
+                            index = i;
+                            break;
                         }
-                        [_members addObject:@(_applyDelay)];
-                        [_tableView reloadData];
                     }
-                }else {
-                    
+                    if (md) {
+                        [actions replaceObjectAtIndex:index withObject:md];
+                        [_mDic setObject:@{@"actions":actions} forKey:@"body"];
+                    }
+                    _actionIDToApply ++;
+                    if (_actionIDToApply < [actions count]) {
+                        for (NSDictionary *action in actions) {
+                            int eActionID = [action[@"actionID"] intValue];
+                            if (eActionID > _actionIDToApply) {
+                                Byte byte[] = {0xea, 0x8b, 0x04, 0x00, _actionIDToApply, 0x00, 0x00, [action[@"scene_index"] integerValue] & 0x00FF, ([action[@"scene_index"] integerValue] & 0xFF00)>>8, [action[@"delay"] intValue]};
+                                NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                            }
+                        }
+                    }else {
+                        NSNumber *repeat = [_mDic objectForKey:@"repeat"];
+                        Byte byte[] = {0xea, 0x8b, 0x04, 0x00, 0xff, [actions count],[repeat boolValue],0x01,0x00,0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    }
                 }
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"下个步骤：" preferredStyle:UIAlertControllerStyleAlert];
-                [alert.view setTintColor:DARKORAGE];
-                UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"动作不重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    _applyAction = 255;
-                    _applyRepeat = NO;
-                    Byte byte[] = {0xea, 0x8b, 0x04, 0x00, 0xff, actionsCount,0x00,0x01,0x00,0x00};
-                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
-                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-                }];
-                UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"动作重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    _applyAction = 255;
-                    _applyRepeat = YES;
-                    Byte byte[] = {0xea, 0x8b, 0x04, 0x00, 0xff, actionsCount,0x01,0x01,0x00,0x00};
-                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
-                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-                }];
-                if (_applyAction == 4) {
-                    [alert addAction:action1];
-                    [alert addAction:action2];
+            }else if ([trigger intValue] == 1 && (_triggerNumber == 2 || _triggerNumber == 4) && [action intValue] == _actionIDToApply) {
+                if (_actionIDToApply == 255) {
+                    _actionIDToApply = -1;
+                    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
                 }else {
-                    UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"继续添加动作" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
-                        [self addItemAction];
-                    }];
-                    [alert addAction:action3];
-                    [alert addAction:action1];
-                    [alert addAction:action2];
+                    NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:_mDic[@"no_body"][@"actions"]];
+                    NSMutableDictionary *md;
+                    int index = 0;
+                    for (int i = 0; i < [actions count]; i ++) {
+                        NSDictionary *action = actions[i];
+                        int actionID = [action[@"actionID"] intValue];
+                        if (actionID > _actionIDToApply) {
+                            md = [[NSMutableDictionary alloc] initWithDictionary:action];
+                            [md setObject:@(_actionIDToApply) forKey:@"actionID"];
+                            index = i;
+                            break;
+                        }
+                    }
+                    if (md) {
+                        [actions replaceObjectAtIndex:index withObject:md];
+                        [_mDic setObject:@{@"actions":actions} forKey:@"no_body"];
+                    }
+                    _actionIDToApply ++;
+                    if (_actionIDToApply < [actions count]) {
+                        for (NSDictionary *action in actions) {
+                            int eActionID = [action[@"actionID"] intValue];
+                            if (eActionID > _actionIDToApply) {
+                                Byte byte[] = {0xea, 0x8b, 0x04, 0x01, _actionIDToApply, 0x00, 0x00, [action[@"scene_index"] integerValue] & 0x00FF, ([action[@"scene_index"] integerValue] & 0xFF00)>>8, [action[@"delay"] intValue]};
+                                NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                            }
+                        }
+                    }else {
+                        NSNumber *repeat = [_mDic objectForKey:@"repeat"];
+                        Byte byte[] = {0xea, 0x8b, 0x04, 0x01, 0xff, [actions count],[repeat boolValue],0x01,0x00,0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    }
                 }
-                [self presentViewController:alert animated:YES completion:nil];
+            }else if ([trigger intValue] == 2 && _triggerNumber == 5 && [action intValue] == _actionIDToApply) {
+                if (_actionIDToApply == 255) {
+                    _actionIDToApply = -1;
+                    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
+                }else {
+                    NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:_mDic[@"greater"][@"actions"]];
+                    NSMutableDictionary *md;
+                    int index = 0;
+                    for (int i = 0; i < [actions count]; i ++) {
+                        NSDictionary *action = actions[i];
+                        int actionID = [action[@"actionID"] intValue];
+                        if (actionID > _actionIDToApply) {
+                            md = [[NSMutableDictionary alloc] initWithDictionary:action];
+                            [md setObject:@(_actionIDToApply) forKey:@"actionID"];
+                            index = i;
+                            break;
+                        }
+                    }
+                    if (md) {
+                        [actions replaceObjectAtIndex:index withObject:md];
+                        [_mDic setObject:@{@"actions":actions} forKey:@"greater"];
+                    }
+                    _actionIDToApply ++;
+                    if (_actionIDToApply < [actions count]) {
+                        for (NSDictionary *action in actions) {
+                            int eActionID = [action[@"actionID"] intValue];
+                            if (eActionID > _actionIDToApply) {
+                                Byte byte[] = {0xea, 0x8b, 0x04, 0x02, _actionIDToApply, 0x00, 0x00, [action[@"scene_index"] integerValue] & 0x00FF, ([action[@"scene_index"] integerValue] & 0xFF00)>>8, [action[@"delay"] intValue]};
+                                NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                            }
+                        }
+                    }else {
+                        NSNumber *repeat = [_mDic objectForKey:@"repeat"];
+                        Byte byte[] = {0xea, 0x8b, 0x04, 0x02, 0xff, [actions count],[repeat boolValue],0x01,0x00,0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    }
+                }
+            }else if ([trigger intValue] == 2 && _triggerNumber == 6 && [action intValue] == _actionIDToApply) {
+                if (_actionIDToApply == 255) {
+                    _actionIDToApply = -1;
+                    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
+                }else {
+                    NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:_mDic[@"less"][@"actions"]];
+                    NSMutableDictionary *md;
+                    int index = 0;
+                    for (int i = 0; i < [actions count]; i ++) {
+                        NSDictionary *action = actions[i];
+                        int actionID = [action[@"actionID"] intValue];
+                        if (actionID > _actionIDToApply) {
+                            md = [[NSMutableDictionary alloc] initWithDictionary:action];
+                            [md setObject:@(_actionIDToApply) forKey:@"actionID"];
+                            index = i;
+                            break;
+                        }
+                    }
+                    if (md) {
+                        [actions replaceObjectAtIndex:index withObject:md];
+                        [_mDic setObject:@{@"actions":actions} forKey:@"less"];
+                    }
+                    _actionIDToApply ++;
+                    if (_actionIDToApply < [actions count]) {
+                        for (NSDictionary *action in actions) {
+                            int eActionID = [action[@"actionID"] intValue];
+                            if (eActionID > _actionIDToApply) {
+                                Byte byte[] = {0xea, 0x8b, 0x04, 0x02, _actionIDToApply, 0x00, 0x00, [action[@"scene_index"] integerValue] & 0x00FF, ([action[@"scene_index"] integerValue] & 0xFF00)>>8, [action[@"delay"] intValue]};
+                                NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                            }
+                        }
+                    }else {
+                        NSNumber *repeat = [_mDic objectForKey:@"repeat"];
+                        Byte byte[] = {0xea, 0x8b, 0x04, 0x02, 0xff, [actions count],[repeat boolValue],0x01,0x00,0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    }
+                }
             }
-        }else if ([trigger intValue] == 1 && _triggerNumber == 2 && [action intValue] == _applyAction) {
-            if (_applyAction == 255) {
-                [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
-                [_mDic setObject:@(_applyRepeat) forKey:@"repeat"];
-                if (_applyRepeat) {
-                    [_members addObject:@"Y"];
-                }else {
-                    [_members addObject:@"N"];
-                }
-                [_tableView reloadData];
-                CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-                NSMutableDictionary *bsDic;
-                if ([de.remoteBranch length] > 0) {
-                    NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
-                    if (dic) {
-                        bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
-                    }else {
-                        bsDic = [NSMutableDictionary new];
-                    }
-                    [bsDic setObject:_mDic forKey:@"body_sensor"];
-                }else {
-                    bsDic = [NSMutableDictionary new];
-                    [bsDic setObject:_mDic forKey:@"body_sensor"];
-                }
-                de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            }else {
-                if (![state boolValue]) {
-                    id obj = [_mDic objectForKey:@"no_body"];
-                    if (obj) {
-                        if ([obj isKindOfClass:[NSNumber class]]) {
-                            NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
-                            [_mDic setObject:@{@"actions":@[actionDic]} forKey:@"no_body"];
-                            actionsCount = 1;
-                        }else if ([obj isKindOfClass:[NSDictionary class]]) {
-                            NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
-                            NSDictionary *bodyDic = (NSDictionary *)obj;
-                            NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:[bodyDic objectForKey:@"actions"]];
-                            [actions addObject:actionDic];
-                            [_mDic setObject:@{@"actions":actions} forKey:@"no_body"];
-                            actionsCount = (int)[actions count];
+        }else {
+            int actionsCount = 0;
+            if ([trigger intValue] == 0 && _triggerNumber == 1 && [action intValue] == _applyAction) {
+                if (_applyAction == 255) {
+                    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
+                    if (![[_mDic allKeys] containsObject:@"repeat"]) {
+                        if (_applyRepeat) {
+                            [_members addObject:@"Y"];
+                        }else {
+                            [_members addObject:@"N"];
                         }
-                        [_members addObject:@(_applyDelay)];
                         [_tableView reloadData];
                     }
-                }else {
-                    
-                }
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"下个步骤：" preferredStyle:UIAlertControllerStyleAlert];
-                [alert.view setTintColor:DARKORAGE];
-                UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"动作不重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    _applyAction = 255;
-                    _applyRepeat = NO;
-                    Byte byte[] = {0xea, 0x8b, 0x04, 0x01, 0xff, actionsCount,0x00,0x01,0x00,0x00};
-                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
-                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-                }];
-                UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"动作重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    _applyAction = 255;
-                    _applyRepeat = YES;
-                    Byte byte[] = {0xea, 0x8b, 0x04, 0x01, 0xff, actionsCount,0x01,0x01,0x00,0x00};
-                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
-                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-                }];
-                if (_applyAction == 4) {
-                    [alert addAction:action1];
-                    [alert addAction:action2];
-                }else {
-                    UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"继续添加动作" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
-                        [self addItemAction];
-                    }];
-                    [alert addAction:action3];
-                    [alert addAction:action1];
-                    [alert addAction:action2];
-                }
-                [self presentViewController:alert animated:YES completion:nil];
-            }
-        }else if ([trigger intValue] == 0 && _triggerNumber == 3 && [action intValue] == _applyAction) {
-            if (_applyAction == 255) {
-                [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
-                [_mDic setObject:@(_applyRepeat) forKey:@"repeat"];
-                if (_applyRepeat) {
-                    [_members addObject:@"Y"];
-                }else {
-                    [_members addObject:@"N"];
-                }
-                [_tableView reloadData];
-                CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-                NSMutableDictionary *bsDic;
-                if ([de.remoteBranch length] > 0) {
-                    NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
-                    if (dic) {
-                        bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+                    [_mDic setObject:@(_applyRepeat) forKey:@"repeat"];
+                    CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                    NSMutableDictionary *bsDic;
+                    if ([de.remoteBranch length] > 0) {
+                        NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
+                        if (dic) {
+                            bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+                        }else {
+                            bsDic = [NSMutableDictionary new];
+                        }
+                        [bsDic setObject:_mDic forKey:@"body_sensor"];
                     }else {
                         bsDic = [NSMutableDictionary new];
+                        [bsDic setObject:_mDic forKey:@"body_sensor"];
                     }
-                    [bsDic setObject:_mDic forKey:@"body_sensor"];
+                    de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
+                    [[CSRDatabaseManager sharedInstance] saveContext];
                 }else {
-                    bsDic = [NSMutableDictionary new];
-                    [bsDic setObject:_mDic forKey:@"body_sensor"];
-                }
-                de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            }else {
-                if (![state boolValue]) {
-                    id obj = [_mDic objectForKey:@"body"];
-                    if (obj) {
-                        if ([obj isKindOfClass:[NSNumber class]]) {
-                            NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
-                            [_mDic setObject:@{@"actions":@[actionDic]} forKey:@"body"];
-                            actionsCount = 1;
-                        }else if ([obj isKindOfClass:[NSDictionary class]]) {
-                            NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
-                            NSDictionary *bodyDic = (NSDictionary *)obj;
-                            NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:[bodyDic objectForKey:@"actions"]];
-                            [actions addObject:actionDic];
-                            [_mDic setObject:@{@"actions":actions} forKey:@"body"];
-                            actionsCount = (int)[actions count];
+                    if (![state boolValue]) {
+                        id obj = [_mDic objectForKey:@"body"];
+                        if (obj) {
+                            if ([obj isKindOfClass:[NSNumber class]]) {
+                                NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
+                                [_mDic setObject:@{@"actions":@[actionDic]} forKey:@"body"];
+                                actionsCount = 1;
+                            }else if ([obj isKindOfClass:[NSDictionary class]]) {
+                                NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
+                                NSDictionary *bodyDic = (NSDictionary *)obj;
+                                NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:[bodyDic objectForKey:@"actions"]];
+                                [actions addObject:actionDic];
+                                [_mDic setObject:@{@"actions":actions} forKey:@"body"];
+                                actionsCount = (int)[actions count];
+                            }
+                            CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                            NSMutableDictionary *bsDic;
+                            if ([de.remoteBranch length] > 0) {
+                                NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
+                                if (dic) {
+                                    bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+                                }else {
+                                    bsDic = [NSMutableDictionary new];
+                                }
+                                [bsDic setObject:_mDic forKey:@"body_sensor"];
+                            }else {
+                                bsDic = [NSMutableDictionary new];
+                                [bsDic setObject:_mDic forKey:@"body_sensor"];
+                            }
+                            de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
+                            [[CSRDatabaseManager sharedInstance] saveContext];
+                            
+                            BOOL exist = NO;
+                            if ([_members count]>0) {
+                                id robj = [_members lastObject];
+                                if ([robj isKindOfClass:[NSString class]]) {
+                                    NSString *str = (NSString *)robj;
+                                    if ([str length]==1) {
+                                        exist = YES;
+                                    }
+                                }
+                            }
+                            if (exist) {
+                                [_members insertObject:@(_applyDelay) atIndex:[_members count]-1];
+                            }else {
+                                [_members addObject:@(_applyDelay)];
+                            }
+                            [_tableView reloadData];
                         }
-                        [_members addObject:@(_applyDelay)];
-                        [_tableView reloadData];
+                    }else {
+                        
                     }
-                }else {
-                    
-                }
-                if (_applyAction == 4) {
-                    Byte byte[] = {0xea, 0x8b, 0x00, 0x01, 0x01, 0x03, 0x00, 0x00, 0x00, 0x00};
-                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
-                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-                }else {
                     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"下个步骤：" preferredStyle:UIAlertControllerStyleAlert];
                     [alert.view setTintColor:DARKORAGE];
-                    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"继续添加动作" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
-                        [self addItemAction];
-                    }];
-                    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"添加有人/无人中的无人执行动作" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        Byte byte[] = {0xea, 0x8b, 0x00, 0x01, 0x01, 0x03, 0x00, 0x00, 0x00, 0x00};
+                    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"动作不重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        _applyAction = 255;
+                        _applyRepeat = NO;
+                        Byte byte[] = {0xea, 0x8b, 0x04, 0x00, 0xff, actionsCount,0x00,0x01,0x00,0x00};
                         NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
                         [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
                     }];
-                    [alert addAction:action1];
-                    [alert addAction:action2];
-                    [self presentViewController:alert animated:YES completion:nil];
-                }
-            }
-        }else if ([trigger intValue] == 1 && _triggerNumber == 3 && [action intValue] == _applyAction) {
-            if (_applyAction == 255) {
-                id obj = [_mDic objectForKey:@"body"];
-                if ([obj isKindOfClass:[NSDictionary class]]) {
-                    NSDictionary *bodyDic = (NSDictionary *)obj;
-                    NSArray *actions = [bodyDic objectForKey:@"actions"];
-                    actionsCount = (int)[actions count];
-                    Byte byte[] = {0xea, 0x8b, 0x04, 0x01, 0xff, actionsCount,_applyRepeat,0x01,0x00,0x00};
-                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
-                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-                }
-            }else {
-                if (![state boolValue]) {
-                    id obj = [_mDic objectForKey:@"no_body"];
-                    if (obj) {
-                        if ([obj isKindOfClass:[NSNumber class]]) {
-                            NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
-                            [_mDic setObject:@{@"actions":@[actionDic]} forKey:@"no_body"];
-                            actionsCount = 1;
-                        }else if ([obj isKindOfClass:[NSDictionary class]]) {
-                            NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
-                            NSDictionary *bodyDic = (NSDictionary *)obj;
-                            NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:[bodyDic objectForKey:@"actions"]];
-                            [actions addObject:actionDic];
-                            [_mDic setObject:@{@"actions":actions} forKey:@"no_body"];
-                            actionsCount = (int)[actions count];
+                    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"动作重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        _applyAction = 255;
+                        _applyRepeat = YES;
+                        Byte byte[] = {0xea, 0x8b, 0x04, 0x00, 0xff, actionsCount,0x01,0x01,0x00,0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    }];
+                    if (_applyAction == 4) {
+                        NSNumber *repeat = [_mDic objectForKey:@"repeat"];
+                        if (!repeat) {
+                            [alert addAction:action1];
+                            [alert addAction:action2];
+                            [self presentViewController:alert animated:YES completion:nil];
                         }
-                        [_members addObject:@(_applyDelay)];
+                    }else {
+                        UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"继续添加动作" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                            [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
+                            [self addItemAction];
+                        }];
+                        NSNumber *repeat = [_mDic objectForKey:@"repeat"];
+                        if (!repeat) {
+                            [alert addAction:action3];
+                            [alert addAction:action1];
+                            [alert addAction:action2];
+                            [self presentViewController:alert animated:YES completion:nil];
+                        }
+                    }
+                }
+            }else if ([trigger intValue] == 1 && _triggerNumber == 2 && [action intValue] == _applyAction) {
+                if (_applyAction == 255) {
+                    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
+                    if (![[_mDic allKeys] containsObject:@"repeat"]) {
+                        if (_applyRepeat) {
+                            [_members addObject:@"Y"];
+                        }else {
+                            [_members addObject:@"N"];
+                        }
                         [_tableView reloadData];
                     }
-                }else {
-                    
-                }
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"下个步骤：" preferredStyle:UIAlertControllerStyleAlert];
-                [alert.view setTintColor:DARKORAGE];
-                UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"动作不重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    _applyAction = 255;
-                    _applyRepeat = NO;
-                    Byte byte[] = {0xea, 0x8b, 0x04, 0x01, 0xff, actionsCount,0x00,0x01,0x00,0x00};
-                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
-                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-                }];
-                UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"动作重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    _applyAction = 255;
-                    _applyRepeat = YES;
-                    Byte byte[] = {0xea, 0x8b, 0x04, 0x01, 0xff, actionsCount,0x01,0x01,0x00,0x00};
-                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
-                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-                }];
-                if (_applyAction == 4) {
-                    [alert addAction:action1];
-                    [alert addAction:action2];
-                }else {
-                    UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"继续添加动作" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
-                        [self addItemAction];
-                    }];
-                    [alert addAction:action3];
-                    [alert addAction:action1];
-                    [alert addAction:action2];
-                }
-                [self presentViewController:alert animated:YES completion:nil];
-            }
-        }else if ([trigger intValue] == 2 && _triggerNumber == 4 && [action intValue] == _applyAction) {
-            if (_applyAction == 255) {
-                [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
-                [_mDic setObject:@(_applyRepeat) forKey:@"repeat"];
-                if (_applyRepeat) {
-                    [_members addObject:@"Y"];
-                }else {
-                    [_members addObject:@"N"];
-                }
-                [_tableView reloadData];
-                CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-                NSMutableDictionary *bsDic;
-                if ([de.remoteBranch length] > 0) {
-                    NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
-                    if (dic) {
-                        bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+                    [_mDic setObject:@(_applyRepeat) forKey:@"repeat"];
+                    CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                    NSMutableDictionary *bsDic;
+                    if ([de.remoteBranch length] > 0) {
+                        NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
+                        if (dic) {
+                            bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+                        }else {
+                            bsDic = [NSMutableDictionary new];
+                        }
+                        [bsDic setObject:_mDic forKey:@"body_sensor"];
                     }else {
                         bsDic = [NSMutableDictionary new];
+                        [bsDic setObject:_mDic forKey:@"body_sensor"];
                     }
-                    [bsDic setObject:_mDic forKey:@"temperature_sensor"];
+                    de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
+                    [[CSRDatabaseManager sharedInstance] saveContext];
                 }else {
-                    bsDic = [NSMutableDictionary new];
-                    [bsDic setObject:_mDic forKey:@"temperature_sensor"];
-                }
-                de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            }else {
-                if (![state boolValue]) {
-                    id obj = [_mDic objectForKey:@"greater"];
-                    if (obj) {
-                        if ([obj isKindOfClass:[NSNumber class]]) {
-                            NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
-                            [_mDic setObject:@{@"actions":@[actionDic], @"temperature_value":_temperatures[_selectedRow]} forKey:@"greater"];
-                            actionsCount = 1;
-                        }else if ([obj isKindOfClass:[NSDictionary class]]) {
-                            NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
-                            NSDictionary *bodyDic = (NSDictionary *)obj;
-                            NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:[bodyDic objectForKey:@"actions"]];
-                            [actions addObject:actionDic];
-                            [_mDic setObject:@{@"actions":actions, @"temperature_value":_temperatures[_selectedRow]} forKey:@"greater"];
-                            actionsCount = (int)[actions count];
+                    if (![state boolValue]) {
+                        id obj = [_mDic objectForKey:@"no_body"];
+                        if (obj) {
+                            if ([obj isKindOfClass:[NSNumber class]]) {
+                                NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
+                                [_mDic setObject:@{@"actions":@[actionDic]} forKey:@"no_body"];
+                                actionsCount = 1;
+                            }else if ([obj isKindOfClass:[NSDictionary class]]) {
+                                NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
+                                NSDictionary *bodyDic = (NSDictionary *)obj;
+                                NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:[bodyDic objectForKey:@"actions"]];
+                                [actions addObject:actionDic];
+                                [_mDic setObject:@{@"actions":actions} forKey:@"no_body"];
+                                actionsCount = (int)[actions count];
+                            }
+                            CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                            NSMutableDictionary *bsDic;
+                            if ([de.remoteBranch length] > 0) {
+                                NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
+                                if (dic) {
+                                    bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+                                }else {
+                                    bsDic = [NSMutableDictionary new];
+                                }
+                                [bsDic setObject:_mDic forKey:@"body_sensor"];
+                            }else {
+                                bsDic = [NSMutableDictionary new];
+                                [bsDic setObject:_mDic forKey:@"body_sensor"];
+                            }
+                            de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
+                            [[CSRDatabaseManager sharedInstance] saveContext];
+                            
+                            BOOL exist = NO;
+                            if ([_members count]>0) {
+                                id robj = [_members lastObject];
+                                if ([robj isKindOfClass:[NSString class]]) {
+                                    NSString *str = (NSString *)robj;
+                                    if ([str length]==1) {
+                                        exist = YES;
+                                    }
+                                }
+                            }
+                            if (exist) {
+                                [_members insertObject:@(_applyDelay) atIndex:[_members count]-1];
+                            }else {
+                                [_members addObject:@(_applyDelay)];
+                            }
+                            [_tableView reloadData];
                         }
-                        [_members addObject:@(_applyDelay)];
+                    }else {
+                        
+                    }
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"下个步骤：" preferredStyle:UIAlertControllerStyleAlert];
+                    [alert.view setTintColor:DARKORAGE];
+                    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"动作不重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        _applyAction = 255;
+                        _applyRepeat = NO;
+                        Byte byte[] = {0xea, 0x8b, 0x04, 0x01, 0xff, actionsCount,0x00,0x01,0x00,0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    }];
+                    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"动作重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        _applyAction = 255;
+                        _applyRepeat = YES;
+                        Byte byte[] = {0xea, 0x8b, 0x04, 0x01, 0xff, actionsCount,0x01,0x01,0x00,0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    }];
+                    if (_applyAction == 4) {
+                        NSNumber *repeat = [_mDic objectForKey:@"repeat"];
+                        if (!repeat) {
+                            [alert addAction:action1];
+                            [alert addAction:action2];
+                            [self presentViewController:alert animated:YES completion:nil];
+                        }
+                    }else {
+                        UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"继续添加动作" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                            [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
+                            [self addItemAction];
+                        }];
+                        NSNumber *repeat = [_mDic objectForKey:@"repeat"];
+                        if (!repeat) {
+                            [alert addAction:action3];
+                            [alert addAction:action1];
+                            [alert addAction:action2];
+                            [self presentViewController:alert animated:YES completion:nil];
+                        }
+                    }
+                }
+            }else if ([trigger intValue] == 0 && _triggerNumber == 3 && [action intValue] == _applyAction) {
+                if (_applyAction == 255) {
+                    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
+                    if (![[_mDic allKeys] containsObject:@"repeat"]) {
+                        if (_applyRepeat) {
+                            [_members addObject:@"Y"];
+                        }else {
+                            [_members addObject:@"N"];
+                        }
                         [_tableView reloadData];
                     }
-                }else {
-                    
-                }
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"下个步骤：" preferredStyle:UIAlertControllerStyleAlert];
-                [alert.view setTintColor:DARKORAGE];
-                UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"动作不重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    _applyAction = 255;
-                    _applyRepeat = NO;
-                    Byte byte[] = {0xea, 0x8b, 0x04, 0x02, 0xff, actionsCount,0x00,0x01,0x00,0x00};
-                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
-                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-                }];
-                UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"动作重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    _applyAction = 255;
-                    _applyRepeat = YES;
-                    Byte byte[] = {0xea, 0x8b, 0x04, 0x02, 0xff, actionsCount,0x01,0x01,0x00,0x00};
-                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
-                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-                }];
-                if (_applyAction == 4) {
-                    [alert addAction:action1];
-                    [alert addAction:action2];
-                }else {
-                    UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"继续添加动作" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
-                        [self addItemAction];
-                    }];
-                    [alert addAction:action3];
-                    [alert addAction:action1];
-                    [alert addAction:action2];
-                }
-                [self presentViewController:alert animated:YES completion:nil];
-            }
-        }else if ([trigger intValue] == 2 && _triggerNumber == 5 && [action intValue] == _applyAction) {
-            if (_applyAction == 255) {
-                [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
-                [_mDic setObject:@(_applyRepeat) forKey:@"repeat"];
-                if (_applyRepeat) {
-                    [_members addObject:@"Y"];
-                }else {
-                    [_members addObject:@"N"];
-                }
-                [_tableView reloadData];
-                CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-                NSMutableDictionary *bsDic;
-                if ([de.remoteBranch length] > 0) {
-                    NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
-                    if (dic) {
-                        bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+                    [_mDic setObject:@(_applyRepeat) forKey:@"repeat"];
+                    CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                    NSMutableDictionary *bsDic;
+                    if ([de.remoteBranch length] > 0) {
+                        NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
+                        if (dic) {
+                            bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+                        }else {
+                            bsDic = [NSMutableDictionary new];
+                        }
+                        [bsDic setObject:_mDic forKey:@"body_sensor"];
                     }else {
                         bsDic = [NSMutableDictionary new];
+                        [bsDic setObject:_mDic forKey:@"body_sensor"];
                     }
-                    [bsDic setObject:_mDic forKey:@"temperature_sensor"];
+                    de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
+                    [[CSRDatabaseManager sharedInstance] saveContext];
                 }else {
-                    bsDic = [NSMutableDictionary new];
-                    [bsDic setObject:_mDic forKey:@"temperature_sensor"];
-                }
-                de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
-                [[CSRDatabaseManager sharedInstance] saveContext];
-            }else {
-                if (![state boolValue]) {
-                    id obj = [_mDic objectForKey:@"less"];
-                    if (obj) {
-                        if ([obj isKindOfClass:[NSNumber class]]) {
-                            NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
-                            [_mDic setObject:@{@"actions":@[actionDic], @"temperature_value":_temperatures[_selectedRow]} forKey:@"less"];
-                            actionsCount = 1;
-                        }else if ([obj isKindOfClass:[NSDictionary class]]) {
-                            NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
-                            NSDictionary *bodyDic = (NSDictionary *)obj;
-                            NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:[bodyDic objectForKey:@"actions"]];
-                            [actions addObject:actionDic];
-                            [_mDic setObject:@{@"actions":actions, @"temperature_value":_temperatures[_selectedRow]} forKey:@"less"];
-                            actionsCount = (int)[actions count];
+                    if (![state boolValue]) {
+                        id obj = [_mDic objectForKey:@"body"];
+                        if (obj) {
+                            if ([obj isKindOfClass:[NSNumber class]]) {
+                                NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
+                                [_mDic setObject:@{@"actions":@[actionDic]} forKey:@"body"];
+                                actionsCount = 1;
+                            }else if ([obj isKindOfClass:[NSDictionary class]]) {
+                                NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
+                                NSDictionary *bodyDic = (NSDictionary *)obj;
+                                NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:[bodyDic objectForKey:@"actions"]];
+                                [actions addObject:actionDic];
+                                [_mDic setObject:@{@"actions":actions} forKey:@"body"];
+                                actionsCount = (int)[actions count];
+                            }
+                            CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                            NSMutableDictionary *bsDic;
+                            if ([de.remoteBranch length] > 0) {
+                                NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
+                                if (dic) {
+                                    bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+                                }else {
+                                    bsDic = [NSMutableDictionary new];
+                                }
+                                [bsDic setObject:_mDic forKey:@"body_sensor"];
+                            }else {
+                                bsDic = [NSMutableDictionary new];
+                                [bsDic setObject:_mDic forKey:@"body_sensor"];
+                            }
+                            de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
+                            [[CSRDatabaseManager sharedInstance] saveContext];
+                            BOOL exist = NO;
+                            if ([_members count]>0) {
+                                id robj = [_members lastObject];
+                                if ([robj isKindOfClass:[NSString class]]) {
+                                    NSString *str = (NSString *)robj;
+                                    if ([str length]==1) {
+                                        exist = YES;
+                                    }
+                                }
+                            }
+                            if (exist) {
+                                [_members insertObject:@(_applyDelay) atIndex:[_members count]-1];
+                            }else {
+                                [_members addObject:@(_applyDelay)];
+                            }
+                            [_tableView reloadData];
                         }
-                        [_members addObject:@(_applyDelay)];
+                    }else {
+                        
+                    }
+                    if (_applyAction == 4) {
+                        Byte byte[] = {0xea, 0x8b, 0x00, 0x01, 0x01, 0x03, 0x00, 0x00, 0x00, 0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    }else {
+                        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"下个步骤：" preferredStyle:UIAlertControllerStyleAlert];
+                        [alert.view setTintColor:DARKORAGE];
+                        UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"继续添加动作" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                            [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
+                            [self addItemAction];
+                        }];
+                        UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"添加有人/无人中的无人执行动作" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                            Byte byte[] = {0xea, 0x8b, 0x00, 0x01, 0x01, 0x03, 0x00, 0x00, 0x00, 0x00};
+                            NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                        }];
+                        [alert addAction:action1];
+                        [alert addAction:action2];
+                        [self presentViewController:alert animated:YES completion:nil];
+                    }
+                }
+            }else if ([trigger intValue] == 1 && _triggerNumber == 4 && [action intValue] == _applyAction) {
+                if (_applyAction == 255) {
+                    id obj = [_mDic objectForKey:@"body"];
+                    if ([obj isKindOfClass:[NSDictionary class]]) {
+                        NSDictionary *bodyDic = (NSDictionary *)obj;
+                        NSArray *actions = [bodyDic objectForKey:@"actions"];
+                        actionsCount = (int)[actions count];
+                        Byte byte[] = {0xea, 0x8b, 0x04, 0x01, 0xff, actionsCount,_applyRepeat,0x01,0x00,0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    }
+                }else {
+                    if (![state boolValue]) {
+                        id obj = [_mDic objectForKey:@"no_body"];
+                        if (obj) {
+                            if ([obj isKindOfClass:[NSNumber class]]) {
+                                NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
+                                [_mDic setObject:@{@"actions":@[actionDic]} forKey:@"no_body"];
+                                actionsCount = 1;
+                            }else if ([obj isKindOfClass:[NSDictionary class]]) {
+                                NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
+                                NSDictionary *bodyDic = (NSDictionary *)obj;
+                                NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:[bodyDic objectForKey:@"actions"]];
+                                [actions addObject:actionDic];
+                                [_mDic setObject:@{@"actions":actions} forKey:@"no_body"];
+                                actionsCount = (int)[actions count];
+                            }
+                            CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                            NSMutableDictionary *bsDic;
+                            if ([de.remoteBranch length] > 0) {
+                                NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
+                                if (dic) {
+                                    bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+                                }else {
+                                    bsDic = [NSMutableDictionary new];
+                                }
+                                [bsDic setObject:_mDic forKey:@"body_sensor"];
+                            }else {
+                                bsDic = [NSMutableDictionary new];
+                                [bsDic setObject:_mDic forKey:@"body_sensor"];
+                            }
+                            de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
+                            [[CSRDatabaseManager sharedInstance] saveContext];
+                            
+                            BOOL exist = NO;
+                            if ([_members count]>0) {
+                                id robj = [_members lastObject];
+                                if ([robj isKindOfClass:[NSString class]]) {
+                                    NSString *str = (NSString *)robj;
+                                    if ([str length]==1) {
+                                        exist = YES;
+                                    }
+                                }
+                            }
+                            if (exist) {
+                                [_members insertObject:@(_applyDelay) atIndex:[_members count]-1];
+                            }else {
+                                [_members addObject:@(_applyDelay)];
+                            }
+                            [_tableView reloadData];
+                        }
+                    }else {
+                        
+                    }
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"下个步骤：" preferredStyle:UIAlertControllerStyleAlert];
+                    [alert.view setTintColor:DARKORAGE];
+                    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"动作不重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        _applyAction = 255;
+                        _applyRepeat = NO;
+                        Byte byte[] = {0xea, 0x8b, 0x04, 0x01, 0xff, actionsCount,0x00,0x01,0x00,0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    }];
+                    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"动作重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        _applyAction = 255;
+                        _applyRepeat = YES;
+                        Byte byte[] = {0xea, 0x8b, 0x04, 0x01, 0xff, actionsCount,0x01,0x01,0x00,0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    }];
+                    if (_applyAction == 4) {
+                        NSNumber *repeat = [_mDic objectForKey:@"repeat"];
+                        if (!repeat) {
+                            [alert addAction:action1];
+                            [alert addAction:action2];
+                            [self presentViewController:alert animated:YES completion:nil];
+                        }
+                    }else {
+                        UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"继续添加动作" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                            [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
+                            [self addItemAction];
+                        }];
+                        NSNumber *repeat = [_mDic objectForKey:@"repeat"];
+                        if (!repeat) {
+                            [alert addAction:action3];
+                            [alert addAction:action1];
+                            [alert addAction:action2];
+                            [self presentViewController:alert animated:YES completion:nil];
+                        }
+                    }
+                }
+            }else if ([trigger intValue] == 2 && _triggerNumber == 5 && [action intValue] == _applyAction) {
+                if (_applyAction == 255) {
+                    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
+                    if (![[_mDic allKeys] containsObject:@"repeat"]) {
+                        if (_applyRepeat) {
+                            [_members addObject:@"Y"];
+                        }else {
+                            [_members addObject:@"N"];
+                        }
                         [_tableView reloadData];
                     }
+                    [_mDic setObject:@(_applyRepeat) forKey:@"repeat"];
+                    CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                    NSMutableDictionary *bsDic;
+                    if ([de.remoteBranch length] > 0) {
+                        NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
+                        if (dic) {
+                            bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+                        }else {
+                            bsDic = [NSMutableDictionary new];
+                        }
+                        [bsDic setObject:_mDic forKey:@"temperature_sensor"];
+                    }else {
+                        bsDic = [NSMutableDictionary new];
+                        [bsDic setObject:_mDic forKey:@"temperature_sensor"];
+                    }
+                    de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
+                    [[CSRDatabaseManager sharedInstance] saveContext];
                 }else {
-                    
-                }
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"下个步骤：" preferredStyle:UIAlertControllerStyleAlert];
-                [alert.view setTintColor:DARKORAGE];
-                UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"动作不重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    _applyAction = 255;
-                    _applyRepeat = NO;
-                    Byte byte[] = {0xea, 0x8b, 0x04, 0x02, 0xff, actionsCount,0x00,0x01,0x00,0x00};
-                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
-                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-                }];
-                UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"动作重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    _applyAction = 255;
-                    _applyRepeat = YES;
-                    Byte byte[] = {0xea, 0x8b, 0x04, 0x02, 0xff, actionsCount,0x01,0x01,0x00,0x00};
-                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
-                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-                }];
-                if (_applyAction == 4) {
-                    [alert addAction:action1];
-                    [alert addAction:action2];
-                }else {
-                    UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"继续添加动作" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
-                        [self addItemAction];
+                    if (![state boolValue]) {
+                        id obj = [_mDic objectForKey:@"greater"];
+                        if (obj) {
+                            if ([obj isKindOfClass:[NSNumber class]]) {
+                                NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
+                                [_mDic setObject:@{@"actions":@[actionDic], @"temperature_value":_temperatures[_selectedRow]} forKey:@"greater"];
+                                actionsCount = 1;
+                            }else if ([obj isKindOfClass:[NSDictionary class]]) {
+                                NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
+                                NSDictionary *bodyDic = (NSDictionary *)obj;
+                                NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:[bodyDic objectForKey:@"actions"]];
+                                [actions addObject:actionDic];
+                                [_mDic setObject:@{@"actions":actions, @"temperature_value":_temperatures[_selectedRow]} forKey:@"greater"];
+                                actionsCount = (int)[actions count];
+                            }
+                            CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                            NSMutableDictionary *bsDic;
+                            if ([de.remoteBranch length] > 0) {
+                                NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
+                                if (dic) {
+                                    bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+                                }else {
+                                    bsDic = [NSMutableDictionary new];
+                                }
+                                [bsDic setObject:_mDic forKey:@"temperature_sensor"];
+                            }else {
+                                bsDic = [NSMutableDictionary new];
+                                [bsDic setObject:_mDic forKey:@"temperature_sensor"];
+                            }
+                            de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
+                            [[CSRDatabaseManager sharedInstance] saveContext];
+                            BOOL exist = NO;
+                            if ([_members count]>0) {
+                                id robj = [_members lastObject];
+                                if ([robj isKindOfClass:[NSString class]]) {
+                                    NSString *str = (NSString *)robj;
+                                    if ([str length]==1) {
+                                        exist = YES;
+                                    }
+                                }
+                            }
+                            if (exist) {
+                                [_members insertObject:@(_applyDelay) atIndex:[_members count]-1];
+                            }else {
+                                [_members addObject:@(_applyDelay)];
+                            }
+                            [_tableView reloadData];
+                        }
+                    }else {
+                        
+                    }
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"下个步骤：" preferredStyle:UIAlertControllerStyleAlert];
+                    [alert.view setTintColor:DARKORAGE];
+                    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"动作不重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        _applyAction = 255;
+                        _applyRepeat = NO;
+                        Byte byte[] = {0xea, 0x8b, 0x04, 0x02, 0xff, actionsCount,0x00,0x01,0x00,0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
                     }];
-                    [alert addAction:action3];
-                    [alert addAction:action1];
-                    [alert addAction:action2];
+                    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"动作重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        _applyAction = 255;
+                        _applyRepeat = YES;
+                        Byte byte[] = {0xea, 0x8b, 0x04, 0x02, 0xff, actionsCount,0x01,0x01,0x00,0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    }];
+                    if (_applyAction == 4) {
+                        NSNumber *repeat = [_mDic objectForKey:@"repeat"];
+                        if (!repeat) {
+                            [alert addAction:action1];
+                            [alert addAction:action2];
+                            [self presentViewController:alert animated:YES completion:nil];
+                        }
+                    }else {
+                        UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"继续添加动作" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                            [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
+                            [self addItemAction];
+                        }];
+                        NSNumber *repeat = [_mDic objectForKey:@"repeat"];
+                        if (!repeat) {
+                            [alert addAction:action3];
+                            [alert addAction:action1];
+                            [alert addAction:action2];
+                            [self presentViewController:alert animated:YES completion:nil];
+                        }
+                    }
                 }
-                [self presentViewController:alert animated:YES completion:nil];
+            }else if ([trigger intValue] == 2 && _triggerNumber == 6 && [action intValue] == _applyAction) {
+                if (_applyAction == 255) {
+                    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
+                    if (![[_mDic allKeys] containsObject:@"repeat"]) {
+                        if (_applyRepeat) {
+                            [_members addObject:@"Y"];
+                        }else {
+                            [_members addObject:@"N"];
+                        }
+                        [_tableView reloadData];
+                    }
+                    [_mDic setObject:@(_applyRepeat) forKey:@"repeat"];
+                    CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                    NSMutableDictionary *bsDic;
+                    if ([de.remoteBranch length] > 0) {
+                        NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
+                        if (dic) {
+                            bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+                        }else {
+                            bsDic = [NSMutableDictionary new];
+                        }
+                        [bsDic setObject:_mDic forKey:@"temperature_sensor"];
+                    }else {
+                        bsDic = [NSMutableDictionary new];
+                        [bsDic setObject:_mDic forKey:@"temperature_sensor"];
+                    }
+                    de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                }else {
+                    if (![state boolValue]) {
+                        id obj = [_mDic objectForKey:@"less"];
+                        if (obj) {
+                            if ([obj isKindOfClass:[NSNumber class]]) {
+                                NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
+                                [_mDic setObject:@{@"actions":@[actionDic], @"temperature_value":_temperatures[_selectedRow]} forKey:@"less"];
+                                actionsCount = 1;
+                            }else if ([obj isKindOfClass:[NSDictionary class]]) {
+                                NSDictionary *actionDic = @{@"actionID":@(_applyAction), @"scene_index":@(_applyIndex), @"delay":@(_applyDelay)};
+                                NSDictionary *bodyDic = (NSDictionary *)obj;
+                                NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:[bodyDic objectForKey:@"actions"]];
+                                [actions addObject:actionDic];
+                                [_mDic setObject:@{@"actions":actions, @"temperature_value":_temperatures[_selectedRow]} forKey:@"less"];
+                                actionsCount = (int)[actions count];
+                            }
+                            CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                            NSMutableDictionary *bsDic;
+                            if ([de.remoteBranch length] > 0) {
+                                NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
+                                if (dic) {
+                                    bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+                                }else {
+                                    bsDic = [NSMutableDictionary new];
+                                }
+                                [bsDic setObject:_mDic forKey:@"temperature_sensor"];
+                            }else {
+                                bsDic = [NSMutableDictionary new];
+                                [bsDic setObject:_mDic forKey:@"temperature_sensor"];
+                            }
+                            de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
+                            [[CSRDatabaseManager sharedInstance] saveContext];
+                            BOOL exist = NO;
+                            if ([_members count]>0) {
+                                id robj = [_members lastObject];
+                                if ([robj isKindOfClass:[NSString class]]) {
+                                    NSString *str = (NSString *)robj;
+                                    if ([str length]==1) {
+                                        exist = YES;
+                                    }
+                                }
+                            }
+                            if (exist) {
+                                [_members insertObject:@(_applyDelay) atIndex:[_members count]-1];
+                            }else {
+                                [_members addObject:@(_applyDelay)];
+                            }
+                            [_tableView reloadData];
+                        }
+                    }else {
+                        
+                    }
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"下个步骤：" preferredStyle:UIAlertControllerStyleAlert];
+                    [alert.view setTintColor:DARKORAGE];
+                    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"动作不重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        _applyAction = 255;
+                        _applyRepeat = NO;
+                        Byte byte[] = {0xea, 0x8b, 0x04, 0x02, 0xff, actionsCount,0x00,0x01,0x00,0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    }];
+                    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"动作重复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        _applyAction = 255;
+                        _applyRepeat = YES;
+                        Byte byte[] = {0xea, 0x8b, 0x04, 0x02, 0xff, actionsCount,0x01,0x01,0x00,0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    }];
+                    if (_applyAction == 4) {
+                        NSNumber *repeat = [_mDic objectForKey:@"repeat"];
+                        if (!repeat) {
+                            [alert addAction:action1];
+                            [alert addAction:action2];
+                            [self presentViewController:alert animated:YES completion:nil];
+                        }
+                    }else {
+                        UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"继续添加动作" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                            [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PIRACTIONCALL" object:nil];
+                            [self addItemAction];
+                        }];
+                        NSNumber *repeat = [_mDic objectForKey:@"repeat"];
+                        if (!repeat) {
+                            [alert addAction:action3];
+                            [alert addAction:action1];
+                            [alert addAction:action2];
+                            [self presentViewController:alert animated:YES completion:nil];
+                        }
+                    }
+                }
             }
         }
         
@@ -2289,7 +2673,7 @@
                 Byte byte[] = {0xea, 0x8b, 0x00, 0x00, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00};
                 NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
                 [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-            }else if (_triggerNumber == 4) {
+            }else if (_triggerNumber == 5) {
                 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(triggerCall:) name:@"PIRTRIGGERCALL" object:nil];
                 NSInteger temp = [_temperatures[_selectedRow] integerValue];
                 if (temp < 0) {
@@ -2300,7 +2684,7 @@
                 Byte byte[] = {0xea, 0x8b, 0x00, 0x02, 0x02, 0x00, temp, 0x00, 0x00, 0x00};
                 NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
                 [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-            }else if (_triggerNumber == 5) {
+            }else if (_triggerNumber == 6) {
                 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(triggerCall:) name:@"PIRTRIGGERCALL" object:nil];
                 NSInteger temp = [_temperatures[_selectedRow] integerValue];
                 if (temp < 0) {
@@ -2316,63 +2700,690 @@
     }
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    id obj = [_members objectAtIndex:indexPath.row];
+    if ([obj isKindOfClass:[SceneMemberExpandModel class]]) {
+        return YES;
+    }
+    return NO;
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return UITableViewCellEditingStyleDelete;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        SceneMemberExpandModel *member = [_members objectAtIndex:indexPath.row];
+        [self removeSceneMember:member];
+    }
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return AcTECLocalizedStringFromTable(@"Remove", @"Localizable");
+}
+
+- (void)removeSceneMember:(SceneMemberExpandModel *)member {
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:AcTECLocalizedStringFromTable(@"removeSceneMemberAlert", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
+    [alert.view setTintColor:DARKORAGE];
+    
+    if (member.eve1Type) {
+        NSString *title = AcTECLocalizedStringFromTable(@"Yes", @"Localizable");
+        if ([CSRUtilities belongToTwoChannelSwitch:member.kindString]
+            || [CSRUtilities belongToThreeChannelSwitch:member.kindString]
+            || [CSRUtilities belongToTwoChannelDimmer:member.kindString]
+            || [CSRUtilities belongToSocketTwoChannel:member.kindString]
+            || [CSRUtilities belongToTwoChannelCurtainController:member.kindString]
+            || [CSRUtilities belongToThreeChannelDimmer:member.kindString]
+            || [CSRUtilities belongToMusicController:member.kindString]
+            || [CSRUtilities belongToSonosMusicController:member.kindString]) {
+            title = @"1";
+        }
+        UIAlertAction *eve1 = [UIAlertAction actionWithTitle:title style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//            [self showLoading];
+            [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
+            _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
+            SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:member.sceneID];
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 1) {
+                    _mMemberToApply = sme;
+                    break;
+                }
+            }
+            NSInteger s = [member.sceneID integerValue];
+            Byte b[] = {};
+            b[0] = (Byte)((s & 0xFF00)>>8);
+            b[1] = (Byte)(s & 0x00FF);
+            
+            if ([CSRUtilities belongToTwoChannelSwitch:member.kindString]
+                || [CSRUtilities belongToThreeChannelSwitch:member.kindString]
+                || [CSRUtilities belongToTwoChannelDimmer:member.kindString]
+                || [CSRUtilities belongToSocketTwoChannel:member.kindString]
+                || [CSRUtilities belongToTwoChannelCurtainController:member.kindString]
+                || [CSRUtilities belongToThreeChannelDimmer:member.kindString]
+                || [CSRUtilities belongToMusicController:member.kindString]
+                || [CSRUtilities belongToSonosMusicController:member.kindString]) {
+                Byte byte[] = {0x5d, 0x03, 0x01, b[1], b[0]};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+                retryCount = 0;
+                retryCmd = cmd;
+                retryDeviceId = member.deviceID;
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+            }else {
+                Byte byte[] = {0x98, 0x02, b[1], b[0]};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:4];
+                retryCount = 0;
+                retryCmd = cmd;
+                retryDeviceId = member.deviceID;
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+            }
+        }];
+        [alert addAction:eve1];
+    }
+    if (member.eve2Type) {
+        UIAlertAction *eve2 = [UIAlertAction actionWithTitle:@"2" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//            [self showLoading];
+            [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
+            _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
+            SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:member.sceneID];
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 2) {
+                    _mMemberToApply = sme;
+                    break;
+                }
+            }
+            NSInteger s = [member.sceneID integerValue];
+            Byte b[] = {};
+            b[0] = (Byte)((s & 0xFF00)>>8);
+            b[1] = (Byte)(s & 0x00FF);
+            Byte byte[] = {0x5d, 0x03, 0x02, b[1], b[0]};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+            retryCount = 0;
+            retryCmd = cmd;
+            retryDeviceId = member.deviceID;
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+        }];
+        [alert addAction:eve2];
+    }
+    if (member.eve3Type) {
+        UIAlertAction *eve3 = [UIAlertAction actionWithTitle:@"3" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//            [self showLoading];
+            [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
+            _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
+            SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:member.sceneID];
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 4) {
+                    _mMemberToApply = sme;
+                    break;
+                }
+            }
+            NSInteger s = [member.sceneID integerValue];
+            Byte b[] = {};
+            b[0] = (Byte)((s & 0xFF00)>>8);
+            b[1] = (Byte)(s & 0x00FF);
+            Byte byte[] = {0x5d, 0x03, 0x04, b[1], b[0]};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+            retryCount = 0;
+            retryCmd = cmd;
+            retryDeviceId = member.deviceID;
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+        }];
+        [alert addAction:eve3];
+    }
+    if (member.eve4Type) {
+        UIAlertAction *eve4 = [UIAlertAction actionWithTitle:@"4" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//            [self showLoading];
+            [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
+            _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
+            SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:member.sceneID];
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 8) {
+                    _mMemberToApply = sme;
+                    break;
+                }
+            }
+            NSInteger s = [member.sceneID integerValue];
+            Byte b[] = {};
+            b[0] = (Byte)((s & 0xFF00)>>8);
+            b[1] = (Byte)(s & 0x00FF);
+            Byte byte[] = {0x5d, 0x03, 0x08, b[1], b[0]};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+            retryCount = 0;
+            retryCmd = cmd;
+            retryDeviceId = member.deviceID;
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+        }];
+        [alert addAction:eve4];
+    }
+    if (member.eve5Type) {
+        UIAlertAction *eve5 = [UIAlertAction actionWithTitle:@"5" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//            [self showLoading];
+            [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
+            _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
+            SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:member.sceneID];
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 16) {
+                    _mMemberToApply = sme;
+                    break;
+                }
+            }
+            NSInteger s = [member.sceneID integerValue];
+            Byte b[] = {};
+            b[0] = (Byte)((s & 0xFF00)>>8);
+            b[1] = (Byte)(s & 0x00FF);
+            Byte byte[] = {0x5d, 0x03, 0x10, b[1], b[0]};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+            retryCount = 0;
+            retryCmd = cmd;
+            retryDeviceId = member.deviceID;
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+        }];
+        [alert addAction:eve5];
+    }
+    if (member.eve6Type) {
+        UIAlertAction *eve6 = [UIAlertAction actionWithTitle:@"6" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//            [self showLoading];
+            [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
+            _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
+            SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:member.sceneID];
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 32) {
+                    _mMemberToApply = sme;
+                    break;
+                }
+            }
+            NSInteger s = [member.sceneID integerValue];
+            Byte b[] = {};
+            b[0] = (Byte)((s & 0xFF00)>>8);
+            b[1] = (Byte)(s & 0x00FF);
+            Byte byte[] = {0x5d, 0x03, 0x20, b[1], b[0]};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+            retryCount = 0;
+            retryCmd = cmd;
+            retryDeviceId = member.deviceID;
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+        }];
+        [alert addAction:eve6];
+    }
+    if (member.eve7Type) {
+        UIAlertAction *eve7 = [UIAlertAction actionWithTitle:@"7" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//            [self showLoading];
+            [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
+            _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
+            SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:member.sceneID];
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 64) {
+                    _mMemberToApply = sme;
+                    break;
+                }
+            }
+            NSInteger s = [member.sceneID integerValue];
+            Byte b[] = {};
+            b[0] = (Byte)((s & 0xFF00)>>8);
+            b[1] = (Byte)(s & 0x00FF);
+            Byte byte[] = {0x5d, 0x03, 0x40, b[1], b[0]};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+            retryCount = 0;
+            retryCmd = cmd;
+            retryDeviceId = member.deviceID;
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+        }];
+        [alert addAction:eve7];
+    }
+    if (member.eve8Type) {
+        UIAlertAction *eve8 = [UIAlertAction actionWithTitle:@"8" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//            [self showLoading];
+            [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
+            _mDeviceToApplay = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:member.deviceID];
+            SceneEntity *sceneEntity = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:member.sceneID];
+            for (SceneMemberEntity *sme in sceneEntity.members) {
+                if ([sme.deviceID isEqualToNumber:member.deviceID] && [sme.channel integerValue] == 128) {
+                    _mMemberToApply = sme;
+                    break;
+                }
+            }
+            NSInteger s = [member.sceneID integerValue];
+            Byte b[] = {};
+            b[0] = (Byte)((s & 0xFF00)>>8);
+            b[1] = (Byte)(s & 0x00FF);
+            Byte byte[] = {0x5d, 0x03, 0x80, b[1], b[0]};
+            NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+            retryCount = 0;
+            retryCmd = cmd;
+            retryDeviceId = member.deviceID;
+            [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+        }];
+        [alert addAction:eve8];
+    }
+    
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+
+    }];
+    [alert addAction:cancel];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)removeSceneIDTimerOut {
+    if (retryCount < 1) {
+        [self performSelector:@selector(removeSceneIDTimerOut) withObject:nil afterDelay:10.0];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:retryDeviceId data:retryCmd];
+        retryCount ++;
+    }else {
+//        [self hideLoading];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:[NSString stringWithFormat:@"%@ %@",_mDeviceToApplay.name,AcTECLocalizedStringFromTable(@"removescenefail", @"Localizable")] preferredStyle:UIAlertControllerStyleAlert];
+        [alert.view setTintColor:DARKORAGE];
+        UIAlertAction *yes = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self removeMemberFromMembers:_mMemberToApply];
+            [_tableView reloadData];
+            
+            SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:_mMemberToApply.sceneID];
+            [s removeMembersObject:_mMemberToApply];
+            [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:_mMemberToApply];
+            [[CSRDatabaseManager sharedInstance] saveContext];
+            
+            _mMemberToApply = nil;
+        }];
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Cancel", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        [alert addAction:cancel];
+        [alert addAction:yes];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
+}
+
 - (void)removeSceneCall:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     NSNumber *deviceID = userInfo[@"deviceId"];
     NSNumber *sceneID = userInfo[@"index"];
-    SceneMemberEntity *m = [_sceneMembers firstObject];
-    if ([deviceID isEqualToNumber:m.deviceID] && [sceneID isEqualToNumber:m.sceneID]) {
-        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(removeSceneIDTimeOut) object:nil];
-        
-        [_sceneMembers removeObject:m];
-        [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:m];
-        [[CSRDatabaseManager sharedInstance] saveContext];
-        
-        if (![self nextOperation]) {
-            for (SceneEntity *srs in _scenes) {
-                [[CSRAppStateManager sharedInstance].selectedPlace removeScenesObject:srs];
-                [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:srs];
-            }
+    if ([_sceneMembers count] > 0) {
+        SceneMemberEntity *m = [_sceneMembers firstObject];
+        if ([deviceID isEqualToNumber:m.deviceID] && [sceneID isEqualToNumber:m.sceneID]) {
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(removeSceneIDTimeOut) object:nil];
+            
+            [_sceneMembers removeObject:m];
+            [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:m];
             [[CSRDatabaseManager sharedInstance] saveContext];
-            if (_triggerNumber == 1) {
-                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(triggerCall:) name:@"PIRTRIGGERCALL" object:nil];
-                Byte byte[] = {0xea, 0x8b, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00};
-                NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
-                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-            }else if (_triggerNumber == 2) {
-                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(triggerCall:) name:@"PIRTRIGGERCALL" object:nil];
-                Byte byte[] = {0xea, 0x8b, 0x00, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00};
-                NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
-                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-            }else if (_triggerNumber == 3) {
-                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(triggerCall:) name:@"PIRTRIGGERCALL" object:nil];
-                Byte byte[] = {0xea, 0x8b, 0x00, 0x00, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00};
-                NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
-                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-            }else if (_triggerNumber == 4) {
-                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(triggerCall:) name:@"PIRTRIGGERCALL" object:nil];
-                NSInteger temp = [_temperatures[_selectedRow] integerValue];
-                if (temp < 0) {
-                    temp = ((-temp) & 0x7F) + 0x80;
-                }else {
-                    temp = (temp & 0x7F);
+            
+            if (![self nextOperation]) {
+                for (SceneEntity *srs in _scenes) {
+                    [[CSRAppStateManager sharedInstance].selectedPlace removeScenesObject:srs];
+                    [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:srs];
                 }
-                Byte byte[] = {0xea, 0x8b, 0x00, 0x02, 0x02, 0x00, temp, 0x00, 0x00, 0x00};
-                NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
-                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
-            }else if (_triggerNumber == 5) {
-                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(triggerCall:) name:@"PIRTRIGGERCALL" object:nil];
-                NSInteger temp = [_temperatures[_selectedRow] integerValue];
-                if (temp < 0) {
-                    temp = ((-temp) & 0x7F) + 0x80;
-                }else {
-                    temp = (temp & 0x7F);
+                [[CSRDatabaseManager sharedInstance] saveContext];
+                if (_triggerNumber == 1) {
+                    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(triggerCall:) name:@"PIRTRIGGERCALL" object:nil];
+                    Byte byte[] = {0xea, 0x8b, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                }else if (_triggerNumber == 2) {
+                    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(triggerCall:) name:@"PIRTRIGGERCALL" object:nil];
+                    Byte byte[] = {0xea, 0x8b, 0x00, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                }else if (_triggerNumber == 3) {
+                    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(triggerCall:) name:@"PIRTRIGGERCALL" object:nil];
+                    Byte byte[] = {0xea, 0x8b, 0x00, 0x00, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                }else if (_triggerNumber == 5) {
+                    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(triggerCall:) name:@"PIRTRIGGERCALL" object:nil];
+                    NSInteger temp = [_temperatures[_selectedRow] integerValue];
+                    if (temp < 0) {
+                        temp = ((-temp) & 0x7F) + 0x80;
+                    }else {
+                        temp = (temp & 0x7F);
+                    }
+                    Byte byte[] = {0xea, 0x8b, 0x00, 0x02, 0x02, 0x00, temp, 0x00, 0x00, 0x00};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                }else if (_triggerNumber == 6) {
+                    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(triggerCall:) name:@"PIRTRIGGERCALL" object:nil];
+                    NSInteger temp = [_temperatures[_selectedRow] integerValue];
+                    if (temp < 0) {
+                        temp = ((-temp) & 0x7F) + 0x80;
+                    }else {
+                        temp = (temp & 0x7F);
+                    }
+                    Byte byte[] = {0xea, 0x8b, 0x00, 0x02, 0x02, 0x04, temp, 0x00, 0x00, 0x00};
+                    NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
                 }
-                Byte byte[] = {0xea, 0x8b, 0x00, 0x02, 0x02, 0x04, temp, 0x00, 0x00, 0x00};
-                NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
-                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
             }
         }
+    }else if (_mDeviceToApplay && [_mDeviceToApplay.deviceId isEqualToNumber:deviceID] && [sceneID isEqualToNumber:_mMemberToApply.sceneID]) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(removeSceneIDTimerOut) object:nil];
+        
+        [self removeMemberFromMembers:_mMemberToApply];
+        [_tableView reloadData];
+        
+        SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:sceneID];
+        [s removeMembersObject:_mMemberToApply];
+        if ([s.members count] == 0) {
+            NSDictionary *dAction;
+            if (_triggerNumber == 1 || _triggerNumber == 3) {
+                NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:_mDic[@"body"][@"actions"]];
+                for (NSDictionary *action in actions) {
+                    NSNumber *sceneIndex = action[@"scene_index"];
+                    if ([sceneIndex isEqualToNumber:sceneID]) {
+                        dAction = action;
+                        break;
+                    }
+                }
+                if (dAction) {
+                    [actions removeObject:dAction];
+                    _actionIDToApply = [dAction[@"actionID"] intValue];
+                    if (_actionIDToApply < [actions count]) {
+                        for (NSDictionary *action in actions) {
+                            int eActionID = [action[@"actionID"] intValue];
+                            if (eActionID > _actionIDToApply) {
+                                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(actionCall:) name:@"PIRACTIONCALL" object:nil];
+                                Byte byte[] = {0xea, 0x8b, 0x04, 0x00, _actionIDToApply, 0x00, 0x00, [action[@"scene_index"] integerValue] & 0x00FF, ([action[@"scene_index"] integerValue] & 0xFF00)>>8, [action[@"delay"] intValue]};
+                                NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                            }
+                        }
+                    }else {
+                        _actionIDToApply = 255;
+                        NSNumber *repeat = [_mDic objectForKey:@"repeat"];
+                        Byte byte[] = {0xea, 0x8b, 0x04, 0x00, 0xff, [actions count], [repeat boolValue],0x01,0x00,0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    }
+                    [_mDic setObject:@{@"actions":actions} forKey:@"body"];
+                    CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                    NSMutableDictionary *bsDic;
+                    if ([de.remoteBranch length] > 0) {
+                        NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
+                        if (dic) {
+                            bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+                        }else {
+                            bsDic = [NSMutableDictionary new];
+                        }
+                        [bsDic setObject:_mDic forKey:@"body_sensor"];
+                    }else {
+                        bsDic = [NSMutableDictionary new];
+                        [bsDic setObject:_mDic forKey:@"body_sensor"];
+                    }
+                    de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                    NSLog(@">> %@", _mDic);
+                }
+            }else if (_triggerNumber == 2 || _triggerNumber == 4) {
+                NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:_mDic[@"no_body"][@"actions"]];
+                for (NSDictionary *action in actions) {
+                    NSNumber *sceneIndex = action[@"scene_index"];
+                    if ([sceneIndex isEqualToNumber:sceneID]) {
+                        dAction = action;
+                        break;
+                    }
+                }
+                if (dAction) {
+                    [actions removeObject:dAction];
+                    _actionIDToApply = [dAction[@"actionID"] intValue];
+                    if (_actionIDToApply < [actions count]) {
+                        for (NSDictionary *action in actions) {
+                            int eActionID = [action[@"actionID"] intValue];
+                            if (eActionID > _actionIDToApply) {
+                                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(actionCall:) name:@"PIRACTIONCALL" object:nil];
+                                Byte byte[] = {0xea, 0x8b, 0x04, 0x01, _actionIDToApply, 0x00, 0x00, [action[@"scene_index"] integerValue] & 0x00FF, ([action[@"scene_index"] integerValue] & 0xFF00)>>8, [action[@"delay"] intValue]};
+                                NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                            }
+                        }
+                    }else {
+                        _actionIDToApply = 255;
+                        NSNumber *repeat = [_mDic objectForKey:@"repeat"];
+                        Byte byte[] = {0xea, 0x8b, 0x04, 0x01, 0xff, [actions count],[repeat boolValue],0x01,0x00,0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    }
+                    [_mDic setObject:@{@"actions":actions} forKey:@"no_body"];
+                    CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                    NSMutableDictionary *bsDic;
+                    if ([de.remoteBranch length] > 0) {
+                        NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
+                        if (dic) {
+                            bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+                        }else {
+                            bsDic = [NSMutableDictionary new];
+                        }
+                        [bsDic setObject:_mDic forKey:@"body_sensor"];
+                    }else {
+                        bsDic = [NSMutableDictionary new];
+                        [bsDic setObject:_mDic forKey:@"body_sensor"];
+                    }
+                    de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                }
+            }else if (_triggerNumber == 5) {
+                NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:_mDic[@"greater"][@"actions"]];
+                for (NSDictionary *action in actions) {
+                    NSNumber *sceneIndex = action[@"scene_index"];
+                    if ([sceneIndex isEqualToNumber:sceneID]) {
+                        dAction = action;
+                        break;
+                    }
+                }
+                if (dAction) {
+                    [actions removeObject:dAction];
+                    _actionIDToApply = [dAction[@"actionID"] intValue];
+                    if (_actionIDToApply < [actions count]) {
+                        for (NSDictionary *action in actions) {
+                            int eActionID = [action[@"actionID"] intValue];
+                            if (eActionID > _actionIDToApply) {
+                                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(actionCall:) name:@"PIRACTIONCALL" object:nil];
+                                Byte byte[] = {0xea, 0x8b, 0x04, 0x02, _actionIDToApply, 0x00, 0x00, [action[@"scene_index"] integerValue] & 0x00FF, ([action[@"scene_index"] integerValue] & 0xFF00)>>8, [action[@"delay"] intValue]};
+                                NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                            }
+                        }
+                    }else {
+                        _actionIDToApply = 255;
+                        NSNumber *repeat = [_mDic objectForKey:@"repeat"];
+                        Byte byte[] = {0xea, 0x8b, 0x04, 0x02, 0xff, [actions count],[repeat boolValue],0x01,0x00,0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    }
+                    [_mDic setObject:@{@"actions":actions} forKey:@"greater"];
+                    CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                    NSMutableDictionary *bsDic;
+                    if ([de.remoteBranch length] > 0) {
+                        NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
+                        if (dic) {
+                            bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+                        }else {
+                            bsDic = [NSMutableDictionary new];
+                        }
+                        [bsDic setObject:_mDic forKey:@"temperature_sensor"];
+                    }else {
+                        bsDic = [NSMutableDictionary new];
+                        [bsDic setObject:_mDic forKey:@"temperature_sensor"];
+                    }
+                    de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                }
+            }else if (_triggerNumber == 6) {
+                NSMutableArray *actions = [[NSMutableArray alloc] initWithArray:_mDic[@"less"][@"actions"]];
+                for (NSDictionary *action in actions) {
+                    NSNumber *sceneIndex = action[@"scene_index"];
+                    if ([sceneIndex isEqualToNumber:sceneID]) {
+                        dAction = action;
+                        break;
+                    }
+                }
+                if (dAction) {
+                    [actions removeObject:dAction];
+                    _actionIDToApply = [dAction[@"actionID"] intValue];
+                    if (_actionIDToApply < [actions count]) {
+                        for (NSDictionary *action in actions) {
+                            int eActionID = [action[@"actionID"] intValue];
+                            if (eActionID > _actionIDToApply) {
+                                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(actionCall:) name:@"PIRACTIONCALL" object:nil];
+                                Byte byte[] = {0xea, 0x8b, 0x04, 0x02, _actionIDToApply, 0x00, 0x00, [action[@"scene_index"] integerValue] & 0x00FF, ([action[@"scene_index"] integerValue] & 0xFF00)>>8, [action[@"delay"] intValue]};
+                                NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                            }
+                        }
+                    }else {
+                        _actionIDToApply = 255;
+                        NSNumber *repeat = [_mDic objectForKey:@"repeat"];
+                        Byte byte[] = {0xea, 0x8b, 0x04, 0x02, 0xff, [actions count],[repeat boolValue],0x01,0x00,0x00};
+                        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+                    }
+                    [_mDic setObject:@{@"actions":actions} forKey:@"less"];
+                    CSRDeviceEntity *de = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
+                    NSMutableDictionary *bsDic;
+                    if ([de.remoteBranch length] > 0) {
+                        NSDictionary *dic = [CSRUtilities dictionaryWithJsonString:de.remoteBranch];
+                        if (dic) {
+                            bsDic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+                        }else {
+                            bsDic = [NSMutableDictionary new];
+                        }
+                        [bsDic setObject:_mDic forKey:@"temperature_sensor"];
+                    }else {
+                        bsDic = [NSMutableDictionary new];
+                        [bsDic setObject:_mDic forKey:@"temperature_sensor"];
+                    }
+                    de.remoteBranch = [CSRUtilities convertToJsonData2:bsDic];
+                    [[CSRDatabaseManager sharedInstance] saveContext];
+                }
+            }
+            [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:s];
+        }
+        
+        [[CSRDatabaseManager sharedInstance].managedObjectContext deleteObject:_mMemberToApply];
+        [[CSRDatabaseManager sharedInstance] saveContext];
+        
+        _mMemberToApply = nil;
+        
+//        [self hideLoading];
+    }
+}
+
+- (void)removeMemberFromMembers:(SceneMemberEntity *)memberEntity {
+    for (int i=0; i<_members.count; i++) {
+        id obj = _members[i];
+        if ([obj isKindOfClass:[SceneMemberExpandModel class]]) {
+            SceneMemberExpandModel *eModel = (SceneMemberExpandModel *)obj;
+            int dIndex = -1;
+            if ([eModel.deviceID isEqualToNumber:memberEntity.deviceID]) {
+                if ([memberEntity.channel integerValue] == 1) {
+                    eModel.eve1Type = 0;
+                    eModel.eve1D0 = 0;
+                    eModel.eve1D1 = 0;
+                    eModel.eve1D2 = 0;
+                    eModel.eve1D3 = 0;
+                }else if ([memberEntity.channel integerValue] == 2) {
+                    eModel.eve2Type = 0;
+                    eModel.eve2D0 = 0;
+                    eModel.eve2D1 = 0;
+                    eModel.eve2D2 = 0;
+                    eModel.eve2D3 = 0;
+                }else if ([memberEntity.channel integerValue] == 4) {
+                    eModel.eve3Type = 0;
+                    eModel.eve3D0 = 0;
+                    eModel.eve3D1 = 0;
+                    eModel.eve3D2 = 0;
+                    eModel.eve3D3 = 0;
+                }else if ([memberEntity.channel integerValue] == 8) {
+                    eModel.eve4Type = 0;
+                    eModel.eve4D0 = 0;
+                    eModel.eve4D1 = 0;
+                    eModel.eve4D2 = 0;
+                    eModel.eve4D3 = 0;
+                }else if ([memberEntity.channel integerValue] == 16) {
+                    eModel.eve5Type = 0;
+                    eModel.eve5D0 = 0;
+                    eModel.eve5D1 = 0;
+                    eModel.eve5D2 = 0;
+                    eModel.eve5D3 = 0;
+                }else if ([memberEntity.channel integerValue] == 32) {
+                    eModel.eve6Type = 0;
+                    eModel.eve6D0 = 0;
+                    eModel.eve6D1 = 0;
+                    eModel.eve6D2 = 0;
+                    eModel.eve6D3 = 0;
+                }else if ([memberEntity.channel integerValue] == 64) {
+                    eModel.eve7Type = 0;
+                    eModel.eve7D0 = 0;
+                    eModel.eve7D1 = 0;
+                    eModel.eve7D2 = 0;
+                    eModel.eve7D3 = 0;
+                }else if ([memberEntity.channel integerValue] == 128) {
+                    eModel.eve8Type = 0;
+                    eModel.eve8D0 = 0;
+                    eModel.eve8D1 = 0;
+                    eModel.eve8D2 = 0;
+                    eModel.eve8D3 = 0;
+                }
+                if (!eModel.eve1Type && !eModel.eve2Type && !eModel.eve3Type && !eModel.eve4Type && !eModel.eve5Type && !eModel.eve6Type && !eModel.eve7Type && !eModel.eve8Type) {
+                    [_members removeObject:eModel];
+                    SceneEntity *s = [[CSRDatabaseManager sharedInstance] getSceneEntityWithRcIndexId:memberEntity.sceneID];
+                    if ([s.members count] == 1) {
+//                        [_members removeObjectAtIndex:i+1];
+                        dIndex = i;
+                    }
+                }
+                if (dIndex != -1) {
+                    [_members removeObjectAtIndex:i];
+                }
+                NSLog(@"m: %@", _members);
+                break;
+            }
+        }
+    }
+}
+
+- (void)repeatSwitch:(UISwitch *)sender {
+    if (_triggerNumber == 1) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(actionCall:) name:@"PIRACTIONCALL" object:nil];
+        _applyAction = 255;
+        _applyRepeat = sender.on;
+        NSArray *actions = _mDic[@"body"][@"actions"];
+        Byte byte[] = {0xea, 0x8b, 0x04, 0x00, 0xff, [actions count],sender.on,0x01,0x00,0x00};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+    }else if (_triggerNumber == 2) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(actionCall:) name:@"PIRACTIONCALL" object:nil];
+        _applyAction = 255;
+        _applyRepeat = sender.on;
+        NSArray *actions = _mDic[@"no_body"][@"actions"];
+        Byte byte[] = {0xea, 0x8b, 0x04, 0x01, 0xff, [actions count],sender.on,0x01,0x00,0x00};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+    }else if (_triggerNumber == 4) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(actionCall:) name:@"PIRACTIONCALL" object:nil];
+        _applyAction = 255;
+        _applyRepeat = sender.on;
+        NSArray *actions = _mDic[@"body"][@"actions"];
+        Byte byte[] = {0xea, 0x8b, 0x04, 0x00, 0xff, [actions count],sender.on,0x01,0x00,0x00};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+        [NSThread sleepForTimeInterval:0.5];
+        NSArray *nactions = _mDic[@"no_body"][@"actions"];
+        Byte nbyte[] = {0xea, 0x8b, 0x04, 0x01, 0xff, [nactions count],sender.on,0x01,0x00,0x00};
+        NSData *ncmd = [[NSData alloc] initWithBytes:nbyte length:10];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:ncmd];
+    }else if (_triggerNumber == 5) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(actionCall:) name:@"PIRACTIONCALL" object:nil];
+        _applyAction = 255;
+        _applyRepeat = sender.on;
+        NSArray *actions = _mDic[@"greater"][@"actions"];
+        Byte byte[] = {0xea, 0x8b, 0x04, 0x02, 0xff, [actions count],sender.on,0x01,0x00,0x00};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+    }else if (_triggerNumber == 6) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(actionCall:) name:@"PIRACTIONCALL" object:nil];
+        _applyAction = 255;
+        _applyRepeat = sender.on;
+        NSArray *actions = _mDic[@"less"][@"actions"];
+        Byte byte[] = {0xea, 0x8b, 0x04, 0x02, 0xff, [actions count],sender.on,0x01,0x00,0x00};
+        NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
     }
 }
 

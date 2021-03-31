@@ -20,7 +20,10 @@
 #import "SoundListenTool.h"
 #import "PowerViewController.h"
 
-@interface DeviceViewController ()<UITextFieldDelegate,ColorSliderDelegate,ColorSquareDelegate,MBProgressHUDDelegate>
+#import "SelectionListView.h"
+#import "SelectionListModel.h"
+
+@interface DeviceViewController ()<UITextFieldDelegate,ColorSliderDelegate,ColorSquareDelegate,MBProgressHUDDelegate, SelectionListViewDelegate>
 {
     BOOL musicBehavior;
     
@@ -97,6 +100,14 @@
 @property (weak, nonatomic) IBOutlet UILabel *levelLabelChannelThree;
 
 @property (weak, nonatomic) IBOutlet UIButton *dalispowerBtn;
+@property (weak, nonatomic) IBOutlet UILabel *powerSwitchTitleLabel;
+@property (strong, nonatomic) IBOutlet UIView *thermoregulatorView;
+@property (nonatomic, strong) SelectionListView *selectionView;
+@property (weak, nonatomic) IBOutlet UILabel *fengsu;
+@property (weak, nonatomic) IBOutlet UILabel *wendu;
+@property (weak, nonatomic) IBOutlet UILabel *moshi;
+@property (weak, nonatomic) IBOutlet UILabel *fengxiang;
+@property (nonatomic,strong) UIView *translucentBgView;
 
 @end
 
@@ -358,6 +369,18 @@
             [btn autoPinEdgeToSuperviewEdge:ALEdgeLeft];
             [btn autoAlignAxisToSuperviewAxis:ALAxisVertical];
             _dalispowerBtn.hidden = NO;
+        }
+        
+        else if ([CSRUtilities belongToThermoregulator:_deviceEn.shortName]) {
+            _powerSwitchTitleLabel.text = @"温控开/关";
+            [_powerStateSwitch removeTarget:self action:@selector(powerStateSwitch:) forControlEvents:UIControlEventValueChanged];
+            [_powerStateSwitch addTarget:self action:@selector(temperatureControl:) forControlEvents:UIControlEventValueChanged];
+            [self.view addSubview:_thermoregulatorView];
+            [_thermoregulatorView autoSetDimension:ALDimensionHeight toSize:181];
+            [_thermoregulatorView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:_topView];
+            [_thermoregulatorView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+            [_thermoregulatorView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+            [self flashThermoregulatorStateShow];
         }
         
         self.navigationItem.title = _deviceEn.name;
@@ -729,6 +752,9 @@
             [self.levelSliderChannelThree setValue:0 animated:YES];
             self.levelLabelChannelThree.text = @"0%";
         }
+        return;
+    }else if ([CSRUtilities belongToThermoregulator:deviceM.shortName]) {
+        [self flashThermoregulatorStateShow];
         return;
     }
 }
@@ -1709,6 +1735,155 @@
         self.reloadDataHandle();
     }
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)temperatureControl:(UISwitch *)sender {
+    DeviceModel *m = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+    m.channel1PowerState = sender.on;
+    [self temperatureControlCommand];
+}
+
+- (IBAction)temperatureControlTouchUpInside:(UIButton *)sender {
+    if (sender.tag == 1) {
+        CGFloat w = self.view.bounds.size.width * 0.618;
+        CGFloat sh = w/0.618;
+        CGFloat mh = 6*44+90;
+        CGFloat h = sh > mh ? mh : sh;
+        NSMutableArray *ary = [[NSMutableArray alloc] init];
+        for (int i = 0; i < 6; i ++) {
+            SelectionListModel *slm = [[SelectionListModel alloc] init];
+            slm.value = i;
+            slm.name = TFENGSU[i];
+            [ary addObject:slm];
+        }
+        [self.view addSubview:self.translucentBgView];
+        _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((self.view.bounds.size.width-w)/2.0, (self.view.bounds.size.height-h)/2.0, w, h) dataArray:ary tite:AcTECLocalizedStringFromTable(@"Select", @"Localizable") mode:SelectionListViewSelectionMode_Fengsu];
+        _selectionView.delegate = self;
+        [self.view addSubview:_selectionView];
+    }else if (sender.tag == 2) {
+        CGFloat w = self.view.bounds.size.width * 0.618;
+        CGFloat sh = w/0.618;
+        CGFloat mh = 15*44+90;
+        CGFloat h = sh > mh ? mh : sh;
+        NSMutableArray *ary = [[NSMutableArray alloc] init];
+        for (int i = 0; i < 15; i ++) {
+            SelectionListModel *slm = [[SelectionListModel alloc] init];
+            slm.value = i;
+            slm.name = TWENDU[i];
+            [ary addObject:slm];
+        }
+        [self.view addSubview:self.translucentBgView];
+        _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((self.view.bounds.size.width-w)/2.0, (self.view.bounds.size.height-h)/2.0, w, h) dataArray:ary tite:AcTECLocalizedStringFromTable(@"Select", @"Localizable") mode:SelectionListViewSelectionMode_Wendu];
+        _selectionView.delegate = self;
+        [self.view addSubview:_selectionView];
+    }else if (sender.tag == 3) {
+        CGFloat w = self.view.bounds.size.width * 0.618;
+        CGFloat sh = w/0.618;
+        CGFloat mh = 5*44+90;
+        CGFloat h = sh > mh ? mh : sh;
+        NSMutableArray *ary = [[NSMutableArray alloc] init];
+        for (int i = 0; i < 5; i ++) {
+            SelectionListModel *slm = [[SelectionListModel alloc] init];
+            slm.value = i;
+            slm.name = TMOSHI[i];
+            [ary addObject:slm];
+        }
+        [self.view addSubview:self.translucentBgView];
+        _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((self.view.bounds.size.width-w)/2.0, (self.view.bounds.size.height-h)/2.0, w, h) dataArray:ary tite:AcTECLocalizedStringFromTable(@"Select", @"Localizable") mode:SelectionListViewSelectionMode_Moshi];
+        _selectionView.delegate = self;
+        [self.view addSubview:_selectionView];
+    }else if (sender.tag == 4) {
+        CGFloat w = self.view.bounds.size.width * 0.618;
+        CGFloat sh = w/0.618;
+        CGFloat mh = 4*44+90;
+        CGFloat h = sh > mh ? mh : sh;
+        NSMutableArray *ary = [[NSMutableArray alloc] init];
+        for (int i = 0; i < 4; i ++) {
+            SelectionListModel *slm = [[SelectionListModel alloc] init];
+            slm.value = i;
+            slm.name = TFENGXIANG[i];
+            [ary addObject:slm];
+        }
+        [self.view addSubview:self.translucentBgView];
+        _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((self.view.bounds.size.width-w)/2.0, (self.view.bounds.size.height-h)/2.0, w, h) dataArray:ary tite:AcTECLocalizedStringFromTable(@"Select", @"Localizable") mode:SelectionListViewSelectionMode_Fengxiang];
+        _selectionView.delegate = self;
+        [self.view addSubview:_selectionView];
+    }
+}
+
+- (void)selectionListViewCancelAction {
+    [_selectionView removeFromSuperview];
+    _selectionView = nil;
+    [_translucentBgView removeFromSuperview];
+    _translucentBgView = nil;
+}
+
+- (void)selectionListViewSaveAction:(NSArray *)ary selectionMode:(SelectionListViewSelectionMode)mode {
+    SelectionListModel *slm = [ary firstObject];
+    if (mode == SelectionListViewSelectionMode_Fengsu) {
+        _fengsu.text = slm.name;
+        DeviceModel *m = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+        m.red = @(slm.value);
+    }else if (mode == SelectionListViewSelectionMode_Wendu) {
+        _wendu.text = slm.name;
+        DeviceModel *m = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+        m.green = @(slm.value + 16);
+    }else if (mode == SelectionListViewSelectionMode_Moshi) {
+        _moshi.text = slm.name;
+        DeviceModel *m = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+        m.channel1Level = slm.value;
+    }else if (mode == SelectionListViewSelectionMode_Fengxiang) {
+        _fengxiang.text = slm.name;
+        DeviceModel *m = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+        m.blue = @(slm.value + 1);
+    }
+    [self temperatureControlCommand];
+    [_selectionView removeFromSuperview];
+    _selectionView = nil;
+    [_translucentBgView removeFromSuperview];
+    _translucentBgView = nil;
+}
+
+- (void)flashThermoregulatorStateShow {
+    DeviceModel *m = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+    if (m) {
+        _powerStateSwitch.on = m.channel1PowerState;
+        int tfs = [m.red intValue];
+        if (tfs >= 0 && tfs <= 5) {
+            _fengsu.text = TFENGSU[tfs];
+        }
+        int twd = [m.green intValue] - 16;
+        if (twd >= 0 && twd <= 14) {
+            _wendu.text = TWENDU[twd];
+        }
+        int tms = (int)m.channel1Level;
+        if (tms >= 0 && tms <= 4) {
+            _moshi.text = TMOSHI[tms];
+        }
+        int tfx = [m.blue intValue]-1;
+        if (tfx >= 0 && tfx <= 3) {
+            _fengxiang.text = TFENGXIANG[tfx];
+        }
+    }
+}
+
+- (void)temperatureControlCommand {
+    DeviceModel *m = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
+    uint8_t d2 = m.channel1PowerState + (m.channel1Level << 1) + ([m.blue intValue] << 4);
+    uint8_t d3 = [m.red intValue];
+    uint8_t d4 = [m.green intValue];
+    Byte byte[] = {0x9e, 0x06, 0x01, 0x01, d2, d3, d4, 0x00};
+    NSData *cmd = [[NSData alloc] initWithBytes:byte length:8];
+    [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:cmd];
+}
+
+- (UIView *)translucentBgView {
+    if (!_translucentBgView) {
+        _translucentBgView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        _translucentBgView.backgroundColor = [UIColor blackColor];
+        _translucentBgView.alpha = 0.4;
+    }
+    return _translucentBgView;
 }
 
 @end

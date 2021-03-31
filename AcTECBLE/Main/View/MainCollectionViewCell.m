@@ -538,6 +538,14 @@
             self.level3Label.hidden = YES;
             self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
+        }else if ([CSRUtilities belongToThermoregulator:deviceEntity.shortName]) {
+            self.iconView.image = [UIImage imageNamed:@"room_sonos"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"module", @"Localizable");
+            self.levelLabel.hidden = YES;
+            self.level2Label.hidden = YES;
+            self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
+            self.levelTextTopCon.constant = 0;
         }
         
         self.cellIndexPath = indexPath;
@@ -983,6 +991,8 @@
             self.iconView.image = [UIImage imageNamed:@"device_M_panel"];
         }else if ([CSRUtilities belongToSceneRemotesEightKeysSM:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"device_M_panels"];
+        }else if ([CSRUtilities belongToThermoregulator:appearanceShortname]) {
+            self.iconView.image = [UIImage imageNamed:@"device_sonos"];
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
@@ -1157,7 +1167,8 @@
                 || [CSRUtilities belongToLCDRemote:model.shortName]
                 || [CSRUtilities belongToPIRDevice:model.shortName]
                 || [CSRUtilities belongToSceneRemotesEightKeysM:model.shortName]
-                || [CSRUtilities belongToSceneRemotesEightKeysSM:model.shortName]) {
+                || [CSRUtilities belongToSceneRemotesEightKeysSM:model.shortName]
+                || [CSRUtilities belongToThermoregulator:model.shortName]) {
                 self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
             }else {
                 if (![model.powerState boolValue]) {
@@ -1218,8 +1229,9 @@
               || [CSRUtilities belongToCWRemote:model.shortName]
               || [CSRUtilities belongToLCDRemote:model.shortName]
               || [CSRUtilities belongToPIRDevice:model.shortName]
-              ||[CSRUtilities belongToSceneRemotesEightKeysM:model.shortName]
-              ||[CSRUtilities belongToSceneRemotesEightKeysSM:model.shortName])) {
+              || [CSRUtilities belongToSceneRemotesEightKeysM:model.shortName]
+              || [CSRUtilities belongToSceneRemotesEightKeysSM:model.shortName]
+              || [CSRUtilities belongToThermoregulator:model.shortName])) {
             self.nameLabel.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
             self.levelLabel.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
             self.level2Label.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
@@ -1330,7 +1342,8 @@
                         &&![CSRUtilities belongToMusicControlRemoteV:deviceEntity.shortName]
                         &&![CSRUtilities belongToPIRDevice:deviceEntity.shortName]
                         &&![CSRUtilities belongToSceneRemotesEightKeysM:deviceEntity.shortName]
-                        &&![CSRUtilities belongToSceneRemotesEightKeysSM:deviceEntity.shortName]) {
+                        &&![CSRUtilities belongToSceneRemotesEightKeysSM:deviceEntity.shortName]
+                        &&![CSRUtilities belongToThermoregulator:deviceEntity.shortName]) {
                         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
                         [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@1 withPowerState:![model.powerState boolValue]];
                     }

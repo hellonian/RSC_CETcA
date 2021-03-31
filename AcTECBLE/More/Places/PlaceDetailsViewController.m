@@ -142,13 +142,16 @@
 - (void)displayQRCode {
     NSString *wifiName = [self getWifiName];
     if (wifiName) {
-        NSDictionary *dic = @{@"WIFIName":wifiName,
-                              @"IPAddress":[self localIpAddressForCurrentDevice],
-                              @"PORT":@(4321),
-                              @"FROM":@"ios"};
-        NSString *jsonString = [CSRUtilities convertToJsonData:dic];
-        if (jsonString) {
-            self.QRCodeImageView.image = [SGQRCodeObtain generateQRCodeWithData:jsonString size:200];
+        NSString *ip = [self localIpAddressForCurrentDevice];
+        if (ip) {
+            NSDictionary *dic = @{@"WIFIName":wifiName,
+                                  @"IPAddress":[self localIpAddressForCurrentDevice],
+                                  @"PORT":@(4321),
+                                  @"FROM":@"ios"};
+            NSString *jsonString = [CSRUtilities convertToJsonData:dic];
+            if (jsonString) {
+                self.QRCodeImageView.image = [SGQRCodeObtain generateQRCodeWithData:jsonString size:200];
+            }
         }
     }else {
         _QRCodeLabel.text = AcTECLocalizedStringFromTable(@"noWifiAlert", @"Localizable");

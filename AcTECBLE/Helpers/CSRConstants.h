@@ -58,7 +58,7 @@
 #define kSceneRemotesOneKeyV @[@"PR1B"]
 #define kSceneRemotesEightKeysM @[@"MR8B"]
 #define kSceneRemotesEightKeysSM @[@"MRT12B"]
-#define kThermoregulators @[@"TS2412CB"]
+#define kThermoregulators @[@"TS2412CB",@"MB-T1"]
 
 #define kLCDRemote @[@"GR1000B"]
 
@@ -105,6 +105,11 @@
 #define PLAYMODE @[AcTECLocalizedStringFromTable(@"single_cycle", @"Localizable"),AcTECLocalizedStringFromTable(@"loop_playback", @"Localizable"),AcTECLocalizedStringFromTable(@"random", @"Localizable"),AcTECLocalizedStringFromTable(@"order", @"Localizable")]
 #define PLAYMODE_SONOS @[AcTECLocalizedStringFromTable(@"single", @"Localizable"),AcTECLocalizedStringFromTable(@"single_cycle", @"Localizable"),AcTECLocalizedStringFromTable(@"random", @"Localizable"),AcTECLocalizedStringFromTable(@"order", @"Localizable")]
 #define AUDIOSOURCES @[@"FM",@"DVD",@"MP3",@"AUX",@"NET RADIO",@"CLOUD MUSIC",@"AIRPLAY",@"DLNA"]
+
+#define TFENGSU @[@"自动", @"超低速", @"中低速", @"中速", @"中高速", @"高速"]
+#define TWENDU @[@"16 ℃", @"17 ℃", @"18 ℃", @"19 ℃", @"20 ℃", @"21 ℃", @"22 ℃", @"23 ℃", @"24 ℃", @"25 ℃", @"26 ℃", @"27 ℃", @"28 ℃", @"29 ℃", @"30 ℃"]
+#define TMOSHI @[@"自动", @"制冷", @"制热", @"除湿", @"送风"]
+#define TFENGXIANG @[@"向上", @"向下", @"向左", @"向右"]
 
 #define E_series_dimmer @[@"D350B"]
 #define E_series_single_wire_switch @[@"S350B"]
