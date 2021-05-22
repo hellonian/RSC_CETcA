@@ -804,15 +804,45 @@ static DataModelManager *manager = nil;
         }
     }
     
-    else if ([dataStr hasPrefix:@"9f060101"]) {
-        if ([data length] >= 8) {
-            Byte *byte = (Byte *)[data bytes];
-            int tpower  = byte[4] & 1;
-            int tmoshi = (byte[4] & 14) >> 1;
-            int tfengxiang = (byte[4] & 240) >> 4;
-            int tfengsu = byte[5] & 7;
-            int twendu = byte[6] & 127;
-            [[DeviceModelManager sharedInstance] flashThermoregulatorState:sourceDeviceId tpower:tpower tmoshi:tmoshi tfengxiang:tfengxiang tfengsu:tfengsu twendu:twendu];
+    else if ([dataStr hasPrefix:@"eb60"]) {
+        if ([data length] == 3) {
+            CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:sourceDeviceId];
+            if (deviceEntity) {
+                Byte *byte = (Byte *)[data bytes];
+                int cnt = byte[2];
+                deviceEntity.port = @(cnt); //存储温控执行器的通道数
+                [[CSRDatabaseManager sharedInstance] saveContext];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"CHANNELNUMBEROFTHERMOREGULATORCALL" object:self userInfo:@{@"DEVICEID":sourceDeviceId, @"CNT":@(cnt)}];
+            }
+        }
+    }
+    
+    else if ([dataStr hasPrefix:@"b60728"]) {
+        if ([data length] == 9) {
+            Byte *bytes = (Byte *)[data bytes];
+            int channel = bytes[3];
+            int tpower = (bytes[4] & 0x01);
+            int tmoshi = (bytes[4] & 0x0e) >> 1;
+            int tfengxiang = (bytes[4] & 0x70) >> 4;
+            int tfengsu = (bytes[5] & 0x07);
+            int twendu = (bytes[6] & 0x7f) * pow(-1, ((bytes[6] & 0x80) >> 7));
+            if (twendu < 16) {
+                twendu = 0;
+            }else if (twendu >= 16 && twendu <= 30) {
+                twendu = twendu - 16;
+            }else if (twendu > 30) {
+                twendu = 14;
+            }
+            [[DeviceModelManager sharedInstance] flashThermoregulatorState:sourceDeviceId channel:channel tpower:tpower tmoshi:tmoshi tfengxiang:tfengxiang tfengsu:tfengsu twendu:twendu];
+        }
+    }
+    
+    else if ([dataStr hasPrefix:@"b6042b"]) {
+        if ([data length] == 6) {
+            Byte *bytes = (Byte *)[data bytes];
+            NSInteger addr = bytes[3] + bytes[4] * 256;
+            NSInteger channel = bytes[5];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"CALLBACKOFTHERMOREGULATORCONFIGURATION" object:self userInfo:@{@"DEVICEID":sourceDeviceId, @"ADDRESS":@(addr), @"CHANNEL":@(channel)}];
         }
     }
 }

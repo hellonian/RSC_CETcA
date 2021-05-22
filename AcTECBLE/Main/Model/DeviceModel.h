@@ -46,6 +46,7 @@
 @property (nonatomic, strong) NSString *songName;
 @property (nonatomic, assign) NSInteger curtainRange;
 @property (nonatomic, assign) NSInteger curtainDirection;
+@property (nonatomic, strong) NSMutableDictionary *stateDic;
 
 @end
 

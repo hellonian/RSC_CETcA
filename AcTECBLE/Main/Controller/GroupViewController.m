@@ -459,6 +459,9 @@
             }
         }
     }
+    if (self.handle) {
+        self.handle();
+    }
 }
 
 

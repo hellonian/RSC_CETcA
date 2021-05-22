@@ -55,6 +55,8 @@
 		2E216EE62138EDAE00E545B9 /* RGBSceneEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E216EE52138EDAE00E545B9 /* RGBSceneEntity.m */; };
 		2E216EEA2138F28200E545B9 /* RGBSceneCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E216EE82138F28200E545B9 /* RGBSceneCollectionViewCell.m */; };
 		2E216EEB2138F28200E545B9 /* RGBSceneCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E216EE92138F28200E545B9 /* RGBSceneCollectionViewCell.xib */; };
+		2E241BAB263A89B700183F8B /* ThermoregulatorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E241BA9263A89B700183F8B /* ThermoregulatorViewController.m */; };
+		2E241BAC263A89B800183F8B /* ThermoregulatorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E241BAA263A89B700183F8B /* ThermoregulatorViewController.xib */; };
 		2E2533EE20219850002A6EC3 /* DeviceListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2533ED20219850002A6EC3 /* DeviceListViewController.m */; };
 		2E2A016821425F7F00B2EFAF /* GetDataTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2A016721425F7F00B2EFAF /* GetDataTools.m */; };
 		2E2E707B1FF5DE60002D1C1D /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E70051FF5DE60002D1C1D /* AboutViewController.m */; };
@@ -308,6 +310,9 @@
 		2E216EE72138F28200E545B9 /* RGBSceneCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGBSceneCollectionViewCell.h; sourceTree = "<group>"; };
 		2E216EE82138F28200E545B9 /* RGBSceneCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RGBSceneCollectionViewCell.m; sourceTree = "<group>"; };
 		2E216EE92138F28200E545B9 /* RGBSceneCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RGBSceneCollectionViewCell.xib; sourceTree = "<group>"; };
+		2E241BA8263A89B700183F8B /* ThermoregulatorViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThermoregulatorViewController.h; sourceTree = "<group>"; };
+		2E241BA9263A89B700183F8B /* ThermoregulatorViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ThermoregulatorViewController.m; sourceTree = "<group>"; };
+		2E241BAA263A89B700183F8B /* ThermoregulatorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ThermoregulatorViewController.xib; sourceTree = "<group>"; };
 		2E2533EC20219850002A6EC3 /* DeviceListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceListViewController.h; sourceTree = "<group>"; };
 		2E2533ED20219850002A6EC3 /* DeviceListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeviceListViewController.m; sourceTree = "<group>"; };
 		2E2A016621425F7F00B2EFAF /* GetDataTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetDataTools.h; sourceTree = "<group>"; };
@@ -1226,6 +1231,9 @@
 				2EBC344C25F2079900FA887E /* PIRAutomaticDetailViewController.h */,
 				2EBC344D25F2079900FA887E /* PIRAutomaticDetailViewController.m */,
 				2EBC344E25F2079900FA887E /* PIRAutomaticDetailViewController.xib */,
+				2E241BA8263A89B700183F8B /* ThermoregulatorViewController.h */,
+				2E241BA9263A89B700183F8B /* ThermoregulatorViewController.m */,
+				2E241BAA263A89B700183F8B /* ThermoregulatorViewController.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1645,6 +1653,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2EE757D2201078A000FB75C5 /* MainCollectionViewCell.xib in Resources */,
+				2E241BAC263A89B800183F8B /* ThermoregulatorViewController.xib in Resources */,
 				2E5A5874213788F900E416F9 /* FavoriteViewController.xib in Resources */,
 				2E388A64214B9EF900CBF73C /* RGBDeviceViewController.xib in Resources */,
 				2E3B9680200F3847000BD086 /* MainViewController.xib in Resources */,
@@ -1761,6 +1770,7 @@
 				0D835B361B9749E600FF4376 /* AppDelegate.m in Sources */,
 				2E3A65F7202BF97300B3E425 /* SingleDeviceModel.m in Sources */,
 				2EB246B22282A82600DFF5D3 /* QTIRWCP.m in Sources */,
+				2E241BAB263A89B700183F8B /* ThermoregulatorViewController.m in Sources */,
 				2EB3C2C9251D7D6D002FFD1D /* SonosMusicControllerVC.m in Sources */,
 				2EC3893F204939CE004D822D /* TimerDetailViewController.m in Sources */,
 				2EE757CA201030CA00FB75C5 /* TopImageView.m in Sources */,
@@ -2310,7 +2320,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "caff5128-55de-4182-9ed0-8e248dae59b9";
@@ -2363,7 +2373,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PROVISIONING_PROFILE = "caff5128-55de-4182-9ed0-8e248dae59b9";
 				SDKROOT = iphoneos;
@@ -2384,7 +2394,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 45;
+				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2406,7 +2416,7 @@
 					"$(inherited)",
 					"\"${PODS_ROOT}/OpenSSL/lib\"",
 				);
-				MARKETING_VERSION = 3.0.5;
+				MARKETING_VERSION = 3.0.6;
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-isystem",
@@ -2444,7 +2454,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 45;
+				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 5AEE5R2F69;
 				ENABLE_BITCODE = NO;
@@ -2466,7 +2476,7 @@
 					"$(inherited)",
 					"\"${PODS_ROOT}/OpenSSL/lib\"",
 				);
-				MARKETING_VERSION = 3.0.5;
+				MARKETING_VERSION = 3.0.6;
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-isystem",

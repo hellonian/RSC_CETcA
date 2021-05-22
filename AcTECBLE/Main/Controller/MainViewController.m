@@ -52,8 +52,10 @@
 
 //#import "PIRDeviceVC.h"
 #import "PIRViewController.h"
+#import <CSRmesh/ConfigModelApi.h>
+#import "ThermoregulatorViewController.h"
 
-@interface MainViewController ()<MainCollectionViewDelegate,PlaceColorIconPickerViewDelegate,MBProgressHUDDelegate>
+@interface MainViewController ()<MainCollectionViewDelegate,PlaceColorIconPickerViewDelegate,MBProgressHUDDelegate, ConfigModelApiDelegate>
 {
     NSNumber *selectedSceneId;
     PlaceColorIconPickerView *pickerView;
@@ -85,6 +87,11 @@
 
 @property (nonatomic, strong) NSMutableArray *selects;
 @property (nonatomic, strong) NSMutableArray *srScenes;
+
+@property (nonatomic, strong) NSMutableArray *tests;
+@property (nonatomic, strong) NSMutableArray *testfails;
+@property (nonatomic, assign) int testRetry;
+@property (nonatomic, strong) UIAlertController *testAlert;
 
 @end
 
@@ -934,6 +941,21 @@
             [self presentViewController:nav animated:YES completion:nil];
             nav.popoverPresentationController.sourceRect = mainCell.bounds;
             nav.popoverPresentationController.sourceView = mainCell;
+        }else if ([CSRUtilities belongToThermoregulator:deviceEntity.shortName]) {
+            ThermoregulatorViewController *tvc = [[ThermoregulatorViewController alloc] init];
+            tvc.deviceId = mainCell.deviceId;
+            tvc.renameBlock = ^{
+                [self getMainDataArray];
+            };
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:tvc];
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
         }else{
             DeviceViewController *dvc = [[DeviceViewController alloc] init];
             dvc.deviceId = mainCell.deviceId;
@@ -1589,5 +1611,201 @@
     }
     [_mainCollectionView reloadData];
 }*/
+- (IBAction)setTimeToLive:(id)sender {
+    NSArray *devices = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
+    if ([devices count]>0) {
+        _tests = [NSMutableArray new];
+        for (CSRDeviceEntity *device in devices) {
+            if ([device.bleHwVersion integerValue] >= 32 && [device.bleHwVersion integerValue] < 48) {
+                [_tests addObject:device];
+            }
+        }
+    }
+    if ([_tests count]>0) {
+        _testAlert = [UIAlertController alertControllerWithTitle:@"正在修改TTL值。。。" message:nil preferredStyle:UIAlertControllerStyleAlert];
+        [self presentViewController:_testAlert animated:YES completion:nil];
+        [[ConfigModelApi sharedInstance] addDelegate:self];
+        _testfails = [NSMutableArray new];
+        _testRetry = 0;
+        [self nextSetttl];
+    }
+}
+
+- (void)nextSetttl {
+    CSRDeviceEntity *device = [_tests firstObject];
+    [self performSelector:@selector(setttlDelay) withObject:nil afterDelay:5];
+    if ([device.bleHwVersion integerValue] >= 32 && [device.bleHwVersion integerValue] < 48) {
+        [[ConfigModelApi sharedInstance] setParameters:device.deviceId
+                                            txInterval:@90
+                                            txDuration:@600
+                                           rxDutyCycle:@255
+                                               txPower:@0
+                                            timeToLive:@5
+                                               success:nil
+                                               failure:nil];
+    }
+}
+
+- (void)didGetParameters:(NSNumber *)deviceId
+              txInterval:(NSNumber *)txInterval
+              txDuration:(NSNumber *)txDuration
+             rxDutyCycle:(NSNumber *)rxDutyCycle
+                 txPower:(NSNumber *)txPower
+              timeToLive:(NSNumber *)timeToLive
+           meshRequestId:(NSNumber *)meshRequestId {
+    NSLog(@"%@  %@  %@  %@  %@  %@",deviceId, txInterval, txDuration, rxDutyCycle, txPower, timeToLive);
+    CSRDeviceEntity *device = [_tests firstObject];
+    if (device) {
+        if ([deviceId isEqualToNumber:device.deviceId]) {
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(setttlDelay) object:nil];
+            [_tests removeObjectAtIndex:0];
+            if ([_tests count] > 0) {
+                [self nextSetttl];
+            }else {
+                [self endSetttl];
+            }
+        }
+    }
+}
+
+- (void)setttlDelay {
+    if (_testRetry < 2) {
+        _testRetry ++;
+        [self nextSetttl];
+    }else {
+        [_testfails addObject:[_tests firstObject]];
+        [_tests removeObjectAtIndex:0];
+        _testRetry = 0;
+        if ([_tests count] > 0) {
+            [self nextSetttl];
+        }else {
+            [self endSetttl];
+        }
+    }
+}
+
+- (void)endSetttl {
+    if (_testAlert) {
+        [_testAlert setTitle:@"完成修改TTL值"];
+    }else {
+        _testAlert = [UIAlertController alertControllerWithTitle:@"完成修改TTL值" message:nil preferredStyle:UIAlertControllerStyleAlert];
+        [self presentViewController:_testAlert animated:YES completion:nil];
+    }
+    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"完成" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        _tests = nil;
+        _testfails = nil;
+    }];
+    [_testAlert addAction:ok];
+    
+    if ([_testfails count] > 0) {
+        NSString *message = @"";
+        for (CSRDeviceEntity *device in _testfails) {
+            if ([message length]>0) {
+                message = [NSString stringWithFormat:@"%@、%@（%@）",message, device.name, device.deviceId];
+            }else {
+                message = [NSString stringWithFormat:@"%@（%@）",device.name, device.deviceId];
+            }
+        }
+        [_testAlert setMessage:[NSString stringWithFormat:@"%@ 未响应！", message]];
+    }else {
+        [_testAlert setMessage:@"所有已添加设备的TTL值全部修改成功。"];
+    }
+}
+
+- (IBAction)setRelayRepeatCount:(id)sender {
+    NSArray *devices = [[CSRAppStateManager sharedInstance].selectedPlace.devices allObjects];
+    if ([devices count]>0) {
+        _tests = [NSMutableArray new];
+        for (CSRDeviceEntity *device in devices) {
+            if ([device.bleHwVersion integerValue] >= 32 && [device.bleHwVersion integerValue] < 48) {
+                [_tests addObject:device];
+            }
+        }
+    }
+
+    if ([_tests count]>0) {
+        _testAlert = [UIAlertController alertControllerWithTitle:@"正在修改RelayRepeatCount值。。。" message:nil preferredStyle:UIAlertControllerStyleAlert];
+        [self presentViewController:_testAlert animated:YES completion:nil];
+        [[ConfigModelApi sharedInstance] addDelegate:self];
+        _testfails = [NSMutableArray new];
+        _testRetry = 0;
+        [self nextSetRRC];
+    }
+}
+
+- (void)nextSetRRC {
+    CSRDeviceEntity *device = [_tests firstObject];
+    [self performSelector:@selector(setrrcDelay) withObject:nil afterDelay:5];
+    [[ConfigModelApi sharedInstance] setMessageParameters:device.deviceId
+                                              txQueueSize:@8
+                                         relayRepeatCount:@1
+                                        deviceRepeatCount:@6
+                                                  success:nil
+                                                  failure:nil];
+}
+
+- (void)didGetMessageParameters:(NSNumber *)deviceId
+                    txQueueSize:(NSNumber *)txQueueSize
+               relayRepeatCount:(NSNumber *)relayRepeatCount
+              deviceRepeatCount:(NSNumber *)deviceRepeatCount
+                  meshRequestId:(NSNumber *)meshRequestId {
+    NSLog(@"%@  %@  %@  %@",deviceId, txQueueSize, relayRepeatCount, deviceRepeatCount);
+    CSRDeviceEntity *device = [_tests firstObject];
+    if (device) {
+        if ([deviceId isEqualToNumber:device.deviceId]) {
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(setrrcDelay) object:nil];
+            [_tests removeObjectAtIndex:0];
+            if ([_tests count] > 0) {
+                [self nextSetRRC];
+            }else {
+                [self endSetRRC];
+            }
+        }
+    }
+}
+
+- (void)setrrcDelay {
+    if (_testRetry < 2) {
+        _testRetry ++;
+        [self nextSetRRC];
+    }else {
+        [_testfails addObject:[_tests firstObject]];
+        [_tests removeObjectAtIndex:0];
+        _testRetry = 0;
+        if ([_tests count] > 0) {
+            [self nextSetRRC];
+        }else {
+            [self endSetRRC];
+        }
+    }
+}
+
+- (void)endSetRRC {
+    if (_testAlert) {
+        [_testAlert setTitle:@"完成修改RelayRepeatCount值"];
+    }else {
+        _testAlert = [UIAlertController alertControllerWithTitle:@"完成修改RelayRepeatCount值" message:nil preferredStyle:UIAlertControllerStyleAlert];
+        [self presentViewController:_testAlert animated:YES completion:nil];
+    }
+    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"完成" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        _tests = nil;
+        _testfails = nil;
+    }];
+    [_testAlert addAction:ok];
+    
+    if ([_testfails count] > 0) {
+        NSString *message = @"";
+        for (CSRDeviceEntity *device in _testfails) {
+            if ([message length]>0) {
+                message = [NSString stringWithFormat:@"%@、%@（%@）",message, device.name, device.deviceId];
+            }else {
+                message = [NSString stringWithFormat:@"%@（%@）",device.name, device.deviceId];
+            }
+        }
+        [_testAlert setMessage:[NSString stringWithFormat:@"%@ 未响应！", message]];
+    }else {
+        [_testAlert setMessage:@"所有已添加设备的RelayRepeatCount值全部修改成功。"];
+    }
+}
 
 @end

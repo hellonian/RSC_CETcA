@@ -46,6 +46,6 @@
 - (void)refreshDNS:(NSNumber *)deviceID DNS:(NSString *)dns;
 - (void)refreshSongList:(NSNumber *)deviceID songs:(NSString *)songs;
 
-- (void)flashThermoregulatorState:(NSNumber *)deviceID tpower:(int)tpower tmoshi:(int)tmoshi tfengxiang:(int)tfengxiang tfengsu:(int)tfengsu twendu:(int)twendu;
+- (void)flashThermoregulatorState:(NSNumber *)deviceID channel:(int)tchanel tpower:(int)tpower tmoshi:(int)tmoshi tfengxiang:(int)tfengxiang tfengsu:(int)tfengsu twendu:(int)twendu;
 
 @end

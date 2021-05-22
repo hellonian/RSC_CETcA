@@ -784,6 +784,14 @@
             self.level3Label.hidden = YES;
             self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
+        }else if ([CSRUtilities belongToThermoregulator:device.deviceShortName]) {
+            self.iconView.image = [UIImage imageNamed:@"device_sonos"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"module", @"Localizable");
+            self.levelLabel.hidden = YES;
+            self.level2Label.hidden = YES;
+            self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
+            self.levelTextTopCon.constant = 0;
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;

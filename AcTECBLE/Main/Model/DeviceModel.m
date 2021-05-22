@@ -19,6 +19,7 @@
         self.mcStatus = -1;
         self.mcVoice = -1;
         self.mcSong = -1;
+        self.stateDic = [NSMutableDictionary new];
     }
     return self;
 }

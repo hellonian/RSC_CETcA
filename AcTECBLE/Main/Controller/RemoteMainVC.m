@@ -274,18 +274,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                 [_remoteBtn23 setBackgroundImage:[UIImage imageNamed:@"sr_P_six_default"] forState:UIControlStateNormal];
                 [_remoteBtn23 setBackgroundImage:[UIImage imageNamed:@"sr_P_six_selected"] forState:UIControlStateSelected];
             }
-            if ([deviceEntity.remoteBranch length] < 36) {
-                if (!_activityIndicator) {
-                    [[UIApplication sharedApplication].keyWindow addSubview:self.translucentBgView];
-                    _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-                    [[UIApplication sharedApplication].keyWindow addSubview:_activityIndicator];
-                    [_activityIndicator autoCenterInSuperview];
-                    [_activityIndicator startAnimating];
-                }
-                [self performSelector:@selector(waitSceneRemoteConfigurationTimeOut) withObject:nil afterDelay:30.0];
-                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(waitSceneRemoteConfiguration:) name:@"SCENEREMOTEDIDCONFIGURED" object:nil];
-                [[CSRmeshManager sharedInstance] sceneRemoteConfigureSceneIndex:_deviceId];
-            }
         }else if ([CSRUtilities belongToSceneRemoteFourKeys:deviceEntity.shortName]
                   || [CSRUtilities belongToSceneRemoteFourKeysV:deviceEntity.shortName]) {
             _mType = MainRemoteType_SceneFour;
@@ -332,9 +320,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                 [_remoteBtn21 setBackgroundImage:[UIImage imageNamed:@"sr_P_four_default"] forState:UIControlStateNormal];
                 [_remoteBtn21 setBackgroundImage:[UIImage imageNamed:@"sr_P_four_selected"] forState:UIControlStateSelected];
             }
-            if ([deviceEntity.remoteBranch length] < 24) {
-                [[CSRmeshManager sharedInstance] sceneRemoteConfigureSceneIndex:_deviceId];
-            }
         }else if ([CSRUtilities belongToSceneRemoteThreeKeys:deviceEntity.shortName]
                   || [CSRUtilities belongToSceneRemoteThreeKeysV:deviceEntity.shortName]) {
             _mType = MainRemoteType_SceneThree;
@@ -379,9 +364,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                 [_remoteBtn20 setBackgroundImage:[UIImage imageNamed:@"sr_P_three_default"] forState:UIControlStateNormal];
                 [_remoteBtn20 setBackgroundImage:[UIImage imageNamed:@"sr_P_three_selected"] forState:UIControlStateSelected];
             }
-            if ([deviceEntity.remoteBranch length] < 18) {
-                [[CSRmeshManager sharedInstance] sceneRemoteConfigureSceneIndex:_deviceId];
-            }
         }else if ([CSRUtilities belongToSceneRemoteTwoKeys:deviceEntity.shortName]
                   || [CSRUtilities belongToSceneRemoteTwoKeysV:deviceEntity.shortName]) {
             _mType = MainRemoteType_SceneTwo;
@@ -418,9 +400,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                 [_remoteBtn19 setBackgroundImage:[UIImage imageNamed:@"sr_P_two_default"] forState:UIControlStateNormal];
                 [_remoteBtn19 setBackgroundImage:[UIImage imageNamed:@"sr_P_two_selected"] forState:UIControlStateSelected];
             }
-            if ([deviceEntity.remoteBranch length] < 12) {
-                [[CSRmeshManager sharedInstance] sceneRemoteConfigureSceneIndex:_deviceId];
-            }
         }else if ([CSRUtilities belongToSceneRemoteOneKey:deviceEntity.shortName]
                   || [CSRUtilities belongToSceneRemoteOneKeyV:deviceEntity.shortName]) {
             _mType = MainRemoteType_SceneOne;
@@ -448,9 +427,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                 [_remoteBtn18 setBackgroundImage:[UIImage imageNamed:@"sr_P_one_selected"] forState:UIControlStateSelected];
             }
             _keyOneLeftConstraint.constant = 127;
-            if ([deviceEntity.remoteBranch length] < 6) {
-                [[CSRmeshManager sharedInstance] sceneRemoteConfigureSceneIndex:_deviceId];
-            }
         }else if ([CSRUtilities belongToMusicControlRemote:deviceEntity.shortName]
                   || [CSRUtilities belongToMusicControlRemoteV:deviceEntity.shortName]) {
             [self.view addSubview:self.mcrView];
@@ -623,9 +599,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             _keyFiveLeftConstraint.constant = 0;
             _keySixBottomConstaint.constant = 108;
             _keySixRightConstraint.constant = 0;
-            if ([deviceEntity.remoteBranch length] < 48) {
-                [[CSRmeshManager sharedInstance] sceneRemoteConfigureSceneIndex:_deviceId];
-            }
         }else if ([CSRUtilities belongToSceneRemotesEightKeysSM:deviceEntity.shortName]) {
             [self.view addSubview:self.sceneView2];
             [self.sceneView2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameView withOffset:44.0];
@@ -682,10 +655,10 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             _keyEightWidthConstraint.constant = 50;
             _keyEightHeightConstraint.constant = 39;
             _settingSelectMutArray = [[NSMutableArray alloc] initWithCapacity:1];
-            if ([deviceEntity.remoteBranch length] == 54) {
+            if ([deviceEntity.remoteBranch length] == 56) {
                 SelectModel *mod = [[SelectModel alloc] init];
                 mod.sourceID = @(9);
-                mod.channel = @(1);
+                mod.channel = @([CSRUtilities numberWithHexString:[deviceEntity.remoteBranch substringWithRange:NSMakeRange(54, 2)]]);
                 mod.deviceID = @([self exchangePositionOfDeviceIdString:[deviceEntity.remoteBranch substringWithRange:NSMakeRange(50, 4)]]);
                 [_settingSelectMutArray addObject:mod];
             }else {
@@ -693,9 +666,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                 mod.channel = @(0);
                 mod.deviceID = @(0);
                 [_settingSelectMutArray addObject:mod];
-            }
-            if ([deviceEntity.remoteBranch length] < 48) {
-                [[CSRmeshManager sharedInstance] sceneRemoteConfigureSceneIndex:_deviceId];
             }
         }
     }
@@ -977,14 +947,13 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                         NSInteger sDeviceID = [mod.deviceID integerValue];
                         NSInteger d0 = (sDeviceID & 0xFF00) >> 8;
                         NSInteger d1 = sDeviceID & 0x00FF;
-                        
-                        Byte byte[] = {0x9b, 0x06, 0x01, 0x09, 0x01, 0x00, d1, d0};
-                        applyCmd = [[NSData alloc] initWithBytes:byte length:8];
+                        Byte byte[] = {0xb6, 0x04, 0x29, d1, d0, [mod.channel intValue]};
+                        applyCmd = [[NSData alloc] initWithBytes:byte length:6];
                         [[NSNotificationCenter defaultCenter] addObserver:self
                                                                  selector:@selector(callbackOfRemoteConfigruation:)
-                                                                     name:@"CALLBACKOFREMOTECONFIGURATION"
+                                                                     name:@"CALLBACKOFTHERMOREGULATORCONFIGURATION"
                                                                    object:nil];
-                        [[DataModelManager shareInstance] sendDataByStreamDataTransfer:_deviceId data:applyCmd];
+                        [[DataModelManager shareInstance] sendDataByBlockDataTransfer:_deviceId data:applyCmd];
                     }
                 }else {
                     if (!_activityIndicator) {
@@ -997,11 +966,11 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
                     [self performSelector:@selector(configureThermoregulatorTimeOut) withObject:nil afterDelay:10.0f];
                     retryCount = 0;
                     
-                    Byte byte[] = {0x9b, 0x06, 0x01, 0x09, 0x00, 0x00, 0x00, 0x00};
-                    applyCmd = [[NSData alloc] initWithBytes:byte length:8];
+                    Byte byte[] = {0xb6, 0x04, 0x29, 0x00, 0x00, 0x00};
+                    applyCmd = [[NSData alloc] initWithBytes:byte length:6];
                     [[NSNotificationCenter defaultCenter] addObserver:self
                                                              selector:@selector(callbackOfRemoteConfigruation:)
-                                                                 name:@"CALLBACKOFREMOTECONFIGURATION"
+                                                                 name:@"CALLBACKOFTHERMOREGULATORCONFIGURATION"
                                                                object:nil];
                     [[DataModelManager shareInstance] sendDataByStreamDataTransfer:_deviceId data:applyCmd];
                 }
@@ -1585,27 +1554,22 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
             _translucentBgView = nil;
         }
         CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:_deviceId];
-        NSNumber *state = userInfo[@"STATE"];
-        if ([state boolValue]) {
-            if ([applyCmd length] == 8) {
-                NSString *ds = [NSString stringWithFormat:@"09%@",[[CSRUtilities hexStringForData:applyCmd] substringWithRange:NSMakeRange(12, 4)]];
+        NSInteger addr = [userInfo[@"ADDRESS"] integerValue];
+        if (addr != 0) {
+            if ([applyCmd length] == 6) {
+                NSString *ds = [NSString stringWithFormat:@"09%@",[[CSRUtilities hexStringForData:applyCmd] substringWithRange:NSMakeRange(6, 6)]];
                 if ([deviceEntity.remoteBranch length] == 48) {
                     deviceEntity.remoteBranch = [NSString stringWithFormat:@"%@%@",deviceEntity.remoteBranch, ds];
-                }else if ([deviceEntity.remoteBranch length] == 54) {
+                }else if ([deviceEntity.remoteBranch length] == 56) {
                     deviceEntity.remoteBranch = [NSString stringWithFormat:@"%@%@",[deviceEntity.remoteBranch substringToIndex:48], ds];
                 }
                 [[CSRDatabaseManager sharedInstance] saveContext];
             }
         }else {
-            if ([deviceEntity.remoteBranch length] == 54) {
+            if ([deviceEntity.remoteBranch length] == 56) {
                 deviceEntity.remoteBranch = [deviceEntity.remoteBranch substringToIndex:48];
                 [[CSRDatabaseManager sharedInstance] saveContext];
             }
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"TimeOut", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
-            [alert.view setTintColor:DARKORAGE];
-            UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
-            [alert addAction:cancel];
-            [self presentViewController:alert animated:YES completion:nil];
         }
     }
 }
@@ -1631,36 +1595,6 @@ typedef NS_ENUM(NSInteger,MainRemoteType)
         [alert addAction:cancel];
         [self presentViewController:alert animated:YES completion:nil];
     }
-}
-
-- (void)waitSceneRemoteConfiguration:(NSNotification *)notification {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"SCENEREMOTEDIDCONFIGURED" object:nil];
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(waitSceneRemoteConfigurationTimeOut) object:nil];
-    if (_activityIndicator) {
-        [_activityIndicator stopAnimating];
-        [_activityIndicator removeFromSuperview];
-        _activityIndicator = nil;
-        [self.translucentBgView removeFromSuperview];
-        self.translucentBgView = nil;
-    }
-}
-
-- (void)waitSceneRemoteConfigurationTimeOut {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"SCENEREMOTEDIDCONFIGURED" object:nil];
-    if (_activityIndicator) {
-        [_activityIndicator stopAnimating];
-        [_activityIndicator removeFromSuperview];
-        _activityIndicator = nil;
-        [self.translucentBgView removeFromSuperview];
-        self.translucentBgView = nil;
-    }
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示" message:@"给按钮设置情景号失败。" preferredStyle:UIAlertControllerStyleAlert];
-    [alert.view setTintColor:DARKORAGE];
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }];
-    [alert addAction:cancel];
-    [self presentViewController:alert animated:YES completion:nil];
 }
 
 @end

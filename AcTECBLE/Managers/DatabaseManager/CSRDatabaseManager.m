@@ -4,7 +4,6 @@
 
 #import "CSRDatabaseManager.h"
 #import "CSRUtilities.h"
-#import "CSRDeviceEntity.h"
 #import "CSRDevicesManager.h"
 #import "CSRConstants.h"
 #import "CSRmeshManager.h"

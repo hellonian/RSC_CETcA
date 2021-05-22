@@ -334,7 +334,6 @@
     }else {
         [self.tcpSocketManager readDataWithTimeout:-1 tag:0];
     }
-
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port {
@@ -343,7 +342,7 @@
 }
 
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err {
-    NSLog(@">>>>> socketDidDisconnect <<<<<");
+    NSLog(@">>>>> socketDidDisconnect <<<<< %@",err);
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:AcTECLocalizedStringFromTable(@"lan_connection_fail", @"Localizable") preferredStyle:UIAlertControllerStyleAlert];
     [alert.view setTintColor:DARKORAGE];
     UIAlertAction *action = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"Yes", @"Localizable") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {

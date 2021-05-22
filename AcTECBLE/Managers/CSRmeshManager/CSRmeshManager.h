@@ -29,6 +29,4 @@
 + (id) sharedInstance;
 - (void)setUpDelegates;
 
-- (void)sceneRemoteConfigureSceneIndex:(NSNumber *)deviceID;
-
 @end

@@ -36,8 +36,11 @@
 #import "SonosSelectModel.h"
 #import "SonosSceneSettingVC.h"
 
+#import "SelectionListView.h"
+#import "SelectionListModel.h"
+#import "ThermoregulatorViewController.h"
 
-@interface DeviceListViewController ()<MainCollectionViewDelegate>
+@interface DeviceListViewController ()<MainCollectionViewDelegate, SelectionListViewDelegate>
 
 @property (nonatomic,strong) MainCollectionView *devicesCollectionView;
 @property (nonatomic,strong) NSMutableArray *selectedDevices;
@@ -56,6 +59,8 @@
 
 @property (nonatomic, strong) UIView *mcChannelSelectedView;
 @property (nonatomic, strong) UIView *mcSonosChannelSelectionView;
+
+@property (nonatomic, strong) SelectionListView *selectionView;
 
 @end
 
@@ -142,7 +147,6 @@
                                                                      constant:0];
     
     [NSLayoutConstraint  activateConstraints:@[main_top,main_left,main_bottom,main_right]];
-    
     
     self.improver = [[ImproveTouchingExperience alloc] init];
 }
@@ -650,7 +654,8 @@
                     || [kMusicController containsObject:device.shortName]
                     || [kThreeChannelDimmers containsObject:device.shortName]
                     || [kHOneChannelCurtainController containsObject:device.shortName]
-                    || [kSonosMusicController containsObject:device.shortName]) {
+                    || [kSonosMusicController containsObject:device.shortName]
+                    || [kThermoregulators containsObject:device.shortName]) {
                     
                     BOOL exist = NO;
                     for (SceneMemberEntity *m in self.originalMembers) {
@@ -965,8 +970,7 @@
                 }
                 
             }else if (_selectMode == DeviceListSelectMode_SingleRegardlessChannel
-                      || _selectMode == DeviceListSelectMode_SingleRegardlessChannelPlus
-                      || _selectMode == DeviceListSelectMode_Thermoregulator) {
+                      || _selectMode == DeviceListSelectMode_SingleRegardlessChannelPlus) {
                 SelectModel *mod = [[SelectModel alloc] init];
                 mod.deviceID = mainCell.deviceId;
                 mod.channel = @1;
@@ -1008,6 +1012,33 @@
                     }else {
                         mainCell.seleteButton.selected = NO;
                     }
+                }
+            }else if (_selectMode == DeviceListSelectMode_Thermoregulator) {
+                _channelCurrentDeviceID = mainCell.deviceId;
+                CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
+                NSInteger channel = [deviceEntity.port integerValue];
+                if (channel > 0) {
+                    CGFloat w = self.view.bounds.size.width * 0.618;
+                    CGFloat sh = w/0.618;
+                    CGFloat mh = channel*44+90;
+                    CGFloat h = sh > mh ? mh : sh;
+                    NSMutableArray *ary = [[NSMutableArray alloc] init];
+                    for (int i = 1; i <= channel; i ++) {
+                        SelectionListModel *slm = [[SelectionListModel alloc] init];
+                        slm.value = i;
+                        slm.name = [NSString stringWithFormat:@"通道 %d", i];
+                        [ary addObject:slm];
+                    }
+                    [self.view addSubview:self.translucentBgView];
+                    _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((self.view.bounds.size.width-w)/2.0, (self.view.bounds.size.height-h)/2.0, w, h) dataArray:ary tite:AcTECLocalizedStringFromTable(@"Select", @"Localizable") mode:SelectionListViewSelectionMode_Channel];
+                    _selectionView.delegate = self;
+                    [self.view addSubview:_selectionView];
+                }else {
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"未发现可用通道" preferredStyle:UIAlertControllerStyleAlert];
+                    [alert.view setTintColor:DARKORAGE];
+                    UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+                    [alert addAction:cancel];
+                    [self presentViewController:alert animated:YES completion:nil];
                 }
             }else {
                 CSRDeviceEntity *deviceEntity = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:mainCell.deviceId];
@@ -1051,6 +1082,32 @@
                         }
                     };
                     [self.navigationController pushViewController:sss animated:YES];
+                }else if ([CSRUtilities belongToThermoregulator:deviceEntity.shortName]) {
+                    _channelCurrentDeviceID = mainCell.deviceId;
+                    NSInteger channel = [deviceEntity.port integerValue];
+                    if (channel > 0) {
+                        CGFloat w = self.view.bounds.size.width * 0.618;
+                        CGFloat sh = w/0.618;
+                        CGFloat mh = channel*44+90;
+                        CGFloat h = sh > mh ? mh : sh;
+                        NSMutableArray *ary = [[NSMutableArray alloc] init];
+                        for (int i = 1; i <= channel; i ++) {
+                            SelectionListModel *slm = [[SelectionListModel alloc] init];
+                            slm.value = i;
+                            slm.name = [NSString stringWithFormat:@"通道 %d", i];
+                            [ary addObject:slm];
+                        }
+                        [self.view addSubview:self.translucentBgView];
+                        _selectionView = [[SelectionListView alloc] initWithFrame:CGRectMake((self.view.bounds.size.width-w)/2.0, (self.view.bounds.size.height-h)/2.0, w, h) dataArray:ary tite:AcTECLocalizedStringFromTable(@"Select", @"Localizable") mode:SelectionListViewSelectionMode_Sonos];
+                        _selectionView.delegate = self;
+                        [self.view addSubview:_selectionView];
+                    }else {
+                        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"未发现可用通道" preferredStyle:UIAlertControllerStyleAlert];
+                        [alert.view setTintColor:DARKORAGE];
+                        UIAlertAction *cancel = [UIAlertAction actionWithTitle:AcTECLocalizedStringFromTable(@"OK", @"Localizable") style:UIAlertActionStyleCancel handler:nil];
+                        [alert addAction:cancel];
+                        [self presentViewController:alert animated:YES completion:nil];
+                    }
                 }else {
                     SelectModel *mod = [[SelectModel alloc] init];
                     mod.deviceID = mainCell.deviceId;
@@ -1219,6 +1276,22 @@
                 [_devicesCollectionView reloadData];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:sonosVC];
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
+        }else if ([CSRUtilities belongToThermoregulator:deviceEntity.shortName]) {
+            ThermoregulatorViewController *tvc = [[ThermoregulatorViewController alloc] init];
+            tvc.deviceId = mainCell.deviceId;
+            tvc.renameBlock = ^{
+                [self loadData];
+                [_devicesCollectionView reloadData];
+            };
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:tvc];
             if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
                 nav.modalPresentationStyle = UIModalPresentationFullScreen;
             }else {
@@ -1866,6 +1939,66 @@
         _translucentBgView = nil;
     }
     self.navigationItem.rightBarButtonItem.enabled = YES;
+}
+
+- (void)selectionListViewSaveAction:(NSArray *)ary selectionMode:(SelectionListViewSelectionMode)mode {
+    if (mode == SelectionListViewSelectionMode_Channel) {
+        SelectionListModel *slm = [ary firstObject];
+        BOOL exist = NO;
+        for (SelectModel *mod in _selectedDevices) {
+            if ([mod.deviceID isEqualToNumber:_channelCurrentDeviceID]) {
+                mod.channel = @(slm.value);
+                exist = YES;
+            }
+        }
+        if (!exist) {
+            SelectModel *mod = [[SelectModel alloc] init];
+            mod.deviceID = _channelCurrentDeviceID;
+            mod.channel = @(slm.value);
+            [_selectedDevices addObject:mod];
+        }
+    }else if (mode == SelectionListViewSelectionMode_Sonos) {
+        int channel = 0;
+        for (SelectionListModel *slm in ary) {
+            channel += pow(2, slm.value-1);
+        }
+        BOOL exist = NO;
+        for (SelectModel *mod in _selectedDevices) {
+            if ([mod.deviceID isEqualToNumber:_channelCurrentDeviceID]) {
+                mod.channel = @(channel);
+                exist = YES;
+            }
+        }
+        if (!exist) {
+            SelectModel *mod = [[SelectModel alloc] init];
+            mod.deviceID = _channelCurrentDeviceID;
+            mod.channel = @(channel);
+            [_selectedDevices addObject:mod];
+        }
+    }
+    [_selectionView removeFromSuperview];
+    _selectionView = nil;
+    [_translucentBgView removeFromSuperview];
+    _translucentBgView = nil;
+}
+
+- (void)selectionListViewCancelAction {
+//    for (SelectModel *mod in _selectedDevices) {
+//        if ([mod.deviceID isEqualToNumber:_channelCurrentDeviceID]) {
+//            [_selectedDevices removeObject:mod];
+//            break;
+//        }
+//    }
+//    for (MainCollectionViewCell *mainCell in _devicesCollectionView.visibleCells) {
+//        if ([mainCell.deviceId isEqualToNumber:_channelCurrentDeviceID]) {
+//            mainCell.seleteButton.selected = NO;
+//            break;
+//        }
+//    }
+    [_selectionView removeFromSuperview];
+    _selectionView = nil;
+    [_translucentBgView removeFromSuperview];
+    _translucentBgView = nil;
 }
 
 @end

@@ -39,7 +39,7 @@
 #define kRGBSceneDefaultHue @[@(0.17),@(0.17),@(0),@(0.17),@(0.9),@(0.6),@(0.3),@(0.67),@(0.04),@[@(0.15),@(0.36),@(0.5),@(0.6),@(0.8),@(0.95)],@[@(0.18),@(0.35),@(0.4),@(0.5),@(0.67),@(1)],@[@(0),@(0.08),@(0.17),@(0.33),@(0.67),@(0.83)]]
 #define kRGBSceneDefaultColorSat @[@(0.27),@(0.4),@(0),@(0.4),@(0.85),@(1),@(0.4),@(0.3),@(1),@(1),@(1),@(1)]
 
-#define kDimmers @[@"D350BT",@"D350B-H",@"D350SB",@"D350B",@"D300IB",@"D300SB-T3",@"D350SB-T1",@"D300IB-H",@"D300IB-T2",@"D350B-B",@"D350B-L",@"D300IB-L",@"D0-10IB",@"D0/1-10IB",@"D350SB-Q2",@"D300SB",@"D350STB-Q",@"D350SB-Q",@"D1-10VIBH",@"D300IB",@"DDSB",@"D300IB-Q",@"D300B",@"D300B-H",@"DAL-IBH",@"D300BH",@"D0/1-10B",@"PD350B",@"SD350",@"D350GB",@"SSD150",@"GD400B",@"ED350B",@"ED350SB",@"TD400B",@"DM300BH",@"TD300B",@"PD300B"]
+#define kDimmers @[@"D350BT",@"D350B-H",@"D350SB",@"D350B",@"D300SB-T3",@"D350SB-T1",@"D300IB-H",@"D300IB-T2",@"D350B-B",@"D350B-L",@"D300IB-L",@"D0-10IB",@"D0/1-10IB",@"D350SB-Q2",@"D300SB",@"D350STB-Q",@"D350SB-Q",@"D1-10VIBH",@"D300IB",@"DDSB",@"D300IB-Q",@"D300B",@"D300B-H",@"DAL-IBH",@"D300BH",@"D0/1-10B",@"PD350B",@"SD350",@"D350GB",@"SSD150",@"GD400B",@"ED350B",@"ED350SB",@"TD400B",@"DM300BH",@"TD300B",@"PD300B"]
 #define kSwitchs @[@"S350BT",@"S350B",@"S2400IB",@"S350B-H",@"S2400IB-H",@"S2400IB-T4",@"S10IB",@"S10IB-H2",@"S10IBH",@"S2400IB-Q",@"GS10B",@"ES350B",@"S6AB",@"RM300BH",@"TS10B",@"PS10B",@"TS5B",@"PS5B",@"4DCOB",@"RM1440BH"]
 #define kRemotes @[@"RB01",@"RB02",@"S10IB-H2",@"RB04",@"RSIBH",@"R5BSBH",@"R9BSBH",@"RB07",@"RB06",@"RSBH",@"RB05",@"RB09",@"1BMBH",@"5RSIBH",@"5BCBH",@"6RSIBH",@"H1CSWB",@"H2CSWB",@"H3CSWB",@"H4CSWB",@"H6CSWB",@"H1CSB",@"H2CSB",@"H3CSB",@"H4CSB",@"H6CSB",@"KT6RS",@"H1RSMB",@"H2RSMB",@"H3RSMB",@"H4RSMB",@"H5RSMB",@"H6RSMB",@"RB08"]
 
@@ -51,7 +51,7 @@
 #define kSceneRemotesThreeKeys @[@"TR3B", @"TSTR3B"]
 #define kSceneRemotesTwoKeys @[@"TR2B", @"TSTR2B"]
 #define kSceneRemotesOneKey @[@"TR1B", @"TSTR1B"]
-#define kSceneRemotesSixKeysV @[@"PR6B"]
+#define kSceneRemotesSixKeysV @[@"PR6B", @"PR6MB"]
 #define kSceneRemotesFourKeysV @[@"PR4B"]
 #define kSceneRemotesThreeKeysV @[@"PR3B"]
 #define kSceneRemotesTwoKeysV @[@"PR2B"]
@@ -105,11 +105,6 @@
 #define PLAYMODE @[AcTECLocalizedStringFromTable(@"single_cycle", @"Localizable"),AcTECLocalizedStringFromTable(@"loop_playback", @"Localizable"),AcTECLocalizedStringFromTable(@"random", @"Localizable"),AcTECLocalizedStringFromTable(@"order", @"Localizable")]
 #define PLAYMODE_SONOS @[AcTECLocalizedStringFromTable(@"single", @"Localizable"),AcTECLocalizedStringFromTable(@"single_cycle", @"Localizable"),AcTECLocalizedStringFromTable(@"random", @"Localizable"),AcTECLocalizedStringFromTable(@"order", @"Localizable")]
 #define AUDIOSOURCES @[@"FM",@"DVD",@"MP3",@"AUX",@"NET RADIO",@"CLOUD MUSIC",@"AIRPLAY",@"DLNA"]
-
-#define TFENGSU @[@"自动", @"超低速", @"中低速", @"中速", @"中高速", @"高速"]
-#define TWENDU @[@"16 ℃", @"17 ℃", @"18 ℃", @"19 ℃", @"20 ℃", @"21 ℃", @"22 ℃", @"23 ℃", @"24 ℃", @"25 ℃", @"26 ℃", @"27 ℃", @"28 ℃", @"29 ℃", @"30 ℃"]
-#define TMOSHI @[@"自动", @"制冷", @"制热", @"除湿", @"送风"]
-#define TFENGXIANG @[@"向上", @"向下", @"向左", @"向右"]
 
 #define E_series_dimmer @[@"D350B"]
 #define E_series_single_wire_switch @[@"S350B"]

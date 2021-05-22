@@ -173,6 +173,16 @@
         model.powerState = @([powerState boolValue] || [red boolValue] || [blue boolValue]);
         NSInteger l = ([level integerValue] > [green integerValue] ? [level integerValue] : [green integerValue]) > [colorTemperature integerValue] ? ([level integerValue] > [green integerValue] ? [level integerValue] : [green integerValue]) : [colorTemperature integerValue];
         model.level = @(l > 3 ? l : 3);
+    }else if ([CSRUtilities belongToThermoregulator:model.shortName]) {
+        model.powerState = powerState;
+        model.channel1PowerState = [powerState boolValue];
+        model.level = level;
+        model.channel1Level = [level integerValue];
+        model.red = red;
+        model.green = green;
+        model.blue = blue;
+        model.colorTemperature = colorTemperature;
+        model.supports = supports;
     }else {
         model.powerState = powerState;
         model.channel1PowerState = [powerState boolValue];
@@ -506,7 +516,8 @@
                 }
                 
             }else {
-                Byte byte[] = {0x51, 0x05, [currentChannel integerValue]-1, 0x00, 0x03, 01, [currentLevel integerValue]};
+                BOOL p = [currentLevel integerValue] == 0 ? NO : YES;
+                Byte byte[] = {0x51, 0x05, [currentChannel integerValue]-1, 0x00, 0x03, p, [currentLevel integerValue]};
                 NSData *cmd = [[NSData alloc]initWithBytes:byte length:7];
                 [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceId data:cmd];
                 
@@ -1832,15 +1843,11 @@
     }
 }
 
-- (void)flashThermoregulatorState:(NSNumber *)deviceID tpower:(int)tpower tmoshi:(int)tmoshi tfengxiang:(int)tfengxiang tfengsu:(int)tfengsu twendu:(int)twendu {
+- (void)flashThermoregulatorState:(NSNumber *)deviceID channel:(int)tchanel tpower:(int)tpower tmoshi:(int)tmoshi tfengxiang:(int)tfengxiang tfengsu:(int)tfengsu twendu:(int)twendu {
     for (DeviceModel *model in _allDevices) {
         if ([model.deviceId isEqualToNumber:deviceID]) {
-            model.channel1PowerState = tpower;
-            model.channel1Level = tmoshi;
-            model.blue = @(tfengxiang);
-            model.red = @(tfengsu);
-            model.green  = @(twendu);
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceID,@"channel":@1}];
+            [model.stateDic setObject:@[@(tpower), @(tfengsu), @(twendu), @(tmoshi), @(tfengxiang)] forKey:@(tchanel)];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceID,@"channel":@(tchanel)}];
             break;
         }
     }

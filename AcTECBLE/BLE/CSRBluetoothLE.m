@@ -479,11 +479,6 @@
             if (peripheral.services.count==0) {
                 [peripheral discoverServices:nil];
             }
-            else {
-                for (CBService *service in peripheral.services) {
-                    NSLog(@"didConnectPeripheral_service: %@",service.UUID);
-                }
-            }
             
             [self didConnectPeripheral:peripheral];
         }
