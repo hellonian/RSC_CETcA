@@ -54,6 +54,7 @@
 #import "PIRViewController.h"
 #import <CSRmesh/ConfigModelApi.h>
 #import "ThermoregulatorViewController.h"
+#import "CSRGatewayViewController.h"
 
 @interface MainViewController ()<MainCollectionViewDelegate,PlaceColorIconPickerViewDelegate,MBProgressHUDDelegate, ConfigModelApiDelegate>
 {
@@ -948,6 +949,21 @@
                 [self getMainDataArray];
             };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:tvc];
+            if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
+                nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            }else {
+                nav.modalPresentationStyle = UIModalPresentationPopover;
+            }
+            [self presentViewController:nav animated:YES completion:nil];
+            nav.popoverPresentationController.sourceRect = mainCell.bounds;
+            nav.popoverPresentationController.sourceView = mainCell;
+        }else if ([CSRUtilities belongToCSRGateway:deviceEntity.shortName]) {
+            CSRGatewayViewController *gvc = [[CSRGatewayViewController alloc] init];
+            gvc.deviceId = mainCell.deviceId;
+            gvc.renameBlock = ^{
+                [self getMainDataArray];
+            };
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:gvc];
             if ([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPhone) {
                 nav.modalPresentationStyle = UIModalPresentationFullScreen;
             }else {

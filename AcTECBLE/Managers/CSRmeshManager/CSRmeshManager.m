@@ -445,7 +445,7 @@
     for (int i=0; i<keyCount; i++) {
         NSInteger index = 0;
         while ([allIndexs containsObject:@(index)]) {
-            index = arc4random()%65470+64;
+            index = arc4random()%65468+64;
         }
         SceneEntity *scene = [NSEntityDescription insertNewObjectForEntityForName:@"SceneEntity" inManagedObjectContext:[CSRDatabaseManager sharedInstance].managedObjectContext];
         scene.rcIndex = @(index);

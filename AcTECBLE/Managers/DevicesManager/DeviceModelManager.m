@@ -67,6 +67,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(RGBCWDeviceActionCall:) name:@"RGBCWDeviceActionCall" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fanControllerCall:) name:@"fanControllerCall" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(multichannelActionCall:) name:@"multichannelActionCall" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reGetDataForPlaceChanged) name:@"reGetDataForPlaceChanged" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(childrenModelState:)
                                                      name:@"childrenModelState"
@@ -1723,14 +1724,14 @@
 }
 
 - (void)refreshNetworkConnectionStatus:(NSNumber *)deviceID staus:(BOOL)status {
-    for (DeviceModel *model in _allDevices) {
-        if ([model.deviceId isEqualToNumber:deviceID]) {
+    NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
+    for (CSRDeviceEntity *device in allDevices) {
+        if ([device.deviceId isEqualToNumber:deviceID]) {
             if (status) {
                 Byte byte[] = {0xea, 0x77, 0x01};
                 NSData *cmd = [[NSData alloc] initWithBytes:byte length:3];
                 [[DataModelManager shareInstance] sendDataByBlockDataTransfer:deviceID data:cmd];
             }else {
-                CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID];
                 device.ipAddress = nil;
                 device.port = nil;
                 [[CSRDatabaseManager sharedInstance] saveContext];
@@ -1744,9 +1745,9 @@
 }
 
 - (void)refreshIPAddress:(NSNumber *)deviceID IPAddress:(NSString *)ip {
-    for (DeviceModel *model in _allDevices) {
-        if ([model.deviceId isEqualToNumber:deviceID]) {
-            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID];
+    NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
+    for (CSRDeviceEntity *device in allDevices) {
+        if ([device.deviceId isEqualToNumber:deviceID]) {
             device.ipAddress = ip;
             [[CSRDatabaseManager sharedInstance] saveContext];
             
@@ -1763,9 +1764,9 @@
 }
 
 - (void)refreshSubnetMask:(NSNumber *)deviceID subnetMask:(NSString *)sub {
-    for (DeviceModel *model in _allDevices) {
-        if ([model.deviceId isEqualToNumber:deviceID]) {
-            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID];
+    NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
+    for (CSRDeviceEntity *device in allDevices) {
+        if ([device.deviceId isEqualToNumber:deviceID]) {
             device.subnetMask = sub;
             [[CSRDatabaseManager sharedInstance] saveContext];
             
@@ -1783,9 +1784,9 @@
 }
 
 - (void)refreshGateway:(NSNumber *)deviceID gateway:(NSString *)gateway {
-    for (DeviceModel *model in _allDevices) {
-        if ([model.deviceId isEqualToNumber:deviceID]) {
-            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID];
+    NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
+    for (CSRDeviceEntity *device in allDevices) {
+        if ([device.deviceId isEqualToNumber:deviceID]) {
             device.gateway = gateway;
             [[CSRDatabaseManager sharedInstance] saveContext];
             
@@ -1803,9 +1804,9 @@
 }
 
 - (void)refreshDNS:(NSNumber *)deviceID DNS:(NSString *)dns {
-    for (DeviceModel *model in _allDevices) {
-        if ([model.deviceId isEqualToNumber:deviceID]) {
-            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID];
+    NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
+    for (CSRDeviceEntity *device in allDevices) {
+        if ([device.deviceId isEqualToNumber:deviceID]) {
             device.dns = dns;
             [[CSRDatabaseManager sharedInstance] saveContext];
             
@@ -1819,9 +1820,9 @@
 }
 
 - (void)refreshPort:(NSNumber *)deviceID port:(NSInteger)port {
-    for (DeviceModel *model in _allDevices) {
-        if ([model.deviceId isEqualToNumber:deviceID]) {
-           CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID];
+    NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
+    for (CSRDeviceEntity *device in allDevices) {
+        if ([device.deviceId isEqualToNumber:deviceID]) {
             device.port = @(port);
             [[CSRDatabaseManager sharedInstance] saveContext];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshPort"
@@ -1833,9 +1834,9 @@
 }
 
 - (void)refreshSongList:(NSNumber *)deviceID songs:(NSString *)songs {
-    for (DeviceModel *model in _allDevices) {
-        if ([model.deviceId isEqualToNumber:deviceID]) {
-            CSRDeviceEntity *device = [[CSRDatabaseManager sharedInstance] getDeviceEntityWithId:deviceID];
+    NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
+    for (CSRDeviceEntity *device in allDevices) {
+        if ([device.deviceId isEqualToNumber:deviceID]) {
             device.remoteBranch = songs;
             [[CSRDatabaseManager sharedInstance] saveContext];
             break;
@@ -1849,6 +1850,44 @@
             [model.stateDic setObject:@[@(tpower), @(tfengsu), @(twendu), @(tmoshi), @(tfengxiang)] forKey:@(tchanel)];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"setPowerStateSuccess" object:self userInfo:@{@"deviceId":deviceID,@"channel":@(tchanel)}];
             break;
+        }
+    }
+}
+
+- (void)reGetDataForPlaceChanged {
+    [self addDeviceModel];
+}
+
+- (void)addDeviceModel {
+    NSSet *allDevices = [CSRAppStateManager sharedInstance].selectedPlace.devices;
+    if (allDevices != nil && [allDevices count] != 0) {
+        for (CSRDeviceEntity *deviceEntity in allDevices) {
+            if ([CSRUtilities belongToMainVCDevice:deviceEntity.shortName] || [CSRUtilities belongToLightSensor:deviceEntity.shortName]) {
+                BOOL exist = NO;
+                for (DeviceModel *model in _allDevices) {
+                    if ([model.deviceId isEqualToNumber:deviceEntity.deviceId]) {
+                        exist = YES;
+                        break;
+                    }
+                }
+                if (!exist) {
+                    DeviceModel *model = [[DeviceModel alloc] init];
+                    model.deviceId = deviceEntity.deviceId;
+                    model.shortName = deviceEntity.shortName;
+                    model.name = deviceEntity.name;
+                    
+                    model.powerState = @0;
+                    model.channel1PowerState = NO;
+                    model.channel2PowerState = NO;
+                    model.channel3PowerState = NO;
+                    model.level = @0;
+                    model.channel1Level = 0;
+                    model.channel2Level = 0;
+                    model.channel3Level = 0;
+                    
+                    [_allDevices addObject:model];
+                }
+            }
         }
     }
 }

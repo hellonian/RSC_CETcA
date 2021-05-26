@@ -280,3 +280,4 @@
 "temperature_less" = "温度小于";
 "body_sensor" = "人体感应";
 "temperature_sensor" = "温度感应";
+"gateway" = "网关";

@@ -280,3 +280,4 @@
 "temperature_less" = "The temperature is less than";
 "body_sensor" = "Body sensor";
 "temperature_sensor" = "Temperature sensor";
+"gateway" = "Gateway";

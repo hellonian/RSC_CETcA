@@ -197,6 +197,7 @@
 		2EEA427B2151FFF70050B729 /* CustomizeProgressHud.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EEA427A2151FFF70050B729 /* CustomizeProgressHud.m */; };
 		2EEA427F215247180050B729 /* CurtainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EEA427D215247180050B729 /* CurtainViewController.m */; };
 		2EEA6E361F453B1300895CE2 /* ControlMaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EEA6E341F453B1300895CE2 /* ControlMaskView.m */; };
+		2EED2B9D265CA2D6001A80AD /* CSRGatewayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EED2B9C265CA2D5001A80AD /* CSRGatewayViewController.m */; };
 		2EF2DB5A200DA6CF00A1B236 /* DeviceModelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF2DB59200DA6CF00A1B236 /* DeviceModelManager.m */; };
 		2EF332502045030100565374 /* LanguageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF3324E2045030100565374 /* LanguageViewController.m */; };
 		2EF332512045030100565374 /* LanguageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2EF3324F2045030100565374 /* LanguageViewController.xib */; };
@@ -733,6 +734,8 @@
 		2EEA427D215247180050B729 /* CurtainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CurtainViewController.m; sourceTree = "<group>"; };
 		2EEA6E331F453B1300895CE2 /* ControlMaskView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControlMaskView.h; sourceTree = "<group>"; };
 		2EEA6E341F453B1300895CE2 /* ControlMaskView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControlMaskView.m; sourceTree = "<group>"; };
+		2EED2B9B265CA2D5001A80AD /* CSRGatewayViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CSRGatewayViewController.h; sourceTree = "<group>"; };
+		2EED2B9C265CA2D5001A80AD /* CSRGatewayViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CSRGatewayViewController.m; sourceTree = "<group>"; };
 		2EF2DB58200DA6CF00A1B236 /* DeviceModelManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceModelManager.h; sourceTree = "<group>"; };
 		2EF2DB59200DA6CF00A1B236 /* DeviceModelManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeviceModelManager.m; sourceTree = "<group>"; };
 		2EF3324D2045030100565374 /* LanguageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LanguageViewController.h; sourceTree = "<group>"; };
@@ -1234,6 +1237,8 @@
 				2E241BA8263A89B700183F8B /* ThermoregulatorViewController.h */,
 				2E241BA9263A89B700183F8B /* ThermoregulatorViewController.m */,
 				2E241BAA263A89B700183F8B /* ThermoregulatorViewController.xib */,
+				2EED2B9B265CA2D5001A80AD /* CSRGatewayViewController.h */,
+				2EED2B9C265CA2D5001A80AD /* CSRGatewayViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1779,6 +1784,7 @@
 				2E2E70B11FF5DE60002D1C1D /* NSMutableArray+Queue.m in Sources */,
 				2EBC344F25F2079900FA887E /* PIRAutomaticDetailViewController.m in Sources */,
 				2E3630FB2199666F00EF22DD /* FanViewController.m in Sources */,
+				2EED2B9D265CA2D6001A80AD /* CSRGatewayViewController.m in Sources */,
 				2E8623492019DB28004EF0E0 /* DeviceViewController.m in Sources */,
 				0D835B851B975E8700FF4376 /* CSRSettingsEntity.m in Sources */,
 				2E7C7B13250B6B6A00AFA845 /* FadeViewController.m in Sources */,

@@ -546,6 +546,14 @@
             self.level3Label.hidden = YES;
             self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
+        }else if ([CSRUtilities belongToCSRGateway:deviceEntity.shortName]) {
+            self.iconView.image = [UIImage imageNamed:@"room_sonos"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"gateway", @"Localizable");
+            self.levelLabel.hidden = YES;
+            self.level2Label.hidden = YES;
+            self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
+            self.levelTextTopCon.constant = 0;
         }
         
         self.cellIndexPath = indexPath;
@@ -792,6 +800,14 @@
             self.level3Label.hidden = YES;
             self.adjustableBrightness = NO;
             self.levelTextTopCon.constant = 0;
+        }else if ([CSRUtilities belongToCSRGateway:device.deviceShortName]) {
+            self.iconView.image = [UIImage imageNamed:@"device_sonos"];
+            self.kindLabel.text = AcTECLocalizedStringFromTable(@"gateway", @"Localizable");
+            self.levelLabel.hidden = YES;
+            self.level2Label.hidden = YES;
+            self.level3Label.hidden = YES;
+            self.adjustableBrightness = NO;
+            self.levelTextTopCon.constant = 0;
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
@@ -1001,6 +1017,8 @@
             self.iconView.image = [UIImage imageNamed:@"device_M_panels"];
         }else if ([CSRUtilities belongToThermoregulator:appearanceShortname]) {
             self.iconView.image = [UIImage imageNamed:@"device_sonos"];
+        }else if ([CSRUtilities belongToCSRGateway:appearanceShortname]) {
+            self.iconView.image = [UIImage imageNamed:@"device_sonos"];
         }
         self.cellIndexPath = indexPath;
         self.bottomView.hidden = YES;
@@ -1176,7 +1194,8 @@
                 || [CSRUtilities belongToPIRDevice:model.shortName]
                 || [CSRUtilities belongToSceneRemotesEightKeysM:model.shortName]
                 || [CSRUtilities belongToSceneRemotesEightKeysSM:model.shortName]
-                || [CSRUtilities belongToThermoregulator:model.shortName]) {
+                || [CSRUtilities belongToThermoregulator:model.shortName]
+                || [CSRUtilities belongToCSRGateway:model.shortName]) {
                 self.nameLabel.textColor = [UIColor colorWithRed:77/255.0 green:77/255.0 blue:77/255.0 alpha:1];
             }else {
                 if (![model.powerState boolValue]) {
@@ -1239,7 +1258,8 @@
               || [CSRUtilities belongToPIRDevice:model.shortName]
               || [CSRUtilities belongToSceneRemotesEightKeysM:model.shortName]
               || [CSRUtilities belongToSceneRemotesEightKeysSM:model.shortName]
-              || [CSRUtilities belongToThermoregulator:model.shortName])) {
+              || [CSRUtilities belongToThermoregulator:model.shortName]
+              || [CSRUtilities belongToCSRGateway:model.shortName])) {
             self.nameLabel.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
             self.levelLabel.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
             self.level2Label.textColor = [UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1];
@@ -1351,7 +1371,8 @@
                         &&![CSRUtilities belongToPIRDevice:deviceEntity.shortName]
                         &&![CSRUtilities belongToSceneRemotesEightKeysM:deviceEntity.shortName]
                         &&![CSRUtilities belongToSceneRemotesEightKeysSM:deviceEntity.shortName]
-                        &&![CSRUtilities belongToThermoregulator:deviceEntity.shortName]) {
+                        &&![CSRUtilities belongToThermoregulator:deviceEntity.shortName]
+                        &&![CSRUtilities belongToCSRGateway:deviceEntity.shortName]) {
                         DeviceModel *model = [[DeviceModelManager sharedInstance] getDeviceModelByDeviceId:_deviceId];
                         [[DeviceModelManager sharedInstance] setPowerStateWithDeviceId:_deviceId channel:@1 withPowerState:![model.powerState boolValue]];
                     }

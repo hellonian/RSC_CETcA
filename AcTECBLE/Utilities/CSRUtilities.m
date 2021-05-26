@@ -1178,7 +1178,8 @@
         || [kPIRDevice containsObject:shortName]
         || [kSceneRemotesEightKeysM containsObject:shortName]
         || [kSceneRemotesEightKeysSM containsObject:shortName]
-        || [kThermoregulators containsObject:shortName]) {
+        || [kThermoregulators containsObject:shortName]
+        || [kCSRGateway containsObject:shortName]) {
         return YES;
     }
     return NO;
@@ -1762,6 +1763,13 @@
 
 + (BOOL)belongToThermoregulator:(NSString *)shortName {
     if ([kThermoregulators containsObject:shortName]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)belongToCSRGateway:(NSString *)shortName {
+    if ([kCSRGateway containsObject:shortName]) {
         return YES;
     }
     return NO;

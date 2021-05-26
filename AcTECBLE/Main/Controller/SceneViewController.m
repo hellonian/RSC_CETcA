@@ -562,9 +562,7 @@
         if ([devices count] > 0) {
             [self showLoading];
             _devices = devices;
-            NSLog(@"☂︎  %@  %@",_srDeviceId, _sceneIndex);
             if (_srDeviceId && [_sceneIndex integerValue] == 0) {
-                NSLog(@"☂︎☂︎ %ld", [[CSRAppStateManager sharedInstance].selectedPlace.scenes count]);
                 for (SceneEntity *scene in [CSRAppStateManager sharedInstance].selectedPlace.scenes) {
                     if ([scene.srDeviceId isEqualToNumber:_srDeviceId] && [scene.iconID integerValue] == _keyNumber) {
                         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -755,14 +753,19 @@
                 || [CSRUtilities belongToTwoChannelCurtainController:m.kindString]
                 || [CSRUtilities belongToThreeChannelDimmer:m.kindString]
                 || [CSRUtilities belongToMusicController:m.kindString]
-                || [CSRUtilities belongToSonosMusicController:m.kindString]
-                || [CSRUtilities belongToThermoregulator:m.kindString]) {
+                || [CSRUtilities belongToSonosMusicController:m.kindString]) {
                 Byte byte[] = {0x59, 0x08, [m.channel integerValue], b[1], b[0], e, d0, d1, d2, d3};
                 NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
                 retryCount = 0;
                 retryCmd = cmd;
                 retryDeviceId = m.deviceID;
-                NSLog(@"%@",cmd);
+                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:m.deviceID data:cmd];
+            }else if ([CSRUtilities belongToThermoregulator:m.kindString]) {
+                Byte byte[] = {0x7c, 0x08, [m.channel integerValue], b[1], b[0], e, d0, d1, d2, d3};
+                NSData *cmd = [[NSData alloc] initWithBytes:byte length:10];
+                retryCount = 0;
+                retryCmd = cmd;
+                retryDeviceId = m.deviceID;
                 [[DataModelManager shareInstance] sendDataByBlockDataTransfer:m.deviceID data:cmd];
             }else {
                 Byte byte[] = {0x93, 0x07, b[1], b[0], e, d0, d1, d2, d3};
@@ -1081,7 +1084,7 @@
                     m.sceneID = _sceneIndex;
                     m.kindString = device.shortName;
                     m.deviceID = device.deviceId;
-                    m.channel = @(a);
+                    m.channel = @(i+1);
                     m.eveType = @(34);
                     uint8_t d1 = [ary[0] boolValue] + ([ary[3] integerValue] << 1) + ([ary[4] integerValue] << 4);
                     uint8_t d2 = [ary[1] integerValue];
@@ -1257,6 +1260,13 @@
                                 || [CSRUtilities belongToMusicController:member.kindString]
                                 || [CSRUtilities belongToSonosMusicController:member.kindString]) {
                                 Byte byte[] = {0x5d, 0x03, c, b[1], b[0]};
+                                NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
+                                retryCount = 0;
+                                retryCmd = cmd;
+                                retryDeviceId = member.deviceID;
+                                [[DataModelManager shareInstance] sendDataByBlockDataTransfer:member.deviceID data:cmd];
+                            }else if ([CSRUtilities belongToThermoregulator:member.kindString]) {
+                                Byte byte[] = {0x67, 0x03, c, b[1], b[0]};
                                 NSData *cmd = [[NSData alloc] initWithBytes:byte length:5];
                                 retryCount = 0;
                                 retryCmd = cmd;

@@ -584,7 +584,7 @@ static DataModelManager *manager = nil;
     }
     
     else if ([dataStr hasPrefix:@"eb7701"]) {
-        if ([dataStr length] == 14) {
+        if ([dataStr length] >= 14) {
             NSData *d = [data subdataWithRange:NSMakeRange(3, 4)];
             Byte *byte = (Byte *)[d bytes];
             NSString *ip = [NSString stringWithFormat:@"%hhu.%hhu.%hhu.%hhu", byte[0], byte[1], byte[2], byte[3]];
@@ -593,7 +593,7 @@ static DataModelManager *manager = nil;
     }
     
     else if ([dataStr hasPrefix:@"eb7703"]) {
-        if ([dataStr length] == 14) {
+        if ([dataStr length] >= 14) {
             NSData *d = [data subdataWithRange:NSMakeRange(3, 4)];
             Byte *byte = (Byte *)[d bytes];
             NSString *sub = [NSString stringWithFormat:@"%hhu.%hhu.%hhu.%hhu", byte[0], byte[1], byte[2], byte[3]];
@@ -602,7 +602,7 @@ static DataModelManager *manager = nil;
     }
     
     else if ([dataStr hasPrefix:@"eb7702"]) {
-        if ([dataStr length] == 14) {
+        if ([dataStr length] >= 14) {
             NSData *d = [data subdataWithRange:NSMakeRange(3, 4)];
             Byte *byte = (Byte *)[d bytes];
             NSString *gateway = [NSString stringWithFormat:@"%hhu.%hhu.%hhu.%hhu", byte[0], byte[1], byte[2], byte[3]];
@@ -611,7 +611,7 @@ static DataModelManager *manager = nil;
     }
     
     else if ([dataStr hasPrefix:@"eb7704"]) {
-        if ([dataStr length] == 14) {
+        if ([dataStr length] >= 14) {
             NSData *d = [data subdataWithRange:NSMakeRange(3, 4)];
             Byte *byte = (Byte *)[d bytes];
             NSString *dns = [NSString stringWithFormat:@"%hhu.%hhu.%hhu.%hhu", byte[0], byte[1], byte[2], byte[3]];
@@ -701,7 +701,7 @@ static DataModelManager *manager = nil;
     }
     
     else if ([dataStr hasPrefix:@"eb7707"]) {
-        if ([dataStr length] == 8) {
+        if ([dataStr length] >= 8) {
             NSData *d = [data subdataWithRange:NSMakeRange(3, 1)];
             Byte *byte = (Byte *)[d bytes];
             BOOL b = byte[0];
@@ -843,6 +843,16 @@ static DataModelManager *manager = nil;
             NSInteger addr = bytes[3] + bytes[4] * 256;
             NSInteger channel = bytes[5];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"CALLBACKOFTHERMOREGULATORCONFIGURATION" object:self userInfo:@{@"DEVICEID":sourceDeviceId, @"ADDRESS":@(addr), @"CHANNEL":@(channel)}];
+        }
+    }
+    
+    else if ([dataStr hasPrefix:@"7d04"]) {
+        if ([dataStr length]>=12) {
+            NSNumber *state = [NSNumber numberWithBool:[[dataStr substringWithRange:NSMakeRange(10, 2)] boolValue]];
+            NSString *str1 = [dataStr substringWithRange:NSMakeRange(6, 2)];
+            NSString *str2 = [dataStr substringWithRange:NSMakeRange(8, 2)];
+            NSNumber *index = [NSNumber numberWithInteger:[CSRUtilities numberWithHexString:[NSString stringWithFormat:@"%@%@",str2,str1]]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"SceneAddedSuccessCall" object:nil userInfo:@{@"deviceId":sourceDeviceId,@"state":state,@"index":index}];
         }
     }
 }

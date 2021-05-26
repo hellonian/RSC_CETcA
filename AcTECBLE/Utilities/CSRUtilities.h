@@ -160,6 +160,7 @@
 + (BOOL)belongToSceneRemotesEightKeysM:(NSString *)shortName;
 + (BOOL)belongToSceneRemotesEightKeysSM:(NSString *)shortName;
 + (BOOL)belongToThermoregulator:(NSString *)shortName;
++ (BOOL)belongToCSRGateway:(NSString *)shortName;
 
 + (NSString *)convertToJsonData:(NSDictionary *)dict;
 + (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString;

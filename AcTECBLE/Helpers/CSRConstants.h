@@ -59,6 +59,7 @@
 #define kSceneRemotesEightKeysM @[@"MR8B"]
 #define kSceneRemotesEightKeysSM @[@"MRT12B"]
 #define kThermoregulators @[@"TS2412CB",@"MB-T1"]
+#define kCSRGateway @[@"GW01B"]
 
 #define kLCDRemote @[@"GR1000B"]
 
